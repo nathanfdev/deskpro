@@ -52,9 +52,12 @@ class FeedbackDataService extends AbstractDataService
     {
         $em = $this->em;
 
-        return $this->generateAndCache(array('hasAny'), function () use ($em) {
-            return $em->getConnection()->fetchColumn("SELECT COUNT(*) FROM feedback LIMIT 1") ? true : false;
-        });
+        return $this->generateAndCache(
+            array('hasAny'),
+            function () use ($em) {
+                return $em->getConnection()->fetchColumn("SELECT COUNT(*) FROM feedback LIMIT 1") ? true : false;
+            }
+        );
     }
 
     /**
@@ -99,7 +102,10 @@ class FeedbackDataService extends AbstractDataService
                 // status_categories (feedback->status_category)
                 // array(6,1,4)
                 if (count($status_categories = $filter->getStatusCategories())) {
-                    $qb->andWhere('f.status_category IN (:status_categories)')->setParameter('status_categories', $status_categories);
+                    $qb->andWhere('f.status_category IN (:status_categories)')->setParameter(
+                        'status_categories',
+                        $status_categories
+                    );
                 }
 
                 // types
@@ -304,6 +310,7 @@ class FeedbackDataService extends AbstractDataService
         } catch (QueryException $e) {
             $count = 0;
         }
+
         return Count::fromValue($count);
     }
 
@@ -325,6 +332,7 @@ class FeedbackDataService extends AbstractDataService
             $count->add($group['value']);
             $count->addNested($group['value'], $group['group_name']);
         }
+
         return $count;
     }
 
@@ -338,6 +346,7 @@ class FeedbackDataService extends AbstractDataService
             ->leftJoin('f.category', 'category')
             ->groupBy('category.id')
             ->orderBy('category.title');
+
         return $qb->getQuery()->getScalarResult();
     }
 }

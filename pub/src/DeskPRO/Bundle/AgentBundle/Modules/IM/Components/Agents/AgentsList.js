@@ -1,9 +1,8 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import AgentsListItem from './AgentsListItem'
+import AgentsListItem from './AgentsListItem';
 
 /**
- * TODO: find a way to avoid this really srong dark magic arount porps.agents and state.agents. The point is that when
+ * TODO: find a way to avoid this really strong dark magic arount porps.agents and state.agents. The point is that when
  * TODO: rendering this template at the very first time you have nothing in props.agents, cause ajax still on progress
  * TODO: and promise have no data yet.
  */
@@ -29,7 +28,7 @@ const AgentsList = React.createClass(
                 </form>
                 <div className="im-list-wrapper">
                     <ul className="im-list">
-                        {this.state.agents.length > 0 ? this.state.agents.map((agent, index) => <AgentsListItem agentClickHandler={this.props.handler} key={index} agent={agent} highlight={this.state.value}/>) : this.props.agents.map((agent, index) => <AgentsListItem key={index} agent={agent} />)}
+                        {this.state.agents.length > 0 ? this.state.agents.map((agent, index) => <AgentsListItem agentClickHandler={this.props.handler} key={index} agent={agent} highlight={this.state.value}/>) : (this.props.agents.length ? this.props.agents.map((agent, index) => <AgentsListItem key={index} agent={agent} />) : null)}
                     </ul>
                 </div>
             </div>
@@ -40,7 +39,8 @@ const AgentsList = React.createClass(
     {
         const newState = {
             ...this.state,
-            agents: this.filterAgents(event.target.value), value: event.target.value,
+            agents: this.filterAgents(event.target.value),
+            value: event.target.value,
         }
         this.setState(newState);
     },

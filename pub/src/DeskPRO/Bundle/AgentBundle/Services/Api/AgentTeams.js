@@ -1,6 +1,10 @@
-import DpApi from "../DpApi";
+import DpApi from '../DpApi';
 
-/** Load all departments. */
+/**
+ * Load all departments.
+ * @param {Object} options - options to get teams
+ * @return {object} - promise
+ */
 export function loadAgentTeams(options = {}) {
   return DpApi.sendGet('DP_API/agent_teams?' + compileParams(options));
 }
@@ -9,8 +13,12 @@ export function loadAll() {
   return loadAgentTeams();
 }
 
-export function loadAgentTeam(team_id) {
-  return DpApi.sendGet(`DP_API/agent_teams/${team_id}`);
+export function loadAgentTeam(teamId) {
+  return DpApi.sendGet(`DP_API/agent_teams/${teamId}`);
+}
+
+export function loadAgentTeamAgents(teamId) {
+  return DpApi.sendGet(`DP_API/agent_teams/${teamId}/agents`);
 }
 
 export function loadCounts() {
@@ -19,13 +27,13 @@ export function loadCounts() {
 
 /**
  * Compile parameters into a URL string
- * @param params
- * @returns {string}
+ * @param {Object} params - parameters to be compiled
+ * @returns {string} - compiled string
  */
 function compileParams(params) {
-  let compiled = [];
+  const compiled = [];
 
-  for (let key of Object.keys(params)) {
+  for (const key of Object.keys(params)) {
     compiled.push(key + '=' + String(params[key]));
   }
 

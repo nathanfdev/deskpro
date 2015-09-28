@@ -1,12 +1,13 @@
-import React from "react";
-import Formsy from "formsy-react";
-import FRC from "../../../../../Component/FormComponents/main.js";
-import Picker from "anytime";
-import Moment from "moment";
-import $ from 'jquery';
+import React from 'react';
+import Formsy from 'formsy-react';
+import FRC from '../../../../../Component/FormComponents/main.js';
 import * as constants from '../../../Constants/Constants';
+import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
+import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
+import MenuFooter from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooter';
+import MenuFooterOptions from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterOptions';
 
-import * as TaskActions from "../Actions/TaskListActions";
+import * as TaskActions from '../Actions/TaskListActions';
 
 const TaskOrderHover = React.createClass({
 
@@ -28,58 +29,46 @@ const TaskOrderHover = React.createClass({
 
   },
 
+  setOrder: function(order) {
+    this.props.applyOrder(order);
+  },
+
   render: function() {
-    const direction = this.props.direction;
     const order = this.props.order;
 
-    const sortOptions = [
-      {value: constants.ORDER_ASC, label: <span>Ascending</span>},
-      {value: constants.ORDER_DESC, label: <span>Descending</span>}
-    ];
-
-    const orderByOptions = [
-      {value: 'list', label: 'List'},
-      {value: 'project', label: 'Project'},
-      {value: 'due', label: 'Due Date'},
-      {value: 'done', label: 'Completed Date'},
-      {value: 'created', label: 'Created Date'},
-      {value: 'assignee', label: 'Assignee'}
-    ];
-
-    return (<div style={{top: 94}} className="sidebar-hover hide-indicator">
-        <div className="sidebar-hover-content">
-          <div className="sidebar-hover-header">
-            <i className="fa fa-tags"/> <span className="title">Order</span>
-          </div>
-          <Formsy.Form onSubmit={this.props.applyOrder}>
-            <div className="sidebar-hover-content-box">
-              <h2>Order By</h2>
-              <FRC.Select
-                layout="horizontal"
-                name="order"
-                options={orderByOptions}
-                value={order ? order : 'due'}
-              />
-            </div>
-            <div className="sidebar-hover-content-box">
-              <h2>Direction</h2>
-              <div className="sidebar-hover-checkbox-collection inline-radio">
-                <FRC.RadioGroupDeskPRO
-                  layout="horizontal"
-                  name="direction"
-                  type="inline"
-                  options={sortOptions}
-                  value={direction ? direction : 'asc'}
-                />
-              </div>
-            </div>
-            <div className="sidebar-hover-content-box">
-              <button type="submit" value="Apply" className="button">Apply</button> <a href="#" className="button">Clear</a>
-            </div>
-          </Formsy.Form>
-        </div>
-      </div>
-    );
+    return (<Menu>
+              <Item onClick={this.setOrder.bind(this, {order: 'list'})}
+                isActive={order === 'list'}
+                checked={order === 'list'}
+                icon="list">List</Item>
+              <Item onClick={this.setOrder.bind(this, {order: 'project'})}
+                isActive={order === 'project'}
+                checked={order === 'project'}
+                icon="briefcase">Project</Item>
+              <Item onClick={this.setOrder.bind(this, {order: 'due'})}
+                isActive={order === 'due'}
+                checked={order === 'due'}
+                icon="calendar">Due Date</Item>
+              <Item onClick={this.setOrder.bind(this, {order: 'done'})}
+                isActive={order === 'done'}
+                checked={order === 'done'}
+                icon="calendar">Done Date</Item>
+              <Item onClick={this.setOrder.bind(this, {order: 'created'})}
+                isActive={order === 'created'}
+                checked={order === 'created'}
+                icon="calendar">Created Date</Item>
+              <Item onClick={this.setOrder.bind(this, {order: 'assignee'})}
+                isActive={order === 'assignee'}
+                checked={order === 'assignee'}
+                icon="user">Assignee</Item>
+              <MenuFooter>
+                <MenuFooterOptions options={[{id: 'asc', onClick: this.setOrder.bind(this, {direction: 'asc'}), label: 'Asc'},
+                                             {id: 'desc', onClick: this.setOrder.bind(this, {direction: 'desc'}), label: 'Desc'}
+                                            ]} active={this.props.direction}>
+                  Sort
+                </MenuFooterOptions>
+              </MenuFooter>
+            </Menu>);
   }
 });
 

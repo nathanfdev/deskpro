@@ -11,7 +11,7 @@ export class LabelsDictionary extends React.Component {
         <div className="sidebar-label-list sidebar-list">
           <span className="labelCharacter">--</span>
           <ul>
-            <li onClick={onClick.bind(this, {name:'no_labels', value:1})}>
+            <li onClick={onClick.bind(this, {name: 'no_labels', value: 1})}>
               <a href="#" className="item-label">no labels defined</a>
             </li>
           </ul>

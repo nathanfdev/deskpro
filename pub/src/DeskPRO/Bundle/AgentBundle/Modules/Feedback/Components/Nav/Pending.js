@@ -23,7 +23,9 @@ export class Pending extends Component {
                       active={currentGroup.name === 'awaiting_validation'}
               />
           </div>
-          <ListItem count={commentsToReviewCount} label="Comments to Review"/>
+          <ListItem count={commentsToReviewCount} label="Comments to Review"
+                    active={false}
+            />
         </ul>
       </Section>
     );

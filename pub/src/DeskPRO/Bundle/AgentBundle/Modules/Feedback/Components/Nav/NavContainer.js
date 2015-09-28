@@ -1,13 +1,15 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../Actions/FeedbackListActions'
+import * as actions from '../../Actions/FeedbackListActions';
 import { Nav } from './Nav';
-import { sortingDataSelector, filterDataSelector } from '../../Selectors/list';
+import { filterDataSelector } from '../../Selectors/list';
 import { groupDataSelector } from '../../Selectors/nav';
+import { loadFeedbackTypes } from '../../RecordStores/Actions/feedbackTypesActions';
 
 @connect(state => {
   return ({
     toValidateCount: state.Feedback.nav.get('toValidateCount'),
+    commentsToReviewCount: state.Feedback.nav.get('commentsToReviewCount'),
     statuses: state.Feedback.nav.get('statuses').toJS(),
     types: state.Feedback.nav.get('types').toJS(),
     labels: state.Feedback.nav.get('labels'),
@@ -17,12 +19,26 @@ import { groupDataSelector } from '../../Selectors/nav';
   });
 })
 
-export class NavContainer extends React.Component {
+export class NavContainer extends Component {
+
+  static propTypes = {
+    groupChoice: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    currentFilterMode: PropTypes.object.isRequired,
+    toValidateCount: PropTypes.string.isRequired,
+    commentsToReviewCount: PropTypes.string.isRequired,
+    statuses: PropTypes.array.isRequired,
+    labels: PropTypes.array.isRequired,
+    types: PropTypes.array.isRequired,
+    customCategories: PropTypes.array.isRequired,
+    currentGroup: PropTypes.object.isRequired
+  };
 
   constructor(props) {
     super(props);
     const { dispatch, currentFilterMode } = this.props;
 
+    dispatch(loadFeedbackTypes());
     dispatch(actions.feedbackToValidate());
     dispatch(actions.commentsToReview());
     dispatch(actions.feedbackLabels());
@@ -37,12 +53,21 @@ export class NavContainer extends React.Component {
     dispatch(actions.loadFeedbackList());
   }
 
+
+  groupChoice(group, event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const {dispatch } = this.props;
+    dispatch(actions.changeGroupState(group));
+  }
+
   render() {
-    const {statuses, toValidateCount, dispatch, labels, types, customCategories, currentGroup} = this.props;
+    const {statuses, toValidateCount, commentsToReviewCount, dispatch, labels, types, customCategories, currentGroup} = this.props;
 
     return (
       <Nav
         toValidateCount={toValidateCount}
+        commentsToReviewCount={commentsToReviewCount}
         dispatch={dispatch}
         statuses={statuses}
         labels={labels}
@@ -52,12 +77,5 @@ export class NavContainer extends React.Component {
         groupChoice={this.groupChoice.bind(this)}
         />
     );
-  }
-
-  groupChoice(group, event) {
-    event.preventDefault();
-    event.stopPropagation();
-    const {dispatch } = this.props;
-    dispatch(actions.changeGroupState(group));
   }
 }

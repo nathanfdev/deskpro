@@ -24,7 +24,7 @@ export default class Menu extends React.Component {
     super(props);
 
     this.state = {
-      activeItem: false
+      activeItem: {}
     };
   }
 
@@ -34,8 +34,14 @@ export default class Menu extends React.Component {
    * @return {void}
    */
   setActiveItem(item) {
+    let activeItem = item;
+
+    if (!item) {
+      activeItem = {};
+    }
+
     this.setState({
-      activeItem: item
+      activeItem: activeItem
     });
   }
 

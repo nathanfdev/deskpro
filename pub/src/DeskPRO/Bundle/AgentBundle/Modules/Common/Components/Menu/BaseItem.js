@@ -1,7 +1,7 @@
 import React from 'react';
-import Menu from 'DeskPRO/Component/Menu/Menu';
-import ItemFormat from 'DeskPRO/Component/Menu/ItemFormat';
-import Positioned from 'DeskPRO/Component/Positioned';
+import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
+import ItemFormat from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemFormat';
+import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned';
 import classNames from 'classnames';
 import $ from 'jquery';
 
@@ -27,7 +27,8 @@ const BaseItem = React.createClass({
     keepOpen: React.PropTypes.bool,
     activeItem: React.PropTypes.object,
     setActiveItem: React.PropTypes.func,
-    closeMenu: React.PropTypes.func
+    closeMenu: React.PropTypes.func,
+    isActive: React.PropTypes.bool
   },
 
   /**
@@ -80,7 +81,7 @@ const BaseItem = React.createClass({
    */
   closeMenu: function() {
     if (this.props.setActiveItem) {
-      this.props.setActiveItem(false);
+      this.props.setActiveItem({});
     }
   },
 
@@ -91,9 +92,9 @@ const BaseItem = React.createClass({
    */
   handleClickOutside: function(e) {
     // Don't handle clicks for menu items - they deal with that themselves
-    const closest = $(e.target).closest('.dropdown-nav-item');
+    const closest = $(e.target).parents('.dropdown-nav-item');
 
-    if (!closest) {
+    if (closest.length === 0) {
       this.closeMenu();
     }
   },
@@ -201,7 +202,7 @@ const BaseItem = React.createClass({
       }
 
       // Only add an active state if the menu is open and exists
-      if (this.props.activeItem === this && keepMenuState) {
+      if (this.props.activeItem === this && keepMenuState || this.props.isActive) {
         divClasses.push('active');
       }
 

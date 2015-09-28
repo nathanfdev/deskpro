@@ -1,11 +1,11 @@
 import React from 'react';
-import TeamsListItem from './TeamsListItem'
+import TeamsListItem from './TeamsListItem';
 
 export default class TeamsList extends React.Component {
     render() {
         return (
             <ul className="im-list short">
-                {this.props.teams.map((team, index) => <TeamsListItem key={index} team={team} />)}
+                {this.props.teams.length > 0 ? this.props.teams.map((team, index) => <TeamsListItem key={index} team={team} />) : null}
             </ul>
         );
     }

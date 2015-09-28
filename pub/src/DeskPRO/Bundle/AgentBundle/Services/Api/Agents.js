@@ -1,10 +1,10 @@
-import * as People from "./People";
+import * as People from './People';
+import _ from 'lodash';
 
-/** Load all departments. */
 export function loadAgents(options = {}) {
-    return People.loadPeople({is_agent: 1});
+  return People.loadPeople(_.merge(options, {is_agent: true}));
 }
 
 export function loadAgent(id) {
-    return People.loadPerson(id);
+  return People.loadPerson(id);
 }

@@ -1,37 +1,25 @@
-import { Reducer } from 'Ampliflux/reducers';
+import { createReducer } from 'Ampliflux';
 import * as actions from '../Actions/imListActions.js';
+import Immutable from 'immutable';
 
-export default class IM_list extends Reducer {
+const initialState = {
+  agents: [],
+  teams: [],
+  departments: [],
+  recentAgents: [],
+};
 
-    getInitialState() {
-        return {
-            agents: [],
-            teams: [],
-            departments: [],
-            recentAgents: []
-        };
-    }
-
-    registerHandlers() {
-        this.r(actions.loadAgents, this.listAgents);
-        this.r(actions.loadTeams, this.listTeams);
-        this.r(actions.loadDepartments, this.listDepartments);
-        this.r(actions.loadRecentAgents, this.listRecentAgents);
-    }
-
-    listAgents(prev, {payload}) {
-        return {...prev, agents: payload};
-    }
-
-    listTeams(prev, {payload}) {
-        return {...prev, teams: payload};
-    }
-
-    listDepartments(prev, {payload}) {
-        return {...prev, departments: payload};
-    }
-
-    listRecentAgents(prev, {payload}) {
-        return {...prev, recentAgents: payload};
-    }
-}
+export default createReducer(initialState, {
+  [actions.loadAgents]: (state, payload) => {
+    return state.set('agents', payload);
+  },
+  [actions.loadDepartments]: (state, payload) => {
+    return state.set('departments', payload);
+  },
+  [actions.loadTeams]: (state, payload) => {
+    return state.set('teams', payload);
+  },
+  [actions.loadRecentAgents]: (state, payload) => {
+    return state.set('recentAgents', payload);
+  }
+});

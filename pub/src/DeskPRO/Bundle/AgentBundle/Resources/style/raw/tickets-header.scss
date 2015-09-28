@@ -1,6 +1,8 @@
 // Top control bar (to be renamed)
 .tickets-control-bar {
-  position: relative;
+  position: fixed;
+  top: 44px;
+  width: 450px;
   overflow: hidden;
   background: #ebebeb;
   border-bottom: 1px solid #dbddde;
@@ -81,9 +83,6 @@
       }
     }
   }
-
-
-
 
   .ticket-controls-default {
     display: inline-block;
@@ -269,7 +268,9 @@
   }
 }
 
-
+.kanban .tickets-control-bar {
+  width: 800px;
+}
 
 // Tickets head for sorting/grouping buttons etc
 .tickets-header {

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import HeaderWidget from '../../IM/Components/HeaderWidget';
+import { HeaderWidget } from '../../IM/Components/HeaderWidget';
 
 @connect(state => ({
   user: state.user

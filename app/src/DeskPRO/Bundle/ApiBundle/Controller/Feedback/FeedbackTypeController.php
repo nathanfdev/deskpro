@@ -24,45 +24,46 @@
  * |                                                                          |
  * | ~ Thanks, Everyone at Team DeskPRO                                       |
  * \**************************************************************************/
+
 /**
  * DeskPRO
  *
  * @package DeskPRO
  */
+namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
-namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
-
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class FeedbackTransformer
+ * API access to feedback types.
  */
-class FeedbackTransformer extends AbstractDataSerializerTransformer
+class FeedbackTypeController extends BaseController
 {
-    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
+    /**
+     * @ApiDoc(
+     *      description="get a filtered list of feedback types",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     * @Get("/feedback_types", name="api_feedback_types")
+     * @return View
+     * @throws \LogicException
+     */
+    public function cgetAction()
     {
-        return [
-            'id',
-            'status',
-            'hidden_status',
-            'title',
-            'slug',
-            'date_created',
-            'date_published',
-            'view_count',
-            'total_rating',
-            'num_ratings',
-            'num_comments',
-            'validating',
-            'popularity',
-            'content',
-            'person_id',
-            'category_id'
-        ];
+        $feedbackTypes = $this->getDoctrine()->getRepository('DeskPRO:FeedbackCategory')->findAll();
+
+        return View::create(
+            $this->dataSerialize($feedbackTypes),
+            Response::HTTP_OK
+        );
     }
 
-    public function getCustomProperties(DataTransformerRequest $transformation_request)
-    {
-        return [];
-    }
+
 }
