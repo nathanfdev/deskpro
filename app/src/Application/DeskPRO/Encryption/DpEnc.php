@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Encryption;
 
 class DpEnc
@@ -54,12 +52,12 @@ class DpEnc
     private $key;
 
     /**
-     * @param bool $is_enabled
+     * @param bool   $is_enabled
      * @param string $key_file
      */
     public function __construct($is_enabled, $key_file)
     {
-        $this->key_file  = $key_file;
+        $this->key_file   = $key_file;
         $this->is_enabled = $is_enabled;
     }
 
@@ -84,7 +82,7 @@ class DpEnc
     }
 
     /**
-     * Return true if we have a key
+     * Return true if we have a key.
      *
      * @return bool
      */
@@ -94,7 +92,7 @@ class DpEnc
     }
 
     /**
-     * Returns the key or null if there is no key
+     * Returns the key or null if there is no key.
      *
      * @return string|null
      */
@@ -117,13 +115,15 @@ class DpEnc
 
     /**
      * @param string $string
-     * @return string
+     *
      * @throws \CannotPerformOperationException
+     * @return string
+     *
      */
     public function encrypt($string)
     {
         if (!$this->hasKey()) {
-            throw new \RuntimeException("Cannot encrypt because no key");
+            throw new \RuntimeException('Cannot encrypt because no key');
         }
 
         return base64_encode(\Crypto::Encrypt($string, $this->getKey()));
@@ -131,14 +131,16 @@ class DpEnc
 
     /**
      * @param string $string
-     * @return string
+     *
      * @throws \CannotPerformOperationException
      * @throws \InvalidCiphertextException
+     * @return string
+     *
      */
     public function decrypt($string)
     {
         if (!$this->hasKey()) {
-            throw new \InvalidCiphertextException("Cannot decrypt because no key");
+            throw new \InvalidCiphertextException('Cannot decrypt because no key');
         }
 
         return \Crypto::Decrypt(base64_decode($string), $this->getKey());
@@ -153,6 +155,7 @@ class DpEnc
      * If encryption IS enabled, this will return an encrypted version of $string with the prefix signifier.
      *
      * @param string $string
+     *
      * @return string
      */
     public function dpEncrypt($string)
@@ -167,7 +170,7 @@ class DpEnc
             return $string;
         }
 
-        return self::DP_ENC_SIG_PREFIX . $enc_string;
+        return self::DP_ENC_SIG_PREFIX.$enc_string;
     }
 
     /**
@@ -176,9 +179,11 @@ class DpEnc
      * If the string is encrypted but we have no key, this may throw an exception.
      *
      * @param string $string
-     * @return string
+     *
      * @throws \CannotPerformOperationException
      * @throws \InvalidCiphertextException
+     * @return string
+     *
      */
     public function dpDecrypt($string)
     {

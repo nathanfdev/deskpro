@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Tickets
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;
@@ -39,7 +36,7 @@ use Application\DeskPRO\Searcher\ChatConversationSearch;
 
 class GroupingCounter
 {
-    const LAST_TIME_MARKER   = 1893456000;
+    const LAST_TIME_MARKER = 1893456000;
 
     /** @var string */
     protected $group_by;
@@ -47,11 +44,11 @@ class GroupingCounter
     protected $searcher;
     /** @var array */
     protected $groups = array(
-        'none' => '',
-        'department' => 'department_id',
-        'agent' => 'agent_id',
-        'date_created' => 'date_created',
-        'total_to_ended' => 'total_to_ended'
+        'none'           => '',
+        'department'     => 'department_id',
+        'agent'          => 'agent_id',
+        'date_created'   => 'date_created',
+        'total_to_ended' => 'total_to_ended',
     );
 
     public function __construct($group_by)
@@ -61,14 +58,14 @@ class GroupingCounter
 
     public function getCounts(ChatConversationSearch $searcher)
     {
-        if(empty($this->group_by)) {
+        if (empty($this->group_by)) {
             return array();
         }
 
         $searcher->setGroupBy($this->group_by);
         $db = App::getDb();
 
-        switch($this->group_by) {
+        switch ($this->group_by) {
             case 'agent_id':
                 $searcher->addJoin('people ON agent_id = people.id');
                 $searcher->setColumns('agent_id AS id, COALESCE(people.name, "Unassigned") AS title, COUNT(*) AS count');
@@ -78,23 +75,24 @@ class GroupingCounter
                 $searcher->addJoin('departments ON department_id = departments.id');
                 $searcher->setColumns('department_id AS id, COUNT(*) AS count');
                 $searcher->setOrderBy('departments.title');
-                $counts = $db->fetchAll($searcher->getSql());
+                $counts            = $db->fetchAll($searcher->getSql());
                 $counts_department = array();
 
-                foreach($counts as $count)
+                foreach ($counts as $count) {
                     $counts_department[$count['id']] = $count;
+                }
 
                 $departments = App::getDataService('Department')->getInHierarchy();
 
-                foreach($departments as $i => $department) {
-                    if(!isset($counts_department[$department['id']])) {
+                foreach ($departments as $i => $department) {
+                    if (!isset($counts_department[$department['id']])) {
                         $departments[$i]['count'] = 0;
                     } else {
                         $departments[$i]['count'] = $counts_department[$department['id']]['count'];
                     }
 
-                    foreach($department['children'] as $h => $child) {
-                        if(!isset($counts_department[$child['id']])) {
+                    foreach ($department['children'] as $h => $child) {
+                        if (!isset($counts_department[$child['id']])) {
                             unset($departments[$i]['children'][$h]);
                             continue;
                         }
@@ -104,8 +102,9 @@ class GroupingCounter
                         $departments[$i]['children'][$h] = $child;
                     }
 
-                    if(!$departments[$i]['count'])
+                    if (!$departments[$i]['count']) {
                         unset($departments[$i]);
+                    }
                 }
 
                 return $departments;
@@ -116,7 +115,7 @@ class GroupingCounter
                 break;
 
             case 'total_to_ended':
-                $searcher->setColumns($this->makeTimeFieldSelect('total_to_ended', 'grouping_var') . ',  COUNT(*) AS count');
+                $searcher->setColumns($this->makeTimeFieldSelect('total_to_ended', 'grouping_var').',  COUNT(*) AS count');
                 $searcher->setGroupBy('grouping_var');
                 $searcher->setOrderBy('grouping_var', 'ASC');
                 break;
@@ -127,7 +126,7 @@ class GroupingCounter
         if ($this->group_by == 'total_to_ended') {
             $titles = \Application\DeskPRO\Tickets\GroupingCounter::getTimeTitles();
             foreach ($counts as &$c) {
-                $c['id'] = $c['grouping_var'];
+                $c['id']    = $c['grouping_var'];
                 $c['title'] = $titles[$c['grouping_var']];
             }
         }
@@ -140,20 +139,21 @@ class GroupingCounter
      *
      * @param $field
      * @param $select_name
+     *
      * @return string
      */
     public function makeTimeFieldSelect($field, $select_name)
     {
         $times = array_keys(\Application\DeskPRO\Tickets\GroupingCounter::getTimeTitles());
 
-        $sql = "CASE ";
+        $sql = 'CASE ';
 
         $parts = array();
         foreach ($times as $t) {
             $parts[] = " WHEN chat_conversations.total_to_ended < $t THEN $t ";
         }
 
-        $sql .= implode('', $parts) . " ELSE ".self::LAST_TIME_MARKER." END AS $select_name";
+        $sql .= implode('', $parts).' ELSE '.self::LAST_TIME_MARKER." END AS $select_name";
 
         return $sql;
     }

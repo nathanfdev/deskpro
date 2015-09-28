@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Languages;
 
 use Orb\Util\DOMDocument;
@@ -74,9 +72,8 @@ class GenLanguagePackFile
         $this->phrases[$id] = $phrase;
     }
 
-
     /**
-     * Add an array of phrases
+     * Add an array of phrases.
      *
      * @param string[] $phrases
      */
@@ -85,9 +82,8 @@ class GenLanguagePackFile
         $this->phrases = array_merge($this->phrases, $phrases);
     }
 
-
     /**
-     * Get the generated document as a string
+     * Get the generated document as a string.
      *
      * @return string
      */
@@ -98,11 +94,11 @@ class GenLanguagePackFile
         return $dom->saveXML();
     }
 
-
     /**
-     * Write the generated XML document to a file
+     * Write the generated XML document to a file.
      *
-     * @param  string            $path
+     * @param string $path
+     *
      * @throws \RuntimeException
      */
     public function writeXml($path)
@@ -110,19 +106,18 @@ class GenLanguagePackFile
         $xml = $this->getXml();
 
         if (!file_put_contents($path, $xml)) {
-            throw new \RuntimeException("Failed to write XML to file");
+            throw new \RuntimeException('Failed to write XML to file');
         }
     }
 
-
     /**
-     * Get the generated DOMDocuemtn
+     * Get the generated DOMDocuemtn.
      *
      * @return \DOMDocument
      */
     public function getDomDocument()
     {
-        $dom = new DOMDocument('1.0', 'UTF-8');
+        $dom               = new DOMDocument('1.0', 'UTF-8');
         $dom->formatOutput = true;
 
         $pack = $dom->createElement('pack');

@@ -1,40 +1,39 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @category Util
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ *
+ * @category Util
+ */
 namespace Orb\Helper;
 
-use \Orb\Util\Util;
+use Orb\Util\Util;
 
 /**
  * An object that keeps track of "helpers".
@@ -42,20 +41,19 @@ use \Orb\Util\Util;
 class HelperManager
 {
     /**
-     * An array of helpers
+     * An array of helpers.
+     *
      * @var array
      */
     protected $_helpers = array();
 
     /**
-     * An array of short callable names
+     * An array of short callable names.
      */
     protected $_callable_names = array();
 
-
-
     /**
-     * Add a helper object
+     * Add a helper object.
      *
      * @param Object $object
      * @param string $name   The name of the helper. Defaults to strtolower of the base classname
@@ -79,7 +77,7 @@ class HelperManager
         if ($object instanceof ShortCallableInterface) {
             foreach ($object->getShortCallableNames() as $short_name => $method) {
                 if ($prefix_callable) {
-                    $short_name = $prefix_callable . $short_name;
+                    $short_name = $prefix_callable.$short_name;
                 }
 
                 $short_name = strtolower($short_name);
@@ -94,8 +92,9 @@ class HelperManager
     /**
      * Check to see if a helper of a specific type has been registerd.
      *
-     * @param  string $typename
-     * @param  bool   $exact    Check for exact class, discount any children
+     * @param string $typename
+     * @param bool   $exact    Check for exact class, discount any children
+     *
      * @return bool
      */
     public function findHelperOfType($typename, $exact = false)
@@ -130,9 +129,10 @@ class HelperManager
     }
 
     /**
-     * Get a helper
+     * Get a helper.
      *
-     * @param  <type> $name
+     * @param <type> $name
+     *
      * @return <type>
      */
     public function getHelper($name)
@@ -146,10 +146,9 @@ class HelperManager
     }
 
     /**
-     * Remove a helper
+     * Remove a helper.
      *
-     * @param  string $name
-     * @return void
+     * @param string $name
      */
     public function removeHelper($name)
     {
@@ -164,7 +163,8 @@ class HelperManager
     /**
      * Is a certain name callable given our helpers?
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function isNameCallable($name)
@@ -177,10 +177,11 @@ class HelperManager
     }
 
     /**
-     * Call a certain callable
+     * Call a certain callable.
      *
-     * @param  string $name
-     * @param  array  $args
+     * @param string $name
+     * @param array  $args
+     *
      * @return mixed
      */
     public function callName($name, array $args)

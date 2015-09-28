@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage UserBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\UserBundle\Validator;
 
 use Application\DeskPRO\App;
@@ -61,7 +58,8 @@ class NewFeedbackValidator extends AbstractValidator
     /**
      * Check $value to see if its valid.
      *
-     * @param  \Application\DeskPRO\Feedback\NewFeedback $newfeedback
+     * @param \Application\DeskPRO\Feedback\NewFeedback $newfeedback
+     *
      * @return bool
      */
     protected function checkIsValid($newfeedback)
@@ -87,7 +85,7 @@ class NewFeedbackValidator extends AbstractValidator
             $this->addError('category_id.invalid');
         }
 
-        $cf_man = App::getSystemService('FeedbackFieldsManager');
+        $cf_man                = App::getSystemService('FeedbackFieldsManager');
         $newfeedback_cat_field = $cf_man->getSystemField('cat');
         if (!$newfeedback_cat_field || !$cf_man->getFieldChildren($newfeedback_cat_field)) {
             $newfeedback_cat_field = null;
@@ -95,13 +93,13 @@ class NewFeedbackValidator extends AbstractValidator
 
         if ($newfeedback_cat_field) {
             // Not specified in the form
-            if (!isset($newfeedback->custom_fields['field_' . $newfeedback_cat_field->getId()])) {
+            if (!isset($newfeedback->custom_fields['field_'.$newfeedback_cat_field->getId()])) {
                 $this->addError('usercat.invalid');
 
             // Specifid but may be invalid option
             } else {
-                $children = $cf_man->getFieldChildren($newfeedback_cat_field);
-                $selected_id = $newfeedback->custom_fields['field_' . $newfeedback_cat_field->getId()];
+                $children    = $cf_man->getFieldChildren($newfeedback_cat_field);
+                $selected_id = $newfeedback->custom_fields['field_'.$newfeedback_cat_field->getId()];
 
                 if (!isset($children[$selected_id])) {
                     $this->addError('usercat.invalid');

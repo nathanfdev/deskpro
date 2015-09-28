@@ -1,44 +1,41 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage ApiBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\TicketMacro;
 
 /**
- * Simple ticket macros CRUD
+ * Simple ticket macros CRUD.
  *
  * @SWG\Resource(
  * 	resourcePath="/ticket_macros",
@@ -49,13 +46,12 @@ use Application\DeskPRO\Entity\TicketMacro;
 class TicketMacrosController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
         return new AdminManagePermission();
     }
-
 
     ####################################################################################################################
     # list
@@ -82,19 +78,19 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
 
         foreach ($macros as $macro) {
             $row = array(
-                'id'                => $macro->id,
-                'title'             => $macro->title,
-                'is_enabled'        => $macro->is_enabled,
-                'is_global'         => $macro->is_global,
-                'person_id'         => $macro->person ? $macro->person->id : null,
-                'person'            => $macro->person ? $macro->person->toApiData(true) : null,
+                'id'         => $macro->id,
+                'title'      => $macro->title,
+                'is_enabled' => $macro->is_enabled,
+                'is_global'  => $macro->is_global,
+                'person_id'  => $macro->person ? $macro->person->id : null,
+                'person'     => $macro->person ? $macro->person->toApiData(true) : null,
             );
 
             $data[] = $row;
         }
 
         return $this->createApiResponse(array(
-            'macros' => $data
+            'macros' => $data,
         ));
     }
 
@@ -102,12 +98,14 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
     # get
     ####################################################################################################################
 
-	/**
+    /**
      * @param $id
-     * @return Response
+     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @return Response
+     *
      *
      * @SWG\Api(
      * 	path="/ticket_layouts/{dep_id}",
@@ -138,7 +136,7 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
         $data = $this->getApiData($macro);
 
         return $this->createApiResponse(array(
-            'macro' => $data
+            'macro' => $data,
         ));
     }
 
@@ -148,10 +146,12 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
 
     /**
      * @param $id
-     * @return Response
+     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @return Response
+     *
      *
      *
      * @SWG\Api(
@@ -203,7 +203,7 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
             $macro->is_global = true;
         } else {
             $macro->is_global = false;
-            $macro->person = $this->container->getAgentData()->get($this->in->getUint('person_id'));
+            $macro->person    = $this->container->getAgentData()->get($this->in->getUint('person_id'));
         }
 
         if (!$macro->person) {
@@ -219,7 +219,7 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
         $this->em->flush();
 
         return $this->createSuccessResponse(array(
-            'macro_id' => $macro->id
+            'macro_id' => $macro->id,
         ));
     }
 
@@ -227,12 +227,14 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
     # remove
     ####################################################################################################################
 
-	/**
+    /**
      * @param $id
-     * @return Response
+     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @return Response
+     *
      *
      * @SWG\Api(
      * 	path="/ticket_macros/{id}",

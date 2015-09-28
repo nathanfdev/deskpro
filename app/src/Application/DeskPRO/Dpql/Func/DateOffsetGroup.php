@@ -1,44 +1,41 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Dpql
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Dpql\Func;
 
+use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
 use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
 use Application\DeskPRO\Dpql\Statement\Display;
-use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 
 /**
@@ -61,8 +58,7 @@ class DateOffsetGroup extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         $argCount = count($this->_arguments);
 
         if ($argCount != 1 && $argCount != 2) {
@@ -70,37 +66,37 @@ class DateOffsetGroup extends AbstractFunc
         }
 
         if ($argCount == 1) {
-            $value = reset($this->_arguments);
+            $value   = reset($this->_arguments);
             $prepped = $value->prepare($statement, $section, $stack, $select, $result);
 
-            $name = 'DATE_OFFSET_GROUP(' . $prepped->name() . ')';
+            $name  = 'DATE_OFFSET_GROUP('.$prepped->name().')';
             $ifSql = $prepped->sql();
         } else {
-            $valueTo = reset($this->_arguments);
+            $valueTo   = reset($this->_arguments);
             $valueFrom = next($this->_arguments);
 
-            $toPrepped = $valueTo->prepare($statement, $section, $stack, $select, $result);
+            $toPrepped   = $valueTo->prepare($statement, $section, $stack, $select, $result);
             $fromPrepped = $valueFrom->prepare($statement, $section, $stack, $select, $result);
 
-            $name = 'DATE_OFFSET_GROUP(' . $toPrepped->name() . ', ' . $fromPrepped->name() . ')';
-            $ifSql = 'UNIX_TIMESTAMP(' . $toPrepped->sql() . ') - UNIX_TIMESTAMP(' . $fromPrepped->sql() . ')';
+            $name  = 'DATE_OFFSET_GROUP('.$toPrepped->name().', '.$fromPrepped->name().')';
+            $ifSql = 'UNIX_TIMESTAMP('.$toPrepped->sql().') - UNIX_TIMESTAMP('.$fromPrepped->sql().')';
         }
 
         $groups = array(
-            900 => '0-15 minutes',
-            1800 => '15-30 minutes',
-            3600 => '30-60 minutes',
-            7200 => '1-2 hours',
-            14400 => '2-4 hours',
-            43200 => '4-12 hours',
-            86400 => '12-24 hours',
-            172800 => '1-2 days',
-            345600 => '2-4 days',
-            604800 => '4-7 days',
-            1209600 => '1-2 weeks',
-            2419200 => '2-4 weeks',
-            5270400 => '1-2 months', // actually 61 days
-            7862400 => '2-3 months', // 91 days
+            900      => '0-15 minutes',
+            1800     => '15-30 minutes',
+            3600     => '30-60 minutes',
+            7200     => '1-2 hours',
+            14400    => '2-4 hours',
+            43200    => '4-12 hours',
+            86400    => '12-24 hours',
+            172800   => '1-2 days',
+            345600   => '2-4 days',
+            604800   => '4-7 days',
+            1209600  => '1-2 weeks',
+            2419200  => '2-4 weeks',
+            5270400  => '1-2 months', // actually 61 days
+            7862400  => '2-3 months', // 91 days
             15724800 => '3-6 months', // 181 days
             31536000 => '6-12 months', // 365 days
             63072000 => '1-2 years', // 365*2 days
@@ -110,7 +106,7 @@ class DateOffsetGroup extends AbstractFunc
         $maxSentinel = 630720000;
 
         $sql = $maxSentinel; // this value must be higher than all the group values
-        foreach ($groups AS $max => $value) {
+        foreach ($groups as $max => $value) {
             $sql = "IF($ifSql < $max, $max, $sql)";
         }
         $sql = "IF($ifSql IS NULL, 0, $sql)";
@@ -132,7 +128,7 @@ class DateOffsetGroup extends AbstractFunc
             if ($max >= $maxSentinel) {
                 $fills[] = array($maxSentinel, $maxSentinel, $maxSentinel);
             }
-            foreach ($groups AS $groupMax => $null) {
+            foreach ($groups as $groupMax => $null) {
                 if ($groupMax <= $max) {
                     $fills[] = array($groupMax, $groupMax, $groupMax);
                 }

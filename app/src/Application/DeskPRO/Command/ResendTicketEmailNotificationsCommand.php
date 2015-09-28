@@ -1,38 +1,34 @@
 <?php
 
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
-
-
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\Tickets\TicketEmailBuilder;
@@ -46,7 +42,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ResendTicketEmailNotificationsCommand extends ContainerAwareCommand
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function configure()
     {
@@ -66,7 +62,7 @@ class ResendTicketEmailNotificationsCommand extends ContainerAwareCommand
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -80,9 +76,9 @@ class ResendTicketEmailNotificationsCommand extends ContainerAwareCommand
             return 1;
         }
 
-        $output->writeln("Timezone: " . $tz->getName());
-        $output->writeln("Start:    " . $date_start->format('Y-m-d H:i:s'));
-        $output->writeln("End:      " . $date_end->format('Y-m-d H:i:s'));
+        $output->writeln('Timezone: '.$tz->getName());
+        $output->writeln('Start:    '.$date_start->format('Y-m-d H:i:s'));
+        $output->writeln('End:      '.$date_end->format('Y-m-d H:i:s'));
 
         $db = $this->getContainer()->getDb();
         $em = $this->getContainer()->getEm();
@@ -94,10 +90,11 @@ class ResendTicketEmailNotificationsCommand extends ContainerAwareCommand
             ORDER BY id ASC
         ", array($date_start->format('Y-m-d H:i:s'), $date_end->format('Y-m-d H:i:s')));
 
-        $output->writeln("Number of emails in the time period: " . count($ids));
+        $output->writeln('Number of emails in the time period: '.count($ids));
 
         if (!$ids) {
-            $output->writeln("Nothing to do!");
+            $output->writeln('Nothing to do!');
+
             return 0;
         }
 
@@ -115,17 +112,18 @@ class ResendTicketEmailNotificationsCommand extends ContainerAwareCommand
 
         $log = $em->find('DeskPRO:TicketLog', $id);
         if (!$log) {
-            $output->writeln("Unknown ID: " . $id);
+            $output->writeln('Unknown ID: '.$id);
+
             return;
         }
 
         $ticket = $log->ticket;
 
-        $group = $em->createQuery("
+        $group = $em->createQuery('
             SELECT l
             FROM DeskPRO:TicketLog l
             WHERE l.parent = ?0
-        ")->setParameters(array($log->parent))->execute();
+        ')->setParameters(array($log->parent))->execute();
 
         $message_log = null;
         foreach ($group as $l) {
@@ -136,13 +134,15 @@ class ResendTicketEmailNotificationsCommand extends ContainerAwareCommand
         }
 
         if (!$message_log) {
-            $output->writeln("Is not a message-related email: ".  $id);
+            $output->writeln('Is not a message-related email: '.$id);
+
             return;
         }
 
         $message = $em->find('DeskPRO:TicketMessage', $message_log->id_after);
         if (!$message || $message->ticket->id != $log->ticket->id) {
             $output->writeln("Not a valid message on $id");
+
             return;
         }
 
@@ -154,13 +154,14 @@ class ResendTicketEmailNotificationsCommand extends ContainerAwareCommand
 
         $to_person = $em->getRepository('DeskPRO:Person')->findOneByEmail($to_email);
         if (!$to_person) {
-            $output->writeln("ERROR: Unknow person for email " . $to_email . " on log $id");
+            $output->writeln('ERROR: Unknow person for email '.$to_email." on log $id");
+
             return;
         }
 
-        $output->writeln("Email for log " . $id . " for message " . $message->id . " by " . $message->person->display_name);
+        $output->writeln('Email for log '.$id.' for message '.$message->id.' by '.$message->person->display_name);
         $output->writeln("\tMode: $user_mode");
-        $output->writeln("\tTo: $to_email :: " . $to_person->display_name);
+        $output->writeln("\tTo: $to_email :: ".$to_person->display_name);
         if ($to_ccs) {
             $output->writeln("\tCC: ", implode(',', $to_ccs));
         }
@@ -169,7 +170,8 @@ class ResendTicketEmailNotificationsCommand extends ContainerAwareCommand
 
         $from_account = $this->getContainer()->getEmailAccountManager()->findAccountForEmailAddress($from_email);
         if (!$from_account) {
-            $output->writeln("ERROR: Unknown email account for " . $from_email);
+            $output->writeln('ERROR: Unknown email account for '.$from_email);
+
             return;
         }
 

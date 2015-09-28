@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage UserBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -48,21 +45,21 @@ class ProfileController extends AbstractController implements RequireUserInterfa
     ############################################################################
 
     /**
-     * Shows emails, link to edit password, form to edit name and timezone
+     * Shows emails, link to edit password, form to edit name and timezone.
      */
     public function indexAction(Request $request)
     {
-        $form = $this->get('form.factory')->create(new ProfileType(), $this->person);
+        $form          = $this->get('form.factory')->create(new ProfileType(), $this->person);
         $field_manager = $this->container->getSystemService('person_fields_manager');
 
         $is_org_manager = ($this->person->organization && $this->person->organization_manager);
-        $new_blob_key = false;
+        $new_blob_key   = false;
 
-        $invalid_name = false;
-        $profile_saved = false;
+        $invalid_name          = false;
+        $profile_saved         = false;
         $invalid_custom_fields = array();
 
-        $manager = $this->container->getCustomFieldManager();
+        $manager          = $this->container->getCustomFieldManager();
         $definitions_form = $manager->createDefinitionsFormForContext($this->person);
 
         foreach ($definitions_form as $name => $child) {
@@ -77,7 +74,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
             $is_valid = true;
             if (!$this->person->first_name) {
-                $is_valid = false;
+                $is_valid     = false;
                 $invalid_name = true;
             } elseif (!in_array($this->person->timezone, \DateTimeZone::listIdentifiers())) {
                 $is_valid = false;
@@ -87,9 +84,9 @@ class ProfileController extends AbstractController implements RequireUserInterfa
             foreach ($field_manager->getFields() as $field) {
                 $errors = $field->getHandler()->validateFormData($custom_fields ?: array());
                 foreach ($errors as $code) {
-                    $invalid_custom_fields['field_' . $field->getId()] = true;
-                    $invalid_custom_fields[$code] = true;
-                    $is_valid = false;
+                    $invalid_custom_fields['field_'.$field->getId()] = true;
+                    $invalid_custom_fields[$code]                    = true;
+                    $is_valid                                        = false;
                 }
             }
 
@@ -97,7 +94,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
                 $this->person->setPreference('org.manager_auto_add', $this->in->getBool('org_manager_auto_add') ? 1 : 0);
             }
 
-            /** @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
+            /* @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
             if ($this->person->getPermissionsManager()->get('GeneralChecker')->canSetPicture()) {
                 $file = $this->request->files->get('new_picture');
                 if ($file && $file->getClientSize()) {
@@ -106,12 +103,12 @@ class ProfileController extends AbstractController implements RequireUserInterfa
                     $picture_error = $accept->getError($file, 'user');
                     if ($picture_error) {
                         switch ($picture_error['error_code']) {
-                            case 'size': $phrase_id = 'user.error.attach_size'; break;
-                            case 'failed_upload': $phrase_id = 'user.error.attach_failed'; break;
-                            case 'no_file': $phrase_id = 'user.error.attach_no-file'; break;
-                            case 'server_error': $phrase_id = 'user.error.attach_unknown-error'; break;
+                            case 'size': $phrase_id                = 'user.error.attach_size'; break;
+                            case 'failed_upload': $phrase_id       = 'user.error.attach_failed'; break;
+                            case 'no_file': $phrase_id             = 'user.error.attach_no-file'; break;
+                            case 'server_error': $phrase_id        = 'user.error.attach_unknown-error'; break;
                             case 'not_in_allowed_exts': $phrase_id = 'user.error.attach_ext-allowed'; break;
-                            case 'not_allowed_exts': $phrase_id = 'user.error.attach_ext-not-allow'; break;
+                            case 'not_allowed_exts': $phrase_id    = 'user.error.attach_ext-not-allow'; break;
                         }
                         $picture_error['error'] = $this->container->getTranslator()->phrase($phrase_id, $picture_error);
                     }
@@ -125,13 +122,13 @@ class ProfileController extends AbstractController implements RequireUserInterfa
                     if (!$picture_error) {
                         $blob = $accept->accept($file);
                         $this->person->setPictureBlob($blob);
-                        $new_blob_key = $blob->getId() . '-' . $blob->getAuthId();
+                        $new_blob_key = $blob->getId().'-'.$blob->getAuthId();
                     }
                 } else {
                     $new_blob_key = $this->in->getString('new_blob_key');
                     if ($new_blob_key) {
                         list($id, $auth_code) = explode('-', $new_blob_key);
-                        $blob = $this->em->getRepository('DeskPRO:Blob')->find($id);
+                        $blob                 = $this->em->getRepository('DeskPRO:Blob')->find($id);
                         if ($new_blob_key && $blob->getAuthId() == $auth_code) {
                             $this->person->setPictureBlob($blob);
                         }
@@ -174,16 +171,16 @@ class ProfileController extends AbstractController implements RequireUserInterfa
         $password_validator = App::$container->getSystemService('password_policy_validator');
 
         return $this->render('UserBundle:Profile:index.html.twig', array(
-            'form'               => $form->createView(),
-            'validating_emails'  => $validating_emails,
-            'invalid_name'       => $invalid_name,
-            'custom_fields'      => $custom_fields,
+            'form'                  => $form->createView(),
+            'validating_emails'     => $validating_emails,
+            'invalid_name'          => $invalid_name,
+            'custom_fields'         => $custom_fields,
             'invalid_custom_fields' => $invalid_custom_fields,
-            'is_org_manager'     => $is_org_manager,
-            'org_manager_auto_add' => ($is_org_manager && $this->person->getPref('org.manager_auto_add')),
-            'new_blob_key'       => $new_blob_key,
-            'enable_twitter'     => $enable_twitter,
-            'password_expired'   => $password_validator->isPasswordExpired($this->person),
+            'is_org_manager'        => $is_org_manager,
+            'org_manager_auto_add'  => ($is_org_manager && $this->person->getPref('org.manager_auto_add')),
+            'new_blob_key'          => $new_blob_key,
+            'enable_twitter'        => $enable_twitter,
+            'password_expired'      => $password_validator->isPasswordExpired($this->person),
 
             'custom_fields_definitions' => $definitions_form->createView(),
         ));
@@ -195,15 +192,15 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
     public function changePasswordAction()
     {
-        $password = $this->in->getString('password');
+        $password  = $this->in->getString('password');
         $password2 = $this->in->getString('password2');
 
         $history = null;
         if ($this->person->password && $this->person->password_scheme == 'bcrypt') {
-            $history = new PasswordHistory();
-            $history->person = $this->person;
+            $history                  = new PasswordHistory();
+            $history->person          = $this->person;
             $history->password_scheme = $this->person->password_scheme;
-            $history->password = $this->person->password;
+            $history->password        = $this->person->password;
         }
 
         /** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
@@ -255,7 +252,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
                 $verified = App::getEntityRepository('DeskPRO:PersonTwitterUser')->getVerifiedPersonForTwitterUser($access->user_id);
                 if (!$verified || $verified->id == $this->person->id) {
-                    App::getDb()->executeUpdate("
+                    App::getDb()->executeUpdate('
                         INSERT INTO people_twitter_users
                             (person_id, twitter_user_id, screen_name, is_verified, oauth_token, oauth_token_secret)
                         VALUES (?, ?, ?, 1, ?, ?)
@@ -265,10 +262,10 @@ class ProfileController extends AbstractController implements RequireUserInterfa
                             is_verified = 1,
                             oauth_token = VALUES(oauth_token),
                             oauth_token_secret = VALUES(oauth_token_secret)
-                    ", array($this->person->id, $access->user_id, $access->screen_name, $access->oauth_token, $access->oauth_token_secret));
+                    ', array($this->person->id, $access->user_id, $access->screen_name, $access->oauth_token, $access->oauth_token_secret));
 
                     $has_account = false;
-                    foreach ($this->person->getContactData('twitter') AS $twitter_details) {
+                    foreach ($this->person->getContactData('twitter') as $twitter_details) {
                         if ($twitter_details->field_1 == $access->screen_name || ($twitter_details->field_3 && $twitter_details->field_3 == $access->user_id)) {
                             $twitter_details->field_10 = '1';
                             $this->em->persist($twitter_details);
@@ -277,13 +274,13 @@ class ProfileController extends AbstractController implements RequireUserInterfa
                     }
 
                     if (!$has_account) {
-                        $twitter_details = new \Application\DeskPRO\Entity\PersonContactData();
+                        $twitter_details               = new \Application\DeskPRO\Entity\PersonContactData();
                         $twitter_details->contact_type = 'twitter';
-                        $twitter_details->person = $this->person;
-                        $twitter_details->field_1 = $access->screen_name;
-                        $twitter_details->field_2 = '0';
-                        $twitter_details->field_3 = $access->user_id;
-                        $twitter_details->field_10 = '1';
+                        $twitter_details->person       = $this->person;
+                        $twitter_details->field_1      = $access->screen_name;
+                        $twitter_details->field_2      = '0';
+                        $twitter_details->field_3      = $access->user_id;
+                        $twitter_details->field_10     = '1';
                         $this->em->persist($twitter_details);
                     }
 
@@ -303,7 +300,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
     {
         $twitter_user_id = null;
 
-        foreach ($this->person->twitter_users AS $account) {
+        foreach ($this->person->twitter_users as $account) {
             if ($account->id == $account_id) {
                 $this->em->remove($account);
                 $twitter_user_id = $account->twitter_user_id;
@@ -312,7 +309,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
         }
 
         if ($twitter_user_id) {
-            foreach ($this->person->getContactData('twitter') AS $twitter_details) {
+            foreach ($this->person->getContactData('twitter') as $twitter_details) {
                 if ($twitter_details->field_3 && $twitter_details->field_3 == $twitter_user_id) {
                     $this->em->remove($twitter_details);
                 }
@@ -329,7 +326,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
     ############################################################################
 
     /**
-     * Switches the primary email address on the account
+     * Switches the primary email address on the account.
      */
     public function setDefaultEmailAction($email_id)
     {
@@ -345,7 +342,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
             return $this->renderStandardError('@user.profile.error_validate_to_use', '@user.profile.error_validate_to_use_tilte', 409);
         }
 
-        $person = $this->person;
+        $person                = $this->person;
         $person->primary_email = $email;
 
         $this->em->transactional(function ($em) use ($person) {
@@ -355,13 +352,12 @@ class ProfileController extends AbstractController implements RequireUserInterfa
         return $this->redirectRoute('user_profile');
     }
 
-
     ############################################################################
     # removeEmail
     ############################################################################
 
     /**
-     * Removes an email address from the account
+     * Removes an email address from the account.
      */
     public function removeEmailAction($email_id)
     {
@@ -381,9 +377,13 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
         $pass_count = false;
         if (!$email['is_validated']) {
-            if (count($validated_emails) >= 1) $pass_count = true;
+            if (count($validated_emails) >= 1) {
+                $pass_count = true;
+            }
         } else {
-            if (count($validated_emails) >= 2) $pass_count = true; // 2 because 1 wil be this email
+            if (count($validated_emails) >= 2) {
+                $pass_count = true;
+            } // 2 because 1 wil be this email
         }
 
         if (!$pass_count) {
@@ -425,7 +425,6 @@ class ProfileController extends AbstractController implements RequireUserInterfa
         return $this->redirectRoute('user_profile');
     }
 
-
     ############################################################################
     # newEmail
     ############################################################################
@@ -441,6 +440,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
         if (!$this->person->checkPassword($this->in->getString('current_password'))) {
             $this->session->setFlash('new_email_invalid_password', 1);
+
             return $this->redirectRoute('user_profile');
         }
 
@@ -459,18 +459,18 @@ class ProfileController extends AbstractController implements RequireUserInterfa
             return $this->redirectRoute('user_profile');
         }
 
-        $validating_exists = $this->db->fetchColumn("
+        $validating_exists = $this->db->fetchColumn('
             SELECT id
             FROM people_emails_validating
             WHERE email = ?
-        ", array($email_address));
+        ', array($email_address));
         if ($validating_exists) {
             return $this->redirectRoute('user_profile');
         }
 
-        $validating_email = new PersonEmailValidating($email_address);
+        $validating_email          = new PersonEmailValidating($email_address);
         $validating_email['email'] = $email_address;
-        $validating_email->person = $this->person;
+        $validating_email->person  = $this->person;
 
         $this->em->transactional(function ($em) use ($validating_email) {
             $em->persist($validating_email);
@@ -494,7 +494,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
         $person = $this->person;
 
         $vars = array(
-            'validating_email' => $validating_email
+            'validating_email' => $validating_email,
         );
 
         $container = $this->container;
@@ -509,7 +509,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
     }
 
     /**
-     * Re-send the validation link
+     * Re-send the validation link.
      */
     public function sendValidateEmailLinkAction($email_id)
     {

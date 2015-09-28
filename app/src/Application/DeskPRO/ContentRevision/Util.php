@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage ContentRevision
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\ContentRevision;
 
 use Application\DeskPRO\App;
@@ -39,7 +36,9 @@ use Application\DeskPRO\Entity\Person;
 
 class Util
 {
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     public static function findOrCreate($content, $edit_field, Person $person)
     {
@@ -60,11 +59,11 @@ class Util
             FROM $entity r
             WHERE r.$field = ?1
             ORDER BY r.id DESC
-        ")->setMaxResults(1)->setParameters(array(1=> $content))->getOneOrNullResult();
+        ")->setMaxResults(1)->setParameters(array(1 => $content))->getOneOrNullResult();
 
         $has_field = false;
         if ($rev) {
-            foreach ((array)$edit_field as $f) {
+            foreach ((array) $edit_field as $f) {
                 if ($rev[$f]) {
                     $has_field = true;
                 } else {
@@ -74,10 +73,9 @@ class Util
             }
         }
 
-        if (!$rev OR $has_field OR $rev->person['id'] != $person['id'] OR $rev['date_created'] < $timesnip) {
-
-            $rev_class = self::getRevisionClass($content);
-            $rev = new $rev_class;
+        if (!$rev or $has_field or $rev->person['id'] != $person['id'] or $rev['date_created'] < $timesnip) {
+            $rev_class   = self::getRevisionClass($content);
+            $rev         = new $rev_class();
             $rev->person = $person;
             $rev->$field = $content;
         }
@@ -88,7 +86,7 @@ class Util
     public static function compareRevisions($entity, $rev_old_id, $rev_new_id)
     {
         if ($rev_old_id > $rev_new_id) {
-            $tmp = $rev_old_id;
+            $tmp        = $rev_old_id;
             $rev_old_id = $rev_new_id;
             $rev_new_id = $tmp;
         }
@@ -115,7 +113,7 @@ class Util
                     FROM $entity r
                     WHERE r.$field = ?1 AND r.id < ?2 AND r.content != ''
                     ORDER BY r.id DESC
-                ")->setMaxResults(1)->setParameters(array(1=> $rev_new[$field], 2=> $rev_old_id))->getOneOrNullResult();
+                ")->setMaxResults(1)->setParameters(array(1 => $rev_new[$field], 2 => $rev_old_id))->getOneOrNullResult();
                 if ($r['content']) {
                     $old_data['content'] = $r['content'];
                 } else {
@@ -130,20 +128,19 @@ class Util
             );
             $rendered_diff = $diff->renderDiffToHTML();
 
-            $rendered_diff = html_entity_decode($rendered_diff);
+            $rendered_diff         = html_entity_decode($rendered_diff);
             $rendered_content_diff = nl2br($rendered_diff);
         }
 
         $rendered_title_diff = null;
         if ($new_data['title']) {
-
             if (!$old_data['title']) {
                 $r = App::getOrm()->createQuery("
                     SELECT r
                     FROM $entity r
                     WHERE r.$field = ?1 AND r.id < ?2 AND r.title != ''
                     ORDER BY r.id DESC
-                ")->setMaxResults(1)->setParameters(array(1=> $rev_new[$field], 2=> $rev_old_id))->getOneOrNullResult();
+                ")->setMaxResults(1)->setParameters(array(1 => $rev_new[$field], 2 => $rev_old_id))->getOneOrNullResult();
                 if ($r['title']) {
                     $old_data['title'] = $r['title'];
                 } else {
@@ -157,7 +154,6 @@ class Util
                 \FineDiff::$characterGranularity
             );
             $rendered_title_diff = $diff->renderDiffToHTML();
-
         }
 
         $use_blob = false;
@@ -165,14 +161,14 @@ class Util
             $new_data['blob'] = $rev_new['blob'];
 
             $use_blob = true;
-            $r = $rev_old;
+            $r        = $rev_old;
             if (!$r['blob']) {
                 $r = App::getOrm()->createQuery("
                     SELECT r
                     FROM $entity r
                     WHERE r.$field = ?1 AND r.id < ?2 AND r.blob IS NOT NULL
                     ORDER BY r.id DESC
-                ")->setMaxResults(1)->setParameters(array(1=> $rev_new[$field], 2=> $rev_old_id))->getOneOrNullResult();
+                ")->setMaxResults(1)->setParameters(array(1 => $rev_new[$field], 2 => $rev_old_id))->getOneOrNullResult();
             }
 
             if ($r['blob']) {
@@ -184,7 +180,7 @@ class Util
 
         $ret = array(
             'rendered_content_diff' => $rendered_content_diff,
-            'rendered_title_diff' => $rendered_title_diff,
+            'rendered_title_diff'   => $rendered_title_diff,
         );
 
         if ($use_blob) {

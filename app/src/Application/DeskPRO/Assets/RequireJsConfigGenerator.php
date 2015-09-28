@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Assets;
 
 class RequireJsConfigGenerator
@@ -67,7 +66,7 @@ class RequireJsConfigGenerator
             return;
         }
 
-        $this->setBaseUrlExpr('"' . addslashes($url) . '"');
+        $this->setBaseUrlExpr('"'.addslashes($url).'"');
     }
 
     /**
@@ -84,7 +83,6 @@ class RequireJsConfigGenerator
         $this->base_url = $url_expr;
     }
 
-
     /**
      * @return string|null
      */
@@ -92,7 +90,6 @@ class RequireJsConfigGenerator
     {
         return $this->base_url;
     }
-
 
     /**
      * @param string $url_args
@@ -105,9 +102,8 @@ class RequireJsConfigGenerator
             return;
         }
 
-        $this->setUrlArgsExpr('"' . addslashes($url_args) . '"');
+        $this->setUrlArgsExpr('"'.addslashes($url_args).'"');
     }
-
 
     /**
      * @param string $url_args_expr
@@ -123,7 +119,6 @@ class RequireJsConfigGenerator
         $this->url_args = $url_args_expr;
     }
 
-
     /**
      * @return string|null
      */
@@ -131,7 +126,6 @@ class RequireJsConfigGenerator
     {
         return $this->url_args;
     }
-
 
     /**
      * @param string $key
@@ -142,7 +136,6 @@ class RequireJsConfigGenerator
         $this->addShimExpr($key, json_encode($config));
     }
 
-
     /**
      * @return array
      */
@@ -150,7 +143,6 @@ class RequireJsConfigGenerator
     {
         return $this->shims;
     }
-
 
     /**
      * @param string $key
@@ -161,16 +153,14 @@ class RequireJsConfigGenerator
         $this->shims[$key] = $expr;
     }
 
-
     /**
      * @param string $key
      * @param string $path
      */
     public function addPath($key, $path)
     {
-        $this->addPathExpr($key, '"' . addslashes($path) . '"');
+        $this->addPathExpr($key, '"'.addslashes($path).'"');
     }
-
 
     /**
      * @param string $key
@@ -181,7 +171,6 @@ class RequireJsConfigGenerator
         $this->paths[$key] = $path_expr;
     }
 
-
     /**
      * @return array
      */
@@ -189,7 +178,6 @@ class RequireJsConfigGenerator
     {
         return $this->paths;
     }
-
 
     /**
      * @return string
@@ -213,7 +201,7 @@ class RequireJsConfigGenerator
                 $parts[] = "\t\t\"$k\": $v";
             }
 
-            $js .= "\t\t" . trim(implode(",\n", $parts));
+            $js .= "\t\t".trim(implode(",\n", $parts));
             $js .= "\n\t},\n";
         }
 
@@ -225,7 +213,7 @@ class RequireJsConfigGenerator
                 $parts[] = "\t\t\"$k\": $v";
             }
 
-            $js .= "\t\t" . trim(implode(",\n", $parts));
+            $js .= "\t\t".trim(implode(",\n", $parts));
             $js .= "\n\t},\n";
         }
 
@@ -242,7 +230,7 @@ class RequireJsConfigGenerator
      */
     public function generateRequireJsConfigCode()
     {
-        return "requirejs.config(" . $this->generateConfigObject() . ");";
+        return 'requirejs.config('.$this->generateConfigObject().');';
     }
 
     /**

@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -68,34 +65,33 @@ class UsergroupDataService extends BaseRepositoryService
      */
     protected $continer;
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public static function create(DeskproContainer $container, array $options = null)
     {
-        if (!$options) $options = array();
-        $options['entity'] = 'Application\\DeskPRO\\Entity\\Usergroup';
-        $options['container']  = $container;
+        if (!$options) {
+            $options = array();
+        }
+        $options['entity']    = 'Application\\DeskPRO\\Entity\\Usergroup';
+        $options['container'] = $container;
 
         $em = $container->getEm();
-        $o = new static($em, $options);
+        $o  = new static($em, $options);
 
         return $o;
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function init()
     {
         $this->continer = $this->options['container'];
     }
 
-
     /**
-     * Loads data
+     * Loads data.
      */
     protected function preload()
     {
@@ -104,11 +100,11 @@ class UsergroupDataService extends BaseRepositoryService
         }
         $this->has_init = true;
 
-        $this->ugs = $this->em->createQuery("
+        $this->ugs = $this->em->createQuery('
             SELECT ug
             FROM DeskPRO:Usergroup ug INDEX BY ug.id
             ORDER BY ug.id ASC
-        ")->execute();
+        ')->execute();
         $this->em->getUnitOfWork()->markAsPreloaded('DeskPRO:Usergroup');
 
         foreach ($this->ugs as $ug) {
@@ -124,9 +120,10 @@ class UsergroupDataService extends BaseRepositoryService
     }
 
     /**
-     * Gets a usergroup (either user or agent)
+     * Gets a usergroup (either user or agent).
      *
-     * @param  int                                        $ug_id
+     * @param int $ug_id
+     *
      * @return \Application\DeskPRO\Entity\Usergroup|null
      */
     public function get($ug_id)
@@ -137,7 +134,8 @@ class UsergroupDataService extends BaseRepositoryService
     }
 
     /**
-     * @param  int                                        $id
+     * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\Usergroup|null
      */
     public function getAgentGroup($id)
@@ -148,7 +146,8 @@ class UsergroupDataService extends BaseRepositoryService
     }
 
     /**
-     * @param  int                                        $id
+     * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\Usergroup|null
      */
     public function getUserGroup($id)
@@ -159,7 +158,7 @@ class UsergroupDataService extends BaseRepositoryService
     }
 
     /**
-     * Gets all groups
+     * Gets all groups.
      *
      * @return array
      */
@@ -171,7 +170,7 @@ class UsergroupDataService extends BaseRepositoryService
     }
 
     /**
-     * Gets an array of user groups
+     * Gets an array of user groups.
      *
      * @return array
      */
@@ -183,7 +182,7 @@ class UsergroupDataService extends BaseRepositoryService
     }
 
     /**
-     * Gets an array of agent groups
+     * Gets an array of agent groups.
      */
     public function getAgentUsergroups()
     {
@@ -193,7 +192,8 @@ class UsergroupDataService extends BaseRepositoryService
     }
 
     /**
-     * @param  null  $for_ids
+     * @param null $for_ids
+     *
      * @return array
      */
     public function getNames($for_ids = null)
@@ -239,8 +239,9 @@ class UsergroupDataService extends BaseRepositoryService
     }
 
     /**
-     * @param  array $ids
-     * @param  bool  $keep_order
+     * @param array $ids
+     * @param bool  $keep_order
+     *
      * @return array
      */
     public function getByIds(array $ids, $keep_order = false)
@@ -258,7 +259,7 @@ class UsergroupDataService extends BaseRepositoryService
     }
 
     /**
-     * Pass-through to repository
+     * Pass-through to repository.
      */
     public function __call($method, array $args = array())
     {

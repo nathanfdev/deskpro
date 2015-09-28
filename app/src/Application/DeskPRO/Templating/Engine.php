@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Templating;
 
 use Application\DeskPRO\App;
@@ -45,7 +43,7 @@ class Engine extends BaseEngine
     protected $_template_files_map;
 
     /**
-     * List of templates who are allowed to have variants
+     * List of templates who are allowed to have variants.
      *
      * @var array
      */
@@ -70,7 +68,7 @@ class Engine extends BaseEngine
             return;
         }
 
-        $tf = new TemplateFiles(true);
+        $tf                        = new TemplateFiles(true);
         $this->_template_files_map = $tf->getTemplateMap();
     }
 
@@ -87,7 +85,8 @@ class Engine extends BaseEngine
     /**
      * Checks to see if a template is a template shipped with DeskPRO.
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function isDefaultTemplate($name)
@@ -97,30 +96,30 @@ class Engine extends BaseEngine
         return isset($this->_template_files_map[$name]);
     }
 
-
     /**
-     * Check if a template is custom
+     * Check if a template is custom.
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function isCustomTemplate($name)
     {
-        $id = App::getDb()->fetchColumn("
+        $id = App::getDb()->fetchColumn('
             SELECT id
             FROM templates
             WHERE name = ?
             LIMIT 1
-        ", array($name));
+        ', array($name));
 
         return $id ? true : false;
     }
 
-
     /**
-     * Get the default source code for a template
+     * Get the default source code for a template.
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return string
      */
     public function getDefaultSource($name)
@@ -135,22 +134,22 @@ class Engine extends BaseEngine
         return file_get_contents($path);
     }
 
-
     /**
      * Get the source code for a template. This will return the custom source
      * if its been customised, or the default if not.
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return string
      */
     public function getSource($name)
     {
-        $source = App::getDb()->fetchColumn("
+        $source = App::getDb()->fetchColumn('
             SELECT template_code
             FROM templates
             WHERE name = ?
             LIMIT 1
-        ", array($name));
+        ', array($name));
 
         if ($source === false) {
             $source = $this->getDefaultSource($name);
@@ -159,9 +158,9 @@ class Engine extends BaseEngine
         return $source ?: '';
     }
 
-
     /**
-     * @param  string $name
+     * @param string $name
+     *
      * @return array
      */
     public function getSplitSource($name)
@@ -171,25 +170,24 @@ class Engine extends BaseEngine
         return $this->splitSource($source);
     }
 
-
     /**
-     * @param  string $source
+     * @param string $source
+     *
      * @return array
      */
     public function splitSource($source)
     {
         $parts = array(
-            'source' => $source
+            'source' => $source,
         );
 
         if (preg_match('#<dp:subject>(.*?)</dp:subject>#is', $source, $m)) {
             $parts['subject'] = trim($m[1]);
-            $parts['body'] = trim(str_replace($m[0], '', $source));
+            $parts['body']    = trim(str_replace($m[0], '', $source));
         }
 
         return $parts;
     }
-
 
     /**
      * @return array
@@ -199,16 +197,16 @@ class Engine extends BaseEngine
         return self::$varied_templates;
     }
 
-
     /**
-     * @param  mixed $name
+     * @param mixed $name
+     *
      * @return bool
      */
     public function exists($name)
     {
         try {
             $GLOBALS['DP_NOLOG_TPL_CACHE_ERR'] = true;
-            $ret = parent::exists($name);
+            $ret                               = parent::exists($name);
             $GLOBALS['DP_NOLOG_TPL_CACHE_ERR'] = false;
 
             return $ret;

@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Controller
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Controller
+ */
 namespace Application\DeskPRO\Controller\Helper;
 
 use Application\DeskPRO\App;
@@ -76,7 +75,7 @@ class LoginHelper
         ')->setParameter(1, true)->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
         $return = $this->controller->request->getReturnParam();
-        if ($return AND $return[0] != '/') {
+        if ($return and $return[0] != '/') {
             // Always be a path on the current domain,
             // or else it might be a trick to go to some other domain etc
             $return = '';
@@ -85,10 +84,10 @@ class LoginHelper
         $vars = $vars + array(
             'usersources'      => $usersources,
             'usersource_forms' => $this->_getUsersourceLoginForms($usersources),
-            'return'           => $return
+            'return'           => $return,
         );
 
-        return $this->controller->render($this->tpl_prefix . ':index.html.twig', $vars);
+        return $this->controller->render($this->tpl_prefix.':index.html.twig', $vars);
     }
 
     protected function _getUsersourceLoginForms($usersources)
@@ -96,19 +95,17 @@ class LoginHelper
         $forms = array();
 
         foreach ($usersources as $usersource) {
-            $parts = explode('\\', $usersource['handler_class']);
-            $tpl_name = $this->tpl_prefix . 'login-form-.html.twig' . strtolower(array_pop($parts));
+            $parts    = explode('\\', $usersource['handler_class']);
+            $tpl_name = $this->tpl_prefix.'login-form-.html.twig'.strtolower(array_pop($parts));
 
             $forms[] = array(
                 'usersource' => $usersource,
-                'html' => $this->tpl->render($tpl_name, array('usersource' => $usersource))
+                'html'       => $this->tpl->render($tpl_name, array('usersource' => $usersource)),
             );
         }
 
         return $forms;
     }
-
-
 
     ############################################################################
     # /logout
@@ -119,18 +116,17 @@ class LoginHelper
         // When an agent actually logs out, we should be clearing the state
         $person = $this->controller->session->getPerson();
         if ($person['is_agent']) {
-            App::getDb()->executeUpdate("
+            App::getDb()->executeUpdate('
                 DELETE FROM people_prefs
                 WHERE person_id = ? AND name = ?
-            ", array($person['id'], 'agent.ui.state'));
+            ', array($person['id'], 'agent.ui.state'));
         }
 
         $this->controller->session->replace(array());
         $this->controller->session->save();
 
-        return $this->controller->redirectRoute($this->route_prefix . '_login');
+        return $this->controller->redirectRoute($this->route_prefix.'_login');
     }
-
 
     ############################################################################
     # /login/authenticate
@@ -170,17 +166,17 @@ class LoginHelper
             $this->controller->session->set('dp_active_status', 'available');
 
             $data = array(
-                'agent_id'   => $person['id'],
-                'agent_name' => $person['display_name'],
+                'agent_id'         => $person['id'],
+                'agent_name'       => $person['display_name'],
                 'agent_short_name' => $person->getDisplayContactShort(4),
-                'picture_url' => $person->getPictureUrl(10)
+                'picture_url'      => $person->getPictureUrl(10),
             );
 
             // Announce if its an agent
             $cm = new \Application\DeskPRO\Entity\ClientMessage();
             $cm->fromArray(array(
-                'channel' => 'agent.new-agent-online',
-                'data' => $data,
+                'channel'           => 'agent.new-agent-online',
+                'data'              => $data,
                 'created_by_client' => $this->controller->session->getEntityId(),
             ));
 
@@ -218,15 +214,13 @@ class LoginHelper
         #------------------------------
         # Other types should return a result right away
         #------------------------------
-
         } else {
             $result = $adapter->authenticate();
 
             // Valid
             if ($result->isValid()) {
-
                 $login_processor = new LoginProcessor($usersource, $result->getIdentity());
-                $person = $login_processor->getPerson();
+                $person          = $login_processor->getPerson();
 
                 $this->controller->session->set('auth_person_id', $person['id']);
                 \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
@@ -254,7 +248,7 @@ class LoginHelper
     {
         $return = $this->controller->request->getReturnParam();
 
-        return $this->controller->redirectRoute($this->route_prefix . '_login', array('return' => $return));
+        return $this->controller->redirectRoute($this->route_prefix.'_login', array('return' => $return));
     }
 
     ############################################################################
@@ -278,9 +272,8 @@ class LoginHelper
 
         // Valid
         if ($result->isValid()) {
-
             $login_processor = new LoginProcessor($usersource, $result->getIdentity());
-            $person = $login_processor->getPerson();
+            $person          = $login_processor->getPerson();
 
             $this->controller->session->set('auth_person_id', $person['id']);
             \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
@@ -289,10 +282,9 @@ class LoginHelper
 
         // Error, go back to login
         } else {
-            return $this->controller->redirect($this->controller->get('router')->generate($this->route_prefix . '_login', array()));
+            return $this->controller->redirect($this->controller->get('router')->generate($this->route_prefix.'_login', array()));
         }
     }
-
 
     ############################################################################
 
@@ -305,7 +297,7 @@ class LoginHelper
         }
 
         if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
-            $adapter->setCallbackUrl($this->generateUrl($this->route_prefix . '_login_callback', array('usersource_id' => $usersource['id']), true));
+            $adapter->setCallbackUrl($this->generateUrl($this->route_prefix.'_login_callback', array('usersource_id' => $usersource['id']), true));
         }
 
         if ($adapter instanceof \Orb\Auth\Adapter\SessionStateInterface) {

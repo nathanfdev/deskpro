@@ -1,35 +1,35 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Exporter\Parser;
 
 /**
- * Class ExportCollectionConfig
- * @package Application\ImportBundle\Generator\Exporter\Parser
+ * Class ExportCollectionConfig.
  */
 class ExportCollectionConfig
 {
@@ -60,15 +60,17 @@ class ExportCollectionConfig
 
     /**
      * @param \Traversable|array $data
+     *
      * @return $this
      */
     public function setData($data)
     {
-        if ( ! is_array($data) && ! $data instanceof \Traversable) {
+        if (!is_array($data) && !$data instanceof \Traversable) {
             throw new \RuntimeException('Export collection data should be array or instance of Traversable');
         }
 
         $this->data = $data;
+
         return $this;
     }
 
@@ -90,11 +92,13 @@ class ExportCollectionConfig
 
     /**
      * @param string $prefix
+     *
      * @return $this
      */
     public function setPrefix($prefix)
     {
         $this->prefix = $prefix;
+
         return $this;
     }
 
@@ -108,11 +112,13 @@ class ExportCollectionConfig
 
     /**
      * @param string $ref_column
+     *
      * @return $this
      */
     public function setRefColumn($ref_column)
     {
         $this->ref_column = $ref_column;
+
         return $this;
     }
 
@@ -126,16 +132,18 @@ class ExportCollectionConfig
 
     /**
      * @param callable|string $method
+     *
      * @return $this
      */
     public function setMethod($method)
     {
         $this->method = $method;
+
         return $this;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isAdvanceProgressbar()
     {
@@ -143,12 +151,14 @@ class ExportCollectionConfig
     }
 
     /**
-     * @param boolean $advance_progressbar
+     * @param bool $advance_progressbar
+     *
      * @return $this
      */
     public function setAdvanceProgressbar($advance_progressbar)
     {
-        $this->advance_progressbar = (bool)$advance_progressbar;
+        $this->advance_progressbar = (bool) $advance_progressbar;
+
         return $this;
     }
 }

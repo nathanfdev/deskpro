@@ -1,49 +1,49 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Reader\Csv;
 
 use Application\ImportBundle\Reader\AbstractReader;
 use Application\ImportBundle\Reader\NotFoundException;
-use SplFileObject;
 use LimitIterator;
+use SplFileObject;
 
 /**
- * Csv data parser
+ * Csv data parser.
  *
  * Class CsvReader
- * @package Application\ImportBundle\Reader\Csv
  *
  * @property CsvConfig $config
  */
 class CsvReader extends AbstractReader implements CsvReaderInterface
 {
     /**
-     * Constructor
+     * Constructor.
      *
      * @param CsvConfig $config
      */
@@ -62,30 +62,30 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
             self::FILE_ARTICLES           => array(
                 self::FILE_ARTICLE_CUSTOM_FIELDS,
             ),
-            self::FILE_DOWNLOADS          => array(
+            self::FILE_DOWNLOADS => array(
                 self::FILE_DOWNLOAD_ATTACHMENTS,
             ),
-            self::FILE_FEEDBACK           => array(
+            self::FILE_FEEDBACK => array(
                 self::FILE_FEEDBACK_ATTACHMENTS,
                 self::FILE_FEEDBACK_CUSTOM_FIELDS,
             ),
-            self::FILE_NEWS               => array(),
-            self::FILE_PEOPLE             => array(
+            self::FILE_NEWS   => array(),
+            self::FILE_PEOPLE => array(
                 self::FILE_PEOPLE_CONTACT_DATA,
                 self::FILE_PEOPLE_CUSTOM_FIELDS,
             ),
-            self::FILE_TICKETS            => array(
+            self::FILE_TICKETS => array(
                 self::FILE_TICKET_MESSAGES,
                 self::FILE_TICKET_ATTACHMENTS,
                 self::FILE_TICKET_CUSTOM_FIELDS,
             ),
-            self::FILE_ORGANIZATIONS      => array(
+            self::FILE_ORGANIZATIONS => array(
                 self::FILE_ORGANIZATION_CONTACT_DATA,
                 self::FILE_ORGANIZATION_CUSTOM_FIELDS,
             ),
         );
 
-        if ( ! is_dir($this->config->getPath())) {
+        if (!is_dir($this->config->getPath())) {
             throw new \RuntimeException(sprintf('`%s` is not a directory.', $this->config->getPath()));
         }
 
@@ -94,13 +94,11 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
             try {
                 $this->getIterator($primary_file);
                 $has_primary_iterator = true;
-
             } catch (NotFoundException $e) {
                 foreach ($related_files as $file) {
                     try {
                         $this->getIterator($file);
                         throw new \RuntimeException(sprintf('Unable to parse `%s` without primary file `%s`.', $file, $primary_file));
-
                     } catch (NotFoundException $e) {
                         // File not found, continue...
                     }
@@ -108,12 +106,12 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
             }
         }
 
-        if ( ! $has_primary_iterator) {
+        if (!$has_primary_iterator) {
             throw new \RuntimeException(sprintf(
                 'No required files found in directory `%s`. Expected one of %s.',
                 $this->config->getPath(), implode(', ', array_map(
                     function ($file) {
-                        return '`' . $file . '`';
+                        return '`'.$file.'`';
                     },
                     $files
                 ))
@@ -134,13 +132,13 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
         $count = 0;
         foreach ($iterator as $row) {
             if (is_array($row)) {
-                $count++;
+                ++$count;
             }
         }
 
         // remove header from count value
         if ($count > 0) {
-            $count--;
+            --$count;
         }
 
         return $count;
@@ -157,7 +155,7 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
         $header = null;
         $data   = array();
         foreach ($iterator as $row) {
-            if ( ! $this->isValidRow($row)) {
+            if (!$this->isValidRow($row)) {
                 continue;
             }
 
@@ -184,32 +182,34 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
     }
 
     /**
-     * Returns entity type path
+     * Returns entity type path.
      *
      * @param string $entity_file
+     *
      * @return string
      */
     private function getEntityPath($entity_file)
     {
-        return rtrim($this->config->getPath(), '/') . '/' . $entity_file;
+        return rtrim($this->config->getPath(), '/').'/'.$entity_file;
     }
 
     /**
-     * Returns spl file object iterator
+     * Returns spl file object iterator.
      *
      * @param string $entity_type
      *
-     * @return LimitIterator
      * @throws \RuntimeException
+     * @return LimitIterator
+     *
      */
     private function getIterator($entity_type)
     {
         $entity_path = $this->getEntityPath($entity_type);
 
-        if ( ! file_exists($entity_path)) {
+        if (!file_exists($entity_path)) {
             throw new NotFoundException(sprintf('File "%s" not found.', $entity_path));
         }
-        if ( ! stream_is_local($entity_path)) {
+        if (!stream_is_local($entity_path)) {
             throw new \RuntimeException(sprintf('This is not a local file "%s".', $entity_path));
         }
 
@@ -226,7 +226,7 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
     }
 
     /**
-     * Detect a delimiter
+     * Detect a delimiter.
      *
      * @param string $entity_file
      */
@@ -245,13 +245,13 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
 
             $this->config->setDelimiter(array_shift($delimiters));
         }
-
     }
 
     /**
-     * Checks if row is array
+     * Checks if row is array.
      *
      * @param mixed $row
+     *
      * @return bool
      */
     private function isValidRow($row)

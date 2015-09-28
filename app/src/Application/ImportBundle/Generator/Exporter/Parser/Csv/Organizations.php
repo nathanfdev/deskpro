@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
@@ -34,10 +35,9 @@ use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
 
 /**
- * Organizations csv file parser
+ * Organizations csv file parser.
  *
  * Class Organizations
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
 class Organizations extends AbstractParser
 {
@@ -78,7 +78,7 @@ class Organizations extends AbstractParser
         $custom_fields = $this->exportOrganizationCustomFields();
 
         foreach ($collection as $organization) {
-            /** @var Entity\Organization $organization */
+            /* @var Entity\Organization $organization */
             foreach ($contact_data as $contact) {
                 if ($organization->getDestination() === $contact->getDestination()) {
                     $organization->addContact($contact);
@@ -105,7 +105,7 @@ class Organizations extends AbstractParser
     }
 
     /**
-     * Returns a organization entity
+     * Returns a organization entity.
      *
      * @param array $data
      * @param int   $num
@@ -115,12 +115,12 @@ class Organizations extends AbstractParser
     protected function exportOrganization(array $data, $num)
     {
         $formatted = $this->formatter->format($data, array(
-            'id'           => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
-                'default' => 'num_' . $num,
+            'id'          => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+                'default' => 'num_'.$num,
             )),
-            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => self::ORGANIZATION_PREFIX,
-                'ref'    => array('original#id', 'name'),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix'  => self::ORGANIZATION_PREFIX,
+                'ref'     => array('original#id', 'name'),
             )),
             'name'         => TransformerInterface::TYPE_STRING,
             'importance'   => TransformerInterface::TYPE_STRING,
@@ -142,7 +142,7 @@ class Organizations extends AbstractParser
     }
 
     /**
-     * Returns a collection of organization custom field data
+     * Returns a collection of organization custom field data.
      *
      * @return Entity\CustomField[]|Entity\Collection
      */
@@ -154,7 +154,7 @@ class Organizations extends AbstractParser
     }
 
     /**
-     * Returns a collection of organization contact data
+     * Returns a collection of organization contact data.
      *
      * @return Entity\ContactData[]|Entity\Collection
      */

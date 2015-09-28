@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\Monolog\NullLogger;
@@ -164,7 +163,8 @@ class TicketEmail
     /**
      * Use TicketEmailBuilder to build the options array easier.
      *
-     * @param  array                     $options
+     * @param array $options
+     *
      * @throws \InvalidArgumentException When there are invalid options
      */
     public function __construct(array $options)
@@ -196,27 +196,27 @@ class TicketEmail
         $opt->setAll($options);
         $opt->ensureRequired();
 
-        $this->to_person               = $opt->get('to_person');
-        $this->ticket                  = $opt->get('ticket');
-        $this->template_name           = $opt->get('template_name');
-        $this->from_name               = $opt->get('from_name', '');
+        $this->to_person     = $opt->get('to_person');
+        $this->ticket        = $opt->get('ticket');
+        $this->template_name = $opt->get('template_name');
+        $this->from_name     = $opt->get('from_name', '');
 
-        $this->settings                = $opt->get('settings');
-        $this->mailer                  = $opt->get('mailer');
-        $this->email_accounts          = $opt->get('email_accounts');
-        $this->translate               = $opt->get('translate');
-        $this->em                      = $opt->get('em');
-        $this->ticket_field_manager    = $opt->get('ticket_field_manager');
-        $this->user_field_manager      = $opt->get('user_field_manager');
-        $this->ticket_layout_manager   = $opt->get('ticket_layout_manager');
-        $this->from_email_account      = $opt->get('from_email_account', null);
+        $this->settings              = $opt->get('settings');
+        $this->mailer                = $opt->get('mailer');
+        $this->email_accounts        = $opt->get('email_accounts');
+        $this->translate             = $opt->get('translate');
+        $this->em                    = $opt->get('em');
+        $this->ticket_field_manager  = $opt->get('ticket_field_manager');
+        $this->user_field_manager    = $opt->get('user_field_manager');
+        $this->ticket_layout_manager = $opt->get('ticket_layout_manager');
+        $this->from_email_account    = $opt->get('from_email_account', null);
 
-        $this->do_cc_users             = $opt->get('cc_users', false);
-        $this->is_auto                 = $opt->get('is_auto', false);
-        $this->max_attach_size         = $opt->get('max_attach_size', 0);
+        $this->do_cc_users     = $opt->get('cc_users', false);
+        $this->is_auto         = $opt->get('is_auto', false);
+        $this->max_attach_size = $opt->get('max_attach_size', 0);
 
-        $this->user_mode               = $opt->get('user_mode');
-        $this->headers                 = $opt->get('headers', array());
+        $this->user_mode = $opt->get('user_mode');
+        $this->headers   = $opt->get('headers', array());
 
         if ($opt->get('user_mode') == 'user') {
             $this->user_mode = 'user';
@@ -231,14 +231,13 @@ class TicketEmail
         }
 
         if ($this->do_cc_users && $this->user_mode == self::MODE_AGENT) {
-            throw new \InvalidArgumentException("CC Users does not work on agent emails");
+            throw new \InvalidArgumentException('CC Users does not work on agent emails');
         }
 
         if ($this->user_mode == self::MODE_AGENT && !$this->to_person->is_agent) {
-            throw new \InvalidArgumentException("Agent mode but person is not an agent");
+            throw new \InvalidArgumentException('Agent mode but person is not an agent');
         }
     }
-
 
     /**
      * @return string
@@ -248,7 +247,6 @@ class TicketEmail
         return $this->user_mode;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\EmailAccount
      */
@@ -256,7 +254,6 @@ class TicketEmail
     {
         return $this->from_email_account;
     }
-
 
     /**
      * @return null|string
@@ -266,15 +263,13 @@ class TicketEmail
         return $this->from_name;
     }
 
-
     /**
-     * @return boolean
+     * @return bool
      */
     public function getDoCcUsers()
     {
         return $this->do_cc_users;
     }
-
 
     /**
      * @return string
@@ -284,7 +279,6 @@ class TicketEmail
         return $this->template_name;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\Ticket
      */
@@ -293,7 +287,6 @@ class TicketEmail
         return $this->ticket;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\Person
      */
@@ -301,7 +294,6 @@ class TicketEmail
     {
         return $this->to_person;
     }
-
 
     /**
      * @param array $vars
@@ -330,7 +322,7 @@ class TicketEmail
         // If we have a speciifc 'new message', then we need to trim
         // messages array down (which is ALL the latest messages, may be too many if we are re-sending)
         if (isset($vars['new_message'])) {
-            $got = false;
+            $got     = false;
             $new_arr = array();
 
             foreach (array_reverse($vars['messages']) as $m) {
@@ -374,11 +366,11 @@ class TicketEmail
             $vars['custom_user_fields'] = $custom_user_fields;
         }
 
-        $this->logger->info(sprintf("[TicketEmail] Template: %s -- Mode: %s", $this->template_name, $this->user_mode));
+        $this->logger->info(sprintf('[TicketEmail] Template: %s -- Mode: %s', $this->template_name, $this->user_mode));
 
-        $to_name  = $this->to_person->getDisplayName();
+        $to_name = $this->to_person->getDisplayName();
 
-        $state = $this->ticket->getStateChangeRecorder();
+        $state              = $this->ticket->getStateChangeRecorder();
         $ticket_attachments = array();
         if ($state->hasNewReply() && !$this->is_auto) {
             $last_message = Arrays::getFirstItem($vars['messages']);
@@ -389,19 +381,19 @@ class TicketEmail
             // and this check will prevent warnings about trying to use a null $last_message.
 
             if ($last_message) {
-                $this->logger->info(sprintf("[TicketEmail] New reply on #%d checking for attachments <= %d", $last_message->id, $this->max_attach_size));
+                $this->logger->info(sprintf('[TicketEmail] New reply on #%d checking for attachments <= %d', $last_message->id, $this->max_attach_size));
                 if (count($last_message->attachments)) {
-                    $this->logger->info(sprintf("[TicketEmail] Message has %d attachments", count($last_message->attachments)));
+                    $this->logger->info(sprintf('[TicketEmail] Message has %d attachments', count($last_message->attachments)));
                     foreach ($last_message->attachments as $a) {
                         if ($a->blob->filesize <= $this->max_attach_size) {
-                            $this->logger->info(sprintf("[TicketEmail] Adding attachment %s", $a->blob->filename));
+                            $this->logger->info(sprintf('[TicketEmail] Adding attachment %s', $a->blob->filename));
                             $ticket_attachments[$a->id] = $a;
                         } else {
-                            $this->logger->info(sprintf("[TicketEmail] Skipping attachment %s", $a->blob->filename));
+                            $this->logger->info(sprintf('[TicketEmail] Skipping attachment %s', $a->blob->filename));
                         }
                     }
                 } else {
-                    $this->logger->info(sprintf("[TicketEmail] Message has no attachments"));
+                    $this->logger->info(sprintf('[TicketEmail] Message has no attachments'));
                 }
             }
 
@@ -414,30 +406,30 @@ class TicketEmail
         if ($this->user_mode == self::MODE_USER) {
             if ($this->ticket->person_email && $this->ticket->person_email->person === $this->to_person) {
                 $to_email = $this->ticket->person_email->email;
-                $this->logger->info(sprintf("[TicketEmail] to_email(1): %s", $to_email));
+                $this->logger->info(sprintf('[TicketEmail] to_email(1): %s', $to_email));
             } elseif ($this->ticket->person_email_validating) {
-                $to_email = $this->ticket->person_email_validating->email;
+                $to_email                 = $this->ticket->person_email_validating->email;
                 $vars['validating_email'] = $this->ticket->person_email_validating;
-                $this->logger->info(sprintf("[TicketEmail] to_email(2): %s -- validating", $to_email));
+                $this->logger->info(sprintf('[TicketEmail] to_email(2): %s -- validating', $to_email));
             } elseif ($this->to_person->primary_email) {
                 $to_email = $this->to_person->primary_email->email;
-                $this->logger->info(sprintf("[TicketEmail] to_email(3): %s", $to_email));
+                $this->logger->info(sprintf('[TicketEmail] to_email(3): %s', $to_email));
             } else {
                 $vars['validating_email'] = $em->getRepository('DeskPRO:PersonEmailValidating')->getForPerson($this->to_person);
 
                 if (!$vars['validating_email']) {
-                    $this->logger->info(sprintf("[TicketEmail] to_email(4): no email and no validating email"));
-                    throw new \RuntimeException("no email and no validating email");
+                    $this->logger->info(sprintf('[TicketEmail] to_email(4): no email and no validating email'));
+                    throw new \RuntimeException('no email and no validating email');
                 }
 
                 $to_email = $vars['validating_email']->email;
-                $this->logger->info(sprintf("[TicketEmail] to_email(4): %s -- validating", $to_email));
+                $this->logger->info(sprintf('[TicketEmail] to_email(4): %s -- validating', $to_email));
             }
 
         // To agent
         } else {
             if (!$this->to_person || !$this->to_person->primary_email) {
-                throw new \RuntimeException("No agent email to send to");
+                throw new \RuntimeException('No agent email to send to');
             }
 
             $to_email = $this->to_person->primary_email->email;
@@ -449,12 +441,12 @@ class TicketEmail
         }
         $vars['tac'] = $tac;
 
-        $this->sent_to_name = $to_name;
+        $this->sent_to_name  = $to_name;
         $this->sent_to_email = $to_email;
         $this->sent_with_ccs = array();
 
         $message = $mailer->createMessage();
-        $this->logger->info(sprintf("[TicketEmail] To: %s -- Name: %s", $to_email, $to_name));
+        $this->logger->info(sprintf('[TicketEmail] To: %s -- Name: %s', $to_email, $to_name));
         $message->setTo(array($to_email => $to_name));
         $message->setContextId('ticket_gateway');
 
@@ -478,14 +470,14 @@ class TicketEmail
                     }
 
                     if ($this->is_auto && $p->disable_autoresponses) {
-                        $this->logger->info(sprintf("[TicketEmail] CC skipped because autoresponder: %s -- Name: %s", $cc_email, $cc_name));
+                        $this->logger->info(sprintf('[TicketEmail] CC skipped because autoresponder: %s -- Name: %s', $cc_email, $cc_name));
                         continue;
                     }
 
                     $this->sent_with_ccs[] = $cc_email;
 
                     $message->addCc($cc_email, $cc_name);
-                    $this->logger->info(sprintf("[TicketEmail] CC: %s -- Name: %s", $cc_email, $cc_name));
+                    $this->logger->info(sprintf('[TicketEmail] CC: %s -- Name: %s', $cc_email, $cc_name));
                 }
             }
         }
@@ -495,14 +487,14 @@ class TicketEmail
         }
 
         if (!$this->from_email_account) {
-            $this->logger->warning(sprintf("[TicketEmail] No from email to send mail from!"));
-            throw new \RuntimeException("No from email to send mail from");
+            $this->logger->warning(sprintf('[TicketEmail] No from email to send mail from!'));
+            throw new \RuntimeException('No from email to send mail from');
         }
 
         $from_email = $this->from_email_account->getUseEmailAddress();
-        $from_name = $this->from_name;
+        $from_name  = $this->from_name;
 
-        $this->logger->info(sprintf("[TicketEmail] From: %s -- Name: %s", $from_email, $from_name));
+        $this->logger->info(sprintf('[TicketEmail] From: %s -- Name: %s', $from_email, $from_name));
         $message->setFrom($from_email, $from_name);
 
         if ($tac) {
@@ -517,7 +509,7 @@ class TicketEmail
         if (isset($vars['is_auto']) && $vars['is_auto']) {
             $message->getHeaders()->addTextHeader('X-DeskPRO-Auto', 'Yes');
             $message->setSuppressAutoreplies(true);
-            $this->logger->info(sprintf("[TicketEmail] Is auto"));
+            $this->logger->info(sprintf('[TicketEmail] Is auto'));
         }
 
         if ($this->user_mode == self::MODE_USER) {
@@ -526,13 +518,13 @@ class TicketEmail
             $lang = $this->to_person->getLanguage();
         }
 
-        $this->logger->info(sprintf("[TicketEmail] Language: %s", $lang->sys_name));
+        $this->logger->info(sprintf('[TicketEmail] Language: %s', $lang->sys_name));
 
         $start = microtime(true);
         $translator->setTemporaryLanguage($lang, function () use ($message) {
             $message->prepare();
         });
-        $this->logger->info(sprintf("[TicketEmail] Prepare took %.3fs", microtime(true) - $start));
+        $this->logger->info(sprintf('[TicketEmail] Prepare took %.3fs', microtime(true) - $start));
 
         foreach ($this->headers as $header) {
             $message->getHeaders()->addTextHeader($header['name'], $header['value']);
@@ -543,14 +535,14 @@ class TicketEmail
         if ($mailer instanceof StorageTransportInterface) {
             $id = $mailer->queueMessage($message);
             if ($id) {
-                $this->logger->info(sprintf("[TicketEmail] SendmailSource ID #%d", $id));
+                $this->logger->info(sprintf('[TicketEmail] SendmailSource ID #%d', $id));
                 $this->sendmail_source_id = $id;
             }
         } else {
             $mailer->send($message);
         }
 
-        $this->logger->info(sprintf("[TicketEmail] Send took %.3fs", microtime(true) - $start));
+        $this->logger->info(sprintf('[TicketEmail] Send took %.3fs', microtime(true) - $start));
     }
 
     /**

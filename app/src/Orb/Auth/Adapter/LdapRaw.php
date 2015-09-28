@@ -1,59 +1,58 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @category Auth
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ *
+ * @category Auth
+ */
 namespace Orb\Auth\Adapter;
 
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
-use Orb\Util\Arrays;
 use Orb\Log\Logger;
+use Orb\Util\Arrays;
 use Zend\Ldap\Ldap;
 
 class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
 {
-    const OPT_HOST               = 'host';
-    const OPT_PORT               = 'port';
-    const OPT_TLS                = 'useStartTls';
-    const OPT_SSL                = 'useSsl';
-    const OPT_BASE_DN            = 'baseDn';
-    const OPT_LOOKUP_USERNAME    = 'username';
-    const OPT_LOOKUP_PASSWORD    = 'password';
+    const OPT_HOST            = 'host';
+    const OPT_PORT            = 'port';
+    const OPT_TLS             = 'useStartTls';
+    const OPT_SSL             = 'useSsl';
+    const OPT_BASE_DN         = 'baseDn';
+    const OPT_LOOKUP_USERNAME = 'username';
+    const OPT_LOOKUP_PASSWORD = 'password';
 
-    const OPT_FIELD_ID           = 'field_id';
-    const OPT_FIELD_EMAIL        = 'field_email';
-    const OPT_FIELD_USERNAME     = 'field_username';
+    const OPT_FIELD_ID       = 'field_id';
+    const OPT_FIELD_EMAIL    = 'field_email';
+    const OPT_FIELD_USERNAME = 'field_username';
 
     /**
      * @var \Orb\Log\Logger
@@ -73,32 +72,35 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
      * @var array
      */
     protected $options = array(
-        self::OPT_HOST               => 'localhost',
-        self::OPT_PORT               => null, // null means default of 389 or 636 if ssl enabled
-        self::OPT_TLS                => false,
-        self::OPT_SSL                => false,
-        self::OPT_BASE_DN            => '',
-        self::OPT_LOOKUP_USERNAME    => null,
-        self::OPT_LOOKUP_PASSWORD    => null,
-        self::OPT_FIELD_ID           => 'dn',
-        self::OPT_FIELD_EMAIL        => 'mail',
-        self::OPT_FIELD_USERNAME     => 'uid',
-        'accountCanonicalForm'       => 2,
-        'bindRequiresDn'             => true,
-        'ldapClass'                  => null,
+        self::OPT_HOST            => 'localhost',
+        self::OPT_PORT            => null, // null means default of 389 or 636 if ssl enabled
+        self::OPT_TLS             => false,
+        self::OPT_SSL             => false,
+        self::OPT_BASE_DN         => '',
+        self::OPT_LOOKUP_USERNAME => null,
+        self::OPT_LOOKUP_PASSWORD => null,
+        self::OPT_FIELD_ID        => 'dn',
+        self::OPT_FIELD_EMAIL     => 'mail',
+        self::OPT_FIELD_USERNAME  => 'uid',
+        'accountCanonicalForm'    => 2,
+        'bindRequiresDn'          => true,
+        'ldapClass'               => null,
     );
 
     public function __construct(array $options)
     {
         $this->options = array_merge($this->options, $options);
-        if (!$this->options['field_email']) $this->options['field_email'] = 'mail';
-        if (!$this->options['field_username']) $this->options['field_username'] = 'uid';
+        if (!$this->options['field_email']) {
+            $this->options['field_email'] = 'mail';
+        }
+        if (!$this->options['field_username']) {
+            $this->options['field_username'] = 'uid';
+        }
 
         if (!isset($this->options['accountFilterFormat']) || !$this->options['accountFilterFormat']) {
-            $this->options['accountFilterFormat']  = '(|(dn=%1$s)(mail=%1$s)(uid=%1$s))';
+            $this->options['accountFilterFormat'] = '(|(dn=%1$s)(mail=%1$s)(uid=%1$s))';
         }
     }
-
 
     /**
      * @param string $username
@@ -106,10 +108,9 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
      */
     public function setFormData(array $form_data)
     {
-        $this->set_username = !empty($form_data['username']) ? (string)$form_data['username'] : '';
-        $this->set_password = !empty($form_data['password']) ? (string)$form_data['password'] : '';
+        $this->set_username = !empty($form_data['username']) ? (string) $form_data['username'] : '';
+        $this->set_password = !empty($form_data['password']) ? (string) $form_data['password'] : '';
     }
-
 
     /**
      * @return \Zend\Authentication\Adapter\Ldap
@@ -127,13 +128,12 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
 
         if ($this->options['ldapClass']) {
             $class = $this->options['ldapClass'];
-            $ldap = new $class();
+            $ldap  = new $class();
             $auth->setLdap($ldap);
         }
 
         return $auth;
     }
-
 
     /**
      * Authenticate a user.
@@ -151,8 +151,8 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
 
         $time_start = microtime(true);
         if ($this->logger) {
-            $this->logger->log("START Ldap::authenticate", Logger::DEBUG);
-            $this->logger->log("Options: " . trim(print_r($this->options,1)), Logger::DEBUG);
+            $this->logger->log('START Ldap::authenticate', Logger::DEBUG);
+            $this->logger->log('Options: '.trim(print_r($this->options, 1)), Logger::DEBUG);
             $this->logger->log("Request: {$this->set_username}:{$this->set_password}", Logger::DEBUG);
         }
 
@@ -169,20 +169,19 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
             return new Result(Result::FAILURE_EXCEPTION, null, array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e));
         }
 
-
         if ($this->logger) {
             foreach ($result->getMessages() as $msg) {
                 $this->logger->log($msg, \Orb\Log\Logger::DEBUG);
             }
 
-            $this->logger->log(sprintf("END Ldap::authenticate (took %.4fs)", microtime(true)-$time_start), Logger::DEBUG);
+            $this->logger->log(sprintf('END Ldap::authenticate (took %.4fs)', microtime(true) - $time_start), Logger::DEBUG);
         }
 
         if (!$result->isValid()) {
             return new Result(Result::FAILURE_INVALID_CREDS, null, array('error_code' => 'invalid_credentials', 'error_message' => 'Invalid username or password'));
         }
 
-        $raw_info = array();
+        $raw_info                      = array();
         $raw_info['identity_friendly'] = $result->getIdentity();
 
         try {
@@ -194,7 +193,8 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
                 $zend_auth->setUsername('__bogus__');
                 $zend_auth->setPassword('__bogus__');
                 $zend_auth->authenticate();
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
 
             /** @var $ldap \Zend\Ldap\Ldap */
             $ldap = $zend_auth->getLdap();
@@ -227,7 +227,7 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
                 }
 
                 if ($rec->getAttribute('givenName') && $rec->getAttribute('SN')) {
-                    $raw_info['name'] = Arrays::getFirstItem($rec->getAttribute('givenName')) . ' ' . Arrays::getFirstItem($rec->getAttribute('SN'));
+                    $raw_info['name'] = Arrays::getFirstItem($rec->getAttribute('givenName')).' '.Arrays::getFirstItem($rec->getAttribute('SN'));
                 } elseif ($rec->getAttribute('name')) {
                     $raw_info['name'] = Arrays::getFirstItem($rec->getAttribute('name'));
                 } elseif ($rec->getAttribute('CN')) {
@@ -248,6 +248,7 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
             if ($this->logger) {
                 $this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}\n{$e->getTraceAsString()}", Logger::ERR);
             }
+
             return new Result(Result::FAILURE_EXCEPTION, null, array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e));
         }
 
@@ -255,7 +256,6 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
 
         return new Result(Result::SUCCESS, $identity);
     }
-
 
     /**
      * Authenticate a user.
@@ -273,7 +273,8 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
                 $zend_auth->setUsername('__bogus__');
                 $zend_auth->setPassword('__bogus__');
                 $zend_auth->authenticate();
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
             $raw_info = array();
 
             /** @var $ldap \Zend\Ldap\Ldap */
@@ -307,7 +308,7 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
                 }
 
                 if ($rec->getAttribute('givenName') && $rec->getAttribute('SN')) {
-                    $raw_info['name'] = Arrays::getFirstItem($rec->getAttribute('givenName')) . ' ' . Arrays::getFirstItem($rec->getAttribute('SN'));
+                    $raw_info['name'] = Arrays::getFirstItem($rec->getAttribute('givenName')).' '.Arrays::getFirstItem($rec->getAttribute('SN'));
                 } elseif ($rec->getAttribute('name')) {
                     $raw_info['name'] = Arrays::getFirstItem($rec->getAttribute('name'));
                 } elseif ($rec->getAttribute('CN')) {
@@ -325,11 +326,11 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
                 }
             }
         } catch (\Exception $e) {
-            $raw_info['dp_error'] = "Error when fetching node";
-            $raw_info['exception_type'] = get_class($e);
+            $raw_info['dp_error']          = 'Error when fetching node';
+            $raw_info['exception_type']    = get_class($e);
             $raw_info['exception_message'] = $e->getMessage();
-            $raw_info['exception_code'] = $e->getCode();
-            $raw_info['exception_trace'] = KernelErrorHandler::formatBacktrace($e->getTrace());
+            $raw_info['exception_code']    = $e->getCode();
+            $raw_info['exception_trace']   = KernelErrorHandler::formatBacktrace($e->getTrace());
         }
 
         $identity = new Identity($raw_info['identity'], $raw_info);
@@ -337,18 +338,17 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
         return $identity;
     }
 
-
     /**
-     * Search the AD for the user based on email address
+     * Search the AD for the user based on email address.
      */
     public function findRecordViaEmail()
     {
         if (!$this->set_username || !preg_match('#^.+@.+$#', $this->set_username)) {
-            return null;
+            return;
         }
 
         if ($this->logger) {
-            $this->logger->log("START Filter for email", Logger::DEBUG);
+            $this->logger->log('START Filter for email', Logger::DEBUG);
         }
 
         $zend_auth = $this->getZendAuthAdapter();
@@ -359,7 +359,8 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
             $zend_auth->setUsername('__bogus__');
             $zend_auth->setPassword('__bogus__');
             $zend_auth->authenticate();
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
         /** @var $ldap \Zend\Ldap\Ldap */
         $ldap = $zend_auth->getLdap();
@@ -373,14 +374,14 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
             $r = $ldap->search($filter, $this->options['baseDn']);
         } catch (\Exception $e) {
             if ($this->logger) {
-                $this->logger->log("Failed to search: " . $e->getCode() . ' ' . $e->getMessage(), Logger::DEBUG);
+                $this->logger->log('Failed to search: '.$e->getCode().' '.$e->getMessage(), Logger::DEBUG);
             }
 
-            return null;
+            return;
         }
 
         if ($this->logger) {
-            $this->logger->log("Filter results: " . print_r($r->toArray(),1), Logger::DEBUG);
+            $this->logger->log('Filter results: '.print_r($r->toArray(), 1), Logger::DEBUG);
         }
 
         if ($r->count() == 1) {
@@ -389,13 +390,13 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
             return $arr;
         }
 
-        return null;
+        return;
     }
 
     public function findRecordViaDn($dn)
     {
         if ($this->logger) {
-            $this->logger->log("START Filter for dn", Logger::DEBUG);
+            $this->logger->log('START Filter for dn', Logger::DEBUG);
         }
 
         $zend_auth = $this->getZendAuthAdapter();
@@ -415,14 +416,13 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
         return $ldap->getEntry($dn);
     }
 
-
     /**
-     * Search the AD for the user based on username
+     * Search the AD for the user based on username.
      */
     public function findRecordViaUsername()
     {
         if ($this->logger) {
-            $this->logger->log("START Filter for username", Logger::DEBUG);
+            $this->logger->log('START Filter for username', Logger::DEBUG);
         }
 
         $zend_auth = $this->getZendAuthAdapter();
@@ -433,7 +433,8 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
             $zend_auth->setUsername('__bogus__');
             $zend_auth->setPassword('__bogus__');
             $zend_auth->authenticate();
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
         /** @var $ldap \Zend\Ldap\Ldap */
         $ldap = $zend_auth->getLdap();
@@ -447,14 +448,14 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
             $r = $ldap->search($filter, $this->options['baseDn']);
         } catch (\Exception $e) {
             if ($this->logger) {
-                $this->logger->log("Failed to search: " . $e->getCode() . ' ' . $e->getMessage(), Logger::DEBUG);
+                $this->logger->log('Failed to search: '.$e->getCode().' '.$e->getMessage(), Logger::DEBUG);
             }
 
-            return null;
+            return;
         }
 
         if ($this->logger) {
-            $this->logger->log("Filter results: " . print_r($r->toArray(),1), Logger::DEBUG);
+            $this->logger->log('Filter results: '.print_r($r->toArray(), 1), Logger::DEBUG);
         }
 
         if ($r->count() == 1) {
@@ -463,7 +464,7 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
             return $arr;
         }
 
-        return null;
+        return;
     }
 
     /**

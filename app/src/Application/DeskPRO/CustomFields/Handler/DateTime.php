@@ -1,70 +1,70 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Form
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Form\Type\CriteriaFilterField\DateTimeType;
 
-
 /**
- * Handles the datetime field
+ * Handles the datetime field.
  */
 class DateTime extends Date
 {
     public function renderHtml($data = null, array $template_vars = array())
     {
-        if ($data === null) return '';
+        if ($data === null) {
+            return '';
+        }
 
         if (!ctype_digit($data['value'])) {
             $data['value'] = time();
         }
 
-        $data['value'] = new \DateTime('@' . $data['value']);
+        $data['value'] = new \DateTime('@'.$data['value']);
 
         return parent::renderText($data, $template_vars);
     }
 
     public function renderText($data = null, array $template_vars = array())
     {
-        if ($data === null) return '';
+        if ($data === null) {
+            return '';
+        }
 
         if (!ctype_digit($data['value'])) {
             $data['value'] = time();
         }
 
-        $data['value'] = new \DateTime('@' . $data['value']);
+        $data['value'] = new \DateTime('@'.$data['value']);
 
         return  parent::renderText($data, $template_vars);
     }
@@ -90,17 +90,17 @@ class DateTime extends Date
         $date = \Orb\Util\Dates::convertToUtcDateTime($date);
 
         return array(
-            array($this->field_def['id'], 'value', $date->getTimestamp())
+            array($this->field_def['id'], 'value', $date->getTimestamp()),
         );
     }
 
     public function getFormField($data = null)
     {
         $setData = null;
-        if ($data AND !empty($data['value'])) {
+        if ($data and !empty($data['value'])) {
             try {
                 if (ctype_digit($data['value'])) {
-                    $date = new \DateTime('@' . $data['value']);
+                    $date = new \DateTime('@'.$data['value']);
                     if ($date) {
                         $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
                         $setData = $date->format('Y-m-d H:i');
@@ -118,7 +118,7 @@ class DateTime extends Date
         }
 
         $field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'text', $setData, array(
-            'required' => false
+            'required' => false,
         ));
 
         return $field;
@@ -148,7 +148,7 @@ class DateTime extends Date
 
         $options = array();
         foreach (array('required') as $k) {
-            $options[$k] = $this->field_def->getOption($opt_prefix . $k);
+            $options[$k] = $this->field_def->getOption($opt_prefix.$k);
         }
 
         if ($options['required']) {
@@ -195,7 +195,7 @@ class DateTime extends Date
 
             if ($d1) {
                 $d1 = \DateTime::createFromFormat('Y-m-d', $d1, $admin_tz);
-                $d1->setTime(0,0,0);
+                $d1->setTime(0, 0, 0);
 
                 if ($date_admin < $d1) {
                     return $this->makeErrorArray(array('date_invalid_range'));
@@ -203,7 +203,7 @@ class DateTime extends Date
             }
             if ($d2) {
                 $d2 = \DateTime::createFromFormat('Y-m-d', $d2, $admin_tz);
-                $d2->setTime(23,59,59);
+                $d2->setTime(23, 59, 59);
 
                 if ($date_admin > $d2) {
                     return $this->makeErrorArray(array('date_invalid_range'));
@@ -219,8 +219,8 @@ class DateTime extends Date
                 $now = new \DateTime('now', $admin_tz);
             }
 
-            $days1 = (int)$this->field_def->getOption('date_valid_range1');
-            $days2 = (int)$this->field_def->getOption('date_valid_range2');
+            $days1 = (int) $this->field_def->getOption('date_valid_range1');
+            $days2 = (int) $this->field_def->getOption('date_valid_range2');
 
             $d1 = clone $now;
             $d1->modify("-{$days1} days");
@@ -241,10 +241,10 @@ class DateTime extends Date
     public function getSearchCriteriaForm($data = null)
     {
         $setData = null;
-        if ($data AND !empty($data['value'])) {
+        if ($data and !empty($data['value'])) {
             try {
                 if (ctype_digit($data['value'])) {
-                    $date = new \DateTime('@' . $data['value']);
+                    $date = new \DateTime('@'.$data['value']);
                     if ($date) {
                         $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
                         $setData = $date->format('Y-m-d');

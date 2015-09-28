@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Dpql
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Dpql;
 
 /**
@@ -87,7 +84,7 @@ class SqlSelect
     /**
      * The amount of rows to fetch. If null or 0, rows will not be limited.
      *
-     * @var integer|null
+     * @var int|null
      */
     protected $_limitAmount = null;
 
@@ -95,7 +92,7 @@ class SqlSelect
      * The number of rows to skip before returning results. If null or 0,
      * rows will not be limited.
      *
-     * @var integer|null
+     * @var int|null
      */
     protected $_limitOffset = null;
 
@@ -123,11 +120,11 @@ class SqlSelect
      *
      * @param string $string
      *
-     * @return integer
+     * @return int
      */
     public function addSelectField($string)
     {
-        $this->_fields[] = $string;
+        $this->_fields[]       = $string;
         $this->_lastFieldAdded = true;
 
         end($this->_fields);
@@ -146,7 +143,7 @@ class SqlSelect
     /**
      * Gets the specified select field.
      *
-     * @param integer $id The 1-based ID of the field to look up
+     * @param int $id The 1-based ID of the field to look up
      *
      * @return string|false False if the field cannot be found
      */
@@ -173,7 +170,7 @@ class SqlSelect
     }
 
     /**
-     * Sets all joins
+     * Sets all joins.
      *
      * @param array $joins
      */
@@ -191,7 +188,7 @@ class SqlSelect
     }
 
     /**
-     * Sets all conditions
+     * Sets all conditions.
      *
      * @param array $conditions
      */
@@ -251,8 +248,8 @@ class SqlSelect
     /**
      * Sets the limit clause.
      *
-     * @param integer      $amount
-     * @param integer|null $offset
+     * @param int      $amount
+     * @param int|null $offset
      */
     public function setLimit($amount, $offset = null)
     {
@@ -286,20 +283,20 @@ class SqlSelect
     public function toSql()
     {
         if ($this->_limitAmount) {
-            $limit = $this->_limitAmount . ($this->_limitOffset ? " OFFSET " . $this->_limitOffset : '');
+            $limit = $this->_limitAmount.($this->_limitOffset ? ' OFFSET '.$this->_limitOffset : '');
         } elseif ($this->_limitOffset) {
-            $limit = '999999 OFFSET ' . $this->_limitOffset;
+            $limit = '999999 OFFSET '.$this->_limitOffset;
         } else {
             $limit = false;
         }
 
-        return 'SELECT ' . implode(', ', $this->_fields)
-            . "\nFROM `$this->_table`"
-            . ($this->_joins ? "\n" . implode("\n", $this->_joins) : '')
-            . ($this->_conditions ? "\nWHERE " . implode(' AND ', $this->_conditions) : '')
-            . ($this->_groupBy ? "\nGROUP BY " . implode(', ', $this->_groupBy) : '')
-            . ($this->_orderBy ? "\nORDER BY " . implode(', ', $this->_orderBy) : '')
-            . ($limit ? "\nLIMIT $limit" : '');
+        return 'SELECT '.implode(', ', $this->_fields)
+            ."\nFROM `$this->_table`"
+            .($this->_joins ? "\n".implode("\n", $this->_joins) : '')
+            .($this->_conditions ? "\nWHERE ".implode(' AND ', $this->_conditions) : '')
+            .($this->_groupBy ? "\nGROUP BY ".implode(', ', $this->_groupBy) : '')
+            .($this->_orderBy ? "\nORDER BY ".implode(', ', $this->_orderBy) : '')
+            .($limit ? "\nLIMIT $limit" : '');
     }
 
     /**

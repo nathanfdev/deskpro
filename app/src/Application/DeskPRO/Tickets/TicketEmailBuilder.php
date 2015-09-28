@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\CustomFields\PersonFieldManager;
@@ -70,7 +69,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  DeskproContainer   $container
+     * @param DeskproContainer $container
+     *
      * @return TicketEmailBuilder
      */
     public static function createFromContainer(DeskproContainer $container)
@@ -97,7 +97,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  Settings $settings
+     * @param Settings $settings
+     *
      * @return $this
      */
     public function setSettings(Settings $settings)
@@ -108,7 +109,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  Swift_Mailer $mailer
+     * @param Swift_Mailer $mailer
+     *
      * @return TicketEmailBuilder
      */
     public function setMailer(Swift_Mailer $mailer)
@@ -120,16 +122,19 @@ class TicketEmailBuilder
 
     /**
      * @param EmailAccountManager $email_accounts
+     *
      * @return $this
      */
     public function setEmailAccountManager(EmailAccountManager $email_accounts)
     {
         $this->options->set('email_accounts', $email_accounts);
+
         return $this;
     }
 
     /**
-     * @param  Translate          $tr
+     * @param Translate $tr
+     *
      * @return TicketEmailBuilder
      */
     public function setTranslate(Translate $tr)
@@ -140,7 +145,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  EntityManager      $em
+     * @param EntityManager $em
+     *
      * @return TicketEmailBuilder
      */
     public function setEm(EntityManager $em)
@@ -151,7 +157,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  TicketFieldManager $field_manager
+     * @param TicketFieldManager $field_manager
+     *
      * @return TicketEmailBuilder
      */
     public function setTicketFieldManager(TicketFieldManager $field_manager)
@@ -162,7 +169,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  PersonFieldManager $field_manager
+     * @param PersonFieldManager $field_manager
+     *
      * @return TicketEmailBuilder
      */
     public function setUserFieldManager(PersonFieldManager $field_manager)
@@ -173,7 +181,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  TicketLayoutManager $ticket_layout_manager
+     * @param TicketLayoutManager $ticket_layout_manager
+     *
      * @return TicketEmailBuilder
      */
     public function setTicketLayoutManager(TicketLayoutManager $ticket_layout_manager)
@@ -184,7 +193,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  Ticket             $ticket
+     * @param Ticket $ticket
+     *
      * @return TicketEmailBuilder
      */
     public function setTicket(Ticket $ticket)
@@ -195,7 +205,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  Person             $person
+     * @param Person $person
+     *
      * @return TicketEmailBuilder
      */
     public function setToPerson(Person $person)
@@ -206,7 +217,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  Person[] $people
+     * @param Person[] $people
+     *
      * @return $this
      */
     public function setToPeople(array $people)
@@ -230,6 +242,7 @@ class TicketEmailBuilder
 
     /**
      * @see setUserMode
+     *
      * @return TicketEmailBuilder
      */
     public function setAgentMode()
@@ -240,7 +253,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  string             $template_name
+     * @param string $template_name
+     *
      * @return TicketEmailBuilder
      */
     public function setTemplateName($template_name)
@@ -252,6 +266,7 @@ class TicketEmailBuilder
 
     /**
      * @param $from_name
+     *
      * @return TicketEmailBuilder
      */
     public function setFromName($from_name)
@@ -262,7 +277,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  EmailAccount       $account
+     * @param EmailAccount $account
+     *
      * @return TicketEmailBuilder
      */
     public function setFromEmailAccount(EmailAccount $account = null)
@@ -286,6 +302,7 @@ class TicketEmailBuilder
 
     /**
      * @see enableUserCc
+     *
      * @return TicketEmailBuilder
      */
     public function disableUserCc()
@@ -309,6 +326,7 @@ class TicketEmailBuilder
 
     /**
      * @see setIsAuto
+     *
      * @return TicketEmailBuilder
      */
     public function setIsNotAuto()
@@ -318,22 +336,23 @@ class TicketEmailBuilder
         return $this;
     }
 
-
     /**
      * Sets the maximum size of attachments that will be sent with the message.
      *
-     * @param  int                $size
+     * @param int $size
+     *
      * @return TicketEmailBuilder
      */
     public function setMaxAttachSize($size)
     {
-        $this->options->set('max_attach_size', (int)$size);
+        $this->options->set('max_attach_size', (int) $size);
 
         return $this;
     }
 
     /**
-     * @param  Logger             $logger
+     * @param Logger $logger
+     *
      * @return TicketEmailBuilder
      */
     public function setLogger(Logger $logger)
@@ -344,7 +363,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  array              $headers
+     * @param array $headers
+     *
      * @return TicketEmailBuilder
      */
     public function setHeaders($headers = array())

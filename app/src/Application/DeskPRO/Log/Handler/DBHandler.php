@@ -1,38 +1,38 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\DeskPRO\Log\Handler;
 
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Monolog\Logger;
 use Monolog\Handler\AbstractProcessingHandler;
+use Monolog\Logger;
 
 abstract class DBHandler extends AbstractProcessingHandler
 {
@@ -50,7 +50,7 @@ abstract class DBHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function isHandling(array $record)
     {
@@ -58,8 +58,10 @@ abstract class DBHandler extends AbstractProcessingHandler
     }
 
     /**
-     * create/return prepared insert statement
-     * @param  DomainObject                                             $entity
+     * create/return prepared insert statement.
+     *
+     * @param DomainObject $entity
+     *
      * @return \Doctrine\DBAL\Driver\Statement|\Doctrine\DBAL\Statement
      */
     protected function getStatement(DomainObject $entity)
@@ -76,13 +78,15 @@ abstract class DBHandler extends AbstractProcessingHandler
             ',
             $meta['table'],
             implode(', ', array_keys($meta['fields'])),
-            ':' . implode(', :', array_values($meta['fields']))
+            ':'.implode(', :', array_values($meta['fields']))
         ));
     }
 
     /**
-     * table/fields metadata
-     * @param  DomainObject $entity
+     * table/fields metadata.
+     *
+     * @param DomainObject $entity
+     *
      * @return array
      */
     protected function getMeta(DomainObject $entity)
@@ -92,9 +96,9 @@ abstract class DBHandler extends AbstractProcessingHandler
             return $this->meta[$class];
         }
 
-        $data = $this->em->getUnitOfWork()->getEntityPersister($class)->getClassMetadata();
+        $data               = $this->em->getUnitOfWork()->getEntityPersister($class)->getClassMetadata();
         $this->meta[$class] = array(
-            'table' => $data->table['name'],
+            'table'  => $data->table['name'],
             'fields' => $data->fieldNames,
         );
 
@@ -104,7 +108,6 @@ abstract class DBHandler extends AbstractProcessingHandler
                 foreach ($mapping['joinColumns'] as $joinColumn) {
                     $this->meta[$class]['fields'][$joinColumn['name']] = $property;
                 }
-
             }
         }
 
@@ -117,9 +120,9 @@ abstract class DBHandler extends AbstractProcessingHandler
     protected function write(array $record)
     {
         $entity = $record['context']['_entity'];
-        $meta = $this->getMeta($entity);
-        $stmt = $this->getStatement($entity);
-        $data = array();
+        $meta   = $this->getMeta($entity);
+        $stmt   = $this->getStatement($entity);
+        $data   = array();
         foreach ($meta['fields'] as $fieldName) {
             $data[$fieldName] = $entity[$fieldName] instanceof DomainObject
                 ? $entity[$fieldName]['id'] // todo

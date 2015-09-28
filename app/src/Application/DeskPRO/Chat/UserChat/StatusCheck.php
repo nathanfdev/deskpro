@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Chat
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;
@@ -61,7 +58,7 @@ class StatusCheck
     public function __construct($conversation, $session)
     {
         $this->conversation = $conversation;
-        $this->session = $session;
+        $this->session      = $session;
 
         if ($session->person) {
             $this->person = $session->person;
@@ -82,9 +79,7 @@ class StatusCheck
 
     /**
      * These checks are done by the agent:
-     * - Check if user has timedout
-     *
-     * @return void
+     * - Check if user has timedout.
      */
     public function runChecksByAgents()
     {
@@ -99,7 +94,6 @@ class StatusCheck
         }
 
         if ($last < $cut_close) {
-
             $this->conversation->addSystemMessage(
                 App::getTranslator()->phrase('agent.general.msg_user_timeout'),
                 true
@@ -123,19 +117,16 @@ class StatusCheck
         }
     }
 
-
     /**
      * The checks run by the user:
-     * - Check if agent has tiemdout
-     *
-     * @return void
+     * - Check if agent has tiemdout.
      */
     public function runChecksByUser()
     {
         // Get the users session
         $user_sess = $this->conversation->session;
 
-        $cut = time() - App::getSetting('core_chat.agent_timeout');
+        $cut  = time() - App::getSetting('core_chat.agent_timeout');
         $last = $user_sess['date_last']->getTimestamp();
 
         if ($last < $cut) {
@@ -148,8 +139,7 @@ class StatusCheck
 
             // And need to insert a "new chat" event for agents
             if (App::getSetting('core_chat.assign_mode') == 'round_robin') {
-
-                $assign_agent = App::getEntityRepository('DeskPRO:Person')->getChatAgentRoundRobin();
+                $assign_agent        = App::getEntityRepository('DeskPRO:Person')->getChatAgentRoundRobin();
                 $conversation->agent = $assign_agent;
 
                 $client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewChatRoundRobinMessages(
@@ -158,7 +148,6 @@ class StatusCheck
                     $msg
                 ));
             } else {
-
                 $client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewChatMessages(
                     'sys',
                     $this->conversation,

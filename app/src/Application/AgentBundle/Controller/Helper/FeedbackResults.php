@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\AgentBundle\Controller\Helper;
 
 use Application\DeskPRO\Entity\ResultCache;
@@ -65,10 +62,11 @@ class FeedbackResults
      * $options can have:
      * - default_terms: For when viewing the page that you havent submitted
      * - specific_terms: Always added to the search
-     * - default_order_by: The default order by for a page you havent submitted
+     * - default_order_by: The default order by for a page you havent submitted.
      *
      * @param  $controller
-     * @param  array                                                      $options
+     * @param array $options
+     *
      * @return \Application\AgentBundle\Controller\Helper\FeedbackResults
      */
     public static function newFromRequest($controller, array $options = array())
@@ -88,10 +86,10 @@ class FeedbackResults
         if (!$result_cache) {
             $term_rules = RuleBuilder::newTermsBuilder();
 
-            $form_terms = $controller->in->getCleanValueArray('terms', 'raw' , 'string');
+            $form_terms = $controller->in->getCleanValueArray('terms', 'raw', 'string');
             $form_terms = Arrays::removeFalsey($form_terms);
 
-            if (!$form_terms AND !empty($options['default_terms'])) {
+            if (!$form_terms and !empty($options['default_terms'])) {
                 $form_terms = $options['default_terms'];
             }
 
@@ -121,10 +119,10 @@ class FeedbackResults
 
             $results = $searcher->getMatches();
 
-            $result_cache = new ResultCache();
-            $result_cache['person'] = $controller->person;
-            $result_cache['criteria'] = array('terms' => $searcher->getTerms(), 'order_by' => $order_by);
-            $result_cache['results'] = $results;
+            $result_cache                = new ResultCache();
+            $result_cache['person']      = $controller->person;
+            $result_cache['criteria']    = array('terms' => $searcher->getTerms(), 'order_by' => $order_by);
+            $result_cache['results']     = $results;
             $result_cache['num_results'] = count($results);
 
             /*
@@ -170,7 +168,6 @@ class FeedbackResults
         }
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\ResultCache
      */
@@ -179,9 +176,9 @@ class FeedbackResults
         return $this->result_cache;
     }
 
-
     /**
-     * Set ticket IDs for the search results
+     * Set ticket IDs for the search results.
+     *
      * @param array $feedback_ids
      */
     public function setFeedbackIds(array $feedback_ids)
@@ -189,9 +186,8 @@ class FeedbackResults
         $this->feedback_ids = $feedback_ids;
     }
 
-
     /**
-     * Get ticket IDs
+     * Get ticket IDs.
      *
      * @return array
      */
@@ -200,9 +196,8 @@ class FeedbackResults
         return $this->feedback_ids;
     }
 
-
     /**
-     * Get tickets for a particular page
+     * Get tickets for a particular page.
      *
      * @return array
      */
@@ -216,11 +211,10 @@ class FeedbackResults
         return $this->_getPageFromFeedbackIds($this->getFeedbackIds(), $page, $per_page);
     }
 
-
     protected function _getPageFromFeedbackIds(array $feedback_ids, $page, $per_page)
     {
         $page_feedback_ids = Arrays::getPageChunk($feedback_ids, $page, $per_page);
-        $feedback_raw = $this->controller->em->getRepository('DeskPRO:Feedback')->getByIds($page_feedback_ids);
+        $feedback_raw      = $this->controller->em->getRepository('DeskPRO:Feedback')->getByIds($page_feedback_ids);
 
         // - We'll get a page of results, but that actual page isn't going to be
         // sorted the way we want, because MySQL was just sent a list of ID's.

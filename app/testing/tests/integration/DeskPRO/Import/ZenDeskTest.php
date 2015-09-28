@@ -1,5 +1,31 @@
 <?php
 
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 namespace DpIntegrationTests\DeskPRO\Import;
 
 use Application\DeskPRO\Entity;
@@ -15,8 +41,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * Class ZenDeskTest
- * @package DpIntegrationTests\DeskPRO\Import
+ * Class ZenDeskTest.
  *
  * @group importer
  */
@@ -72,8 +97,8 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->ticket_attachment_repository = $entity_manager->getRepository('DeskPRO:TicketAttachment');
         $this->person_repository            = $entity_manager->getRepository('DeskPRO:Person');
 
-        $this->output_path = dp_get_data_dir() . '/import/zendesk/export';
-        if ( ! is_dir($this->output_path)) {
+        $this->output_path = dp_get_data_dir().'/import/zendesk/export';
+        if (!is_dir($this->output_path)) {
             mkdir($this->output_path, 0755, true);
         }
 
@@ -96,7 +121,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $application = new Application($this->helper->getSymfonyContainer()->getKernel());
         $application->add(new CheckExportCommand());
 
-        $command = $application->find('dp:export:check');
+        $command        = $application->find('dp:export:check');
         $command_tester = new CommandTester($command);
         $command_tester->execute(array(
             'command'   => $command->getName(),
@@ -129,7 +154,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $application = new Application($this->helper->getSymfonyContainer()->getKernel());
         $application->add(new ExportCommand());
 
-        $command = $application->find('dp:export:run');
+        $command        = $application->find('dp:export:run');
         $command_tester = new CommandTester($command);
         $command_tester->execute(array(
             'command'       => $command->getName(),
@@ -149,14 +174,14 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $application = new Application($this->helper->getSymfonyContainer()->getKernel());
         $application->add(new ImportCommand());
 
-        $command = $application->find('dp:import:run');
+        $command        = $application->find('dp:import:run');
         $command_tester = new CommandTester($command);
         $command_tester->execute(array(
-            'command'   => $command->getName(),
-            'script'    => 'zendesk',
+            'command'       => $command->getName(),
+            'script'        => 'zendesk',
             '--output-path' => $this->output_path,
-            '--verbose' => true,
-            '--batch'   => true,
+            '--verbose'     => true,
+            '--batch'       => true,
         ));
 
         $this->checkJsonEmpty();
@@ -170,7 +195,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $application = new Application($this->helper->getSymfonyContainer()->getKernel());
         $application->add(new ImportBatchCommand());
 
-        $command = $application->find('dp:import:batch');
+        $command        = $application->find('dp:import:batch');
         $command_tester = new CommandTester($command);
         $command_tester->execute(array(
             'command'       => $command->getName(),
@@ -267,9 +292,9 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $now   = new \DateTime();
 
         $this->adapter
-            ->addTicketsIncrementalExportResponse((object)array(
-                'tickets'  => array(
-                    (object)array(
+            ->addTicketsIncrementalExportResponse((object) array(
+                'tickets' => array(
+                    (object) array(
                         'id'               => 1,
                         'requester_id'     => 1,
                         'assignee_id'      => 3,
@@ -279,11 +304,11 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'priority'         => 'high',
                         'organization_id'  => 1,
                         'created_at'       => $date1->format('Y-m-d H:i:s'),
-                        'custom_fields'    => (object)array(),
-                        'tags'             => (object)array('label 1', 'label 2'),
-                        'collaborator_ids' => (object)array(1, 100000),
+                        'custom_fields'    => (object) array(),
+                        'tags'             => (object) array('label 1', 'label 2'),
+                        'collaborator_ids' => (object) array(1, 100000),
                     ),
-                    (object)array(
+                    (object) array(
                         'id'              => 2,
                         'requester_id'    => 2,
                         'assignee_id'     => 4,
@@ -293,10 +318,10 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'priority'        => 'low',
                         'organization_id' => 1,
                         'created_at'      => $date2->format('Y-m-d H:i:s'),
-                        'custom_fields'   => (object)array(),
-                        'tags'            => (object)array('label 1', 'label 3'),
+                        'custom_fields'   => (object) array(),
+                        'tags'            => (object) array('label 1', 'label 3'),
                     ),
-                    (object)array(
+                    (object) array(
                         'id'              => 3,
                         'requester_id'    => 3,
                         'assignee_id'     => 4,
@@ -306,10 +331,10 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'priority'        => 'low',
                         'organization_id' => 1,
                         'created_at'      => $date2->format('Y-m-d H:i:s'),
-                        'custom_fields'   => (object)array(),
-                        'tags'            => (object)array('label 1', 'label 3'),
+                        'custom_fields'   => (object) array(),
+                        'tags'            => (object) array('label 1', 'label 3'),
                     ),
-                    (object)array(
+                    (object) array(
                         'id'              => 4,
                         'requester_id'    => 1,
                         'assignee_id'     => 4,
@@ -319,35 +344,35 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'priority'        => 'low',
                         'organization_id' => 1,
                         'created_at'      => $date2->format('Y-m-d H:i:s'),
-                        'custom_fields'   => (object)array(),
-                        'tags'            => (object)array('label 2', 'label 3'),
+                        'custom_fields'   => (object) array(),
+                        'tags'            => (object) array('label 2', 'label 3'),
                     ),
                 ),
                 'end_time' => $now->getTimestamp(),
             ))
-            ->addTicketCommentsFindAllResponse((object)array(
+            ->addTicketCommentsFindAllResponse((object) array(
                 'comments' => array(
-                    (object)array(
+                    (object) array(
                         'id'          => 1,
                         'author_id'   => 1,
                         'body'        => 'Reply #1',
                         'public'      => true,
                         'created_at'  => $date3->format('Y-m-d H:i:s'),
                         'attachments' => array(
-                            (object)array(
+                            (object) array(
                                 'id'           => 1,
                                 'file_name'    => 'file 1',
                                 'content_type' => 'image/png',
                                 'content_url'  => 'http://deskpro.com/assets/build/img/deskpro/logo.png',
                             ),
-                            (object)array(
+                            (object) array(
                                 'id'           => 2,
                                 'file_name'    => 'file 1',
                                 'content_type' => 'image/png',
                                 'content_url'  => 'http://deskpro.com/assets/build/img/deskpro/logo.png',
                                 'inline'       => true,
                             ),
-                            (object)array(
+                            (object) array(
                                 'id'           => 3,
                                 'file_name'    => 'file 3',
                                 'content_type' => 'image/png',
@@ -355,7 +380,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                             ),
                         ),
                     ),
-                    (object)array(
+                    (object) array(
                         'id'          => 2,
                         'author_id'   => 2,
                         'body'        => 'Reply #2',
@@ -363,7 +388,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'created_at'  => $date4->format('Y-m-d H:i:s'),
                         'attachments' => array(),
                     ),
-                    (object)array(
+                    (object) array(
                         'id'          => 3,
                         'author_id'   => null,
                         'body'        => 'Reply #3',
@@ -371,7 +396,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'created_at'  => $date4->format('Y-m-d H:i:s'),
                         'attachments' => array(),
                     ),
-                    (object)array(
+                    (object) array(
                         'id'          => 4,
                         'author_id'   => 3,
                         'body'        => 'Reply #4',
@@ -381,31 +406,31 @@ class ZenDeskTest extends \DpIntegrationTestCase
                     ),
                 ),
             ))
-            ->addTicketCommentsFindAllResponse((object)array(
+            ->addTicketCommentsFindAllResponse((object) array(
                 'comments' => array(
-                    (object)array(
-                        'id'          => 1,
-                        'body'        => 'Comment 1',
-                        'author_id'   => 1,
-                        'created_at'  => $date2->format('Y-m-d H:i:s'),
+                    (object) array(
+                        'id'         => 1,
+                        'body'       => 'Comment 1',
+                        'author_id'  => 1,
+                        'created_at' => $date2->format('Y-m-d H:i:s'),
                     ),
-                    (object)array(
-                        'id'          => 2,
-                        'body'        => 'Comment 1',
-                        'author_id'   => 3,
-                        'created_at'  => $date4->format('Y-m-d H:i:s'),
+                    (object) array(
+                        'id'         => 2,
+                        'body'       => 'Comment 1',
+                        'author_id'  => 3,
+                        'created_at' => $date4->format('Y-m-d H:i:s'),
                     ),
                 ),
             ))
-            ->addTicketCommentsFindAllResponse((object)array(
+            ->addTicketCommentsFindAllResponse((object) array(
                 'comments' => array(),
             ))
-            ->addTicketCommentsFindAllResponse((object)array(
+            ->addTicketCommentsFindAllResponse((object) array(
                 'comments' => array(),
             ))
-            ->addArticleCategoriesFindAll((object)array(
+            ->addArticleCategoriesFindAll((object) array(
                 'categories' => array(
-                    (object)array(
+                    (object) array(
                         'id'              => 1,
                         'name'            => 'Category 1',
                         'description'     => 'Category description',
@@ -419,12 +444,12 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'translation_ids' => array(),
                         'created_at'      => $date1->format('Y-m-d H:i:s'),
                         'updated_at'      => $date2->format('Y-m-d H:i:s'),
-                    )
-                )
+                    ),
+                ),
             ))
-            ->addArticleSectionsFindAll((object)array(
+            ->addArticleSectionsFindAll((object) array(
                 'sections' => array(
-                    (object)array(
+                    (object) array(
                         'id'              => 1,
                         'name'            => 'Section 1',
                         'description'     => 'Section description',
@@ -438,11 +463,11 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'translation_ids' => array(),
                         'created_at'      => $date1->format('Y-m-d H:i:s'),
                         'updated_at'      => $date2->format('Y-m-d H:i:s'),
-                    )
-                )
+                    ),
+                ),
             ))
-            ->addArticleSectionAccessPolicyFindResponse((object)array(
-                'access_policy' => (object)array(
+            ->addArticleSectionAccessPolicyFindResponse((object) array(
+                'access_policy' => (object) array(
                     'viewable_by'                    => ArticleCategories::VIEWABLE_BY_SIGNED,
                     'manageable_by'                  => ArticleCategories::VIEWABLE_BY_STAFF,
                     'restricted_to_group_ids'        => array(),
@@ -450,9 +475,9 @@ class ZenDeskTest extends \DpIntegrationTestCase
                     'required_tags'                  => array(),
                 ),
             ))
-            ->addArticlesIncrementalExportResponse((object)array(
+            ->addArticlesIncrementalExportResponse((object) array(
                 'articles' => array(
-                    (object)array(
+                    (object) array(
                         'id'          => 1,
                         'author_id'   => 1,
                         'section_id'  => 1,
@@ -466,7 +491,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'draft'       => false,
                         'label_names' => array('Label 1', 'Label 2'),
                     ),
-                    (object)array(
+                    (object) array(
                         'id'          => 2,
                         'author_id'   => 1,
                         'section_id'  => 1,
@@ -480,7 +505,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'draft'       => true,
                         'label_names' => array('Label 1', 'Label 3'),
                     ),
-                    (object)array(
+                    (object) array(
                         'id'          => 3,
                         'author_id'   => 200000,
                         'section_id'  => 1,
@@ -497,44 +522,44 @@ class ZenDeskTest extends \DpIntegrationTestCase
                 ),
                 'end_time' => $now->getTimestamp(),
             ))
-            ->addArticleCommentsFindAllResponse((object)array(
+            ->addArticleCommentsFindAllResponse((object) array(
                 'comments' => array(
-                    (object)array(
+                    (object) array(
                         'id'         => 1,
                         'body'       => 'Comment 1',
                         'author_id'  => 2,
                         'created_at' => $date3->format('Y-m-d H:i:s'),
                     ),
-                    (object)array(
+                    (object) array(
                         'id'         => 2,
                         'body'       => 'Comment 2',
                         'author_id'  => 3,
                         'created_at' => $date4->format('Y-m-d H:i:s'),
                     ),
-                )
+                ),
             ))
-            ->addArticleCommentsFindAllResponse((object)array(
+            ->addArticleCommentsFindAllResponse((object) array(
                 'comments' => array(
-                    (object)array(
+                    (object) array(
                         'id'         => 3,
                         'body'       => 'Comment 3',
                         'author_id'  => 2,
                         'created_at' => $date3->format('Y-m-d H:i:s'),
                     ),
-                    (object)array(
+                    (object) array(
                         'id'         => 4,
                         'body'       => 'Comment 4',
                         'author_id'  => 3,
                         'created_at' => $date4->format('Y-m-d H:i:s'),
                     ),
-                )
+                ),
             ))
-            ->addArticleCommentsFindAllResponse((object)array(
-                'comments' => array()
+            ->addArticleCommentsFindAllResponse((object) array(
+                'comments' => array(),
             ))
-            ->addArticleAttachmentsFindAllResponse((object)array(
+            ->addArticleAttachmentsFindAllResponse((object) array(
                 'article_attachments' => array(
-                    (object)array(
+                    (object) array(
                         'id'           => 1,
                         'file_name'    => 'file 1',
                         'content_type' => 'image/png',
@@ -542,9 +567,9 @@ class ZenDeskTest extends \DpIntegrationTestCase
                     ),
                 ),
             ))
-            ->addArticleAttachmentsFindAllResponse((object)array(
+            ->addArticleAttachmentsFindAllResponse((object) array(
                 'article_attachments' => array(
-                    (object)array(
+                    (object) array(
                         'id'           => 1,
                         'file_name'    => 'file 1',
                         'content_type' => 'image/png',
@@ -552,19 +577,19 @@ class ZenDeskTest extends \DpIntegrationTestCase
                     ),
                 ),
             ))
-            ->addArticleAttachmentsFindAllResponse((object)array(
-                'article_attachments' => array()
+            ->addArticleAttachmentsFindAllResponse((object) array(
+                'article_attachments' => array(),
             ))
-            ->addArticleTranslationsFindAllResponse((object)array(
+            ->addArticleTranslationsFindAllResponse((object) array(
                 'translations' => array(
-                    (object)array(
+                    (object) array(
                         'id'     => '1',
                         'locale' => 'es',
                         'title'  => 'Title (es_ES)',
                         'body'   => 'Content (es_ES)',
                         'draft'  => true,
                     ),
-                    (object)array(
+                    (object) array(
                         'id'     => '2',
                         'locale' => 'de',
                         'title'  => 'Title (de)',
@@ -573,15 +598,15 @@ class ZenDeskTest extends \DpIntegrationTestCase
                     ),
                 ),
             ))
-            ->addArticleTranslationsFindAllResponse((object)array(
+            ->addArticleTranslationsFindAllResponse((object) array(
                 'translations' => array(),
             ))
-            ->addArticleTranslationsFindAllResponse((object)array(
+            ->addArticleTranslationsFindAllResponse((object) array(
                 'translations' => array(),
             ))
-            ->addPeopleFindResponse((object)array(
+            ->addPeopleFindResponse((object) array(
                 'users' => array(
-                    (object)array(
+                    (object) array(
                         'id'              => 1,
                         'name'            => 'Person 1',
                         'email'           => 'person1@domain.tld',
@@ -592,7 +617,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'organization_id' => 1,
                         'tags'            => array('Tag 1', 'Tag 2'),
                     ),
-                    (object)array(
+                    (object) array(
                         'id'              => 2,
                         'name'            => 'Person 2',
                         'email'           => 'person2@domain.tld',
@@ -603,7 +628,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'organization_id' => 1,
                         'tags'            => array('Tag 2', 'Tag 3'),
                     ),
-                    (object)array(
+                    (object) array(
                         'id'              => 3,
                         'name'            => 'Person 3',
                         'email'           => null,
@@ -615,7 +640,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                     ),
                 ),
             ))
-            ->addPeopleFindResponse((object)array(
+            ->addPeopleFindResponse((object) array(
                 'user' => array(
                     'id'              => 100000,
                     'name'            => 'Person 100000',
@@ -628,7 +653,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                     'tags'            => array(),
                 ),
             ))
-            ->addPeopleFindResponse((object)array(
+            ->addPeopleFindResponse((object) array(
                 'user' => array(
                     'id'              => 4,
                     'name'            => 'Person 4',
@@ -641,13 +666,13 @@ class ZenDeskTest extends \DpIntegrationTestCase
                     'tags'            => array(),
                 ),
             ))
-            ->addPeopleFindResponse((object)array(
-                'users' => array()
+            ->addPeopleFindResponse((object) array(
+                'users' => array(),
             ))
-            ->addPeopleFindResponse((object)array(
+            ->addPeopleFindResponse((object) array(
             ))
-            ->addOrganizationFindResponse((object)array(
-                'organization' => (object)array(
+            ->addOrganizationFindResponse((object) array(
+                'organization' => (object) array(
                     'id'   => 1,
                     'name' => 'An organization name',
                 ),

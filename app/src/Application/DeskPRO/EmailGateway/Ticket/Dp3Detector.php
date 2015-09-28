@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use Application\DeskPRO\App;
@@ -48,9 +46,8 @@ class Dp3Detector implements TicketDetectorInterface
      */
     protected $_found_person = null;
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function findExistingTicket(AbstractReader $reader)
     {
@@ -58,10 +55,10 @@ class Dp3Detector implements TicketDetectorInterface
 
         $subject_text = $reader->getSubject()->getSubject();
 
-        $body_text = array();
+        $body_text   = array();
         $body_text[] = $reader->getBodyText()->getBody();
         $body_text[] = strip_tags($reader->getBodyHtml()->getBody());
-        $body_text = implode(' ', $body_text);
+        $body_text   = implode(' ', $body_text);
 
         $from_email = $reader->getFromAddress()->getEmail();
 
@@ -94,15 +91,15 @@ class Dp3Detector implements TicketDetectorInterface
             return $ticket;
         }
 
-        return null;
+        return;
     }
-
 
     /**
      * Subject codes like: [AAAA-0000-AAAA] [ABC123D4]
      * That is (1) ticket ref and (2) ticket authcode.
      *
-     * @param  string                                  $subject_text
+     * @param string $subject_text
+     *
      * @return \Application\DeskPRO\Entity\Ticket|null
      */
     public function userMatchSubject($subject_text)
@@ -112,7 +109,7 @@ class Dp3Detector implements TicketDetectorInterface
         #------------------------------
 
         if (!preg_match('#\[([0-9]{4}-[A-Za-z]{4}-[0-9]{4})\]#', $subject_text, $m)) {
-            return null;
+            return;
         }
         $old_ref = $m[1];
 
@@ -123,7 +120,7 @@ class Dp3Detector implements TicketDetectorInterface
         $pos = strpos($subject_text, $m[0]);
 
         if (!preg_match('#\[([a-zA-Z0-9]{8})\]#', $subject_text, $m, null, $pos)) {
-            return null;
+            return;
         }
         $old_auth = $m[1];
 
@@ -131,19 +128,19 @@ class Dp3Detector implements TicketDetectorInterface
         # Fetch map info
         #------------------------------
 
-        $map_info = App::getDb()->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array('dp3_ticketref_' . $old_ref));
+        $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', array('dp3_ticketref_'.$old_ref));
         if ($map_info) {
             $map_info = @unserialize($map_info);
 
         // Might have a merge record
         } else {
-            $map_info = App::getDb()->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array('dp3_ticketmerge_' . $old_ref));
+            $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', array('dp3_ticketmerge_'.$old_ref));
             if ($map_info) {
                 $map_info = @unserialize($map_info);
             }
         }
         if (!$map_info) {
-            return null;
+            return;
         }
 
         #------------------------------
@@ -151,24 +148,24 @@ class Dp3Detector implements TicketDetectorInterface
         #------------------------------
 
         if ($old_auth != $map_info['old_auth']) {
-            return null;
+            return;
         }
 
         return App::getOrm()->getRepository('DeskPRO:Ticket')->find($map_info['new_id']);
     }
 
-
     /**
      * In the body we have: <=== AAAA-0000-AAAA --- ABC123D4 ===>
-     * Thats (1) The old ticket ref and (2) the old ticket auth
+     * Thats (1) The old ticket ref and (2) the old ticket auth.
      *
-     * @param  string                             $body_text
+     * @param string $body_text
+     *
      * @return \Application\DeskPRO\Entity\Ticket
      */
     public function userMatchBody($body_text)
     {
         if (!preg_match('#<=== ([0-9]{4}-[A-Za-z]{4}-[0-9]{4}) --- ([a-zA-Z0-9]{8}) ===>#', $body_text, $m)) {
-            return null;
+            return;
         }
 
         $old_ref  = $m[1];
@@ -178,19 +175,19 @@ class Dp3Detector implements TicketDetectorInterface
         # Fetch map info
         #------------------------------
 
-        $map_info = App::getDb()->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array('dp3_ticketref_' . $old_ref));
+        $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', array('dp3_ticketref_'.$old_ref));
         if ($map_info) {
             $map_info = @unserialize($map_info);
 
         // Might have a merge record
         } else {
-            $map_info = App::getDb()->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array('dp3_ticketmerge_' . $old_ref));
+            $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', array('dp3_ticketmerge_'.$old_ref));
             if ($map_info) {
                 $map_info = @unserialize($map_info);
             }
         }
         if (!$map_info) {
-            return null;
+            return;
         }
 
         #------------------------------
@@ -198,24 +195,24 @@ class Dp3Detector implements TicketDetectorInterface
         #------------------------------
 
         if ($old_auth != $map_info['old_auth']) {
-            return null;
+            return;
         }
 
         return App::getOrm()->getRepository('DeskPRO:Ticket')->find($map_info['new_id']);
     }
 
-
     /**
      * Tech subjec codes are like: [AAAA-0000-AAAA-8-asd3fda3]
-     * That is (1) the old ticket ref (2) the old tech id (3) substr(md5(old tech pass . old ticket auth), 0, 8)
+     * That is (1) the old ticket ref (2) the old tech id (3) substr(md5(old tech pass . old ticket auth), 0, 8).
      *
-     * @param  string                             $subject_text
+     * @param string $subject_text
+     *
      * @return \Application\DeskPRO\Entity\Ticket
      */
     public function techMatchSubject($subject_text)
     {
         if (!preg_match('#\[([0-9]{4}-[A-Za-z]{4}-[0-9]{4})-([0-9]+)-([a-zA-Z0-9]{8})\]#', $subject_text, $m)) {
-            return null;
+            return;
         }
 
         $old_ref       = $m[1];
@@ -226,34 +223,34 @@ class Dp3Detector implements TicketDetectorInterface
         # Fetch map info
         #------------------------------
 
-        $map_info = App::getDb()->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array('dp3_ticketref_' . $old_ref));
+        $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', array('dp3_ticketref_'.$old_ref));
         if ($map_info) {
             $map_info = @unserialize($map_info);
         }
         if (!$map_info) {
-            return null;
+            return;
         }
 
-        $techmap_info = App::getDb()->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array('dp3_techpass_' . $old_tech_id));
+        $techmap_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', array('dp3_techpass_'.$old_tech_id));
         if ($techmap_info) {
             $techmap_info = @unserialize($techmap_info);
         }
         if (!$techmap_info) {
-            return null;
+            return;
         }
 
         #------------------------------
         # Check and return ticket
         #------------------------------
 
-        $check_tech_auth = substr(md5($techmap_info['old_pass'] . $map_info['old_auth']), 0, 8);
+        $check_tech_auth = substr(md5($techmap_info['old_pass'].$map_info['old_auth']), 0, 8);
         if ($check_tech_auth != $old_tech_auth) {
-            return null;
+            return;
         }
 
         $agent = App::getOrm()->getRepository('DeskPRO:Person')->find($techmap_info['new_id']);
         if (!$agent) {
-            return null;
+            return;
         }
 
         $this->_found_person = $agent;
@@ -262,7 +259,7 @@ class Dp3Detector implements TicketDetectorInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
     {
@@ -270,7 +267,7 @@ class Dp3Detector implements TicketDetectorInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
     {

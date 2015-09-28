@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage InstallBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\InstallBundle\Data;
 
 use Doctrine\ORM\EntityManager;
@@ -81,7 +78,6 @@ class GenerateSchema
         $this->em = $em;
     }
 
-
     /**
      * @return array
      */
@@ -91,7 +87,6 @@ class GenerateSchema
 
         return $this->creates;
     }
-
 
     /**
      * @return array
@@ -103,7 +98,6 @@ class GenerateSchema
         return $this->alters;
     }
 
-
     /**
      * @return array
      */
@@ -113,7 +107,6 @@ class GenerateSchema
 
         return $this->triggers;
     }
-
 
     /**
      * @return string
@@ -125,9 +118,8 @@ class GenerateSchema
         return $this->php_file;
     }
 
-
     /**
-     * Loads the schema
+     * Loads the schema.
      */
     protected function load()
     {
@@ -136,7 +128,7 @@ class GenerateSchema
         }
 
         $this->creates = array();
-        $this->alters = array();
+        $this->alters  = array();
 
         #------------------------------
         # Load SQL
@@ -145,9 +137,9 @@ class GenerateSchema
         $em = $this->em;
         /** @var $metadata \Doctrine\ORM\Mapping\ClassMetadata[] */
         $metadata = $em->getMetadataFactory()->getAllMetadata();
-        $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
-        $sm = $this->em->getConnection()->getSchemaManager();
-        $all_sql = $tool->getCreateSchemaSql($metadata);
+        $tool     = new \Doctrine\ORM\Tools\SchemaTool($em);
+        $sm       = $this->em->getConnection()->getSchemaManager();
+        $all_sql  = $tool->getCreateSchemaSql($metadata);
 
         #------------------------------
         # Non-entity tables
@@ -175,28 +167,24 @@ SQL;
         $php_alters   = array();
         $php_triggers = array();
 
-
-
         foreach ($all_sql as $s) {
             $s = trim($s);
 
             // Trigger
             if (preg_match('#^CREATE TRIGGER#', $s)) {
-
                 $s_ex = var_export($s, true);
 
                 $this->triggers[] = $s;
-                $php_triggers[] = "\$queries['trigger'][$xt] = $s_ex;";
-                $xt++;
+                $php_triggers[]   = "\$queries['trigger'][$xt] = $s_ex;";
+                ++$xt;
 
             // Alter
             } elseif (preg_match('#^ALTER#', $s)) {
-                $s = str_replace(array("\r\n", "\n"), ' ', $s);
+                $s              = str_replace(array("\r\n", "\n"), ' ', $s);
                 $this->alters[] = $s;
 
             // Create
             } else {
-
                 $s = str_replace(array("\r\n", "\n"), ' ', $s);
                 $s .= ' DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 
@@ -207,17 +195,17 @@ SQL;
                 $s_ex = var_export($s, true);
 
                 $this->creates[] = $s;
-                $php_creates[] = "\$queries['create'][$xc] = $s_ex;";
-                $xc++;
+                $php_creates[]   = "\$queries['create'][$xc] = $s_ex;";
+                ++$xc;
             }
         }
 
         $this->alters = self::combineAlters($this->alters);
 
         foreach ($this->alters as $s) {
-            $s_ex = var_export($s, true);
+            $s_ex         = var_export($s, true);
             $php_alters[] = "\$queries['alter'][$xa] = $s_ex;";
-            $xa++;
+            ++$xa;
         }
 
         #------------------------------
@@ -225,9 +213,9 @@ SQL;
         #------------------------------
 
         $this->indexes = array();
-        $this->fks = array();
-        $php_indexes = array();
-        $php_fks = array();
+        $this->fks     = array();
+        $php_indexes   = array();
+        $php_fks       = array();
 
         $schema = $tool->getSchemaFromMetadata($metadata);
         /** @var $tables \Doctrine\DBAL\Schema\Table[] */
@@ -236,10 +224,10 @@ SQL;
             $t = $table->getName();
 
             $this->indexes[$t] = array();
-            $this->fks[$t] = array();
+            $this->fks[$t]     = array();
 
             $indexes = $table->getIndexes();
-            $fkeys = $table->getForeignKeys();
+            $fkeys   = $table->getForeignKeys();
 
             if (count($indexes) > 0) {
                 $php_indexes[] = "\$queries['index']['$t'] = array(";
@@ -249,26 +237,25 @@ SQL;
             }
 
             foreach ($indexes as $idx) {
-                $sql = $sm->getDatabasePlatform()->getCreateIndexSQL($idx, $t);
+                $sql                                = $sm->getDatabasePlatform()->getCreateIndexSQL($idx, $t);
                 $this->indexes[$t][$idx->getName()] = $sql;
 
-                $php_indexes[] = "\t'{$idx->getName()}' => '" . addslashes($sql) . "',";
+                $php_indexes[] = "\t'{$idx->getName()}' => '".addslashes($sql)."',";
             }
             foreach ($fkeys as $fk) {
-                $sql = $sm->getDatabasePlatform()->getCreateForeignKeySQL($fk, $t);
+                $sql                           = $sm->getDatabasePlatform()->getCreateForeignKeySQL($fk, $t);
                 $this->fks[$t][$fk->getName()] = $sql;
 
-                $php_fks[] = "\t'{$fk->getName()}' => '" . addslashes($sql) . "',";
+                $php_fks[] = "\t'{$fk->getName()}' => '".addslashes($sql)."',";
             }
 
             if (count($indexes) > 0) {
-                $php_indexes[] = ");";
+                $php_indexes[] = ');';
             }
             if (count($fkeys) > 0) {
-                $php_fks[] = ");";
+                $php_fks[] = ');';
             }
         }
-
 
         #------------------------------
         # Create the PHP file
@@ -299,7 +286,6 @@ SQL;
         $this->php_file = $php;
     }
 
-
     /**
      * Takes an array of ALTER queries and combines any alters that alter the same table.
      * For example, instead of 10 separate ALTER TABLE queries that add 10 separate FK's, there's only one.
@@ -319,7 +305,7 @@ SQL;
                 throw new \InvalidArgumentException("Invalid ALTER query: $sql");
             }
 
-            $table = $m[1];
+            $table     = $m[1];
             $alter_seg = trim($m[2], ' ,');
 
             if (!isset($segments[$table])) {
@@ -331,7 +317,7 @@ SQL;
 
         $return = array();
         foreach ($segments as $table => $segs) {
-            $return[] = "ALTER TABLE " . $table . " " . implode(', ', $segs);
+            $return[] = 'ALTER TABLE '.$table.' '.implode(', ', $segs);
         }
 
         return $return;

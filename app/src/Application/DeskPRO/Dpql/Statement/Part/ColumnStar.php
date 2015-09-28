@@ -1,52 +1,49 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Dpql
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Statement\Display;
-use Application\DeskPRO\Dpql;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Represents a reference to all data in a table
+ * Represents a reference to all data in a table.
  */
 class ColumnStar extends AbstractPart
 {
     /**
-     * List of parts in the reference
+     * List of parts in the reference.
      *
      * @var array
      */
@@ -76,8 +73,7 @@ class ColumnStar extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         $parts = $this->parts;
         $table = array_shift($parts);
 
@@ -93,28 +89,28 @@ class ColumnStar extends AbstractPart
 
         $partsSoFar = array($table);
 
-        foreach ($parts AS $partKey => $part) {
+        foreach ($parts as $partKey => $part) {
             $partsSoFar[] = $part;
-            $partsString = implode('.', $partsSoFar);
+            $partsString  = implode('.', $partsSoFar);
 
             if (preg_match('/\[(.+)\]$/', $part, $match)) {
                 $part = substr($part, 0, -strlen($match[0]));
             }
 
             // are we referencing a field?
-            foreach ($repository->getFieldMappings() AS $key => $field) {
+            foreach ($repository->getFieldMappings() as $key => $field) {
                 if (strtolower($key) == $part) {
                     throw new Exception("Select star conditions may only include references to tables or associations (did not expect $partsString).");
                 }
             }
 
-            foreach ($repository->getAssociationMappings() AS $association) {
+            foreach ($repository->getAssociationMappings() as $association) {
                 if (empty($association['joinColumns'])) {
                     // need to know how to make the join; ignore this
                     continue;
                 }
 
-                foreach ($association['joinColumns'] AS $joinColumn) {
+                foreach ($association['joinColumns'] as $joinColumn) {
                     // are we referencing a field that is only listed in an association?
                     if (strtolower($joinColumn['name']) == $part) {
                         throw new Exception("Select star conditions may only include references to tables or associations (did not expect $partsString).");
@@ -122,9 +118,9 @@ class ColumnStar extends AbstractPart
                 }
             }
 
-            foreach ($repository->getReportAssociations() AS $name => $association) {
+            foreach ($repository->getReportAssociations() as $name => $association) {
                 if (strtolower($name) == $part) {
-                    $target = $association['targetEntity'];
+                    $target          = $association['targetEntity'];
                     $childRepository = $target::getRepository();
 
                     if (!($childRepository instanceof \Application\DeskPRO\EntityRepository\AbstractEntityRepository)) {
@@ -136,10 +132,10 @@ class ColumnStar extends AbstractPart
                 }
             }
 
-            foreach ($repository->getAssociationMappings() AS $association) {
+            foreach ($repository->getAssociationMappings() as $association) {
                 // are we referencing an association?
                 if (strtolower($association['fieldName']) == $part) {
-                    $target = $association['targetEntity'];
+                    $target          = $association['targetEntity'];
                     $childRepository = $target::getRepository();
 
                     if ((isset($association['dpqlAccess']) && !$association['dpqlAccess'])
@@ -178,7 +174,7 @@ class ColumnStar extends AbstractPart
             throw new Exception('Did not get to end of column references');
         }
 
-        foreach ($repository->getFieldMappings() AS $key => $field) {
+        foreach ($repository->getFieldMappings() as $key => $field) {
             if (isset($field['dpqlAccess']) && !$field['dpqlAccess']) {
                 continue;
             }
@@ -186,7 +182,7 @@ class ColumnStar extends AbstractPart
             $column = new Column(array_merge($partsSoFar, array($key)));
             $statement->addPreparedSelectField($column->prepare($statement, $section, $stack, $select, $result));
         }
-        foreach ($repository->getAssociationMappings() AS $association) {
+        foreach ($repository->getAssociationMappings() as $association) {
             if ((isset($association['dpqlAccess']) && !$association['dpqlAccess'])
                 || $association['type'] == ClassMetadataInfo::MANY_TO_MANY
             ) {
@@ -197,20 +193,21 @@ class ColumnStar extends AbstractPart
                 try {
                     $column = new Column(array_merge($partsSoFar, array($association['fieldName'])));
                     $statement->addPreparedSelectField($column->prepare($statement, $section, $stack, $select, $result));
-                } catch (Exception $e) {}
+                } catch (Exception $e) {
+                }
             } elseif (preg_match('/CustomData([a-zA-Z]+)$/', $association['targetEntity'], $match)) {
                 switch ($match[1]) {
-                    case 'Article': $type = 'articles'; break;
-                    case 'Feedback': $type = 'feedback'; break;
+                    case 'Article': $type      = 'articles'; break;
+                    case 'Feedback': $type     = 'feedback'; break;
                     case 'Organization': $type = 'organizations'; break;
-                    case 'Person': $type = 'people'; break;
-                    case 'Ticket': $type = 'tickets'; break;
-                    default: $type = ''; break;
+                    case 'Person': $type       = 'people'; break;
+                    case 'Ticket': $type       = 'tickets'; break;
+                    default: $type             = ''; break;
                 }
 
                 if ($type) {
-                    foreach (App::getApi('custom_fields.' . $type)->getFields() AS $field) {
-                        $column = new Column(array_merge($partsSoFar, array($association['fieldName'] . "[$field->id]")));
+                    foreach (App::getApi('custom_fields.'.$type)->getFields() as $field) {
+                        $column = new Column(array_merge($partsSoFar, array($association['fieldName']."[$field->id]")));
                         $statement->addPreparedSelectField(
                             $column->prepare($statement, $section, $stack, $select, $result), $field->title
                         );
@@ -233,6 +230,6 @@ class ColumnStar extends AbstractPart
      */
     public function toDpql(Display $statement, $section, array $stack)
     {
-        return implode('.', $this->parts) . '.*';
+        return implode('.', $this->parts).'.*';
     }
 }

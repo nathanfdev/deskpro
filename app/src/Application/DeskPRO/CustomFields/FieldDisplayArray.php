@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\App;
@@ -96,20 +94,19 @@ class FieldDisplayArray implements \ArrayAccess
             } else {
                 $value = array('value' => $default_value);
             }
-
         }
         if (!$field_def->isFormField()) {
             $value = array();
         }
 
         $this->data = array(
-            'elId'            => \Orb\Util\Util::requestUniqueIdString(),
-            'hasValue'        => ($value !== null),
-            'id'              => $field_def->getId(),
-            'name'            => 'field_' . $field_def->getId(),
-            'title'           => $field_def->getTitle(),
-            'value'           => $value,
-            'field_handler'   => strtolower(\Orb\Util\Util::getBaseClassname($field_def->getHandler())),
+            'elId'          => \Orb\Util\Util::requestUniqueIdString(),
+            'hasValue'      => ($value !== null),
+            'id'            => $field_def->getId(),
+            'name'          => 'field_'.$field_def->getId(),
+            'title'         => $field_def->getTitle(),
+            'value'         => $value,
+            'field_handler' => strtolower(\Orb\Util\Util::getBaseClassname($field_def->getHandler())),
         );
     }
 
@@ -141,7 +138,7 @@ class FieldDisplayArray implements \ArrayAccess
                         $field_group->add($f);
                     }
 
-                    $form = $field_group->getForm();
+                    $form     = $field_group->getForm();
                     $formView = $form->createView();
                     $formView = $formView[$this->data['name']];
 
@@ -150,7 +147,7 @@ class FieldDisplayArray implements \ArrayAccess
                         $field_group->remove($f->getName());
                     }
                 } else {
-                    $form = $f->getForm();
+                    $form     = $f->getForm();
                     $formView = $form->createView();
                 }
 
@@ -159,31 +156,29 @@ class FieldDisplayArray implements \ArrayAccess
                 break;
 
             case 'formViewCriteria':
-	            $handler = $this->field_def->getHandler();
+                $handler = $this->field_def->getHandler();
 
                 if ($handler instanceof Choice && !$this->field_def->getOption('multiple')) {
+                    $handler->enableMultiple();
 
-	                $handler->enableMultiple();
+                    $field_group = $this->field_group;
+                    if (!$field_group) {
+                        $field_group = App::get('form.factory')->createNamedBuilder('custom_fields', 'form');
+                    }
 
-	                $field_group = $this->field_group;
-	                if (!$field_group) {
-		                $field_group = App::get('form.factory')->createNamedBuilder('custom_fields', 'form');
-	                }
+                    $f = $handler->getFormField($this->data['value'], true);
 
-	                $f = $handler->getFormField($this->data['value'], true);
+                    if ($field_group) {
+                        if (!$field_group->has($this->data['name'])) {
+                            $field_group->add($f);
+                        }
 
-	                if ($field_group) {
-		                if (!$field_group->has($this->data['name'])) {
-			                $field_group->add($f);
-		                }
-
-		                $form = $field_group->getForm();
-		                $formView = $form->createView();
-		                $formView = $formView[$this->data['name']];
-	                } elseif ($handler instanceof Date) {
-
+                        $form     = $field_group->getForm();
+                        $formView = $form->createView();
+                        $formView = $formView[$this->data['name']];
+                    } elseif ($handler instanceof Date) {
                     } else {
-                        $form = $f->getForm();
+                        $form     = $f->getForm();
                         $formView = $form->createView();
                     }
 
@@ -191,12 +186,12 @@ class FieldDisplayArray implements \ArrayAccess
 
                     $handler->disableMultiple();
                 } elseif ($handler instanceof Date || $handler instanceof DateTime) {
-	                $this->data['form'] = $handler->getSearchCriteriaForm($this->data['value']);
-	                $this->data['formView'] = $this->data['form']->createView();
-	                $this->data['formViewCriteria'] = $this->data['formView'];
+                    $this->data['form']             = $handler->getSearchCriteriaForm($this->data['value']);
+                    $this->data['formView']         = $this->data['form']->createView();
+                    $this->data['formViewCriteria'] = $this->data['formView'];
                 } else {
-	                $this->initValue('formView');
-	                $this->data['formViewCriteria'] = $this->data['formView'];
+                    $this->initValue('formView');
+                    $this->data['formViewCriteria'] = $this->data['formView'];
                 }
                 break;
         }

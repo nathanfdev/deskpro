@@ -1,48 +1,45 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Controller
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Controller
+ */
 namespace Application\DeskPRO\ResourceScanner;
 
-
 /**
- * Scans the filesystem for an array of all templates
+ * Scans the filesystem for an array of all templates.
  */
 class TemplateFiles
 {
     /** @var bool */
     protected $use_map_file = true;
-
 
     /**
      * @param bool $use_map_file
@@ -52,9 +49,8 @@ class TemplateFiles
         $this->use_map_file = $use_map_file;
     }
 
-
     /**
-     * Get the map array
+     * Get the map array.
      *
      * @return array
      */
@@ -71,18 +67,17 @@ class TemplateFiles
         return $map;
     }
 
-
     /**
-     * Scans the filesystem to generate the map on-demand
+     * Scans the filesystem to generate the map on-demand.
      *
      * @return array
      */
     public function genTemplateMap()
     {
         $paths = array(
-            'AgentBundle'   => DP_ROOT.'/src/Application/AgentBundle/Resources/views',
-            'DeskPRO'       => DP_ROOT.'/src/Application/DeskPRO/Resources/views',
-            'UserBundle'    => DP_ROOT.'/src/Application/UserBundle/Resources/views',
+            'AgentBundle' => DP_ROOT.'/src/Application/AgentBundle/Resources/views',
+            'DeskPRO'     => DP_ROOT.'/src/Application/DeskPRO/Resources/views',
+            'UserBundle'  => DP_ROOT.'/src/Application/UserBundle/Resources/views',
         );
 
         $tpl_info = array();
@@ -92,18 +87,18 @@ class TemplateFiles
             $finder->files()->name('*.twig')->in($dir);
 
             foreach ($finder as $file) {
-                /** @var \Symfony\Component\Finder\SplFileinfo $file */
+                /* @var \Symfony\Component\Finder\SplFileinfo $file */
 
                 $filepath = $file->getRealPath();
                 $filepath = str_replace('\\', '/', $filepath);
-                $dir = str_replace('\\', '/', $dir);
+                $dir      = str_replace('\\', '/', $dir);
 
-                $tplname = str_replace($dir . '/', ':', $filepath);
+                $tplname = str_replace($dir.'/', ':', $filepath);
                 $tplname = str_replace('/', ':', $tplname);
                 if (substr_count($tplname, ':') < 2) {
-                    $tplname = ':' . $tplname; // for layouts that are in top dir, MyBundle::layout
+                    $tplname = ':'.$tplname; // for layouts that are in top dir, MyBundle::layout
                 }
-                $tplname = $bundle . $tplname;
+                $tplname = $bundle.$tplname;
 
                 // Dev templates arent included
                 if (strpos($tplname, ':Dev:') !== false) {
@@ -111,7 +106,7 @@ class TemplateFiles
                 }
 
                 $tpl_info[$tplname] = array(
-                    'path' => $file->getRealPath(),
+                    'path'         => $file->getRealPath(),
                     'last_updated' => 0,
                 );
             }
@@ -119,7 +114,6 @@ class TemplateFiles
 
         return $tpl_info;
     }
-
 
     /**
      * Templates that should be categorized as "user portal" type templates.
@@ -139,9 +133,8 @@ class TemplateFiles
         return $map;
     }
 
-
     /**
-     * Non-user portal templates
+     * Non-user portal templates.
      */
     public function getEmailTemplates()
     {
@@ -158,9 +151,8 @@ class TemplateFiles
         return $map;
     }
 
-
     /**
-     * Email templates
+     * Email templates.
      */
     public function getOtherTemplates()
     {
@@ -177,11 +169,11 @@ class TemplateFiles
         return $map;
     }
 
-
     /**
-     * Group the map into [bundle][dir][tplname]
+     * Group the map into [bundle][dir][tplname].
      *
-     * @param  array $map
+     * @param array $map
+     *
      * @return array
      */
     public function groupPrefixes(array $map)
@@ -190,25 +182,29 @@ class TemplateFiles
         foreach ($map as $k => $v) {
             preg_match('#^(.*?):(.*?):(.*?)$#', $k, $m);
             $bundle = $m[1];
-            $dir = $m[2];
+            $dir    = $m[2];
             if ($dir) {
                 $dir = 'TOP';
             }
 
-            if (!isset($grouped[$bundle])) $grouped[$bundle] = array();
-            if (!isset($grouped[$bundle][$dir])) $grouped[$bundle][$dir] = array();
+            if (!isset($grouped[$bundle])) {
+                $grouped[$bundle] = array();
+            }
+            if (!isset($grouped[$bundle][$dir])) {
+                $grouped[$bundle][$dir] = array();
+            }
 
-            $grouped[$bundle][$dir][$k] = $v;
+            $grouped[$bundle][$dir][$k]              = $v;
             $grouped[$bundle][$dir][$k]['shortname'] = str_replace('.twig', '', $m[3]);
         }
 
         return $grouped;
     }
 
-
     /**
-     * @param  array $map
-     * @param  array $custom_templates
+     * @param array $map
+     * @param array $custom_templates
+     *
      * @return array
      */
     public function groupMap(array $map, array $custom_templates)
@@ -218,28 +214,32 @@ class TemplateFiles
         foreach ($map as $k => $v) {
             preg_match('#^(.*?):(.*?):(.*?)$#', $k, $m);
             $bundle = $m[1];
-            $dir = $m[2];
+            $dir    = $m[2];
             if (!$dir) {
                 $dir = 'TOP';
             }
 
-            if (!isset($grouped[$bundle])) $grouped[$bundle] = array();
-            if (!isset($grouped[$bundle][$dir])) $grouped[$bundle][$dir] = array('count_changed' => 0, 'count_outdated' => 0, 'templates' => array());
+            if (!isset($grouped[$bundle])) {
+                $grouped[$bundle] = array();
+            }
+            if (!isset($grouped[$bundle][$dir])) {
+                $grouped[$bundle][$dir] = array('count_changed' => 0, 'count_outdated' => 0, 'templates' => array());
+            }
 
-            $v['name'] = $k;
+            $v['name']      = $k;
             $v['shortname'] = str_replace('.twig', '', $m[3]);
 
             if (isset($custom_templates[$k])) {
                 $v['is_custom'] = true;
-                $grouped[$bundle][$dir]['count_changed']++;
+                ++$grouped[$bundle][$dir]['count_changed'];
 
                 $time = strtotime($custom_templates[$k]['date_updated']);
                 if ($time < $v['last_updated']) {
-                    $grouped[$bundle][$dir]['count_outdated']++;
+                    ++$grouped[$bundle][$dir]['count_outdated'];
                     $v['is_outdated'] = true;
                 }
             } else {
-                $v['is_custom'] = false;
+                $v['is_custom']   = false;
                 $v['is_outdated'] = false;
             }
 

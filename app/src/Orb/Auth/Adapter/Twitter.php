@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @category Auth
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ *
+ * @category Auth
+ */
 namespace Orb\Auth\Adapter;
 
 use Orb\Auth\Result;
@@ -57,10 +56,9 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
      */
     public function __construct($consumer_key, $consumer_secret)
     {
-        $this->consumer_key = $consumer_key;
+        $this->consumer_key    = $consumer_key;
         $this->consumer_secret = $consumer_secret;
     }
-
 
     /**
      * @param \Orb\Log\Logger $logger
@@ -70,7 +68,6 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
         $this->logger = $logger;
     }
 
-
     /**
      * @return \Orb\Log\Logger
      */
@@ -78,7 +75,6 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
     {
         return $this->logger;
     }
-
 
     /**
      * Initialize the auth process by setting state, and returning a redirect result.
@@ -113,8 +109,6 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
         return $result;
     }
 
-
-
     /**
      * Process the callback and return a final result.
      *
@@ -126,7 +120,7 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
 
         if (!isset($state['orb_oauth_twitter_rtoken'])) {
             if ($this->logger) {
-                $this->logger->log("[Twitter] authenticateCallback fail: Missing token", 'DEBUG');
+                $this->logger->log('[Twitter] authenticateCallback fail: Missing token', 'DEBUG');
             }
 
             return new Result(Result::FAILURE, null, array('error_code' => 'invalid_token', 'error_message' => 'Invalid verify token'));
@@ -151,9 +145,9 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
 
         $account_data = @json_decode($response->getBody(), true);
 
-        if (!$account_data OR !isset($account_data['id'])) {
+        if (!$account_data or !isset($account_data['id'])) {
             if ($this->logger) {
-                $this->logger->log("[Twitter] authenticateCallback failed_verify_credentials", 'DEBUG');
+                $this->logger->log('[Twitter] authenticateCallback failed_verify_credentials', 'DEBUG');
             }
 
             return new Result(Result::FAILURE, null, array('error_code' => 'failed_verify_credentials', 'error_message' => 'Failed to call API service to verify credentials'));
@@ -190,9 +184,9 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
         static $has_set_http_client = false;
         if (!$has_set_http_client) {
             $has_set_http_client = true;
-            $httpClient = new \Zend\Http\Client(null, array(
-                'adapter' => 'Zend\Http\Client\Adapter\Socket',
-                'sslverifypeer' => false
+            $httpClient          = new \Zend\Http\Client(null, array(
+                'adapter'       => 'Zend\Http\Client\Adapter\Socket',
+                'sslverifypeer' => false,
             ));
             OAuth::setHttpClient($httpClient);
         }
@@ -206,8 +200,7 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
             'callbackUrl'    => $this->getCallbackUrl(),
             'siteUrl'        => 'https://api.twitter.com/oauth',
             'consumerKey'    => $this->consumer_key,
-            'consumerSecret' => $this->consumer_secret
+            'consumerSecret' => $this->consumer_secret,
         );
     }
-
 }

@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage UserBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\UserBundle\Controller\Helper;
 
 use Application\DeskPRO\App;
@@ -88,17 +85,15 @@ class ContentRating
      */
     public function __construct(ContentAbstract $content_object, Person $person, Visitor $visitor = null)
     {
-        $this->person = $person;
-        $this->visitor = $visitor;
+        $this->person         = $person;
+        $this->visitor        = $visitor;
         $this->content_object = $content_object;
 
         $this->em = App::getOrm();
     }
 
-
     /**
-     * @param  \Symfony\Component\HttpFoundation\Request $request
-     * @return void
+     * @param \Symfony\Component\HttpFoundation\Request $request
      */
     public function setRequest(Request $request)
     {
@@ -106,17 +101,19 @@ class ContentRating
         $this->session = $request->getSession();
     }
 
-
     /**
-     * Get this users existing rating
+     * Get this users existing rating.
      *
      * @return \Application\DeskPRO\Entity\Rating
      */
     public function getRating()
     {
         if ($this->rating !== null) {
-            if ($this->rating) return null;
-            else return null;
+            if ($this->rating) {
+                return;
+            } else {
+                return;
+            }
         }
 
         $em = App::getOrm();
@@ -124,67 +121,66 @@ class ContentRating
         $res = null;
         if ($this->person) {
             if ($this->visitor) {
-                $res = $em->createQuery("
+                $res = $em->createQuery('
                     SELECT r
                     FROM DeskPRO:Rating r
                     WHERE
                         r.object_type = ?1 AND r.object_id = ?2
                         AND (r.visitor = ?3 OR r.person = ?4)
-                ")->setParameter(1, $this->content_object->getContentType())
+                ')->setParameter(1, $this->content_object->getContentType())
                   ->setParameter(2, $this->content_object->getId())
                   ->setParameter(3, $this->visitor)
                   ->setParameter(4, $this->person)
                   ->execute();
             } else {
-                $res = $em->createQuery("
+                $res = $em->createQuery('
                     SELECT r
                     FROM DeskPRO:Rating r
                     WHERE
                         r.object_type = ?1 AND r.object_id = ?2
                         AND (r.person = ?3)
-                ")->setParameter(1, $this->content_object->getContentType())
+                ')->setParameter(1, $this->content_object->getContentType())
                   ->setParameter(2, $this->content_object->getId())
-                  ->setParameter(3,$this->person)
+                  ->setParameter(3, $this->person)
                   ->execute();
             }
         } elseif ($this->visitor) {
-            $res = $em->createQuery("
+            $res = $em->createQuery('
                 SELECT r
                 FROM DeskPRO:Rating r
                 WHERE
                     r.object_type = ?1 AND r.object_id = ?2
                     AND r.visitor = ?3
-            ")->setParameter(1, $this->content_object->getContentType())
+            ')->setParameter(1, $this->content_object->getContentType())
               ->setParameter(2, $this->content_object->getId())
               ->setParameter(3, $this->visitor)
               ->execute();
         }
 
-        if ($res AND count($res)) {
+        if ($res and count($res)) {
             $this->rating = $res[0];
 
             return $this->rating;
         } else {
             $this->rating = false;
 
-            return null;
+            return;
         }
     }
 
-
     /**
-     * Get a search log ID that sholud be recorded if the user were to vote on the next page
+     * Get a search log ID that sholud be recorded if the user were to vote on the next page.
      *
      * @return int
      */
     public function getSearchLogId()
     {
-        if ($this->request AND $this->session AND $this->session->has('last_searchlog_id')) {
-            $ref = $this->request->server->get('HTTP_REFERER');
-            $search_url = App::getRouter()->generate('user', array(), true) . 'search';
+        if ($this->request and $this->session and $this->session->has('last_searchlog_id')) {
+            $ref        = $this->request->server->get('HTTP_REFERER');
+            $search_url = App::getRouter()->generate('user', array(), true).'search';
             $search_url = preg_replace('#^https?://#', '', $search_url);
 
-            if ($ref && preg_match('#' . preg_quote($search_url, '#') . '(\?.*?)?$#', $ref)) {
+            if ($ref && preg_match('#'.preg_quote($search_url, '#').'(\?.*?)?$#', $ref)) {
                 $searchlog = App::findEntity('DeskPRO:SearchLog', $this->session->has('last_searchlog_id'));
                 if ($searchlog->visitor && $this->visitor && $searchlog->visitor == $this->visitor) {
                     return $searchlog['id'];
@@ -195,17 +191,17 @@ class ContentRating
         return 0;
     }
 
-
     /**
-     * Set the user rating on this
+     * Set the user rating on this.
      *
      * @param $user_rating
+     *
      * @return \Application\DeskPRO\Entity\Rating|
      */
     public function setRating($user_rating, $search_log_id = 0)
     {
         if (!$user_rating) {
-            return null;
+            return;
         }
 
         $rating = $this->getRating();
@@ -223,7 +219,7 @@ class ContentRating
             }
         } else {
             if ($this->session->get('from_search')) {
-                $searchlog = App::findEntity('DeskPRO:SearchLog', $this->session->get('last_searchlog_id'));
+                $searchlog         = App::findEntity('DeskPRO:SearchLog', $this->session->get('last_searchlog_id'));
                 $rating->searchlog = $searchlog;
 
                 $this->session->remove('from_search');

@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage ApiBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -40,7 +37,6 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Searcher\FeedbackSearch;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-
 
 /**
  * @SWG\Resource(
@@ -116,16 +112,16 @@ class FeedbackController extends AbstractController
     public function searchAction()
     {
         $search_map = array(
-            'category_id' => FeedbackSearch::TERM_CATEGORY,
+            'category_id'          => FeedbackSearch::TERM_CATEGORY,
             'category_id_specific' => FeedbackSearch::TERM_CATEGORY_SPECIFIC,
-            'label' => FeedbackSearch::TERM_LABEL,
-            'status' => FeedbackSearch::TERM_STATUS,
-            'status_category_id' => FeedbackSearch::TERM_STATUS_CATEGORY
+            'label'                => FeedbackSearch::TERM_LABEL,
+            'status'               => FeedbackSearch::TERM_STATUS,
+            'status_category_id'   => FeedbackSearch::TERM_STATUS_CATEGORY,
         );
 
         $terms = array();
 
-        foreach ($search_map AS $input => $search_key) {
+        foreach ($search_map as $input => $search_key) {
             $value = $this->in->getCleanValueArray($input, 'raw', 'discard');
             if ($value) {
                 $terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
@@ -133,15 +129,15 @@ class FeedbackController extends AbstractController
         }
 
         $date_created_start = $this->in->getUint('date_created_start');
-        $date_created_end = $this->in->getUint('date_created_end');
+        $date_created_end   = $this->in->getUint('date_created_end');
         if ($date_created_end) {
             $terms[] = array('type' => FeedbackSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1' => $date_created_start,
-                'date2' => $date_created_end
+                'date1'             => $date_created_start,
+                'date2'             => $date_created_end,
             ));
         } elseif ($date_created_start) {
             $terms[] = array('type' => FeedbackSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1' => $date_created_start
+                'date1'             => $date_created_start,
             ));
         }
 
@@ -158,7 +154,9 @@ class FeedbackController extends AbstractController
         $result_cache = $this->getApiSearchResult('feedback', $terms, $extra, $this->in->getUint('cache_id'), new FeedbackSearch());
 
         $page = $this->in->getUint('page');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = 1;
+        }
 
         $per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
@@ -168,11 +166,11 @@ class FeedbackController extends AbstractController
         $feedback = App::getEntityRepository('DeskPRO:Feedback')->getByIds($page_ids, true);
 
         return $this->createApiResponse(array(
-            'page' => $page,
+            'page'     => $page,
             'per_page' => $per_page,
-            'total' => count($ids),
+            'total'    => count($ids),
             'cache_id' => $result_cache->id,
-            'feedback' => $this->getApiData($feedback)
+            'feedback' => $this->getApiData($feedback),
         ));
     }
 
@@ -238,7 +236,7 @@ class FeedbackController extends AbstractController
      */
     public function newFeedbackAction()
     {
-        $errors = array();
+        $errors   = array();
         $feedback = new Feedback();
 
         $title = $this->in->getString('title');
@@ -257,7 +255,7 @@ class FeedbackController extends AbstractController
 
         $status_cat = $this->em->find('DeskPRO:FeedbackStatusCategory', $this->in->getUint('status_category_id'));
         if ($status_cat) {
-            $feedback->setStatusCode($status_cat->status_type . '.' . $status_cat->id);
+            $feedback->setStatusCode($status_cat->status_type.'.'.$status_cat->id);
         } else {
             $status = $this->in->getString('status');
             if (!$status) {
@@ -290,9 +288,9 @@ class FeedbackController extends AbstractController
 
         $user_category_id = $this->in->getUint('user_category_id');
         if ($user_category_id) {
-            $field = $this->_getUserCategoryField();
+            $field         = $this->_getUserCategoryField();
             $field_manager = $this->container->getSystemService('feedback_fields_manager');
-            $field_manager->saveFormToObject(array('field_' . $field->id => $user_category_id), $feedback, true);
+            $field_manager->saveFormToObject(array('field_'.$field->id => $user_category_id), $feedback, true);
         }
 
         return $this->createApiCreateResponse(
@@ -407,7 +405,7 @@ class FeedbackController extends AbstractController
         if ($title) {
             $feedback->title = $title;
 
-            $rev = ContentRevisionUtil::findOrCreate($feedback, 'title', $this->person);
+            $rev        = ContentRevisionUtil::findOrCreate($feedback, 'title', $this->person);
             $rev->title = $feedback->title;
 
             $revs['title'] = $rev;
@@ -417,7 +415,7 @@ class FeedbackController extends AbstractController
         if ($content && $content != $feedback->content) {
             $feedback->content = $this->in->getHtml('content');
 
-            $rev = ContentRevisionUtil::findOrCreate($feedback, array('content'), $this->person);
+            $rev          = ContentRevisionUtil::findOrCreate($feedback, array('content'), $this->person);
             $rev->content = $feedback->content;
 
             $revs['content'] = $rev;
@@ -435,7 +433,7 @@ class FeedbackController extends AbstractController
         if ($status_category_id) {
             $status_cat = $this->em->find('DeskPRO:FeedbackStatusCategory', $this->in->getUint('status_category_id'));
             if ($status_cat) {
-                $feedback->setStatusCode($status_cat->status_type . '.' . $status_cat->id);
+                $feedback->setStatusCode($status_cat->status_type.'.'.$status_cat->id);
             }
         } else {
             $status = $this->in->getString('status');
@@ -446,7 +444,7 @@ class FeedbackController extends AbstractController
 
         $this->_insertFeedbackAttachments($feedback);
 
-        foreach ($revs AS $rev) {
+        foreach ($revs as $rev) {
             $this->em->persist($rev);
         }
         $this->em->persist($feedback);
@@ -454,9 +452,9 @@ class FeedbackController extends AbstractController
 
         $user_category_id = $this->in->getUint('user_category_id');
         if ($user_category_id) {
-            $field = $this->_getUserCategoryField();
+            $field         = $this->_getUserCategoryField();
             $field_manager = $this->container->getSystemService('feedback_fields_manager');
-            $field_manager->saveFormToObject(array('field_' . $field->id => $user_category_id), $feedback, true);
+            $field_manager->saveFormToObject(array('field_'.$field->id => $user_category_id), $feedback, true);
         }
 
         return $this->createSuccessResponse();
@@ -515,7 +513,7 @@ class FeedbackController extends AbstractController
     public function getFeedbackVotesAction($feedback_id)
     {
         $feedback = $this->_getFeedbackOr404($feedback_id);
-        $votes = App::getEntityRepository('DeskPRO:Rating')->getRatingsFor('feedback', $feedback->id);
+        $votes    = App::getEntityRepository('DeskPRO:Rating')->getRatingsFor('feedback', $feedback->id);
 
         return $this->createApiResponse(array('votes' => $this->getApiData($votes)));
     }
@@ -599,20 +597,20 @@ class FeedbackController extends AbstractController
         }
 
         $person_id = $this->in->getUint('person_id');
-        $person = null;
+        $person    = null;
         if ($person_id) {
             $person = $this->em->getRepository('DeskPRO:Person')->find($person_id);
         }
 
         $status = $this->in->getString('status');
 
-        $comment = new \Application\DeskPRO\Entity\FeedbackComment();
-        $comment->feedback = $feedback;
-        $comment->person = $person ?: $this->person;
-        $comment['content'] = $content;
-        $comment['status'] = $status ?: 'visible';
-        $comment['is_reviewed'] = ($comment['status'] == 'visible' && !$person);
-        $comment['date_created']  = new \DateTime();
+        $comment                 = new \Application\DeskPRO\Entity\FeedbackComment();
+        $comment->feedback       = $feedback;
+        $comment->person         = $person ?: $this->person;
+        $comment['content']      = $content;
+        $comment['status']       = $status ?: 'visible';
+        $comment['is_reviewed']  = ($comment['status'] == 'visible' && !$person);
+        $comment['date_created'] = new \DateTime();
 
         $this->em->persist($comment);
         $this->em->flush();
@@ -653,7 +651,7 @@ class FeedbackController extends AbstractController
     public function getFeedbackCommentAction($feedback_id, $comment_id)
     {
         $feedback = $this->_getFeedbackOr404($feedback_id);
-        $comment = $this->em->getRepository('DeskPRO:FeedbackComment')->find($comment_id);
+        $comment  = $this->em->getRepository('DeskPRO:FeedbackComment')->find($comment_id);
         if (!$comment || $comment->feedback->id != $feedback->id) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
@@ -704,15 +702,15 @@ class FeedbackController extends AbstractController
     public function postFeedbackCommentAction($feedback_id, $comment_id)
     {
         $feedback = $this->_getFeedbackOr404($feedback_id);
-        $comment = $this->em->getRepository('DeskPRO:FeedbackComment')->find($comment_id);
+        $comment  = $this->em->getRepository('DeskPRO:FeedbackComment')->find($comment_id);
         if (!$comment || $comment->feedback->id != $feedback->id) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
         $approved = false;
-        $status = $this->in->getString('status');
+        $status   = $this->in->getString('status');
         if ($status) {
-            $approved = ($status == 'visible' && $comment->status != 'visible');
+            $approved        = ($status == 'visible' && $comment->status != 'visible');
             $comment->status = $status;
         }
 
@@ -761,7 +759,7 @@ class FeedbackController extends AbstractController
     public function deleteFeedbackCommentAction($feedback_id, $comment_id)
     {
         $feedback = $this->_getFeedbackOr404($feedback_id);
-        $comment = $this->em->getRepository('DeskPRO:FeedbackComment')->find($comment_id);
+        $comment  = $this->em->getRepository('DeskPRO:FeedbackComment')->find($comment_id);
         if (!$comment || $comment->feedback->id != $feedback->id) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
@@ -802,7 +800,7 @@ class FeedbackController extends AbstractController
      */
     public function mergeFeedbackAction($feedback_id, $other_feedback_id)
     {
-        $feedback = $this->_getFeedbackOr404($feedback_id, 'edit');
+        $feedback       = $this->_getFeedbackOr404($feedback_id, 'edit');
         $other_feedback = $this->_getFeedbackOr404($other_feedback_id, 'edit');
 
         if (!$this->person->PermissionsManager->PublishChecker->canEdit($feedback)
@@ -903,13 +901,13 @@ class FeedbackController extends AbstractController
             if (!$error) {
                 $blob = $accept->accept($file);
             } else {
-                $message = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+                $message = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
 
                 return $this->createApiErrorResponse($error['error_code'], $message);
             }
         } else {
             $blob_id = $this->in->getUint('attach_id');
-            $blob = $this->em->find('DeskPRO:Blob', $blob_id);
+            $blob    = $this->em->find('DeskPRO:Blob', $blob_id);
             if (!$blob) {
                 return $this->createApiErrorResponse('invalid_argument.attach_id', 'attach_id not found');
             }
@@ -955,8 +953,8 @@ class FeedbackController extends AbstractController
     public function getFeedbackAttachmentAction($feedback_id, $attachment_id)
     {
         $feedback = $this->_getFeedbackOr404($feedback_id);
-        $exists = false;
-        foreach ($feedback->attachments AS $attachment) {
+        $exists   = false;
+        foreach ($feedback->attachments as $attachment) {
             if ($attachment->id == $attachment_id) {
                 $exists = true;
                 break;
@@ -996,7 +994,7 @@ class FeedbackController extends AbstractController
     public function deleteFeedbackAttachmentAction($feedback_id, $attachment_id)
     {
         $feedback = $this->_getFeedbackOr404($feedback_id);
-        foreach ($feedback->attachments AS $k => $attachment) {
+        foreach ($feedback->attachments as $k => $attachment) {
             if ($attachment->id == $attachment_id) {
                 $feedback->attachments->remove($k);
                 $this->em->remove($attachment);
@@ -1067,7 +1065,7 @@ class FeedbackController extends AbstractController
     public function postFeedbackLabelsAction($feedback_id)
     {
         $feedback = $this->_getFeedbackOr404($feedback_id, 'edit');
-        $label = $this->in->getString('label');
+        $label    = $this->in->getString('label');
 
         if ($label === '') {
             return $this->createApiErrorResponse('required_field', "Field 'label' missing or empty");
@@ -1168,10 +1166,10 @@ class FeedbackController extends AbstractController
      */
     public function getValidatingCommentsAction()
     {
-        $comments = $this->em->getRepository('DeskPRO:FeedbackComment')->getValidatingComments();
+        $comments   = $this->em->getRepository('DeskPRO:FeedbackComment')->getValidatingComments();
         $entity_key = 'feedback';
-        $output = array();
-        foreach ($comments AS $key => $value) {
+        $output     = array();
+        foreach ($comments as $key => $value) {
             $output[$key] = $value->toApiData(false, true);
             if ($value->$entity_key) {
                 $output[$key][$entity_key] = $value->$entity_key->toApiData(false, false);
@@ -1224,7 +1222,7 @@ class FeedbackController extends AbstractController
      */
     public function getUserCategoriesAction()
     {
-        $field = $this->_getUserCategoryField();
+        $field    = $this->_getUserCategoryField();
         $children = $field->getAllChildren();
 
         return $this->createApiResponse(array('categories' => $this->getApiData($children)));
@@ -1238,7 +1236,7 @@ class FeedbackController extends AbstractController
         }
         $accept = $this->container->getAttachmentAccepter();
 
-        foreach ($attachments AS $file) {
+        foreach ($attachments as $file) {
             $error = $accept->getError($file, 'agent');
             if (!$error) {
                 $blob = $accept->accept($file);
@@ -1260,8 +1258,8 @@ class FeedbackController extends AbstractController
         }
 
         if ($blob) {
-            $attach = new \Application\DeskPRO\Entity\FeedbackAttachment();
-            $attach['blob'] = $blob;
+            $attach           = new \Application\DeskPRO\Entity\FeedbackAttachment();
+            $attach['blob']   = $blob;
             $attach['person'] = $this->person;
 
             $feedback->addAttachment($attach);
@@ -1280,11 +1278,11 @@ class FeedbackController extends AbstractController
         $field = $this->container->getDataService('CustomDefFeedback')->getCategoryField();
 
         if (!$field) {
-            $field = new \Application\DeskPRO\Entity\CustomDefFeedback();
+            $field                = new \Application\DeskPRO\Entity\CustomDefFeedback();
             $field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice';
-            $field->title = 'Category';
-            $field->sys_name = 'cat';
-            $field->description = 'Category';
+            $field->title         = 'Category';
+            $field->sys_name      = 'cat';
+            $field->description   = 'Category';
             $this->em->persist($field);
             $this->em->flush();
         }
@@ -1293,9 +1291,11 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @param  integer                                                       $id
-     * @return \Application\DeskPRO\Entity\Feedback
+     * @param int $id
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @return \Application\DeskPRO\Entity\Feedback
+     *
      */
     protected function _getFeedbackOr404($id, $check_perm = false)
     {

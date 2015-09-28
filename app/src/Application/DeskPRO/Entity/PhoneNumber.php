@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -68,28 +67,28 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
     protected $person;
 
     /**
-     * The number, stored in E.164 string format, ie. +19021111111
+     * The number, stored in E.164 string format, ie. +19021111111.
      *
      * @var string
      */
     protected $number;
 
     /**
-     * A human-defined (optional) label to describe what this phone number is
+     * A human-defined (optional) label to describe what this phone number is.
      *
      * @var string
      */
     protected $label;
 
     /**
-     * An extension for the number - optional
+     * An extension for the number - optional.
      *
      * @var string
      */
     protected $ext;
 
     /**
-     * The ISO 3166-1 country/region code of the phone number (2 char)
+     * The ISO 3166-1 country/region code of the phone number (2 char).
      *
      * @var string
      */
@@ -123,26 +122,27 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @param $phone_number
+     *
      * @return PhoneNumber
      */
     public static function createEntity($phone_number)
     {
         try {
             if (!PhoneNumbers::isValid($phone_number)) {
-                return null;
+                return;
             }
 
-            $num = PhoneNumbers::parseNum($phone_number);
+            $num    = PhoneNumbers::parseNum($phone_number);
             $region = PhoneNumbers::getRegionForNumber($num);
-            $type = PhoneNumbers::getType($num);
+            $type   = PhoneNumbers::getType($num);
 
             if (empty($num) || empty($region) || empty($type)) {
-                return null;
+                return;
             }
 
             return new static($num, $region, $type);
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 
@@ -159,7 +159,7 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
         $num = $this->getNumberFormatted();
 
         if ($ext = $this->ext) {
-            $num .= ' ext . ' . $this->ext;
+            $num .= ' ext . '.$this->ext;
         }
 
         return $num;
@@ -179,7 +179,7 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
         $number = (string) $this->getPhoneNumber();
 
         if ($ext = $this->ext) {
-            $number .= ';ext=' . $ext;
+            $number .= ';ext='.$ext;
         }
 
         return $number;
@@ -210,7 +210,7 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
         try {
             return $phone_util->parse($this->number, null);
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 
@@ -229,40 +229,40 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PhoneNumber';
 
-        $metadata->setPrimaryTable(array( 'name'    => 'phone_numbers',
-                                          'indexes' => array( 'phone_number_idx' => array( 'columns' => array( 'number' ) ), ), ));
+        $metadata->setPrimaryTable(array('name'     => 'phone_numbers',
+                                          'indexes' => array('phone_number_idx' => array('columns' => array('number'))), ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0,
-                                   'nullable'  => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0,
+                                   'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 
-        $metadata->mapField(array( 'fieldName' => 'number', 'type' => 'string', 'length' => 30, 'precision' => 0,
-                                   'scale'     => 0, 'nullable' => false, 'columnName' => 'number', ));
+        $metadata->mapField(array('fieldName' => 'number', 'type' => 'string', 'length' => 30, 'precision' => 0,
+                                   'scale'    => 0, 'nullable' => false, 'columnName' => 'number', ));
 
-        $metadata->mapField(array( 'fieldName' => 'ext', 'type' => 'string', 'length' => 30, 'precision' => 0,
-                                   'scale'     => 0, 'nullable' => true, 'columnName' => 'ext', ));
+        $metadata->mapField(array('fieldName' => 'ext', 'type' => 'string', 'length' => 30, 'precision' => 0,
+                                   'scale'    => 0, 'nullable' => true, 'columnName' => 'ext', ));
 
-        $metadata->mapField(array( 'fieldName' => 'label', 'type' => 'string', 'length' => 100, 'precision' => 0,
-                                   'scale'     => 0, 'nullable' => true, 'columnName' => 'label', ));
+        $metadata->mapField(array('fieldName' => 'label', 'type' => 'string', 'length' => 100, 'precision' => 0,
+                                   'scale'    => 0, 'nullable' => true, 'columnName' => 'label', ));
 
-        $metadata->mapField(array( 'fieldName' => 'region', 'type' => 'string', 'length' => 2, 'precision' => 0,
-                                   'scale'     => 0, 'nullable' => false, 'columnName' => 'region', ));
+        $metadata->mapField(array('fieldName' => 'region', 'type' => 'string', 'length' => 2, 'precision' => 0,
+                                   'scale'    => 0, 'nullable' => false, 'columnName' => 'region', ));
 
-        $metadata->mapField(array( 'fieldName' => 'guessed_type', 'type' => 'integer', 'precision' => 10,
-                                   'scale'     => 0, 'nullable' => false, 'columnName' => 'guessed_type', ));
+        $metadata->mapField(array('fieldName' => 'guessed_type', 'type' => 'integer', 'precision' => 10,
+                                   'scale'    => 0, 'nullable' => false, 'columnName' => 'guessed_type', ));
 
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0,
-                                   'nullable'  => false, 'columnName' => 'date_created', ));
+        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0,
+                                   'nullable' => false, 'columnName' => 'date_created', ));
 
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName'    => 'person',
+        $metadata->mapManyToOne(array('fieldName'     => 'person',
                                        'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null,
                                        'inversedBy'   => 'phone_numbers',
                                         'cascade'     => array('persist'),
-                                       'joinColumns'  => array( 0 => array( 'name'                 => 'person_id',
+                                       'joinColumns'  => array(0 => array('name'                   => 'person_id',
                                                                             'referencedColumnName' => 'id',
                                                                             'nullable'             => true,
                                                                             'onDelete'             => 'cascade',
-                                                                            'columnDefinition'     => null, ), ), ));
+                                                                            'columnDefinition'     => null, )), ));
     }
 }

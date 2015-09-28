@@ -1,4 +1,6 @@
-<?php if (!defined('DP_ROOT')) exit('No access'); ?>
+<?php if (!defined('DP_ROOT')) {
+    exit('No access');
+} ?>
 <?php $view->extend('InstallBundle:Install:layout.html.php') ?>
 <?php $view['slots']->start('subtitle') ?>DeskPRO v3 Detected<?php $view['slots']->stop() ?>
 <fieldset>

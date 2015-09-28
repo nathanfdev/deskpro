@@ -1,42 +1,38 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @subpackage Mail
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ */
 namespace Orb\Mail\QueueProcessor;
 
-
 /**
- * Stores messages in the filesystem
+ * Stores messages in the filesystem.
  */
 class Filesystem implements QueueProcessorInterface
 {
@@ -47,17 +43,15 @@ class Filesystem implements QueueProcessorInterface
     {
         $path = rtrim($path, '/\\');
 
-        if (!is_dir($path) OR !is_writable($path)) {
+        if (!is_dir($path) or !is_writable($path)) {
             throw new \InvalidArgumentException('$path is not writable');
         }
 
         $this->filepath = $path;
     }
 
-
-
     /**
-     * Process queues
+     * Process queues.
      *
      * @return Message
      */
@@ -66,14 +60,13 @@ class Filesystem implements QueueProcessorInterface
         $files = scandir($this->filepath);
 
         foreach ($files as $file) {
-
-            if (!($message = unserialize(file_get_contents($this->filepath . DIRECTORY_SEPARATOR . $file)))) {
+            if (!($message = unserialize(file_get_contents($this->filepath.DIRECTORY_SEPARATOR.$file)))) {
                 throw new \RuntimeException('Failed to read or unserialize message');
             }
 
             $ret = call_user_func($callback, $message);
             if ($ret & self::PROCESS_SUCCESS) {
-                if (!unlink($this->filepath . DIRECTORY_SEPARATOR . $file)) {
+                if (!unlink($this->filepath.DIRECTORY_SEPARATOR.$file)) {
                     throw new \RuntimeException('Failed to remove old message file');
                 }
             }
@@ -84,19 +77,17 @@ class Filesystem implements QueueProcessorInterface
         }
     }
 
-
-
     /**
-     * Add a message to the queue
+     * Add a message to the queue.
      *
      * @param Orb\Mail\Message $message
      */
     public function addQueuedMessage(\Orb\Mail\Message $message)
     {
-        $name = time() . '_' . preg_replace('#[^a-zA-Z0-9]#', '-', $message->getSubject()) . '.dat';
+        $name = time().'_'.preg_replace('#[^a-zA-Z0-9]#', '-', $message->getSubject()).'.dat';
         $name = preg_replace('#-{,2}#', '-', $name);
 
-        $path = $this->filepath . DIRECTORY_SEPARATOR . $name;
+        $path = $this->filepath.DIRECTORY_SEPARATOR.$name;
 
         if (!file_put_contents($path, serialize($message))) {
             return false;
@@ -106,12 +97,16 @@ class Filesystem implements QueueProcessorInterface
     }
 
     /**
-     * Start the queue system
+     * Start the queue system.
      */
-    public function startQueue() {}
+    public function startQueue()
+    {
+    }
 
     /**
-     * Shutdown the queue system
+     * Shutdown the queue system.
      */
-    public function shutdownQueue() {}
+    public function shutdownQueue()
+    {
+    }
 }

@@ -1,44 +1,41 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
 use Doctrine\DBAL\Connection;
 
 /**
- * Archives old tickets
+ * Archives old tickets.
  */
 class ArchiveTickets extends AbstractJob
 {
@@ -51,7 +48,7 @@ class ArchiveTickets extends AbstractJob
         }
 
         $datecut = date('Y-m-d H:i:s', time() - App::getSetting('core_tickets.auto_archive_time'));
-        $now = date('Y-m-d H:i:s');
+        $now     = date('Y-m-d H:i:s');
 
         $ticket_ids = App::getDb()->fetchAllCol("
             SELECT id FROM tickets_search_active
@@ -59,12 +56,12 @@ class ArchiveTickets extends AbstractJob
             LIMIT 3000
         ", array($datecut));
 
-        $count = count($ticket_ids);
+        $count      = count($ticket_ids);
         $ticket_ids = array_chunk($ticket_ids, 500, false);
 
         $details_arr = serialize(array(
             'old_status' => 'resolved',
-            'new_status' => 'archived'
+            'new_status' => 'archived',
         ));
 
         foreach ($ticket_ids as $ids) {
@@ -88,7 +85,7 @@ class ArchiveTickets extends AbstractJob
                     'id_before'    => 200,
                     'id_after'     => 210,
                     'details'      => $details_arr,
-                    'date_created' => $now
+                    'date_created' => $now,
                 );
             }
 
@@ -100,10 +97,10 @@ class ArchiveTickets extends AbstractJob
 
             App::getDb()->batchInsert('tickets_logs', $batch);
 
-            App::getDb()->executeUpdate("
+            App::getDb()->executeUpdate('
                 DELETE FROM tickets_search_active
                 WHERE id IN (?)
-            ", array($ids), array(Connection::PARAM_INT_ARRAY));
+            ', array($ids), array(Connection::PARAM_INT_ARRAY));
         }
 
         if ($count) {

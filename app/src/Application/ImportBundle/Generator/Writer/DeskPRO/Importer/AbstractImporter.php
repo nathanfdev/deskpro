@@ -1,45 +1,43 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity as DeskPROEntity;
-use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper\AbstractCustomDefMapper;
 
 /**
  * Abstract DeskPRO importer
- * Finds or creates DeskPRO entities
+ * Finds or creates DeskPRO entities.
  *
  * Class AbstractImporter
- * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
  */
 abstract class AbstractImporter extends AbstractGenerator implements ImporterInterface
 {
@@ -54,7 +52,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     protected $records;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Mapper\Collection $mappers
      */
@@ -69,16 +67,18 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     public function reset()
     {
         $this->records = new DoctrineEntities();
+
         return $this;
     }
 
     /**
-     * Returns a language id by title
+     * Returns a language id by title.
      *
      * @param string $title
      *
-     * @return int
      * @throws \Exception
+     * @return int
+     *
      */
     protected function findLanguageId($title)
     {
@@ -91,9 +91,10 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns a language by title
+     * Returns a language by title.
      *
      * @param string $title
+     *
      * @return DeskPROEntity\Language|null
      */
     protected function findLanguage($title)
@@ -113,12 +114,13 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
 
     /**
      * Returns an organization by title
-     * Creates a new organization if not found
+     * Creates a new organization if not found.
      *
      * @param string $title
      *
-     * @return DeskPROEntity\Organization|null
      * @throws \Exception
+     * @return DeskPROEntity\Organization|null
+     *
      */
     protected function findOrCreateOrganization($title)
     {
@@ -146,12 +148,13 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns an user group by sys name
+     * Returns an user group by sys name.
      *
      * @param string $sys_name
      *
-     * @return DeskPROEntity\UserGroup|null
      * @throws \Exception
+     * @return DeskPROEntity\UserGroup|null
+     *
      */
     protected function findUserGroup($sys_name)
     {
@@ -175,14 +178,15 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns custom def person entity
+     * Returns custom def person entity.
      *
      * @param AbstractCustomDefMapper          $mapper
      * @param Entity\CustomField               $entity
      * @param DeskPROEntity\CustomDataAbstract $custom_field
      *
-     * @return DeskPROEntity\CustomDataTicket
      * @throws ImporterException
+     * @return DeskPROEntity\CustomDataTicket
+     *
      */
     protected function createCustomData(AbstractCustomDefMapper $mapper, Entity\CustomField $entity, DeskPROEntity\CustomDataAbstract $custom_field)
     {
@@ -232,7 +236,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
 
             case Entity\CustomField::FIELD_TYPE_DISPLAY:
             case Entity\CustomField::FIELD_TYPE_HIDDEN:
-                return null;
+                return;
 
             default:
                 throw new ImporterException('Unknown custom field type `%s`', $custom_field_def->getTypeName());
@@ -242,7 +246,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Creates object lang
+     * Creates object lang.
      *
      * @param Entity\ObjectLang $translation
      * @param mixed             $record
@@ -258,10 +262,11 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the person mapper
+     * Returns the person mapper.
      *
-     * @return Mapper\Person
      * @throws \Exception
+     * @return Mapper\Person
+     *
      */
     protected function getPersonMapper()
     {
@@ -269,10 +274,11 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the language mapper
+     * Returns the language mapper.
      *
-     * @return Mapper\Language
      * @throws \Exception
+     * @return Mapper\Language
+     *
      */
     protected function getLanguageMapper()
     {
@@ -280,10 +286,11 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the article mapper
+     * Returns the article mapper.
      *
-     * @return Mapper\Article
      * @throws \Exception
+     * @return Mapper\Article
+     *
      */
     protected function getArticleMapper()
     {
@@ -291,10 +298,11 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the download mapper
+     * Returns the download mapper.
      *
-     * @return Mapper\Download
      * @throws \Exception
+     * @return Mapper\Download
+     *
      */
     protected function getDownloadMapper()
     {
@@ -302,10 +310,11 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the news mapper
+     * Returns the news mapper.
      *
-     * @return Mapper\News
      * @throws \Exception
+     * @return Mapper\News
+     *
      */
     protected function getNewsMapper()
     {
@@ -313,10 +322,11 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the feedback mapper
+     * Returns the feedback mapper.
      *
-     * @return Mapper\Feedback
      * @throws \Exception
+     * @return Mapper\Feedback
+     *
      */
     protected function getFeedbackMapper()
     {
@@ -324,10 +334,11 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the ticket mapper
+     * Returns the ticket mapper.
      *
-     * @return Mapper\Ticket
      * @throws \Exception
+     * @return Mapper\Ticket
+     *
      */
     protected function getTicketMapper()
     {
@@ -335,10 +346,11 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the organization mapper
+     * Returns the organization mapper.
      *
-     * @return Mapper\Organization
      * @throws \Exception
+     * @return Mapper\Organization
+     *
      */
     protected function getOrganizationMapper()
     {
@@ -346,10 +358,11 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the object lang mapper
+     * Returns the object lang mapper.
      *
-     * @return Mapper\ObjectLang
      * @throws \Exception
+     * @return Mapper\ObjectLang
+     *
      */
     protected function getObjectLangMapper()
     {
@@ -357,10 +370,11 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the article category mapper
+     * Returns the article category mapper.
      *
-     * @return Mapper\ArticleCategory
      * @throws \Exception
+     * @return Mapper\ArticleCategory
+     *
      */
     protected function getArticleCategoryMapper()
     {

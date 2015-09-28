@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity;
@@ -39,8 +38,9 @@ use Application\DeskPRO\Entity;
 class TicketLog extends AbstractEntityRepository
 {
     /**
-     * @param  Entity\Ticket $ticket
-     * @param  array         $options
+     * @param Entity\Ticket $ticket
+     * @param array         $options
+     *
      * @return array
      */
     public function getLogsForTicket(Entity\Ticket $ticket, array $options = array())
@@ -78,7 +78,7 @@ class TicketLog extends AbstractEntityRepository
             $params['types'] = $options['types'];
         }
 
-        $query = $qb->getQuery();
+        $query           = $qb->getQuery();
         $raw_ticket_logs = $query->execute($params);
 
         $ticket_logs = array();
@@ -92,6 +92,7 @@ class TicketLog extends AbstractEntityRepository
 
     /**
      * @param $ticket_logs
+     *
      * @return array
      */
     public function groupTicketLogs($ticket_logs)
@@ -138,6 +139,7 @@ class TicketLog extends AbstractEntityRepository
     /**
      * @param $ticket_logs
      * @param $filter_type
+     *
      * @return array
      */
     public function filterTicketLogs($ticket_logs, $filter_type)
@@ -171,6 +173,7 @@ class TicketLog extends AbstractEntityRepository
 
     /**
      * @param $ticket_logs
+     *
      * @return array
      */
     public function countTicketLogTypes($ticket_logs)
@@ -188,12 +191,14 @@ class TicketLog extends AbstractEntityRepository
         );
 
         foreach ($ticket_logs as $log) {
-            $counts['all']++;
+            ++$counts['all'];
 
             foreach ($type_map as $t => $types) {
                 if (in_array($log->action_type, $types)) {
-                    if (!isset($counts[$t])) $counts[$t] = 0;
-                    $counts[$t]++;
+                    if (!isset($counts[$t])) {
+                        $counts[$t] = 0;
+                    }
+                    ++$counts[$t];
                 }
             }
         }
@@ -209,7 +214,7 @@ class TicketLog extends AbstractEntityRepository
             ->where('log.person = :person')
             ->orderBy('log.date_created', 'ASC');
 
-        $params = array();
+        $params           = array();
         $params['person'] = $agent;
 
         if (!empty($options['types'])) {
@@ -217,7 +222,7 @@ class TicketLog extends AbstractEntityRepository
             $params['types'] = $options['types'];
         }
 
-        if(!empty($options['date_range'])) {
+        if (!empty($options['date_range'])) {
             $qb->andWhere('log.date_created BETWEEN :date_start AND :date_end');
             $params['date_start'] = $options['date_range']['start'];
             $params['date_end']   = $options['date_range']['end'];

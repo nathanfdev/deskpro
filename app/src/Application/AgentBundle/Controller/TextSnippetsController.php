@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\Entity\TextSnippet;
@@ -57,7 +55,7 @@ class TextSnippetsController extends AbstractController
         }
 
         return $this->render("AgentBundle:TextSnippets:$typename-widget-shell.html.twig", array(
-            'snippet_cats' => $snippet_cats
+            'snippet_cats' => $snippet_cats,
         ));
     }
 
@@ -129,10 +127,9 @@ class TextSnippetsController extends AbstractController
 
         if ($filter_string || $language_id) {
             $snippets_all = $snippets;
-            $snippets = array();
+            $snippets     = array();
 
             $filter_string = Strings::utf8_strtolower($filter_string);
-
 
             foreach ($snippets_all as $snippet) {
                 $match_lang   = false;
@@ -240,7 +237,7 @@ class TextSnippetsController extends AbstractController
         foreach ($this->container->getLanguageData()->getAll() as $lang) {
             $lang_id = $lang->getId();
 
-            $title   = $this->in->getString("title.$lang_id");
+            $title       = $this->in->getString("title.$lang_id");
             $snippet_val = $this->in->getHtml("snippet.$lang_id");
             $snippet_val = Strings::prepareWysiwygHtml($snippet_val);
 
@@ -287,9 +284,9 @@ class TextSnippetsController extends AbstractController
                 throw $this->createNotFoundException();
             }
         } else {
-            $cat = new TextSnippetCategory();
+            $cat           = new TextSnippetCategory();
             $cat->typename = $typename;
-            $cat->person = $this->person;
+            $cat->person   = $this->person;
         }
 
         $cat->is_global = ($this->in->getString('perm_type') == 'global');
@@ -327,16 +324,16 @@ class TextSnippetsController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $has_snippets = $this->db->fetchColumn("
+        $has_snippets = $this->db->fetchColumn('
             SELECT COUNT(*)
             FROM text_snippets
             WHERE category_id = ?
-        ", array($cat->getId()));
+        ', array($cat->getId()));
 
         if ($has_snippets) {
             return $this->createJsonResponse(array(
-                'error' => true,
-                'error_code' => 'not_empty'
+                'error'      => true,
+                'error_code' => 'not_empty',
             ));
         }
 
@@ -344,8 +341,8 @@ class TextSnippetsController extends AbstractController
         $this->em->flush();
 
         return $this->createJsonResponse(array(
-            'success' => true,
-            'category_id' => $id
+            'success'     => true,
+            'category_id' => $id,
         ));
     }
 }

@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\App;
@@ -49,14 +47,14 @@ class TicketSatisfaction
         $this->em = $em;
     }
 
-
     /**
-     * @param  int   $page
+     * @param int $page
+     *
      * @return array
      */
     public function getVarsForFeedHtmlView($page)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\EntityRepository\TicketFeedback $repository
          */
 
@@ -74,9 +72,9 @@ class TicketSatisfaction
         return $vars;
     }
 
-
     /**
-     * @param  string $date
+     * @param string $date
+     *
      * @return array
      */
     public function getVarsForSummaryHtmlView($date)
@@ -85,7 +83,7 @@ class TicketSatisfaction
             $date = date('Y-m');
         }
 
-        $dt = new \DateTime('now', new \DateTimeZone('UTC'));
+        $dt                 = new \DateTime('now', new \DateTimeZone('UTC'));
         list($year, $month) = explode('-', $date);
         $dt->setDate($year, $month, 1);
         $dt->setTime(0, 0, 0);
@@ -98,12 +96,12 @@ class TicketSatisfaction
         )->format('Y-m-d H:i:s');
 
         $all_feedback = App::getDb()->fetchAll(
-            "
+            '
                 SELECT ticket_feedback.rating, UNIX_TIMESTAMP(ticket_feedback.date_created) AS created_at, tickets_messages.person_id AS agent_id
                 FROM ticket_feedback
                 LEFT JOIN tickets_messages ON (tickets_messages.id = ticket_feedback.message_id)
                 WHERE ticket_feedback.date_created BETWEEN ? AND ?
-            ",
+            ',
             array($date_start, $date_end)
         );
 
@@ -116,7 +114,7 @@ class TicketSatisfaction
         $days_in_month = Dates::daysInMonth($month, $year);
         $day_date      = clone $dt;
 
-        for ($i = 1; $i <= $days_in_month; $i++) {
+        for ($i = 1; $i <= $days_in_month; ++$i) {
             $days[]   = $day_date;
             $day_date = clone $day_date;
             $day_date->add(new \DateInterval('P1D'));
@@ -145,7 +143,7 @@ class TicketSatisfaction
                 $summary[$d][$agent_id][$rating] = 0;
             }
 
-            $summary[$d][$agent_id][$rating]++;
+            ++$summary[$d][$agent_id][$rating];
 
             if (!isset($totals[$agent_id])) {
                 $totals[$agent_id] = array();
@@ -155,7 +153,7 @@ class TicketSatisfaction
                 $totals[$agent_id][$rating] = 0;
             }
 
-            $totals[$agent_id][$rating]++;
+            ++$totals[$agent_id][$rating];
         }
 
         $vars['first_created'] = $first_created;

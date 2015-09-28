@@ -1,39 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
-
+ * DeskPRO.
+ */
 namespace Application\AdminInterfaceBundle\Controller;
 
-use Application\ApiBundle\ApiUser;
 use Application\ApiBundle\Request\RequestAuth;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Chat\UserChat\ChatAvailableCheck;
@@ -58,13 +55,13 @@ class PortalEditorController extends AbstractController
         // This is a legacy controller that otherwise doesn't use the same logic.
 
         $request_auth = new RequestAuth($this->em, $this->getRequest());
-        $api_user = $request_auth->getApiUser();
-        $api_token = $api_user->api_token;
+        $api_user     = $request_auth->getApiUser();
+        $api_token    = $api_user->api_token;
 
         if (!$api_token || $api_token->scope != 'session') {
             return $this->createJsonResponse(array(
-                'error_code' => 'invalid_api_token',
-                'error_message' => 'API requests via token must be with a valid session'
+                'error_code'    => 'invalid_api_token',
+                'error_message' => 'API requests via token must be with a valid session',
             ), 403);
         }
 
@@ -72,19 +69,19 @@ class PortalEditorController extends AbstractController
 
         if (!$session || !$session->person || $session->person != $api_token->person) {
             return $this->createJsonResponse(array(
-                'error_code' => 'invalid_api_token',
-                'error_message' => 'API requests via token must be with a valid session'
+                'error_code'    => 'invalid_api_token',
+                'error_message' => 'API requests via token must be with a valid session',
             ), 403);
         }
 
         // Validate the request token
         if (!$api_user->request_token || !$api_user->session->checkSecurityToken('request_token', $api_user->request_token)) {
             return $this->createJsonResponse(array(
-                'error_code' => 'invalid_request_token',
-                'error_message' => 'You must provide a valid request token'
+                'error_code'    => 'invalid_request_token',
+                'error_message' => 'You must provide a valid request token',
             ), 403);
         }
-   }
+    }
 
     public function uploadFaviconAction()
     {
@@ -98,7 +95,7 @@ class PortalEditorController extends AbstractController
 
                 $ext = strtolower(\Orb\Util\Strings::getExtension($orig_blob->getFilename()));
                 if (!$ext || !in_array($ext, array('gif', 'png', 'jpg', 'jpeg', 'ico'))) {
-                    throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Please upload a valid image");
+                    throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Please upload a valid image');
                 }
 
                 $file = $this->container->getBlobStorage()->copyBlobRecordToString($orig_blob);
@@ -109,7 +106,7 @@ class PortalEditorController extends AbstractController
                         try {
                             $im->readimageblob($file, $orig_blob->getFilename());
                         } catch (\Exception $e) {
-                            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Please upload a valid image");
+                            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Please upload a valid image');
                         }
                         $im->scaleImage(16, 16, true);
                         $im->setImageFormat('ico');
@@ -117,9 +114,9 @@ class PortalEditorController extends AbstractController
                     } else {
                         $gd = @imagecreatefromstring($file);
                         if (!$gd) {
-                            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Please upload a valid image");
+                            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Please upload a valid image');
                         }
-                        $width = imagesx($gd);
+                        $width  = imagesx($gd);
                         $height = imagesy($gd);
 
                         $gd_dest = imagecreatetruecolor(16, 16);
@@ -176,24 +173,25 @@ class PortalEditorController extends AbstractController
                 }
 
                 if (!empty($data['token']) && !empty($data['secret'])) {
-                    $api = \Application\DeskPRO\Service\Twitter::getUserTwitterApi($data['token'], $data['secret']);
+                    $api      = \Application\DeskPRO\Service\Twitter::getUserTwitterApi($data['token'], $data['secret']);
                     $oauth_ok = false;
                     try {
                         $res = $api->get_accountVerify_credentials();
                         if (!empty($res->id_str)) {
                             $oauth_ok = true;
                         }
-                    } catch (\Exception $e) {}
+                    } catch (\Exception $e) {
+                    }
 
                     if (!$oauth_ok) {
-                        $data['token'] = false;
+                        $data['token']  = false;
                         $data['secret'] = false;
                     }
                 }
 
                 return $this->render('AdminInterfaceBundle:PortalEditor:twitter-sidebar-editor.html.twig', array(
-                    'data' => $data,
-                    'consumer_key' => \Application\DeskPRO\Service\Twitter::getUserConsumerKey()
+                    'data'         => $data,
+                    'consumer_key' => \Application\DeskPRO\Service\Twitter::getUserConsumerKey(),
                 ));
                 break;
         }
@@ -207,7 +205,7 @@ class PortalEditorController extends AbstractController
             case 'css_var':
                 $css_vars = $this->in->getCleanValueArray('vars', 'string', 'string');
                 foreach ($css_vars as $name => $value) {
-                    $setting_name = 'user_style.' . $name;
+                    $setting_name = 'user_style.'.$name;
                     $this->container->getSettingsHandler()->setSetting($setting_name, $value);
                 }
 
@@ -264,7 +262,7 @@ class PortalEditorController extends AbstractController
                 }
 
                 $app = $this->in->getStrSimple('tab');
-                $this->container->getSettingsHandler()->setSetting('user.portal_tab_' . $app, $val);
+                $this->container->getSettingsHandler()->setSetting('user.portal_tab_'.$app, $val);
 
                 // If the tab is turned on, we need to make sure the app itself is on as well
                 if ($val) {
@@ -273,7 +271,7 @@ class PortalEditorController extends AbstractController
                         $app_name = 'kb';
                     }
 
-                    $this->container->getSettingsHandler()->setSetting('core.apps_' . $app_name, 1);
+                    $this->container->getSettingsHandler()->setSetting('core.apps_'.$app_name, 1);
                 }
 
                 break;
@@ -321,7 +319,8 @@ class PortalEditorController extends AbstractController
                     $this->em->flush();
                     $this->em->commit();
                 }
-            } catch (\EpiOAuthException $e) {}
+            } catch (\EpiOAuthException $e) {
+            }
         }
 
         return $this->redirectRoute('admin_portal');
@@ -342,26 +341,26 @@ class PortalEditorController extends AbstractController
 
         return $this->createJsonResponse(array(
             'success' => true,
-            'pid'     => $pd->getId()
+            'pid'     => $pd->getId(),
         ));
     }
 
     public function saveCustomBlockAction($name)
     {
         if ($name == 'UserBundle:Portal:new-sidebar-block.html.twig') {
-            $name = 'DeskPRO:CustomBlocks:Sidebar_' . mt_rand(1000,9999) . '_' . time() . '.html.twig';
-            $block = new \Application\DeskPRO\Entity\PortalPageDisplay();
-            $block->type = 'template';
-            $block->data = array('tpl' => $name);
+            $name              = 'DeskPRO:CustomBlocks:Sidebar_'.mt_rand(1000, 9999).'_'.time().'.html.twig';
+            $block             = new \Application\DeskPRO\Entity\PortalPageDisplay();
+            $block->type       = 'template';
+            $block->data       = array('tpl' => $name);
             $block->is_enabled = true;
-            $block->section = 'sidebar';
+            $block->section    = 'sidebar';
         } elseif ($pid = \Orb\Util\Strings::extractRegexMatch('#^EDIT_SIDEBAR_BLOCK:(.*?)$#', $name)) {
             $page_display = $this->em->find('DeskPRO:PortalPageDisplay', $pid);
             if (!$page_display || $page_display->type != 'template') {
-                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
             }
 
-            $name = $page_display->data['tpl'];
+            $name  = $page_display->data['tpl'];
             $block = null;
         }
 
@@ -369,34 +368,34 @@ class PortalEditorController extends AbstractController
 
         try {
             /** @var $twig \Application\DeskPRO\Twig\Environment */
-            $twig = $this->container->get('twig');
+            $twig     = $this->container->get('twig');
             $compiled = $twig->compileSource($template_code, $name);
         } catch (\Twig_Error_Syntax $e) {
             return $this->createJsonResponse(array(
-                'error' => true,
-                'error_syntax' => true,
-                'error_code' => $e->getCode(),
+                'error'         => true,
+                'error_syntax'  => true,
+                'error_code'    => $e->getCode(),
                 'error_message' => $e->getMessage(),
-                'error_line' => $e->getTemplateLine(),
-                'source' => $template_code
+                'error_line'    => $e->getTemplateLine(),
+                'source'        => $template_code,
             ));
         } catch (\Twig_Error $e) {
             return $this->createJsonResponse(array(
-                'error' => true,
-                'error_code' => $e->getCode(),
+                'error'         => true,
+                'error_code'    => $e->getCode(),
                 'error_message' => $e->getMessage(),
-                'source' => $template_code
+                'source'        => $template_code,
             ));
         }
 
-        $template = new Template();
+        $template        = new Template();
         $template->style = $this->container->getSystemService('style');
-        $template->name = $name;
+        $template->name  = $name;
         $template->setTemplate($template_code, $compiled);
 
         $ret_data = array(
             'success' => true,
-            'name' => $name,
+            'name'    => $name,
         );
 
         $this->db->beginTransaction();
@@ -437,10 +436,10 @@ class PortalEditorController extends AbstractController
         $pd->type = 'sidebar_block_simple';
         $pd->data = array(
             'title'   => $this->in->getString('title'),
-            'content' => $this->in->getString('content')
+            'content' => $this->in->getString('content'),
         );
         $pd->is_enabled = true;
-        $pd->section = 'sidebar';
+        $pd->section    = 'sidebar';
 
         $this->em->persist($pd);
         $this->em->flush();
@@ -450,7 +449,7 @@ class PortalEditorController extends AbstractController
 
         return $this->createJsonResponse(array(
             'success' => true,
-            'pid'     => $pd->getId()
+            'pid'     => $pd->getId(),
         ));
     }
 
@@ -464,9 +463,9 @@ class PortalEditorController extends AbstractController
         $data = $pd->data;
 
         return $this->createJsonResponse(array(
-            'pid'      => $pid,
-            'title'    => isset($data['title'])   ? $data['title'] : '',
-            'content'  => isset($data['content']) ? $data['content'] : '',
+            'pid'     => $pid,
+            'title'   => isset($data['title'])   ? $data['title'] : '',
+            'content' => isset($data['content']) ? $data['content'] : '',
         ));
     }
 
@@ -515,7 +514,7 @@ class PortalEditorController extends AbstractController
         $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
         $cache->invalidateAll();
 
-        return $this->createJsonResponse(array('success'=>1));
+        return $this->createJsonResponse(array('success' => 1));
     }
 
     public function deleteTemplateBlockAction($pid)
@@ -543,7 +542,7 @@ class PortalEditorController extends AbstractController
         $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
         $cache->invalidateAll();
 
-        return $this->createJsonResponse(array('success'=>1));
+        return $this->createJsonResponse(array('success' => 1));
     }
 
     ############################################################################
@@ -556,13 +555,13 @@ class PortalEditorController extends AbstractController
         $downloads = App::getDb()->fetchAllKeyValue("SELECT id, title FROM downloads WHERE status = 'published'");
         $news      = App::getDb()->fetchAllKeyValue("SELECT id, title FROM news WHERE status = 'published'");
 
-        $article_cat_map   = App::getDb()->fetchAllGrouped("SELECT category_id, article_id FROM article_to_categories", array(), 'category_id', null, 'article_id');
-        $download_cat_map  = App::getDb()->fetchAllGrouped("SELECT category_id, id FROM downloads", array(), 'category_id', null, 'id');
-        $news_cat_map      = App::getDb()->fetchAllGrouped("SELECT category_id, id FROM news", array(), 'category_id', null, 'id');
+        $article_cat_map  = App::getDb()->fetchAllGrouped('SELECT category_id, article_id FROM article_to_categories', array(), 'category_id', null, 'article_id');
+        $download_cat_map = App::getDb()->fetchAllGrouped('SELECT category_id, id FROM downloads', array(), 'category_id', null, 'id');
+        $news_cat_map     = App::getDb()->fetchAllGrouped('SELECT category_id, id FROM news', array(), 'category_id', null, 'id');
 
         if ($this->in->getBool('save_selections')) {
             $set_selections = $this->in->getCleanValueArray('selections', 'raw', 'raw');
-            $ds = App::getEntityRepository('DeskPRO:DataStore')->getByName('portal_widget_default_links', true);
+            $ds             = App::getEntityRepository('DeskPRO:DataStore')->getByName('portal_widget_default_links', true);
             $ds->setData('selections', $set_selections);
 
             $this->em->persist($ds);
@@ -586,11 +585,11 @@ class PortalEditorController extends AbstractController
 
         $widget_url = $this->container->getSetting('core.deskpro_url');
         if (defined('DPC_SITE_DOMAIN')) {
-            $widget_url = 'http://' . DPC_SITE_DOMAIN . '/';
+            $widget_url = 'http://'.DPC_SITE_DOMAIN.'/';
         }
 
         $chat_online = ChatAvailableCheck::getAvailableTime();
-        $chat_online = (bool)$chat_online;
+        $chat_online = (bool) $chat_online;
 
         return $this->render('AdminInterfaceBundle:PortalEditor:website-widgets.html.twig', array(
             'articles'    => $articles,
@@ -603,9 +602,9 @@ class PortalEditorController extends AbstractController
 
             'widget_url' => $widget_url,
 
-            'article_cat_map'   => $article_cat_map,
-            'download_cat_map'  => $download_cat_map,
-            'news_cat_map'      => $news_cat_map
+            'article_cat_map'  => $article_cat_map,
+            'download_cat_map' => $download_cat_map,
+            'news_cat_map'     => $news_cat_map,
         ));
     }
 
@@ -623,7 +622,7 @@ class PortalEditorController extends AbstractController
             $error = $accept->getError($file, 'only_images');
         }
         if ($error) {
-            $error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+            $error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
 
             return $this->createJsonResponse(array($error));
         }
@@ -639,8 +638,8 @@ class PortalEditorController extends AbstractController
                 case 'article':
                     $article = $this->em->find('DeskPRO:Article', $this->in->getUint('object_id'));
 
-                    $attach = new \Application\DeskPRO\Entity\ArticleAttachment();
-                    $attach['blob'] = $blob;
+                    $attach           = new \Application\DeskPRO\Entity\ArticleAttachment();
+                    $attach['blob']   = $blob;
                     $attach['person'] = $this->person;
 
                     $article->addAttachment($attach);
@@ -653,12 +652,12 @@ class PortalEditorController extends AbstractController
         }
 
         return $this->createJsonResponse(array(array(
-            'blob_id' => $blob['id'],
-            'blob_auth' => $blob->authcode,
-            'blob_auth_id' => $blob->id . '-' . $blob->authcode,
-            'download_url' => $blob->getDownloadUrl(true),
-            'filename' => $blob['filename'],
-            'filesize_readable' => $blob->getReadableFilesize()
+            'blob_id'           => $blob['id'],
+            'blob_auth'         => $blob->authcode,
+            'blob_auth_id'      => $blob->id.'-'.$blob->authcode,
+            'download_url'      => $blob->getDownloadUrl(true),
+            'filename'          => $blob['filename'],
+            'filesize_readable' => $blob->getReadableFilesize(),
         )));
     }
 

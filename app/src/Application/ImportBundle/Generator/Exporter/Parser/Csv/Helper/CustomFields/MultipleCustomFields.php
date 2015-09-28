@@ -1,40 +1,40 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\CustomFields;
 
+use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserFormatterHelper;
-use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
- * Class MultipleCustomFields
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\CustomFields
+ * Class MultipleCustomFields.
  */
 class MultipleCustomFields extends AbstractParserFormatterHelper
 {
@@ -43,15 +43,15 @@ class MultipleCustomFields extends AbstractParserFormatterHelper
      */
     public function getEntityType()
     {
-        return 'multiple_' . Entity\EntityInterface::TYPE_CUSTOM_FIELD;
+        return 'multiple_'.Entity\EntityInterface::TYPE_CUSTOM_FIELD;
     }
 
     /**
-     * Returns a collection of custom fields
+     * Returns a collection of custom fields.
      *
-     * @param array     $data
-     * @param string    $destination_prefix
-     * @param string    $ref_column
+     * @param array  $data
+     * @param string $destination_prefix
+     * @param string $ref_column
      *
      * @return Entity\CustomField[]|Entity\Collection
      */
@@ -63,7 +63,7 @@ class MultipleCustomFields extends AbstractParserFormatterHelper
             ->setData($data)
             ->setPrefix('CSVCustomField')
             ->setRefColumn($ref_column)
-            ->setMethod(function($data, $num) use($that, $destination_prefix, $ref_column) {
+            ->setMethod(function ($data, $num) use ($that, $destination_prefix,$ref_column) {
                 return $that->exportCustomField($num, $destination_prefix, $data, $ref_column);
             })
         ;
@@ -72,7 +72,7 @@ class MultipleCustomFields extends AbstractParserFormatterHelper
     }
 
     /**
-     * Returns an attachment entity
+     * Returns an attachment entity.
      *
      * @param int    $num
      * @param string $destination_prefix
@@ -84,7 +84,7 @@ class MultipleCustomFields extends AbstractParserFormatterHelper
     public function exportCustomField($num, $destination_prefix, array $data, $ref_column)
     {
         if (isset($data[$ref_column])) {
-            $data['destination'] = $destination_prefix . $data[$ref_column];
+            $data['destination'] = $destination_prefix.$data[$ref_column];
         }
 
         $formatted = $this->formatter->format($data, array(

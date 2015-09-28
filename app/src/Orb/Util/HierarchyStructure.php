@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @category Util
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ *
+ * @category Util
+ */
 namespace Orb\Util;
 
 /**
@@ -108,20 +107,21 @@ class HierarchyStructure
         foreach ($this->cats as $cat) {
             if (($cat->parent && $cat->parent->getId() == $parent_id) || (!$parent_id && !$cat->parent)) {
                 $array[$cat->getId()] = array(
-                    'id' => $cat->getId(),
+                    'id'        => $cat->getId(),
                     'parent_id' => $cat->parent ? $cat->parent->getId() : 0,
-                    'depth' => $depth,
+                    'depth'     => $depth,
                     //'category' => $cat
                 );
-                $this->_getFlatHierarchyArray($array, $cat->getId(), $depth+1);
+                $this->_getFlatHierarchyArray($array, $cat->getId(), $depth + 1);
             }
         }
     }
 
     /**
-     * Get an array of id=>parent
+     * Get an array of id=>parent.
      *
      * @param $cats
+     *
      * @return array
      */
     public function getParentMap()
@@ -140,9 +140,10 @@ class HierarchyStructure
     }
 
     /**
-     * Get an array of parent IDs for a category in order (left to right, aka top to bottom)
+     * Get an array of parent IDs for a category in order (left to right, aka top to bottom).
      *
      * @param $id
+     *
      * @return array
      */
     public function getPathIds($cat)
@@ -154,7 +155,7 @@ class HierarchyStructure
         $ids = array();
         while (!empty($this->parent_map[$cat_id])) {
             $cat_id = $this->parent_map[$cat_id];
-            $ids[] = $cat_id;
+            $ids[]  = $cat_id;
         }
 
         $that = $this;
@@ -169,9 +170,10 @@ class HierarchyStructure
     }
 
     /**
-     * Get an array of parents for a category in order (left to right, aka top to bottom)
+     * Get an array of parents for a category in order (left to right, aka top to bottom).
      *
      * @param $id
+     *
      * @return array
      */
     public function getPath($cat)
@@ -189,10 +191,11 @@ class HierarchyStructure
     }
 
     /**
-     * Get children IDs of a category
+     * Get children IDs of a category.
      *
-     * @param  int|\Application\DeskPRO\Entity\CategoryAbstract $category
-     * @param  bool                                             $direct   Only get the immediate children?
+     * @param int|\Application\DeskPRO\Entity\CategoryAbstract $category
+     * @param bool                                             $direct   Only get the immediate children?
+     *
      * @return int[]
      */
     public function getChildrenIds($category = null, $direct = true)
@@ -214,8 +217,9 @@ class HierarchyStructure
     }
 
     /**
-     * @param  null  $category
-     * @param  bool  $direct
+     * @param null $category
+     * @param bool $direct
+     *
      * @return array
      */
     public function getChildren($category = null, $direct = true)
@@ -230,6 +234,7 @@ class HierarchyStructure
 
     /**
      * @param $category
+     *
      * @return int
      */
     public function getParentId($category)
@@ -243,13 +248,14 @@ class HierarchyStructure
 
     /**
      * @param $category
+     *
      * @return mixed
      */
     public function getParent($category)
     {
         $pid = $this->getParentId($category);
         if (!$pid || !isset($this->cats[$pid])) {
-            return null;
+            return;
         }
 
         return $this->cats[$pid];

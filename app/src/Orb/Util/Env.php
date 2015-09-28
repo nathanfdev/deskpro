@@ -1,54 +1,54 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @category Util
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ *
+ * @category Util
+ */
 namespace Orb\Util;
 
-
 /**
- * Helps fetch stuff about the server/environment
+ * Helps fetch stuff about the server/environment.
  *
  * @static
  */
 class Env
 {
     /**
-     * Static class
+     * Static class.
      */
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     /**
-     * Return 'upload_max_filesize' size in bytes
+     * Return 'upload_max_filesize' size in bytes.
      *
      * @return int
      */
@@ -62,9 +62,8 @@ class Env
         return Numbers::parseIniSize($size);
     }
 
-
     /**
-     * Return 'post_max_size' size in bytes
+     * Return 'post_max_size' size in bytes.
      *
      * @return int
      */
@@ -77,7 +76,6 @@ class Env
 
         return Numbers::parseIniSize($size);
     }
-
 
     /**
      * Get the size in bytes of the effective maximum upload size.
@@ -101,9 +99,8 @@ class Env
         return $min;
     }
 
-
     /**
-     * Return 'memory_limit' size in bytes or -1 if there is no limit
+     * Return 'memory_limit' size in bytes or -1 if there is no limit.
      *
      * @return int
      */
@@ -117,9 +114,8 @@ class Env
         return Numbers::parseIniSize($size);
     }
 
-
     /**
-     * Get phpinfo() as a string
+     * Get phpinfo() as a string.
      *
      * @return string
      */
@@ -132,9 +128,8 @@ class Env
         return $phpinfo;
     }
 
-
     /**
-     * Gets the path to the laoded php.ini file by scanning phpinfo
+     * Gets the path to the laoded php.ini file by scanning phpinfo.
      *
      * @return false|string
      */
@@ -151,11 +146,11 @@ class Env
         return self::getPhpIniPathFromInfo($phpinfo);
     }
 
-
     /**
-     * Get php.ini path from the phpinfo HTML string
+     * Get php.ini path from the phpinfo HTML string.
      *
      * @param $phpinfo
+     *
      * @return false|string
      */
     public static function getPhpIniPathFromInfo($phpinfo)
@@ -173,11 +168,11 @@ class Env
         return false;
     }
 
-
     /**
-     * Check if a function has been disabled in php.ini with 'disable_functions'
+     * Check if a function has been disabled in php.ini with 'disable_functions'.
      *
-     * @param  string $func_name
+     * @param string $func_name
+     *
      * @return string
      */
     public static function isFunctionDisabled($func_name)
@@ -189,11 +184,11 @@ class Env
         return isset($disabled[$func_name]);
     }
 
-
     /**
-     * Check if a class has been disabled in php.ini with 'disable_classes'
+     * Check if a class has been disabled in php.ini with 'disable_classes'.
      *
-     * @param  string $class_name
+     * @param string $class_name
+     *
      * @return bool
      */
     public static function isClassDisabled($class_name)
@@ -205,7 +200,6 @@ class Env
 
         return isset($disabled[$class_name]);
     }
-
 
     /**
      * Check to see if two phpinfo's appear to be the same.
@@ -238,7 +232,7 @@ class Env
     }
 
     /**
-     * True if the current OS is Windows
+     * True if the current OS is Windows.
      *
      * @return bool
      */
@@ -276,7 +270,7 @@ class Env
     }
 
     /**
-     * Get an array of disabled functions
+     * Get an array of disabled functions.
      *
      * @return array
      */
@@ -286,13 +280,13 @@ class Env
 
         if ($functions === null) {
             $functions = array();
-            $list = @ini_get('disable_functions') . ',' . @ini_get('suhosin.executor.func.blacklist');
-            $list = explode(',', $list);
+            $list      = @ini_get('disable_functions').','.@ini_get('suhosin.executor.func.blacklist');
+            $list      = explode(',', $list);
 
             foreach ($list as $f) {
                 $f = trim($f);
                 if ($f) {
-                    $f = strtolower($f);
+                    $f             = strtolower($f);
                     $functions[$f] = $f;
                 }
             }
@@ -302,7 +296,7 @@ class Env
     }
 
     /**
-     * Get an array of disabled classes
+     * Get an array of disabled classes.
      *
      * @return array
      */
@@ -312,8 +306,8 @@ class Env
 
         if ($classes === null) {
             $classes = array();
-            $list = @ini_get('disable_classes');
-            $list = explode(',', $list);
+            $list    = @ini_get('disable_classes');
+            $list    = explode(',', $list);
 
             foreach ($list as $c) {
                 $c = trim($c);
@@ -339,14 +333,16 @@ class Env
     public static function getMaxPostVars()
     {
         $vals = array(
-            (int)ini_get('max_input_vars'),
-            (int)ini_get('suhosin.post.max_vars'),
-            (int)ini_get('suhosin.request.max_vars')
+            (int) ini_get('max_input_vars'),
+            (int) ini_get('suhosin.post.max_vars'),
+            (int) ini_get('suhosin.request.max_vars'),
         );
 
         $min = null;
         foreach ($vals as $v) {
-            if (!$v) continue;
+            if (!$v) {
+                continue;
+            }
 
             if ($min === null) {
                 $min = $v;
@@ -368,14 +364,16 @@ class Env
     public static function getMaxGetVars()
     {
         $vals = array(
-            (int)ini_get('max_input_vars'),
-            (int)ini_get('suhosin.get.max_vars'),
-            (int)ini_get('suhosin.request.max_vars')
+            (int) ini_get('max_input_vars'),
+            (int) ini_get('suhosin.get.max_vars'),
+            (int) ini_get('suhosin.request.max_vars'),
         );
 
         $min = null;
         foreach ($vals as $v) {
-            if (!$v) continue;
+            if (!$v) {
+                continue;
+            }
 
             if ($min === null) {
                 $min = $v;

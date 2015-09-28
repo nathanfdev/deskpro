@@ -1,12 +1,29 @@
 <?php
 
 /*
- * This file is part of the Monolog package.
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * (c) Jordi Boggiano <j.boggiano@seld.be>
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
 namespace Application\DeskPRO\Monolog;
@@ -20,23 +37,22 @@ class ArrayLogger extends AbstractLogger
     /**
      * Logs with an arbitrary level.
      *
-     * @param mixed $level
+     * @param mixed  $level
      * @param string $message
-     * @param array $context
-     * @return null
+     * @param array  $context
      */
     public function log($level, $message, array $context = array())
     {
         $context['_dp_time'] = time();
-        $this->messages[] = array(
+        $this->messages[]    = array(
             'level'   => $level,
             'message' => $message,
-            'context' => $context
+            'context' => $context,
         );
     }
 
     /**
-     * Get raw messages as an array
+     * Get raw messages as an array.
      *
      * @return array
      */
@@ -55,7 +71,7 @@ class ArrayLogger extends AbstractLogger
         $str = array();
 
         foreach ($this->messages as $m) {
-            $str[] = "[" . date('Y-m-d H:i:s', $m['context']['_dp_time']) . "] " . $m['level'] . ": " . $m['message'];
+            $str[] = '['.date('Y-m-d H:i:s', $m['context']['_dp_time']).'] '.$m['level'].': '.$m['message'];
         }
 
         return implode("\n", $str);

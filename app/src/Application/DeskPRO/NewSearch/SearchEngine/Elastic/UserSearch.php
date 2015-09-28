@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\DeskPRO\NewSearch\SearchEngine\Elastic;
 
@@ -33,14 +34,14 @@ use Application\DeskPRO\NewSearch\SearchEngine\SearchContextInterface;
 use Application\DeskPRO\NewSearch\SearchEngine\UserSearchInterface;
 use Elastica\Filter;
 use Elastica\Query;
-use Orb\Util\Arrays;
 use Elastica\Util as ElasticaUtil;
+use Orb\Util\Arrays;
 
 class UserSearch implements UserSearchInterface
 {
-    const MAX_LEN = 315;
+    const MAX_LEN         = 315;
     const MAX_LEN_CONTENT = 2000;
-    const LIMIT = 20;
+    const LIMIT           = 20;
 
     /**
      * @var \Elastica\Index
@@ -52,22 +53,21 @@ class UserSearch implements UserSearchInterface
      */
     private $transformer;
 
-
     /**
      * @param \Elastica\Index            $index
      * @param ElasticaResultsTransformer $transformer
      */
     public function __construct(\Elastica\Index $index, ElasticaResultsTransformer $transformer)
     {
-        $this->index = $index;
+        $this->index       = $index;
         $this->transformer = $transformer;
     }
 
-
     /**
-     * @param  SearchContextInterface $context
-     * @param  string                 $query
-     * @param  array                  $options
+     * @param SearchContextInterface $context
+     * @param string                 $query
+     * @param array                  $options
+     *
      * @return ResultSet
      */
     public function search(SearchContextInterface $context, $query, array $options = null)
@@ -142,7 +142,7 @@ class UserSearch implements UserSearchInterface
         }
 
         $bool_query = new Query\Bool();
-        $qs = $this->getQueryString($query);
+        $qs         = $this->getQueryString($query);
         $qs->setDefaultField('_all');
         $qs->setFields(array('title', 'labels', 'content', 'messages'));
         $qs->setDefaultOperator('AND');
@@ -155,14 +155,15 @@ class UserSearch implements UserSearchInterface
         $bool_query->addShould($sticky_match);
 
         $filtered_query = new Query\Filtered($qs, $filter);
-        $res = $search->search($filtered_query, array('limit' => self::LIMIT));
-        $objects = $this->transformer->transform($res->getResults());
+        $res            = $search->search($filtered_query, array('limit' => self::LIMIT));
+        $objects        = $this->transformer->transform($res->getResults());
 
         if ($context->getPerson() && !$context->getPerson()->is_agent) {
-            $objects = array_filter($objects, function($ticket) {
+            $objects = array_filter($objects, function ($ticket) {
                 if ($ticket instanceof Ticket && !($ticket->date_last_agent_reply || $ticket->date_last_user_reply)) {
                     return false;
                 }
+
                 return true;
             });
         }
@@ -171,9 +172,10 @@ class UserSearch implements UserSearchInterface
     }
 
     /**
-     * @param  SearchContextInterface $context
-     * @param  string $content
-     * @param  array $options
+     * @param SearchContextInterface $context
+     * @param string                 $content
+     * @param array                  $options
+     *
      * @return ResultSet
      */
     public function similarTo(SearchContextInterface $context, $content, array $options = null)
@@ -238,16 +240,17 @@ class UserSearch implements UserSearchInterface
         $like_query->setMinDocFrequency(1);
 
         $filtered_query = new Query\Filtered($like_query, $filter);
-        $res = $search->search($filtered_query, array('limit' => self::LIMIT));
-        $objects = $this->transformer->transform($res->getResults());
+        $res            = $search->search($filtered_query, array('limit' => self::LIMIT));
+        $objects        = $this->transformer->transform($res->getResults());
 
         return new ResultSet($objects);
     }
 
     /**
-     * Makes sure a "query" var is formatted for use with QueryString
+     * Makes sure a "query" var is formatted for use with QueryString.
      *
-     * @param  string $q
+     * @param string $q
+     *
      * @return string
      */
     private function escapeQueryStringTerm($q)
@@ -258,11 +261,11 @@ class UserSearch implements UserSearchInterface
         return $q;
     }
 
-
     /**
-     * Constructs the query string
+     * Constructs the query string.
      *
      * @param $q
+     *
      * @return Query\QueryString|Query\MultiMatch
      */
     protected function getQueryString($q)

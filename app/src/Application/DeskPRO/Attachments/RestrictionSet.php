@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category DependencyInjection
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category DependencyInjection
+ */
 namespace Application\DeskPRO\Attachments;
 
 use Orb\Util\Strings;
@@ -43,34 +42,34 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class RestrictionSet
 {
-    const ERR_SIZE = 'size';
+    const ERR_SIZE          = 'size';
     const ERR_FAIL_MUST_EXT = 'not_in_allowed_exts';
-    const ERR_FAIL_NOT_EXT = 'not_allowed_exts';
+    const ERR_FAIL_NOT_EXT  = 'not_allowed_exts';
 
     /**
-     * The max size to accept
+     * The max size to accept.
      *
      * @var int
      */
     protected $max_size = 5242880; // 5 MB
 
     /**
-     * Whitelist of extention to accept
+     * Whitelist of extention to accept.
      *
      * @var array
      */
     protected $allowed_exts = null;
 
     /**
-     * Blacklist of extensions to reject
+     * Blacklist of extensions to reject.
      *
      * @var array
      */
     protected $disallowed_exts = null;
 
-
     /**
-     * @param  \Symfony\Component\HttpFoundation\File\File $file
+     * @param \Symfony\Component\HttpFoundation\File\File $file
+     *
      * @return array|null
      */
     public function getError(File $file)
@@ -84,17 +83,17 @@ class RestrictionSet
 
         return $this->getErrorForProperties(array(
             'size' => $size,
-            'ext'  => $ext
+            'ext'  => $ext,
         ));
     }
-
 
     /**
      * Check properties against this restriction set. $props can be:
      * - size (filesize)
-     * - ext (file extension)
+     * - ext (file extension).
      *
-     * @param  array      $props
+     * @param array $props
+     *
      * @return array|null
      */
     public function getErrorForProperties(array $props)
@@ -103,7 +102,7 @@ class RestrictionSet
             if ($this->max_size && $props['size'] > $this->max_size) {
                 return array(
                     'error_code'   => self::ERR_SIZE,
-                    'error_detail' => $this->max_size
+                    'error_detail' => $this->max_size,
                 );
             }
         }
@@ -112,24 +111,24 @@ class RestrictionSet
             if ($this->allowed_exts && !in_array($props['ext'], $this->allowed_exts)) {
                 return array(
                     'error_code'   => self::ERR_FAIL_MUST_EXT,
-                    'error_detail' => implode(',', $this->allowed_exts)
+                    'error_detail' => implode(',', $this->allowed_exts),
                 );
             }
 
             if ($this->disallowed_exts && in_array($props['ext'], $this->disallowed_exts)) {
                 return array(
                     'error_code'   => self::ERR_FAIL_NOT_EXT,
-                    'error_detail' => implode(',', $this->disallowed_exts)
+                    'error_detail' => implode(',', $this->disallowed_exts),
                 );
             }
         }
 
-        return null;
+        return;
     }
 
-
     /**
-     * @param  array $allowed_exts
+     * @param array $allowed_exts
+     *
      * @return $this
      */
     public function setAllowedExts(array $allowed_exts = null)
@@ -142,7 +141,6 @@ class RestrictionSet
         return $this;
     }
 
-
     /**
      * @return array
      */
@@ -151,9 +149,9 @@ class RestrictionSet
         return $this->allowed_exts;
     }
 
-
     /**
-     * @param  array $disallowed_exts
+     * @param array $disallowed_exts
+     *
      * @return $this
      */
     public function setDisallowedExts(array $disallowed_exts = null)
@@ -175,12 +173,13 @@ class RestrictionSet
     }
 
     /**
-     * @param  int   $max_size
+     * @param int $max_size
+     *
      * @return $this
      */
     public function setMaxSize($max_size = null)
     {
-        $this->max_size = (int)$max_size;
+        $this->max_size = (int) $max_size;
 
         return $this;
     }

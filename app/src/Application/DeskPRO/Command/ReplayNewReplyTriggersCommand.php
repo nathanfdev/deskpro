@@ -1,52 +1,48 @@
 <?php
 
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
-
-
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\EmailGateway\Reader\ValueReader;
-use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketTrigger;
+use Application\DeskPRO\Monolog\Logger as DpLogger;
+use Application\DeskPRO\Tickets;
+use Application\DeskPRO\Tickets\TicketSaveActions;
 use Monolog\Handler\StreamHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Application\DeskPRO\Tickets;
-use Application\DeskPRO\Tickets\TicketSaveActions;
-use Application\DeskPRO\Monolog\Logger as DpLogger;
 
 /**
  * Attempts to replay triggers for a newreply. Note that this isn't point-in-time reply
@@ -57,7 +53,7 @@ use Application\DeskPRO\Monolog\Logger as DpLogger;
 class ReplayNewReplyTriggersCommand extends ContainerAwareCommand
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function configure()
     {
@@ -79,7 +75,7 @@ class ReplayNewReplyTriggersCommand extends ContainerAwareCommand
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -99,19 +95,19 @@ class ReplayNewReplyTriggersCommand extends ContainerAwareCommand
         $trigger_ids = explode(',', $input->getArgument('trigger_ids'));
         $trigger_ids = array_map('trim', $trigger_ids);
 
-        $output->writeln("Timezone: " . $tz->getName());
-        $output->writeln("Start:    " . $date_start->format('Y-m-d H:i:s'));
-        $output->writeln("End:      " . $date_end->format('Y-m-d H:i:s'));
-        $output->writeln("Triggers: " . implode(', ', $trigger_ids));
+        $output->writeln('Timezone: '.$tz->getName());
+        $output->writeln('Start:    '.$date_start->format('Y-m-d H:i:s'));
+        $output->writeln('End:      '.$date_end->format('Y-m-d H:i:s'));
+        $output->writeln('Triggers: '.implode(', ', $trigger_ids));
 
-        $triggers = $em->createQuery("
+        $triggers = $em->createQuery('
             SELECT t
             FROM DeskPRO:TicketTrigger t
             WHERE t.id IN (?0) AND t.is_enabled = true
-        ")->setParameter(0, $trigger_ids)->execute();
+        ')->setParameter(0, $trigger_ids)->execute();
 
         if (!$triggers) {
-            $output->writeln("No triggers to execute");
+            $output->writeln('No triggers to execute');
         }
 
         $ids = $db->fetchAllCol("
@@ -121,10 +117,11 @@ class ReplayNewReplyTriggersCommand extends ContainerAwareCommand
             ORDER BY id ASC
         ", array($date_start->format('Y-m-d H:i:s'), $date_end->format('Y-m-d H:i:s')));
 
-        $output->writeln("Number of new messages in the time period: " . count($ids));
+        $output->writeln('Number of new messages in the time period: '.count($ids));
 
         if (!$ids) {
-            $output->writeln("Nothing to do!");
+            $output->writeln('Nothing to do!');
+
             return 0;
         }
 
@@ -138,11 +135,12 @@ class ReplayNewReplyTriggersCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param int $id
-     * @param bool $do_run
+     * @param int             $id
+     * @param bool            $do_run
      * @param TicketTrigger[] $triggers
-     * @param bool $do_rexec
+     * @param bool            $do_rexec
      * @param OutputInterface $output
+     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
@@ -154,21 +152,22 @@ class ReplayNewReplyTriggersCommand extends ContainerAwareCommand
 
         $log = $em->find('DeskPRO:TicketLog', $id);
         if (!$log || !$log->parent) {
-            $output->writeln("Unknown ID: " . $id);
+            $output->writeln('Unknown ID: '.$id);
+
             return;
         }
 
         /** @var Ticket $ticket */
-        $ticket = $log->ticket;
+        $ticket        = $log->ticket;
         $action_person = $log->person;
 
-        $group = $em->createQuery("
+        $group = $em->createQuery('
             SELECT l
             FROM DeskPRO:TicketLog l
             WHERE l.parent = ?0
-        ")->setParameters(array($log->parent))->execute();
+        ')->setParameters(array($log->parent))->execute();
 
-        $message_log = null;
+        $message_log     = null;
         $has_trigger_ids = array();
         foreach ($group as $l) {
             if ($l->trigger_id) {
@@ -180,47 +179,53 @@ class ReplayNewReplyTriggersCommand extends ContainerAwareCommand
             }
         }
 
-        $output->writeln("----------");
+        $output->writeln('----------');
         $output->writeln("Ticket {$ticket->id}");
 
         if (!$message_log) {
-            $output->writeln("No message");
+            $output->writeln('No message');
+
             return;
         }
 
         if ($do_rexec) {
             $try_triggers = $triggers;
         } else {
-            $try_triggers = array_filter($triggers, function($t) use ($has_trigger_ids) {
+            $try_triggers = array_filter($triggers, function ($t) use ($has_trigger_ids) {
                 return !isset($has_trigger_ids[$t->getId()]);
             });
         }
 
         $message = $em->find('DeskPRO:TicketMessage', $message_log->id_after);
         if (!$message) {
-            $output->writeln("No message");
+            $output->writeln('No message');
+
             return;
         }
 
         $output->writeln("Message {$message->id} by {$message->person->getDisplayContact()}");
 
         if (!$try_triggers) {
-            $output->writeln("No triggers to run");
+            $output->writeln('No triggers to run');
+
             return;
         }
 
         if (!$message_log || !$action_person) {
-            $output->writeln("Is not a message-related email: ".  $id);
+            $output->writeln('Is not a message-related email: '.$id);
+
             return;
         }
 
         if (!$message || $message->ticket->id != $log->ticket->id) {
             $output->writeln("Not a valid message on $id");
+
             return;
         }
 
         if (!$do_run) {
-            $output->writeln("Preview mode, not running");
+            $output->writeln('Preview mode, not running');
+
             return;
         }
 
@@ -232,7 +237,7 @@ class ReplayNewReplyTriggersCommand extends ContainerAwareCommand
         $stream = new StreamHandler('php://stdout');
         $logger->pushHandler($stream);
 
-        $ticket->getStateChangeRecorder()->recordData('free', array('message' => 'Replaying triggers for reply event on message #' . $message->getId() . ' by ' . $message->person->getDisplayContact()));
+        $ticket->getStateChangeRecorder()->recordData('free', array('message' => 'Replaying triggers for reply event on message #'.$message->getId().' by '.$message->person->getDisplayContact()));
         $ticket->getStateChangeRecorder()->record('message', null, $message);
 
         $context = new Tickets\ExecutorContext($logger);
@@ -244,13 +249,13 @@ class ReplayNewReplyTriggersCommand extends ContainerAwareCommand
             $context->setPersonContext($action_person);
         }
 
-        $repos = new CustomTicketTriggerRepository();
+        $repos           = new CustomTicketTriggerRepository();
         $repos->triggers = $try_triggers;
 
         $reader = new ValueReader();
         $context->getVars()->set('email_reader', $reader);
 
-        $exec = new TicketSaveActions\ExecTriggers($repos, new Tickets\Actions\ActionApplicator($this->getContainer()));
+        $exec      = new TicketSaveActions\ExecTriggers($repos, new Tickets\Actions\ActionApplicator($this->getContainer()));
         $save_logs = new TicketSaveActions\SaveTicketLogs($this->getContainer()->getEm());
 
         $exec->processTicket($ticket, $context);
@@ -274,7 +279,6 @@ class CustomTicketTriggerRepository extends \Application\DeskPRO\EntityRepositor
 
     public function __construct()
     {
-
     }
 
     public function getTriggersForEventType($t)

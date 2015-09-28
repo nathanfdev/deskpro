@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
@@ -47,15 +45,15 @@ class EditEmailAccountType extends AbstractType
         $builder->add('other_addresses', 'text',  array('required' => false));
 
         $builder->add('incoming_type', 'choice', array(
-            'choices'  => array(
-                'gmail' => 'gmail',
-                'pop3' => 'pop3',
-                'imap' => 'imap',
-                'exchange' => 'exchange',
+            'choices' => array(
+                'gmail'     => 'gmail',
+                'pop3'      => 'pop3',
+                'imap'      => 'imap',
+                'exchange'  => 'exchange',
                 'office365' => 'office365',
-                'noop' => 'noop'
+                'noop'      => 'noop',
             ),
-            'required' => true
+            'required' => true,
         ));
         $builder->add('in_gmail_account',       new IncomingAccount\GmailAccountType());
         $builder->add('in_pop3_account',        new IncomingAccount\Pop3AccountType());
@@ -63,16 +61,15 @@ class EditEmailAccountType extends AbstractType
         $builder->add('in_exchange_account',    new IncomingAccount\ExchangeAccountType());
         $builder->add('in_office365_account',   new IncomingAccount\Office365AccountType());
 
-
         $builder->add('outgoing_type', 'choice', array(
-            'choices'  => array(
-                'gmail' => 'gmail',
-                'smtp' => 'smtp',
-                'php_mail' => 'php_mail',
-                'exchange' => 'exchange',
+            'choices' => array(
+                'gmail'     => 'gmail',
+                'smtp'      => 'smtp',
+                'php_mail'  => 'php_mail',
+                'exchange'  => 'exchange',
                 'office365' => 'office365',
             ),
-            'required' => true
+            'required' => true,
         ));
         $builder->add('out_gmail_account',      new OutgoingAccount\GmailAccountType());
         $builder->add('out_smtp_account',       new OutgoingAccount\SmtpAccountType());

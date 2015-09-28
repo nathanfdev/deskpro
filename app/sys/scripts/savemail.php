@@ -1,9 +1,37 @@
-<?php if (!defined('DP_ROOT')) exit('No access');
-/**
- * DeskPRO
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage SystemScripts
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+if (!defined('DP_ROOT')) {
+    exit('No access');
+}
+/**
+ * DeskPRO.
+ *
  * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
  * @license http://www.deskpro.com/license-agreement DeskPRO License
  */
@@ -11,7 +39,6 @@
 /**
  * This handles a raw email submitted via a PUT request.
  */
-
 require DP_ROOT.'/sys/load_config.php';
 dp_load_config();
 
@@ -20,17 +47,17 @@ dp_load_config();
 #------------------------------
 
 if (!defined('DP_SAVEMAIL_AUTH')) {
-    echo "DP_SAVEMAIL_AUTH_UNDEFINED";
+    echo 'DP_SAVEMAIL_AUTH_UNDEFINED';
     exit(1);
 }
 
 if (!isset($_GET['auth']) || $_GET['auth'] != DP_SAVEMAIL_AUTH) {
-    echo "DP_SAVEMAIL_AUTH_INVALID";
+    echo 'DP_SAVEMAIL_AUTH_INVALID';
     exit(1);
 }
 
 if (!isset($_FILES['mailfile']) || !empty($_FILES['mailfile']['error']) || empty($_FILES['mailfile']['tmp_name'])) {
-    echo "DP_MAILFILE_INVALID";
+    echo 'DP_MAILFILE_INVALID';
     exit(1);
 }
 
@@ -44,7 +71,7 @@ if (!dp_get_config('savemail_accept_all')) {
     if (isset($_GET['cat'])) {
         try {
             $pdo = new \PDO("mysql:host={$DP_CONFIG['db']['host']};dbname={$DP_CONFIG['db']['dbname']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
-            $st = $pdo->prepare("SELECT id FROM email_gateway_addresses WHERE match_pattern = ?");
+            $st  = $pdo->prepare('SELECT id FROM email_gateway_addresses WHERE match_pattern = ?');
             $st->execute(array($_GET['cat']));
 
             if (!$st->fetchColumn()) {
@@ -58,7 +85,7 @@ if (!dp_get_config('savemail_accept_all')) {
     }
 
     if ($invalid_mail) {
-        echo "DP_UNKNOWN_CAT";
+        echo 'DP_UNKNOWN_CAT';
         exit(1);
     }
 }
@@ -68,12 +95,12 @@ if (!dp_get_config('savemail_accept_all')) {
 #------------------------------
 
 if (!defined('DP_SAVEMAIL_DIR')) {
-    define('DP_SAVEMAIL_DIR', dp_get_data_dir() . '/emailstore');
+    define('DP_SAVEMAIL_DIR', dp_get_data_dir().'/emailstore');
 }
 
 if (!is_dir(DP_SAVEMAIL_DIR)) {
     if (!mkdir(DP_SAVEMAIL_DIR, 0777, true)) {
-        echo "DP_SAVEMAIL_DIR_INVALID";
+        echo 'DP_SAVEMAIL_DIR_INVALID';
         exit(1);
     }
 
@@ -86,16 +113,16 @@ if (!is_dir(DP_SAVEMAIL_DIR)) {
 $cat = isset($_GET['cat']) ? $_GET['cat'] : 'default';
 
 if (!preg_match('#^[a-zA-Z0-9\-_][a-zA-Z0-9\-_.@]*$#', $cat)) {
-    echo "DP_INVALID_CAT";
+    echo 'DP_INVALID_CAT';
     exit(1);
 }
 
-$cat = strtolower($cat);
-$cat_dir = DP_SAVEMAIL_DIR . '/' . $cat;
+$cat     = strtolower($cat);
+$cat_dir = DP_SAVEMAIL_DIR.'/'.$cat;
 
 if (!is_dir($cat_dir)) {
     if (!mkdir($cat_dir, 0777, true)) {
-        echo "DP_SAVEMAIL_DIR_MAKE_ERROR";
+        echo 'DP_SAVEMAIL_DIR_MAKE_ERROR';
         exit(1);
     }
 
@@ -109,12 +136,12 @@ if (!is_dir($cat_dir)) {
 # Save input
 #------------------------------
 
-$name = date('Y-m-d.H-i-s') . '-' . mt_rand(100000000,999999999) . '.eml';
+$name = date('Y-m-d.H-i-s').'-'.mt_rand(100000000, 999999999).'.eml';
 
-$tmp_path = dp_get_tmp_dir() . '/tmp_eml_' . $name;
+$tmp_path = dp_get_tmp_dir().'/tmp_eml_'.$name;
 if (!is_dir(dp_get_tmp_dir())) {
     if (!mkdir(dp_get_tmp_dir(), 0777, true)) {
-        echo "DP_SAVEMAIL_TMPDIR_MAKE_ERROR";
+        echo 'DP_SAVEMAIL_TMPDIR_MAKE_ERROR';
         exit(1);
     }
 
@@ -131,6 +158,6 @@ umask(0000);
 chmod($tmp_path, 0777);
 umask($current_umask);
 
-rename($tmp_path, $cat_dir . '/' . $name);
+rename($tmp_path, $cat_dir.'/'.$name);
 
-echo "DP_MAIL_ACCEPT";
+echo 'DP_MAIL_ACCEPT';

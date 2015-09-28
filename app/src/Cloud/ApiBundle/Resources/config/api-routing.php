@@ -1,22 +1,52 @@
-<?php if (!defined('DP_ROOT')) exit('No access');
+<?php
 
-require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php');
-require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php');
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+if (!defined('DP_ROOT')) {
+    exit('No access');
+}
+
+require_once DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php';
+require_once DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php';
 
 use Application\DeskPRO\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 
 $collection->create('api_dpc_call_ping', array(
-    'path'        => '/dpc-call/ping',
-    'controller'  => 'CloudApiBundle:CloudCall:ping',
-    'methods'     => array('GET'),
+    'path'       => '/dpc-call/ping',
+    'controller' => 'CloudApiBundle:CloudCall:ping',
+    'methods'    => array('GET'),
 ));
 
 $collection->create('api_dpc_call_resetpass', array(
-    'path'        => '/dpc-call/reset-password/{person_id}',
-    'controller'  => 'CloudApiBundle:CloudCall:resetPassword',
-    'methods'     => array('GET', 'POST'),
+    'path'       => '/dpc-call/reset-password/{person_id}',
+    'controller' => 'CloudApiBundle:CloudCall:resetPassword',
+    'methods'    => array('GET', 'POST'),
 ));
 
 ########################################################################################################################
@@ -39,9 +69,9 @@ $collection->removeRoutes(
 );
 
 $collection->create('api_dpc_call_resetpass', array(
-    'path'        => '/dp_license/cloud/billing-login-token',
-    'controller'  => 'CloudApiBundle:License:getBillingLoginToken',
-    'methods'     => array('GET'),
+    'path'       => '/dp_license/cloud/billing-login-token',
+    'controller' => 'CloudApiBundle:License:getBillingLoginToken',
+    'methods'    => array('GET'),
 ));
 
 ########################################################################################################################
@@ -51,13 +81,13 @@ $collection->create('api_dpc_call_resetpass', array(
 $collection->create('api_cloud_urlsettings', array(
     'path'       => '/settings/cloud/url-settings',
     'controller' => 'CloudApiBundle:Settings:getUrlSettings',
-    'methods'    => array('GET')
+    'methods'    => array('GET'),
 ));
 
 $collection->create('api_cloud_urlsettings_save', array(
     'path'       => '/settings/cloud/url-settings',
     'controller' => 'CloudApiBundle:Settings:saveUrlSettings',
-    'methods'    => array('POST')
+    'methods'    => array('POST'),
 ));
 
 $collection->rewriteController('ApiBundle:Settings', 'CloudApiBundle:Settings');

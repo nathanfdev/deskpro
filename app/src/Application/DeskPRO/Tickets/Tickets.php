@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
-
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -41,7 +39,8 @@ class Tickets
     /**
      * Get an array of tickets from the passed IDs.
      *
-     * @param  array $ids
+     * @param array $ids
+     *
      * @return array
      */
     public function getTicketsFromIds(array $ids)
@@ -51,10 +50,9 @@ class Tickets
             ->getTicketsFromIds($ids);
     }
 
-
-
     /**
-     * @param  Ticket     $ticket
+     * @param Ticket $ticket
+     *
      * @return TicketEdit
      */
     public function getTicketEditor(Entity\Ticket $ticket)
@@ -64,12 +62,11 @@ class Tickets
         return $ticket_edit;
     }
 
-
-
     /**
      * Get an array of various options used on the new ticket page.
      *
-     * @param  mixed $person The person we're fetching for. This will define the permissions/context.
+     * @param mixed $person The person we're fetching for. This will define the permissions/context.
+     *
      * @return array
      */
     public function getTicketOptions($person)
@@ -90,12 +87,12 @@ class Tickets
 
         if (App::getSetting('core.use_ticket_category')) {
             $options['ticket_categories_hierarchy'] = App::getDataService('TicketCategory')->getInHierarchy();
-            $options['ticket_categories_full'] = App::getDataService('TicketCategory')->getFullNames(null, false);
-            $options['ticket_categories'] = App::getDataService('TicketCategory')->getNames(null, false);
+            $options['ticket_categories_full']      = App::getDataService('TicketCategory')->getFullNames(null, false);
+            $options['ticket_categories']           = App::getDataService('TicketCategory')->getNames(null, false);
         } else {
             $options['ticket_categories_hierarchy'] = array();
-            $options['ticket_categories_full'] = array();
-            $options['ticket_categories'] = array();
+            $options['ticket_categories_full']      = array();
+            $options['ticket_categories']           = array();
         }
 
         if (App::getSetting('core.use_ticket_workflow')) {
@@ -105,21 +102,21 @@ class Tickets
         }
 
         if (App::getSetting('core.use_product')) {
-            $options['products'] = App::getDataService('Product')->getNames();
-            $options['products_hierarchy']  = App::getDataService('Product')->getInHierarchy();
+            $options['products']           = App::getDataService('Product')->getNames();
+            $options['products_hierarchy'] = App::getDataService('Product')->getInHierarchy();
         } else {
-            $options['products'] = array();
-            $options['products_hierarchy']  = array();
+            $options['products']           = array();
+            $options['products_hierarchy'] = array();
         }
 
-        $options['slas']  = App::getDataService('Sla')->getSlaTitles();
+        $options['slas'] = App::getDataService('Sla')->getSlaTitles();
 
         if (App::getSetting('core.use_ticket_priority')) {
-            $options['priorities']  = App::getDataService('TicketPriority')->getNames();
+            $options['priorities'] = App::getDataService('TicketPriority')->getNames();
         } else {
             $options['priorities'] = array();
         }
-        $options['ticket_priorities']  = $options['priorities'];
+        $options['ticket_priorities'] = $options['priorities'];
 
         return $options;
     }

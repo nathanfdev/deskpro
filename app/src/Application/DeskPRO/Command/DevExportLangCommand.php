@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Commands
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Commands
+ */
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\Languages\Build\OneSkyBuild;
@@ -58,7 +57,7 @@ class DevExportLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
                 || !dp_get_config('transifex.username')
                 || !dp_get_config('transifex.password')
             ) {
-                $output->writeln("Missing transifex configuration");
+                $output->writeln('Missing transifex configuration');
 
                 return 1;
             }
@@ -69,7 +68,7 @@ class DevExportLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
                 !dp_get_config('onesky.api_key')
                 || !dp_get_config('onesky.secret_key')
             ) {
-                $output->writeln("Missing onesky configuration");
+                $output->writeln('Missing onesky configuration');
 
                 return 1;
             }
@@ -102,7 +101,7 @@ class DevExportLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
         }
 
         if (!$done_any) {
-            $output->writeln("<error>Choose an export option. See --help for options.");
+            $output->writeln('<error>Choose an export option. See --help for options.');
 
             return 1;
         }
@@ -116,8 +115,8 @@ class DevExportLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
         $langpack = new \Application\DeskPRO\Languages\LangPackInfo();
 
         foreach ($langpack->getDefaultSections() as $section) {
-            $section_dir = DP_ROOT.'/languages/default/' . $section;
-            $export_dir = $section_dir . '/export';
+            $section_dir = DP_ROOT.'/languages/default/'.$section;
+            $export_dir  = $section_dir.'/export';
 
             if (is_dir($export_dir)) {
                 $fileutil->remove($export_dir);
@@ -128,34 +127,33 @@ class DevExportLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
             }
 
             foreach ($langpack->getDefaultCategories($section) as $category) {
-                $cat_path = $section_dir . '/' . $category . '.php';
+                $cat_path = $section_dir.'/'.$category.'.php';
                 if (!is_file($cat_path)) {
-                    die('MISSING: ' . $cat_path);
+                    die('MISSING: '.$cat_path);
                 }
 
-                $phrases = include($cat_path);
+                $phrases = include $cat_path;
 
-                $outfile = $export_dir . '/' . $category . '.po';
-                $fs = fopen($outfile, 'w');
+                $outfile = $export_dir.'/'.$category.'.po';
+                $fs      = fopen($outfile, 'w');
 
-                fwrite($fs, 'msgid ""' . "\n");
-                fwrite($fs, 'msgstr ""' . "\n");
-                fwrite($fs, '"MIME-Version: 1.0\n"' . "\n");
-                fwrite($fs, '"Content-Type: text/plain; charset=UTF-8\n"' . "\n");
-                fwrite($fs, '"Content-Transfer-Encoding: 8bit\n"' . "\n");
+                fwrite($fs, 'msgid ""'."\n");
+                fwrite($fs, 'msgstr ""'."\n");
+                fwrite($fs, '"MIME-Version: 1.0\n"'."\n");
+                fwrite($fs, '"Content-Type: text/plain; charset=UTF-8\n"'."\n");
+                fwrite($fs, '"Content-Transfer-Encoding: 8bit\n"'."\n");
 
-                foreach($phrases as $source => $target) {
-
+                foreach ($phrases as $source => $target) {
                     fwrite($fs, "\nmsgid \"{$source}\"\n");
-                    fwrite($fs, "msgstr ");
+                    fwrite($fs, 'msgstr ');
 
                     $parts = explode("\n", $target);
-                    foreach($parts as $i=>$part) {
+                    foreach ($parts as $i => $part) {
 
                         // escape " for PO format
-                        fwrite($fs, '"'. str_replace('"', '\\"', $part));
+                        fwrite($fs, '"'.str_replace('"', '\\"', $part));
 
-                        if($i != count($parts) -1) {
+                        if ($i != count($parts) - 1) {
                             fwrite($fs, '\n');
                         }
 

@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -39,7 +36,7 @@ use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Log\Logger;
 
 /**
- * This cycles through chats and cleans up abandonded ones
+ * This cycles through chats and cleans up abandonded ones.
  */
 class ChatPingTimeout extends AbstractJob
 {
@@ -57,12 +54,12 @@ class ChatPingTimeout extends AbstractJob
         $cutoff = date('Y-m-d H:i:s', time() - 20); // 20 secs for agents
 
         // Agnets who we know are online
-        $agent_ids = App::getDb()->fetchAllCol("
+        $agent_ids = App::getDb()->fetchAllCol('
             SELECT sessions.person_id
             FROM sessions
             JOIN people ON people.id = sessions.person_id
             WHERE people.is_agent = 1 AND sessions.date_last > ?
-        ", array($cutoff));
+        ', array($cutoff));
 
         $agent_ids[] = 0;
 
@@ -75,11 +72,11 @@ class ChatPingTimeout extends AbstractJob
 
         $count_agents = 0;
         foreach ($timeouts as $chat_id => $agent_id) {
-            $chat = App::getEntityRepository('DeskPRO:ChatConversation')->find($chat_id);
+            $chat  = App::getEntityRepository('DeskPRO:ChatConversation')->find($chat_id);
             $agent = App::getEntityRepository('DeskPRO:Person')->find($agent_id);
             $chat_manager->agentTimeout($chat, $agent);
 
-            $count_agents++;
+            ++$count_agents;
             $this->logger->log("Agent {$agent->id} {$agent->display_name} timed out in chat {$chat->id}", Logger::INFO);
         }
 
@@ -103,7 +100,7 @@ class ChatPingTimeout extends AbstractJob
             $chat = App::getEntityRepository('DeskPRO:ChatConversation')->find($chat_id);
             $chat_manager->userTimeout($chat);
 
-            $count_users++;
+            ++$count_users;
             $this->logger->log("User timed out in chat {$chat->id}", Logger::INFO);
         }
 
@@ -111,7 +108,7 @@ class ChatPingTimeout extends AbstractJob
         # Max waiting times
         #------------------------------
 
-        $max_time = App::getSetting('core_chat.max_wait_time');
+        $max_time   = App::getSetting('core_chat.max_wait_time');
         $count_wait = 0;
 
         if ($max_time) {
@@ -126,7 +123,7 @@ class ChatPingTimeout extends AbstractJob
                 $chat = App::getEntityRepository('DeskPRO:ChatConversation')->find($chat_id);
                 $chat_manager->waitTimeout($chat);
 
-                $count_wait++;
+                ++$count_wait;
                 $secs = time() - $chat->date_user_waiting->getTimestamp();
                 $this->logger->log("Wait timed out chat {$chat->id} (waiting $secs seconds)", Logger::INFO);
             }
@@ -136,7 +133,7 @@ class ChatPingTimeout extends AbstractJob
         # Abandoned chats after user timeout
         #------------------------------
 
-        $max_time = App::getSetting('core_chat.abandoned_time');
+        $max_time        = App::getSetting('core_chat.abandoned_time');
         $count_abandoned = 0;
 
         if ($max_time) {
@@ -151,7 +148,7 @@ class ChatPingTimeout extends AbstractJob
                 $chat = App::getEntityRepository('DeskPRO:ChatConversation')->find($chat_id);
                 $chat_manager->userAbandoned($chat);
 
-                $count_abandoned++;
+                ++$count_abandoned;
                 $secs = time() - $chat->date_ended->getTimestamp();
                 $this->logger->log("Timed out user abandoned chat {$chat->id} (its been $secs seconds)", Logger::INFO);
             }
@@ -161,7 +158,7 @@ class ChatPingTimeout extends AbstractJob
             $this->logStatus("Chat timeouts: {$count_agents} agents, {$count_users} users, {$count_wait} wait", array(
                 'count_agents' => $count_agents,
                 'count_users'  => $count_users,
-                'count_wait'   => $count_wait
+                'count_wait'   => $count_wait,
             ));
         }
     }

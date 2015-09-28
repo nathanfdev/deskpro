@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Banning;
 
 use Application\DeskPRO\Entity\BanEmail;
@@ -41,35 +39,31 @@ class EmailBans
     /**
      * @var \Application\DeskPRO\ORM\EntityManager
      */
-
     protected $em;
 
     /**
      * @var \Application\DeskPRO\Entity\BanEmail[]
      */
-
     protected $email_bans;
 
     /**
      * @var int
      */
-
     protected $per_page = 20;
 
     /**
      * @var int
      */
-
     protected $from;
 
     /**
      * @var string
      */
-
     protected $search_phrase;
 
     /**
-     * filter wildcards only if true
+     * filter wildcards only if true.
+     *
      * @var bool
      */
     protected $wildcard = false;
@@ -77,7 +71,6 @@ class EmailBans
     /**
      * @param EntityManager $em
      */
-
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
@@ -88,7 +81,6 @@ class EmailBans
      *
      * @return $this
      */
-
     public function setPerPage($per_page)
     {
         $this->per_page = $per_page;
@@ -101,11 +93,9 @@ class EmailBans
      *
      * @return $this
      */
-
     public function setPage($page)
     {
         if ($page == 0) {
-
             $page = 1;
         }
 
@@ -123,6 +113,7 @@ class EmailBans
 
     /**
      * @param $search_phrase
+     *
      * @return $this
      */
     public function setSearchPhrase($search_phrase)
@@ -133,9 +124,8 @@ class EmailBans
     }
 
     /**
-     * Loads twitter accounts data from the database
+     * Loads twitter accounts data from the database.
      */
-
     private function preload()
     {
         if ($this->email_bans !== null) {
@@ -150,22 +140,20 @@ class EmailBans
         );
     }
 
-
     /**
      * Resets this repository so the next time data is requested form it, it will
      * be queried again.
      */
-
     public function reset()
     {
         $this->email_bans = null;
     }
 
     /**
-     * @param  int                                  $id
+     * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\BanEmail
      */
-
     public function getById($id)
     {
         return $this->em->getRepository('DeskPRO:BanEmail')->get($id);
@@ -174,7 +162,6 @@ class EmailBans
     /**
      * @return \Application\DeskPRO\Entity\BanEmail[]
      */
-
     public function getAll()
     {
         $this->preload();
@@ -185,7 +172,6 @@ class EmailBans
     /**
      * @return array
      */
-
     public function getAllAsNestedArray()
     {
         $this->preload();
@@ -193,7 +179,6 @@ class EmailBans
         $result = array();
 
         foreach ($this->email_bans as $email_ban) {
-
             $result[] = array('banned_email' => $email_ban);
         }
 
@@ -203,7 +188,6 @@ class EmailBans
     /**
      * @return int
      */
-
     public function getPageCount()
     {
         return $this->em->getRepository('DeskPRO:BanEmail')->getPageCount($this->per_page, $this->search_phrase, $this->wildcard);
@@ -220,7 +204,6 @@ class EmailBans
     /**
      * @return int
      */
-
     public function count()
     {
         $this->preload();
@@ -231,7 +214,6 @@ class EmailBans
     /**
      * @return BanEmail
      */
-
     public function createNew()
     {
         return BanEmail::createEmailBan();

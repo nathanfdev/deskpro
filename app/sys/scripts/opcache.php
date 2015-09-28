@@ -1,17 +1,19 @@
 <?php
 
-if (!defined('DP_ROOT')) exit('No access');
+if (!defined('DP_ROOT')) {
+    exit('No access');
+}
 function url(array $params)
 {
     $params = array_merge(array(
         '_sys' => $_REQUEST['_sys'],
-        '_' => $_REQUEST['_'],
+        '_'    => $_REQUEST['_'],
     ), $params);
 
-    return $_SERVER['SCRIPT_NAME'] . '?' . http_build_query($params);
+    return $_SERVER['SCRIPT_NAME'].'?'.http_build_query($params);
 }
 
-/**
+/*
  * OPcache GUI
  *
  * A simple but effective single-file GUI for the OPcache PHP extension.
@@ -25,32 +27,32 @@ if (!function_exists('opcache_get_status')) {
 }
 
 $settings = array(
-    'compress_path_threshold' => 2,
+    'compress_path_threshold'               => 2,
     'used_memory_percentage_high_threshold' => 80,
-    'used_memory_percentage_mid_threshold' => 60,
-    'allow_invalidate' => true
+    'used_memory_percentage_mid_threshold'  => 60,
+    'allow_invalidate'                      => true,
 );
 
 $validPages = array('overview', 'files', 'reset', 'invalidate');
-$page = (empty($_GET['page']) || !in_array($_GET['page'], $validPages)
+$page       = (empty($_GET['page']) || !in_array($_GET['page'], $validPages)
     ? 'overview'
     : strtolower($_GET['page'])
 );
 
 if ($page == 'reset') {
     opcache_reset();
-    header('Location: ' . url(array('page' => 'overview')));
+    header('Location: '.url(array('page' => 'overview')));
     exit;
 }
 
 if ($page == 'invalidate') {
     $file = (isset($_GET['file']) ? trim($_GET['file']) : null);
     if (!$settings['allow_invalidate'] || !function_exists('opcache_invalidate') || empty($file)) {
-        header('Location: ' . url(array('page' => 'files', 'error' => 1)));
+        header('Location: '.url(array('page' => 'files', 'error' => 1)));
         exit;
     }
-    $success = (int)opcache_invalidate(urldecode($file), true);
-    header('Location: ' . url(array('page' => 'files', 'success' => $success)));
+    $success = (int) opcache_invalidate(urldecode($file), true);
+    header('Location: '.url(array('page' => 'files', 'success' => $success)));
     exit;
 }
 
@@ -66,7 +68,7 @@ if (!empty($opcache_status['scripts'])) {
 
 function memsize($size, $precision = 3, $space = false)
 {
-    $i = 0;
+    $i   = 0;
     $val = array(' bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
     while (($size / 1024) > 1) {
         $size /= 1024;
@@ -83,7 +85,7 @@ function rc($at = null)
     if ($at !== null) {
         $i = $at;
     } else {
-        echo (++$i % 2 ? 'even' : 'odd');
+        echo(++$i % 2 ? 'even' : 'odd');
     }
 }
 
@@ -91,21 +93,21 @@ $data = array_merge(
     $opcache_status['memory_usage'],
     $opcache_status['opcache_statistics'],
     array(
-        'total_memory_size'       => memsize($opcache_config['directives']['opcache.memory_consumption']),
-        'used_memory_percentage'  => round(100 * (
+        'total_memory_size'      => memsize($opcache_config['directives']['opcache.memory_consumption']),
+        'used_memory_percentage' => round(100 * (
                 ($opcache_status['memory_usage']['used_memory'] + $opcache_status['memory_usage']['wasted_memory'])
                 / $opcache_config['directives']['opcache.memory_consumption'])),
-        'hit_rate_percentage'     => round($opcache_status['opcache_statistics']['opcache_hit_rate']),
-        'wasted_percentage'       => round($opcache_status['memory_usage']['current_wasted_percentage'], 2),
-        'used_memory_size'        => memsize($opcache_status['memory_usage']['used_memory']),
-        'free_memory_size'        => memsize($opcache_status['memory_usage']['free_memory']),
-        'wasted_memory_size'      => memsize($opcache_status['memory_usage']['wasted_memory']),
-        'files_cached'            => number_format($opcache_status['opcache_statistics']['num_cached_scripts']),
-        'hits_size'               => number_format($opcache_status['opcache_statistics']['hits']),
-        'miss_size'               => number_format($opcache_status['opcache_statistics']['misses']),
-        'blacklist_miss_size'     => number_format($opcache_status['opcache_statistics']['blacklist_misses']),
-        'num_cached_keys_size'    => number_format($opcache_status['opcache_statistics']['num_cached_keys']),
-        'max_cached_keys_size'    => number_format($opcache_status['opcache_statistics']['max_cached_keys']),
+        'hit_rate_percentage'  => round($opcache_status['opcache_statistics']['opcache_hit_rate']),
+        'wasted_percentage'    => round($opcache_status['memory_usage']['current_wasted_percentage'], 2),
+        'used_memory_size'     => memsize($opcache_status['memory_usage']['used_memory']),
+        'free_memory_size'     => memsize($opcache_status['memory_usage']['free_memory']),
+        'wasted_memory_size'   => memsize($opcache_status['memory_usage']['wasted_memory']),
+        'files_cached'         => number_format($opcache_status['opcache_statistics']['num_cached_scripts']),
+        'hits_size'            => number_format($opcache_status['opcache_statistics']['hits']),
+        'miss_size'            => number_format($opcache_status['opcache_statistics']['misses']),
+        'blacklist_miss_size'  => number_format($opcache_status['opcache_statistics']['blacklist_misses']),
+        'num_cached_keys_size' => number_format($opcache_status['opcache_statistics']['num_cached_keys']),
+        'max_cached_keys_size' => number_format($opcache_status['opcache_statistics']['max_cached_keys']),
     )
 );
 
@@ -280,7 +282,7 @@ $host = (function_exists('gethostname')
                 </tr>
                 <tr class="<?php rc(); ?>">
                     <td>Last reset</td>
-                    <td><?php echo ($data['last_restart_time'] == 0
+                    <td><?php echo($data['last_restart_time'] == 0
                             ? '<em>never</em>'
                             : date_format(date_create("@{$data['last_restart_time']}"), 'Y-m-d H:i:s')); ?></td>
                 </tr>
@@ -292,7 +294,7 @@ $host = (function_exists('gethostname')
                 <?php rc(0); foreach ($opcache_config['directives'] as $d => $v): ?>
                     <tr class="<?php rc(); ?>">
                         <td><span title="<?php echo $d; ?>"><?php echo str_replace(array('opcache.', '_'), array('', ' '), $d); ?></span></td>
-                        <td><?php echo (is_bool($v)
+                        <td><?php echo(is_bool($v)
                                 ? ($v ? '<i>true</i>' : '<i>false</i>')
                                 : (empty($v) ? '<i>no value</i>' : $v)); ?></td>
                     </tr>
@@ -344,7 +346,7 @@ $host = (function_exists('gethostname')
     <h2>File usage</h2>
     <p><label>Start typing to filter on script path<br/><input type="text" style="width:40em;" name="filter" id="frmFilter" /><label></p>
     <div class="container">
-        <h3><?php echo $data['files_cached']; ?> file<?php echo ($data['files_cached'] == 1 ? '' : 's'); ?> cached <span id="filterShowing"></span></h3>
+        <h3><?php echo $data['files_cached']; ?> file<?php echo($data['files_cached'] == 1 ? '' : 's'); ?> cached <span id="filterShowing"></span></h3>
         <table>
             <tr>
                 <th>Script</th>
@@ -356,10 +358,10 @@ $host = (function_exists('gethostname')
                             $base  = basename($s['full_path']);
                             $parts = array_filter(explode(DIRECTORY_SEPARATOR, dirname($s['full_path'])));
                             if (!empty($settings['compress_path_threshold'])) {
-                                echo '<span class="showmore"><span class="button">…</span><span class="text" style="display:none;">' . DIRECTORY_SEPARATOR;
-                                echo join(DIRECTORY_SEPARATOR, array_slice($parts, 0, $settings['compress_path_threshold'])) . DIRECTORY_SEPARATOR;
+                                echo '<span class="showmore"><span class="button">…</span><span class="text" style="display:none;">'.DIRECTORY_SEPARATOR;
+                                echo implode(DIRECTORY_SEPARATOR, array_slice($parts, 0, $settings['compress_path_threshold'])).DIRECTORY_SEPARATOR;
                                 echo '</span>';
-                                echo join(DIRECTORY_SEPARATOR, array_slice($parts, $settings['compress_path_threshold']));
+                                echo implode(DIRECTORY_SEPARATOR, array_slice($parts, $settings['compress_path_threshold']));
                                 if (count($parts) > $settings['compress_path_threshold']) {
                                     echo DIRECTORY_SEPARATOR;
                                 }

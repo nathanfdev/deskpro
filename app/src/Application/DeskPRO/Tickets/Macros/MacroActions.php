@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Tickets\Macros;
 
 use Application\DeskPRO\Entity\Person;
@@ -61,9 +60,9 @@ class MacroActions implements \Serializable, MacroActionInterface
         $this->actions = new MacroActionComposite();
     }
 
-
     /**
-     * @param  MacroActionInterface      $action
+     * @param MacroActionInterface $action
+     *
      * @throws \InvalidArgumentException
      */
     public function addAction(MacroActionInterface $action)
@@ -75,9 +74,9 @@ class MacroActions implements \Serializable, MacroActionInterface
         $this->actions->add($action);
     }
 
-
     /**
-     * @param  array                     $action_info
+     * @param array $action_info
+     *
      * @throws \InvalidArgumentException
      */
     public function addActionFromArray(array $action_info)
@@ -95,9 +94,10 @@ class MacroActions implements \Serializable, MacroActionInterface
      * Return an array of macros that the user does not have permission to use.
      * An empty array means there are no permission errors.
      *
-     * @param  Person                   $person
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
+     * @param Person                   $person
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     *
      * @return array
      */
     public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
@@ -105,18 +105,15 @@ class MacroActions implements \Serializable, MacroActionInterface
         return $this->actions->getMacroPermissionErrors($person, $ticket, $context);
     }
 
-
     /**
-     * @param  Person                   $person
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @return void
+     * @param Person                   $person
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
      */
     public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
     {
         $this->actions->applyMacro($person, $ticket, $context);
     }
-
 
     /**
      * @return array
@@ -125,7 +122,7 @@ class MacroActions implements \Serializable, MacroActionInterface
     {
         $data = array();
 
-        $data['version']  = 1;
+        $data['version'] = 1;
         $data['actions'] = array();
         foreach ($this->actions->getAll() as $actions) {
             if (!($actions instanceof ActionDefinitionInterface)) {
@@ -134,13 +131,12 @@ class MacroActions implements \Serializable, MacroActionInterface
 
             $data['actions'][] = array(
                 'type'    => $actions->getActionType(),
-                'options' => $actions->getActionOptions()->all()
+                'options' => $actions->getActionOptions()->all(),
             );
         }
 
         return $data;
     }
-
 
     /**
      * @return string
@@ -149,7 +145,6 @@ class MacroActions implements \Serializable, MacroActionInterface
     {
         return json_encode($this->exportToArray());
     }
-
 
     /**
      * @param array $data
@@ -161,7 +156,6 @@ class MacroActions implements \Serializable, MacroActionInterface
         }
     }
 
-
     /**
      * @return string
      */
@@ -169,7 +163,6 @@ class MacroActions implements \Serializable, MacroActionInterface
     {
         return $this->exportToJson();
     }
-
 
     /**
      * @param string $data
@@ -185,7 +178,7 @@ class MacroActions implements \Serializable, MacroActionInterface
                 $this->addActionFromArray($action_info);
             } catch (\Exception $e) {
                 if (!empty($action_info['type'])) {
-                    KernelErrorHandler::logException($e, false, md5('macro_' . $action_info['type']));
+                    KernelErrorHandler::logException($e, false, md5('macro_'.$action_info['type']));
                 }
             }
         }

@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Usersource\Adapter;
 
 use Application\DeskPRO\Ldap\LdapPagedSearcher;
@@ -46,13 +43,13 @@ class Ldap extends AbstractAdapter
         $info = $identity->getRawData();
 
         return array(
-            'name'             => isset($info['name']) ? $info['name'] : '',
-            'first_name'       => isset($info['first_name']) ? $info['first_name'] : '',
-            'last_name'        => isset($info['last_name']) ? $info['last_name'] : '',
-            'email'            => isset($info['email_address']) ? $info['email_address'] : '',
-            'email_confirmed'  => true,
-            'phone'            => isset($info['phone']) ? $info['phone'] : null,
-            'picture_data'     => isset($info['picture_data']) ? $info['picture_data'] : null,
+            'name'            => isset($info['name']) ? $info['name'] : '',
+            'first_name'      => isset($info['first_name']) ? $info['first_name'] : '',
+            'last_name'       => isset($info['last_name']) ? $info['last_name'] : '',
+            'email'           => isset($info['email_address']) ? $info['email_address'] : '',
+            'email_confirmed' => true,
+            'phone'           => isset($info['phone']) ? $info['phone'] : null,
+            'picture_data'    => isset($info['picture_data']) ? $info['picture_data'] : null,
         );
     }
 
@@ -92,10 +89,12 @@ class Ldap extends AbstractAdapter
         /** @var \Orb\Auth\Adapter\LdapRaw $adapter */
         $adapter = $us_adapter->getAuthAdapter();
 
-        if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findAllIdentities");
+        if ($adapter->getLogger()) {
+            $adapter->getLogger()->logDebug('findAllIdentities');
+        }
 
         $paging = $usersource->getOption('ldapPaging', false);
-        $size = $usersource->getOption('ldapPerPage', 0);
+        $size   = $usersource->getOption('ldapPerPage', 0);
 
         return $adapter->findAllRecords($size, $paging);
     }
@@ -103,7 +102,8 @@ class Ldap extends AbstractAdapter
     /**
      * Find a user identity with an email address, a username, or the DN.
      *
-     * @param  string                  $id_input Username or email address
+     * @param string $id_input Username or email address
+     *
      * @return \Orb\Auth\Identity|null
      */
     public function findIdentityByInput($id_input)
@@ -114,7 +114,9 @@ class Ldap extends AbstractAdapter
         /** @var \Orb\Auth\Adapter\LdapRaw $adapter */
         $adapter = $usersource->getAdapter()->getAuthAdapter();
 
-        if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findIdentityByInput: $id_input");
+        if ($adapter->getLogger()) {
+            $adapter->getLogger()->logDebug("findIdentityByInput: $id_input");
+        }
 
         $adapter->setFormData(array(
             'username' => $id_input,
@@ -133,14 +135,17 @@ class Ldap extends AbstractAdapter
                 $rec_arr = $adapter->findRecordViaDn($id_input);
             }
         } catch (\Exception $e) {
-            if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findIdentityByInput Exception: {$e->getCode()} {$e->getMessage()}");
+            if ($adapter->getLogger()) {
+                $adapter->getLogger()->logDebug("findIdentityByInput Exception: {$e->getCode()} {$e->getMessage()}");
+            }
             throw $e;
         }
 
         $raw_info = array();
         if ($rec_arr && isset($rec_arr['dn'])) {
-
-            if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findRecordViaEmail result: " . print_r($rec_arr,1));
+            if ($adapter->getLogger()) {
+                $adapter->getLogger()->logDebug('findRecordViaEmail result: '.print_r($rec_arr, 1));
+            }
 
             $raw_info = $rec_arr;
 
@@ -168,7 +173,8 @@ class Ldap extends AbstractAdapter
                 $auth->setUsername('__bogus__');
                 $auth->setPassword('__bogus__');
                 $auth->authenticate();
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
 
             /** @var $ldap \Zend\Ldap\Ldap */
             $ldap = $auth->getLdap();
@@ -176,9 +182,13 @@ class Ldap extends AbstractAdapter
             /** @var $rec \Zend\Ldap\Node */
             $rec = $ldap->getNode($rec_arr['dn']);
 
-            if ($adapter->getLogger()) $adapter->getLogger()->logDebug("getNode result: " . print_r($rec,1));
+            if ($adapter->getLogger()) {
+                $adapter->getLogger()->logDebug('getNode result: '.print_r($rec, 1));
+            }
         } else {
-            if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findRecordViaEmail result: null");
+            if ($adapter->getLogger()) {
+                $adapter->getLogger()->logDebug('findRecordViaEmail result: null');
+            }
         }
 
         if ($rec) {
@@ -192,7 +202,7 @@ class Ldap extends AbstractAdapter
             }
 
             if (isset($raw_info['first_name']) && isset($raw_info['last_name'])) {
-                $raw_info['name'] = $raw_info['first_name'] . ' ' . $raw_info['last_name'];
+                $raw_info['name'] = $raw_info['first_name'].' '.$raw_info['last_name'];
             } elseif ($rec->getAttribute('name')) {
                 $raw_info['name'] = $rec->getAttribute('name', 0);
             } elseif ($rec->getAttribute('cn')) {
@@ -208,7 +218,7 @@ class Ldap extends AbstractAdapter
             if ($rec->getAttribute('jpegPhoto')) {
                 $raw_info['picture_data'] = $rec->getAttribute('jpegPhoto', 0);
             } elseif ($rec->getAttribute('thumbnailPhoto')) {
-                $raw_info['picture_data'] =$rec->getAttribute('thumbnailPhoto', 0);
+                $raw_info['picture_data'] = $rec->getAttribute('thumbnailPhoto', 0);
             }
 
             if ($rec->getAttribute('telephoneNumber')) {
@@ -217,14 +227,16 @@ class Ldap extends AbstractAdapter
         }
 
         if ($raw_info) {
-            if ($adapter->getLogger()) $adapter->getLogger()->logDebug("RESULT: " . print_r($raw_info,1));
+            if ($adapter->getLogger()) {
+                $adapter->getLogger()->logDebug('RESULT: '.print_r($raw_info, 1));
+            }
 
             $identity = new Identity($raw_info['identity'], $raw_info);
 
             return $identity;
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -234,12 +246,13 @@ class Ldap extends AbstractAdapter
     {
         return array(
             UsersourceInfo::CAPABILITY_FORM_LOGIN,
-            UsersourceInfo::CAPABILITY_FIND_IDENTITY
+            UsersourceInfo::CAPABILITY_FIND_IDENTITY,
         );
     }
 
     /**
-     * @param  mixed $capability
+     * @param mixed $capability
+     *
      * @return bool
      */
     public function isCapable($capability)

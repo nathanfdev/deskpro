@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\DeskPRO\Form\Type\CustomFields;
 
@@ -52,11 +53,11 @@ class ContextualChoiceType extends ChoiceType
         if ($options['allow_edit']) {
             $builder->add('custom_choice', 'text', array(
                 'required' => false,
-                'label' => false,
-                'mapped' => false,
-                'attr' => array(
+                'label'    => false,
+                'mapped'   => false,
+                'attr'     => array(
                     'placeholder' => 'Custom choice',
-                    'style' => 'display:none;',
+                    'style'       => 'display:none;',
                 ),
             ));
         }
@@ -72,14 +73,15 @@ class ContextualChoiceType extends ChoiceType
         $resolver
             ->setRequired(array('context'))
             ->setDefaults(array(
-                'allow_edit' => isset($options['allow_edit']) ? $options['allow_edit'] : false
+                'allow_edit' => isset($options['allow_edit']) ? $options['allow_edit'] : false,
             ))
         ;
     }
 
     /**
-     * @param  EntityRepository           $er
-     * @param  array                      $options
+     * @param EntityRepository $er
+     * @param array            $options
+     *
      * @return \Doctrine\ORM\QueryBuilder
      */
     public function getChoicesQueryBuilder(EntityRepository $er, array $options)
@@ -129,7 +131,7 @@ class ContextualChoiceType extends ChoiceType
             return;
         }
 
-        $form = $event->getForm();
+        $form     = $event->getForm();
         $editable = $form->getConfig()->getOption('allow_edit');
 
         if ($editable && !empty($data['custom_choice'])) {
@@ -139,7 +141,7 @@ class ContextualChoiceType extends ChoiceType
             $this->handleCustomChoice($form, $choices, $data);
             $form->remove('value');
             $form->add('value', 'entity', array_merge($this->getValueOptions(), array(
-                'class' => 'DeskPRO:CustomFieldDefinition',
+                'class'   => 'DeskPRO:CustomFieldDefinition',
                 'choices' => $choices,
             )));
 
@@ -148,7 +150,8 @@ class ContextualChoiceType extends ChoiceType
     }
 
     /**
-     * select choice or add new if not exist
+     * select choice or add new if not exist.
+     *
      * @param FormInterface $form
      * @param array         $choices
      * @param $data
@@ -159,7 +162,7 @@ class ContextualChoiceType extends ChoiceType
             return;
         }
 
-        $check = strtolower($data['custom_choice']);
+        $check  = strtolower($data['custom_choice']);
         $newVal = isset($choices[$data['custom_choice']]) ? $choices[$data['custom_choice']] : null;
 
         // first, string comparison
@@ -174,11 +177,11 @@ class ContextualChoiceType extends ChoiceType
 
         // then, add new choice to list
         if (!$newVal) {
-            $newDef = clone $this->definition;
-            $newDef['id'] = null;
-            $newDef->parent = $this->definition;
-            $newDef->children = new ArrayCollection();
-            $newDef['title'] = $data['custom_choice'];
+            $newDef            = clone $this->definition;
+            $newDef['id']      = null;
+            $newDef->parent    = $this->definition;
+            $newDef->children  = new ArrayCollection();
+            $newDef['title']   = $data['custom_choice'];
             $newDef['options'] = array();
 
             if ($context = $form->getConfig()->getOption('context')) {
@@ -187,7 +190,7 @@ class ContextualChoiceType extends ChoiceType
 
             $form->get('value')->getConfig()->getOption('em')->persist($newDef);
             $form->get('value')->getConfig()->getOption('em')->flush($newDef);
-            $newVal = $newDef['id'];
+            $newVal           = $newDef['id'];
             $choices[$newVal] = $newDef;
         }
 

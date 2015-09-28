@@ -1,38 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @subpackage Service
- * @category Highrise
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ *
+ * @category Highrise
+ */
 namespace Orb\Service\Highrise\Resource;
 
 /**
@@ -41,51 +39,50 @@ namespace Orb\Service\Highrise\Resource;
 class Person extends AbstractResource
 {
     /**
-     * Get information about a person
+     * Get information about a person.
      *
-     * @param  int   $person_id
+     * @param int $person_id
+     *
      * @return array
      */
     public function getPerson($person_id)
     {
-        $resource = '/people/' . $person_id . '.xml';
+        $resource = '/people/'.$person_id.'.xml';
         $response = $this->highrise->sendReadRequest($resource);
 
         return $this->highrise->xmlToArray($response->getBody());
     }
 
-
-
     /**
      * Get information about all people. To see if more pages exist, check $page+1
      * etc. There is no way to get total pages. Results are returned in batches of 500.
      *
-     * @param  int   $page The page number
+     * @param int $page The page number
+     *
      * @return array
      */
     public function getAllPeople($page = 1)
     {
         $resource = '/people.xml';
-        $offset = ($page-1) * 500;
+        $offset   = ($page - 1) * 500;
 
         $response = $this->highrise->sendReadRequest($resource, array('n' => $offset));
 
         return $this->highrise->xmlToArray($response->getBody());
     }
 
-
-
     /**
      * Get all people with a certain tag. Note that it's a tag_id.
      *
-     * @param  int   $tag_id
-     * @param  int   $page
+     * @param int $tag_id
+     * @param int $page
+     *
      * @return array
      */
     public function getPeopleWithTag($tag_id, $page = 1)
     {
         $resource = '/people.xml';
-        $offset = ($page-1) * 500;
+        $offset   = ($page - 1) * 500;
 
         $response = $this->highrise->sendReadRequest($resource, array('n' => $offset, 'tag_id' => $tag_id));
 
@@ -95,14 +92,15 @@ class Person extends AbstractResource
     /**
      * Get all people with a certain title (i.e., 'CEO').
      *
-     * @param  string $title
-     * @param  int    $page
+     * @param string $title
+     * @param int    $page
+     *
      * @return array
      */
     public function getPeopleWithTitle($title, $page = 1)
     {
         $resource = '/people.xml';
-        $offset = ($page-1) * 500;
+        $offset   = ($page - 1) * 500;
 
         $response = $this->highrise->sendReadRequest($resource, array('n' => $offset, 'title' => $title));
 
@@ -112,21 +110,20 @@ class Person extends AbstractResource
     /**
      * Get all people in a certain company. Note it's a company ID.
      *
-     * @param  int   $company_id
-     * @param  int   $page
+     * @param int $company_id
+     * @param int $page
+     *
      * @return array
      */
     public function getCompanyPeople($company_id, $page = 1)
     {
         $resource = '/companies/'.$company_id.'/people.xml';
-        $offset = ($page-1) * 500;
+        $offset   = ($page - 1) * 500;
 
         $response = $this->highrise->sendReadRequest($resource, array('n' => $offset));
 
         return $this->highrise->xmlToArray($response->getBody());
     }
-
-
 
     /**
      * Find all people whose match a certain criteria. Results are grouped in
@@ -140,48 +137,48 @@ class Person extends AbstractResource
      * - phone
      * - email
      *
-     * @param  array $criteria
-     * @param  int   $page
+     * @param array $criteria
+     * @param int   $page
+     *
      * @return array
      */
     public function findPeopleWithCriteria(array $criteria = array(), $page = 1)
     {
         $resource = '/people/search.xml';
-        $offset = ($page-1) * 25;
+        $offset   = ($page - 1) * 25;
 
         $postfields = array('n' => $offset);
-        foreach ($criteria as $k=>$v) {
+        foreach ($criteria as $k => $v) {
             $postfields["criteria[$k]"] = $v;
         }
 
         $response = $this->highrise->sendReadRequest($resource, $postfields);
-        $body = new \SimpleXMLElement($response->getBody());
+        $body     = new \SimpleXMLElement($response->getBody());
 
         $people = array();
-        foreach ($body AS $person) {
+        foreach ($body as $person) {
             $people[] = $this->highrise->xmlToArray($person);
         }
 
         return $people;
     }
 
-
-
     /**
      * Get all people who were created or updated since a certain time.
      *
-     * @param  int   $since A timestamp, or a string in the format yyyymmddhhmmss
-     * @param  int   $page
+     * @param int $since A timestamp, or a string in the format yyyymmddhhmmss
+     * @param int $page
+     *
      * @return array
      */
     public function getPeopleSince($since, $page = 1)
     {
         $resource = '/people.xml';
-        $offset = ($page-1) * 500;
+        $offset   = ($page - 1) * 500;
 
         // If it doesn't start with 1, then its probably a timestamp
         // so we need to convert it
-        if (is_numeric($since) AND $since[0] == '1') {
+        if (is_numeric($since) and $since[0] == '1') {
             $since = date('YmdHis', $since);
         }
 
@@ -193,7 +190,8 @@ class Person extends AbstractResource
     /**
      * Create a new person record.
      *
-     * @param  array $person_info
+     * @param array $person_info
+     *
      * @return bool
      */
     public function createPerson(array $person_info)
@@ -208,7 +206,8 @@ class Person extends AbstractResource
     /**
      * Update a person.
      *
-     * @param  array $person_info
+     * @param array $person_info
+     *
      * @return bool
      */
     public function updatePerson($person_id, array $person_info)
@@ -223,7 +222,8 @@ class Person extends AbstractResource
     /**
      * Delete a person.
      *
-     * @param  int  $person_id
+     * @param int $person_id
+     *
      * @return bool
      */
     public function deletePerson($person_id)

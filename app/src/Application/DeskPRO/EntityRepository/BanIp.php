@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -42,31 +41,31 @@ class BanIp extends AbstractEntityRepository
     protected $counts = array();
 
     /**
-     * Get a list of IPs suitable for display
+     * Get a list of IPs suitable for display.
+     *
      * @param int    $from
      * @param int    $limit
      * @param string $search_phrase
      *
      * @return array
      */
-
     public function getList($from = 0, $limit = 20, $search_phrase = '')
     {
-        $where = '';
+        $where  = '';
         $params = array();
 
         if (!empty($search_phrase)) {
-            $where = " WHERE banned_ip LIKE :search";
-            $params['search'] = '%' . $search_phrase . '%';
+            $where            = ' WHERE banned_ip LIKE :search';
+            $params['search'] = '%'.$search_phrase.'%';
         }
 
-        $list = App::getDb()->fetchAllCol(sprintf("
+        $list = App::getDb()->fetchAllCol(sprintf('
             SELECT banned_ip
             FROM ban_ips
             %s
             ORDER BY ip_start ASC
             LIMIT %d, %d
-        ", $where, $from, $limit), $params);
+        ', $where, $from, $limit), $params);
         $this->counts[$search_phrase] = count($list);
 
         return $list;
@@ -78,7 +77,6 @@ class BanIp extends AbstractEntityRepository
      *
      * @return int
      */
-
     public function getPageCount($per_page = 20, $search_phrase = '')
     {
         return ceil($this->getCount($search_phrase) / $per_page);
@@ -90,12 +88,12 @@ class BanIp extends AbstractEntityRepository
             return $this->counts[$search_phrase];
         }
 
-        $where = '';
+        $where  = '';
         $params = array();
 
         if (!empty($search_phrase)) {
-            $where = "banned_ip LIKE :search";
-            $params['search'] = '%' . $search_phrase . '%';
+            $where            = 'banned_ip LIKE :search';
+            $params['search'] = '%'.$search_phrase.'%';
         }
 
         $count = App::getDb()->countWithPlaceholders('ban_ips', $where, $params);
@@ -105,18 +103,19 @@ class BanIp extends AbstractEntityRepository
 
     /**
      * @param $ip
+     *
      * @return bool
      */
     public function isIpBanned($ip)
     {
-        $ip_long = sprintf("%u", ip2long($ip));
+        $ip_long = sprintf('%u', ip2long($ip));
 
-        $banned = App::getDb()->fetchColumn("
+        $banned = App::getDb()->fetchColumn('
             SELECT banned_ip
             FROM ban_ips
             WHERE banned_ip = ? OR (ip_start >= ? AND ip_end <= ?)
             LIMIT 1
-        ", array($ip, $ip_long, $ip_long));
+        ', array($ip, $ip_long, $ip_long));
 
         return $banned ? true : false;
     }

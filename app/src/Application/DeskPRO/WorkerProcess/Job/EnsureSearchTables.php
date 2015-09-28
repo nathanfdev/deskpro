@@ -1,43 +1,40 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
 
 /**
- * Goes through queued messages
+ * Goes through queued messages.
  */
 class EnsureSearchTables extends AbstractJob
 {
@@ -61,7 +58,7 @@ class EnsureSearchTables extends AbstractJob
             $do_refill = true;
         } else {
             // Check to see if the search table isnt already filled
-            $has_one = App::getDb()->fetchColumn("SELECT id FROM tickets_search_active LIMIT 1");
+            $has_one = App::getDb()->fetchColumn('SELECT id FROM tickets_search_active LIMIT 1');
             if (!$has_one) {
                 $has_one = App::getDb()->fetchColumn("SELECT id FROM tickets WHERE status IN ('awaiting_agent', 'awaiting_user') LIMIT 1");
                 if ($has_one) {
@@ -75,17 +72,17 @@ class EnsureSearchTables extends AbstractJob
             App::getContainer()->getSettingsHandler()->setSetting('core.do_searchtables_refill', 0);
 
             App::getEntityRepository('DeskPRO:Ticket')->fillSearchTable();
-            $this->logStatus("Filled tickets_search_active table");
+            $this->logStatus('Filled tickets_search_active table');
 
             // Broadcast a refresh event to all agents
             $cm = new \Application\DeskPRO\Entity\ClientMessage();
             $cm->fromArray(array(
                 'channel' => 'agent.ui.reload',
-                'data' => array(
+                'data'    => array(
                     'type'        => 'admin',
                     'person_id'   => 0,
-                    'person_name' => 'System'
-                )
+                    'person_name' => 'System',
+                ),
             ));
 
             App::getOrm()->persist($cm);

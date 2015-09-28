@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Portal;
 
 use Application\DeskPRO\People\PersonGuest;
@@ -73,12 +70,12 @@ class SitemapGenerator
 
     public function __construct($base_url, EntityManager $em, Router $router)
     {
-        $this->base_url   = rtrim($base_url, '/');
-        $this->em         = $em;
-        $this->db         = $em->getConnection();
-        $this->router     = $router;
+        $this->base_url = rtrim($base_url, '/');
+        $this->em       = $em;
+        $this->db       = $em->getConnection();
+        $this->router   = $router;
 
-        $person = new PersonGuest();
+        $person          = new PersonGuest();
         $this->structure = new PublishStructure(
             $person,
             $this->em,
@@ -86,36 +83,35 @@ class SitemapGenerator
         );
     }
 
-
     /**
-     * Get sitemap.xml
+     * Get sitemap.xml.
      *
      * @return string
      */
     public function getXml()
     {
-        $xml = array();
+        $xml   = array();
         $xml[] = '<?xml version="1.0" encoding="UTF-8"?>';
         $xml[] = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
         $attributes = array('loc', 'changefreq', 'lastmod', 'priority');
 
         foreach ($this->getItems() as $item) {
-            $xml[] = "<url>";
+            $xml[] = '<url>';
             foreach ($attributes as $attr) {
                 if (!empty($item[$attr])) {
                     $val = $item[$attr];
                     if ($attr == 'loc') {
-                        $val = $this->base_url . $val;
+                        $val = $this->base_url.$val;
                     }
 
                     $xml[] = "\t<$attr>$val</$attr>";
                 }
             }
-            $xml[] = "</url>";
+            $xml[] = '</url>';
         }
 
-        $xml[] = "</urlset>";
+        $xml[] = '</urlset>';
         $xml[] = '';
 
         $xml = implode("\n", $xml);
@@ -123,15 +119,16 @@ class SitemapGenerator
         return $xml;
     }
 
-
     /**
-     * Get items
+     * Get items.
      *
      * @return array
      */
     public function getItems()
     {
-        if ($this->items !== null) return $this->items;
+        if ($this->items !== null) {
+            return $this->items;
+        }
 
         $this->items = array_merge(
             $this->getSiteItems(),
@@ -149,19 +146,19 @@ class SitemapGenerator
      */
     protected function getSiteItems()
     {
-        $items = array();
+        $items   = array();
         $items[] = array(
-            'loc' => $this->router->generate('user', array()),
+            'loc'        => $this->router->generate('user', array()),
             'changefreq' => 'daily',
         );
 
         $items[] = array(
-            'loc' => $this->router->generate('user_tickets_new', array()),
+            'loc'        => $this->router->generate('user_tickets_new', array()),
             'changefreq' => 'monthly',
         );
 
         $items[] = array(
-            'loc' => $this->router->generate('user_feedback_new', array()),
+            'loc'        => $this->router->generate('user_feedback_new', array()),
             'changefreq' => 'monthly',
         );
 
@@ -181,8 +178,8 @@ class SitemapGenerator
         $items = array();
 
         $items[] = array(
-            'loc' => $this->router->generate('user_articles', array()),
-            'changefreq' => 'daily'
+            'loc'        => $this->router->generate('user_articles', array()),
+            'changefreq' => 'daily',
         );
 
         #------------------------------
@@ -193,8 +190,8 @@ class SitemapGenerator
 
         foreach ($cats as $cat) {
             $items[] = array(
-                'loc' => $this->router->generate('user_articles', array('slug' => $cat->getUrlSlug())),
-                'changefreq' => 'daily'
+                'loc'        => $this->router->generate('user_articles', array('slug' => $cat->getUrlSlug())),
+                'changefreq' => 'daily',
             );
         }
 
@@ -211,8 +208,8 @@ class SitemapGenerator
 
         foreach ($articles as $a) {
             $items[] = array(
-                'loc' => $this->router->generate('user_articles_article', array('slug' => $a->getUrlSlug())),
-                'changefreq' => 'weekly'
+                'loc'        => $this->router->generate('user_articles_article', array('slug' => $a->getUrlSlug())),
+                'changefreq' => 'weekly',
             );
         }
 
@@ -232,8 +229,8 @@ class SitemapGenerator
         $items = array();
 
         $items[] = array(
-            'loc' => $this->router->generate('user_news', array()),
-            'changefreq' => 'daily'
+            'loc'        => $this->router->generate('user_news', array()),
+            'changefreq' => 'daily',
         );
 
         #------------------------------
@@ -244,8 +241,8 @@ class SitemapGenerator
 
         foreach ($cats as $cat) {
             $items[] = array(
-                'loc' => $this->router->generate('user_news', array('slug' => $cat->getUrlSlug())),
-                'changefreq' => 'daily'
+                'loc'        => $this->router->generate('user_news', array('slug' => $cat->getUrlSlug())),
+                'changefreq' => 'daily',
             );
         }
 
@@ -262,8 +259,8 @@ class SitemapGenerator
 
             foreach ($news as $n) {
                 $items[] = array(
-                    'loc' => $this->router->generate('user_news_view', array('slug' => $n->getUrlSlug())),
-                    'changefreq' => 'weekly'
+                    'loc'        => $this->router->generate('user_news_view', array('slug' => $n->getUrlSlug())),
+                    'changefreq' => 'weekly',
                 );
             }
         }
@@ -284,8 +281,8 @@ class SitemapGenerator
         $items = array();
 
         $items[] = array(
-            'loc' => $this->router->generate('user_downloads', array()),
-            'changefreq' => 'daily'
+            'loc'        => $this->router->generate('user_downloads', array()),
+            'changefreq' => 'daily',
         );
 
         #------------------------------
@@ -296,8 +293,8 @@ class SitemapGenerator
 
         foreach ($cats as $cat) {
             $items[] = array(
-                'loc' => $this->router->generate('user_downloads', array('slug' => $cat->getUrlSlug())),
-                'changefreq' => 'daily'
+                'loc'        => $this->router->generate('user_downloads', array('slug' => $cat->getUrlSlug())),
+                'changefreq' => 'daily',
             );
         }
 
@@ -313,8 +310,8 @@ class SitemapGenerator
 
         foreach ($downloads as $d) {
             $items[] = array(
-                'loc' => $this->router->generate('user_downloads_file', array('slug' => $d->getUrlSlug())),
-                'changefreq' => 'weekly'
+                'loc'        => $this->router->generate('user_downloads_file', array('slug' => $d->getUrlSlug())),
+                'changefreq' => 'weekly',
             );
         }
 
@@ -334,8 +331,8 @@ class SitemapGenerator
         $items = array();
 
         $items[] = array(
-            'loc' => $this->router->generate('user_feedback', array()),
-            'changefreq' => 'daily'
+            'loc'        => $this->router->generate('user_feedback', array()),
+            'changefreq' => 'daily',
         );
 
         #------------------------------
@@ -346,8 +343,8 @@ class SitemapGenerator
 
         foreach ($cats as $cat) {
             $items[] = array(
-                'loc' => $this->router->generate('user_feedback', array('slug' => $cat->getUrlSlug())),
-                'changefreq' => 'daily'
+                'loc'        => $this->router->generate('user_feedback', array('slug' => $cat->getUrlSlug())),
+                'changefreq' => 'daily',
             );
         }
 
@@ -355,16 +352,16 @@ class SitemapGenerator
         # Downloads
         #------------------------------
 
-        $feedback = $this->em->createQuery("
+        $feedback = $this->em->createQuery('
             SELECT PARTIAL feedback.{id,slug,title}
             FROM DeskPRO:Feedback feedback
             WHERE feedback.hidden_status IS NULL AND feedback.category IN (?0)
-        ")->execute(array($cat_ids));
+        ')->execute(array($cat_ids));
 
         foreach ($feedback as $f) {
             $items[] = array(
-                'loc' => $this->router->generate('user_feedback_view', array('slug' => $f->getUrlSlug())),
-                'changefreq' => 'weekly'
+                'loc'        => $this->router->generate('user_feedback_view', array('slug' => $f->getUrlSlug())),
+                'changefreq' => 'weekly',
             );
         }
 

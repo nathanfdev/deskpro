@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator;
 
@@ -36,15 +37,14 @@ use Application\ImportBundle\Reader\ReaderFactoryInterface;
 use Application\ImportBundle\Reader\ReaderInterface;
 
 /**
- * Generator importer service factory
+ * Generator importer service factory.
  *
  * Class GeneratorFactory
- * @package Application\ImportBundle\Generator
  */
 class GeneratorFactory
 {
     /**
-     * Creates importer generator instance
+     * Creates importer generator instance.
      *
      * @param DeskproContainer $container
      * @param GeneratorConfig  $config
@@ -57,7 +57,7 @@ class GeneratorFactory
         $writer   = self::createWriter($container, $config);
 
         $symfony_validator = $container->get('validator');
-        $validators = new Validator\Collection();
+        $validators        = new Validator\Collection();
         $validators
             ->attach(new Validator\Download($symfony_validator))
             ->attach(new Validator\Feedback($symfony_validator))
@@ -76,7 +76,7 @@ class GeneratorFactory
     }
 
     /**
-     * Creates generator reader instance
+     * Creates generator reader instance.
      *
      * @param DeskproContainer $container
      * @param GeneratorConfig  $config
@@ -87,17 +87,19 @@ class GeneratorFactory
     {
         /** @var ReaderFactoryInterface $factory */
         $factory = $container->get(sprintf('deskpro.import.%s_reader_factory', $config->getExporterType()));
+
         return $factory->createReader($config->getReaderConfig());
     }
 
     /**
-     * Creates generator exporter instance
+     * Creates generator exporter instance.
      *
      * @param DeskproContainer $container
      * @param GeneratorConfig  $config
      *
-     * @return ExporterInterface
      * @throws \RuntimeException
+     * @return ExporterInterface
+     *
      */
     private static function createExporter(DeskproContainer $container, GeneratorConfig $config)
     {
@@ -109,7 +111,7 @@ class GeneratorFactory
             ExporterInterface::TYPE_DESKPRO   => 'Application\ImportBundle\Generator\Exporter\DeskPROFactory',
         );
 
-        if ( ! isset($factories[$config->getExporterType()])) {
+        if (!isset($factories[$config->getExporterType()])) {
             throw new \RuntimeException(sprintf('Invalid exporter type `%s`', $config->getExporterType()));
         }
 
@@ -118,7 +120,7 @@ class GeneratorFactory
         $exporter = $factory->createExporter(self::createReader($container, $config));
 
         if ($exporter instanceof Exporter\ExporterBatchInterface) {
-            if ( ! $config->getExporterBatchConfig()) {
+            if (!$config->getExporterBatchConfig()) {
                 $config->setExporterBatchConfig($exporter->getDefaultBatchConfig());
             }
         }
@@ -127,13 +129,14 @@ class GeneratorFactory
     }
 
     /**
-     * Creates generator writer instance
+     * Creates generator writer instance.
      *
      * @param DeskproContainer $container
      * @param GeneratorConfig  $config
      *
-     * @return WriterInterface
      * @throws \RuntimeException
+     * @return WriterInterface
+     *
      */
     private static function createWriter(DeskproContainer $container, GeneratorConfig $config)
     {
@@ -142,10 +145,10 @@ class GeneratorFactory
             WriterInterface::TYPE_JSON     => 'Application\ImportBundle\Generator\Writer\Json\JsonWriterFactory',
         );
 
-        if ( ! $config->getWriterType()) {
-            return null;
+        if (!$config->getWriterType()) {
+            return;
         }
-        if ( ! isset($factories[$config->getWriterType()])) {
+        if (!isset($factories[$config->getWriterType()])) {
             throw new \RuntimeException(sprintf('Invalid writer type `%s`', $config->getWriterType()));
         }
 
@@ -154,6 +157,5 @@ class GeneratorFactory
         $writer  = $factory->createWriter();
 
         return $writer;
-
     }
 }

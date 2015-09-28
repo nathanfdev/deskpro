@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage PageDisplay
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\PageDisplay\Page;
 
 use Application\DeskPRO\Entity\PageDisplayAbstract;
@@ -76,25 +73,23 @@ class BasicPage
     const SECTION_DEFAULT = 'default';
 
     /**
-     * array[section] = page_display
+     * array[section] = page_display.
+     *
      * @var \Application\DeskPRO\Entity\PageDisplayAbstract[]
      */
     protected $page_displays = array();
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\PageDisplayAbstract $page_display
-     * @return void
+     * @param \Application\DeskPRO\Entity\PageDisplayAbstract $page_display
      */
     public function addPageDisplay(PageDisplayAbstract $page_display)
     {
-        $section = $page_display['section'];
+        $section                       = $page_display['section'];
         $this->page_displays[$section] = $page_display;
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\PageDisplayAbstract[] $page_displays
-     * @return void
+     * @param \Application\DeskPRO\Entity\PageDisplayAbstract[] $page_displays
      */
     public function addPageDisplays(array $page_displays)
     {
@@ -104,9 +99,10 @@ class BasicPage
     }
 
     /**
-     * Check to see if a section has been set
+     * Check to see if a section has been set.
      *
-     * @param  string $section
+     * @param string $section
+     *
      * @return bool
      */
     public function hasPageDisplay($section)
@@ -115,22 +111,23 @@ class BasicPage
     }
 
     /**
-     * Returns a section
+     * Returns a section.
      *
      * @param  $section
+     *
      * @return \Application\DeskPRO\Entity\PageDisplayAbstract[]|null
      */
     public function getPageDisplay($section)
     {
         if (!isset($this->page_displays[$section])) {
-            return null;
+            return;
         }
 
         return $this->page_displays[$section];
     }
 
     /**
-     * Get all page displays
+     * Get all page displays.
      *
      * @return \Application\DeskPRO\Entity\PageDisplayAbstract[]
      */

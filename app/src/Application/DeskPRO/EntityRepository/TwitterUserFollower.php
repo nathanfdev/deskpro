@@ -1,39 +1,37 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\EntityRepository;
-
 
 class TwitterUserFollower extends AbstractEntityRepository
 {
@@ -43,17 +41,17 @@ class TwitterUserFollower extends AbstractEntityRepository
             return array();
         }
 
-        $output = array();
-        $results = $this->getEntityManager()->createQuery("
+        $output  = array();
+        $results = $this->getEntityManager()->createQuery('
             SELECT f, u
             FROM   DeskPRO:TwitterUserFollower f
             INNER JOIN f.follower_user u
             WHERE  f.user = :user AND f.follower_user IN (:follower)
-        ")->setParameters(array(
-            'user' => $user_id,
-            'follower' => $follower_ids
+        ')->setParameters(array(
+            'user'     => $user_id,
+            'follower' => $follower_ids,
         ))->execute();
-        foreach ($results AS $result) {
+        foreach ($results as $result) {
             $output[$result->follower_user->getId()] = $result;
         }
 
@@ -62,12 +60,12 @@ class TwitterUserFollower extends AbstractEntityRepository
 
     public function getFollowersForUser($user, $page = 1, $per_page = 25)
     {
-        return $this->getEntityManager()->createQuery("
+        return $this->getEntityManager()->createQuery('
             SELECT f, u
             FROM DeskPRO:TwitterUserFollower f
             INNER JOIN f.follower_user u
             WHERE f.user = ?0
             ORDER BY f.display_order DESC
-        ")->setFirstResult((max(1, $page) - 1) * $per_page)->setMaxResults($per_page)->execute(array($user));
+        ')->setFirstResult((max(1, $page) - 1) * $per_page)->setMaxResults($per_page)->execute(array($user));
     }
 }

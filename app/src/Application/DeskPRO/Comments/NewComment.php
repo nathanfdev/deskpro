@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Comments
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Comments;
 
 use Application\DeskPRO\App;
@@ -61,9 +58,9 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
 
     public function __construct($class, Person $person, array $assignments)
     {
-        $this->class = $class;
+        $this->class          = $class;
         $this->person_context = $person;
-        $this->assignments = $assignments;
+        $this->assignments    = $assignments;
     }
 
     public function setPersonContext(Person $person)
@@ -86,7 +83,7 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
         $obj = new $this->class();
 
         $validating = null;
-        $person = null;
+        $person     = null;
 
         App::getOrm()->beginTransaction();
 
@@ -100,10 +97,10 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
 
         try {
             if ($this->person_context && !$this->person_context->isGuest()) {
-                $person = $this->person_context;
+                $person           = $this->person_context;
                 $email_validating = null;
             } else {
-                $email = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($this->email);
+                $email            = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($this->email);
                 $email_validating = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getEmail($this->email);
 
                 // Email already exists on an account
@@ -111,12 +108,11 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
                 // might require the user to log in (in which case the ticket is a temp ticket for a bit)
                 if ($email) {
                     if (App::getSetting('core.existing_account_login')) {
-                        $person = $email->person;
-                        $person->name = $this->name;
+                        $person              = $email->person;
+                        $person->name        = $this->name;
                         $this->require_login = true;
-
                     } else {
-                        $person = $email->person;
+                        $person       = $email->person;
                         $person->name = $this->name;
                     }
 
@@ -127,15 +123,14 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
                 } elseif (!$no_validation_required || $email_validating) {
                     $validating = 'new';
                     if (!$email_validating) {
-                        $person = Person::newContactPerson();
+                        $person       = Person::newContactPerson();
                         $person->name = $this->name;
                         App::getOrm()->persist($person);
 
-                        $email_validating = new PersonEmailValidating();
-                        $email_validating->email = $this->email;
+                        $email_validating         = new PersonEmailValidating();
+                        $email_validating->email  = $this->email;
                         $email_validating->person = $person;
                         App::getOrm()->persist($email_validating);
-
                     } else {
                         $person = $email_validating->person;
                     }
@@ -144,12 +139,12 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
                 // Note a user isnt a "user" at this point, they cant log in etc,
                 // no validation just means they dont need to validate to get their ticket reads
                 } else {
-                    $person = Person::newContactPerson();
+                    $person       = Person::newContactPerson();
                     $person->name = $this->name;
                     App::getOrm()->persist($person);
 
-                    $email = new PersonEmail();
-                    $email->email = $this->email;
+                    $email         = new PersonEmail();
+                    $email->email  = $this->email;
                     $email->person = $person;
                     $person->addEmailAddress($email);
                     App::getOrm()->persist($email);
@@ -159,7 +154,7 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
             }
 
             $obj->person = $person;
-            $obj->name = $person->name;
+            $obj->name   = $person->name;
             if ($person->getPrimaryEmailAddress()) {
                 $obj->email = $person->getPrimaryEmailAddress();
             } elseif ($email_validating) {
@@ -167,8 +162,8 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
             }
 
             $obj->validating = $validating;
-            $obj->visitor = App::getSession()->getVisitor();
-            $obj->content = $this->content;
+            $obj->visitor    = App::getSession()->getVisitor();
+            $obj->content    = $this->content;
 
             if ($this->require_login) {
                 $obj->setStatus('temp');
@@ -198,7 +193,7 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
                 $email_validating->addValidatingContent($this->class, $obj->id);
                 App::getOrm()->flush();
             } elseif ($this->require_login) {
-                $login_validate_comments = App::getSession()->get('login_validate_comments', array());
+                $login_validate_comments   = App::getSession()->get('login_validate_comments', array());
                 $login_validate_comments[] = array($this->class, $obj->id);
                 App::getSession()->set('login_validate_comments', $login_validate_comments);
                 App::getSession()->save();
@@ -215,11 +210,11 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
                     }
 
                     $vars = array(
-                        'comment' => $obj,
-                        'person' => $person,
+                        'comment'          => $obj,
+                        'person'           => $person,
                         'email_validating' => $email_validating,
-                        'email' => $email,
-                        'validating' => $validating,
+                        'email'            => $email,
+                        'validating'       => $validating,
                     );
 
                     $message = App::getMailer()->createMessage();
@@ -247,7 +242,6 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
             }
 
             return $obj;
-
         } catch (\Exception $e) {
             App::getOrm()->rollback();
             throw $e;

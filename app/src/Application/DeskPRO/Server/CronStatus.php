@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Server;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -54,7 +53,6 @@ class CronStatus
         $this->db = $db;
     }
 
-
     /**
      * @return int
      */
@@ -64,11 +62,11 @@ class CronStatus
             return $this->last_run_ts;
         }
 
-        $this->last_run_ts = $this->db->fetchColumn("
+        $this->last_run_ts = $this->db->fetchColumn('
             SELECT value
             FROM settings
             WHERE name = ?
-        ", array('core.last_cron_run'));
+        ', array('core.last_cron_run'));
 
         if (!$this->last_run_ts) {
             $this->last_run_ts = 0;
@@ -77,7 +75,6 @@ class CronStatus
         return $this->last_run_ts;
     }
 
-
     /**
      * @return \DateTime|null
      */
@@ -85,7 +82,7 @@ class CronStatus
     {
         $ts = $this->getLastRunTimestamp();
         if (!$ts) {
-            return null;
+            return;
         }
 
         $date = new \DateTime("@$ts");
@@ -93,15 +90,14 @@ class CronStatus
         return $date;
     }
 
-
     /**
-     * Get how long it's been since the last cron
+     * Get how long it's been since the last cron.
      *
      * @return int
      */
     public function getSecsSinceLastRun()
     {
-        $now = time();
+        $now  = time();
         $last = $this->getLastRunTimestamp();
 
         return $now - $last;
@@ -116,7 +112,6 @@ class CronStatus
     {
         return $this->getSecsSinceLastRun() > 300;
     }
-
 
     /**
      * @return array
@@ -133,7 +128,7 @@ class CronStatus
         }
 
         if ($error_message) {
-            $split = explode('###', $error_message);
+            $split        = explode('###', $error_message);
             $codes_string = array_pop($split);
             $codes_string = trim($codes_string);
 
@@ -144,7 +139,7 @@ class CronStatus
                 $error_codes = $m[1];
             }
 
-            $web_ini_path = \Orb\Util\Env::getPhpIniPath();
+            $web_ini_path  = \Orb\Util\Env::getPhpIniPath();
             $is_zendserver = false;
             if ($web_ini_path) {
                 $is_zendserver = strpos($web_ini_path, 'ZendServer') !== false;
@@ -156,10 +151,10 @@ class CronStatus
                 'is_zendserver' => $is_zendserver,
                 'web_ini_path'  => $web_ini_path,
                 'data_dir'      => dp_get_data_dir(),
-                'error_log'     => @file_get_contents(dp_get_log_dir() . '/error.log') . "\n\n\n" . @file_get_contents(dp_get_log_dir() . '/cli-phperr.log')
+                'error_log'     => @file_get_contents(dp_get_log_dir().'/error.log')."\n\n\n".@file_get_contents(dp_get_log_dir().'/cli-phperr.log'),
             );
         }
 
-        return null;
+        return;
     }
 }

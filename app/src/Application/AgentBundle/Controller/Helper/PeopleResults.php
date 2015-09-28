@@ -1,47 +1,43 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\AgentBundle\Controller\Helper;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\People;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\ResultCache;
 use Orb\Util\Arrays;
 
 /**
- * Handles people searches
+ * Handles people searches.
  */
 class PeopleResults
 {
@@ -78,12 +74,10 @@ class PeopleResults
         return $helper;
     }
 
-
-
     public function __construct($controller, $resultsPerPage = self::PER_PAGE_DEFAULT)
     {
         $this->controller = $controller;
-        $this->perPage = $resultsPerPage;
+        $this->perPage    = $resultsPerPage;
     }
 
     public function getPerPageCount()
@@ -91,9 +85,9 @@ class PeopleResults
         return $this->perPage;
     }
 
-
     /**
-     * Set people IDs for the search results
+     * Set people IDs for the search results.
+     *
      * @param array $people_ids
      */
     public function setPeopleIds(array $people_ids)
@@ -101,10 +95,8 @@ class PeopleResults
         $this->people_ids = $people_ids;
     }
 
-
-
     /**
-     * Get people IDs
+     * Get people IDs.
      *
      * @return array
      */
@@ -113,9 +105,8 @@ class PeopleResults
         return $this->people_ids;
     }
 
-
     /**
-     * Get people for a particular page
+     * Get people for a particular page.
      *
      * @return array
      */
@@ -124,12 +115,10 @@ class PeopleResults
         return $this->_getPageFromPeopleIds($this->getPeopleIds(), $page, $this->getPerPageCount());
     }
 
-
-
     protected function _getPageFromPeopleIds(array $people_ids, $page, $per_page)
     {
         $page_people_ids = Arrays::getPageChunk($people_ids, $page, $per_page);
-        $people_raw = App::getEntityRepository('DeskPRO:Person')->getPeopleResultsFromIds($page_people_ids);
+        $people_raw      = App::getEntityRepository('DeskPRO:Person')->getPeopleResultsFromIds($page_people_ids);
 
         // - We'll get a page of results, but that actual page isn't going to be
         // sorted the way we want, because MySQL was just sent a list of ID's.

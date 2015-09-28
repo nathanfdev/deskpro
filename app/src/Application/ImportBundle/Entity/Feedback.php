@@ -1,41 +1,41 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Entity;
 
+use Application\DeskPRO;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
-use Application\DeskPRO;
 
 /**
- * Exporting feedback entity
+ * Exporting feedback entity.
  *
  * Class Feedback
- * @package Application\ImportBundle\Entity
  */
 final class Feedback extends AbstractContentEntity
     implements PersonAwareInterface, LabelAwareInterface, AttachmentsAwareInterface
@@ -46,7 +46,6 @@ final class Feedback extends AbstractContentEntity
     private $category;
 
     /**
-     *
      * @var string
      */
     private $person_email;
@@ -72,7 +71,7 @@ final class Feedback extends AbstractContentEntity
     private $custom_fields;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -89,7 +88,7 @@ final class Feedback extends AbstractContentEntity
     }
 
     /**
-     * Feedback category
+     * Feedback category.
      *
      * @return string
      */
@@ -99,14 +98,16 @@ final class Feedback extends AbstractContentEntity
     }
 
     /**
-     * Set feedback category
+     * Set feedback category.
      *
      * @param string $category
+     *
      * @return $this
      */
     public function setCategory($category)
     {
         $this->category = $category;
+
         return $this;
     }
 
@@ -124,11 +125,12 @@ final class Feedback extends AbstractContentEntity
     public function setPersonEmail($person_email)
     {
         $this->person_email = $person_email;
+
         return $this;
     }
 
     /**
-     * Feedback popularity
+     * Feedback popularity.
      *
      * @return int
      */
@@ -138,14 +140,16 @@ final class Feedback extends AbstractContentEntity
     }
 
     /**
-     * Set feedback popularity
+     * Set feedback popularity.
      *
      * @param int $popularity
+     *
      * @return $this
      */
     public function setPopularity($popularity)
     {
-        $this->popularity = (int)$popularity;
+        $this->popularity = (int) $popularity;
+
         return $this;
     }
 
@@ -163,6 +167,7 @@ final class Feedback extends AbstractContentEntity
     public function addLabel($label)
     {
         $this->labels[] = $label;
+
         return $this;
     }
 
@@ -180,6 +185,7 @@ final class Feedback extends AbstractContentEntity
     public function addAttachment(Attachment $attachment)
     {
         $this->attachments->attach($attachment);
+
         return $this;
     }
 
@@ -193,11 +199,13 @@ final class Feedback extends AbstractContentEntity
 
     /**
      * @param CustomField $custom_field
+     *
      * @return $this
      */
     public function addCustomField(CustomField $custom_field)
     {
         $this->custom_fields->attach($custom_field);
+
         return $this;
     }
 
@@ -221,7 +229,7 @@ final class Feedback extends AbstractContentEntity
      */
     public function toArray()
     {
-        if ( ! $this->date_created) {
+        if (!$this->date_created) {
             throw new \Exception('Date created is not set up');
         }
 

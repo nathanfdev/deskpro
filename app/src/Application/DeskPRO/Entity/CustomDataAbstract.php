@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 /**
@@ -46,13 +45,12 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
      * The unique ID.
      *
      * @var int
-     *
      */
     protected $id = null;
 
     /**
      * IMPLEMENT IN CHILD CLASS
-     * The form field this is attached to
+     * The form field this is attached to.
      *
      * @var \Application\DeskPRO\Entity\CustomDefXXX
      */
@@ -60,28 +58,28 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 
     /**
      * IMPLEMENT IN CHILD CLASS
-     * The root custom field this is attached to
+     * The root custom field this is attached to.
      *
      * @var \Application\DeskPRO\Entity\CustomDefXXX
      */
     //protected $root_field = null;
 
     /**
-     * IMPLEMENT IN CHILD CLASS
+     * IMPLEMENT IN CHILD CLASS.
      *
      * @var \Application\DeskPRO\Entity\Xxx
      */
     //protected $xxx;
 
     /**
-     * User numeric data
+     * User numeric data.
      *
      * @var int
      */
     protected $value = 0;
 
     /**
-     * User string data
+     * User string data.
      *
      * @var string
      */
@@ -97,21 +95,25 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 
     /**
      * @param int $value
+     *
      * @return $this
      */
     public function setValue($value)
     {
         $this->setModelField('value', $value);
+
         return $this;
     }
 
     /**
      * @param string $input
+     *
      * @return $this
      */
     public function setInput($input)
     {
         $this->setModelField('input', $input);
+
         return $this;
     }
 
@@ -133,7 +135,6 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
                 return $this->value ? $this->value : $this->input;
         }
     }
-
 
     /**
      * @return int

@@ -1,42 +1,39 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
-use Application\DeskPRO\Log\Loggable;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -104,42 +101,41 @@ class RoundRobinLogEntry extends DomainObject
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->setPrimaryTable(array('name' => 'round_robin_log',));
+        $metadata->setPrimaryTable(array('name' => 'round_robin_log'));
 
         $metadata->mapField(array(
-            'fieldName' => 'id',
+            'fieldName'  => 'id',
             'columnName' => 'id',
-            'type' => 'integer',
-            'id' => true,
+            'type'       => 'integer',
+            'id'         => true,
         ));
 
         $metadata->mapField(array(
-            'fieldName' => 'ticketId',
+            'fieldName'  => 'ticketId',
             'columnName' => 'ticket_id',
-            'type' => 'integer',
+            'type'       => 'integer',
         ));
 
         $metadata->mapField(array(
-            'fieldName' => 'ticketSubject',
+            'fieldName'  => 'ticketSubject',
             'columnName' => 'ticket_subject',
         ));
 
         $metadata->mapField(array(
-            'fieldName' => 'actions',
+            'fieldName'  => 'actions',
             'columnName' => 'actions',
-            'type' => 'array',
+            'type'       => 'array',
         ));
 
         $metadata->mapField(array(
-            'fieldName' => 'created',
+            'fieldName'  => 'created',
             'columnName' => 'created',
-            'type' => 'datetime',
+            'type'       => 'datetime',
         ));
 
         $metadata->mapManyToOne(array(
-            'fieldName' => 'rr',
+            'fieldName'    => 'rr',
             'targetEntity' => 'Application\DeskPRO\Entity\RoundRobin',
         ));
-
     }
 }

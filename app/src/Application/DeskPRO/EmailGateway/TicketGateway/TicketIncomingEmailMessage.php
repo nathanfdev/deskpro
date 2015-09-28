@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category EmailGateway
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category EmailGateway
+ */
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
@@ -113,7 +112,6 @@ class TicketIncomingEmailMessage
      */
     public $agent_reply_as_note = true;
 
-
     /**
      * @param                     $mode
      * @param Ticket              $ticket
@@ -130,7 +128,7 @@ class TicketIncomingEmailMessage
         }
 
         $this->mode = $mode;
-        $this->logMessage('[TicketIncomingEmailMessage] mode = ' . $mode);
+        $this->logMessage('[TicketIncomingEmailMessage] mode = '.$mode);
 
         $this->email_accounts = $email_accounts;
 
@@ -143,10 +141,10 @@ class TicketIncomingEmailMessage
 
         if (!$this->subject) {
             $this->is_no_subject = true;
-            $this->subject = '(No Subject)';
+            $this->subject       = '(No Subject)';
         }
 
-        $inline_images = new InlineImageTokens($reader);
+        $inline_images  = new InlineImageTokens($reader);
         $inline_images2 = new InlineImageTokens($reader);
 
         if ($ticket_email->force_reply_cutter) {
@@ -167,11 +165,11 @@ class TicketIncomingEmailMessage
             $this->logMessage('[TicketIncomingEmailMessage] Note: Cutter is enabled but the pattern cutters are disabled');
         }
 
-        $orig_text = $ticket_email->email_body_text;
+        $orig_text     = $ticket_email->email_body_text;
         $did_html_trim = false;
-        $is_text = false;
-        $has_text_cut = false;
-        $has_cut = false;
+        $is_text       = false;
+        $has_text_cut  = false;
+        $has_cut       = false;
 
         $cutters_require_from = Arrays::flatten(array_map(function ($e) {
             return array($e->address, $e->other_addresses);
@@ -183,7 +181,7 @@ class TicketIncomingEmailMessage
             $this->logMessage('[TicketIncomingEmailMessage] read HTML email');
             $this->body = $ticket_email->email_body_html;
             if (!$this->body) {
-                $this->body = $ticket_email->email_body_html;
+                $this->body          = $ticket_email->email_body_html;
                 $this->charset_error = $reader->getBodyHtml()->getOriginalCharset();
             }
             $this->body_is_html = true;
@@ -191,11 +189,11 @@ class TicketIncomingEmailMessage
             // Sent from a DeskPRO instance, we should get the specific message by looking for our delims
             // But dont do this cut if its an auto-reply, we want the real message in those cases. The actual notifs we sent
             // are silenced in those cases anyway so the auto-replies are handled like other robot replies
-			// !! - TODO this needs to check for delims that aren't preceded by any other reply.
-			//      Otherwise you could have a case of DeskPRO -> User -> Reply to other DeskPRO.
-			//      The users reply would reach other DeskPRO and we would throw it away because we see the DP_MESSAGE_BEGIN tags
-			//      but not the users reply above it.
-			/*
+            // !! - TODO this needs to check for delims that aren't preceded by any other reply.
+            //      Otherwise you could have a case of DeskPRO -> User -> Reply to other DeskPRO.
+            //      The users reply would reach other DeskPRO and we would throw it away because we see the DP_MESSAGE_BEGIN tags
+            //      but not the users reply above it.
+            /*
             if (
                 $reader->getHeader('X-DeskPRO-Build') && $reader->getHeader('X-DeskPRO-Build')->getHeader()
                 && !($reader->getHeader('X-DeskPRO-Auto') && $reader->getHeader('X-DeskPRO-Auto')->getHeader())
@@ -205,7 +203,7 @@ class TicketIncomingEmailMessage
                     $this->body = $body;
                 }
             }
-			*/
+            */
 
             $body_raw = $this->body;
 
@@ -242,8 +240,8 @@ class TicketIncomingEmailMessage
                     } else {
                         $this->logMessage('[TicketIncomingEmailMessage] Using cut-trimmed document');
 
-                        $did_html_trim = true;
-                        $this->body = $generic_cut;
+                        $did_html_trim      = true;
+                        $this->body         = $generic_cut;
                         $this->body_is_html = true;
                     }
                 } else {
@@ -269,37 +267,37 @@ class TicketIncomingEmailMessage
             $this->logMessage('[TicketIncomingEmailMessage] read text email');
             $txt = $ticket_email->email_body_text;
             if (!$txt && $ticket_email->email_body_text) {
-                $txt = $ticket_email->email_body_text;
+                $txt                 = $ticket_email->email_body_text;
                 $this->charset_error = $reader->getBodyText()->getOriginalCharset();
             }
 
             if (strlen($txt) > 25000) {
                 $this->logMessage('[TicketIncomingEmailMessage] Message too long, trimming');
                 $did_html_trim = true;
-                $txt = substr($txt, 0, 25000);
+                $txt           = substr($txt, 0, 25000);
             }
 
             $body_raw = @htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8');
 
-            $has_text_cut = true;
-            $this->body_raw = $txt;
+            $has_text_cut      = true;
+            $this->body_raw    = $txt;
             $this->generic_cut = $txt;
-            $this->body = $txt;
-            $this->body_full = $txt;
+            $this->body        = $txt;
+            $this->body_full   = $txt;
 
             // Always generic cut from the DP_TOP_MARK position first
             // The PatternCutter will trim off the remaining quoted headers
             if ($do_cut) {
-                $cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
+                $cut         = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
                 $generic_cut = $cut->cutQuoteBlock($this->body, false);
                 if ($this->body != $generic_cut) {
-                    $this->logMessage("Generic cutter matched");
-                    $this->body = $generic_cut;
-                    $this->generic_cut = $generic_cut;
+                    $this->logMessage('Generic cutter matched');
+                    $this->body             = $generic_cut;
+                    $this->generic_cut      = $generic_cut;
                     $this->found_top_marker = true;
-                    $has_cut = true;
+                    $has_cut                = true;
                 } else {
-                    $this->logMessage("Generic cutter did not match");
+                    $this->logMessage('Generic cutter did not match');
                     $this->found_top_marker = false;
                 }
 
@@ -308,26 +306,26 @@ class TicketIncomingEmailMessage
                     $pattern_config = new \Application\DeskPRO\Config\UserFileConfig('text-cut-patterns');
                     $cutter->addPatterns($pattern_config->all());
                     $cutter->setRequireFrom($cutters_require_from);
-                    $this->logMessage("Text cutter set require from: " . implode(', ', $cutters_require_from));
+                    $this->logMessage('Text cutter set require from: '.implode(', ', $cutters_require_from));
 
                     $this->body = $cutter->cutQuoteBlock($this->body, false);
 
                     if ($cutter->getMatchedPatterns()) {
                         $has_text_cut = true;
                         foreach ($cutter->getMatchedPatterns() as $p) {
-                            $this->logMessage("Text cutter matched pattern: " . $p->getPattern());
+                            $this->logMessage('Text cutter matched pattern: '.$p->getPattern());
                         }
                     } else {
-                        $this->logMessage("Text cutter did not match any pattern");
+                        $this->logMessage('Text cutter did not match any pattern');
                     }
 
                     // Run generic cutter as well, in case it matches higher
                     $parts = $cut->splitFromFirstHeaderText($this->body);
                     if ($parts && count($parts) == 2) {
-                        $this->logMessage("Split header cutter matched, cut from standard quote headers");
+                        $this->logMessage('Split header cutter matched, cut from standard quote headers');
                         $this->body = trim($parts[0]);
                     } else {
-                        $this->logMessage("Split header cutter did not match");
+                        $this->logMessage('Split header cutter did not match');
                     }
                 }
             }
@@ -336,15 +334,15 @@ class TicketIncomingEmailMessage
             $this->body_full   = Strings::utf8_bad_strip($this->body_full);
             $this->generic_cut = Strings::utf8_bad_strip($this->generic_cut);
 
-            $this->body = Strings::text2html($this->body, 'plaintext-email');
-            $this->body_full = Strings::text2html($this->body_full, 'plaintext-email');
-            $this->generic_cut = Strings::text2html($this->generic_cut, 'plaintext-email');
+            $this->body         = Strings::text2html($this->body, 'plaintext-email');
+            $this->body_full    = Strings::text2html($this->body_full, 'plaintext-email');
+            $this->generic_cut  = Strings::text2html($this->generic_cut, 'plaintext-email');
             $this->body_is_html = false;
         }
 
         if (!$is_text) {
             $this->body_raw = $this->body;
-            $this->body = $cleaner->clean($this->body, 'html_email_preclean');
+            $this->body     = $cleaner->clean($this->body, 'html_email_preclean');
 
             if ($did_html_trim) {
                 // We pre-trimmed, lets set the full body to the plaintext version so we always have the full message
@@ -363,17 +361,17 @@ class TicketIncomingEmailMessage
                     $generic_cut = $this->body;
                 }
 
-				if ($this->body != $generic_cut && trim(Strings::stripTags($generic_cut))) {
-                    $this->body = $generic_cut;
-                    $this->generic_cut = $generic_cut;
+                if ($this->body != $generic_cut && trim(Strings::stripTags($generic_cut))) {
+                    $this->body             = $generic_cut;
+                    $this->generic_cut      = $generic_cut;
                     $this->found_top_marker = true;
-                    $has_cut = true;
+                    $has_cut                = true;
                 } else {
                     $this->found_top_marker = false;
                 }
 
                 if ($this->body_is_html && !$ticket_email->force_no_pattern_cutter) {
-                    $cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
+                    $cutter         = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
                     $pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
                     $cutter->addPatterns($pattern_config->all());
 
@@ -381,12 +379,12 @@ class TicketIncomingEmailMessage
                     if ($this->found_top_marker) {
                         $cutter->setLimit(1);
                         $cutter->setMaxLinesFromEnd(18);
-                        $this->logMessage("HTML cutter set limit =1 , max lines = 18");
+                        $this->logMessage('HTML cutter set limit =1 , max lines = 18');
 
                     // We didnt cut, so the cutline is missing so we need to guess based on our email address
                     } else {
                         $cutter->setRequireFrom($cutters_require_from);
-                        $this->logMessage("HTML cutter set require from: " . implode(', ', $cutters_require_from));
+                        $this->logMessage('HTML cutter set require from: '.implode(', ', $cutters_require_from));
                     }
 
                     $this->body = $cutter->cutQuoteBlock($this->body, true);
@@ -394,10 +392,10 @@ class TicketIncomingEmailMessage
                     if ($cutter->getMatchedPatterns()) {
                         $has_cut = true;
                         foreach ($cutter->getMatchedPatterns() as $p) {
-                            $this->logMessage("Cutter matched pattern: " . $p->getPattern());
+                            $this->logMessage('Cutter matched pattern: '.$p->getPattern());
                         }
                     } else {
-                        $this->logMessage("Cutter did not match any pattern");
+                        $this->logMessage('Cutter did not match any pattern');
                     }
                 }
 
@@ -406,7 +404,7 @@ class TicketIncomingEmailMessage
         }
 
         // Cut down the quoted message part to 10000 chars
-        $cut_len = strlen($this->body);
+        $cut_len  = strlen($this->body);
         $full_len = strlen($this->body_full);
 
         if (($full_len - $cut_len) > 19000) {
@@ -424,14 +422,14 @@ class TicketIncomingEmailMessage
 
             $this->body_full .= "\n\n";
             if ($this->body_is_html) {
-                $this->body_full .= "<br /><br />";
+                $this->body_full .= '<br /><br />';
             }
 
             $this->body_full .= App::getTranslator()->phrase('user.emails.message-clipped');
         }
 
         // Replace inline image tags with tokens
-        $this->body = $inline_images->processTokens($this->body);
+        $this->body      = $inline_images->processTokens($this->body);
         $this->body_full = $inline_images2->processTokens($this->body_full);
 
         if ($this->body_is_html) {
@@ -444,7 +442,7 @@ class TicketIncomingEmailMessage
         }
 
         if ($token_replace_callback) {
-            $this->body = call_user_func($token_replace_callback, $this->body, $inline_images);
+            $this->body      = call_user_func($token_replace_callback, $this->body, $inline_images);
             $this->body_full = call_user_func($token_replace_callback, $this->body_full, $inline_images2);
         }
 
@@ -463,7 +461,7 @@ class TicketIncomingEmailMessage
             if (isset($this->generic_cut) && trim(strip_tags($this->generic_cut))) {
                 $this->body = $this->generic_cut;
             } else {
-                $this->body = $this->body_full;
+                $this->body      = $this->body_full;
                 $this->body_full = '';
             }
         }
@@ -472,15 +470,15 @@ class TicketIncomingEmailMessage
         // (Check on ticket since this can still be called from newticket if the users original ticket was closed)
         if ($ticket) {
             foreach ($ticket->access_codes as $code) {
-                $this->body      = str_replace('(#' . $code->getAccessCode() . ')', '', $this->body);
-                $this->body_full = str_replace('(#' . $code->getAccessCode() . ')', '', $this->body_full);
+                $this->body      = str_replace('(#'.$code->getAccessCode().')', '', $this->body);
+                $this->body_full = str_replace('(#'.$code->getAccessCode().')', '', $this->body_full);
             }
         }
 
         $this->body_raw = $body_raw;
 
-        $this->body = $cleaner->clean($this->body, 'html_email_postclean');
-        $this->body_raw = $cleaner->clean($this->body_raw, 'html_email_postclean');
+        $this->body      = $cleaner->clean($this->body, 'html_email_postclean');
+        $this->body_raw  = $cleaner->clean($this->body_raw, 'html_email_postclean');
         $this->body_full = $cleaner->clean($this->body_full, 'html_email_postclean');
 
         if ($is_text && $did_html_trim) {
@@ -502,16 +500,17 @@ class TicketIncomingEmailMessage
         }
 
         if ($pos_as_reply < $pos_as_note) {
-            $this->logMessage("agent_reply_as_note = false -- acting as reply");
+            $this->logMessage('agent_reply_as_note = false -- acting as reply');
             $this->agent_reply_as_note = false;
         } else {
-            $this->logMessage("agent_reply_as_note = true -- acting as note");
+            $this->logMessage('agent_reply_as_note = true -- acting as note');
             $this->agent_reply_as_note = true;
         }
     }
 
     /**
-     * Set the logger
+     * Set the logger.
+     *
      * @param \Orb\Log\Logger $logger
      */
     public function setLogger(Logger $logger)

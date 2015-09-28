@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -39,8 +36,8 @@ use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\OrganizationContactData;
-use Application\DeskPRO\Entity\OrganizationNote;
 use Application\DeskPRO\Entity\OrganizationFile;
+use Application\DeskPRO\Entity\OrganizationNote;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Orb\Util\Arrays;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,7 +45,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
- * Handles viewing and editing an org
+ * Handles viewing and editing an org.
  */
 class OrganizationController extends AbstractController
 {
@@ -67,12 +64,10 @@ class OrganizationController extends AbstractController
         $field_manager = $this->container->getSystemService('org_fields_manager');
         $custom_fields = $field_manager->getDisplayArrayForObject($org);
 
-
         // org specific custom fields definitions
-        $new_field_manager = $this->container->getCustomFieldManager();
-        $form = $new_field_manager->createDefinitionsFormForContext($org);
+        $new_field_manager         = $this->container->getCustomFieldManager();
+        $form                      = $new_field_manager->createDefinitionsFormForContext($org);
         $custom_fields_definitions = $form->createView();
-
 
         #------------------------------
         # Misc info needed
@@ -80,21 +75,21 @@ class OrganizationController extends AbstractController
 
         $notes = $this->em->getRepository('DeskPRO:OrganizationNote')->getNotesForOrganization($org);
 
-        $org_files = $this->em->getRepository('DeskPRO:OrganizationFile')->getFilesForOrganization($org);
+        $org_files       = $this->em->getRepository('DeskPRO:OrganizationFile')->getFilesForOrganization($org);
         $org_files_count = count($org_files);
 
         $search = new TicketSearch();
         $search->addTerm(TicketSearch::TERM_ORGANIZATION, 'is', $org->getId());
         $search->setOrderBy('ticket.status', 'ASC');
 
-        $org_tickets = $search->getMatches(array('offset' => 0, 'limit' => 30));
-        $org_tickets = $this->em->getRepository('DeskPRO:Ticket')->getByIds($org_tickets, true);
+        $org_tickets       = $search->getMatches(array('offset' => 0, 'limit' => 30));
+        $org_tickets       = $this->em->getRepository('DeskPRO:Ticket')->getByIds($org_tickets, true);
         $org_tickets_count = $search->getCount(1000);
 
-        $org_chats = $this->em->getRepository('DeskPRO:ChatConversation')->getRecentForOrganization($org);
+        $org_chats       = $this->em->getRepository('DeskPRO:ChatConversation')->getRecentForOrganization($org);
         $org_chats_count = $this->em->getRepository('DeskPRO:ChatConversation')->getCountForOrganization($org);
 
-        $org_charges = $this->em->getRepository('DeskPRO:TicketCharge')->getChargesForOrganization($org, 20);
+        $org_charges       = $this->em->getRepository('DeskPRO:TicketCharge')->getChargesForOrganization($org, 20);
         $org_charge_totals = $this->em->getRepository('DeskPRO:TicketCharge')->getTotalChargesForOrganization($org);
 
         $activity_stream = $this->em->getRepository('DeskPRO:PersonActivity')->getForOrganization($org, 10);
@@ -103,7 +98,7 @@ class OrganizationController extends AbstractController
         $members_count = $this->em->getRepository('DeskPRO:Organization')->countMembersFor($org);
 
         $usergroup_names = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
-        $org_usergroups = $org->usergroups;
+        $org_usergroups  = $org->usergroups;
 
         $contact_data = array();
         foreach ($org->contact_data as $cd) {
@@ -118,43 +113,43 @@ class OrganizationController extends AbstractController
         $org_members = $this->em->getRepository('DeskPRO:Person')->getOrganizationMembers($org);
 
         $org_api = array();
-        foreach (array('id', 'name', 'summary') AS $key) {
+        foreach (array('id', 'name', 'summary') as $key) {
             $org_api[$key] = $org->$key;
         }
         $org_api['date_created'] = $org->date_created->getTimestamp();
 
-        foreach ($custom_fields AS $field) {
+        foreach ($custom_fields as $field) {
             $org_api['custom'][$field['id']] = array(
-                'id' => $field['id'],
+                'id'    => $field['id'],
                 'title' => $field['title'],
-                'value' => isset($field['value']['value']) ? $field['value']['value'] : false
+                'value' => isset($field['value']['value']) ? $field['value']['value'] : false,
             );
         }
 
         return $this->render('AgentBundle:Organization:view.html.twig', array(
-            'org'                => $org,
+            'org'                           => $org,
             'org_email_domains'             => $org_domain_data['org_email_domains'],
             'org_count_domain_nonmembers'   => $org_domain_data['org_count_domain_nonmembers'],
             'org_count_domain_takenmembers' => $org_domain_data['org_count_domain_takenmembers'],
             'org_count_domain_members'      => $org_domain_data['org_count_domain_members'],
-            'org_members'        => $org_members,
-            'org_api'            => $org_api,
-            'contact_data'       => $contact_data,
-            'org_usergroups'     => $org_usergroups,
-            'usergroup_names'    => $usergroup_names,
-            'notes'              => $notes,
-            'org_files'          => $org_files,
-            'org_files_count'    => $org_files_count,
-            'activity_stream'    => $activity_stream,
-            'org_tickets'        => $org_tickets,
-            'org_tickets_count'  => $org_tickets_count,
-            'org_chats'          => $org_chats,
-            'org_chats_count'    => $org_chats_count,
-            'org_charges'        => $org_charges,
-            'org_charge_totals'  => $org_charge_totals,
-            'members_count'      => $members_count,
-            'custom_fields'      => $custom_fields,
-            'custom_fields_definitions' => $custom_fields_definitions,
+            'org_members'                   => $org_members,
+            'org_api'                       => $org_api,
+            'contact_data'                  => $contact_data,
+            'org_usergroups'                => $org_usergroups,
+            'usergroup_names'               => $usergroup_names,
+            'notes'                         => $notes,
+            'org_files'                     => $org_files,
+            'org_files_count'               => $org_files_count,
+            'activity_stream'               => $activity_stream,
+            'org_tickets'                   => $org_tickets,
+            'org_tickets_count'             => $org_tickets_count,
+            'org_chats'                     => $org_chats,
+            'org_chats_count'               => $org_chats_count,
+            'org_charges'                   => $org_charges,
+            'org_charge_totals'             => $org_charge_totals,
+            'members_count'                 => $members_count,
+            'custom_fields'                 => $custom_fields,
+            'custom_fields_definitions'     => $custom_fields_definitions,
         ));
     }
 
@@ -168,7 +163,7 @@ class OrganizationController extends AbstractController
 
         $this->em->beginTransaction();
         $data = array(
-            'success' => true
+            'success' => true,
         );
 
         $action = $this->in->getString('action');
@@ -210,11 +205,11 @@ class OrganizationController extends AbstractController
                 if ($person->organization) {
                     $data['already_in_organization'] = true;
                 } elseif ($person) {
-                    $person->organization = $org;
+                    $person->organization          = $org;
                     $person->organization_position = $this->in->getString('position');
                     $this->em->persist($person);
                     $data['add_person_id'] = $person['id'];
-                    $data['row_html'] = $this->renderView('AgentBundle:Organization:view-members-row.html.twig', array('person' => $person, 'org' => $org));
+                    $data['row_html']      = $this->renderView('AgentBundle:Organization:view-members-row.html.twig', array('person' => $person, 'org' => $org));
                 }
                 break;
 
@@ -292,7 +287,7 @@ class OrganizationController extends AbstractController
 
         $org = $this->getOrgOr404($organization_id);
 
-        $field_manager = $this->container->getSystemService('org_fields_manager');
+        $field_manager      = $this->container->getSystemService('org_fields_manager');
         $post_custom_fields = $this->request->request->get('custom_fields', array());
         if (!empty($post_custom_fields)) {
             $field_manager->saveFormToObject($post_custom_fields, $org);
@@ -300,24 +295,23 @@ class OrganizationController extends AbstractController
 
         // specific org custom fields definitions
         $manager = $this->container->getCustomFieldManager();
-        $form = $manager->createDefinitionsFormForContext($org);
+        $form    = $manager->createDefinitionsFormForContext($org);
         // fix: jquery removes empty arrays from post request
         if (!$request->request->has($form->getName())) {
             $request->request->set($form->getName(), array());
         }
         if (!$form->handleRequest($request)->isValid()) {
             return $this->createJsonResponse(array(
-                'error' => true,
+                'error'                 => true,
                 'invalid_custom_fields' => $form->getErrors(true, true)->current(),
             ));
-
         }
         $manager->flush($form);
 
         $custom_fields = $field_manager->getDisplayArrayForObject($org);
 
         return $this->render('AgentBundle:Organization:view-customfields-rendered-rows.html.twig', array(
-            'org' => $org,
+            'org'           => $org,
             'custom_fields' => $custom_fields,
         ));
     }
@@ -327,7 +321,7 @@ class OrganizationController extends AbstractController
         $org = $this->getOrgOr404($organization_id);
 
         return $this->render('AgentBundle:Organization:change-org-picture.html.twig', array(
-            'org' => $org
+            'org' => $org,
         ));
     }
 
@@ -354,7 +348,7 @@ class OrganizationController extends AbstractController
         foreach ($this->in->getCleanValueArray('new_contact_data') as $type => $inputs) {
             foreach ($inputs as $input) {
                 try {
-                    $contact_data = new OrganizationContactData();
+                    $contact_data               = new OrganizationContactData();
                     $contact_data->contact_type = $type;
                     $contact_data->applyFormData($input);
 
@@ -373,12 +367,11 @@ class OrganizationController extends AbstractController
         foreach ($this->in->getCleanValueArray('new_org_email_domain') as $domain) {
             $check = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find($domain);
             if (!$check) {
-
                 $domain = ltrim($domain, '@');
 
-                $org_email_domain = new \Application\DeskPRO\Entity\OrganizationEmailDomain();
+                $org_email_domain               = new \Application\DeskPRO\Entity\OrganizationEmailDomain();
                 $org_email_domain->organization = $org;
-                $org_email_domain->domain = $domain;
+                $org_email_domain->domain       = $domain;
 
                 $this->em->persist($org_email_domain);
             }
@@ -439,19 +432,19 @@ class OrganizationController extends AbstractController
 
         $display_html = $this->renderView('AgentBundle:Organization:view-contact-display.html.twig', array(
             'org_email_domains' => $org_email_domains,
-            'org' => $org,
-            'contact_data' => $contact_data_array,
+            'org'               => $org,
+            'contact_data'      => $contact_data_array,
         ));
         $editor_overlay_html = $this->renderView('AgentBundle:Organization:contact-overlay.html.twig', array(
             'org_email_domains' => $org_email_domains,
-            'org' => $org,
-            'contact_data' => $contact_data_array,
+            'org'               => $org,
+            'contact_data'      => $contact_data_array,
         ));
 
         return $this->createJsonResponse(array(
-            'success' => 1,
-            'display_html' => $display_html,
-            'editor_overlay_html' => $editor_overlay_html
+            'success'             => 1,
+            'display_html'        => $display_html,
+            'editor_overlay_html' => $editor_overlay_html,
         ));
     }
 
@@ -478,10 +471,10 @@ class OrganizationController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        $this->db->executeUpdate("
+        $this->db->executeUpdate('
             UPDATE people SET organization_manager = ?
             WHERE id = ? AND organization_id = ?
-        ", array((int)$this->in->getBool('organization_manager'), $person_id, $organization_id));
+        ', array((int) $this->in->getBool('organization_manager'), $person_id, $organization_id));
 
         return $this->createJsonResponse(array('success' => true));
     }
@@ -503,41 +496,44 @@ class OrganizationController extends AbstractController
         $em = App::getOrm();
         $em->beginTransaction();
 
-        $note = new OrganizationNote();
-        $note['agent'] = $this->person;
+        $note                 = new OrganizationNote();
+        $note['agent']        = $this->person;
         $note['organization'] = $org;
-        $note['note'] = $note_txt;
+        $note['note']         = $note_txt;
         $em->persist($note);
 
         $em->flush();
         $em->commit();
 
         return $this->createJsonResponse(array(
-            'success' => true,
+            'success'         => true,
             'organization_id' => $org['id'],
-            'note_li_html' => $this->renderView('AgentBundle:Organization:note-li.html.twig', array('note' => $note))
+            'note_li_html'    => $this->renderView('AgentBundle:Organization:note-li.html.twig', array('note' => $note)),
         ));
     }
 
     /**
      * @param $note_id
-     * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
      */
     public function deleteNoteAction($note_id)
     {
         if (!$this->person->hasPerm('agent_org.notes')) {
-            throw new AccessDeniedException;
+            throw new AccessDeniedException();
         }
 
         if (!$note = $this->em->find('DeskPRO:OrganizationNote', $note_id)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         $this->em->remove($note);
         $this->em->flush();
+
         return $this->createJsonResponse(array('success' => true));
     }
 
@@ -560,10 +556,10 @@ class OrganizationController extends AbstractController
         } else {
             $blob = $this->em->find('DeskPRO:Blob', $this->in->getUint('blob_id'));
 
-            $file = new OrganizationFile();
-            $file['agent'] = $this->person;
+            $file                 = new OrganizationFile();
+            $file['agent']        = $this->person;
             $file['organization'] = $org;
-            $file['blob'] = $blob;
+            $file['blob']         = $blob;
         }
         $file['note'] = $note_txt;
 
@@ -577,9 +573,9 @@ class OrganizationController extends AbstractController
         $em->commit();
 
         return $this->createJsonResponse(array(
-            'success' => true,
+            'success'         => true,
             'organization_id' => $org['id'],
-            'html' => $this->renderView('AgentBundle:Person:file-row.html.twig', array('file' => $file))
+            'html'            => $this->renderView('AgentBundle:Person:file-row.html.twig', array('file' => $file)),
         ));
     }
 
@@ -618,8 +614,8 @@ class OrganizationController extends AbstractController
         $org_count_domain_members      = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->countMembersAtDomains($org, $org_email_domains);
 
         return array(
-            'org'                => $org,
-            'org_email_domains'  => $org_email_domains,
+            'org'                           => $org,
+            'org_email_domains'             => $org_email_domains,
             'org_count_domain_nonmembers'   => $org_count_domain_nonmembers,
             'org_count_domain_takenmembers' => $org_count_domain_takenmembers,
             'org_count_domain_members'      => $org_count_domain_members,
@@ -635,7 +631,7 @@ class OrganizationController extends AbstractController
         $org = $this->getOrgOr404($organization_id);
 
         $org_domain_manager = $this->container->getSystemService('org_email_domain_manager');
-        $domain = $this->in->getString('domain');
+        $domain             = $this->in->getString('domain');
 
         if ($in_use = $org_domain_manager->isInUse($domain)) {
             return $this->createResponse('<div class="error" data-error-code="in_use" data-org-id="'.$in_use->id.'" />');
@@ -656,7 +652,7 @@ class OrganizationController extends AbstractController
 
         $org = $this->getOrgOr404($organization_id);
 
-        $domain = $this->in->getString('domain');
+        $domain    = $this->in->getString('domain');
         $orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
 
         if ($orgdomain) {
@@ -678,7 +674,7 @@ class OrganizationController extends AbstractController
         $org = $this->getOrgOr404($organization_id);
 
         $org_domain_manager = $this->container->getSystemService('org_email_domain_manager');
-        $domain = $this->in->getString('domain');
+        $domain             = $this->in->getString('domain');
 
         $orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
 
@@ -701,7 +697,7 @@ class OrganizationController extends AbstractController
 
         $org_domain_manager = $this->container->getSystemService('org_email_domain_manager');
 
-        $domain = $this->in->getString('domain');
+        $domain    = $this->in->getString('domain');
         $orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
 
         if (!$orgdomain) {
@@ -746,7 +742,6 @@ class OrganizationController extends AbstractController
         return $this->createJsonResponse(array('success' => true));
     }
 
-
     ############################################################################
     # New person
     ############################################################################
@@ -764,11 +759,11 @@ class OrganizationController extends AbstractController
         #------------------------------
 
         $custom_fields_form = $this->get('form.factory')->createNamedBuilder('org_custom_fields', 'form');
-        $field_manager = $this->container->getOrgFieldManager();
-        $custom_fields = $field_manager->getDisplayArrayForObject(new Entity\Organization(), $custom_fields_form);
+        $field_manager      = $this->container->getOrgFieldManager();
+        $custom_fields      = $field_manager->getDisplayArrayForObject(new Entity\Organization(), $custom_fields_form);
 
         return $this->render('AgentBundle:Organization:neworganization.html.twig', array(
-            'state' => $state,
+            'state'         => $state,
             'custom_fields' => $custom_fields,
         ));
     }
@@ -782,7 +777,7 @@ class OrganizationController extends AbstractController
         $neworg = new \Application\AgentBundle\Form\Model\NewOrganization($this->person);
 
         $formType = new \Application\AgentBundle\Form\Type\NewOrganization();
-        $form = $this->get('form.factory')->create($formType, $neworg);
+        $form     = $this->get('form.factory')->create($formType, $neworg);
 
         if ($this->get('request')->getMethod() == 'POST') {
             $form->handleRequest($this->get('request'));
@@ -807,7 +802,7 @@ class OrganizationController extends AbstractController
 
             return $this->createJsonResponse(array(
                 'success' => true,
-                'org_id' => $org['id']
+                'org_id'  => $org['id'],
             ));
         } else {
             return $this->createJsonResponse(array(
@@ -815,7 +810,6 @@ class OrganizationController extends AbstractController
             ));
         }
     }
-
 
     /**
      * @return \Application\DeskPRO\Entity\Organization

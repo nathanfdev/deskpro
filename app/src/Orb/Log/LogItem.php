@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @subpackage Log
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ */
 namespace Orb\Log;
 
 /**
@@ -40,12 +37,12 @@ namespace Orb\Log;
 class LogItem implements \IteratorAggregate, \ArrayAccess
 {
     /**@#+ Standard fields **/
-    const PRIORITY       = 'priority';
-    const PRIORITY_NAME  = 'priority_name';
-    const MESSAGE        = 'message';
-    const MESSAGE_LINE   = 'message_line';
-    const DATETIME       = 'datetime';
-    const SESSION_NAME   = 'session_name';
+    const PRIORITY      = 'priority';
+    const PRIORITY_NAME = 'priority_name';
+    const MESSAGE       = 'message';
+    const MESSAGE_LINE  = 'message_line';
+    const DATETIME      = 'datetime';
+    const SESSION_NAME  = 'session_name';
     /**@#-*/
 
     /**
@@ -57,7 +54,7 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
         self::MESSAGE,
         self::MESSAGE_LINE,
         self::DATETIME,
-        self::SESSION_NAME
+        self::SESSION_NAME,
     );
 
     /**
@@ -94,15 +91,15 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Empty init method for children
+     * Empty init method for children.
      */
     protected function init()
     {
-
     }
 
     /**
-     * Get the numeric priority
+     * Get the numeric priority.
+     *
      * @return int
      */
     public function getPriority()
@@ -111,7 +108,8 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Get the priority name
+     * Get the priority name.
+     *
      * @return string
      */
     public function getPriorityName()
@@ -120,7 +118,8 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Get the log message
+     * Get the log message.
+     *
      * @return string
      */
     public function getMessage()
@@ -142,7 +141,7 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Get the time of the event
+     * Get the time of the event.
      *
      * @return DateTime
      */
@@ -152,7 +151,7 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Get the session name
+     * Get the session name.
      *
      * @return string
      */

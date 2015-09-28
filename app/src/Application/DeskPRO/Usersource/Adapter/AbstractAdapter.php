@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Usersource
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Usersource\Adapter;
 
 use Application\DeskPRO\Entity\Usersource;
@@ -60,27 +57,26 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
 
     protected function init()
     {
-
     }
-
 
     /**
      * Find a user identity just by an email address.
      *
-     * @param  string                  $input
+     * @param string $input
+     *
      * @return \Orb\Auth\Identity|null
      */
     public function findIdentityByInput($input)
     {
-        return null;
+        return;
     }
-
 
     /**
      * Given an identity returned from an auth adapter, get the mapped fields that we can apply
      * to a Person record. For example, email addresses or names.
      *
-     * @param  \Orb\Auth\Identity $identity
+     * @param \Orb\Auth\Identity $identity
+     *
      * @return array
      */
     public function getFieldsFromIdentity(Identity $identity)
@@ -88,9 +84,9 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
         return array();
     }
 
-
     /**
-     * @param  array  $info
+     * @param array $info
+     *
      * @return string
      */
     public function getDisplayName(array $info)
@@ -105,9 +101,9 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
         return '';
     }
 
-
     /**
-     * @param  array  $info
+     * @param array $info
+     *
      * @return string
      */
     public function getDisplayLink(array $info)
@@ -138,7 +134,6 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
 
     public function applyResultToUser()
     {
-
     }
 
     /**
@@ -148,7 +143,6 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
      */
     public function getAgentLogoutRedirectUrl()
     {
-
     }
 
     /**
@@ -158,7 +152,6 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
      */
     public function getUserLogoutRedirectUrl()
     {
-
     }
 
     /**
@@ -175,7 +168,8 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
     }
 
     /**
-     * @param  mixed $capability
+     * @param mixed $capability
+     *
      * @return bool
      */
     public function isCapable($capability)

@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\Dpql\Statement\Display;
@@ -47,15 +45,14 @@ class ReportsBuilderController extends AbstractController
     public function listAction()
     {
         /**
-         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+         * @var \Application\DeskPRO\Reports\Builder
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
 
         return $this->createApiResponse(array(
-            'reports' => $reports_builder->getAll()
+            'reports' => $reports_builder->getAll(),
         ));
     }
-
 
     ####################################################################################################################
     # list custom reports
@@ -64,15 +61,14 @@ class ReportsBuilderController extends AbstractController
     public function listCustomAction()
     {
         /**
-         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+         * @var \Application\DeskPRO\Reports\Builder
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
 
         return $this->createApiResponse(array(
-             'reports' => $reports_builder->getCustomReports()
+             'reports' => $reports_builder->getCustomReports(),
         ));
     }
-
 
     ####################################################################################################################
     # list built-in reports
@@ -81,15 +77,14 @@ class ReportsBuilderController extends AbstractController
     public function listBuiltInAction()
     {
         /**
-         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+         * @var \Application\DeskPRO\Reports\Builder
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
 
         return $this->createApiResponse(array(
-            'reports' => $reports_builder->getBuiltInReports()
+            'reports' => $reports_builder->getBuiltInReports(),
         ));
     }
-
 
     ####################################################################################################################
     # get group params
@@ -98,13 +93,12 @@ class ReportsBuilderController extends AbstractController
     public function getGroupParamsAction()
     {
         /**
-         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+         * @var \Application\DeskPRO\Reports\Builder
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
 
         return $this->createApiResponse($reports_builder->getGroupParams());
     }
-
 
     ####################################################################################################################
     # get report
@@ -113,7 +107,7 @@ class ReportsBuilderController extends AbstractController
     public function getAction($id)
     {
         /**
-         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+         * @var \Application\DeskPRO\Reports\Builder
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
         $report          = $reports_builder->getById($id);
@@ -133,7 +127,6 @@ class ReportsBuilderController extends AbstractController
         ));
     }
 
-
     ####################################################################################################################
     # save report
     ####################################################################################################################
@@ -141,7 +134,7 @@ class ReportsBuilderController extends AbstractController
     public function saveAction($id)
     {
         /**
-         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+         * @var \Application\DeskPRO\Reports\Builder
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
 
@@ -161,8 +154,7 @@ class ReportsBuilderController extends AbstractController
         if ($error = $reports_builder->getErrors($id, 'from_request')) {
             return $this->createApiResponse(array('error' => $error));
         } else {
-
-            $postData = $this->in->getAll('req');
+            $postData    = $this->in->getAll('req');
             $report_edit = new ReportEdit($report);
 
             $form = $this->createForm(new ReportType(), $report_edit, array('cascade_validation' => true));
@@ -187,7 +179,6 @@ class ReportsBuilderController extends AbstractController
         }
     }
 
-
     ####################################################################################################################
     # clone report
     ####################################################################################################################
@@ -195,7 +186,7 @@ class ReportsBuilderController extends AbstractController
     public function cloneAction($id)
     {
         /**
-         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+         * @var \Application\DeskPRO\Reports\Builder
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
         $report          = $reports_builder->getById($id);
@@ -223,17 +214,16 @@ class ReportsBuilderController extends AbstractController
             $this->em->persist($new_report);
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->em->getConnection()->rollback();
             throw $e;
         }
 
         return $this->createApiResponse(array(
             'success' => true,
-            'id'      => $new_report->id
+            'id'      => $new_report->id,
         ));
     }
-
 
     ####################################################################################################################
     # delete report
@@ -242,7 +232,7 @@ class ReportsBuilderController extends AbstractController
     public function deleteAction($id)
     {
         /**
-         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+         * @var \Application\DeskPRO\Reports\Builder
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
         $report          = $reports_builder->getById($id);
@@ -260,7 +250,6 @@ class ReportsBuilderController extends AbstractController
         return $this->createSuccessResponse(array('id' => $id));
     }
 
-
     ####################################################################################################################
     # test report
     ####################################################################################################################
@@ -268,7 +257,7 @@ class ReportsBuilderController extends AbstractController
     public function testAction($id)
     {
         /**
-         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+         * @var \Application\DeskPRO\Reports\Builder
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
 
@@ -283,7 +272,6 @@ class ReportsBuilderController extends AbstractController
         }
     }
 
-
     ####################################################################################################################
     # parse
     ####################################################################################################################
@@ -291,13 +279,12 @@ class ReportsBuilderController extends AbstractController
     public function parseAction()
     {
         /**
-         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+         * @var \Application\DeskPRO\Reports\Builder
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
 
         return $this->createApiResponse($reports_builder->parseInput());
     }
-
 
     ####################################################################################################################
     # download
@@ -306,7 +293,7 @@ class ReportsBuilderController extends AbstractController
     public function downloadAction($id, $type)
     {
         /**
-         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+         * @var \Application\DeskPRO\Reports\Builder
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
 

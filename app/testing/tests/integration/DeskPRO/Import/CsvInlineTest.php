@@ -1,5 +1,31 @@
 <?php
 
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 namespace DpIntegrationTests\DeskPRO\Import;
 
 use Application\DeskPRO\Entity;
@@ -9,8 +35,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * Class CsvInlineTest
- * @package DpIntegrationTests\DeskPRO\Import
+ * Class CsvInlineTest.
  *
  * @group importer
  */
@@ -55,10 +80,10 @@ class CsvInlineTest extends \DpIntegrationTestCase
         $this->person_repository       = $entity_manager->getRepository('DeskPRO:Person');
         $this->organization_repository = $entity_manager->getRepository('DeskPRO:Organization');
 
-        $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/example/csv_inline';
-        $this->output_path = dp_get_data_dir() . '/import/csv/export';
+        $this->input_path  = DP_ROOT.'/src/Application/ImportBundle/Resources/example/csv_inline';
+        $this->output_path = dp_get_data_dir().'/import/csv/export';
 
-        if ( ! is_dir($this->output_path)) {
+        if (!is_dir($this->output_path)) {
             mkdir($this->output_path, 0755, true);
         }
 
@@ -73,7 +98,7 @@ class CsvInlineTest extends \DpIntegrationTestCase
         $application = new Application($this->helper->getSymfonyContainer()->getKernel());
         $application->add(new ImportBatchCommand());
 
-        $command = $application->find('dp:import:batch');
+        $command        = $application->find('dp:import:batch');
         $command_tester = new CommandTester($command);
         $command_tester->execute(array(
             'command'       => $command->getName(),
@@ -257,6 +282,7 @@ class CsvInlineTest extends \DpIntegrationTestCase
 
     /**
      * @param string $filename
+     *
      * @return array
      */
     private function getContent($filename)
@@ -271,9 +297,9 @@ class CsvInlineTest extends \DpIntegrationTestCase
     {
         $dp_root = str_replace('/app', '/', DP_ROOT);
 
-        $content = file_get_contents($this->input_path . $file);
+        $content = file_get_contents($this->input_path.$file);
         $content = str_replace('/deskpro/www/', $dp_root, $content);
 
-        file_put_contents($this->input_path . $file, $content);
+        file_put_contents($this->input_path.$file, $content);
     }
 }

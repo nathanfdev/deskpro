@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use Application\DeskPRO\App;
@@ -50,7 +48,8 @@ use Orb\Util\Strings;
 class ToEmailTicketDetector implements TicketDetectorInterface
 {
     /**
-     * The regex to match
+     * The regex to match.
+     *
      * @var string
      */
     protected $account_pattern;
@@ -80,12 +79,11 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 
         $account_pattern = str_replace('TAC', '(?P<auth>[A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})', $account_pattern);
 
-        $this->account_pattern = '#^' . $account_pattern . '#$';
+        $this->account_pattern = '#^'.$account_pattern.'#$';
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function findExistingTicket(AbstractReader $reader)
     {
@@ -98,10 +96,12 @@ class ToEmailTicketDetector implements TicketDetectorInterface
         }
 
         // Easier to run regex on all at once
-        $search_addr = ' ' . implode(' ', $search_addr) . ' ';
+        $search_addr = ' '.implode(' ', $search_addr).' ';
 
         $match_ptac = Strings::extractRegexMatch($this->account_pattern, $search_addr, 'auth');
-        if (!$match_ptac) return null;
+        if (!$match_ptac) {
+            return;
+        }
 
         #------------------------------
         # Try to find the ticket and user now
@@ -110,17 +110,16 @@ class ToEmailTicketDetector implements TicketDetectorInterface
         $ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($match_ptac);
 
         if ($ticket && !$ticket->isArchived()) {
-
             $this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
 
             return $ticket;
         }
 
-        return null;
+        return;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
     {
@@ -128,11 +127,11 @@ class ToEmailTicketDetector implements TicketDetectorInterface
             return $this->_found_tac->person;
         }
 
-        return null;
+        return;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
     {

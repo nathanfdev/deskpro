@@ -1,39 +1,35 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\AgentBundle\Controller;
-
 
 class UserTrackController extends AbstractController
 {
@@ -43,9 +39,9 @@ class UserTrackController extends AbstractController
 
     public function winHeaderTableAction()
     {
-        $cut = new \DateTime("@" . (time() - $this->settings->get('core_chat.user_online_time')));
+        $cut = new \DateTime('@'.(time() - $this->settings->get('core_chat.user_online_time')));
 
-        $visitors = $this->em->createQuery("
+        $visitors = $this->em->createQuery('
             SELECT v, t, ti, ts, p
             FROM DeskPRO:Visitor v
             LEFT JOIN v.last_track t
@@ -54,10 +50,10 @@ class UserTrackController extends AbstractController
             LEFT JOIN v.person p
             WHERE v.date_last > ?0 AND v.last_track IS NOT NULL AND v.hint_hidden = 0
             ORDER BY v.date_last DESC
-        ")->setMaxResults(100)->execute(array($cut));
+        ')->setMaxResults(100)->execute(array($cut));
 
         return $this->render('AgentBundle:UserTrack:header-table.html.twig', array(
-            'visitors' => $visitors
+            'visitors' => $visitors,
         ));
     }
 
@@ -73,19 +69,19 @@ class UserTrackController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $tracks = $this->em->createQuery("
+        $tracks = $this->em->createQuery('
             SELECT t
             FROM DeskPRO:VisitorTrack t
             WHERE t.visitor = ?0
             ORDER BY t.id DESC
-        ")->execute(array($visitor));
+        ')->execute(array($visitor));
 
-        $visit_tracks = $this->em->createQuery("
+        $visit_tracks = $this->em->createQuery('
             SELECT t
             FROM DeskPRO:VisitorTrack t
             WHERE t.visitor = ?0 AND t.is_new_visit = true AND t.is_soft_track = 0
             ORDER BY t.id DESC
-        ")->execute(array($visitor));
+        ')->execute(array($visitor));
 
         $ip_addresses  = array();
         $user_agents   = array();
@@ -103,12 +99,12 @@ class UserTrackController extends AbstractController
         }
 
         return $this->render('AgentBundle:UserTrack:view.html.twig', array(
-            'visitor'         => $visitor,
-            'tracks'          => $tracks,
-            'visit_tracks'    => $visit_tracks,
-            'ip_addresses'    => $ip_addresses,
-            'user_agents'     => $user_agents,
-            'geo_countries'   => $geo_countries,
+            'visitor'       => $visitor,
+            'tracks'        => $tracks,
+            'visit_tracks'  => $visit_tracks,
+            'ip_addresses'  => $ip_addresses,
+            'user_agents'   => $user_agents,
+            'geo_countries' => $geo_countries,
         ));
     }
 }

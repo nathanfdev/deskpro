@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
-
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\App;
@@ -45,7 +43,7 @@ abstract class AbstractFields
     const ENTITY_NAME  = 'DeskPRO:CustomDefAbstract';
 
     /**
-     * Get a collection of all defined person fields
+     * Get a collection of all defined person fields.
      *
      * @return array
      */
@@ -85,29 +83,29 @@ abstract class AbstractFields
 
             $f = $f_def->getHandler()->getFormField($value);
 
-            $name = 'field_' . $f_def['id'];
+            $name = 'field_'.$f_def['id'];
 
             if ($field_group) {
                 $field_group->add($f);
-                $form = $field_group->getForm();
+                $form     = $field_group->getForm();
                 $formView = $form->createView();
                 $formView = $formView[$name];
             } else {
-                $form = $f->getForm();
+                $form     = $f->getForm();
                 $formView = $form->createView();
             }
 
             $custom_fields[$f_def['id']] = array(
-                'elId'            => Util::requestUniqueIdString(),
-                'id'              => $f_def['id'],
-                'name'            => 'field_' . $f_def['id'],
-                'handler'         => $f_def->getHandler(),
-                'field_def'       => $f_def,
-                'title'           => $f_def['title'],
-                'form'            => $form,
-                'formView'        => $formView,
-                'value'           => $value,
-                'field_handler'   => strtolower(Util::getBaseClassname($f_def->getHandler())),
+                'elId'          => Util::requestUniqueIdString(),
+                'id'            => $f_def['id'],
+                'name'          => 'field_'.$f_def['id'],
+                'handler'       => $f_def->getHandler(),
+                'field_def'     => $f_def,
+                'title'         => $f_def['title'],
+                'form'          => $form,
+                'formView'      => $formView,
+                'value'         => $value,
+                'field_handler' => strtolower(Util::getBaseClassname($f_def->getHandler())),
             );
         }
 

@@ -1,4 +1,32 @@
-<?php return array(
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+return array(
     'admin.emailtpl_desc.deskpro_emails_agent_admin-noreset-password_html_twig_desc'       => 'This email is sent to agents when an admin resets their password.',
     'admin.emailtpl_desc.deskpro_emails_agent_admin-noreset-password_html_twig_title'      => 'Admin Reset Password',
     'admin.emailtpl_desc.deskpro_emails_agent_agent-changeemail-mergeuser_html_twig_desc'  => 'This email is sent to an agent whose account was merged with another user.',
@@ -57,8 +85,8 @@
     'admin.emailtpl_desc.deskpro_emails_user_new-reply-agent_html_twig_title'              => 'New Agent Reply',
     'admin.emailtpl_desc.deskpro_emails_user_new-reply-user_html_twig_desc'                => 'This is an automatic reply sent to the user to tell them that the system received their ticket reply.',
     'admin.emailtpl_desc.deskpro_emails_user_new-reply-user_html_twig_title'               => 'User Reply Auto-Reponse',
-    'admin.emailtpl_desc.deskpro_emails_user_new-reply-reject-resolved_html_twig_title'               => 'New reply rejected because ticket is resolved',
-    'admin.emailtpl_desc.deskpro_emails_user_new-reply-reject-resolved_html_twig_desc'                => 'If a user tries to reply to a resolved ticket and they do not have permission to re-open tickets, they will get this rejection letter. (You can change this permissions from CRM / Usergroups)',
+    'admin.emailtpl_desc.deskpro_emails_user_new-reply-reject-resolved_html_twig_title'    => 'New reply rejected because ticket is resolved',
+    'admin.emailtpl_desc.deskpro_emails_user_new-reply-reject-resolved_html_twig_desc'     => 'If a user tries to reply to a resolved ticket and they do not have permission to re-open tickets, they will get this rejection letter. (You can change this permissions from CRM / Usergroups)',
     'admin.emailtpl_desc.deskpro_emails_user_new-ticket-agent_html_twig_desc'              => 'This is the notification email sent to the user to tell them about a new ticket created by an agent.',
     'admin.emailtpl_desc.deskpro_emails_user_new-ticket-agent_html_twig_title'             => 'New Ticket Created By Agent',
     'admin.emailtpl_desc.deskpro_emails_user_new-ticket-reg-closed_html_twig_desc'         => 'If you have disabled registration, this is the email users will recieve if they send an email to helpdesk without already having an account.',

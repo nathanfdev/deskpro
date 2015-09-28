@@ -1,44 +1,41 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\PageViewLog;
 
 /**
- * Updates viewcounts on articles
+ * Updates viewcounts on articles.
  */
 class UpdateViewCounts extends AbstractJob
 {
@@ -48,18 +45,18 @@ class UpdateViewCounts extends AbstractJob
     {
         // VIEW_COUNTER
         return;
-        $time = time();
+        $time      = time();
         $last_time = App::getSetting('core.last_viewcount_update');
         if (!$last_time) {
             $last_time = time() - 600;
         }
 
-        $update_objects = App::getDb()->fetchAll("
+        $update_objects = App::getDb()->fetchAll('
             SELECT object_type, object_id, COUNT(*) AS count
             FROM page_view_log
             WHERE date_created > ?
             GROUP BY object_type, object_id
-        ", array(date('Y-m-d H:i:s', $last_time)));
+        ', array(date('Y-m-d H:i:s', $last_time)));
 
         App::getDb()->beginTransaction();
         try {
@@ -69,7 +66,7 @@ class UpdateViewCounts extends AbstractJob
                     case PageViewLog::TYPE_DOWNLOAD: $table = 'downloads'; break;
                     case PageViewLog::TYPE_FEEDBACK: $table = 'feedback';  break;
                     case PageViewLog::TYPE_NEWS:     $table = 'news';      break;
-                    default: $table = null;
+                    default: $table                         = null;
                 }
 
                 if (!$table) {
@@ -90,7 +87,7 @@ class UpdateViewCounts extends AbstractJob
         }
 
         if ($update_objects) {
-            $this->logStatus("Updated " . count($update_objects) . " view counts");
+            $this->logStatus('Updated '.count($update_objects).' view counts');
         }
 
         App::get('deskpro.core.settings')->setSetting('core.last_viewcount_update', $time);

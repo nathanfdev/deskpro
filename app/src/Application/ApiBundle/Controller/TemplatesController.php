@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
@@ -43,13 +41,12 @@ use Orb\Util\Strings;
 class TemplatesController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
         return new AdminManagePermission();
     }
-
 
     ####################################################################################################################
     # get-template-info
@@ -58,7 +55,7 @@ class TemplatesController extends AbstractController implements ProtectedControl
     public function getTemplateInfoAction()
     {
         $tplfiles = new TemplateFiles();
-        $map = $tplfiles->getUserTemplates();
+        $map      = $tplfiles->getUserTemplates();
 
         $custom_templates = $this->container->getSystemService('style')->getCustomTemplateInfo();
 
@@ -77,7 +74,7 @@ class TemplatesController extends AbstractController implements ProtectedControl
     public function getEmailTemplateInfoAction()
     {
         $tpl_desc = new EmailTemplatesDesc();
-        $list = $tpl_desc->getProcessedList($this->container->getTranslator());
+        $list     = $tpl_desc->getProcessedList($this->container->getTranslator());
 
         $custom_templates = $this->container->getSystemService('style')->getCustomTemplateInfo();
         $custom_templates = array_filter($custom_templates, function ($x) { return preg_match('#^DeskPRO:emails_#', $x['name']); });
@@ -85,7 +82,7 @@ class TemplatesController extends AbstractController implements ProtectedControl
         if ($custom_templates) {
             foreach ($list as &$type_coll) {
                 foreach ($type_coll['groups'] as &$group_coll) {
-                    foreach ($group_coll['templates'] as &$tpl){
+                    foreach ($group_coll['templates'] as &$tpl) {
                         if (isset($custom_templates[$tpl['name']])) {
                             $tpl['is_custom'] = true;
                         } else {
@@ -97,19 +94,19 @@ class TemplatesController extends AbstractController implements ProtectedControl
             unset($type_coll, $group_coll, $tpl);
         }
 
-        $list['custom'] = array();
-        $list['custom']['title'] = 'Custom Emails';
-        $list['custom']['typeId'] = 'custom';
-        $list['custom']['groups'] = array();
+        $list['custom']                     = array();
+        $list['custom']['title']            = 'Custom Emails';
+        $list['custom']['typeId']           = 'custom';
+        $list['custom']['groups']           = array();
         $list['custom']['groups']['custom'] = array(
             'groupId'   => 'custom',
             'title'     => 'Custom Emails',
-            'templates' => array()
+            'templates' => array(),
         );
 
         $custom_emails = $this->db->fetchAll("SELECT id, name FROM templates WHERE name LIKE 'DeskPRO:emails_custom:%'");
         foreach ($custom_emails as $tpl) {
-            $name = Strings::extractRegexMatch('#^DeskPRO:emails_custom:(.*?).html.twig$#', $tpl['name'], 1) . '.html';
+            $name                                              = Strings::extractRegexMatch('#^DeskPRO:emails_custom:(.*?).html.twig$#', $tpl['name'], 1).'.html';
             $list['custom']['groups']['custom']['templates'][] = array(
                 'typeId'    => 'custom',
                 'groupId'   => 'custom',
@@ -117,13 +114,13 @@ class TemplatesController extends AbstractController implements ProtectedControl
                 'title'     => $name,
                 'desc'      => '',
                 'name'      => $tpl['name'],
-                'showName'  => 'emails_custom/' . $name,
+                'showName'  => 'emails_custom/'.$name,
             );
         }
 
         return $this->createApiResponse(array(
             'list'             => $list,
-            'custom_templates' => $custom_templates
+            'custom_templates' => $custom_templates,
         ));
     }
 
@@ -135,7 +132,7 @@ class TemplatesController extends AbstractController implements ProtectedControl
     {
         if (strpos($name, 'EDIT_SIDEBAR_BLOCK:') === 0) {
             $block_id = substr($name, strlen('EDIT_SIDEBAR_BLOCK:'));
-            $block = $this->em->find('DeskPRO:PortalPageDisplay', $block_id);
+            $block    = $this->em->find('DeskPRO:PortalPageDisplay', $block_id);
             if (!$block || !$block->getData('tpl')) {
                 throw $this->createNotFoundException();
             }
@@ -197,16 +194,16 @@ class TemplatesController extends AbstractController implements ProtectedControl
             $set->saveTemplate($template);
         } catch (\Twig_Error_Syntax $e) {
             return $this->createJsonResponse(array(
-                'error' => true,
-                'error_syntax' => true,
-                'error_code' => $e->getCode(),
+                'error'         => true,
+                'error_syntax'  => true,
+                'error_code'    => $e->getCode(),
                 'error_message' => $e->getMessage(),
-                'error_line' => $e->getTemplateLine(),
+                'error_line'    => $e->getTemplateLine(),
             ), 400);
         } catch (\Twig_Error $e) {
             return $this->createJsonResponse(array(
-                'error' => true,
-                'error_code' => $e->getCode(),
+                'error'         => true,
+                'error_code'    => $e->getCode(),
                 'error_message' => $e->getMessage(),
             ), 400);
         }
@@ -220,7 +217,6 @@ class TemplatesController extends AbstractController implements ProtectedControl
             'name' => $template->getName(),
         ));
     }
-
 
     ####################################################################################################################
     # delete-template
@@ -250,7 +246,6 @@ class TemplatesController extends AbstractController implements ProtectedControl
             'old_name' => $name,
         ));
     }
-
 
     ####################################################################################################################
 

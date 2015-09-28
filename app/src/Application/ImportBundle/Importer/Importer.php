@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Importer;
 
@@ -36,16 +37,15 @@ use Application\ImportBundle\Generator\GeneratorInterface;
 use Application\ImportBundle\Generator\ImporterProgressBar;
 use Application\ImportBundle\Generator\Writer\WriterInterface;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
-use Application\ImportBundle\Reader\OsTicket\OsTicketConfig;
 use Application\ImportBundle\Reader\DeskPRO\DeskPROConfig;
+use Application\ImportBundle\Reader\OsTicket\OsTicketConfig;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskConfig;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
 use Orb\Zip\Zip;
 
 /**
- * Class Importer
- * @package Application\ImportBundle\Service
+ * Class Importer.
  */
 class Importer
 {
@@ -78,7 +78,7 @@ class Importer
     protected $zipper;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param EntityManager      $entity_manager
      * @param DeskproBlobStorage $blob_storage
@@ -92,30 +92,30 @@ class Importer
     }
 
     /**
-     * Get current importer name
+     * Get current importer name.
      *
      * @return DataStore
      */
     public function getCurrentName()
     {
         $data = $this->data_store_repository->getByName('importers.main');
-        if ( ! $data) {
-            return null;
+        if (!$data) {
+            return;
         }
 
         return $data->getData('current');
     }
 
     /**
-     * Set current importer name
+     * Set current importer name.
      *
      * @param string $name
      */
     public function setCurrentName($name)
     {
         $data = $this->data_store_repository->getByName('importers.main');
-        if ( ! $data) {
-            $data = new DataStore();
+        if (!$data) {
+            $data         = new DataStore();
             $data['name'] = 'importers.main';
             $this->entity_manager->persist($data);
         }
@@ -125,27 +125,28 @@ class Importer
     }
 
     /**
-     * Get importer by id
+     * Get importer by id.
      *
      * @param string $id
      *
-     * @return DataStore
      * @throws \RuntimeException
+     * @return DataStore
+     *
      */
     public function getImporter($id)
     {
-        if ( ! in_array($id, self::$allowed)) {
+        if (!in_array($id, self::$allowed)) {
             throw new \RuntimeException(sprintf('Importer `%s` is not supported', $id));
         }
 
-        $name = 'importers.' . $id;
+        $name     = 'importers.'.$id;
         $importer = $this->data_store_repository->getByName($name);
 
         if ($importer) {
-           return $importer;
+            return $importer;
         }
 
-        $importer = new DataStore();
+        $importer         = new DataStore();
         $importer['name'] = $name;
         $importer->setData('id', $id);
 
@@ -186,17 +187,18 @@ class Importer
     }
 
     /**
-     * Returns reader config
+     * Returns reader config.
      *
      * @param string $id
      *
-     * @return CsvConfig|DeskPROConfig|OsTicketConfig|ZenDeskConfig|null
      * @throws \Exception
+     * @return CsvConfig|DeskPROConfig|OsTicketConfig|ZenDeskConfig|null
+     *
      */
     public function getReaderConfig($id)
     {
         $importer = $this->getImporter($id);
-        $config = $importer->getData('config');
+        $config   = $importer->getData('config');
 
         $readerConfig = null;
         switch ($id) {
@@ -220,9 +222,10 @@ class Importer
     }
 
     /**
-     * Create/copy all necessary dirs/files for import
+     * Create/copy all necessary dirs/files for import.
      *
      * @param string $id
+     *
      * @return DataStore
      */
     public function initReader($id)
@@ -232,13 +235,13 @@ class Importer
 
         // Create temp dir
         $tmp = @$config['temp'];
-        if ( ! $tmp) {
-            $tmp = dp_get_tmp_dir().'/importer-'.time();
+        if (!$tmp) {
+            $tmp            = dp_get_tmp_dir().'/importer-'.time();
             $config['temp'] = $tmp;
             $this->entity_manager->flush($importer);
         }
 
-        if ( ! file_exists($tmp)) {
+        if (!file_exists($tmp)) {
             mkdir($tmp.'/in', 0777, true);
             mkdir($tmp.'/out', 0777, true);
 
@@ -260,7 +263,7 @@ class Importer
 
         // Log file
         $log_file = $importer->getData('logfile');
-        if ( ! $log_file) {
+        if (!$log_file) {
             $log_file = dp_get_log_dir().'/importlog-'.date('Ymd-His').'-'.Strings::random(6, Strings::CHARS_ALPHA_IU);
             $importer->setData('logfile', $log_file);
         }
@@ -272,10 +275,11 @@ class Importer
     }
 
     /**
-     * Set state of import
+     * Set state of import.
      *
      * @param $state
      * @param null $id
+     *
      * @throws \Exception
      */
     public function setStatus($id, $state)
@@ -288,6 +292,7 @@ class Importer
 
     /**
      * @param string $id
+     *
      * @return DataStore
      */
     public function startImport($id)
@@ -299,12 +304,14 @@ class Importer
         $this->setCurrentName($id);
 
         // trigger cron to start console command
-        file_put_contents(dp_get_data_dir() . '/importer_cron.pid', 0);
+        file_put_contents(dp_get_data_dir().'/importer_cron.pid', 0);
+
         return $importer;
     }
 
     /**
      * @param DataStore $importer
+     *
      * @return GeneratorConfig
      */
     public function createGeneratorConfig(DataStore $importer)
@@ -350,11 +357,13 @@ class Importer
 
     /**
      * @param $total_count
+     *
      * @return ImporterProgressBar
      */
     public function createProgressBar($total_count)
     {
         $importer = $this->getImporter($this->getCurrentName());
+
         return new ImporterProgressBar($importer, $this->entity_manager, $total_count);
     }
 }
