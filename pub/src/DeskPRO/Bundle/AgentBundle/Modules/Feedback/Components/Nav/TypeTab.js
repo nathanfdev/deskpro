@@ -15,11 +15,11 @@ export class TypeTab extends Component {
     return (
       <ul>
         {types.map((item, index) =>
-            <div key={index} onClick={onClick.bind(this, {name:'category', value:item.title})}>
-              <ListItem count={item.value} label={item.title}
-                        active={currentGroup.name === 'category' && currentGroup.value === item.title}
-                />
-            </div>
+          <div key={index} onClick={onClick.bind(this, {name: 'category', value: item.title})}>
+            <ListItem count={item.value} label={item.title}
+                      active={currentGroup.name === 'category' && currentGroup.value === item.title}
+              />
+          </div>
         )}
       </ul>
     );

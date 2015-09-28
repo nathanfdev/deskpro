@@ -23,15 +23,8 @@ import AssignHover from "../Components/AssignHover";
 import TaskControlsViewSwitcher from '../Components/TaskControlsViewSwitcher';
 
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned';
-import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
-import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
 import ListFrameMenu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameMenu';
 import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
-import ItemList from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemList';
-import ItemGroup from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemGroup';
-import MenuFooter from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooter';
-import MenuFooterLink from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterLink';
-import MenuFooterOptions from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterOptions';
 
 @connect(state => ({
   taskFrameList: state.taskFrameList,
@@ -203,7 +196,7 @@ export default class TasksListFrame extends React.Component {
       query.sort = modifier.direction;
     }
 
-    console.log(query);
+    this.setState(modifier);
 
     this.props.dispatch(TaskActions.setFilter(query));
   }
@@ -329,7 +322,7 @@ export default class TasksListFrame extends React.Component {
     const {taskFrameList, projectList, taskFilter, labelList, agentList, teamList, departmentList} = this.props;
 
     const _this = this;
-    let linked_items = {};
+    let linkedItems = {};
     let lists = [];
     let labels = [];
     let tickets = {};
@@ -344,7 +337,7 @@ export default class TasksListFrame extends React.Component {
     // Attach IDs to the linked item
     if (taskFrameList.taskFrameLinks && typeof taskFrameList.taskFrameLinks.forEach === 'function') {
       taskFrameList.taskFrameLinks.forEach((link) => {
-        linked_items[link.id.toString()] = link;
+        linkedItems[link.id.toString()] = link;
       });
     }
 
@@ -386,7 +379,7 @@ export default class TasksListFrame extends React.Component {
       });
     }
 
-    const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, lists, linked_items, tickets);
+    const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, lists, linkedItems, tickets);
     const columnField = this.state.order;
     const rawGroupings = grouping.getRawGroupings(columnField, this.state.direction);
     const sectionClass = this.state.view !== 'list' ? "task-list-frame dp-list-frame kanban" : "task-list-frame dp-list-frame";
@@ -536,23 +529,23 @@ export default class TasksListFrame extends React.Component {
                   </thead>
                   {rawGroupings ? rawGroupings.map((grouping) => {
                       if (tasks[grouping.key]) {
-                          return <TaskCardCondensedGroup tasks={tasks[grouping.key]} key={grouping.id}
-                                                         columnField={columnField}
-                                                         source={taskFrameList.taskFrameSource}
-                                                         dispatch={_this.props.dispatch.bind(_this)}
-                                                         updateField={grouping.updateField}
-                                                         updateValue={grouping.updateValue}
-                                                         teams={this.teams} projects={this.projects}
-                                                         linked_items={linked_items}
-                                                         departments={this.departments}
-                                                         agents={this.agents} tickets={tickets}
-                                                         toggleDone={this.toggleDone.bind(this)}
-                                                         editTask={_this.editTask.bind(_this)}
-                                                         updateMassActions={_this.updateMassActions.bind(_this)}
-                                                         actionable={_this.state.actionable}
-                                                         order={this.state.order}
-                                                         divider={grouping.title}
-                                                         moveCard={this.moveCard.bind(this)} />
+                          return (<TaskCardCondensedGroup tasks={tasks[grouping.key]} key={grouping.id}
+                                                          columnField={columnField}
+                                                          source={taskFrameList.taskFrameSource}
+                                                          dispatch={_this.props.dispatch.bind(_this)}
+                                                          updateField={grouping.updateField}
+                                                          updateValue={grouping.updateValue}
+                                                          teams={this.teams} projects={this.projects}
+                                                          linked_items={linkedItems}
+                                                          departments={this.departments}
+                                                          agents={this.agents} tickets={tickets}
+                                                          toggleDone={this.toggleDone.bind(this)}
+                                                          editTask={_this.editTask.bind(_this)}
+                                                          updateMassActions={_this.updateMassActions.bind(_this)}
+                                                          actionable={_this.state.actionable}
+                                                          order={this.state.order}
+                                                          divider={grouping.title}
+                                                          moveCard={this.moveCard.bind(this)} />);
                       }
                   }) : '' }
                 </table>
@@ -571,7 +564,7 @@ export default class TasksListFrame extends React.Component {
                               tickets={tickets}
                               teams={this.teams}
                               projects={this.projects}
-                              linked_items={linked_items}
+                              linked_items={linkedItems}
                               departments={this.departments}
                               agents={this.agents}
                               setYear={this.setYear.bind(this)} />
@@ -591,7 +584,7 @@ export default class TasksListFrame extends React.Component {
                                           updateField={grouping.updateField}
                                           updateValue={grouping.updateValue}
                                           teams={this.teams} projects={this.projects}
-                                          linked_items={linked_items}
+                                          linked_items={linkedItems}
                                           departments={this.departments} agents={this.agents}
                                           tickets={tickets}
                                           toggleDone={this.toggleDone.bind(this)}
