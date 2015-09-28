@@ -280,6 +280,8 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
             self::FIELD_TYPE_SYSTEM_SUBJECT,
             self::FIELD_TYPE_SYSTEM_DESCRIPTION,
             self::FIELD_TYPE_SYSTEM_STATUS,
+            self::FIELD_TYPE_SYSTEM_PRIORITY,
+            self::FIELD_TYPE_SYSTEM_BASIC_PRIORITY,
         );
 
         if ($result) {
