@@ -1732,7 +1732,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $x->label = $l;
 
         foreach ($this->labels as $idx => $label) {
-            if (strtolower($label->label) == strtolower($x->label)) {
+            if (Strings::utf8_strtolower($label->label) == Strings::utf8_strtolower($x->label)) {
                 $this->labels->remove($idx);
                 $this->_onPropertyChanged('labels', null, $this->labels);
 
@@ -1753,8 +1753,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $x = new LabelTicket();
         $x->label = $l;
 
+        $l_lower = Strings::utf8_strtolower($l);
+
         foreach ($this->labels as $l) {
-            if ($l->label == $x->label) {
+            if (Strings::utf8_strtolower($l->label) === $l_lower) {
                 return $l;
             }
         }
