@@ -124,6 +124,7 @@ final class TicketCustomDef extends AbstractCustomDefParser
             ->setHandlerClass(FieldsHandlerClassMapper::getHandlerClass($formatted['type']))
             ->setAsEnabled($formatted['active'])
             ->setAsUserEnabled($formatted['active'])
+            ->setAsAgentField( ! $formatted['editable_in_portal'])
             ->setOptions($options)
         ;
 
