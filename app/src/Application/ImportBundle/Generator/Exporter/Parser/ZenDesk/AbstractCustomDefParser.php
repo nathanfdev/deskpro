@@ -117,7 +117,7 @@ abstract class AbstractCustomDefParser extends AbstractParser
                 break;
 
             case ZenDeskReaderInterface::FIELD_TYPE_DECIMAL:
-                $decimal_regex = '^\d+(\.\d+)?$';
+                $decimal_regex = '/^\d+(\.\d+)?$/';
                 $options = array_merge($options, array(
                     'validation_type'       => 'regex',
                     'regex'                 => $decimal_regex,
@@ -128,7 +128,7 @@ abstract class AbstractCustomDefParser extends AbstractParser
                 break;
 
             case ZenDeskReaderInterface::FIELD_TYPE_INTEGER:
-                $numeric_regex = '^\d+$';
+                $numeric_regex = '/^\d+$/';
                 $options = array_merge($options, array(
                     'validation_type'       => 'regex',
                     'regex'                 => $numeric_regex,
