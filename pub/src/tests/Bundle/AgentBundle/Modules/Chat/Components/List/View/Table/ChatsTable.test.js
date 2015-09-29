@@ -8,7 +8,6 @@ jest.dontMock('~List/View/Table/Row');
 jest.dontMock('~List/View/Table/TableHeader');
 
 describe('ChatsTable', () => {
-
   const React = require('react/addons');
   const TestUtils = React.addons.TestUtils;
   const ChatsTable = require('~List/View/Table/ChatsTable').ChatsTable;
@@ -26,5 +25,4 @@ describe('ChatsTable', () => {
     TestUtils.renderIntoDocument(<ChatsTable elements={[{}, {}, {}]} />);
     expect(Row.prototype.render.calls.length).toEqual(3);
   });
-
 });
