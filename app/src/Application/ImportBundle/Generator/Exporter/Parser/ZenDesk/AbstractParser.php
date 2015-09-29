@@ -91,6 +91,8 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      * Returns a person organization name.
      *
      * @param int $id
+     *
+     * @return string|null
      */
     protected function getOrganizationName($id)
     {
