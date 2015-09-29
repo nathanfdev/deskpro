@@ -347,6 +347,16 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * Returns handler class
+     *
+     * @return string
+     */
+    public function getHandlerClass()
+    {
+        return $this->handler_class;
+    }
+
+    /**
      * Get the DeskPRO form field object that knows how to render data etc.
      *
      * @return \Application\DeskPRO\CustomFields\Handler\HandlerAbstract
