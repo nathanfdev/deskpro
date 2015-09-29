@@ -43,6 +43,21 @@ class ZenDeskTest extends \DpIntegrationTestCase
     private $person_repository;
 
     /**
+     * @var EntityRepository\CustomDefTicket
+     */
+    private $custom_def_ticket_repository;
+
+    /**
+     * @var EntityRepository\CustomDefPerson
+     */
+    private $custom_def_person_repository;
+
+    /**
+     * @var EntityRepository\CustomDefOrganization
+     */
+    private $custom_def_organization_repository;
+
+    /**
      * @var JsonMockAdapter
      */
     private $adapter;
@@ -68,9 +83,12 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();
 
-        $this->ticket_repository            = $entity_manager->getRepository('DeskPRO:Ticket');
-        $this->ticket_attachment_repository = $entity_manager->getRepository('DeskPRO:TicketAttachment');
-        $this->person_repository            = $entity_manager->getRepository('DeskPRO:Person');
+        $this->ticket_repository                  = $entity_manager->getRepository('DeskPRO:Ticket');
+        $this->ticket_attachment_repository       = $entity_manager->getRepository('DeskPRO:TicketAttachment');
+        $this->person_repository                  = $entity_manager->getRepository('DeskPRO:Person');
+        $this->custom_def_ticket_repository       = $entity_manager->getRepository('DeskPRO:CustomDefTicket');
+        $this->custom_def_person_repository       = $entity_manager->getRepository('DeskPRO:CustomDefPerson');
+        $this->custom_def_organization_repository = $entity_manager->getRepository('DeskPRO:CustomDefOrganization');
 
         $this->output_path = dp_get_data_dir() . '/import/zendesk/export';
         if ( ! is_dir($this->output_path)) {
@@ -1005,6 +1023,9 @@ class ZenDeskTest extends \DpIntegrationTestCase
     {
         $this->checkDbTicketsData();
         $this->checkDbPeopleData();
+        $this->checkDbPeopleCustomDefData();
+        $this->checkDbTicketsCustomDefData();
+        $this->checkDbOrganizationsCustomDefData();
     }
 
     private function checkDbTicketsData()
@@ -1078,5 +1099,20 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $person = $this->person_repository->findOneByEmail('imported.user.200000@example.com');
         $this->assertTrue($person->isDisabled());
         $this->assertFalse($person->isDeleted());
+    }
+
+    private function checkDbPeopleCustomDefData()
+    {
+        $this->assertEquals(10, $this->custom_def_person_repository->countAll());
+    }
+
+    private function checkDbTicketsCustomDefData()
+    {
+        $this->assertEquals(14, $this->custom_def_ticket_repository->countAll());
+    }
+
+    private function checkDbOrganizationsCustomDefData()
+    {
+        $this->assertEquals(10, $this->custom_def_organization_repository->countAll());
     }
 }
