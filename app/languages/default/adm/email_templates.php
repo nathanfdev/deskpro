@@ -1,4 +1,32 @@
-<?php return array(
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+return array(
     'adm.email_templates.layout'                                      => 'Layout',
     'adm.email_templates.layout_top'                                  => '',
     'adm.email_templates.emails_common_email-header_title'            => 'Header',
@@ -112,5 +140,5 @@
     'adm.email_templates.emails_common_ticket-fwd-out-header_title'   => 'Forward-out Header',
     'adm.email_templates.emails_common_ticket-fwd-out-header_desc'    => 'This is the content added to the top of a message being forwarded out of the helpdesk.',
     'adm.email_templates.emails_common_ticket-rating-links_title'     => 'Inline Ticket Rating Links',
-    'adm.email_templates.emails_common_ticket-rating-links_desc'      => 'These are the links that appear under agent replies asking the user to rate their support.'
+    'adm.email_templates.emails_common_ticket-rating-links_desc'      => 'These are the links that appear under agent replies asking the user to rate their support.',
 );

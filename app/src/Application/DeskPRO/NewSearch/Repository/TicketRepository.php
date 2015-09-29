@@ -1,11 +1,37 @@
 <?php
 
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 namespace Application\DeskPRO\NewSearch\Repository;
 
 use Elastica\Filter;
 
 /**
- * Ticket Repository
+ * Ticket Repository.
  */
 class TicketRepository extends AbstractRepository implements WithLabelsInterface
 {
@@ -17,17 +43,17 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
     protected $person;
 
     /**
-     * Fields to be highlighted
+     * Fields to be highlighted.
      *
      * @var array
      */
     protected $highlightFields = array(
         'subject'  => array('fragment_size' => 100),
-        'messages' => array('fragment_size' => 100, 'number_of_fragments' => 1)
+        'messages' => array('fragment_size' => 100, 'number_of_fragments' => 1),
     );
 
     /**
-     * Sets the person context
+     * Sets the person context.
      *
      * @param $person
      */
@@ -37,7 +63,7 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
     }
 
     /**
-     * Constructs the filters array to handle agent permission
+     * Constructs the filters array to handle agent permission.
      *
      * @return array
      */
@@ -60,9 +86,8 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
         if (!$this->person->getAllowedDepartments() || (!$this->person->hasPerm('agent_tickets.view_unassigned') && !$this->person->hasPerm('agent_tickets.view_others'))) {
             // cant see anything else
         } else {
-
             $sub_filter = new Filter\BoolAnd();
-            $any = false;
+            $any        = false;
 
             $dis_dep_ids = $this->person->getHelper('AgentPermissions')->getDisallowedDepartments();
             if ($dis_dep_ids) {
@@ -83,7 +108,6 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
                 $sub_filter->addFilter(new Filter\BoolNot(new Filter\Term(array('agent_team' => 0))));
                 $any = true;
             }
-
 
             // If user has all perms, then no filters are applied
             // and the BoolAnd filter will be empty

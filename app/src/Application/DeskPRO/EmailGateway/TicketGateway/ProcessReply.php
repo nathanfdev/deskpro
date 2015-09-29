@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category EmailGateway
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category EmailGateway
+ */
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
@@ -76,9 +75,11 @@ class ProcessReply extends ProcessAbstract
     }
 
     /**
-     * @param  string                                                     $context
-     * @return \Application\DeskPRO\Mail\Message|mixed|null|TicketMessage
+     * @param string $context
+     *
      * @throws \Exception
+     *
+     * @return \Application\DeskPRO\Mail\Message|mixed|null|TicketMessage
      */
     public function run($context = 'user')
     {
@@ -118,7 +119,8 @@ class ProcessReply extends ProcessAbstract
                 }
 
                 $this->setError('perm_insufficient');
-                return null;
+
+                return;
             }
         }
 
@@ -131,7 +133,7 @@ class ProcessReply extends ProcessAbstract
         }
 
         if ($this->ticket_email->is_dp3_reply) {
-            $this->logMessage("doNewReply message class: TicketIncomingEmailMessageV3");
+            $this->logMessage('doNewReply message class: TicketIncomingEmailMessageV3');
             $email_info = new TicketIncomingEmailMessageV3(
                 $this->ticket,
                 $this->ticket_email,
@@ -140,7 +142,7 @@ class ProcessReply extends ProcessAbstract
                 $this->getLogger()
             );
         } else {
-            $this->logMessage("doNewReply message class: TicketIncomingEmailMessage");
+            $this->logMessage('doNewReply message class: TicketIncomingEmailMessage');
             $email_info = new TicketIncomingEmailMessage(
                 TicketIncomingEmailMessage::MODE_NEWREPLY,
                 $this->ticket,
@@ -171,10 +173,10 @@ class ProcessReply extends ProcessAbstract
 
             App::getMailer()->send($message);
 
-            return null;
+            return;
         }
 
-        $message = new TicketMessage($this->reader->getId());
+        $message               = new TicketMessage($this->reader->getId());
         $message->email_reader = $this->reader;
         if ($this->reader->hasProperty('email_source')) {
             $message['email_source'] = $this->reader->getProperty('email_source');
@@ -196,14 +198,14 @@ class ProcessReply extends ProcessAbstract
 
         $message['ticket'] = $this->ticket;
         $message['person'] = $this->person;
-        $message['email'] = $this->reader->getFromAddress()->getEmail();
+        $message['email']  = $this->reader->getFromAddress()->getEmail();
 
-        $message['message'] = $email_info->body;
+        $message['message']      = $email_info->body;
         $message['message_full'] = $email_info->body_full;
-        $message['message_raw'] = $email_info->body_raw;
+        $message['message_raw']  = $email_info->body_raw;
 
         $message['show_full_hint'] = false;
-        $inline_reply_detector = new DetectInlineReply(App::getOrm(), $this->reader);
+        $inline_reply_detector     = new DetectInlineReply(App::getOrm(), $this->reader);
         if ($this->getLogger()) {
             $inline_reply_detector->setLogger($this->getLogger());
         }
@@ -214,25 +216,24 @@ class ProcessReply extends ProcessAbstract
 
         if ($this->person->is_agent) {
             if (!$email_info->agent_reply_as_note || isset($this->ticket_email->reply_actions['is_reply'])) {
-                $this->logMessage("Reply mode: reply");
-                $message['is_agent_note'] = false;
+                $this->logMessage('Reply mode: reply');
+                $message['is_agent_note']          = false;
                 $this->ticket->email_reader_action = 'agent_reply';
             } else {
-                $this->logMessage("Reply mode: note");
-                $message['is_agent_note'] = true;
+                $this->logMessage('Reply mode: note');
+                $message['is_agent_note']          = true;
                 $this->ticket->email_reader_action = 'agent_note';
             }
         }
 
         $ticket_attach = array();
         foreach ($this->processBlobs() as $blob) {
-
             if (isset($this->dupe_inline_blobs[$blob->getId()])) {
                 continue;
             }
 
-            $attach = new TicketAttachment();
-            $attach['blob'] = $blob;
+            $attach           = new TicketAttachment();
+            $attach['blob']   = $blob;
             $attach['person'] = $this->person;
 
             if (isset($this->inline_blobs[$blob->getId()])) {
@@ -260,20 +261,19 @@ class ProcessReply extends ProcessAbstract
         // so the "empty reply" isnt processed as a reply
         $did_add_message = false;
         if (!isset($this->ticket_email->reply_actions['no_reply']) && ($has_message || ($has_reply_codes && !$has_message))) {
-
-            $this->logMessage('[TicketGatewayProcessor] Checking for dupe message: ' . $message->getMessageHash());
+            $this->logMessage('[TicketGatewayProcessor] Checking for dupe message: '.$message->getMessageHash());
 
             $did_add_message = true;
             if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $this->ticket, 10800, $this->getLogger())) {
                 $this->setError('duplicate_message');
-                $this->logMessage('[TicketGatewayProcessor] doNewReply duplicate message ' . $dupe_message->getId());
+                $this->logMessage('[TicketGatewayProcessor] doNewReply duplicate message '.$dupe_message->getId());
 
                 // Reset some objects so they dont get flushed during next loop
                 App::getOrm()->detach($this->ticket);
                 App::getOrm()->detach($message);
 
                 foreach ($ticket_attach as $a) {
-                    $a->ticket = null;
+                    $a->ticket  = null;
                     $a->message = null;
                     App::getOrm()->detach($a);
                 }
@@ -306,8 +306,8 @@ class ProcessReply extends ProcessAbstract
         #------------------------------
 
         if ($this->ticket_email->reply_actions) {
-            $reply_actions_apply = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
-            $reply_actions_context = new ReplyActionsContext();
+            $reply_actions_apply           = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
+            $reply_actions_context         = new ReplyActionsContext();
             $reply_actions_context->ticket = $this->ticket;
             if ($did_add_message) {
                 $reply_actions_context->message = $message;

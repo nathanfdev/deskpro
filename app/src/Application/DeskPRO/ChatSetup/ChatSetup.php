@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\ChatSetup;
 
 use Application\DeskPRO\Chat\UserChat\ChatAvailableCheck;
@@ -41,13 +39,11 @@ class ChatSetup
     /**
      * @var \Application\DeskPRO\Settings\Settings
      */
-
     private $settings;
 
     /**
      * @param \Application\DeskPRO\Settings\Settings $settings
      */
-
     public function __construct(Settings $settings)
     {
         $this->settings = $settings;
@@ -56,11 +52,10 @@ class ChatSetup
     /**
      * @return array
      */
-
     public function getChatInfo()
     {
         $chat_online = ChatAvailableCheck::getAvailableTime();
-        $chat_online = (bool)$chat_online;
+        $chat_online = (bool) $chat_online;
 
         $chat_enabled = (bool) $this->settings->get('core.apps_chat');
 
@@ -73,7 +68,6 @@ class ChatSetup
     /**
      * @param int $is_enabled
      */
-
     public function setChatEnabled($is_enabled = 1)
     {
         $this->settings->setSetting('core.apps_chat', (int) $is_enabled);

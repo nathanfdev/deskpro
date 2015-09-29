@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage AdminBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\InstallBundle\Data;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -56,7 +53,7 @@ class ServerStats
         # PHP info
         #------------------------------
 
-        $stats['php_version'] = phpversion();
+        $stats['php_version']      = phpversion();
         $stats['php_memory_limit'] = \Orb\Util\Env::getMemoryLimit();
 
         if (function_exists('apc_cache_info')) {
@@ -107,7 +104,7 @@ class ServerStats
                 $stats['php_has_pdo_mysql'] = 0;
             }
         } else {
-            $stats['php_has_pdo'] = 0;
+            $stats['php_has_pdo']       = 0;
             $stats['php_has_pdo_mysql'] = 0;
         }
 
@@ -135,18 +132,19 @@ class ServerStats
 
         if ($this->db) {
             try {
-                $stats['mysql_version'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'version'", array(), 1);
-                $stats['mysql_read_buffer_size'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'read_buffer_size'", array(), 1);
+                $stats['mysql_version']                = $this->db->fetchColumn("SHOW VARIABLES LIKE 'version'", array(), 1);
+                $stats['mysql_read_buffer_size']       = $this->db->fetchColumn("SHOW VARIABLES LIKE 'read_buffer_size'", array(), 1);
                 $stats['mysql_default_storage_engine'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'default_storage_engine'", array(), 1);
-                $stats['mysql_join_buffer_size'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'join_buffer_size'", array(), 1);
-                $stats['mysql_key_buffer_size'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'key_buffer_size'", array(), 1);
-                $stats['mysql_max_allowed_packet'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'max_allowed_packet'", array(), 1);
-                $stats['mysql_max_tmp_tables'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'max_tmp_tables'", array(), 1);
-                $stats['mysql_max_user_connections'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'max_user_connections'", array(), 1);
+                $stats['mysql_join_buffer_size']       = $this->db->fetchColumn("SHOW VARIABLES LIKE 'join_buffer_size'", array(), 1);
+                $stats['mysql_key_buffer_size']        = $this->db->fetchColumn("SHOW VARIABLES LIKE 'key_buffer_size'", array(), 1);
+                $stats['mysql_max_allowed_packet']     = $this->db->fetchColumn("SHOW VARIABLES LIKE 'max_allowed_packet'", array(), 1);
+                $stats['mysql_max_tmp_tables']         = $this->db->fetchColumn("SHOW VARIABLES LIKE 'max_tmp_tables'", array(), 1);
+                $stats['mysql_max_user_connections']   = $this->db->fetchColumn("SHOW VARIABLES LIKE 'max_user_connections'", array(), 1);
                 foreach ($this->db->fetchAllKeyValue("SHOW VARIABLES LIKE '%innodb%'") as $k => $v) {
                     $stats["mysql_$k"] = $v;
                 }
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
         #------------------------------
@@ -165,7 +163,7 @@ class ServerStats
             $stats['server_os'] = PHP_OS;
         }
 
-        $stats['server_uname'] = php_uname('s') . ' ' . php_uname('r') . ' ' . php_uname('v') . ' ' . php_uname('m');
+        $stats['server_uname'] = php_uname('s').' '.php_uname('r').' '.php_uname('v').' '.php_uname('m');
 
         #------------------------------
         # Web server

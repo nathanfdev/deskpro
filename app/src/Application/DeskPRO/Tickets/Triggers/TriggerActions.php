@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Tickets\Triggers;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -71,13 +70,13 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
 
     public function __construct()
     {
-        $this->actions = new ActionComposite();
+        $this->actions        = new ActionComposite();
         $this->action_factory = new ActionFactory();
     }
 
-
     /**
-     * @param  ActionInterface           $action
+     * @param ActionInterface $action
+     *
      * @throws \InvalidArgumentException
      */
     public function addAction(ActionInterface $action)
@@ -89,9 +88,9 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
         $this->actions->add($action);
     }
 
-
     /**
-     * @param  array                     $action_info
+     * @param array $action_info
+     *
      * @throws \InvalidArgumentException
      */
     public function addActionFromArray(array $action_info)
@@ -99,7 +98,6 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
         $action = $this->action_factory->createFromArray($action_info);
         $this->addAction($action);
     }
-
 
     /**
      * @param DeskproContainer $container
@@ -109,25 +107,24 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
         $this->container = $container;
     }
 
-
     /**
      * Gets the set container.
      *
-     * @return DeskproContainer
      * @throws \RuntimeException When no container has been set yet
+     *
+     * @return DeskproContainer
      */
     protected function getContainer()
     {
         if (!$this->container) {
-            throw new \RuntimeException("No container has been set");
+            throw new \RuntimeException('No container has been set');
         }
 
         return $this->container;
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
@@ -138,7 +135,6 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
         $this->actions->applyAction($ticket, $context);
     }
 
-
     /**
      * @return int
      */
@@ -147,7 +143,6 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
         return count($this->actions);
     }
 
-
     /**
      * @return array
      */
@@ -155,7 +150,7 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
     {
         $data = array();
 
-        $data['version']  = 1;
+        $data['version'] = 1;
         $data['actions'] = array();
         foreach ($this->actions->getAll() as $actions) {
             if (!($actions instanceof ActionDefinitionInterface)) {
@@ -165,20 +160,19 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
             if (strpos(get_class($actions), 'Application\\DeskPRO\\Tickets\\Actions\\') === 0) {
                 $data['actions'][] = array(
                     'type'    => $actions->getActionType(),
-                    'options' => $actions->getActionOptions()->all()
+                    'options' => $actions->getActionOptions()->all(),
                 );
             } else {
                 $data['actions'][] = array(
                     'type'       => $actions->getActionType(),
                     'type_class' => get_class($actions),
-                    'options'    => $actions->getActionOptions()->all()
+                    'options'    => $actions->getActionOptions()->all(),
                 );
             }
         }
 
         return $data;
     }
-
 
     /**
      * @return \Application\DeskPRO\Tickets\Actions\ActionInterface[]
@@ -188,7 +182,6 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
         return $this->actions->getAll();
     }
 
-
     /**
      * @return ActionComposite
      */
@@ -197,7 +190,6 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
         return $this->actions;
     }
 
-
     /**
      * @return string
      */
@@ -205,7 +197,6 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
     {
         return json_encode($this->exportToArray());
     }
-
 
     /**
      * @param array $data
@@ -217,7 +208,6 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
         }
     }
 
-
     /**
      * @return array
      */
@@ -226,9 +216,9 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
         return $this->exportToArray();
     }
 
-
     /**
-     * @param  array          $data
+     * @param array $data
+     *
      * @return TriggerActions
      */
     public static function unserializeJsonArray(array $data)
@@ -239,14 +229,13 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
                 $obj->addActionFromArray($action_info);
             } catch (\Exception $e) {
                 if (!empty($action_info['type'])) {
-                    KernelErrorHandler::logException($e, false, md5('action_' . $action_info['type']));
+                    KernelErrorHandler::logException($e, false, md5('action_'.$action_info['type']));
                 }
             }
         }
 
         return $obj;
     }
-
 
     /**
      * @return string
@@ -255,7 +244,6 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
     {
         return $this->exportToJson();
     }
-
 
     /**
      * @param string $data
@@ -271,7 +259,7 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
                 $this->addActionFromArray($action_info);
             } catch (\Exception $e) {
                 if (!empty($action_info['type'])) {
-                    KernelErrorHandler::logException($e, false, md5('action_' . $action_info['type']));
+                    KernelErrorHandler::logException($e, false, md5('action_'.$action_info['type']));
                 }
             }
         }

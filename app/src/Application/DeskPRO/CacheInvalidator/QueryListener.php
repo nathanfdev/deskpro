@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\CacheInvalidator;
 
 use Application\DeskPRO\App;
@@ -52,7 +49,8 @@ class QueryListener
     {
         try {
             $this->sendUpdates();
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
     }
 
     public function sendUpdates()
@@ -61,7 +59,7 @@ class QueryListener
             return;
         }
 
-        $updates = array_flip($this->updates);
+        $updates       = array_flip($this->updates);
         $this->updates = array();
 
         $this->is_executing = true;
@@ -75,7 +73,7 @@ class QueryListener
         }
 
         if (isset($updates['permissions'])) {
-            App::getDb()->exec("DELETE FROM permissions_cache");
+            App::getDb()->exec('DELETE FROM permissions_cache');
         }
 
         $this->is_executing = false;
@@ -83,7 +81,9 @@ class QueryListener
 
     public function handleQuery($sql, array $params)
     {
-        if ($this->is_executing) return;
+        if ($this->is_executing) {
+            return;
+        }
         $this->is_executing = true;
 
         $query_id = $this->getQueryIdent($sql, $params);
@@ -159,12 +159,12 @@ class QueryListener
         $this->is_executing = false;
     }
 
-
     /**
      * Get the ID of a query that we can try to match against caches.
      *
      * @param $sql
-     * @param  array  $params
+     * @param array $params
+     *
      * @return string
      */
     public function getQueryIdent($sql, array $params)
@@ -173,7 +173,7 @@ class QueryListener
             $query_name = $m[1];
         } else {
             if (preg_match('#^\s*SELECT#i', $sql)) {
-                return null; // Ignore selects
+                return; // Ignore selects
             } elseif (preg_match('#^\s*UPDATE#i', $sql)) {
                 $query_type = 'UPDATE';
             } elseif (preg_match('#^\s*INSERT#i', $sql)) {
@@ -181,16 +181,16 @@ class QueryListener
             } elseif (preg_match('#^\s*DELETE#i', $sql)) {
                 $query_type = 'DELETE';
             } else {
-                return null; // unknown
+                return; // unknown
             }
 
             if (preg_match('#\s*(FROM|INSERT\s+INTO|UPDATE|DELETE\s+FROM)\s+(.*?)\s+#i', $sql, $m)) {
                 $query_table = $m[2];
             } else {
-                return null; // unknown table
+                return; // unknown table
             }
 
-            $query_name = $query_type . '_' . $query_table;
+            $query_name = $query_type.'_'.$query_table;
         }
 
         return strtolower($query_name);

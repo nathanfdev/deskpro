@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Api
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Api
+ */
 namespace Application\ApiBundle\Request;
 
 use Application\ApiBundle\ApiUser;
@@ -65,17 +64,15 @@ class RequestAuth
      */
     protected $log_entry;
 
-
     /**
      * @param EntityManager $em
      * @param Request       $request
      */
     public function __construct(EntityManager $em, Request $request)
     {
-        $this->em = $em;
+        $this->em      = $em;
         $this->request = $request;
     }
-
 
     /**
      * @return \Application\ApiBundle\ApiUser
@@ -83,7 +80,7 @@ class RequestAuth
     public function getApiUser()
     {
         if ($this->api_user == null) {
-            $this->api_user = new ApiUser();
+            $this->api_user                = new ApiUser();
             $this->api_user->request_token = $this->getRequestToken();
 
             #------------------------------
@@ -121,7 +118,6 @@ class RequestAuth
                 }
 
                 $this->createApiLogEntry();
-
             } elseif ($this->api_user->api_token) {
                 $this->api_user->person = $this->api_user->api_token->person;
             }
@@ -130,7 +126,6 @@ class RequestAuth
         return $this->api_user;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\ApiKey|null
      */
@@ -138,12 +133,11 @@ class RequestAuth
     {
         $key_str = $this->getRequestValue('X-DeskPRO-API-Key', 'API-KEY', true);
         if (!$key_str) {
-            return null;
+            return;
         }
 
         return $this->em->getRepository('DeskPRO:ApiKey')->findByKeyString($key_str);
     }
-
 
     /**
      * @return \Application\DeskPRO\Entity\ApiToken|null
@@ -152,12 +146,11 @@ class RequestAuth
     {
         $token_str = $this->getRequestValue('X-DeskPRO-API-Token', 'API-TOKEN', true);
         if (!$token_str) {
-            return null;
+            return;
         }
 
         return $this->em->getRepository('DeskPRO:ApiToken')->findByTokenString($token_str);
     }
-
 
     /**
      * @return \Application\DeskPRO\Entity\Session|null
@@ -171,12 +164,11 @@ class RequestAuth
             }
         }
         if (!$session_id) {
-            return null;
+            return;
         }
 
         return $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($session_id);
     }
-
 
     /**
      * @return null|string
@@ -185,17 +177,17 @@ class RequestAuth
     {
         $tok = $this->getRequestValue('X-DeskPRO-Request-Token', 'REQUEST-TOKEN', true);
         if (!$tok) {
-            return null;
+            return;
         }
 
         return $tok;
     }
 
-
     /**
-     * @param  string      $header_name   The name to look for in headers
-     * @param  string      $request_name  The name to look for in request params
-     * @param  bool        $use_http_auth To concat the user/pw is http auth
+     * @param string $header_name   The name to look for in headers
+     * @param string $request_name  The name to look for in request params
+     * @param bool   $use_http_auth To concat the user/pw is http auth
+     *
      * @return string|null
      */
     private function getRequestValue($header_name, $request_name, $use_http_auth = false)
@@ -214,7 +206,7 @@ class RequestAuth
             return $headers['PHP_AUTH_USER'].':'.$headers['PHP_AUTH_PW'];
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -226,15 +218,15 @@ class RequestAuth
             return;
         }
 
-        $log = new ApiKeyLog();
-        $log->key = $key;
+        $log          = new ApiKeyLog();
+        $log->key     = $key;
         $log->request = array(
-            'path' => $this->request->getPathInfo(),
-            'method' => $this->request->getMethod(),
+            'path'    => $this->request->getPathInfo(),
+            'method'  => $this->request->getMethod(),
             'payload' => $this->request->request->all(),
         );
         $log->response = array(
-            'status' => null,
+            'status'  => null,
             'content' => null, // parse json to array?
         );
 

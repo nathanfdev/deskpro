@@ -1,4 +1,31 @@
 <?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 namespace DpUnitTests\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -39,7 +66,7 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
 
         $this->exec_context = new ExecutorContext();
 
-        $this->ticket = $this->createTicket(1, $this->object1);
+        $this->ticket      = $this->createTicket(1, $this->object1);
         $this->ticket_null = $this->createTicket(1, null);
     }
 
@@ -57,14 +84,15 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
      * IMPORTANT:
      * 1) The first object should reset the state, then attempt to re-apply the object property (for checking 'touched' types).
      *
-     * @param  int    $id
+     * @param int $id
+     *
      * @return object
      */
     public function createEntityObject($id)
     {
         $ent_class = $this->getEntityClass();
 
-        $object = new $ent_class();
+        $object     = new $ent_class();
         $object->id = $id;
 
         return $object;
@@ -72,15 +100,18 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
 
     /**
      * Should return a ticket if ticket can be created with $object.
-     * @param  int    $id
-     * @param  mixed  $object An object, may also be null for null tests
+     *
+     * @param int   $id
+     * @param mixed $object An object, may also be null for null tests
+     *
      * @return Ticket|null
      */
     abstract public function createTicket($id, $object);
 
     /**
-     * @param  string               $op
-     * @param  array                $options
+     * @param string $op
+     * @param array  $options
+     *
      * @return TriggerTermInterface
      */
     protected function createChecker($op, array $options)
@@ -99,19 +130,22 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
     }
 
     /**
-     * The term checker class
+     * The term checker class.
+     *
      * @return string
      */
     abstract protected function getCheckClass();
 
     /**
-     * The option key to supply IDs in
+     * The option key to supply IDs in.
+     *
      * @return string
      */
     abstract protected function getCheckClassOptionKey();
 
     /**
-     * The entity class we are checking
+     * The entity class we are checking.
+     *
      * @return string
      */
     abstract public function getEntityClass();
@@ -143,13 +177,13 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
 
     public function testIsMatchMultipleOptions()
     {
-        $check = $this->createChecker('is', array('%OPT%' => array(1,2)));
+        $check = $this->createChecker('is', array('%OPT%' => array(1, 2)));
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 
     public function testIsMatchInvalidOptions()
     {
-        $check = $this->createChecker('is', array('%OPT%' => array('invalid',1,2,100)));
+        $check = $this->createChecker('is', array('%OPT%' => array('invalid', 1, 2, 100)));
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 
@@ -161,13 +195,13 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
 
     public function testContainsMatchMultipleOptions()
     {
-        $check = $this->createChecker('contains', array('%OPT%' => array(1,2)));
+        $check = $this->createChecker('contains', array('%OPT%' => array(1, 2)));
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 
     public function testContainsMatchInvalidOptions()
     {
-        $check = $this->createChecker('contains', array('%OPT%' => array('invalid',1,2,100)));
+        $check = $this->createChecker('contains', array('%OPT%' => array('invalid', 1, 2, 100)));
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 
@@ -207,7 +241,7 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
 
     public function testNotContainsMultipleOptions()
     {
-        $check = $this->createChecker('notcontains', array('%OPT%' => array(500,600)));
+        $check = $this->createChecker('notcontains', array('%OPT%' => array(500, 600)));
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 

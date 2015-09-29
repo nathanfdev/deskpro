@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Tickets
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -43,13 +40,13 @@ use Orb\Util\Strings;
 
 class GroupingCounter
 {
-    const LAST_TIME_MARKER   = 1893456000;
-    const MODE_AGENT         = 'agent';
-    const MODE_AGENT_TEAM    = 'agent_team';
-    const MODE_PARTICIPANT   = 'participant';
-    const MODE_UNASSIGNED    = 'unassigned';
-    const MODE_ALL           = 'all';
-    const MODE_SPECIFY       = 'specify';
+    const LAST_TIME_MARKER = 1893456000;
+    const MODE_AGENT       = 'agent';
+    const MODE_AGENT_TEAM  = 'agent_team';
+    const MODE_PARTICIPANT = 'participant';
+    const MODE_UNASSIGNED  = 'unassigned';
+    const MODE_ALL         = 'all';
+    const MODE_SPECIFY     = 'specify';
 
     /** @var string */
     protected $grouping1 = 'department';
@@ -73,7 +70,7 @@ class GroupingCounter
     }
 
     /**
-     * Get an array of counts suitable for looping in a template etc
+     * Get an array of counts suitable for looping in a template etc.
      *
      * @return array
      */
@@ -85,9 +82,9 @@ class GroupingCounter
         #------------------------------
 
         $display_elements = $this->getDisplayElementsArray();
-        $titles1 = $display_elements['titles1'];
-        $titles2 = $display_elements['titles2'];
-        $counts  = $display_elements['counts'];
+        $titles1          = $display_elements['titles1'];
+        $titles2          = $display_elements['titles2'];
+        $counts           = $display_elements['counts'];
 
         Arrays::unshiftAssoc($titles1, -1, 'TOTAL');
         if ($titles2) {
@@ -97,26 +94,27 @@ class GroupingCounter
         $items = array();
 
         foreach ($titles1 as $field1 => $field1_title) {
-
-            if (!isset($counts[$field1])) continue;
+            if (!isset($counts[$field1])) {
+                continue;
+            }
 
             $countinfo = $counts[$field1];
 
-            $row = array();
-            $row['id'] = $field1;
+            $row          = array();
+            $row['id']    = $field1;
             $row['title'] = $field1_title;
             $row['total'] = $countinfo['total'];
 
             if (!empty($countinfo['sub'])) {
-
                 $row['sub'] = array();
                 foreach ($titles2 as $field2 => $field2_title) {
-
-                    if (!isset($countinfo['sub'][$field2])) continue;
+                    if (!isset($countinfo['sub'][$field2])) {
+                        continue;
+                    }
                     $countinfo2 = $countinfo['sub'][$field2];
 
-                    $row2 = array();
-                    $row2['id'] = $field2;
+                    $row2          = array();
+                    $row2['id']    = $field2;
                     $row2['title'] = $field2_title;
                     $row2['total'] = $countinfo2['total'];
 
@@ -139,17 +137,17 @@ class GroupingCounter
         }
 
         return array(
-            'items' => $items,
-            'counts' => $counts,
-            'titles1' => $titles1,
-            'titles2' => $titles2,
+            'items'            => $items,
+            'counts'           => $counts,
+            'titles1'          => $titles1,
+            'titles2'          => $titles2,
             'group1_structure' => $group1_structure,
             'group2_structure' => $group2_structure,
         );
     }
 
     /**
-     * Sort a display array so that the biggest counts are first
+     * Sort a display array so that the biggest counts are first.
      *
      * @param array $display_array
      */
@@ -179,7 +177,7 @@ class GroupingCounter
             if ($f->isChoiceType()) {
                 return "COALESCE(custom_data_ticket_$field.field_id, 0) AS $field";
             } else {
-                return "COALESCE(custom_data_ticket_$field." . $f->getHandler()->getSearchType() . ", 0) AS $field";
+                return "COALESCE(custom_data_ticket_$field.".$f->getHandler()->getSearchType().", 0) AS $field";
             }
         } else {
             try {
@@ -192,9 +190,8 @@ class GroupingCounter
         }
     }
 
-
     /**
-     * Get the raw counts
+     * Get the raw counts.
      *
      * @return array
      */
@@ -238,15 +235,14 @@ class GroupingCounter
 
             // perms only matter if person has permissions applied at all
             if ($agent->getDisallowedDepartments()) {
-
-                $where_perm = array();
+                $where_perm   = array();
                 $where_perm[] = "tickets.agent = {$agent['id']}";
 
                 if ($agent->getAgentTeamIds()) {
-                    $where_perm[] = "tickets.agent_team IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
+                    $where_perm[] = 'tickets.agent_team IN ('.implode(',', $agent->getAgentTeamIds()).')';
                 }
 
-                $where_perm[] = "tickets.department IN (" . implode(',', $agent->getAllowedDepartments()) . ")";
+                $where_perm[] = 'tickets.department IN ('.implode(',', $agent->getAllowedDepartments()).')';
                 $where_perm[] = "part_check.person = {$agent['id']}";
 
                 $where_perm = implode(' OR ', $where_perm);
@@ -256,15 +252,15 @@ class GroupingCounter
 
             switch ($this->mode) {
                 case self::MODE_AGENT:
-                    $wheres[] = 'tickets.agent = ' . $agent['id'];
+                    $wheres[] = 'tickets.agent = '.$agent['id'];
                     break;
 
                 case self::MODE_AGENT_TEAM:
-                    $wheres[] = "tickets.agent_team IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
+                    $wheres[] = 'tickets.agent_team IN ('.implode(',', $agent->getAgentTeamIds()).')';
                     break;
 
                 case self::MODE_PARTICIPANT:
-                    $wheres[] = "tickets.agent_team IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
+                    $wheres[] = 'tickets.agent_team IN ('.implode(',', $agent->getAgentTeamIds()).')';
                     break;
 
                 case self::MODE_ALL:
@@ -275,29 +271,28 @@ class GroupingCounter
                     break;
             }
 
-            $sql = "
-                SELECT " . implode(', ', $select_fields) . "
+            $sql = '
+                SELECT '.implode(', ', $select_fields)."
                 FROM tickets
                 $join
                 LEFT JOIN tickets_participants ON (tickets_participants.ticket = tickets.id)
                 LEFT JOIN tickets_participants AS part_check ON (part_check.ticket = tickets.id)
-                WHERE " . implode(' AND ', $wheres) . "
+                WHERE ".implode(' AND ', $wheres)."
                 $group_by WITH ROLLUP
             ";
 
         // We have ticket IDs already (mode = specify)
         } else {
-
             if (!$this->tickets) {
                 return array();
             }
 
-            $wheres[] = "tickets.id IN (" . implode(',', $this->tickets) . ")";
-            $sql = "
-                SELECT " . implode(', ', $select_fields) . "
+            $wheres[] = 'tickets.id IN ('.implode(',', $this->tickets).')';
+            $sql      = '
+                SELECT '.implode(', ', $select_fields)."
                 FROM tickets
                 $join
-                WHERE " . implode(' AND ', $wheres) . "
+                WHERE ".implode(' AND ', $wheres)."
                 $group_by WITH ROLLUP
             ";
         }
@@ -310,9 +305,10 @@ class GroupingCounter
     }
 
     /**
-     * Check if a field is a time field
+     * Check if a field is a time field.
      *
      * @param $field
+     *
      * @return bool
      */
     public function isTimeField($field)
@@ -325,7 +321,8 @@ class GroupingCounter
     }
 
     /**
-     * @param  string                                           $field
+     * @param string $field
+     *
      * @return \Application\DeskPRO\Entity\CustomDefTicket|null
      */
     public function getCustomDefField($field)
@@ -334,7 +331,7 @@ class GroupingCounter
             return App::getSystemService('TicketFieldsManager')->getFieldFromId($fid);
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -342,24 +339,25 @@ class GroupingCounter
      *
      * @param $field
      * @param $select_name
+     *
      * @return string
      */
     public function makeTimeFieldSelect($field, $select_name)
     {
-        $times = array_keys($this->getTimeTitles());
+        $times     = array_keys($this->getTimeTitles());
         $fieldname = \Application\DeskPRO\Searcher\TicketSearch::getTableField($field);
-        $times = array_reverse($times);
-        $last_t = self::LAST_TIME_MARKER;
+        $times     = array_reverse($times);
+        $last_t    = self::LAST_TIME_MARKER;
 
         $now = time();
 
-        $sql = "CASE ";
+        $sql = 'CASE ';
 
         $parts = array();
         foreach ($times as $t) {
             if ($field == TicketSearch::TERM_TOTAL_USER_WAITING) {
                 // total time is stored in seconds, so we're not doing a date compare
-                $date = $t;
+                $date    = $t;
                 $parts[] = " WHEN (tickets.$fieldname + ($now - COALESCE(UNIX_TIMESTAMP(date_user_waiting)))) >= $date THEN $t ";
             } else {
                 // Get a real time so we dont have mysql doing calculations,
@@ -367,7 +365,7 @@ class GroupingCounter
                 $date = date('Y-m-d H:i:s', $now - $t);
 
                 if ($t == 300) {
-                    $now = date('Y-m-d H:i:s');
+                    $now     = date('Y-m-d H:i:s');
                     $parts[] = " WHEN tickets.$fieldname BETWEEN '$date' AND '$now' THEN $t ";
                 }
 
@@ -377,11 +375,10 @@ class GroupingCounter
             $last_t = $t;
         }
 
-        $sql .= implode('', $parts) . " ELSE ".self::LAST_TIME_MARKER." END AS $select_name";
+        $sql .= implode('', $parts).' ELSE '.self::LAST_TIME_MARKER." END AS $select_name";
 
         return $sql;
     }
-
 
     /**
      * Get information about strucutred counts and titles.
@@ -410,7 +407,7 @@ class GroupingCounter
                 $ids1[] = $count['field1'];
             }
 
-            if ($this->grouping2 AND $count['field2'] !== null) {
+            if ($this->grouping2 and $count['field2'] !== null) {
                 $ids2[] = $count['field2'];
             }
 
@@ -419,8 +416,12 @@ class GroupingCounter
             #------------------------------
 
             // Set ROLLUP's (totals) to -1
-            if ($count['field1'] === null) $count['field1'] = -1;
-            if ($this->grouping2 AND $count['field2'] === null) $count['field2'] = -1;
+            if ($count['field1'] === null) {
+                $count['field1'] = -1;
+            }
+            if ($this->grouping2 and $count['field2'] === null) {
+                $count['field2'] = -1;
+            }
 
             // Init array keys
             if (!isset($counts_structured[$count['field1']])) {
@@ -457,18 +458,17 @@ class GroupingCounter
             'titles2' => $titles2,
             'ids1'    => $ids1,
             'ids2'    => $ids2,
-            'counts'  => $counts_structured
+            'counts'  => $counts_structured,
         );
     }
-
-
 
     /**
      * Get's a hierarchy array of titles for use in a template.
      *
      * @param $field
-     * @param  array $titles
-     * @param  array $ids
+     * @param array $titles
+     * @param array $ids
+     *
      * @return array
      */
     public function getFieldStructure($field, array $titles, array $ids)
@@ -479,12 +479,12 @@ class GroupingCounter
                 break;
 
             case TicketSearch::TERM_CATEGORY:
-                $group_structure = App::getDataService('TicketCategory')->getInHierarchy();
+                $group_structure      = App::getDataService('TicketCategory')->getInHierarchy();
                 $group_structure['0'] = array('id' => 0, 'title' => App::getTranslator()->phrase('agent.general.none'));
                 break;
 
             case TicketSearch::TERM_PRODUCT:
-                $group_structure = App::getDataService('Product')->getInHierarchy();
+                $group_structure      = App::getDataService('Product')->getInHierarchy();
                 $group_structure['0'] = array('id' => 0, 'title' => App::getTranslator()->phrase('agent.general.none'));
                 break;
 
@@ -514,41 +514,42 @@ class GroupingCounter
      * Sometimes $ids is not needed (ie departments can all be fetched),
      * other times it's important (ie dont want every company name in the entire db).
      *
-     * @param  string $field
-     * @param  array  $ids
+     * @param string $field
+     * @param array  $ids
+     *
      * @return array
      */
     public function getFieldTitles($field, array $ids)
     {
-        $tr = App::getTranslator();
+        $tr     = App::getTranslator();
         $titles = null;
 
         switch ($field) {
             case TicketSearch::TERM_DEPARTMENT:
                 $this->grouping_summary = $tr->phrase('agent.general.department');
-                $titles = App::getDataService('Department')->getNames();
+                $titles                 = App::getDataService('Department')->getNames();
                 Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
                 break;
 
             case TicketSearch::TERM_AGENT:
                 $this->grouping_summary = $tr->phrase('agent.general.agent');
-                $titles = App::getDataService('Person')->getAgentNames();
+                $titles                 = App::getDataService('Person')->getAgentNames();
                 Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.unassigned'));
                 break;
 
             case TicketSearch::TERM_AGENT_TEAM:
                 $this->grouping_summary = $tr->phrase('agent.general.agent_team');
-                $titles = App::getDataService('AgentTeam')->getTeamNames();
+                $titles                 = App::getDataService('AgentTeam')->getTeamNames();
                 Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.unassigned'));
                 break;
 
             case TicketSearch::TERM_PERSON:
                 $this->grouping_summary = 'Person';
-                $titles = array();
+                $titles                 = array();
 
                 if ($ids) {
                     $ids_str = implode(',', $ids);
-                    $all = App::getDb()->fetchAll("
+                    $all     = App::getDb()->fetchAll("
                         SELECT
                             people.id, people.name, people.first_name, people.last_name,
                             people_emails.email
@@ -558,8 +559,8 @@ class GroupingCounter
                     ");
 
                     foreach ($all as $r) {
-                        if ($r['first_name'] AND $r['last_name']) {
-                            $name = $r['first_name'] . ' ' . $r['last_name'];
+                        if ($r['first_name'] and $r['last_name']) {
+                            $name = $r['first_name'].' '.$r['last_name'];
                         } elseif ($r['name']) {
                             $name = $r['name'];
                         } elseif ($r['last_name']) {
@@ -567,8 +568,8 @@ class GroupingCounter
                         } elseif ($r['first_name']) {
                             $name = $r['first_name'];
                         } elseif ($r['email']) {
-                            $email = $r['email'];
-                            list ($name,) = explode('@', $email, 2);
+                            $email      = $r['email'];
+                            list($name) = explode('@', $email, 2);
 
                             $name = str_replace('_', ' ', $name);
                             $name = str_replace('.', ' ', $name);
@@ -586,44 +587,44 @@ class GroupingCounter
 
             case TicketSearch::TERM_URGENCY:
                 $this->grouping_summary = $tr->phrase('agent.general.urgency');
-                $x = range(1, 10);
-                $titles = array_combine($x, $x);
+                $x                      = range(1, 10);
+                $titles                 = array_combine($x, $x);
                 break;
 
             case TicketSearch::TERM_CATEGORY:
                 $this->grouping_summary = $tr->phrase('agent.general.category');
-                $titles = App::getDataService('TicketCategory')->getNames();
+                $titles                 = App::getDataService('TicketCategory')->getNames();
                 Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
                 break;
 
             case TicketSearch::TERM_PRIORITY:
                 $this->grouping_summary = $tr->phrase('agent.general.priority');
-                $titles = App::getDataService('TicketPriority')->getNames();
+                $titles                 = App::getDataService('TicketPriority')->getNames();
                 Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
                 break;
 
             case TicketSearch::TERM_PRODUCT:
                 $this->grouping_summary = $tr->phrase('agent.general.product');
-                $titles = App::getDataService('Product')->getNames();
+                $titles                 = App::getDataService('Product')->getNames();
                 Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
                 break;
 
             case TicketSearch::TERM_WORKFLOW:
                 $this->grouping_summary = $tr->phrase('agent.general.workflow');
-                $titles = App::getDataService('TicketWorkflow')->getNames();
+                $titles                 = App::getDataService('TicketWorkflow')->getNames();
                 Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
                 break;
 
             case TicketSearch::TERM_ORGANIZATION:
                 $this->grouping_summary = $tr->phrase('agent.general.organization');
-                $titles = App::getDataService('Organization')->getOrganizationNames($ids);
+                $titles                 = App::getDataService('Organization')->getOrganizationNames($ids);
                 Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
                 break;
 
             case TicketSearch::TERM_LANGUAGE:
                 $this->grouping_summary = $tr->phrase('agent.general.language');
-                $langs = App::getContainer()->getLanguageData();
-                $tr = App::getContainer()->getTranslator();
+                $langs                  = App::getContainer()->getLanguageData();
+                $tr                     = App::getContainer()->getTranslator();
 
                 $titles = array(0 => $tr->phrase('agent.general.none'));
                 foreach ($langs->getAll() as $l) {
@@ -633,17 +634,17 @@ class GroupingCounter
 
             case TicketSearch::TERM_USER_WAITING:
                 $this->grouping_summary = $tr->phrase('agent.general.time_waiting');
-                $titles = $this->getTimeTitles();
+                $titles                 = $this->getTimeTitles();
                 break;
 
             case TicketSearch::TERM_TOTAL_USER_WAITING:
                 $this->grouping_summary = $tr->phrase('agent.general.total_time_waiting');
-                $titles = $this->getTimeTitles();
+                $titles                 = $this->getTimeTitles();
                 break;
 
             case TicketSearch::TERM_DATE_CREATED:
                 $this->grouping_summary = $tr->phrase('agent.general.time_since_creation');
-                $titles = $this->getTimeTitles();
+                $titles                 = $this->getTimeTitles();
                 break;
 
             default:
@@ -656,27 +657,26 @@ class GroupingCounter
                         }
                     } else {
                         if ($ids) {
-
                             $titles = array_combine($ids, $ids);
 
-                            $h = $f->getHandler();
-                            $isDate = $h instanceof Date;
+                            $h          = $f->getHandler();
+                            $isDate     = $h instanceof Date;
                             $isDateTime = $h instanceof DateTime;
 
                             if ($isDate || $isDateTime) {
-
-                                $timezone = App::getCurrentPerson()->getTimezone();
-                                $date_format = App::getSetting('core.date_full');
+                                $timezone        = App::getCurrentPerson()->getTimezone();
+                                $date_format     = App::getSetting('core.date_full');
                                 $datetime_format = App::getSetting('core.date_fulltime');
 
                                 foreach ($titles as &$id) {
-                                    if (!$id) continue;
-                                    $date = new \DateTime('@' . $id, new \DateTimeZone('UTC'));
+                                    if (!$id) {
+                                        continue;
+                                    }
+                                    $date = new \DateTime('@'.$id, new \DateTimeZone('UTC'));
                                     $date->setTimezone($timezone);
                                     $id = $date->format($isDate ? $date_format : $datetime_format);
                                 }
                             }
-
                         } else {
                             $titles = array();
                         }
@@ -703,31 +703,31 @@ class GroupingCounter
     public static function getTimeTitles()
     {
         $times = array(
-            300                                => 'agent.time.group_lt_5_mins',
-            900                                => 'agent.time.group_5_to_15_mins',
-            1800                               => 'agent.time.group_15_to_30_mins',
-            3600                               => 'agent.time.group_30_to_60_mins',
-            7200                               => 'agent.time.group_1_to_2_hours',
-            10800                              => 'agent.time.group_2_to_3_hours',
-            14400                              => 'agent.time.group_3_to_4_hours',
-            21600                              => 'agent.time.group_4_to_6_hours',
-            43200                              => 'agent.time.group_6_to_12_hours',
-            86400                              => 'agent.time.group_12_to_24_hours',
-            172800                             => 'agent.time.group_1_to_2_days',
-            259200                             => 'agent.time.group_2_to_3_days',
-            345600                             => 'agent.time.group_3_to_4_days',
-            432000                             => 'agent.time.group_4_to_5_days',
-            518400                             => 'agent.time.group_5_to_6_days',
-            604800                             => 'agent.time.group_6_to_7_days',
-            1209600                            => 'agent.time.group_1_to_2_weeks',
-            1814400                            => 'agent.time.group_2_to_3_weeks',
-            2419200                            => 'agent.time.group_3_to_4_weeks',
-            4838400                            => 'agent.time.group_1_to_2_months',
-            7257600                            => 'agent.time.group_2_to_3_months',
-            9676800                            => 'agent.time.group_3_to_4_months',
-            12096000                           => 'agent.time.group_4_to_5_months',
-            14515200                           => 'agent.time.group_5_to_6_months',
-            self::LAST_TIME_MARKER             => 'agent.time.group_gt_6_months',
+            300                    => 'agent.time.group_lt_5_mins',
+            900                    => 'agent.time.group_5_to_15_mins',
+            1800                   => 'agent.time.group_15_to_30_mins',
+            3600                   => 'agent.time.group_30_to_60_mins',
+            7200                   => 'agent.time.group_1_to_2_hours',
+            10800                  => 'agent.time.group_2_to_3_hours',
+            14400                  => 'agent.time.group_3_to_4_hours',
+            21600                  => 'agent.time.group_4_to_6_hours',
+            43200                  => 'agent.time.group_6_to_12_hours',
+            86400                  => 'agent.time.group_12_to_24_hours',
+            172800                 => 'agent.time.group_1_to_2_days',
+            259200                 => 'agent.time.group_2_to_3_days',
+            345600                 => 'agent.time.group_3_to_4_days',
+            432000                 => 'agent.time.group_4_to_5_days',
+            518400                 => 'agent.time.group_5_to_6_days',
+            604800                 => 'agent.time.group_6_to_7_days',
+            1209600                => 'agent.time.group_1_to_2_weeks',
+            1814400                => 'agent.time.group_2_to_3_weeks',
+            2419200                => 'agent.time.group_3_to_4_weeks',
+            4838400                => 'agent.time.group_1_to_2_months',
+            7257600                => 'agent.time.group_2_to_3_months',
+            9676800                => 'agent.time.group_3_to_4_months',
+            12096000               => 'agent.time.group_4_to_5_months',
+            14515200               => 'agent.time.group_5_to_6_months',
+            self::LAST_TIME_MARKER => 'agent.time.group_gt_6_months',
         );
 
         foreach ($times as &$phrase) {
@@ -736,8 +736,6 @@ class GroupingCounter
 
         return $times;
     }
-
-
 
     /**
      * Set mode which defines which kinds of tickets we want.
@@ -758,8 +756,6 @@ class GroupingCounter
         }
     }
 
-
-
     /**
      * Set the grouping fields.
      *
@@ -772,12 +768,12 @@ class GroupingCounter
         $this->grouping2 = $grouping2 ? $grouping2 : null;
     }
 
-
     /**
-     * Transforms a grouping var and choice into a search term for TicketSearch
+     * Transforms a grouping var and choice into a search term for TicketSearch.
      *
      * @param $groupvar
      * @param $groupchoice
+     *
      * @return array
      */
     public static function getSearchTerm($groupvar, $groupchoice)
@@ -787,7 +783,7 @@ class GroupingCounter
             case TicketSearch::TERM_DATE_CREATED:
 
                 $times = array_keys(self::getTimeTitles());
-                $key = array_search($groupchoice, $times);
+                $key   = array_search($groupchoice, $times);
 
                 if ($key == 0) {
                     $date1 = new \DateTime('-5 minutes');
@@ -795,12 +791,12 @@ class GroupingCounter
 
                     return array('type' => $groupvar, 'op' => 'between', 'options' => array('date1' => $date1, 'date2' => $date2));
                 } elseif ($key == (count($times) - 1)) {
-                    $date = new \DateTime('@' . (time() - 14515201));
+                    $date = new \DateTime('@'.(time() - 14515201));
 
                     return array('type' => $groupvar, 'op' => 'lte', 'options' => array('date1' => $date));
                 } else {
-                    $date1 = new \DateTime('-' . $times[$key] . ' seconds');
-                    $date2 = new \DateTime('-' . $times[$key-1] . ' seconds');
+                    $date1 = new \DateTime('-'.$times[$key].' seconds');
+                    $date2 = new \DateTime('-'.$times[$key - 1].' seconds');
 
                     return array('type' => $groupvar, 'op' => 'between', 'options' => array('date1' => $date1, 'date2' => $date2));
                 }
@@ -810,14 +806,14 @@ class GroupingCounter
             case TicketSearch::TERM_TOTAL_USER_WAITING:
 
                 $times = array_keys(self::getTimeTitles());
-                $key = array_search($groupchoice, $times);
+                $key   = array_search($groupchoice, $times);
 
                 if ($key == 0) {
                     $term = array('type' => $groupvar, 'op' => 'lte', 'options' => 300);
                 } elseif ($key == (count($times) - 1)) {
                     $term = array('type' => $groupvar, 'op' => 'gte', 'options' => 14515200);
                 } else {
-                    $term = array('type' => $groupvar, 'op' => 'between', 'options' => array($times[$key], $times[$key+1]));
+                    $term = array('type' => $groupvar, 'op' => 'between', 'options' => array($times[$key], $times[$key + 1]));
                 }
 
                 return $term;
@@ -836,9 +832,9 @@ class GroupingCounter
                     }
 
                     return array(
-                        'type' => "ticket_field[$fid]",
-                        'op' => 'is',
-                        'options' => array('value' => $groupchoice)
+                        'type'    => "ticket_field[$fid]",
+                        'op'      => 'is',
+                        'options' => array('value' => $groupchoice),
                     );
                 }
 

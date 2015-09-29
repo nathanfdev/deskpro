@@ -1,42 +1,68 @@
 <?php
 
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 namespace Application\DeskPRO\NewSearch\Repository;
 
 use Elastica\Query;
+use Elastica\Util as ElasticaUtil;
 use FOS\ElasticaBundle\Repository;
 use Orb\Util\Strings;
-use Elastica\Util as ElasticaUtil;
 
 /**
- * Abstract Repository
+ * Abstract Repository.
  */
 abstract class AbstractRepository extends Repository
 {
     const MAX_LEN = 315;
 
     /**
-     * Tag to be placed before highlight
+     * Tag to be placed before highlight.
      *
      * @var string
      */
     protected $highlightPreTag = '<em class="highlight">';
 
     /**
-     * Tab to be placed after highlight
+     * Tab to be placed after highlight.
      *
      * @var string
      */
     protected $highlightPostTag = '</em>';
 
     /**
-     * Fields to be highlighted
+     * Fields to be highlighted.
      *
      * @var array
      */
     protected $highlightFields = array();
 
     /**
-     * Find
+     * Find.
      *
      * Prepares an updated query object and passes back to parent function
      * for actual execution.
@@ -53,18 +79,17 @@ abstract class AbstractRepository extends Repository
         $queryObj->setSize(50);
 
         if (isset($options['sort_type'])) {
-
             switch ($options['sort_type']) {
                 case 'date_active':
                     $queryObj->setSort(array(
                         array('date_active' => array('order' => 'desc')),
-                        '_score'
+                        '_score',
                     ));
                     break;
                 case 'date_created':
                     $queryObj->setSort(array(
                         array('date_created' => array('order' => 'desc')),
-                        '_score'
+                        '_score',
                     ));
                     break;
             }
@@ -78,9 +103,10 @@ abstract class AbstractRepository extends Repository
     }
 
     /**
-     * Constructs the raw query
+     * Constructs the raw query.
      *
      * @param $q
+     *
      * @return Query
      */
     protected function getQuery($q)
@@ -100,8 +126,8 @@ abstract class AbstractRepository extends Repository
                         'filtered' => array(
                             'query'  => $queryString->toArray(),
                             'filter' => $this->getFilters(),
-                        )
-                    )
+                        ),
+                    ),
                 )
             );
         } else {
@@ -111,8 +137,8 @@ abstract class AbstractRepository extends Repository
                         'filtered' => array(
                             'query'  => $this->getQueryString($q)->toArray(),
                             'filter' => $this->getFilters(),
-                        )
-                    )
+                        ),
+                    ),
                 )
             );
         }
@@ -121,9 +147,10 @@ abstract class AbstractRepository extends Repository
     }
 
     /**
-     * Makes sure a "query" var is formatted for use with QueryString
+     * Makes sure a "query" var is formatted for use with QueryString.
      *
-     * @param  string $q
+     * @param string $q
+     *
      * @return string
      */
     protected function escapeQueryStringTerm($q)
@@ -135,9 +162,10 @@ abstract class AbstractRepository extends Repository
     }
 
     /**
-     * Constructs the query string
+     * Constructs the query string.
      *
      * @param $q
+     *
      * @return Query\QueryString|Query\MultiMatch
      */
     protected function getQueryString($q)
@@ -171,7 +199,7 @@ abstract class AbstractRepository extends Repository
     }
 
     /**
-     * Constructs the filters array (override as needed)
+     * Constructs the filters array (override as needed).
      *
      * @return array
      */
@@ -181,7 +209,7 @@ abstract class AbstractRepository extends Repository
     }
 
     /**
-     * Set any highlight requirement
+     * Set any highlight requirement.
      *
      * @param Query $query
      */
@@ -190,7 +218,7 @@ abstract class AbstractRepository extends Repository
         $query->setHighlight(array(
             'fields'    => $this->highlightFields,
             'pre_tags'  => array($this->highlightPreTag),
-            'post_tags' => array($this->highlightPostTag)
+            'post_tags' => array($this->highlightPostTag),
         ));
     }
 }

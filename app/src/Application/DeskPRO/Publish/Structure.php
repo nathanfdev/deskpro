@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Publish
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Publish;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -73,7 +70,7 @@ class Structure implements PersonContextInterface
     protected $category_data = array();
 
     /**
-     * Category data processed in the context of $person_context
+     * Category data processed in the context of $person_context.
      *
      * @var array
      */
@@ -91,11 +88,10 @@ class Structure implements PersonContextInterface
     {
         $this->person_context = $person_context;
 
-        $this->em = $em;
-        $this->db = $em->getConnection();
+        $this->em    = $em;
+        $this->db    = $em->getConnection();
         $this->cache = $cache;
     }
-
 
     /**
      * @param \Application\DeskPRO\Entity\Person $person_context
@@ -109,10 +105,9 @@ class Structure implements PersonContextInterface
             return;
         }
 
-        $this->person_context = $person_context;
+        $this->person_context        = $person_context;
         $this->context_category_data = array();
     }
-
 
     ####################################################################################################################
     # Article Fetchers
@@ -131,7 +126,6 @@ class Structure implements PersonContextInterface
         return $this->context_category_data[$ent]['all'];
     }
 
-
     /**
      * @return mixed
      */
@@ -143,9 +137,8 @@ class Structure implements PersonContextInterface
         return $this->context_category_data[$ent]['hierarchy'];
     }
 
-
     /**
-     * Get an array of all category IDs
+     * Get an array of all category IDs.
      *
      * @return array
      */
@@ -157,9 +150,9 @@ class Structure implements PersonContextInterface
         return $this->context_category_data[$ent]['ids'];
     }
 
-
     /**
      * @param $slug
+     *
      * @return
      */
     public function getArticleCategory($id)
@@ -174,9 +167,9 @@ class Structure implements PersonContextInterface
         return $this->context_category_data[$ent]['all'][$id];
     }
 
-
     /**
      * @param $id
+     *
      * @return bool
      */
     public function hasArticleCategory($id)
@@ -187,12 +180,12 @@ class Structure implements PersonContextInterface
         return isset($this->context_category_data[$ent]['all'][$id]);
     }
 
-
     /**
-     * Get an array of id=>name
+     * Get an array of id=>name.
      *
-     * @param  string $sep
-     * @param  bool   $include_tops
+     * @param string $sep
+     * @param bool   $include_tops
+     *
      * @return array
      */
     public function getArticleCategoryNames($sep = ' > ', $include_tops = true)
@@ -202,7 +195,6 @@ class Structure implements PersonContextInterface
 
         return $this->_getFullNames(array(), $this->context_category_data[$ent]['hierarchy'], $sep, $include_tops);
     }
-
 
     /**
      * @return \Orb\Util\HierarchyStructure
@@ -215,15 +207,15 @@ class Structure implements PersonContextInterface
         return $this->context_category_data[$ent]['helper'];
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\Person|null $person_context
+     * @param \Application\DeskPRO\Entity\Person|null $person_context
+     *
      * @return array
      */
     public function getArticleCategoryCounts(Person $person_context = null)
     {
         $ent = 'DeskPRO:ArticleCategory';
-        $id = 'categories.counts.' . $ent;
+        $id  = 'categories.counts.'.$ent;
         $this->loadCategories($ent);
 
         if ($counts = $this->cache->fetch($id)) {
@@ -265,7 +257,6 @@ class Structure implements PersonContextInterface
         return $this->context_category_data[$ent]['all'];
     }
 
-
     /**
      * @return mixed
      */
@@ -277,9 +268,8 @@ class Structure implements PersonContextInterface
         return $this->context_category_data[$ent]['hierarchy'];
     }
 
-
     /**
-     * Get an array of all category IDs
+     * Get an array of all category IDs.
      *
      * @return array
      */
@@ -291,9 +281,9 @@ class Structure implements PersonContextInterface
         return $this->context_category_data[$ent]['ids'];
     }
 
-
     /**
      * @param $slug
+     *
      * @return
      */
     public function getFeedbackCategory($id)
@@ -308,9 +298,9 @@ class Structure implements PersonContextInterface
         return $this->context_category_data[$ent]['all'][$id];
     }
 
-
     /**
      * @param $id
+     *
      * @return bool
      */
     public function hasFeedbackCategory($id)
@@ -321,12 +311,12 @@ class Structure implements PersonContextInterface
         return isset($this->context_category_data[$ent]['all'][$id]);
     }
 
-
     /**
-     * Get an array of id=>name
+     * Get an array of id=>name.
      *
-     * @param  string $sep
-     * @param  bool   $include_tops
+     * @param string $sep
+     * @param bool   $include_tops
+     *
      * @return array
      */
     public function getFeedbackCategoryNames($sep = ' > ', $include_tops = true)
@@ -336,7 +326,6 @@ class Structure implements PersonContextInterface
 
         return $this->_getFullNames(array(), $this->context_category_data[$ent]['hierarchy'], $sep, $include_tops);
     }
-
 
     /**
      * @return \Orb\Util\HierarchyStructure
@@ -349,15 +338,14 @@ class Structure implements PersonContextInterface
         return $this->context_category_data[$ent]['helper'];
     }
 
-
     public function getFeedbackStatusCounts($category = null, Person $person_context = null)
     {
         $ent = 'DeskPRO:FeedbackStatusCategory';
 
         if ($category) {
-            $id = 'status.counts.' . $ent . '.' . $category->id .  '.' . $person_context->getUsergroupSetKey();
+            $id = 'status.counts.'.$ent.'.'.$category->id.'.'.$person_context->getUsergroupSetKey();
         } else {
-            $id = 'status.counts.' . $ent . '.' . $person_context->getUsergroupSetKey();
+            $id = 'status.counts.'.$ent.'.'.$person_context->getUsergroupSetKey();
         }
 
         //if ($counts = $this->cache->fetch($id)) {
@@ -365,37 +353,37 @@ class Structure implements PersonContextInterface
         //}
 
         if ($category) {
-            $counts = $this->db->fetchAllKeyValue("
+            $counts = $this->db->fetchAllKeyValue('
                 SELECT status, COUNT(*)
                 FROM feedback
                 WHERE category_id IN (?) AND hidden_status IS NULL
                 GROUP BY status
-            ", array($category->getTreeIds(true)), array(Connection::PARAM_INT_ARRAY));
+            ', array($category->getTreeIds(true)), array(Connection::PARAM_INT_ARRAY));
         } else {
-            $counts = $this->db->fetchAllKeyValue("
+            $counts = $this->db->fetchAllKeyValue('
                 SELECT status, COUNT(*)
                 FROM feedback
                 WHERE hidden_status IS NULL
                 GROUP BY status
-            ");
+            ');
         }
 
         $counts['all'] = array_sum($counts);
 
         if ($category) {
-            $counts_status_cats = $this->db->fetchAllKeyValue("
+            $counts_status_cats = $this->db->fetchAllKeyValue('
                 SELECT status_category_id, COUNT(*)
                 FROM feedback
                 WHERE status_category_id IS NOT NULL AND category_id IN (?)
                 GROUP BY status_category_id
-            ", array($category->getTreeIds(true)), array(Connection::PARAM_INT_ARRAY));
+            ', array($category->getTreeIds(true)), array(Connection::PARAM_INT_ARRAY));
         } else {
-            $counts_status_cats = $this->db->fetchAllKeyValue("
+            $counts_status_cats = $this->db->fetchAllKeyValue('
                 SELECT status_category_id, COUNT(*)
                 FROM feedback
                 WHERE status_category_id IS NOT NULL
                 GROUP BY status_category_id
-            ");
+            ');
         }
 
         foreach ($counts_status_cats as $id => $c) {
@@ -409,15 +397,15 @@ class Structure implements PersonContextInterface
         return $counts;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\Person|null $person_context
+     * @param \Application\DeskPRO\Entity\Person|null $person_context
+     *
      * @return array
      */
     public function getFeedbackCategoryCounts(Person $person_context = null)
     {
         $ent = 'DeskPRO:FeedbackCategory';
-        $id = 'categories.counts.' . $ent . '.' . $person_context->getUsergroupSetKey();
+        $id  = 'categories.counts.'.$ent.'.'.$person_context->getUsergroupSetKey();
         $this->loadCategories($ent);
 
         if ($counts = $this->cache->fetch($id)) {
@@ -426,7 +414,6 @@ class Structure implements PersonContextInterface
 
         $counts = array(0 => array('popular' => 0, 'new' => 0, 'active' => 0, 'closed' => 0));
         foreach ($this->getFeedbackCategories() as $c) {
-
             $cat_counts = array();
 
             $searcher = new FeedbackSearch();
@@ -449,7 +436,6 @@ class Structure implements PersonContextInterface
 
             $cat_counts['all'] = array_sum($cat_counts);
 
-
             $counts[$c['id']] = $cat_counts;
 
             // 0 is sum of all root nodes
@@ -466,7 +452,6 @@ class Structure implements PersonContextInterface
 
         return $counts;
     }
-
 
     ####################################################################################################################
     # Download Fetchers
@@ -485,7 +470,6 @@ class Structure implements PersonContextInterface
         return $this->context_category_data[$ent]['all'];
     }
 
-
     /**
      * @return mixed
      */
@@ -497,9 +481,8 @@ class Structure implements PersonContextInterface
         return $this->context_category_data[$ent]['hierarchy'];
     }
 
-
     /**
-     * Get an array of all category IDs
+     * Get an array of all category IDs.
      *
      * @return array
      */
@@ -511,9 +494,9 @@ class Structure implements PersonContextInterface
         return $this->context_category_data[$ent]['ids'];
     }
 
-
     /**
      * @param $slug
+     *
      * @return
      */
     public function getDownloadCategory($id)
@@ -528,9 +511,9 @@ class Structure implements PersonContextInterface
         return $this->context_category_data[$ent]['all'][$id];
     }
 
-
     /**
      * @param $id
+     *
      * @return bool
      */
     public function hasDownloadCategory($id)
@@ -541,12 +524,12 @@ class Structure implements PersonContextInterface
         return isset($this->context_category_data[$ent]['all'][$id]);
     }
 
-
     /**
-     * Get an array of id=>name
+     * Get an array of id=>name.
      *
-     * @param  string $sep
-     * @param  bool   $include_tops
+     * @param string $sep
+     * @param bool   $include_tops
+     *
      * @return array
      */
     public function getDownloadCategoryNames($sep = ' > ', $include_tops = true)
@@ -556,7 +539,6 @@ class Structure implements PersonContextInterface
 
         return $this->_getFullNames(array(), $this->context_category_data[$ent]['hierarchy'], $sep, $include_tops);
     }
-
 
     /**
      * @return \Orb\Util\HierarchyStructure
@@ -569,15 +551,15 @@ class Structure implements PersonContextInterface
         return $this->context_category_data[$ent]['helper'];
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\Person|null $person_context
+     * @param \Application\DeskPRO\Entity\Person|null $person_context
+     *
      * @return array
      */
     public function getDownloadCategoryCounts(Person $person_context = null)
     {
         $ent = 'DeskPRO:DownloadCategory';
-        $id = 'categories.counts.' . $ent . '.' . $person_context->getUsergroupSetKey();
+        $id  = 'categories.counts.'.$ent.'.'.$person_context->getUsergroupSetKey();
         $this->loadCategories($ent);
 
         if ($counts = $this->cache->fetch($id)) {
@@ -602,7 +584,6 @@ class Structure implements PersonContextInterface
         return $counts;
     }
 
-
     ####################################################################################################################
     # News Fetchers
     ####################################################################################################################
@@ -620,7 +601,6 @@ class Structure implements PersonContextInterface
         return $this->context_category_data[$ent]['all'];
     }
 
-
     /**
      * @return mixed
      */
@@ -632,9 +612,8 @@ class Structure implements PersonContextInterface
         return $this->context_category_data[$ent]['hierarchy'];
     }
 
-
     /**
-     * Get an array of all category IDs
+     * Get an array of all category IDs.
      *
      * @return array
      */
@@ -646,9 +625,9 @@ class Structure implements PersonContextInterface
         return $this->context_category_data[$ent]['ids'];
     }
 
-
     /**
      * @param $slug
+     *
      * @return
      */
     public function getNewsCategory($id)
@@ -663,9 +642,9 @@ class Structure implements PersonContextInterface
         return $this->context_category_data[$ent]['all'][$id];
     }
 
-
     /**
      * @param $id
+     *
      * @return bool
      */
     public function hasNewsCategory($id)
@@ -676,12 +655,12 @@ class Structure implements PersonContextInterface
         return isset($this->context_category_data[$ent]['all'][$id]);
     }
 
-
     /**
-     * Get an array of id=>name
+     * Get an array of id=>name.
      *
-     * @param  string $sep
-     * @param  bool   $include_tops
+     * @param string $sep
+     * @param bool   $include_tops
+     *
      * @return array
      */
     public function getNewsCategoryNames($sep = ' > ', $include_tops = true)
@@ -691,7 +670,6 @@ class Structure implements PersonContextInterface
 
         return $this->_getFullNames(array(), $this->context_category_data[$ent]['hierarchy'], $sep, $include_tops);
     }
-
 
     /**
      * @return \Orb\Util\HierarchyStructure
@@ -704,15 +682,15 @@ class Structure implements PersonContextInterface
         return $this->context_category_data[$ent]['helper'];
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\Person|null $person_context
+     * @param \Application\DeskPRO\Entity\Person|null $person_context
+     *
      * @return array
      */
     public function getNewsCategoryCounts(Person $person_context = null)
     {
         $ent = 'DeskPRO:NewsCategory';
-        $id = 'categories.counts.' . $ent . '.' . $person_context->getUsergroupSetKey();
+        $id  = 'categories.counts.'.$ent.'.'.$person_context->getUsergroupSetKey();
         $this->loadCategories($ent);
 
         if ($counts = $this->cache->fetch($id)) {
@@ -737,7 +715,6 @@ class Structure implements PersonContextInterface
         return $counts;
     }
 
-
     ####################################################################################################################
     # Helpers
     ####################################################################################################################
@@ -754,16 +731,17 @@ class Structure implements PersonContextInterface
             return $this->getNewsCategoryHelper();
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Helper used when generating a full names list
+     * Helper used when generating a full names list.
      *
      * @param $basenames
      * @param $cats
      * @param $sep
      * @param $include_tops
+     *
      * @return array
      */
     protected function _getFullNames($basenames, $cats, $sep, $include_tops)
@@ -771,10 +749,10 @@ class Structure implements PersonContextInterface
         $names = array();
 
         foreach ($cats as $k => $cat) {
-            $name = $basenames;
+            $name   = $basenames;
             $name[] = $cat['title'];
 
-            if (!$cat['children'] OR $include_tops) {
+            if (!$cat['children'] or $include_tops) {
                 $names[$k] = implode($sep, $name);
             }
             if ($cat['children']) {
@@ -787,10 +765,10 @@ class Structure implements PersonContextInterface
 
     protected function _getTotalCounts(array $counts, $cats, \Orb\Util\HierarchyStructure $h, array &$called_on = null)
     {
-        $flat = $h->getFlatHierarchy();
+        $flat    = $h->getFlatHierarchy();
         $highest = 0;
         foreach ($flat as $c) {
-            $total_key = $c['id'] . '_total';
+            $total_key = $c['id'].'_total';
             if (!isset($counts[$total_key])) {
                 $counts[$total_key] = $counts[$c['id']];
             }
@@ -801,7 +779,7 @@ class Structure implements PersonContextInterface
 
         while ($highest >= 0) {
             foreach ($flat as $c) {
-                $total_key = $c['id'] . '_total';
+                $total_key = $c['id'].'_total';
                 if ($c['depth'] == $highest) {
                     foreach ($h->getChildrenIds($c, true) as $subcatid) {
                         $counts[$total_key] += isset($counts["{$subcatid}_total"]) ? $counts["{$subcatid}_total"] : 0;
@@ -809,14 +787,14 @@ class Structure implements PersonContextInterface
                 }
             }
 
-            $highest--;
+            --$highest;
         }
 
-        $counts['0'] = 0;
+        $counts['0']       = 0;
         $counts['0_total'] = 0;
 
         foreach ($cats as $c) {
-            $k = $c['id'] . '_total';
+            $k = $c['id'].'_total';
             if ($c['parent_id']) {
                 continue;
             }
@@ -826,12 +804,11 @@ class Structure implements PersonContextInterface
         return $counts;
     }
 
-
-
     /**
-     * Loads category data from the database
+     * Loads category data from the database.
      *
      * @param $ent
+     *
      * @return mixed
      */
     protected function loadCategories($ent)
@@ -859,17 +836,17 @@ class Structure implements PersonContextInterface
             $c->structure_helper = $this;
         }
 
-        $this->category_data[$ent] = array();
+        $this->category_data[$ent]        = array();
         $this->category_data[$ent]['all'] = $cats;
         $this->category_data[$ent]['ids'] = array_keys($cats);
 
-        $maps = $this->cache->fetch('categories.maps.' . $ent);
+        $maps = $this->cache->fetch('categories.maps.'.$ent);
         if (!$maps) {
-            $parent_map = $this->em->getConnection()->fetchAll("
+            $parent_map = $this->em->getConnection()->fetchAll('
                 SELECT id, COALESCE(parent_id, 0) AS parent_id
-                FROM " . $this->em->getRepository($ent)->getTableName() . "
+                FROM '.$this->em->getRepository($ent)->getTableName().'
                 ORDER BY display_order ASC
-            ");
+            ');
             $parent_map = Arrays::keyFromData($parent_map, 'id', 'parent_id');
 
             $child_map = array(0 => array());
@@ -887,11 +864,11 @@ class Structure implements PersonContextInterface
             }
 
             $maps = array('parent_map' => $parent_map, 'child_map' => $child_map);
-            $this->cache->save('categories.maps.' . $ent, $maps);
+            $this->cache->save('categories.maps.'.$ent, $maps);
         }
 
         $this->category_data[$ent]['parent_map'] = $parent_map = $maps['parent_map'];
-        $this->category_data[$ent]['child_map'] =  $child_map  = $maps['child_map'];
+        $this->category_data[$ent]['child_map']  = $child_map  = $maps['child_map'];
 
         // Getting hierarchy is easy because they already have parent/children,
         // hierarchy then is simply getting the root nodes from our collection
@@ -901,9 +878,9 @@ class Structure implements PersonContextInterface
             $this->category_data[$ent]['hierarchy'][$cat_id] = $cats[$cat_id];
         }
 
-        $h = new \Orb\Util\HierarchyStructure($cats);
-        $h->parent_map = $this->category_data[$ent]['parent_map'];
-        $h->child_map = $this->category_data[$ent]['child_map'];
+        $h                                   = new \Orb\Util\HierarchyStructure($cats);
+        $h->parent_map                       = $this->category_data[$ent]['parent_map'];
+        $h->child_map                        = $this->category_data[$ent]['child_map'];
         $this->category_data[$ent]['helper'] = $h;
 
         #------------------------------
@@ -937,7 +914,7 @@ class Structure implements PersonContextInterface
             return;
         }
 
-        $this->context_category_data[$ent] = array();
+        $this->context_category_data[$ent]        = array();
         $this->context_category_data[$ent]['all'] = array();
         foreach ($perm_manager->getAllowedCategories() as $id) {
             if (isset($this->category_data[$ent]['all'][$id])) {
@@ -956,9 +933,9 @@ class Structure implements PersonContextInterface
             }
         }
 
-        $h = new \Orb\Util\HierarchyStructure($this->context_category_data[$ent]['all']);
-        $h->parent_map = $this->category_data[$ent]['parent_map'];
-        $h->child_map = $this->category_data[$ent]['child_map'];
+        $h                                           = new \Orb\Util\HierarchyStructure($this->context_category_data[$ent]['all']);
+        $h->parent_map                               = $this->category_data[$ent]['parent_map'];
+        $h->child_map                                = $this->category_data[$ent]['child_map'];
         $this->context_category_data[$ent]['helper'] = $h;
 
         foreach ($cats as $c) {

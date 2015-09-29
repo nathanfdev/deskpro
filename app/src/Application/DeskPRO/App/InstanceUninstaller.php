@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\App;
 
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
@@ -71,7 +70,6 @@ class InstanceUninstaller
         $this->em      = $em;
     }
 
-
     /**
      * @param DeskproContainer $container
      */
@@ -84,17 +82,17 @@ class InstanceUninstaller
 
         $this->em->remove($this->app);
         $this->em->flush();
-
     }
 
-
     /**
-     * @param  AppPackage                $package
-     * @param  AppInstance               $app
-     * @param  array                     $settings
-     * @param  DeskproContainer          $container
-     * @return InstallerContext
+     * @param AppPackage       $package
+     * @param AppInstance      $app
+     * @param array            $settings
+     * @param DeskproContainer $container
+     *
      * @throws \UnexpectedValueException
+     *
+     * @return InstallerContext
      */
     protected function createInstallContext(AppPackage $package, AppInstance $app, array $settings, DeskproContainer $container)
     {
@@ -112,7 +110,7 @@ class InstanceUninstaller
                 $usersource = $q->getOneOrNullResult();
 
                 if (!$usersource) {
-                    throw new \UnexpectedValueException('a usersource app instance MUST have a usersource pointing to it, app.id=' . $app->id . ' does not!');
+                    throw new \UnexpectedValueException('a usersource app instance MUST have a usersource pointing to it, app.id='.$app->id.' does not!');
                 }
             }
 
@@ -122,9 +120,8 @@ class InstanceUninstaller
         return new InstallerContext($container, null, $settings);
     }
 
-
     /**
-     * Native apps have their own install handler (usually), but we always return the NoopInstallerHandler so we always have a handler
+     * Native apps have their own install handler (usually), but we always return the NoopInstallerHandler so we always have a handler.
      *
      * @return Native\InstallerHandler\InstallerHandlerInterface
      */

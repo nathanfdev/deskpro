@@ -1,34 +1,35 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
-use Application\ImportBundle\Entity;
 use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
@@ -42,20 +43,19 @@ use Exception;
 use Orb\Util\Strings;
 
 /**
- * ZenDesk tickets parser
+ * ZenDesk tickets parser.
  *
  * Class Tickets
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
 final class Tickets extends AbstractParser
 {
-    const STATUS_NEW      = 'new';
-    const STATUS_OPEN     = 'open';
-    const STATUS_PENDING  = 'pending';
-    const STATUS_HOLD     = 'hold';
-    const STATUS_SOLVED   = 'solved';
-    const STATUS_CLOSED   = 'closed';
-    const STATUS_DELETED  = 'deleted';
+    const STATUS_NEW     = 'new';
+    const STATUS_OPEN    = 'open';
+    const STATUS_PENDING = 'pending';
+    const STATUS_HOLD    = 'hold';
+    const STATUS_SOLVED  = 'solved';
+    const STATUS_CLOSED  = 'closed';
+    const STATUS_DELETED = 'deleted';
 
     const PRIORITY_URGENT = 'urgent';
     const PRIORITY_HIGH   = 'high';
@@ -68,7 +68,7 @@ final class Tickets extends AbstractParser
     private $tickets_people;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param ZenDeskReaderInterface       $reader
      * @param FormatterInterface           $formatter
@@ -120,12 +120,13 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns a ticket entity
+     * Returns a ticket entity.
      *
      * @param array $data
      *
-     * @return Entity\Ticket
      * @throws SkippingException
+     *
+     * @return Entity\Ticket
      */
     protected function exportTicket(array $data)
     {
@@ -153,7 +154,7 @@ final class Tickets extends AbstractParser
         $person_email = $this->tickets_people->getPersonEmail($formatted['requester_id']);
         $agent_email  = $this->tickets_people->getPersonEmail($formatted['assignee_id']);
 
-        if ( ! $person_email) {
+        if (!$person_email) {
             throw new SkippingException(sprintf('Unable to get submitter email by id #%s', $formatted['requester_id']), $formatted);
         }
 
@@ -165,7 +166,7 @@ final class Tickets extends AbstractParser
             ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
             ->setPersonEmail($person_email)
             ->setAgentEmail($agent_email)
-            ->setSubject($formatted['subject'] ? : 'No subject')
+            ->setSubject($formatted['subject'] ?: 'No subject')
             ->setStatus($this->getStatus($formatted['status']))
             ->setOrganization($this->getOrganizationName($formatted['organization_id']))
             ->setPriority($this->exportPriority($formatted['priority']))
@@ -204,9 +205,10 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns a ticket priority entity
+     * Returns a ticket priority entity.
      *
      * @param string $priority
+     *
      * @return Entity\TicketPriority|null
      */
     private function exportPriority($priority)
@@ -229,19 +231,19 @@ final class Tickets extends AbstractParser
                 ;
 
                 return $entity;
-
             } else {
                 $this->logWarning(sprintf('Unknown priority `%s`', $priority));
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Returns a ticket comments entity collection
+     * Returns a ticket comments entity collection.
      *
      * @param array $ticket
+     *
      * @return Entity\TicketMessage[]
      */
     private function exportMessages(array $ticket)
@@ -258,9 +260,10 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns a ticket comments entity
+     * Returns a ticket comments entity.
      *
      * @param array $data
+     *
      * @return Entity\TicketMessage|null
      */
     protected function exportMessage(array $data)
@@ -284,7 +287,7 @@ final class Tickets extends AbstractParser
         }
 
         $author_email = $this->tickets_people->getPersonEmail($formatted['author_id']);
-        if ( ! $author_email) {
+        if (!$author_email) {
             throw new SkippingException('Unable to get comment author, skipping', $formatted);
         }
 
@@ -309,25 +312,26 @@ final class Tickets extends AbstractParser
 
     /**
      * Returns tickets
-     * Loads data from ZenDesk reader
+     * Loads data from ZenDesk reader.
      *
-     * @param boolean $count_only
+     * @param bool $count_only
+     *
+     * @throws Exception
      *
      * @return array
-     * @throws Exception
      */
     private function getTickets($count_only = false)
     {
-        $this->logDebugTimeStart('getTickets', "Reading tickets batch");
+        $this->logDebugTimeStart('getTickets', 'Reading tickets batch');
 
         $tickets    = array();
         $start_time = $this->getBatchConfig()->getTicketsEndTime();
 
         if ($start_time < new DateTime('-5 minutes')) {
             if ($start_time) {
-                $this->logDebug(sprintf("Reading from time: %s", $start_time->format('Y-m-d H:i:s')));
+                $this->logDebug(sprintf('Reading from time: %s', $start_time->format('Y-m-d H:i:s')));
             } else {
-                $this->logDebug(sprintf("Reading from time: %s", "Beginning"));
+                $this->logDebug(sprintf('Reading from time: %s', 'Beginning'));
             }
 
             $response = $this->reader->getTickets($start_time);
@@ -337,7 +341,7 @@ final class Tickets extends AbstractParser
                 // We have to load comments for each ticket separately
                 foreach ($response as $ticket) {
                     if ($ticket['status'] !== self::STATUS_DELETED) {
-                        if ( ! $count_only) {
+                        if (!$count_only) {
                             $this->logDebug(sprintf('[ZDTicket #%s] Reading comments', $ticket['id']));
                             $ticket['comments'] = $this->reader->getTicketComments($ticket['id']);
                         }
@@ -355,29 +359,28 @@ final class Tickets extends AbstractParser
                     $this->end_time->modify('+1 second');
                 }
 
-                $this->logDebug(sprintf("New end time: %s", $this->end_time->format('Y-m-d H:i:s')));
-
+                $this->logDebug(sprintf('New end time: %s', $this->end_time->format('Y-m-d H:i:s')));
             } else {
-                $this->logDebug(sprintf("No more records"));
+                $this->logDebug(sprintf('No more records'));
             }
-
         } else {
             $this->logAlert('No ticket was exported due 5 minutes timeout of the last end time');
         }
 
-        $this->logDebug(sprintf("Read %d tickets", count($tickets)));
-        $this->logDebugTimeEnd('getTickets', "Done reading tickets batch");
+        $this->logDebug(sprintf('Read %d tickets', count($tickets)));
+        $this->logDebugTimeEnd('getTickets', 'Done reading tickets batch');
 
         return $tickets;
     }
 
     /**
-     * Returns DeskPRO status by ZenDesk status
+     * Returns DeskPRO status by ZenDesk status.
      *
      * @param string $status
      *
-     * @return string
      * @throws \RuntimeException
+     *
+     * @return string
      */
     private function getStatus($status)
     {
@@ -388,7 +391,7 @@ final class Tickets extends AbstractParser
             self::STATUS_HOLD    => DeskPROEntity\Ticket::STATUS_AWAITING_AGENT,
             self::STATUS_SOLVED  => DeskPROEntity\Ticket::STATUS_RESOLVED,
             self::STATUS_CLOSED  => DeskPROEntity\Ticket::STATUS_ARCHIVED,
-            self::STATUS_DELETED => DeskPROEntity\Ticket::STATUS_HIDDEN . '.' . DeskPROEntity\Ticket::HIDDEN_STATUS_DELETED,
+            self::STATUS_DELETED => DeskPROEntity\Ticket::STATUS_HIDDEN.'.'.DeskPROEntity\Ticket::HIDDEN_STATUS_DELETED,
         );
 
         if (isset($map[$status])) {

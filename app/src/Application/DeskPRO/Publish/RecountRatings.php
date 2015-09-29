@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Publish;
 
 use Doctrine\ORM\EntityManager;
@@ -52,7 +50,6 @@ class RecountRatings
         $this->em = $em;
     }
 
-
     /**
      * @param int $batch_size
      */
@@ -60,7 +57,6 @@ class RecountRatings
     {
         $this->batch_size = $batch_size;
     }
-
 
     /**
      * @return int
@@ -70,12 +66,11 @@ class RecountRatings
         static $id_max = null;
 
         if ($id_max === null) {
-            $id_max = $this->em->getConnection()->fetchColumn("SELECT id FROM ratings ORDER BY id DESC LIMIT 1");
+            $id_max = $this->em->getConnection()->fetchColumn('SELECT id FROM ratings ORDER BY id DESC LIMIT 1');
         }
 
         return $id_max;
     }
-
 
     /**
      * @return float
@@ -91,7 +86,6 @@ class RecountRatings
         return $num_batches;
     }
 
-
     /**
      * @param callable $status_fn
      */
@@ -104,7 +98,7 @@ class RecountRatings
         $pages = $this->countBatches();
         $status_fn('start', array('num_batches' => $pages, 'batch_size' => $this->batch_size));
 
-        for($i = 1; $i <= $pages; $i++) {
+        for ($i = 1; $i <= $pages; ++$i) {
             $status_fn('batch_start', array('batch' => $i));
             $this->recountBatch($i);
             $status_fn('batch_end', array('batch' => $i));
@@ -113,13 +107,12 @@ class RecountRatings
         $status_fn('end', $i);
     }
 
-
     /**
      * @param int $page
      */
     public function recountBatch($page)
     {
-        $start = (($page-1) * $this->batch_size) + 1;
+        $start = (($page - 1) * $this->batch_size) + 1;
         $end   = $page * $this->batch_size;
 
         $ratings = $this->em->getConnection()->fetchAll("
@@ -130,12 +123,12 @@ class RecountRatings
 
         $update_set = array();
         foreach ($ratings as $rating) {
-            $key = $rating['object_type'] . $rating['object_id'];
+            $key = $rating['object_type'].$rating['object_id'];
             if (!isset($update_set[$key])) {
                 $update_set[$key] = array('type' => $rating['object_type'], 'id' => $rating['object_id'], 'count' => 0, 'rating' => 0);
             }
 
-            $update_set[$key]['count']++;
+            ++$update_set[$key]['count'];
             $update_set[$key]['rating'] += $rating['rating'];
         }
 

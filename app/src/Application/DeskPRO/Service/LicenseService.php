@@ -1,38 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Service;
+
 use Guzzle\Http\Client as HttpClient;
 
 class LicenseService
@@ -50,7 +48,6 @@ class LicenseService
 
         return $latest;
     }
-
 
     /**
      * Compares current build to the latest build available.
@@ -78,9 +75,8 @@ class LicenseService
         return $data;
     }
 
-
     /**
-     * Get version notice info
+     * Get version notice info.
      *
      * Data returned:
      * - link: <url>
@@ -104,9 +100,8 @@ class LicenseService
         return $data;
     }
 
-
     /**
-     * Gets news from RSS feed
+     * Gets news from RSS feed.
      *
      * @return array|null
      */
@@ -116,13 +111,13 @@ class LicenseService
 
         try {
             $client = new HttpClient(\DeskPRO\Kernel\License::getSupportUrl(), array(
-                'ssl.certificate_authority' => false
+                'ssl.certificate_authority' => false,
             ));
-            $request = $client->get('/news/2-product.rss');
+            $request  = $client->get('/news/2-product.rss');
             $response = $request->send();
 
             if (!$response->isSuccessful()) {
-                return null;
+                return;
             }
 
             $rss = simplexml_load_string($response->getBody(true));
@@ -131,37 +126,37 @@ class LicenseService
             $x = 0;
             foreach ($rss->channel->item as $item) {
                 $news[] = array(
-                    'title' => (string)$item->title,
-                    'link'  => (string)$item->link
+                    'title' => (string) $item->title,
+                    'link'  => (string) $item->link,
                 );
                 if ($x++ > 5) {
                     break;
                 }
             }
         } catch (\Exception $e) {
-            return null;
+            return;
         }
 
         return $news;
     }
 
-
     /**
-     * @param  string $endpoint
-     * @param  array  $post_data
+     * @param string $endpoint
+     * @param array  $post_data
+     *
      * @return array
      */
     public static function fetchServiceResult($endpoint, array $post_data = array())
     {
-        $url = \DeskPRO\Kernel\License::getSecureLicServer() . '/api/' . ltrim($endpoint, '/');
+        $url = \DeskPRO\Kernel\License::getSecureLicServer().'/api/'.ltrim($endpoint, '/');
 
         try {
             $client = new HttpClient(\DeskPRO\Kernel\License::getSecureLicServer(), array(
                 'ssl.certificate_authority' => false,
-                'redirect.strict' => true,
+                'redirect.strict'           => true,
             ));
             $r = $client->post(
-                \DeskPRO\Kernel\License::getSecureLicServer() . '/api/' . ltrim($endpoint, '/'),
+                \DeskPRO\Kernel\License::getSecureLicServer().'/api/'.ltrim($endpoint, '/'),
                 null,
                 $post_data
             );

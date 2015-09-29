@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Translate;
 
 use Application\DeskPRO\App;
@@ -45,7 +43,7 @@ class ObjectLangRepository
     protected $em;
 
     /**
-     * Loaded lang objects
+     * Loaded lang objects.
      *
      * @var array
      */
@@ -61,7 +59,6 @@ class ObjectLangRepository
      */
     protected $try_langs = array();
 
-
     /**
      * @param EntityManager $em
      */
@@ -69,7 +66,6 @@ class ObjectLangRepository
     {
         $this->em = $em;
     }
-
 
     /**
      * Set the default languages to try (in order). These are used when $lang is null in the get prop methods.
@@ -80,7 +76,6 @@ class ObjectLangRepository
     {
         $this->try_langs = $try_langs;
     }
-
 
     /**
      * @return \Application\DeskPRO\Entity\Language[]
@@ -98,7 +93,7 @@ class ObjectLangRepository
             if ($l = App::getTranslator()->getLanguage()) {
                 $try_langs[$l->id] = $l;
             }
-            $l = App::getContainer()->getLanguageData()->getDefault();
+            $l                 = App::getContainer()->getLanguageData()->getDefault();
             $try_langs[$l->id] = $l;
 
             return $try_langs;
@@ -107,10 +102,10 @@ class ObjectLangRepository
         return $this->try_langs;
     }
 
-
     /**
-     * @param  int|\Application\DeskPRO\Entity\Language $lang
-     * @param  object|string                            $object
+     * @param int|\Application\DeskPRO\Entity\Language $lang
+     * @param object|string                            $object
+     *
      * @return bool
      */
     public function isLoaded($lang, $object)
@@ -121,11 +116,11 @@ class ObjectLangRepository
         return isset($this->loaded[$obj_ref][$lang_id]);
     }
 
-
     /**
-     * Get all objects loaded on a rec
+     * Get all objects loaded on a rec.
      *
-     * @param  object|string                            $object
+     * @param object|string $object
+     *
      * @return \Application\DeskPRO\Entity\ObjectLang[]
      */
     public function getLoadedRecs($object)
@@ -150,14 +145,14 @@ class ObjectLangRepository
         return $recs;
     }
 
-
     /**
      * Get the ObjectLang record for a given property. Returns null if no such record exists.
      *
-     * @param  int|\Application\DeskPRO\Entity\Language $lang      A language or array of languages. If an array, the first existing will be returned.
-     * @param  object|string                            $object    The object to get the property on
-     * @param  string                                   $prop_name The property to get
-     * @param  string                                   $fallback  True to the 'try langs' if $lang is not found
+     * @param int|\Application\DeskPRO\Entity\Language $lang      A language or array of languages. If an array, the first existing will be returned.
+     * @param object|string                            $object    The object to get the property on
+     * @param string                                   $prop_name The property to get
+     * @param string                                   $fallback  True to the 'try langs' if $lang is not found
+     *
      * @return \Application\DeskPRO\Entity\ObjectLang
      */
     public function getRec($lang, $object, $prop_name, $fallback = false)
@@ -165,7 +160,7 @@ class ObjectLangRepository
         $prop_name = strtolower($prop_name);
 
         $try_langs = is_array($lang) ? $lang : array($lang);
-        $done = array();
+        $done      = array();
         if ($fallback) {
             $try_langs = array_merge($try_langs, $this->getTryLangs());
         }
@@ -190,17 +185,17 @@ class ObjectLangRepository
             }
         }
 
-        return null;
+        return;
     }
-
 
     /**
      * Sets the value on a phrase lang. A new record will be created automatically if one doesnt exist.
      *
-     * @param  int|\Application\DeskPRO\Entity\Language $lang
-     * @param  object|string                            $object
-     * @param  string                                   $prop_name
-     * @param  string                                   $text
+     * @param int|\Application\DeskPRO\Entity\Language $lang
+     * @param object|string                            $object
+     * @param string                                   $prop_name
+     * @param string                                   $text
+     *
      * @return ObjectLang
      */
     public function setRec($lang, $object, $prop_name, $text)
@@ -214,11 +209,11 @@ class ObjectLangRepository
             $lang_id = is_object($lang) ? $lang->getId() : $lang;
             $obj_ref = is_object($object) ? $object->getObjectRef() : $object;
 
-            $rec = $this->em->createQuery("
+            $rec = $this->em->createQuery('
                 SELECT o
                 FROM DeskPRO:ObjectLang o
                 WHERE o.ref = ?0 AND o.prop_name = ?1 AND o.language = ?2
-            ")->setParameters(array($obj_ref, $prop_name, $lang_id))->getOneOrNullResult();
+            ')->setParameters(array($obj_ref, $prop_name, $lang_id))->getOneOrNullResult();
         }
 
         if (!$rec) {
@@ -231,21 +226,21 @@ class ObjectLangRepository
         return $rec;
     }
 
-
     /**
      * Get the value of a given property. This is the actual translated text.
      *
-     * @param  int|\Application\DeskPRO\Entity\Language $lang      A language or array of languages. If an array, the first existing will be returned.
-     * @param  object|string                            $object    The object to get the property on
-     * @param  string                                   $prop_name The property to get
-     * @param  string                                   $fallback  True to the 'try langs' if $lang is not found
+     * @param int|\Application\DeskPRO\Entity\Language $lang      A language or array of languages. If an array, the first existing will be returned.
+     * @param object|string                            $object    The object to get the property on
+     * @param string                                   $prop_name The property to get
+     * @param string                                   $fallback  True to the 'try langs' if $lang is not found
+     *
      * @return string
      */
     public function get($lang, $object, $prop_name, $fallback = false)
     {
         $rec = $this->getRec($lang, $object, $prop_name, $fallback);
         if (!$rec) {
-            return null;
+            return;
         }
 
         return $rec->getValue();
@@ -281,7 +276,7 @@ class ObjectLangRepository
     }
 
     /**
-     * Mark an object for preloading
+     * Mark an object for preloading.
      *
      * @param int|\Application\DeskPRO\Entity\Language $lang   Lang, array of langs or null for getTryLangs
      * @param object                                   $object
@@ -296,7 +291,7 @@ class ObjectLangRepository
 
         // Automatically queue up try langs as well
         $langs = array_merge($langs, $this->getTryLangs());
-        $done = array();
+        $done  = array();
 
         foreach ($langs as $lang) {
             $lang_id = is_object($lang) ? $lang->getId() : $lang;
@@ -332,7 +327,7 @@ class ObjectLangRepository
     }
 
     /**
-     * Exec the query that fetches any langs we have queued up
+     * Exec the query that fetches any langs we have queued up.
      */
     public function runPreload()
     {
@@ -340,14 +335,14 @@ class ObjectLangRepository
             return;
         }
 
-        $run = $this->queued_objects;
+        $run                  = $this->queued_objects;
         $this->queued_objects = array();
 
-        $run_refs = array();
+        $run_refs  = array();
         $run_langs = array();
 
         foreach ($run as $lang_id => $refs) {
-            $run_refs = array_merge($run_refs, array_keys($refs));
+            $run_refs    = array_merge($run_refs, array_keys($refs));
             $run_langs[] = $lang_id;
         }
 
@@ -360,11 +355,11 @@ class ObjectLangRepository
         // Possible we over-fetch some info by getting
         // langs we didnt specify if we are pre-loading two sets at a time
         // but better to over-fetch than under-fetch and do another query
-        $recs = $this->em->createQuery("
+        $recs = $this->em->createQuery('
             SELECT o
             FROM DeskPRO:ObjectLang o
             WHERE o.ref IN (?0) AND o.language IN (?1)
-        ")->setParameters(array($run_refs, $run_langs))->execute();
+        ')->setParameters(array($run_refs, $run_langs))->execute();
 
         // Mark the refs themselves as "laoded" so we dont attempt to
         // prelaod empty collections
@@ -377,7 +372,6 @@ class ObjectLangRepository
         }
 
         foreach ($recs as $rec) {
-
             if (!trim($rec->value)) {
                 continue;
             }
@@ -397,7 +391,7 @@ class ObjectLangRepository
     }
 
     /**
-     * Clear the loaded lang objects
+     * Clear the loaded lang objects.
      *
      * @param null $object Optionally only clear this one object
      */

@@ -1,41 +1,41 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Entity;
 
 use DateTime;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
- * Exporting organization entity
+ * Exporting organization entity.
  *
  * Class Organization
- * @package Application\ImportBundle\Entity
  */
 class Organization extends AbstractEntity
 {
@@ -75,7 +75,7 @@ class Organization extends AbstractEntity
     private $labels = array();
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -93,7 +93,7 @@ class Organization extends AbstractEntity
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @return string
      */
@@ -103,19 +103,21 @@ class Organization extends AbstractEntity
     }
 
     /**
-     * Returns name
+     * Returns name.
      *
      * @param string $name
+     *
      * @return $this
      */
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
     /**
-     * Returns picture
+     * Returns picture.
      *
      * @return Blob|null
      */
@@ -125,19 +127,21 @@ class Organization extends AbstractEntity
     }
 
     /**
-     * Set picture
+     * Set picture.
      *
      * @param Blob $picture
+     *
      * @return $this
      */
     public function setPicture(Blob $picture = null)
     {
         $this->picture = $picture;
+
         return $this;
     }
 
     /**
-     * Set importance
+     * Set importance.
      *
      * @return int
      */
@@ -147,19 +151,21 @@ class Organization extends AbstractEntity
     }
 
     /**
-     * Returns importance
+     * Returns importance.
      *
      * @param int $importance
+     *
      * @return $this
      */
     public function setImportance($importance)
     {
-        $this->importance = (int)$importance;
+        $this->importance = (int) $importance;
+
         return $this;
     }
 
     /**
-     * Set date created
+     * Set date created.
      *
      * @return DateTime
      */
@@ -169,19 +175,21 @@ class Organization extends AbstractEntity
     }
 
     /**
-     * Returns date created
+     * Returns date created.
      *
      * @param DateTime $date_created
+     *
      * @return $this
      */
     public function setDateCreated(DateTime $date_created)
     {
         $this->date_created = $date_created;
+
         return $this;
     }
 
     /**
-     * Returns organization contact data
+     * Returns organization contact data.
      *
      * @return Collection|ContactData[]
      */
@@ -191,14 +199,16 @@ class Organization extends AbstractEntity
     }
 
     /**
-     * Add an organization contact data
+     * Add an organization contact data.
      *
      * @param ContactData $contact
+     *
      * @return $this
      */
     public function addContact(ContactData $contact)
     {
         $this->contact_data->attach($contact);
+
         return $this;
     }
 
@@ -212,11 +222,13 @@ class Organization extends AbstractEntity
 
     /**
      * @param CustomField $custom_field
+     *
      * @return $this
      */
     public function addCustomField(CustomField $custom_field)
     {
         $this->custom_fields->attach($custom_field);
+
         return $this;
     }
 
@@ -234,6 +246,7 @@ class Organization extends AbstractEntity
     public function addLabel($label)
     {
         $this->labels[] = $label;
+
         return $this;
     }
 
@@ -242,7 +255,7 @@ class Organization extends AbstractEntity
      */
     public function toArray()
     {
-        if ( ! $this->date_created) {
+        if (!$this->date_created) {
             throw new \Exception('Date created is not set up');
         }
 

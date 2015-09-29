@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -44,13 +43,15 @@ class CommentAbstract extends AbstractEntityRepository
 
     public function getByIds(array $ids, $keep_order = false)
     {
-        if (!$ids) return array();
+        if (!$ids) {
+            return array();
+        }
 
         $ids = implode(',', $ids);
 
-        return $this->getEntityManager()->createQuery("
+        return $this->getEntityManager()->createQuery('
             SELECT c
-            FROM " . $this->_entityName ." c INDEX BY c.id
+            FROM '.$this->_entityName." c INDEX BY c.id
             WHERE c.id IN ($ids)
         ")->execute();
     }
@@ -58,26 +59,26 @@ class CommentAbstract extends AbstractEntityRepository
     public function getComments($object, $show_validating = true)
     {
         if ($show_validating) {
-            return $this->getEntityManager()->createQuery("
+            return $this->getEntityManager()->createQuery('
                 SELECT c
-                FROM " . $this->_entityName ." c
-                WHERE c.status != ?1 AND c." . static::FIELD . " = ?2
+                FROM '.$this->_entityName.' c
+                WHERE c.status != ?1 AND c.'.static::FIELD.' = ?2
                 ORDER BY c.id DESC
-            ")->setParameter(1, 'deleted')->setParameter(2, $object)->execute();
+            ')->setParameter(1, 'deleted')->setParameter(2, $object)->execute();
         } else {
-            return $this->getEntityManager()->createQuery("
+            return $this->getEntityManager()->createQuery('
                 SELECT c
-                FROM " . $this->_entityName ." c
-                WHERE c.status = ?1 AND c." . static::FIELD . " = ?2
+                FROM '.$this->_entityName.' c
+                WHERE c.status = ?1 AND c.'.static::FIELD.' = ?2
                 ORDER BY c.id DESC
-            ")->setParameter(1, 'visible')->setParameter(2, $object)->execute();
+            ')->setParameter(1, 'visible')->setParameter(2, $object)->execute();
         }
     }
 
     public function getDisplayComments($object, PersonEntity $person_context = null, VisitorEntity $visitor_context = null)
     {
         $params = array('obj_id' => $object->getId());
-        $dql = "SELECT c FROM {$this->_entityName} c WHERE c.".static::FIELD." = :obj_id AND (c.status = 'visible'";
+        $dql    = "SELECT c FROM {$this->_entityName} c WHERE c.".static::FIELD." = :obj_id AND (c.status = 'visible'";
         if ($person_context && $person_context->getId()) {
             $dql .= ' OR c.person = :person_id';
             $params['person_id'] = $person_context->getId();
@@ -86,7 +87,7 @@ class CommentAbstract extends AbstractEntityRepository
             $dql .= ' OR c.visitor = :visitor_id';
             $params['visitor_id'] = $visitor_context->getId();
         }
-        $dql .= ")";
+        $dql .= ')';
 
         return $this->_em->createQuery($dql)->execute($params);
     }
@@ -104,13 +105,13 @@ class CommentAbstract extends AbstractEntityRepository
 
     public function getValidatingComments()
     {
-        return $this->getEntityManager()->createQuery("
+        return $this->getEntityManager()->createQuery('
             SELECT c
-            FROM " . $this->_entityName ." c
+            FROM '.$this->_entityName.' c
             LEFT JOIN c.person p
             WHERE c.status = ?1 OR c.is_reviewed = ?2
             ORDER BY c.id DESC
-        ")->setParameter(1, 'validating')
+        ')->setParameter(1, 'validating')
           ->setParameter(2, false)
           ->execute();
     }
@@ -150,6 +151,6 @@ class CommentAbstract extends AbstractEntityRepository
             }
         }
 
-        return null;
+        return;
     }
 }

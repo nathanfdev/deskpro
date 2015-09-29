@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category DependencyInjection
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category DependencyInjection
+ */
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
@@ -56,7 +55,7 @@ class BlobStorageService
             $logger->addFilter(new \Orb\Log\Filter\PriorityFilter(Logger::WARN));
         }
 
-        $wr = new \Orb\Log\Writer\Stream($container->getLogDir() . DIRECTORY_SEPARATOR . 'blob_storage.log');
+        $wr = new \Orb\Log\Writer\Stream($container->getLogDir().DIRECTORY_SEPARATOR.'blob_storage.log');
         $logger->addWriter($wr);
 
         #------------------------------
@@ -80,12 +79,16 @@ class BlobStorageService
 
         $s3_adapter = null;
         if ($container->getSetting('core.filestorage_s3_key') && $container->getSetting('core.filestorage_s3_secret') && $container->getSetting('core.filestorage_s3_bucket')) {
-            if (!defined('CURLOPT_CONNECTTIMEOUT')) define(CURLOPT_CONNECTTIMEOUT, 78);
-            if (!defined('CURLOPT_TIMEOUT')) define(CURLOPT_TIMEOUT, 13);
+            if (!defined('CURLOPT_CONNECTTIMEOUT')) {
+                define(CURLOPT_CONNECTTIMEOUT, 78);
+            }
+            if (!defined('CURLOPT_TIMEOUT')) {
+                define(CURLOPT_TIMEOUT, 13);
+            }
 
             $client = S3Client::factory(array(
-                'key'          => $container->getSetting('core.filestorage_s3_key'),
-                'secret'       => $container->getSetting('core.filestorage_s3_secret'),
+                'key'             => $container->getSetting('core.filestorage_s3_key'),
+                'secret'          => $container->getSetting('core.filestorage_s3_secret'),
                 'request.options' => array(
                     'connect_timeout' => 15,
                     'timeout'         => 120,
@@ -93,7 +96,7 @@ class BlobStorageService
                 'curl.options' => array(
                     CURLOPT_CONNECTTIMEOUT => 15,
                     CURLOPT_TIMEOUT        => 120,
-                )
+                ),
             ));
             $s3_adapter = new AmazonS3Storage(array(
                 's3_client'       => $client,
@@ -114,7 +117,7 @@ class BlobStorageService
             'field_name.data'      => 'data',
             'field_name.path'      => 'blob_id',
             'field_name.order'     => 'id',
-            'metadata_id_property' => 'blob_id'
+            'metadata_id_property' => 'blob_id',
         ));
         $db_adapter->setLogger($logger);
 

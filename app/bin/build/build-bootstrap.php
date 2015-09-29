@@ -7,11 +7,11 @@ if (php_sapi_name() != 'cli') {
 }
 
 define('DP_BUILDING', true);
-define('DP_ROOT', realpath(__DIR__ . '/../../'));
-define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
-define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
+define('DP_ROOT', realpath(__DIR__.'/../../'));
+define('DP_WEB_ROOT', realpath(__DIR__.'/../../../'));
+define('DP_CONFIG_FILE', DP_WEB_ROOT.'/config.php');
 
-require DP_ROOT . '/sys/autoload.php';
+require DP_ROOT.'/sys/autoload.php';
 
 use Symfony\Component\ClassLoader\ClassCollectionLoader;
 
@@ -99,11 +99,11 @@ $files = array(
 $finder = new \Symfony\Component\Finder\Finder();
 $finder->in(DP_ROOT.'/src/Application/DeskPRO/DependencyInjection/SystemServices')->files()->name('*.php');
 foreach ($finder as $file) {
-    /** @var $file \SplFileInfo */
+    /* @var $file \SplFileInfo */
     $name = $file->getFilename();
     $name = str_replace('.php', '', $name);
 
-    $files[] = 'Application\\DeskPRO\\DependencyInjection\\SystemServices\\' . $name;
+    $files[] = 'Application\\DeskPRO\\DependencyInjection\\SystemServices\\'.$name;
 }
 
 ClassCollectionLoader::load($files, dirname($bootstrap_file), basename($bootstrap_file, '.php'), false, false, '.php');

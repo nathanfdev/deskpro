@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Reader\Json;
 
@@ -35,17 +36,16 @@ use Symfony\Component\Finder\Iterator\SortableIterator;
 use Symfony\Component\Finder\SplFileInfo;
 
 /**
- * Json data parser
+ * Json data parser.
  *
  * Class JsonReader
- * @package Application\ImportBundle\Reader\Json
  *
  * @property JsonConfig $config
  */
 class JsonReader extends AbstractReader implements JsonReaderInterface
 {
     /**
-     * Constructor
+     * Constructor.
      *
      * @param JsonConfig $config
      */
@@ -70,15 +70,15 @@ class JsonReader extends AbstractReader implements JsonReaderInterface
             self::ENTITY_ORGANIZATION_PATH,
         );
 
-        if ( ! is_dir($this->config->getPath())) {
+        if (!is_dir($this->config->getPath())) {
             throw new \RuntimeException(sprintf('`%s` is not a directory', $this->config->getPath()));
         }
 
         foreach ($paths as $path) {
             try {
                 $this->getIterator($this->getEntityPath($path, 1));
-                return true;
 
+                return true;
             } catch (NotFoundException $e) {
                 // File not found, continue...
             }
@@ -87,8 +87,8 @@ class JsonReader extends AbstractReader implements JsonReaderInterface
         throw new \RuntimeException(sprintf(
             'No json files found in directory `%s`. Checked in sub directories: %s.',
             $this->config->getPath(), implode(', ', array_map(
-                function($path) {
-                    return '`' . $path . '`';
+                function ($path) {
+                    return '`'.$path.'`';
                 },
                 $paths
             ))
@@ -104,10 +104,10 @@ class JsonReader extends AbstractReader implements JsonReaderInterface
         $iterator = $this->getIterator($this->getEntityPath($entity_path, $batch_num));
 
         foreach ($iterator as $file) {
-            /** @var SplFileInfo $file */
+            /* @var SplFileInfo $file */
             $content = @json_decode($file->getContents(), true);
             if (is_array($content)) {
-                $count++;
+                ++$count;
             }
         }
 
@@ -123,7 +123,7 @@ class JsonReader extends AbstractReader implements JsonReaderInterface
         $iterator = $this->getIterator($this->getEntityPath($entity_path, $batch_num));
 
         foreach ($iterator as $file) {
-            /** @var SplFileInfo $file */
+            /* @var SplFileInfo $file */
             $content = @json_decode($file->getContents(), true);
             if (is_array($content)) {
                 $data[] = $content;
@@ -134,10 +134,10 @@ class JsonReader extends AbstractReader implements JsonReaderInterface
     }
 
     /**
-     * Returns entity type path
+     * Returns entity type path.
      *
      * @param string $entity_type
-     * @param int   $batch_num
+     * @param int    $batch_num
      *
      * @return string
      */
@@ -147,12 +147,13 @@ class JsonReader extends AbstractReader implements JsonReaderInterface
     }
 
     /**
-     * Returns directory json files iterator
+     * Returns directory json files iterator.
      *
      * @param string $path
      *
-     * @return RecursiveIteratorIterator
      * @throws NotFoundException
+     *
+     * @return RecursiveIteratorIterator
      */
     private function getIterator($path)
     {

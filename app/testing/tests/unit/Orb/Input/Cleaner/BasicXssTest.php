@@ -1,41 +1,35 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DpUnitTests\Orb\Input\Cleaner;
-
-use Orb\Serializer\Serializer\ArraySerializer;
-use Orb\Serializer\SerializerRegistry;
 
 class BasicXssTest extends \DpUnitTestCase
 {
@@ -45,7 +39,7 @@ class BasicXssTest extends \DpUnitTestCase
     private $cleaner;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function runBefore()
     {
@@ -58,11 +52,12 @@ class BasicXssTest extends \DpUnitTestCase
      */
     public function fileProvider()
     {
-        return array_map(function($f) { return array($f); }, $this->_loadFileList());
+        return array_map(function ($f) { return array($f); }, $this->_loadFileList());
     }
 
     /**
      * @dataProvider fileProvider
+     *
      * @param string $f
      */
     public function testXss($f)
@@ -89,12 +84,12 @@ class BasicXssTest extends \DpUnitTestCase
      */
     private function _loadFileList()
     {
-        $dir = dir(__DIR__.'/xss_data');
+        $dir   = dir(__DIR__.'/xss_data');
         $files = array();
 
         while (false !== ($f = $dir->read())) {
             if (preg_match('#\.txt$#', $f)) {
-                $files[] = $dir->path . '/' .$f;
+                $files[] = $dir->path.'/'.$f;
             }
         }
 
@@ -103,8 +98,10 @@ class BasicXssTest extends \DpUnitTestCase
 
     /**
      * @param string $f
-     * @return array
+     *
      * @throws \Exception
+     *
+     * @return array
      */
     private function _readFile($f)
     {
@@ -117,7 +114,7 @@ class BasicXssTest extends \DpUnitTestCase
 
         return array(
             'source' => trim($parts[0]),
-            'result' => trim($parts[1])
+            'result' => trim($parts[1]),
         );
     }
 }

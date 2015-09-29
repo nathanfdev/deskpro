@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter;
 
@@ -40,10 +41,9 @@ use Zendesk\API\Client;
 use Zendesk\API\ResponseException;
 
 /**
- * ZenDesk article fixtures
+ * ZenDesk article fixtures.
  *
  * Class Articles
- * @package Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter
  */
 final class Articles extends AbstractFixture
 {
@@ -58,7 +58,7 @@ final class Articles extends AbstractFixture
     private $section_loader;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Client        $client
      * @param PeopleLoader  $people_loader
@@ -93,7 +93,7 @@ final class Articles extends AbstractFixture
         $response = $article_helper->create(array(
             'id'      => $this->section_loader->getRandomSectionId(),
             'article' => array(
-                'title'       => 'Fake article ' . $num,
+                'title'       => 'Fake article '.$num,
                 'body'        => 'Fake article content',
                 'author_id'   => $this->people_loader->getRandomPersonId(),
                 'label_names' => array('label 1', 'label 2'),
@@ -105,26 +105,25 @@ final class Articles extends AbstractFixture
         $this->logger->info('Article created successfully');
         $this->logger->debug(json_encode($article));
 
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 1; $i <= 10; ++$i) {
             try {
                 $response = $article_comment_helper->create(array(
                     'id'      => $article->id,
                     'comment' => array(
                         'author_id' => $this->people_loader->getRandomPersonId(),
-                        'body'      => 'Comment #' . $i,
+                        'body'      => 'Comment #'.$i,
                         'locale'    => 'en-us',
                     ),
                 ));
 
                 $this->logger->info('Article comment created successfully');
                 $this->logger->debug(json_encode($response->comment));
-
             } catch (ResponseException $e) {
                 $this->handleResponseException('article comment');
             }
         }
 
-        for ($i = 1; $i <= 2; $i++) {
+        for ($i = 1; $i <= 2; ++$i) {
             try {
                 $response = $article_attachment_helper->create(array(
                     'id'     => $article->id,
@@ -134,7 +133,6 @@ final class Articles extends AbstractFixture
 
                 $this->logger->info('Article attachment created successfully');
                 $this->logger->debug(json_encode($response->article_attachment));
-
             } catch (ResponseException $e) {
                 $this->handleResponseException('article attachment');
             }
@@ -148,14 +146,13 @@ final class Articles extends AbstractFixture
                     'id'          => $article->id,
                     'translation' => array(
                         'locale' => $locale,
-                        'title'  => 'Translation title ' . $locale,
-                        'body'   => 'Translation body ' . $locale,
+                        'title'  => 'Translation title '.$locale,
+                        'body'   => 'Translation body '.$locale,
                     ),
                 ));
 
                 $this->logger->info('Article translation created successfully');
                 $this->logger->debug(json_encode($response->translation));
-
             } catch (ResponseException $e) {
                 $this->handleResponseException('article translation');
             }

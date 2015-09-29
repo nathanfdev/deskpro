@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Translate\HasPhraseName;
@@ -43,8 +42,7 @@ use Orb\Util\Strings;
 use Orb\Util\Util;
 
 /**
- * Basic hierarchicial category entity
- *
+ * Basic hierarchicial category entity.
  */
 class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
@@ -83,11 +81,12 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     protected $depth = 0;
 
     /**
-     */
+      */
     protected $root;
 
     /**
-     * Local cache of some structure info with this category
+     * Local cache of some structure info with this category.
+     *
      * @var array()
      */
     protected $_structure = array();
@@ -107,12 +106,13 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 
     /**
      * @param CategoryAbstract|null $category
+     *
      * @return $this
      */
     public function setParent(CategoryAbstract $category = null)
     {
         if ($category && $category->getId() && $this->getId() && $category->getId() == $this->getId()) {
-            throw new \InvalidArgumentException("Cannot set parent to self");
+            throw new \InvalidArgumentException('Cannot set parent to self');
         }
 
         $this->setModelField('parent', $category);
@@ -142,11 +142,13 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 
     /**
      * @param string $title
+     *
      * @return $this
      */
     public function setRealTitle($title)
     {
         $this->setModelField('title', $title);
+
         return $this;
     }
 
@@ -182,12 +184,12 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return $titles;
     }
 
-
     /**
      * Get the full display title for the category with all parents parts, separated
-     * by $sep. Example: Category > Subcategory
+     * by $sep. Example: Category > Subcategory.
      *
-     * @param  string $sep
+     * @param string $sep
+     *
      * @return string
      */
     public function getFullTitle($sep = ' > ')
@@ -195,21 +197,22 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return implode($sep, $this->getTitleParts());
     }
 
-
     /**
-     * Gets all parents in the tree, in order (left to right, aka, top to bottom)
+     * Gets all parents in the tree, in order (left to right, aka, top to bottom).
      *
      * @return array
      */
     public function getTreeParents()
     {
-        if (isset($this->_structure['all_parents'])) return $this->_structure['all_parents'];
+        if (isset($this->_structure['all_parents'])) {
+            return $this->_structure['all_parents'];
+        }
 
         $this->_structure['all_parents'] = array();
-        $cat = $this;
+        $cat                             = $this;
         while ($cat->getParent()) {
             $this->_structure['all_parents'][$cat->getParent()->id] = $cat->getParent();
-            $cat = $cat->parent;
+            $cat                                                    = $cat->parent;
         }
 
         $this->_structure['all_parents'] = array_reverse($this->_structure['all_parents'], true);
@@ -217,20 +220,18 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return $this->_structure['all_parents'];
     }
 
-
-
     /**
      * Get all IDs of this tree, from this node and downwards.
      *
-     * @param  bool  $including_this Include this nodes ID in the array of ids
+     * @param bool $including_this Include this nodes ID in the array of ids
+     *
      * @return array
      */
     public function getTreeIds($including_this = true)
     {
         if (!isset($this->_structure['all_child_ids'])) {
-
             $all_ids = array();
-            $r = function (CategoryAbstract $cat) use (&$r, &$all_ids) {
+            $r       = function (CategoryAbstract $cat) use (&$r, &$all_ids) {
                 foreach ($cat->getChildren() as $c) {
                     $all_ids[] = $c->id;
                     if ($c->getChildren()) {
@@ -280,14 +281,14 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
      */
     public function getUrlSlug()
     {
-        return $this->id . '-' . Strings::slugifyTitle($this->title);
+        return $this->id.'-'.Strings::slugifyTitle($this->title);
     }
 
-
     /**
-     * Return a unique ID that we can use to look up translations for this object
+     * Return a unique ID that we can use to look up translations for this object.
      *
-     * @param  string $property If supplied, the property on the object we want to translate.
+     * @param string $property If supplied, the property on the object we want to translate.
+     *
      * @return string
      */
     public function getPhraseName($property = null, Translate $translate)
@@ -295,17 +296,17 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         if (!$property) {
             $property = 'title';
         }
-        $name = strtolower(Util::getBaseClassname($this));
-        $phrase_name = 'obj_'.$name.'.' . $this->id . '_' . $property;
+        $name        = strtolower(Util::getBaseClassname($this));
+        $phrase_name = 'obj_'.$name.'.'.$this->id.'_'.$property;
 
         return $phrase_name;
     }
 
-
     /**
-     * Get the default value phrase for the object
+     * Get the default value phrase for the object.
      *
-     * @param  string $property If supplied, the property on the object we want to translate.
+     * @param string $property If supplied, the property on the object we want to translate.
+     *
      * @return string
      */
     public function getPhraseDefault($property = null, Translate $translate)
@@ -323,7 +324,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     public function getSelectTitle()
     {
         if ($this->depth) {
-            return str_repeat('--', $this->depth) . ' ' . $this->title;
+            return str_repeat('--', $this->depth).' '.$this->title;
         } else {
             return $this->title;
         }
@@ -337,8 +338,6 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return $this->getFullTitle();
     }
 
-
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -347,7 +346,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     {
         $metadata->isMappedSuperclass = true;
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(array( 'name' => 'CategoryAbstract', ));
+        $metadata->setPrimaryTable(array('name' => 'CategoryAbstract'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
     }
 }

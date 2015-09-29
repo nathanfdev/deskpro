@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Tickets
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Tickets
+ */
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -42,7 +41,7 @@ use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Send an email to one or more agents
+ * Send an email to one or more agents.
  *
  * @option bool template       The template to send
  * @option bool agent_ids      Agents to send to
@@ -52,7 +51,7 @@ use Orb\Util\CheckedOptionsArray;
 class SendAgentEmail extends AbstractEmailAction implements ActionInterface, NoopableInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function getOptionsDef()
     {
@@ -64,28 +63,29 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
     }
 
     /**
-     * @param  Ticket                   $ticket
-     * @param  array                    $agent_ids
-     * @param  ExecutorContextInterface $context
+     * @param Ticket                   $ticket
+     * @param array                    $agent_ids
+     * @param ExecutorContextInterface $context
+     *
      * @return array
      */
     private function resolveAgents(Ticket $ticket, array $agent_ids, ExecutorContextInterface $context)
     {
         $agents = array();
 
-        $person_context = $context->getPersonContext();
+        $person_context    = $context->getPersonContext();
         $is_notif_disabled = $this->getContainer()->getSetting('agent.disable_notifications');
 
         foreach ($agent_ids as $aid) {
-
             if ('all_agents' === $aid) {
                 $agents = $this->getContainer()->getAgentData()->getAgents();
                 break;
             }
 
             if ($aid == 'notify_list') {
-
-                if ($is_notif_disabled) continue;
+                if ($is_notif_disabled) {
+                    continue;
+                }
 
                 $change_detect = $this->getContainer()->getTicketFilterChangeDetector();
                 $change_set    = $change_detect->getFilterChangeSet($ticket, $context);
@@ -109,10 +109,10 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
                         }
 
                         if (!$override) {
-                            $context->getLogger()->debug("[SendAgentEmail] notify_list skipping self");
+                            $context->getLogger()->debug('[SendAgentEmail] notify_list skipping self');
                             continue;
                         } else {
-                            $context->getLogger()->debug("[SendAgentEmail] notify_list sending to self because got override preference");
+                            $context->getLogger()->debug('[SendAgentEmail] notify_list sending to self because got override preference');
                         }
                     }
                     if (in_array('email', $n['types'])) {
@@ -122,13 +122,12 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 
                 $force_list = $context->getVars()->get('agent_force_subscription_list', array());
                 if ($force_list) {
-                    $context->getLogger()->debug("[SendAgentEmail] Appending force list");
+                    $context->getLogger()->debug('[SendAgentEmail] Appending force list');
                     $agents = array_merge($agents, $force_list);
                 }
-
             } else {
                 $agent_data = $this->getContainer()->getAgentData();
-                $agents = array_merge($agents, $agent_data->selectAgents($aid, $person_context, $ticket));
+                $agents     = array_merge($agents, $agent_data->selectAgents($aid, $person_context, $ticket));
             }
         }
 
@@ -140,25 +139,29 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
             return array();
         }
 
-        $agents = array_unique($agents);
-        $agents = array_filter($agents, function ($a) { return $a->is_agent && !$a->is_deleted && !$a->is_disabled; });
+        $set_agents = array();
+        foreach ($agents as $a) {
+            if (!isset($set_agents[$a->getId()]) && $a->is_agent && !$a->is_deleted && !$a->is_disabled) {
+                $a->loadHelper('Agent');
+                $set_agents[$a->getId()] = $a;
+            }
+        }
 
-        return $agents;
+        return array_values($set_agents);
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $context->getLogger()->debug("[SendAgentEmail] Begin :: agent_ids = " . implode(', ', $this->getActionOption('agent_ids')));
+        $context->getLogger()->debug('[SendAgentEmail] Begin :: agent_ids = '.implode(', ', $this->getActionOption('agent_ids')));
         $start_time = microtime(true);
 
         $agents = $this->resolveAgents($ticket, $this->getActionOption('agent_ids'), $context);
 
         if (!$agents) {
-            $context->getLogger()->debug("[SendAgentEmail] No agents to send to");
+            $context->getLogger()->debug('[SendAgentEmail] No agents to send to');
 
             return;
         }
@@ -191,7 +194,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 
         $sent_count = 0;
 
-        $state = $ticket->getStateChangeRecorder();
+        $state             = $ticket->getStateChangeRecorder();
         $fn_check_new_part = function ($agent) use ($state, $ticket) {
             $has = false;
             foreach ($ticket->participants as $p) {
@@ -224,9 +227,9 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
         }
 
         foreach ($agents as $agent) {
-            $sent_count++;
+            ++$sent_count;
 
-            $context->getLogger()->debug(sprintf("[SendAgentEmail] Sending to <Person:%d> %s", $agent->id, $agent->getDisplayName()));
+            $context->getLogger()->debug(sprintf('[SendAgentEmail] Sending to <Person:%d> %s', $agent->id, $agent->getDisplayName()));
 
             $vars = $default_vars;
 
@@ -242,9 +245,9 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
             }
 
             if ($state->hasChangedField('ticket_sla_status')) {
-                $change = $state->getLastChangeForField('ticket_sla_status');
-                $new = $change->getNew();
-                $vars['sla'] = $new['sla'];
+                $change             = $state->getLastChangeForField('ticket_sla_status');
+                $new                = $change->getNew();
+                $vars['sla']        = $new['sla'];
                 $vars['sla_status'] = $new['status'];
             }
 
@@ -271,7 +274,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
                 $this->recordEmailTicketLog($ticket_email, $ticket, $context);
             } catch (\Exception $e) {
                 $context->getLogger()->error(
-                    sprintf("[SendAgentEmail] Exception: [%s] %s", $e->getCode(), $e->getMessage()),
+                    sprintf('[SendAgentEmail] Exception: [%s] %s', $e->getCode(), $e->getMessage()),
                     array('exception' => $e)
                 );
 
@@ -279,23 +282,22 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
             }
         }
 
-        $context->getLogger()->info(sprintf("[SendAgentEmail] Send %d messages in %.3fs", $sent_count, microtime(true)-$start_time));
+        $context->getLogger()->info(sprintf('[SendAgentEmail] Send %d messages in %.3fs', $sent_count, microtime(true) - $start_time));
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
     {
         if (!$this->getContainer()->getEmailAccountManager()->countOutgoingAccounts()) {
-            $context->getLogger()->debug("[SendUserEmail] no outgoing email accounts are defined");
+            $context->getLogger()->debug('[SendUserEmail] no outgoing email accounts are defined');
 
             return true;
         }
 
         if ($context->getVars()->get('mute_agent_emails')) {
-            $context->getLogger()->debug("[SendAgentEmail] mute_agent_emails = true");
+            $context->getLogger()->debug('[SendAgentEmail] mute_agent_emails = true');
 
             return true;
         }

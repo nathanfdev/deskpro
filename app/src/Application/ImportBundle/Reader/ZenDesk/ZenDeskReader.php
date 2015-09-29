@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
@@ -34,14 +35,13 @@ use Zendesk\API;
 use DateTime;
 
 /**
- * ZenDesk reader
+ * ZenDesk reader.
  *
  * see https://developer.zendesk.com/rest_api/docs/core/introduction
  * see https://developer.zendesk.com/rest_api/docs/core/incremental_export
  * see https://support.zendesk.com/hc/en-us/articles/204232743
  *
  * Class ZenDeskReader
- * @package Application\ImportBundle\Reader\ZenDesk
  *
  * @property ZenDeskConfig $config
  */
@@ -53,7 +53,7 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
     private $adapter;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param RequestAdapterInterface $adapter
      * @param ZenDeskConfig           $config
@@ -70,6 +70,7 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
     public function checkConfig()
     {
         $this->getSettings();
+
         return true;
     }
 
@@ -329,7 +330,7 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
             return $this->toArray($response_section->section);
         }
 
-        if ( ! empty($section)) {
+        if (!empty($section)) {
             if (isset($categories[$section['category_id']])) {
                 $category = $categories[$section['category_id']];
             } else {
@@ -340,8 +341,8 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
                 $category = $this->toArray($response_section->category);
             }
 
-            if ( ! empty($category)) {
-                return $category['name'] . ' > ' . $section['name'];
+            if (!empty($category)) {
+                return $category['name'].' > '.$section['name'];
             } else {
                 return $section['name'];
             }
@@ -492,9 +493,10 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
     }
 
     /**
-     * Converts stdClass to array
+     * Converts stdClass to array.
      *
      * @param mixed $object
+     *
      * @return array
      */
     private function toArray($object)
@@ -503,9 +505,10 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
     }
 
     /**
-     * Returns request start time timestamp
+     * Returns request start time timestamp.
      *
      * @param DateTime $start_time
+     *
      * @return int
      */
     private function getStartTimeTimestamp(DateTime $start_time = null)
@@ -519,9 +522,10 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
     }
 
     /**
-     * Request end time timestamp to DateTime
+     * Request end time timestamp to DateTime.
      *
      * @param \stdClass $request
+     *
      * @return DateTime|int
      */
     private function getIncrementalEndDateTime(\stdClass $request)

@@ -1,84 +1,81 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Dpql
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
+use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Parser;
-use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
- * Represents a mathematical operation with 2 elements
+ * Represents a mathematical operation with 2 elements.
  */
 class BinaryMath extends AbstractPart
 {
     /**
-     * Token ID of the operator
+     * Token ID of the operator.
      *
-     * @var integer
+     * @var int
      */
     public $operator;
 
     /**
-     * Left hand side of comparison
+     * Left hand side of comparison.
      *
      * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart
      */
     public $lhs;
 
     /**
-     * Right hand side of comparison
+     * Right hand side of comparison.
      *
      * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart
      */
     public $rhs;
 
     /**
-     * Maps from token IDs to printable/usable operators
+     * Maps from token IDs to printable/usable operators.
      *
      * @var array
      */
     protected static $_operatorMap = array(
-        Parser::T_OP_PLUS => '+',
-        Parser::T_OP_MINUS => '-',
+        Parser::T_OP_PLUS     => '+',
+        Parser::T_OP_MINUS    => '-',
         Parser::T_OP_MULTIPLY => '*',
-        Parser::T_OP_DIVIDE => '/'
+        Parser::T_OP_DIVIDE   => '/',
     );
 
     /**
-     * @param integer                                               $operator
+     * @param int                                                   $operator
      * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $lhs
      * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $rhs
      *
@@ -91,8 +88,8 @@ class BinaryMath extends AbstractPart
         }
 
         $this->operator = $operator;
-        $this->lhs = $lhs;
-        $this->rhs = $rhs;
+        $this->lhs      = $lhs;
+        $this->rhs      = $rhs;
     }
 
     /**
@@ -110,12 +107,11 @@ class BinaryMath extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         $childStack = $this->getChildStack($stack);
 
-        $lhs = $this->lhs->prepare($statement, $section, $childStack, $select, $result);
-        $rhs = $this->rhs->prepare($statement, $section, $childStack, $select, $result);
+        $lhs      = $this->lhs->prepare($statement, $section, $childStack, $select, $result);
+        $rhs      = $this->rhs->prepare($statement, $section, $childStack, $select, $result);
         $operator = self::$_operatorMap[$this->operator];
 
         $sql = "({$lhs->sql()} $operator {$rhs->sql()})";
@@ -135,7 +131,7 @@ class BinaryMath extends AbstractPart
     public function toDpql(Display $statement, $section, array $stack)
     {
         return $this->lhs->toDpql($statement, $section, $stack)
-            . ' ' . self::$_operatorMap[$this->operator] . ' '
-            . $this->rhs->toDpql($statement, $section, $stack);
+            .' '.self::$_operatorMap[$this->operator].' '
+            .$this->rhs->toDpql($statement, $section, $stack);
     }
 }

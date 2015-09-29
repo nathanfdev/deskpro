@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
-
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -42,7 +40,8 @@ class Filters
     /**
      * Find all filters a person can use.
      *
-     * @param  mixed $person Person or person ID
+     * @param mixed $person Person or person ID
+     *
      * @return array Collection of TicketFilter entities
      */
     public function getFiltersForPerson($person)
@@ -52,7 +51,6 @@ class Filters
             ->getFiltersForPerson($person);
     }
 
-
     public function getGroupedFiltersForPerson($person)
     {
         $all_filters = App::getApi('tickets.filters')->getFiltersForPerson($person);
@@ -60,7 +58,7 @@ class Filters
         $order = $person->getPref('agent.ui.ticket-filters-order');
         if ($order) {
             $filters_unordered = $all_filters;
-            $all_filters = array();
+            $all_filters       = array();
 
             foreach ($order as $id) {
                 if (isset($filters_unordered[$id])) {
@@ -77,11 +75,10 @@ class Filters
         }
 
         // Order them into sys/other
-        $sys_filters = array();
+        $sys_filters      = array();
         $sys_filters_hold = array();
-        $custom_filters = array();
-        $archive_filters = array();
-
+        $custom_filters   = array();
+        $archive_filters  = array();
 
         $unset_ids = array();
 
@@ -108,7 +105,7 @@ class Filters
 
         // Force order of sys
         $sys_filters_unordered = $sys_filters;
-        $sys_filters = array();
+        $sys_filters           = array();
         foreach (array('agent', 'participant', 'agent_team', 'unassigned', 'all') as $id) {
             if (isset($sys_filters_unordered[$id])) {
                 $sys_filters[$id] = $sys_filters_unordered[$id];
@@ -117,7 +114,7 @@ class Filters
         }
 
         $sys_filters_unordered = $sys_filters_hold;
-        $sys_filters_hold = array();
+        $sys_filters_hold      = array();
         foreach (array('agent', 'participant', 'agent_team', 'unassigned', 'all') as $id) {
             $id .= '_w_hold';
             if (isset($sys_filters_unordered[$id])) {
@@ -150,18 +147,19 @@ class Filters
         });
 
         return array(
-            'all_filters' => $all_filters,
-            'sys_filters' => $sys_filters,
+            'all_filters'      => $all_filters,
+            'sys_filters'      => $sys_filters,
             'sys_filters_hold' => $sys_filters_hold,
-            'archive_filters' => $archive_filters,
-            'custom_filters' => $custom_filters,
+            'archive_filters'  => $archive_filters,
+            'custom_filters'   => $custom_filters,
         );
     }
 
-
     /**
-     * Get a ticket filter from an ID
-     * @param  int          $ticket_filter_id
+     * Get a ticket filter from an ID.
+     *
+     * @param int $ticket_filter_id
+     *
      * @return TicketFilter
      */
     public function getFilterFromId($ticket_filter_id)
@@ -171,11 +169,11 @@ class Filters
             ->find($ticket_filter_id);
     }
 
-
     /**
      * Get the number of results in a filter.
      *
-     * @param  TicketFilter $ticket_filter
+     * @param TicketFilter $ticket_filter
+     *
      * @return int
      */
     public function getCountForFilter($ticket_filter)
@@ -185,11 +183,11 @@ class Filters
         return $ticket_filter->getResultsCount();
     }
 
-
     /**
      * Get the counts for each filter a person can see.
      *
-     * @param  mixed $person Person or person ID
+     * @param mixed $person Person or person ID
+     *
      * @return array
      */
     public function getAllCountsSystemFilters($person)
@@ -201,11 +199,11 @@ class Filters
         return $this->getAllCountsForFiltersCollection($coll, $person);
     }
 
-
     /**
      * Get the counts for each custom filter a person can see.
      *
-     * @param  mixed $person Person or person ID
+     * @param mixed $person Person or person ID
+     *
      * @return array
      */
     public function getAllCountsCustomFilters($person)
@@ -217,11 +215,11 @@ class Filters
         return $this->getAllCountsForFiltersCollection($coll);
     }
 
-
     /**
      * Get counts for each filter in a collection.
      *
-     * @param  array $ticket_filters
+     * @param array $ticket_filters
+     *
      * @return array
      */
     public function getAllCountsForFiltersCollection($ticket_filters, Person $person_context = null)
@@ -238,7 +236,6 @@ class Filters
         }
 
         foreach ($ticket_filters as $ticket_filter) {
-
             $count = 0;
 
             switch ($ticket_filter['sys_name']) {
@@ -271,11 +268,11 @@ class Filters
         return $counts;
     }
 
-
     /**
-     * Get an array of IDs for each filter in a collection
+     * Get an array of IDs for each filter in a collection.
      *
      * @param $ticket_filters
+     *
      * @return array
      */
     public function getAllIdsForFiltersCollection($ticket_filters, Person $person_context = null)
@@ -293,11 +290,11 @@ class Filters
         return $all_ids;
     }
 
-
     /**
-     * Get an array of IDs for each filter in a collection
+     * Get an array of IDs for each filter in a collection.
      *
      * @param $ticket_filters
+     *
      * @return array
      */
     public function getAllHoldIdsForFiltersCollection($ticket_filters)
@@ -305,16 +302,16 @@ class Filters
         $all_ids = array();
 
         foreach ($ticket_filters as $ticket_filter) {
-            $searcher = $ticket_filter->getSearcher(array('type' => 'is_hold', 'op' => 'is', 'options' => array('is_hold' => 1)));
+            $searcher                      = $ticket_filter->getSearcher(array('type' => 'is_hold', 'op' => 'is', 'options' => array('is_hold' => 1)));
             $all_ids[$ticket_filter['id']] = $searcher->getResults();
         }
 
         return $all_ids;
     }
 
-
     /**
      * @param $ticket_filter
+     *
      * @return
      */
     public function getIdsFromFilter($ticket_filter)
@@ -326,13 +323,13 @@ class Filters
         return $result_ids;
     }
 
-
     /**
-     * Get ticket results from a filter
+     * Get ticket results from a filter.
      *
-     * @param  TicketFilter $ticket_filter
-     * @param  int          $page
-     * @param  int          $per_page
+     * @param TicketFilter $ticket_filter
+     * @param int          $page
+     * @param int          $per_page
+     *
      * @return array
      */
     public function getTicketsFromFilter($ticket_filter, $page = 1, $per_page = 25)
@@ -348,7 +345,7 @@ class Filters
         }
 
         // index is 0-based
-        $page--;
+        --$page;
 
         if (!isset($result_ids[$page])) {
             return array();
@@ -361,23 +358,23 @@ class Filters
             ->getTicketsFromIds($page_ids);
     }
 
-
     /**
-     * Get flagged tickets
+     * Get flagged tickets.
      *
-     * @param  string $flag
-     * @param  Person $person
-     * @param  int    $page
-     * @param  int    $per_page
+     * @param string $flag
+     * @param Person $person
+     * @param int    $page
+     * @param int    $per_page
+     *
      * @return array
      */
     public function getTicketsFromFlagged($flag, $person, $page = 1, $per_page = 25)
     {
-        $result_ids = App::getDb()->fetchAllCol("
+        $result_ids = App::getDb()->fetchAllCol('
             SELECT ticket_id
             FROM tickets_flagged
             WHERE person_id = ? AND color = ?
-        ", array($person['id'], $flag));
+        ', array($person['id'], $flag));
 
         if ($per_page) {
             $result_ids = array_chunk($result_ids, $per_page);
@@ -399,21 +396,21 @@ class Filters
             ->getTicketsFromIds($page_ids);
     }
 
-
     /**
      * Get the counts for each flag a person has.
      *
-     * @param  mixed $person Person or person ID
+     * @param mixed $person Person or person ID
+     *
      * @return array
      */
     public function getAllCountsForPersonFlagged($person)
     {
-        $counts = App::getDb()->fetchAllKeyValue("
+        $counts = App::getDb()->fetchAllKeyValue('
             SELECT color, COUNT(color)
             FROM tickets_flagged
             WHERE person_id = ?
             GROUP BY color
-        ", array($person['id']));
+        ', array($person['id']));
 
         return $counts;
     }

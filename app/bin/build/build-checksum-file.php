@@ -7,13 +7,13 @@ if (php_sapi_name() != 'cli') {
 }
 
 define('DP_BUILDING', true);
-define('DP_ROOT', realpath(__DIR__ . '/../../'));
-define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
-define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
+define('DP_ROOT', realpath(__DIR__.'/../../'));
+define('DP_WEB_ROOT', realpath(__DIR__.'/../../../'));
+define('DP_CONFIG_FILE', DP_WEB_ROOT.'/config.php');
 
-require DP_ROOT . '/vendor/symfony/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+require DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
 
-require DP_ROOT . '/sys/autoload.php';
+require DP_ROOT.'/sys/autoload.php';
 
 $start = microtime(true);
 echo sprintf("Starting :: %.f\n", $start);
@@ -30,4 +30,4 @@ $checker->dumpToStardnardFile();
 $count = $checker->count();
 
 $end = microtime(true);
-echo sprintf("\nDone :: $count files :: %.f seconds\n", $end-$start);
+echo sprintf("\nDone :: $count files :: %.f seconds\n", $end - $start);

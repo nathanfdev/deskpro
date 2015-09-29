@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage ApiBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
@@ -45,7 +42,7 @@ use Orb\Util\Arrays;
 class FeedbackTypesController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
@@ -56,22 +53,20 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
         return $multi;
     }
 
-
     ####################################################################################################################
     # list
     ####################################################################################################################
 
     public function listAction()
     {
-        /**
-         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes $feedback_types
+        /*
+         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes
          */
-
         $feedback_types = $this->container->getSystemService('feedback_types');
 
         return $this->createApiResponse(
             array(
-                 'types' => $this->getApiData(Arrays::flatten($feedback_types->getAll()))
+                 'types' => $this->getApiData(Arrays::flatten($feedback_types->getAll())),
             )
         );
     }
@@ -82,15 +77,13 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
 
     public function getAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes $feedback_types
+        /*
+         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes
          */
-
         $feedback_types = $this->container->getSystemService('feedback_types');
         $feedback_type  = $feedback_types->getById($id);
 
         if (!$feedback_type) {
-
             throw $this->createNotFoundException();
         }
 
@@ -99,7 +92,7 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
 
         return $this->createApiResponse(
             array(
-                 'feedback_type' => $returnedData
+                 'feedback_type' => $returnedData,
             )
         );
     }
@@ -110,22 +103,18 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
 
     public function saveAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes $feedback_types
+        /*
+         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes
          */
-
         $feedback_types = $this->container->getSystemService('feedback_types');
 
         if ($id) {
-
             $feedback_type = $feedback_types->getById($id);
 
             if (!$feedback_type) {
-
                 throw $this->createNotFoundException();
             }
         } else {
-
             $feedback_type = $feedback_types->createNew();
         }
 
@@ -137,9 +126,7 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
         $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'feedback_type'), true);
 
         if ($form->isValid()) {
-
             $feedback_type_edit->save($this->em);
-
         } else {
             return $this->createApiValidationErrorResponse($this->container->getValidator()->validate($feedback_type));
         }
@@ -158,15 +145,13 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
 
     public function removeAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes $feedback_types
+        /*
+         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes
          */
-
         $feedback_types = $this->container->getSystemService('feedback_types');
-        $feedback_type   = $feedback_types->getById($id);
+        $feedback_type  = $feedback_types->getById($id);
 
         if (!$feedback_type) {
-
             throw $this->createNotFoundException();
         }
 
@@ -174,18 +159,16 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
         $move_to_feedback_type = $feedback_types->getById($move_to);
 
         if (!$move_to_feedback_type) {
-
             throw ValidationException::create(
-                "feedback_type.remove.move_feedback_types",
-                "You must select a feedback type to move existing feedback into"
+                'feedback_type.remove.move_feedback_types',
+                'You must select a feedback type to move existing feedback into'
             );
         }
 
         if ($move_to_feedback_type->getId() == $feedback_type->getId()) {
-
             throw ValidationException::create(
-                "feedback_type.remove.move_feedback_types",
-                "You must choose a different feedback type"
+                'feedback_type.remove.move_feedback_types',
+                'You must choose a different feedback type'
             );
         }
 
@@ -194,9 +177,8 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
         $this->db->beginTransaction();
 
         try {
-
             $this->db->executeUpdate(
-                "UPDATE feedback SET category_id = ? WHERE category_id = ?",
+                'UPDATE feedback SET category_id = ? WHERE category_id = ?',
                 array($move_to, $old_id)
             );
 
@@ -204,9 +186,7 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
             $this->em->flush();
 
             $this->db->commit();
-
-        } catch(\Exception $e) {
-
+        } catch (\Exception $e) {
             $this->db->rollback();
             throw $e;
         }
@@ -222,10 +202,9 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
     {
         $display_orders = $this->in->getArrayOfUInts('display_orders');
 
-        /**
-         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes $feedback_types
+        /*
+         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes
          */
-
         $feedback_types = $this->container->getSystemService('feedback_types');
         $feedback_types->updateDisplayOrders($display_orders);
 

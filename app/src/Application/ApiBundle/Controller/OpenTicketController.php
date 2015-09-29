@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage ApiBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -39,12 +36,11 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 
-
 class OpenTicketController extends AbstractController
 {
     public function preAction($action, $arguments = null)
     {
-        return null;
+        return;
     }
 
     public function newTicketMessageAction()
@@ -74,19 +70,18 @@ class OpenTicketController extends AbstractController
             if (!$person) {
                 $person = Person::newContactPerson(array(
                     'email' => $this->in->getString('email'),
-                    'name'  => $this->in->getString('name')
+                    'name'  => $this->in->getString('name'),
                 ));
                 $this->em->persist($person);
             }
 
             $context = $ticket_manager->createUserExecutorContext($ticket->person, 'newreply', 'api');
-
         } else {
             // Not allowed to create new tickets using this service
             if (!$this->apikey && !$this->api_token && !dp_get_config('allow_open_ticket_create')) {
                 $response = $this->createApiErrorResponse('invalid_auth', 'Please provide a valid API key or token', 401);
                 $response->headers->add(array(
-                    'WWW-Authenticate' => 'Basic realm="API"'
+                    'WWW-Authenticate' => 'Basic realm="API"',
                 ));
 
                 return $response;
@@ -96,15 +91,15 @@ class OpenTicketController extends AbstractController
             if (!$person) {
                 $person = Person::newContactPerson(array(
                     'email' => $this->in->getString('email'),
-                    'name'  => $this->in->getString('name')
+                    'name'  => $this->in->getString('name'),
                 ));
                 $this->em->persist($person);
             }
 
-            $ticket = $ticket_manager->createTicket();
-            $ticket['creation_system']  = Ticket::CREATED_WEB_API;
-            $ticket['person']  = $person;
-            $ticket['subject'] = $this->in->getString('subject');
+            $ticket                    = $ticket_manager->createTicket();
+            $ticket['creation_system'] = Ticket::CREATED_WEB_API;
+            $ticket['person']          = $person;
+            $ticket['subject']         = $this->in->getString('subject');
             $ticket->setProperty('allow_send_reply_service', true);
 
             $ticket->getTicketLogger()->recordExtra('suppress_user_notify', true);
@@ -122,8 +117,8 @@ class OpenTicketController extends AbstractController
 
         $message_html = $this->in->getHtmlCore('message');
 
-        $ticket_message = new TicketMessage();
-        $ticket_message['person']  = $person;
+        $ticket_message           = new TicketMessage();
+        $ticket_message['person'] = $person;
         $ticket_message->setMessageHtml($message_html);
 
         $ticket->addMessage($ticket_message);
@@ -138,7 +133,7 @@ class OpenTicketController extends AbstractController
 
         return $this->createJsonResponse(array(
             'success' => true,
-            'tac' => $ticket->getAccessCode()
+            'tac'     => $ticket->getAccessCode(),
         ));
     }
 }

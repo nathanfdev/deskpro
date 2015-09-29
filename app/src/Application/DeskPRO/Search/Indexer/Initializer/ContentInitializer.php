@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Search
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Search\IndexInitializer;
 
 use Application\DeskPRO\App;
@@ -49,18 +46,18 @@ abstract class ContentInitializer extends AbstractInitializer
         #------------------------------
 
         $time_start = microtime(true);
-        $total = 0;
+        $total      = 0;
         try {
             $total += $this->runForType('article',  'DeskPRO:Article');
             $total += $this->runForType('download', 'DeskPRO:Download');
             $total += $this->runForType('feedback',     'DeskPRO:Feedback');
             $total += $this->runForType('news',     'DeskPRO:News');
         } catch (\Exception $e) {
-            $this->logger->log('Exception: ' . $e->getMessage(), Logger::ERR);
+            $this->logger->log('Exception: '.$e->getMessage(), Logger::ERR);
             throw $e;
         }
 
-        $time = sprintf("%.5f", microtime(true)-$time_start);
+        $time = sprintf('%.5f', microtime(true) - $time_start);
         $this->logger->log("Indexed $total items in $time seconds", Logger::INFO);
 
         return $total;
@@ -79,9 +76,9 @@ abstract class ContentInitializer extends AbstractInitializer
         $this->logger->log("START $entity_name ($count objects)", Logger::INFO);
 
         $per_page = 25;
-        $pages = ceil($count / $per_page);
+        $pages    = ceil($count / $per_page);
 
-        for ($i = 0; $i < $pages; $i++) {
+        for ($i = 0; $i < $pages; ++$i) {
             $offset = $i * $per_page;
 
             $objects = App::getOrm()->createQuery("
@@ -96,7 +93,7 @@ abstract class ContentInitializer extends AbstractInitializer
             App::getOrm()->clear();
         }
 
-        $time = sprintf("%.5f", microtime(true)-$time_start);
+        $time = sprintf('%.5f', microtime(true) - $time_start);
         $this->logger->log("END $entity_name (took $time seconds)", Logger::INFO);
 
         return $count;

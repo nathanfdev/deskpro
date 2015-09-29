@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\App\Native\RequestHandler;
 
 use Application\DeskPRO\Controller\AbstractController;
@@ -77,7 +76,6 @@ class AbstractRequestContext
      */
     private $controller;
 
-
     /**
      * @param DeskproContainer   $container
      * @param Request            $request
@@ -93,8 +91,7 @@ class AbstractRequestContext
         Person $agent,
         AppPackage $package,
         $action
-    )
-    {
+    ) {
         $this->container  = $container;
         $this->request    = $request;
         $this->controller = $controller;
@@ -105,7 +102,6 @@ class AbstractRequestContext
         $this->native_config = $container->getAppManager()->getNativePackageConfig($package);
     }
 
-
     /**
      * @return string
      */
@@ -113,7 +109,6 @@ class AbstractRequestContext
     {
         return $this->action;
     }
-
 
     /**
      * @return \Application\DeskPRO\Entity\Person
@@ -123,7 +118,6 @@ class AbstractRequestContext
         return $this->agent;
     }
 
-
     /**
      * @return \Application\DeskPRO\App\Native\NativePackageConfig
      */
@@ -131,7 +125,6 @@ class AbstractRequestContext
     {
         return $this->native_config;
     }
-
 
     /**
      * @return \Application\DeskPRO\Entity\AppPackage
@@ -141,7 +134,6 @@ class AbstractRequestContext
         return $this->package;
     }
 
-
     /**
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
      */
@@ -149,7 +141,6 @@ class AbstractRequestContext
     {
         return $this->container;
     }
-
 
     /**
      * @return \Symfony\Component\HttpFoundation\Request
@@ -159,7 +150,6 @@ class AbstractRequestContext
         return $this->request;
     }
 
-
     /**
      * @return \Application\DeskPRO\DBAL\Connection
      */
@@ -167,7 +157,6 @@ class AbstractRequestContext
     {
         return $this->container->getDb();
     }
-
 
     /**
      * @return \Application\DeskPRO\Input\Reader
@@ -177,7 +166,6 @@ class AbstractRequestContext
         return $this->container->getIn();
     }
 
-
     /**
      * @return \Doctrine\ORM\EntityManager
      */
@@ -186,9 +174,9 @@ class AbstractRequestContext
         return $this->container->getEm();
     }
 
-
     /**
-     * @param  string                                                        $message
+     * @param string $message
+     *
      * @return \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
     public function createNotFoundException($message = 'Not Found')
@@ -199,8 +187,9 @@ class AbstractRequestContext
     /**
      * Create a JSON response.
      *
-     * @param  string|array                               $content
-     * @param  int                                        $status_code
+     * @param string|array $content
+     * @param int          $status_code
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function createJsonResponse($content, $status_code = 200)
@@ -211,8 +200,9 @@ class AbstractRequestContext
     /**
      * Create a JSON response.
      *
-     * @param  string                                     $content
-     * @param  int                                        $status_code
+     * @param string $content
+     * @param int    $status_code
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function createResponse($content, $status_code = 200)

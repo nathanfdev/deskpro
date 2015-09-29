@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Tickets\TicketLog;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -40,7 +39,6 @@ use Application\DeskPRO\ORM\StateChange\ChangeCollection;
 use Application\DeskPRO\ORM\StateChange\ChangeData;
 use Application\DeskPRO\ORM\StateChange\ChangeInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Orb\Util\Strings;
 use Orb\Util\Util;
 
 class TicketLogGenerator
@@ -71,13 +69,12 @@ class TicketLogGenerator
         $this->context = $context;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\TicketLog[]
      */
     public function getLogEntries()
     {
-        $group = new TicketLog();
+        $group              = new TicketLog();
         $group->ticket      = $this->ticket;
         $group->person      = $this->context->getPersonContext();
         $group->action_type = 'action_starter';
@@ -90,30 +87,30 @@ class TicketLogGenerator
             'person_email'    => $this->context->getPersonContext() ? $this->context->getPersonContext()->getPrimaryEmailAddress() : null,
         );
 
-        $logs = array();
+        $logs   = array();
         $logs[] = $group;
 
         if ($this->state->isNewTicket() || $this->context->getEventType() == 'newticket') {
-			$data = array(
-                'action_type' => 'ticket_created',
-                'id_after'    => $this->ticket->id,
-                'ticket_id'   => $this->ticket->id,
-				'event_performer' => $this->context->getEventPerformer(),
-				'event_method'    => $this->context->getEventMethod(),
-			);
-			if ($this->context->getEventMethod() == 'email' && $this->context->getEmailContext() && $this->context->getEmailContext()->getDeliveredAddresses()) {
-				$data['email_to']   = array_map(function($a) { return $a->email; }, $this->context->getEmailContext()->getReceivedAddresses());
-				$data['email_from'] = Util::flatMap($this->context->getEmailContext()->getRealFromAddress(), function($v) { return $v->email; });
-			}
-			$log = $this->getLogFromData($data);
+            $data = array(
+                'action_type'     => 'ticket_created',
+                'id_after'        => $this->ticket->id,
+                'ticket_id'       => $this->ticket->id,
+                'event_performer' => $this->context->getEventPerformer(),
+                'event_method'    => $this->context->getEventMethod(),
+            );
+            if ($this->context->getEventMethod() == 'email' && $this->context->getEmailContext() && $this->context->getEmailContext()->getDeliveredAddresses()) {
+                $data['email_to'] = array_map(function ($a) { return $a->email; }, $this->context->getEmailContext()->getReceivedAddresses());
+                $data['email_from'] = Util::flatMap($this->context->getEmailContext()->getRealFromAddress(), function ($v) { return $v->email; });
+            }
+            $log         = $this->getLogFromData($data);
             $log->parent = $group;
-            $logs[] = $log;
+            $logs[]      = $log;
         }
 
         foreach ($this->state->getChanges() as $change) {
             $log_data = $this->getLogDataForChange($change);
             if (!$log_data) {
-                $this->context->getLogger()->info(sprintf("[TicketLogGenerator] %s -> no data", $change->getField()));
+                $this->context->getLogger()->info(sprintf('[TicketLogGenerator] %s -> no data', $change->getField()));
                 continue;
             }
 
@@ -145,13 +142,13 @@ class TicketLogGenerator
                         $log->setDetailItem('escalation_title', $log_metadata['escalation']->title);
                     }
                     if (!empty($log_metadata['sla'])) {
-                        $log->sla = $log_metadata['sla'];
+                        $log->sla        = $log_metadata['sla'];
                         $log->sla_status = $log_metadata['sla_status'];
                         $log->setDetailItem('sla_title', $log_metadata['sla']->title);
                     }
                 }
 
-                $this->context->getLogger()->info(sprintf("[TicketLogGenerator] %s -> %s", $change->getField(), $log->action_type));
+                $this->context->getLogger()->info(sprintf('[TicketLogGenerator] %s -> %s', $change->getField(), $log->action_type));
 
                 $log->parent = $group;
 
@@ -166,14 +163,14 @@ class TicketLogGenerator
         return $logs;
     }
 
-
     /**
-     * @param  array     $log_data
+     * @param array $log_data
+     *
      * @return TicketLog
      */
     private function getLogFromData(array $log_data)
     {
-        $log = new TicketLog();
+        $log         = new TicketLog();
         $log->ticket = $this->ticket;
         $log->person = $this->context->getPersonContext();
 
@@ -181,7 +178,7 @@ class TicketLogGenerator
             $log->action_type = $log_data['action_type'];
             unset($log_data['action_type']);
         } else {
-            return null;
+            return;
         }
 
         foreach (array('id_object', 'id_before', 'id_after') as $prop) {
@@ -196,9 +193,9 @@ class TicketLogGenerator
         return $log;
     }
 
-
     /**
-     * @param  ChangeInterface $change
+     * @param ChangeInterface $change
+     *
      * @return array
      */
     private function getLogDataForChange(ChangeInterface $change)
@@ -233,10 +230,10 @@ class TicketLogGenerator
                     'id_before'   => $old ? $old->id : null,
                     'id_after'    => $new ? $new->id : null,
 
-                    'old_agent_team_id'    => $old ? $old->id : null,
-                    'old_agent_team_name'  => $old ? $old->name : null,
-                    'new_agent_team_id'    => $new ? $new->id : null,
-                    'new_agent_team_name'  => $new ? $new->name : null,
+                    'old_agent_team_id'   => $old ? $old->id : null,
+                    'old_agent_team_name' => $old ? $old->name : null,
+                    'new_agent_team_id'   => $new ? $new->id : null,
+                    'new_agent_team_name' => $new ? $new->name : null,
                 );
                 break;
 
@@ -267,13 +264,14 @@ class TicketLogGenerator
                 if (empty($old['value']) && empty($new['value'])) {
                     return array();
                 }
+
                 return array(
                     'action_type'  => 'changed_custom_field',
                     'value_before' => !empty($old['value']) ? $old['value'] : null,
                     'value_after'  => !empty($new['value']) ? $new['value'] : null,
 
                     'field_id'   => !empty($old['field_def']) ? $old['field_def']->id : null,
-                    'field_name' => !empty($old['field_def']) ? $old['field_def']->title : null
+                    'field_name' => !empty($old['field_def']) ? $old['field_def']->title : null,
                 );
                 break;
 
@@ -292,7 +290,7 @@ class TicketLogGenerator
 
             case 'free':
                 if ($change instanceof ChangeData) {
-                    $data = $change->getData();
+                    $data                = $change->getData();
                     $data['action_type'] = 'free';
                 } else {
                     $data = array(
@@ -316,16 +314,16 @@ class TicketLogGenerator
                     'id_before' => $old ? 1 : 0,
                     'id_after'  => $new ? 0 : 1,
 
-                    'was_hold'  => (bool)$old,
-                    'is_hold'   => (bool)$new,
+                    'was_hold' => (bool) $old,
+                    'is_hold'  => (bool) $new,
                 );
                 break;
 
             case 'labels':
                 return array(
                     'action_type' => 'changed_labels',
-                    'added'   => array_map(function ($l) { return $l->label; }, $added),
-                    'removed' => array_map(function ($l) { return $l->label; }, $removed)
+                    'added'       => array_map(function ($l) { return $l->label; }, $added),
+                    'removed' => array_map(function ($l) { return $l->label; }, $removed),
                 );
                 break;
 
@@ -350,8 +348,8 @@ class TicketLogGenerator
                 $log_set = array();
 
                 if ($new) {
-                    $m = $new;
-                    $log_data = array();
+                    $m                            = $new;
+                    $log_data                     = array();
                     $log_data['action_type']      = 'message_created';
                     $log_data['id_after']         = $m->id;
                     $log_data['message_id']       = $m->id;
@@ -360,12 +358,12 @@ class TicketLogGenerator
                     $log_data['is_agent_message'] = $m->person->is_agent;
                     $log_data['ip_address']       = $m->ip_address ?: null;
                     $log_data['email']            = $m->email ?: null;
-                    $log_set[] = $log_data;
+                    $log_set[]                    = $log_data;
                 }
 
                 if ($old) {
-                    $m = $old;
-                    $log_data = array();
+                    $m                            = $old;
+                    $log_data                     = array();
                     $log_data['action_type']      = 'message_removed';
                     $log_data['id_before']        = $m->id;
                     $log_data['message_id']       = $m->id;
@@ -374,7 +372,7 @@ class TicketLogGenerator
                     $log_data['is_agent_note']    = $m->is_agent_note;
                     $log_data['is_agent_message'] = $m->person->is_agent;
                     $log_data['old_message']      = $m->getMessageHtml();
-                    $log_set[] = $log_data;
+                    $log_set[]                    = $log_data;
                 }
 
                 return $log_set;
@@ -386,32 +384,40 @@ class TicketLogGenerator
                     'id_before'   => $old ? $old->id : null,
                     'id_after'    => $new ? $new->id : null,
 
-                    'old_organization_id'    => $old ? $old->id : null,
-                    'old_organization_name'  => $old ? $old->name : null,
-                    'new_organization_id'    => $new ? $new->id : null,
-                    'new_organization_name'  => $new ? $new->name : null,
+                    'old_organization_id'   => $old ? $old->id : null,
+                    'old_organization_name' => $old ? $old->name : null,
+                    'new_organization_id'   => $new ? $new->id : null,
+                    'new_organization_name' => $new ? $new->name : null,
                 );
                 break;
 
             case 'participants':
-                $added_users    = array_filter($added, function ($part) { return !$part->person->is_agent; });
-                $added_agents   = array_filter($added, function ($part) { return $part->person->is_agent; });
+                $added_users = array_filter($added, function ($part) { return !$part->person->is_agent; });
+                $added_agents = array_filter($added, function ($part) { return $part->person->is_agent; });
 
-                $removed_users  = array_filter($removed, function ($part) { return !$part->person->is_agent; });
+                $removed_users = array_filter($removed, function ($part) { return !$part->person->is_agent; });
                 $removed_agents = array_filter($removed, function ($part) { return $part->person->is_agent; });
 
                 if ($added_users || $removed_users) {
                     return array(
                         'action_type' => 'changed_user_participants',
-                        'added'   => array_map(function ($part) { $p = $part->person; return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $added_users),
-                        'removed' => array_map(function ($part) { $p = $part->person; return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $removed_users)
+                        'added'       => array_map(function ($part) { $p = $part->person;
+
+return array('id'                 => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $added_users),
+                        'removed' => array_map(function ($part) { $p = $part->person;
+
+return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $removed_users),
                     );
                 }
                 if ($added_agents || $removed_agents) {
                     return array(
                         'action_type' => 'changed_agent_participants',
-                        'added'   => array_map(function ($part) { $p = $part->person; return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $added_agents),
-                        'removed' => array_map(function ($part) { $p = $part->person; return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $removed_agents)
+                        'added'       => array_map(function ($part) { $p = $part->person;
+
+return array('id'                 => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $added_agents),
+                        'removed' => array_map(function ($part) { $p = $part->person;
+
+return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $removed_agents),
                     );
                 }
                 break;
@@ -466,8 +472,8 @@ class TicketLogGenerator
             case 'status':
                 return array(
                     'action_type' => 'changed_status',
-                    'id_before' => Ticket::getStatusInt($old) ?: null,
-                    'id_after'  => Ticket::getStatusInt($new) ?: null,
+                    'id_before'   => Ticket::getStatusInt($old) ?: null,
+                    'id_after'    => Ticket::getStatusInt($new) ?: null,
 
                     'old_status' => $old,
                     'new_status' => $new,
@@ -485,8 +491,8 @@ class TicketLogGenerator
             case 'ticket_slas':
                 return array(
                     'action_type' => 'changed_slas',
-                    'added'   => array_map(function ($ts) { return array('id' => $ts->sla->id, 'title' => $ts->sla->title); }, $added),
-                    'removed' => array_map(function ($ts) { return array('id' => $ts->sla->id, 'title' => $ts->sla->title); }, $removed)
+                    'added'       => array_map(function ($ts) { return array('id' => $ts->sla->id, 'title' => $ts->sla->title); }, $added),
+                    'removed'                                                     => array_map(function ($ts) { return array('id' => $ts->sla->id, 'title' => $ts->sla->title); }, $removed),
                 );
                 break;
 
@@ -497,16 +503,17 @@ class TicketLogGenerator
                         'sla_id'      => $new['sla']->id,
                         'sla_title'   => $new['sla']->title,
                         'old_status'  => $new['old_status'],
-                        'new_status'  => $new['new_status']
+                        'new_status'  => $new['new_status'],
                     );
                 }
+
                 return;
 
             case 'urgency':
                 return array(
                     'action_type' => 'changed_urgency',
-                    'id_before' => $old ?: null,
-                    'id_after'  => $new ?: null,
+                    'id_before'   => $old ?: null,
+                    'id_after'    => $new ?: null,
 
                     'old_urgency' => $old ?: 0,
                     'new_urgency' => $new ?: 0,
@@ -572,52 +579,52 @@ class TicketLogGenerator
                 return array(
                     'action_type' => 'merged_from',
                     'id_before'   => $new['old_ticket_id'],
-                    'lost_data'   => $new['lost_data']
+                    'lost_data'   => $new['lost_data'],
                 );
 
             case 'app_message':
                 return array(
-                    'action_type'    => 'app_message',
-                    'app_id'         => $new['app_id'],
-                    'app_title'      => $new['app_title'],
-                    'package_name'   => $new['package_name'],
-                    'package_title'  => $new['package_title'],
-                    'message'        => $new['message']
+                    'action_type'   => 'app_message',
+                    'app_id'        => $new['app_id'],
+                    'app_title'     => $new['app_title'],
+                    'package_name'  => $new['package_name'],
+                    'package_title' => $new['package_title'],
+                    'message'       => $new['message'],
                 );
 
             case 'attachments':
                 $log_set = array();
 
                 if ($new && isset($new->blob) && !$new->is_inline) {
-                    $blob = $new->blob;
-                    $log_data = array();
-                    $log_data['action_type']     = 'attach_added';
-                    $log_data['id_after']        = $new->id;
-                    $log_data['attach_id']       = $new->id;
-                    $log_data['blob_id']         = $blob->id;
-                    $log_data['filename']        = $blob->filename;
-                    $log_data['filesize']        = $blob->filesize;
-                    $log_data['content_type']    = $blob->content_type;
-                    $log_set[] = $log_data;
+                    $blob                     = $new->blob;
+                    $log_data                 = array();
+                    $log_data['action_type']  = 'attach_added';
+                    $log_data['id_after']     = $new->id;
+                    $log_data['attach_id']    = $new->id;
+                    $log_data['blob_id']      = $blob->id;
+                    $log_data['filename']     = $blob->filename;
+                    $log_data['filesize']     = $blob->filesize;
+                    $log_data['content_type'] = $blob->content_type;
+                    $log_set[]                = $log_data;
                 }
 
                 if ($old && isset($old->blob) && !$old->is_inline) {
-                    $blob = $old->blob;
-                    $log_data = array();
-                    $log_data['action_type']     = 'attach_removed';
-                    $log_data['id_before']       = $old->id;
-                    $log_data['attach_id']       = $old->id;
-                    $log_data['blob_id']         = $blob->id;
-                    $log_data['filename']        = $blob->filename;
-                    $log_data['filesize']        = $blob->filesize;
-                    $log_data['content_type']    = $blob->content_type;
-                    $log_set[] = $log_data;
+                    $blob                     = $old->blob;
+                    $log_data                 = array();
+                    $log_data['action_type']  = 'attach_removed';
+                    $log_data['id_before']    = $old->id;
+                    $log_data['attach_id']    = $old->id;
+                    $log_data['blob_id']      = $blob->id;
+                    $log_data['filename']     = $blob->filename;
+                    $log_data['filesize']     = $blob->filesize;
+                    $log_data['content_type'] = $blob->content_type;
+                    $log_set[]                = $log_data;
                 }
 
                 return $log_set;
 
             case 'feedback_rating':
-                $log_data = array();
+                $log_data                = array();
                 $log_data['action_type'] = 'feedback_rating';
                 $log_data['id_before']   = $old;
                 $log_data['id_after']    = $new;
@@ -631,7 +638,7 @@ class TicketLogGenerator
                 return $log_data;
 
             case 'person_email':
-                $log_data = array();
+                $log_data                = array();
                 $log_data['action_type'] = 'person_email_changed';
                 $log_data['id_before']   = $old ? $old->id : null;
                 $log_data['id_after']    = $new ? $new->id : null;
@@ -646,7 +653,7 @@ class TicketLogGenerator
                 return $log_data;
 
             case 'ticket_sla_status':
-                $log_data = array();
+                $log_data                = array();
                 $log_data['action_type'] = 'ticket_sla_status';
                 $log_data['sla_id']      = $old['sla']->id;
                 $log_data['sla_title']   = $old['sla']->title;
@@ -656,72 +663,73 @@ class TicketLogGenerator
                 return $log_data;
 
             case 'message_note_status':
-                $log_data = array();
+                $log_data                   = array();
                 $log_data['action_type']    = 'message_note_status';
                 $log_data['message_id']     = $new['message_id'];
                 $log_data['was_agent_note'] = !$new['is_agent_note'];
                 $log_data['is_agent_note']  = $new['is_agent_note'];
+
                 return $log_data;
 
             case 'webhook':
-                $data = $change instanceof ChangeData ? $change->getData() : array();
+                $data                = $change instanceof ChangeData ? $change->getData() : array();
                 $data['action_type'] = 'webhook';
 
                 return $data;
 
-			// Custom fields changed
-			case strpos($change->getField(), 'custom_data.') === 0:
-				$value_before = null;
-				$value_after  = null;
+            // Custom fields changed
+            case strpos($change->getField(), 'custom_data.') === 0:
+                $value_before = null;
+                $value_after  = null;
 
-				if ($old && $old->field) {
-					$field = $old->field;
-				} else if ($new && $new->field) {
-					$field = $new->field;
-				}
+                if ($old && $old->field) {
+                    $field = $old->field;
+                } elseif ($new && $new->field) {
+                    $field = $new->field;
+                }
 
-				if (!$field) {
-					return null;
-				}
+                if (!$field) {
+                    return;
+                }
 
-				if ($field->parent) {
-					$field = $field->parent;
-				}
+                if ($field->parent) {
+                    $field = $field->parent;
+                }
 
-				$field_id   = $field->id;
-				$field_name = $field->getTitle();
-				$is_choice  = $field->isChoiceType();
+                $field_id   = $field->id;
+                $field_name = $field->getTitle();
+                $is_choice  = $field->isChoiceType();
 
-				if ($old) {
-					$value_before = $old->getData();
+                if ($old) {
+                    $value_before = $old->getData();
 
-					if ($is_choice) {
-						$value_before = $old->field->getTitle();
-					}
-				}
-				if ($new) {
-					$value_after = $new->getData();
+                    if ($is_choice) {
+                        $value_before = $old->field->getTitle();
+                    }
+                }
+                if ($new) {
+                    $value_after = $new->getData();
 
-					if ($is_choice) {
-						$value_after = $new->field->getTitle();
-					}
-				}
+                    if ($is_choice) {
+                        $value_after = $new->field->getTitle();
+                    }
+                }
 
-				$log_data = array();
-				$log_data['action_type']  = 'changed_custom_field';
-				$log_data['field_name']   = $field_name;
-				$log_data['field_id']     = $field_id;
-				$log_data['value_before'] = $value_before;
-				$log_data['value_after']  = $value_after;
-				$log_data['is_choice']    = $is_choice;
+                $log_data                 = array();
+                $log_data['action_type']  = 'changed_custom_field';
+                $log_data['field_name']   = $field_name;
+                $log_data['field_id']     = $field_id;
+                $log_data['value_before'] = $value_before;
+                $log_data['value_after']  = $value_after;
+                $log_data['is_choice']    = $is_choice;
 
-				return $log_data;
+                return $log_data;
 
             case 'email_account':
                 return array(
-                    'action_type'   => 'email_account',
-                    'old'           => $old ? $old->address : null,
-                    'new'           => $new ? $new->address : null,
+                    'action_type' => 'email_account',
+                    'old'         => $old ? $old->address : null,
+                    'new'         => $new ? $new->address : null,
                 );
                 break;
 

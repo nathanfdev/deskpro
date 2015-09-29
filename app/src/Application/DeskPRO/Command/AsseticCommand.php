@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Commands
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Commands
+ */
 namespace Application\DeskPRO\Command;
 
 use Symfony\Component\Console\Input\InputArgument;
@@ -39,9 +38,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 /**
- * dpdev:compile-js
+ * dpdev:compile-js.
  *
  * Compiles and minifies JS source files.
  *
@@ -62,7 +60,7 @@ class AsseticCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $packs = $input->getArgument('pack');
+        $packs           = $input->getArgument('pack');
         $assetic_manager = $this->getContainer()->getSystemService('assetic_manager');
 
         $bundles = array();
@@ -70,7 +68,7 @@ class AsseticCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         if ($packs == 'ALL' || $input->getOption('regex')) {
             if ($input->getOption('regex')) {
                 foreach ($assetic_manager->getAllBundleNames() as $k) {
-                    $match = preg_match('#' . $packs . '#', $k);
+                    $match = preg_match('#'.$packs.'#', $k);
                     if ($input->getOption('not') && !$match) {
                         $bundles[] = $k;
                     } elseif (!$input->getOption('not') && $match) {
@@ -82,7 +80,7 @@ class AsseticCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             }
         } else {
             foreach (explode(',', $packs) as $p) {
-                $p = trim($p);
+                $p         = trim($p);
                 $bundles[] = $p;
             }
         }
@@ -99,7 +97,7 @@ class AsseticCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
                     $assetic_manager->writeBuildFileIfStale($name);
                 }
             } catch (\Exception $e) {
-                $msg = substr($e->getMessage(), 0, 550) . "\n... (truncated)";
+                $msg = substr($e->getMessage(), 0, 550)."\n... (truncated)";
                 $output->writeln("<error>Exception: $msg");
 
                 return 1;

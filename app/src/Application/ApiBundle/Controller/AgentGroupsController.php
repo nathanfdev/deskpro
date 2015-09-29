@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage ApiBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
@@ -45,7 +42,7 @@ use Orb\Util\Arrays;
 
 /**
  * Operations about agent groups
- * Simple CRUD controller
+ * Simple CRUD controller.
  *
  * @SWG\Resource(
  * 	resourcePath="/agent_groups",
@@ -56,7 +53,7 @@ use Orb\Util\Arrays;
 class AgentGroupsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
@@ -82,12 +79,12 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
      */
     public function listAction()
     {
-        $ugs = $this->em->createQuery("
+        $ugs = $this->em->createQuery('
                 SELECT ug
                 FROM DeskPRO:Usergroup ug
                 WHERE ug.is_agent_group = true
                 ORDER BY ug.title ASC
-            ")->execute();
+            ')->execute();
 
         usort($ugs, function ($a, $b) {
             $ao = $a->sys_name ? 0 : 1;
@@ -102,7 +99,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
         });
 
         $data['groups'] = $this->getApiData($ugs);
-        $ids = array_map(function ($g) { return $g['id']; }, $data['groups']);
+        $ids            = array_map(function ($g) { return $g['id']; }, $data['groups']);
 
         if ($this->in->getBool('with_perms')) {
             $loader = new GroupsDbLoader($ids, $this->em);
@@ -116,10 +113,13 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
 
     /**
      * @param $id
-     * @return Response
+     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return Response
+     *
      *
      * @SWG\Api(
      * 	path="/agent_groups/{id}",
@@ -150,13 +150,13 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
 
         $loader = new GroupsDbLoader(array($group), $this->em);
 
-        $data = $group->toApiData();
+        $data            = $group->toApiData();
         $data['members'] = array();
         $data['perms']   = $loader->getGroupPermissions($group->id)->toArray();
 
         $this->enablePermsForGroupOnArray($group, $data['perms']);
 
-        $member_ids = $this->db->fetchAllCol("SELECT person_id FROM person2usergroups WHERE usergroup_id = ?", array($group->id));
+        $member_ids = $this->db->fetchAllCol('SELECT person_id FROM person2usergroups WHERE usergroup_id = ?', array($group->id));
         if ($member_ids) {
             foreach ($member_ids as $pid) {
                 $agent = $this->container->getAgentData()->get($pid);
@@ -171,11 +171,14 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
 
     /**
      * @param $id
-     * @return Response
+     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Exception
+     *
+     * @return Response
+     *
      *
      * @SWG\Api(
      * 	path="/agent_groups/{id}",
@@ -280,16 +283,16 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
     {
         if ($id) {
             $is_new = false;
-            $group = $this->em->find('DeskPRO:Usergroup', $id);
+            $group  = $this->em->find('DeskPRO:Usergroup', $id);
 
             if (!$group || !$group->is_agent_group) {
                 throw $this->createNotFoundException();
             }
         } else {
-            $is_new = true;
-            $group = new Usergroup();
+            $is_new                = true;
+            $group                 = new Usergroup();
             $group->is_agent_group = true;
-            $group->is_enabled = true;
+            $group->is_enabled     = true;
         }
 
         $group->title = $this->in->getString('group.title');
@@ -323,14 +326,14 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
         if ($is_new) {
             $current_members = array();
         } else {
-            $current_members = $this->db->fetchAllCol("SELECT person_id FROM person2usergroups WHERE usergroup_id = ?", array($group->id));
+            $current_members = $this->db->fetchAllCol('SELECT person_id FROM person2usergroups WHERE usergroup_id = ?', array($group->id));
         }
 
         $new_members = $this->in->getArrayOfUInts('group.person_ids');
         $new_members = array_unique($new_members);
         $new_members = Arrays::removeFalsey($new_members);
         if ($new_members) {
-            $agent_data = $this->container->getAgentData();
+            $agent_data  = $this->container->getAgentData();
             $new_members = array_filter($new_members, function ($a) use ($agent_data) {
                 return $agent_data->get($a) ? true : false;
             });
@@ -360,7 +363,9 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
 
             $set_perms = array();
             foreach ($this->in->getArrayValue('dep_perms.tickets') as $did => $p) {
-                if (!$ticket_deps->getById($did)) continue;
+                if (!$ticket_deps->getById($did)) {
+                    continue;
+                }
                 if ($p['full']) {
                     $set_perms[] = array('department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'tickets', 'name' => 'full', 'value' => 1);
                 } elseif ($p['assign']) {
@@ -368,13 +373,15 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
                 }
             }
             foreach ($this->in->getArrayValue('dep_perms.chat') as $did => $p) {
-                if (!$chat_deps->getById($did)) continue;
+                if (!$chat_deps->getById($did)) {
+                    continue;
+                }
                 if ($p['full']) {
                     $set_perms[] = array('department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'chat', 'name' => 'full', 'value' => 1);
                 }
             }
 
-            $this->db->executeUpdate("DELETE FROM department_permissions WHERE usergroup_id = ?", array($group->id));
+            $this->db->executeUpdate('DELETE FROM department_permissions WHERE usergroup_id = ?', array($group->id));
             if ($set_perms) {
                 $this->db->batchInsert('department_permissions', $set_perms, true);
             }
@@ -384,7 +391,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
         # Clear permission cache
         #------------------------------
 
-        $this->db->executeUpdate("DELETE FROM permissions_cache");
+        $this->db->executeUpdate('DELETE FROM permissions_cache');
 
         #------------------------------
         # Return
@@ -397,17 +404,20 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
             );
         } else {
             return $this->createApiSuccessResponse(array(
-                'group_id' => $group->id
+                'group_id' => $group->id,
             ));
         }
     }
 
     /**
      * @param $id
-     * @return Response
+     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return Response
+     *
      *
      * @SWG\Api(
      * 	path="/agent_groups/{id}",
@@ -443,19 +453,18 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
         return $this->createApiDeleteResponse(array('old_group_id' => $old_id));
     }
 
-
     ####################################################################################################################
     # get-all-perms
     ####################################################################################################################
 
     public function getAllPermsAction()
     {
-        $ugs = $this->em->createQuery("
+        $ugs = $this->em->createQuery('
             SELECT ug
             FROM DeskPRO:Usergroup ug
             WHERE ug.is_agent_group = true
             ORDER BY ug.title ASC
-        ")->execute();
+        ')->execute();
 
         $loader = new GroupsDbLoader($ugs, $this->em);
 
@@ -492,7 +501,6 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
         }
     }
 
-
     ####################################################################################################################
     # toggle-group
     ####################################################################################################################
@@ -505,7 +513,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
             throw $this->createNotFoundException();
         }
 
-        $group->is_enabled = (bool)$is_enabled;
+        $group->is_enabled = (bool) $is_enabled;
         $this->em->persist($group);
         $this->em->flush();
 

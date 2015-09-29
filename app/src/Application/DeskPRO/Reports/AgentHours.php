@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\App;
@@ -55,10 +53,10 @@ class AgentHours
         $this->person = App::getCurrentPerson();
     }
 
-
     /**
-     * @param  string $date1
-     * @param  string $date2
+     * @param string $date1
+     * @param string $date2
+     *
      * @return array
      */
     public function getVarsForHtmlView($date1, $date2 = '')
@@ -71,15 +69,15 @@ class AgentHours
 
         $dt = new \DateTime();
         $dt->setTimezone($this->person->getDateTimezone());
-        $dt->setDate((int)$year, (int)$month, (int)$day);
+        $dt->setDate((int) $year, (int) $month, (int) $day);
         $dt->setTime(0, 0, 0);
 
         $dt2 = null;
         if ($date2 && substr_count($date2, '-') == 2) {
             list($year, $month, $day) = explode('-', $date2);
-            $dt2 = new \DateTime();
+            $dt2                      = new \DateTime();
             $dt2->setTimezone($this->person->getDateTimezone());
-            $dt2->setDate((int)$year, (int)$month, (int)$day);
+            $dt2->setDate((int) $year, (int) $month, (int) $day);
             $dt2->setTime(0, 0, 0);
 
             if ($dt->format('Y-m-d H:i:s') == $dt2->format('Y-m-d H:i:s')) {
@@ -116,7 +114,7 @@ class AgentHours
                 $days[$y][$m][$d] = $d;
 
                 $date_run->add(new \DateInterval('P1D'));
-                $num++;
+                ++$num;
             }
 
             $vars['use_days'] = $days;
@@ -126,10 +124,10 @@ class AgentHours
         return $vars;
     }
 
-
     /**
-     * @param  \DateTime      $date
-     * @param  null|\DateTime $end_date
+     * @param \DateTime      $date
+     * @param null|\DateTime $end_date
+     *
      * @return array
      */
     protected function getVarsForDate($date, $end_date = null)
@@ -148,7 +146,7 @@ class AgentHours
 
         $date_range = array($start_date->format('Y-m-d H:i:s'), $end_date->format('Y-m-d H:i:s'));
 
-        $agent_ids  = $db->fetchAll(
+        $agent_ids = $db->fetchAll(
             'SELECT DISTINCT agent_id FROM agent_activity WHERE date_active BETWEEN ? AND ?',
             $date_range
         );
@@ -203,7 +201,7 @@ class AgentHours
                 }
 
                 $times[$agent_id][$year][$month][$day][intval(($hour * 60) / $block_size + $minute / $block_size)] = true;
-                $times_hour[$agent_id][$year][$month][$day][$hour] = true;
+                $times_hour[$agent_id][$year][$month][$day][$hour]                                                 = true;
             }
 
             $total_minutes     = count($active_times) * $block_size;
@@ -225,9 +223,9 @@ class AgentHours
         );
     }
 
-
     /**
-     * @param  string    $mysql_date
+     * @param string $mysql_date
+     *
      * @return \DateTime
      */
     private function mysqlDateToPhpDate($mysql_date)

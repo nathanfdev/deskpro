@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Tickets
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Tickets
+ */
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -53,10 +52,9 @@ class ApplySlas implements TicketSaveActionInterface
     private $em;
 
     /**
-     * @var $cm_sender
+     * @var
      */
     private $cm_sender;
-
 
     /**
      * @param array                  $slas
@@ -70,11 +68,9 @@ class ApplySlas implements TicketSaveActionInterface
         $this->cm_sender = $cm_sender;
     }
 
-
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @return void
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
      */
     public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
     {
@@ -89,7 +85,7 @@ class ApplySlas implements TicketSaveActionInterface
             $has_slas = array();
         }
 
-        $context->getLogger()->debug(sprintf("[ApplySlas] Testing %d SLAs", count($this->slas)));
+        $context->getLogger()->debug(sprintf('[ApplySlas] Testing %d SLAs', count($this->slas)));
 
         // See SetSlas.php
         // - A trigger might run to remove an SLA, but SLAs are special and apply
@@ -104,24 +100,24 @@ class ApplySlas implements TicketSaveActionInterface
 
         foreach ($this->slas as $sla) {
             if (isset($has_slas[$sla->id])) {
-                $context->getLogger()->info(sprintf("[ApplySlas] SLA %d %s -- already exists", $sla->id, $sla->title));
+                $context->getLogger()->info(sprintf('[ApplySlas] SLA %d %s -- already exists', $sla->id, $sla->title));
                 continue;
             }
 
             if (isset($ignore_slas[$sla->id])) {
-                $context->getLogger()->info(sprintf("[ApplySlas] SLA %d %s -- on ignore list", $sla->id, $sla->title));
+                $context->getLogger()->info(sprintf('[ApplySlas] SLA %d %s -- on ignore list', $sla->id, $sla->title));
                 continue;
             }
 
-            $context->getLogger()->info(sprintf("[ApplySlas] Testing SLA %d ...", $sla->id, $sla->title));
+            $context->getLogger()->info(sprintf('[ApplySlas] Testing SLA %d ...', $sla->id, $sla->title));
 
             if ($sla->apply_type == 'all' || ($sla->apply_type == 'terms' && $sla->apply_terms->isTriggerMatch($ticket, $context))) {
-                $context->getLogger()->info(sprintf("[ApplySlas] SLA %d %s -- added", $sla->id, $sla->title));
+                $context->getLogger()->info(sprintf('[ApplySlas] SLA %d %s -- added', $sla->id, $sla->title));
                 $ticket_sla = $ticket->addSla($sla);
                 $this->em->persist($ticket_sla);
                 $this->cm_sender->sendMessage($ticket, $ticket_sla, $ticket_sla->sla_status, $ticket_sla->is_completed);
             } else {
-                $context->getLogger()->info(sprintf("[ApplySlas] SLA %d %s -- no match", $sla->id, $sla->title));
+                $context->getLogger()->info(sprintf('[ApplySlas] SLA %d %s -- no match', $sla->id, $sla->title));
             }
         }
 

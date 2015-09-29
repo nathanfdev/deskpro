@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
@@ -161,7 +158,7 @@ class NewTicket
 
     public function __construct(EntityManager $em, Person $person_context)
     {
-        $this->_em = $em;
+        $this->_em             = $em;
         $this->_person_context = $person_context;
 
         // TODO
@@ -177,7 +174,6 @@ class NewTicket
     {
         $this->layout = $layout;
     }
-
 
     /**
      * @return Ticket
@@ -218,16 +214,16 @@ class NewTicket
         $this->category_id   = $ticket->getCategoryId();
         $this->status        = $ticket->status;
 
-        $field_manager = App::getSystemService('ticket_fields_manager');
-        $custom_fields = $field_manager->createFormArrayForObject($ticket);
+        $field_manager        = App::getSystemService('ticket_fields_manager');
+        $custom_fields        = $field_manager->createFormArrayForObject($ticket);
         $custom_person_fields = App::$container->getPersonFieldManager()->createFormArrayForObject($ticket->person);
-        $custom_org_fields = $ticket->person->organization
+        $custom_org_fields    = $ticket->person->organization
             ? App::$container->getOrgFieldManager()->createFormArrayForObject($ticket->person->organization)
             : array();
 
-        $this->ticket_fields = $custom_fields;
+        $this->ticket_fields        = $custom_fields;
         $this->custom_person_fields = $custom_person_fields;
-        $this->custom_org_fields = $custom_org_fields;
+        $this->custom_org_fields    = $custom_org_fields;
     }
 
     /**
@@ -240,6 +236,7 @@ class NewTicket
 
     /**
      * @throws \Exception
+     *
      * @return \Application\DeskPRO\Entity\Ticket
      */
     public function save()
@@ -274,15 +271,15 @@ class NewTicket
         }
 
         if (!$person) {
-            $person = new Person();
-            $email_obj = $person->addEmailAddressString($this->person->email_address);
+            $person                = new Person();
+            $email_obj             = $person->addEmailAddressString($this->person->email_address);
             $person->primary_email = $email_obj;
         }
 
         if ($this->person->organization) {
             $org = $this->_em->getRepository('DeskPRO:Organization')->findOneByName($this->person->organization);
             if (!$org) {
-                $org = new Organization();
+                $org         = new Organization();
                 $org['name'] = $this->person->organization;
                 $this->_em->persist($org);
             }
@@ -309,7 +306,7 @@ class NewTicket
         #------------------------------
 
         $add_cc_peopleids = $this->add_cc_person;
-        $add_cc_people = $this->add_cc_newpeople;
+        $add_cc_people    = $this->add_cc_newpeople;
 
         foreach ($this->add_cc_newperson as $info) {
             if (empty($info['email']) || !\Orb\Validator\StringEmail::isValueValid($info['email']) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($info['email'])) {
@@ -323,7 +320,7 @@ class NewTicket
                 // New person, coming right up
                 $new_cc_person = Person::newContactPerson(array(
                     'email' => $info['email'],
-                    'name' => !empty($info['name']) ? $info['name'] : ''
+                    'name'  => !empty($info['name']) ? $info['name'] : '',
                 ));
                 $this->_em->persist($new_cc_person);
 
@@ -352,7 +349,7 @@ class NewTicket
         $ticket_context = $this->_ticket_manager->createAgentExecutorContext($this->_person_context, 'newticket', 'web');
 
         $ticket['creation_system'] = Ticket::CREATED_WEB_AGENT_PORTAL;
-        $ticket['language'] = $person->getRealLanguage();
+        $ticket['language']        = $person->getRealLanguage();
 
         if ($this->suppress_user_notify) {
             $ticket_context->getVars()->set('mute_user_emails', true);
@@ -366,7 +363,7 @@ class NewTicket
         $standard = array(
             'subject', 'status', 'agent_id', 'agent_team_id',
             'department_id', 'category_id', 'priority_id', 'workflow_id',
-            'product_id', 'notify_template'
+            'product_id', 'notify_template',
         );
         if (!$this->status) {
             $this->status = 'awaiting_agent';
@@ -378,13 +375,12 @@ class NewTicket
 
         $ticket->person = $person;
 
-
         #------------------------------
         # Message
         #------------------------------
 
         // Message
-        $message = new TicketMessage();
+        $message         = new TicketMessage();
         $message->person = $this->_person_context;
         $message->setVisitorFromRequest();
 
@@ -393,29 +389,29 @@ class NewTicket
         }
 
         $message_text = $this->message;
-        $formatter = new SnippetFormatter(App::getContainer()->get('twig'));
+        $formatter    = new SnippetFormatter(App::getContainer()->get('twig'));
         $message_text = $formatter->formatText($message_text, $ticket);
 
         $notify_agent_ids = array();
         if ($this->is_html_reply) {
             preg_match_all('/<span[^>]+data-notify-agent-id="(\d+)"/i', $message_text, $matches, PREG_SET_ORDER);
-            foreach ($matches AS $match) {
+            foreach ($matches as $match) {
                 $notify_agent_ids[] = $match[1];
             }
-            $message_text = App::get('deskpro.core.input_cleaner')->clean($message_text, 'html');
-            $message_text = \Orb\Util\Strings::trimHtml($message_text);
-            $message_text = \Orb\Util\Strings::prepareWysiwygHtml($message_text);
+            $message_text     = App::get('deskpro.core.input_cleaner')->clean($message_text, 'html');
+            $message_text     = \Orb\Util\Strings::trimHtml($message_text);
+            $message_text     = \Orb\Util\Strings::prepareWysiwygHtml($message_text);
             $message->message = $message_text;
         } else {
             $message->setMessageText($message_text);
         }
 
-        $notify_chat   = array();
-        $agent_chat = null;
+        $notify_chat = array();
+        $agent_chat  = null;
         if ($notify_agent_ids && $message->is_agent_note) {
             $agent_chat = new \Application\DeskPRO\Chat\AgentChat($message->person, App::getSession()->getEntity());
             $agent_chat->disableOfflineEmailAlert(); // we'll handle offline notifs as part of normal notifications
-            $notify_email  = array();
+            $notify_email     = array();
             $notify_agent_ids = array_unique($notify_agent_ids);
 
             foreach ($notify_agent_ids as $agent_id) {
@@ -438,11 +434,10 @@ class NewTicket
 
         // Message Attachments
         foreach ($this->attach as $blob_id) {
-
             $blob = $this->_em->getRepository('DeskPRO:Blob')->find($blob_id);
 
-            $attach = new TicketAttachment();
-            $attach['blob'] = $blob;
+            $attach           = new TicketAttachment();
+            $attach['blob']   = $blob;
             $attach['person'] = $this->_person_context;
 
             $message->addAttachment($attach);
@@ -452,9 +447,9 @@ class NewTicket
         foreach ($this->_blob_inline_ids as $blob_id) {
             $blob = $this->_em->getRepository('DeskPRO:Blob')->find($blob_id);
 
-            $attach = new TicketAttachment();
-            $attach['blob'] = $blob;
-            $attach['person'] = $this->_person_context;
+            $attach            = new TicketAttachment();
+            $attach['blob']    = $blob;
+            $attach['person']  = $this->_person_context;
             $attach->is_inline = true;
 
             $message->addAttachment($attach);
@@ -485,12 +480,12 @@ class NewTicket
             call_user_func_array($this->_pre_save_callback, array($ticket, $message, $person));
         }
 
-        $field_manager = App::getSystemService('ticket_fields_manager');
+        $field_manager      = App::getSystemService('ticket_fields_manager');
         $post_custom_fields = array();
         if ($this->ticket_fields) {
             foreach ($this->ticket_fields as $k => $v) {
                 $id = Strings::extractRegexMatch('#(\d+)$#', $k);
-                if (!$this->layout || $this->layout->hasActiveField('ticket_field_' . $id, $ticket)) {
+                if (!$this->layout || $this->layout->hasActiveField('ticket_field_'.$id, $ticket)) {
                     $post_custom_fields[$k] = $v;
                 }
             }
@@ -499,12 +494,12 @@ class NewTicket
             $field_manager->saveFormToObject($post_custom_fields, $ticket);
         }
 
-        $manager = App::$container->getPersonFieldManager();
+        $manager                   = App::$container->getPersonFieldManager();
         $post_custom_person_fields = array();
         if ($this->custom_person_fields) {
             foreach ($this->custom_person_fields as $k => $v) {
                 $id = Strings::extractRegexMatch('#(\d+)$#', $k);
-                if (!$this->layout || $this->layout->hasActiveField('user_field_' . $id, $ticket)) {
+                if (!$this->layout || $this->layout->hasActiveField('user_field_'.$id, $ticket)) {
                     $post_custom_person_fields[$k] = $v;
                 }
             }
@@ -514,12 +509,12 @@ class NewTicket
         }
 
         if ($ticket->person->organization) {
-            $manager = App::$container->getOrgFieldManager();
+            $manager                = App::$container->getOrgFieldManager();
             $post_custom_org_fields = array();
             if ($this->custom_org_fields) {
                 foreach ($this->custom_org_fields as $k => $v) {
                     $id = Strings::extractRegexMatch('#(\d+)$#', $k);
-                    if (!$this->layout || $this->layout->hasActiveField('org_field_' . $id, $ticket)) {
+                    if (!$this->layout || $this->layout->hasActiveField('org_field_'.$id, $ticket)) {
                         $post_custom_org_fields[$k] = $v;
                     }
                 }
@@ -544,7 +539,7 @@ class NewTicket
         $this->_ticket_manager->saveTicket($ticket, $ticket_context);
 
         if ($agent_chat) {
-            $notify_text = $message->person->getDisplayName() . ' alerted you in a note in {{t-' . $ticket->id . '}}: ' . $ticket->subject;
+            $notify_text = $message->person->getDisplayName().' alerted you in a note in {{t-'.$ticket->id.'}}: '.$ticket->subject;
             $agent_chat->sendAgentMessage($notify_text, array_keys($notify_chat));
         }
 

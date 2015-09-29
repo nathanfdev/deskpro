@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage JobQueue
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\JobQueue;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -64,11 +61,10 @@ class JobWorker
      */
     private $queue;
 
-
     public function __construct(Connection $connection, JobRouter $jobRouter, JobQueue $queue)
     {
         $this->connection = $connection;
-        $this->queue = $queue;
+        $this->queue      = $queue;
 
         // a unique ID for this particular worker
         $this->workerId = uniqid();
@@ -76,7 +72,6 @@ class JobWorker
         // create the JobRouter for this worker instance
         $this->jobRouter = $jobRouter;
     }
-
 
     /**
      * Goto work, starts the loop. Continues until max_time, or no jobs found.
@@ -108,6 +103,7 @@ class JobWorker
      * Note that this is not following the normal JobQueue rules. Use at your own risk.
      *
      * @param $id
+     *
      * @return bool
      */
     public function executeJobById($id)
@@ -118,7 +114,7 @@ class JobWorker
     }
 
     /**
-     * Pop the next job, mark it as processing, and attempt to handle it
+     * Pop the next job, mark it as processing, and attempt to handle it.
      *
      * @return bool whether there was a job process attempt made
      */
@@ -132,11 +128,12 @@ class JobWorker
     /**
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
-     * @return array|null                   an array of the job, or null if none available to work on
+     *
+     * @return array|null an array of the job, or null if none available to work on
      */
     protected function popJob()
     {
-        /**
+        /*
          * Reserve the next available job
          */
         $this->connection->executeUpdate(
@@ -155,17 +152,17 @@ class JobWorker
                 'this_worker_id'  => $this->workerId,
                 'reserved_status' => Job::STATUS_RESERVED,
                 'waiting_status'  => Job::STATUS_WAITING,
-                'date_now'        => new \DateTime()
+                'date_now'        => new \DateTime(),
             ),
             array(
                 'this_worker_id'  => 'string',
                 'reserved_status' => 'string',
                 'waiting_status'  => 'string',
-                'date_now'        => 'datetime'
+                'date_now'        => 'datetime',
             )
         );
 
-        /**
+        /*
          * Fetch the next job reserved for me
          */
         $job = $this->connection->fetchAssoc(
@@ -177,7 +174,7 @@ class JobWorker
             ',
             array(
                 'reserved_status' => Job::STATUS_RESERVED,
-                'this_worker_id'  => $this->workerId
+                'this_worker_id'  => $this->workerId,
             ),
             array(
                 'reserved_status' => 'string',
@@ -190,12 +187,12 @@ class JobWorker
 
     /**
      * @param $job
+     *
      * @return bool
      */
     protected function executeJob($job)
     {
         if ($this->looksLikeAJobArray($job)) {
-
             if (!$this->queue->isReadyByJobId($job['id'])) {
                 $this->queue->rescheduleByJobId($job['id']);
 
@@ -214,6 +211,7 @@ class JobWorker
                 // this is here to attempt to keep the queue moving in case of what should be next-to-impossible situations
                 // this will eventually do something other than return true
                 KernelErrorHandler::handleException($e, false);
+
                 return true;
             }
         } else {
@@ -222,9 +220,10 @@ class JobWorker
     }
 
     /**
-     * Worker calls this before executing a job
+     * Worker calls this before executing a job.
      *
-     * @param  array                        $job the job row from the dbal
+     * @param array $job the job row from the dbal
+     *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
@@ -243,12 +242,12 @@ class JobWorker
                 array(
                     'processing_status' => Job::STATUS_PROCESSING,
                     'date_now'          => new \DateTime(),
-                    'job_id'            => $job['id']
+                    'job_id'            => $job['id'],
                 ),
                 array(
                     'processing_status' => 'string',
                     'date_now'          => 'datetime',
-                    'job_id'            => 'integer'
+                    'job_id'            => 'integer',
                 )
             );
         }
@@ -256,6 +255,7 @@ class JobWorker
 
     /**
      * @param $id
+     *
      * @return array|null
      */
     protected function getJobById($id)
@@ -267,16 +267,17 @@ class JobWorker
             WHERE id = :job_id
             ',
             array(
-                'job_id' => $id
+                'job_id' => $id,
             ),
             array(
-                'job_id' => 'integer'
+                'job_id' => 'integer',
             )
         );
     }
 
     /**
-     * @param  mixed $job
+     * @param mixed $job
+     *
      * @return bool
      */
     protected function looksLikeAJobArray($job)

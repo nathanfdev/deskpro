@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader as AbstractEmailReader;
@@ -61,7 +59,7 @@ class DetectInlineReply implements Loggable
     protected $threshold = 0.24;
 
     /**
-     * How many messages to go back to detect changes
+     * How many messages to go back to detect changes.
      *
      * @var int
      */
@@ -78,7 +76,6 @@ class DetectInlineReply implements Loggable
         $this->reader = $reader;
     }
 
-
     /**
      * @param \Orb\Log\Logger $logger
      */
@@ -86,7 +83,6 @@ class DetectInlineReply implements Loggable
     {
         $this->logger = $logger;
     }
-
 
     /**
      * @return \Orb\Log\Logger
@@ -96,9 +92,8 @@ class DetectInlineReply implements Loggable
         return $this->logger;
     }
 
-
     /**
-     * How much longer/shorter does a messag eneed to be before we think its an inline reply
+     * How much longer/shorter does a messag eneed to be before we think its an inline reply.
      *
      * E.g., 0.1 for 10%
      *
@@ -109,9 +104,8 @@ class DetectInlineReply implements Loggable
         $this->threshold = $threshold;
     }
 
-
     /**
-     * Check to see if we've detected an inline reply
+     * Check to see if we've detected an inline reply.
      *
      * @return bool
      */
@@ -121,7 +115,7 @@ class DetectInlineReply implements Loggable
     }
 
     /**
-     * Gets the first message that we detect has changed
+     * Gets the first message that we detect has changed.
      *
      * @return \Application\DeskPRO\Entity\TicketMessage|null
      */
@@ -129,15 +123,19 @@ class DetectInlineReply implements Loggable
     {
         $message_texts = $this->getMessageTexts();
         if (!$message_texts) {
-            return null;
+            return;
         }
 
-        if ($this->logger) $this->logger->logDebug('[DetectInlineReply] Found ' . count($message_texts) .' texts');
+        if ($this->logger) {
+            $this->logger->logDebug('[DetectInlineReply] Found '.count($message_texts).' texts');
+        }
         $ticket_messages = $this->em->getRepository('DeskPRO:TicketMessage')->getByIds(array_keys($message_texts));
 
         foreach ($message_texts as $message_id => $message_text) {
             if (!isset($ticket_messages[$message_id])) {
-                if ($this->logger) $this->logger->logDebug('[DetectInlineReply] Invalid message text for id ' . $message_id);
+                if ($this->logger) {
+                    $this->logger->logDebug('[DetectInlineReply] Invalid message text for id '.$message_id);
+                }
                 continue;
             }
 
@@ -146,21 +144,27 @@ class DetectInlineReply implements Loggable
             $real_message_text = $this->normalizeMessage($ticket_message->message);
 
             $diff = $this->getMessageDifference($message_text, $real_message_text);
-            if ($this->logger) $this->logger->logDebug('[DetectInlineReply] Message diff for message ' . $message_id . ' is ' . $diff);
+            if ($this->logger) {
+                $this->logger->logDebug('[DetectInlineReply] Message diff for message '.$message_id.' is '.$diff);
+            }
             if ($diff >= $this->threshold) {
-                if ($this->logger) $this->logger->logDebug('[DetectInlineReply] -- Match. Diff over threshold of ' . $this->threshold);
+                if ($this->logger) {
+                    $this->logger->logDebug('[DetectInlineReply] -- Match. Diff over threshold of '.$this->threshold);
+                }
+
                 return $ticket_message;
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Get difference as a float between two messages
+     * Get difference as a float between two messages.
      *
-     * @param  string $message1
-     * @param  string $message2
+     * @param string $message1
+     * @param string $message2
+     *
      * @return float
      */
     public function getMessageDifference($message1, $message2)
@@ -183,7 +187,7 @@ class DetectInlineReply implements Loggable
     }
 
     /**
-     * Read body and extract message texts from the source
+     * Read body and extract message texts from the source.
      *
      * @return array
      */
@@ -197,13 +201,19 @@ class DetectInlineReply implements Loggable
 
         $body = $this->reader->getBodyHtml()->getBodyUtf8();
         if (!$body) {
-            if ($this->logger) $this->logger->logDebug('[DetectInlineReply] No body');
+            if ($this->logger) {
+                $this->logger->logDebug('[DetectInlineReply] No body');
+            }
+
             return $this->message_texts;
         }
 
         $matches = 0;
         if (!preg_match_all('#<a[^>]*dp_message_([0-9]+)_begin[^>]*>(.*?)<a[^>]*dp_message_\\1_end#s', $body, $matches, \PREG_SET_ORDER)) {
-            if ($this->logger) $this->logger->logDebug('[DetectInlineReply] No message texts');
+            if ($this->logger) {
+                $this->logger->logDebug('[DetectInlineReply] No message texts');
+            }
+
             return $this->message_texts;
         }
 
@@ -211,7 +221,9 @@ class DetectInlineReply implements Loggable
             $message_id = $match[1];
             $message    = $match[2];
 
-            if ($this->logger) $this->logger->logDebug('[DetectInlineReply] Found message: ' . $message_id);
+            if ($this->logger) {
+                $this->logger->logDebug('[DetectInlineReply] Found message: '.$message_id);
+            }
 
             // Trim off the </a> which is part of the marker
             if (($pos = stripos($message, '</a>')) !== false) {
@@ -222,14 +234,18 @@ class DetectInlineReply implements Loggable
 
             // Too short to try and guess
             if (!$message || strlen($message) < 100) {
-                if ($this->logger) $this->logger->logDebug('[DetectInlineReply] -- Too short for guess');
+                if ($this->logger) {
+                    $this->logger->logDebug('[DetectInlineReply] -- Too short for guess');
+                }
                 continue;
             }
 
             $this->message_texts[$message_id] = $message;
 
             if (count($this->message_texts) >= $this->history_limit) {
-                if ($this->logger) $this->logger->logDebug('[DetectInlineReply] Reached history limit of ' . $this->history_limit);
+                if ($this->logger) {
+                    $this->logger->logDebug('[DetectInlineReply] Reached history limit of '.$this->history_limit);
+                }
                 break;
             }
         }
@@ -240,7 +256,8 @@ class DetectInlineReply implements Loggable
     /**
      * Normalize message text so our detection can be a bit more accurate.
      *
-     * @param  string $message_text
+     * @param string $message_text
+     *
      * @return string
      */
     public function normalizeMessage($message_text)

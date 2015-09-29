@@ -1,73 +1,68 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\AgentBundle\Controller;
 
-
 /**
- * Handles viewing of deleted items
+ * Handles viewing of deleted items.
  */
 class RecycleBinController extends AbstractController
 {
     public function listAction()
     {
-        $tickets = $this->_getTickets();
+        $tickets     = $this->_getTickets();
         $ticket_html = false;
         if (!empty($tickets['html'])) {
             $ticket_html = $tickets['html'];
         }
 
         return $this->render('AgentBundle:RecycleBin:list.html.twig', array(
-            'tickets_html' => $ticket_html,
+            'tickets_html'            => $ticket_html,
             'tickets_no_more_results' => $tickets['no_more_results'],
         ));
     }
 
     public function listMoreAction($type, $page)
     {
-        $method = '_get' . ucfirst($type);
-        $res = $this->$method($page);
+        $method = '_get'.ucfirst($type);
+        $res    = $this->$method($page);
 
         $return_res = array(
-            'html' => $res['html'],
-            'count' => $res['count'],
-            'no_more_results' => $res['no_more_results']
+            'html'            => $res['html'],
+            'count'           => $res['count'],
+            'no_more_results' => $res['no_more_results'],
         );
 
         return $this->createJsonResponse($return_res);
     }
-
 
     ############################################################################
     # fetcher methods for different types
@@ -78,7 +73,7 @@ class RecycleBinController extends AbstractController
         $per_page = 10;
         $pageinfo = array(
             'limit'  => $per_page,
-            'offset' => ($page - 1) * $per_page
+            'offset' => ($page - 1) * $per_page,
         );
 
         $searcher = new \Application\DeskPRO\Searcher\TicketSearch();
@@ -96,15 +91,14 @@ class RecycleBinController extends AbstractController
         }
 
         $deleted_tickets = array();
-        $tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($results);
-
+        $tickets         = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($results);
 
         $vars = array(
-            'tickets' => $tickets,
-            'count' => count($tickets),
+            'tickets'         => $tickets,
+            'count'           => count($tickets),
             'deleted_tickets' => $deleted_tickets,
-            'page' => $page,
-            'no_more_results' => $no_more
+            'page'            => $page,
+            'no_more_results' => $no_more,
         );
 
         $vars['html'] = $this->renderView('AgentBundle:RecycleBin:list-tickets.html.twig', $vars);

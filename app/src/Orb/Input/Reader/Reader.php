@@ -1,41 +1,40 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @category Input
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ *
+ * @category Input
+ */
 namespace Orb\Input\Reader;
 
-use Orb\Input\Reader\Source\SourceInterface;
 use Orb\Input\Cleaner\Cleaner;
+use Orb\Input\Reader\Source\SourceInterface;
 use Orb\Util\Strings;
 
 /**
@@ -45,19 +44,22 @@ use Orb\Util\Strings;
 class Reader
 {
     /**
-     * Array of Orb\Input\Reader\Source\SourceInterface
+     * Array of Orb\Input\Reader\Source\SourceInterface.
+     *
      * @var array
      */
     protected $sources = array();
 
     /**
      * Other names to refer to a source.
+     *
      * @var array
      */
     protected $source_aliases = array();
 
     /**
      * The default source to use when none provided.
+     *
      * @var string
      */
     protected $default_source_name = null;
@@ -85,8 +87,6 @@ class Reader
      */
     protected $array_name_sep = null;
 
-
-
     /**
      * Create the reader.
      *
@@ -101,9 +101,8 @@ class Reader
         $this->cleaner = $cleaner;
     }
 
-
     /**
-     * Resets all sources
+     * Resets all sources.
      */
     public function resetSources()
     {
@@ -114,9 +113,9 @@ class Reader
         }
     }
 
-
     /**
      * @param $source_name
+     *
      * @return array
      */
     public function getAll($source_name)
@@ -130,34 +129,32 @@ class Reader
         }
     }
 
-
-
     /**
      * Get the raw value from a source.
      *
-     * @param  string $name        The name of the value to fetch
-     * @param  string $source_name The name of the source
+     * @param string $name        The name of the value to fetch
+     * @param string $source_name The name of the source
+     *
      * @return mixed
      */
     public function getValue($name, $source_name = null)
     {
         $source = $this->getSource($source_name);
 
-        if ($this->array_name_sep !== null AND is_string($name) AND Strings::isIn($this->array_name_sep, $name)) {
+        if ($this->array_name_sep !== null and is_string($name) and Strings::isIn($this->array_name_sep, $name)) {
             $name = explode($this->array_name_sep, $name);
         }
 
         return $source->getValue($name);
     }
 
-
-
     /**
      * Get an array value. This is just a shortcut to get a raw value, and then
      * cast it to an array if it isn't already.
      *
-     * @param  string $name        The name of the value to fetch
-     * @param  string $source_name The name of the source
+     * @param string $name        The name of the value to fetch
+     * @param string $source_name The name of the source
+     *
      * @return mixed
      */
     public function getArrayValue($name, $source_name = null)
@@ -165,7 +162,7 @@ class Reader
         $value = $this->getValue($name, $source_name);
 
         if (!is_array($value)) {
-            $value = (array)$value;
+            $value = (array) $value;
         }
 
         return $value;
@@ -174,10 +171,11 @@ class Reader
     /**
      * Get a value from a source then clean it.
      *
-     * @param  string     $name          The name of the value to fetch
-     * @param  string|int $clean_type    How to clean the value
-     * @param  string     $source_name   Where to get the value from
-     * @param  mixed      $clean_options Any options to pass to the cleaner
+     * @param string     $name          The name of the value to fetch
+     * @param string|int $clean_type    How to clean the value
+     * @param string     $source_name   Where to get the value from
+     * @param mixed      $clean_options Any options to pass to the cleaner
+     *
      * @return mixed
      */
     public function getCleanValue($name, $clean_type = 'raw', $source_name = null, $clean_options = null)
@@ -190,12 +188,13 @@ class Reader
     /**
      * Get an array value from a source then clean it.
      *
-     * @param  string     $name              The name of the value to fetch
-     * @param  string|int $clean_val_type    How to clean the value
-     * @param  string|int $clean_key_type    How to clean the key
-     * @param  string     $source_name       Where to get the value from
-     * @param  mixed      $clean_val_options Any options to pass to the cleaner for value cleaning
-     * @param  mixed      $clean_key_options Any options to pass to the cleaner for key cleaning
+     * @param string     $name              The name of the value to fetch
+     * @param string|int $clean_val_type    How to clean the value
+     * @param string|int $clean_key_type    How to clean the key
+     * @param string     $source_name       Where to get the value from
+     * @param mixed      $clean_val_options Any options to pass to the cleaner for value cleaning
+     * @param mixed      $clean_key_options Any options to pass to the cleaner for key cleaning
+     *
      * @return mixed
      */
     public function getCleanValueArray($name, $clean_val_type = 'raw', $clean_key_type = 'raw', $source_name = null, $clean_val_options = null, $clean_key_options = null)
@@ -208,15 +207,16 @@ class Reader
     /**
      * Check if a variable is set.
      *
-     * @param  string $name        The name of the value to fetch
-     * @param  string $source_name The name of the source
+     * @param string $name        The name of the value to fetch
+     * @param string $source_name The name of the source
+     *
      * @return bool
      */
     public function checkIsset($name, $source_name = null)
     {
         $source = $this->getSource($source_name);
 
-        if ($this->array_name_sep !== null AND is_string($name) AND Strings::isIn($this->array_name_sep, $name)) {
+        if ($this->array_name_sep !== null and is_string($name) and Strings::isIn($this->array_name_sep, $name)) {
             $name = explode($this->array_name_sep, $name);
         }
 
@@ -226,15 +226,16 @@ class Reader
     /**
      * Add a new source to this reader.
      *
-     * @param  string                   $name   The name to reference this source by
-     * @param  Orb_Input_Reader_ISource $source The source object
+     * @param string                   $name   The name to reference this source by
+     * @param Orb_Input_Reader_ISource $source The source object
+     *
      * @return Orb_Input_Reader
      */
     public function addSource($name, SourceInterface $source)
     {
         if (is_array($name)) {
             $names = $name;
-            $name = $names[0];
+            $name  = $names[0];
         } else {
             $names = array($name);
         }
@@ -255,7 +256,8 @@ class Reader
     /**
      * Has a source been registered?
      *
-     * @param  string $name The name to check
+     * @param string $name The name to check
+     *
      * @return bool
      */
     public function hasSource($name)
@@ -277,8 +279,6 @@ class Reader
         $this->default_source_name = $name;
     }
 
-
-
     /**
      * Get the currently set default source.
      *
@@ -289,31 +289,30 @@ class Reader
         return $this->default_source_name;
     }
 
-
-
     /**
      * Get a source object from the name.
      *
-     * @param  string          $name The name of the source to get
+     * @param string $name The name of the source to get
+     *
      * @return SourceInterface
      */
     public function getSource($name = null)
     {
-        if ($name === null) $name = $this->default_source_name;
+        if ($name === null) {
+            $name = $this->default_source_name;
+        }
 
         if (!isset($this->source_aliases[$name])) {
-            throw new \Exception('Unknown source: ' . $name);
+            throw new \Exception('Unknown source: '.$name);
         }
 
         return $this->source_aliases[$name];
     }
 
-
-
     /**
      * Dynamic method calls for easy fetching of data types from a source. There are two styleS:
      * - getTypeFromSource($name, $options = null)
-     * - getType($name, $source = null, $options = null);
+     * - getType($name, $source = null, $options = null);.
      *
      * Exampes:
      * <code>
@@ -324,15 +323,16 @@ class Reader
      *
      * @param $method_name
      * @param $method_args
+     *
      * @return unknown_type
      */
     public function __call($method_name, $method_args)
     {
         $match = null;
 
-        $name = null;
-        $type = null;
-        $from = null;
+        $name    = null;
+        $type    = null;
+        $from    = null;
         $options = null;
 
         #----------------------------------------
@@ -368,7 +368,6 @@ class Reader
         #----------------------------------------
         # First time calling this method
         #----------------------------------------
-
         } else {
 
             #----------------------------------------
@@ -376,7 +375,6 @@ class Reader
             #----------------------------------------
 
             if (preg_match('#^get(.*?)From(.*?)$#', $method_name, $match)) {
-
                 $name = $method_args[0];
 
                 $type = $match[1];
@@ -391,17 +389,14 @@ class Reader
 
                 $this->call_cache[$method_name] = array(
                     'call_type' => 'getTypeFromSource',
-                    'type' => $type,
-                    'from' => $from
+                    'type'      => $type,
+                    'from'      => $from,
                 );
-
 
             #----------------------------------------
             # getType(name, source, options);
             #----------------------------------------
-
             } elseif (preg_match('#^get(.*?)$#', $method_name, $match)) {
-
                 $name = $method_args[0];
 
                 $type = $match[1];
@@ -418,13 +413,12 @@ class Reader
 
                 $this->call_cache[$method_name] = array(
                     'call_type' => 'getType',
-                    'type' => $type
+                    'type'      => $type,
                 );
 
             #----------------------------------------
             # Invalid
             #----------------------------------------
-
             } else {
                 throw new \BadMethodCallException("Unknown method $method_name");
             }
@@ -432,8 +426,6 @@ class Reader
 
         return $this->getCleanValue($name, $type, $from, $options);
     }
-
-
 
     /**
      * Get the cleaner object.
@@ -445,11 +437,9 @@ class Reader
         return $this->cleaner;
     }
 
-
-
     /**
      * Setting an array string separator will allow you to provide $name's that represent
-     * nested arrays. For example:
+     * nested arrays. For example:.
      *
      * <code>
      * $in->getValue(array('user', 'profile', 'name'));

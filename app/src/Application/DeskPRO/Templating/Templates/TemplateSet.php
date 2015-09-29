@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Templating\Templates;
 
 use Application\DeskPRO\Entity\Style;
@@ -63,14 +61,14 @@ class TemplateSet
      */
     public function __construct(EntityManager $em, Twig_Environment $twig, Style $style)
     {
-        $this->em = $em;
-        $this->twig = $twig;
+        $this->em    = $em;
+        $this->twig  = $twig;
         $this->style = $style;
     }
 
-
     /**
-     * @param  string                      $name
+     * @param string $name
+     *
      * @return TemplateCustom|TemplateFile
      */
     public function getTemplate($name)
@@ -85,7 +83,6 @@ class TemplateSet
         return $template;
     }
 
-
     /**
      * Returns a custom template.
      *
@@ -93,7 +90,8 @@ class TemplateSet
      * a TemplateFile if the template isn't custom (e.g., we are saving a customised version of a file
      * template for the fist time.)
      *
-     * @param  string         $name
+     * @param string $name
+     *
      * @return TemplateCustom
      */
     public function getCustomTemplate($name)
@@ -103,9 +101,9 @@ class TemplateSet
             return $template;
         }
 
-        $entity = new TemplateEntity();
+        $entity        = new TemplateEntity();
         $entity->style = $this->style;
-        $entity->name = $template->getName();
+        $entity->name  = $template->getName();
 
         $custom = TemplateCustom::createFromEntity($entity);
         $custom->getTemplateCode()->setCode($template->getTemplateCode()->getCode());
@@ -119,27 +117,28 @@ class TemplateSet
     }
 
     /**
-     * @param  string         $name
+     * @param string $name
+     *
      * @return TemplateCustom
      */
     public function createCustomTemplate($name)
     {
-        $entity = new TemplateEntity();
+        $entity        = new TemplateEntity();
         $entity->style = $this->style;
-        $entity->name = $name;
-        $custom = TemplateCustom::createFromEntity($entity);
+        $entity->name  = $name;
+        $custom        = TemplateCustom::createFromEntity($entity);
 
         return $custom;
     }
 
     /**
-     * Persists code saved in the template_code
+     * Persists code saved in the template_code.
      *
      * @param TemplateCustom $template
      */
     public function saveTemplate(TemplateCustom $template)
     {
-        $entity = $template->getEntity();
+        $entity       = $template->getEntity();
         $entity->name = $template->getName();
         $entity->setTemplate(
             $template->getTemplateCode()->getCode(),
@@ -152,7 +151,7 @@ class TemplateSet
     }
 
     /**
-     * Delete a template
+     * Delete a template.
      *
      * @param TemplateCustom $template
      */
@@ -165,7 +164,8 @@ class TemplateSet
     }
 
     /**
-     * @param  Template $template
+     * @param Template $template
+     *
      * @return string
      */
     public function compileTemplate(Template $template)
@@ -177,7 +177,7 @@ class TemplateSet
 
         $template_code = $template->getTemplateCode();
         if ($template_code instanceof EmailTemplateCode) {
-            $proc = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
+            $proc         = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
             $compile_code = $proc->process($template_code->getCode(), $template->getName());
         } else {
             $compile_code = $template_code->getCode();
@@ -194,6 +194,7 @@ class TemplateSet
 
     /**
      * @param $code
+     *
      * @return mixed
      */
     private function preProcessCustomTemplate($code)
@@ -204,12 +205,13 @@ class TemplateSet
     }
 
     /**
-     * @param  Template $template
+     * @param Template $template
+     *
      * @return array
      */
     public function exportTemplateToArray(Template $template, Translate $tr = null, $replace_phrases = false)
     {
-        $data = array();
+        $data                          = array();
         $data['name']                  = $template->getName();
         $data['base_name']             = $data['name'];
         $data['type']                  = $template->getType();
@@ -226,7 +228,7 @@ class TemplateSet
             $data['base_name'] = $template->getOriginalName();
             $data['original']  = array(
                 'name'          => $template->getOriginalName(),
-                'template_code' => array()
+                'template_code' => array(),
             );
 
             $data['original']['template_code']['code'] = $template->getTemplateCode()->getCode();
@@ -240,13 +242,13 @@ class TemplateSet
 
         if ($tr) {
             if (preg_match('#^DeskPRO:email#', $data['name']) && !preg_match('#^DeskPRO:emails_custom#', $data['name'])) {
-                $tpl_desc = new EmailTemplatesDesc();
-                $info = $tpl_desc->getTplDisplayInfo(array('name' => $data['name']), $tr);
+                $tpl_desc                    = new EmailTemplatesDesc();
+                $info                        = $tpl_desc->getTplDisplayInfo(array('name' => $data['name']), $tr);
                 $data['display_title']       = $info['title'];
                 $data['display_description'] = $info['desc'];
             } else {
-                $name = Strings::extractRegexMatch('#^DeskPRO:.*?:(.*?).html.twig$#', $data['name'], 1) . '.html';
-                $key = 'admin.emailtpl_desc.' . strtolower(str_replace(array(':', '.'), '_', $data['base_name']));
+                $name                        = Strings::extractRegexMatch('#^DeskPRO:.*?:(.*?).html.twig$#', $data['name'], 1).'.html';
+                $key                         = 'admin.emailtpl_desc.'.strtolower(str_replace(array(':', '.'), '_', $data['base_name']));
                 $data['display_title']       = $tr->hasPhrase($key.'_title') ? $tr->phrase($key.'_title') : $name;
                 $data['display_description'] = $tr->hasPhrase($key.'_desc') ? $tr->phrase($key.'_desc')   : null;
             }
@@ -262,10 +264,11 @@ class TemplateSet
     }
 
     /**
-     * Replace phrase tags with actual language
+     * Replace phrase tags with actual language.
      *
-     * @param  string    $code
-     * @param  Translate $tr
+     * @param string    $code
+     * @param Translate $tr
+     *
      * @return string
      */
     public function resolvePhraseTags($code, Translate $tr)

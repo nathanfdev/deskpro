@@ -1,39 +1,39 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Entity;
 
 use Application\ImportBundle\AbstractCollection;
 
 /**
- * Exporting collection of entities
+ * Exporting collection of entities.
  *
  * Class Collection
- * @package Application\ImportBundle\Entity
  *
  * @property EntityInterface[]|array $collection
  */
@@ -46,11 +46,13 @@ final class Collection extends AbstractCollection
 
     /**
      * @param int $expected_count
+     *
      * @return $this
      */
     public function setExpectedCount($expected_count)
     {
         $this->expected_count = $expected_count;
+
         return $this;
     }
 
@@ -68,25 +70,29 @@ final class Collection extends AbstractCollection
     public function getSkippedCount()
     {
         $diff = $this->expected_count - count($this->collection);
+
         return $diff > 0 ? $diff : 0;
     }
 
     /**
-     * Add an entity
+     * Add an entity.
      *
      * @param EntityInterface $entity
+     *
      * @return $this
      */
     public function attach(EntityInterface $entity)
     {
         $this->collection[] = $entity;
+
         return $this;
     }
 
     /**
-     * Remove an entity
+     * Remove an entity.
      *
      * @param EntityInterface $entity
+     *
      * @return $this
      */
     public function detach(EntityInterface $entity)
@@ -101,9 +107,10 @@ final class Collection extends AbstractCollection
     }
 
     /**
-     * Merge another entity collection
+     * Merge another entity collection.
      *
      * @param Collection $collection
+     *
      * @return $this
      */
     public function merge(Collection $collection)
@@ -111,7 +118,7 @@ final class Collection extends AbstractCollection
         $this->expected_count += $collection->getExpectedCount();
 
         foreach ($collection as $entity) {
-            /** @var EntityInterface $entity */
+            /* @var EntityInterface $entity */
             $this->attach($entity);
         }
 
@@ -119,7 +126,7 @@ final class Collection extends AbstractCollection
     }
 
     /**
-     * Converts collection's entities to array
+     * Converts collection's entities to array.
      *
      * @return array
      */
@@ -127,7 +134,7 @@ final class Collection extends AbstractCollection
     {
         $entities = array();
         foreach ($this->collection as $entity) {
-            /** @var EntityInterface $entity */
+            /* @var EntityInterface $entity */
             $entities[] = $entity->toArray();
         }
 
@@ -135,14 +142,14 @@ final class Collection extends AbstractCollection
     }
 
     /**
-     * Checks if all entities has import map key
+     * Checks if all entities has import map key.
      *
      * @return bool
      */
     public function hasImportMapKey()
     {
         foreach ($this->collection as $entity) {
-            if ( ! $entity->getImportMapKey()) {
+            if (!$entity->getImportMapKey()) {
                 return false;
             }
         }
@@ -151,14 +158,14 @@ final class Collection extends AbstractCollection
     }
 
     /**
-     * Returns containing entity destinations
+     * Returns containing entity destinations.
      *
      * @return array
      */
     public function getDestinations()
     {
         return array_map(
-            function(EntityInterface $entity) {
+            function (EntityInterface $entity) {
                 return $entity->getDestination();
             },
             $this->collection
@@ -166,7 +173,7 @@ final class Collection extends AbstractCollection
     }
 
     /**
-     * Returns containing entity oids
+     * Returns containing entity oids.
      *
      * @return array
      */
@@ -181,7 +188,7 @@ final class Collection extends AbstractCollection
     }
 
     /**
-     * Returns the max oid
+     * Returns the max oid.
      *
      * @return mixed
      */
@@ -189,7 +196,7 @@ final class Collection extends AbstractCollection
     {
         return empty($this->collection) ? 0 : max(
             array_map(
-                function(EntityInterface $entity) {
+                function (EntityInterface $entity) {
                     return $entity->getOid();
                 },
                 $this->collection

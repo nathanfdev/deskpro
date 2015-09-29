@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage RefGenerator
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\RefGenerator;
 
 use Application\DeskPRO\App;
@@ -42,15 +39,15 @@ class CustomRef implements RefGeneratorInterface
 {
     /** @var array */
     public static $keywords = array(
-        'A'          => true,
-        '#'          => true,
-        '?'          => true,
-        'YEAR'       => true,
-        'MONTH'      => true,
-        'DAY'        => true,
-        'HOUR'       => true,
-        'MIN'        => true,
-        'SEC'        => true,
+        'A'     => true,
+        '#'     => true,
+        '?'     => true,
+        'YEAR'  => true,
+        'MONTH' => true,
+        'DAY'   => true,
+        'HOUR'  => true,
+        'MIN'   => true,
+        'SEC'   => true,
     );
 
     /**
@@ -79,7 +76,7 @@ class CustomRef implements RefGeneratorInterface
     protected $max_tries = 100;
 
     /**
-     * How many digits to append to the end
+     * How many digits to append to the end.
      *
      * @var int
      */
@@ -87,16 +84,16 @@ class CustomRef implements RefGeneratorInterface
 
     /**
      * $format_string shold encase keywords in brakcets. For example:
-     *     <A><A><A><A>-<#><#><#><#>-<A><A><A><A>
+     *     <A><A><A><A>-<#><#><#><#>-<A><A><A><A>.
      *
      * @param \Doctrine\ORM\EntityManager $em
      * @param $format_string
      */
     public function __construct(\Doctrine\ORM\EntityManager $em, $format_string, $append_count = 0)
     {
-        $this->em = $em;
-        $this->db = $em->getConnection();
-        $this->append_count = $append_count;
+        $this->em            = $em;
+        $this->db            = $em->getConnection();
+        $this->append_count  = $append_count;
         $this->format_string = $format_string;
 
         #------------------------------
@@ -104,14 +101,14 @@ class CustomRef implements RefGeneratorInterface
         #------------------------------
 
         $format = array();
-        $tok = strtok($format_string, '<>');
-        $parts = array();
+        $tok    = strtok($format_string, '<>');
+        $parts  = array();
         while ($tok !== false) {
             $parts[] = $tok;
-            $tok = strtok("<>");
+            $tok     = strtok('<>');
         }
 
-        $last = null;
+        $last   = null;
         $repeat = 0;
         foreach ($parts as $p) {
             if ($last === null) {
@@ -119,11 +116,11 @@ class CustomRef implements RefGeneratorInterface
             }
 
             if ($last == $p) {
-                $repeat++;
+                ++$repeat;
             } else {
                 $format[] = array($last, $repeat);
-                $last = $p;
-                $repeat = 1;
+                $last     = $p;
+                $repeat   = 1;
             }
         }
 
@@ -137,7 +134,8 @@ class CustomRef implements RefGeneratorInterface
     /**
      * Is a word a keyword?
      *
-     * @param  string $word
+     * @param string $word
+     *
      * @return bool
      */
     public function isKeyword($word)
@@ -145,9 +143,9 @@ class CustomRef implements RefGeneratorInterface
         return isset(self::$keywords[$word]);
     }
 
-
     /**
-     * @param  string $entity_name
+     * @param string $entity_name
+     *
      * @return string
      */
     public function generateReference($entity_name)
@@ -155,10 +153,10 @@ class CustomRef implements RefGeneratorInterface
         $table = $this->em->getClassMetadata(App::getEntityClass($entity_name))->getTableName();
         $field = 'ref';
 
-        $stmt = $this->db->prepare("SELECT COUNT(*) FROM `$table` WHERE `$field` = ? LIMIT 1");
-        $stmt2 = $this->db->prepare("SELECT COUNT(*) FROM `ref_reserve` WHERE `obj_type` = ? AND `ref` = ?");
+        $stmt  = $this->db->prepare("SELECT COUNT(*) FROM `$table` WHERE `$field` = ? LIMIT 1");
+        $stmt2 = $this->db->prepare('SELECT COUNT(*) FROM `ref_reserve` WHERE `obj_type` = ? AND `ref` = ?');
 
-        $attempt = 0;
+        $attempt      = 0;
         $append_count = 0;
 
         // Get the last count used for this series of pattern,
@@ -166,7 +164,7 @@ class CustomRef implements RefGeneratorInterface
         // nums to get the last number used, and the inc
         if ($this->append_count) {
             $ref_check = $this->generateRefString(null);
-            $last = $this->db->fetchColumn("
+            $last      = $this->db->fetchColumn("
                 SELECT `$field` AS ref
                 FROM `$table`
                 WHERE `$field` LIKE ?
@@ -176,9 +174,8 @@ class CustomRef implements RefGeneratorInterface
 
             $m = null;
             if ($this->isRefMatch($last, $m)) {
-                $append_count = (int)$m['count'];
+                $append_count = (int) $m['count'];
             }
-
 
             if (!$append_count) {
                 $append_count = 0;
@@ -187,16 +184,16 @@ class CustomRef implements RefGeneratorInterface
 
         while (true) {
             do {
-                $attempt++;
-                $append_count++;
+                ++$attempt;
+                ++$append_count;
 
                 if ($attempt > $this->max_tries) {
                     throw new \Exception("Cannot find unique ref after $attempt attempts with pattern {$this->format_string}. Aborting.");
                 }
 
-                if ($attempt > $this->max_tries-5) {
+                if ($attempt > $this->max_tries - 5) {
                     // Last five allowed attempts, fallback to trying random nums at the end
-                    $ref = $this->generateRefString($append_count . mt_rand(1000,9999));
+                    $ref = $this->generateRefString($append_count.mt_rand(1000, 9999));
                 } else {
                     $ref = $this->generateRefString($append_count);
                 }
@@ -224,9 +221,8 @@ class CustomRef implements RefGeneratorInterface
         return $ref;
     }
 
-
     /**
-     * Generate a new ref string
+     * Generate a new ref string.
      *
      * @param int $count
      */
@@ -282,7 +278,7 @@ class CustomRef implements RefGeneratorInterface
 
         if ($count && $this->append_count) {
             $length = $this->append_count;
-            $ref[] = sprintf("%0{$length}d", $count);
+            $ref[]  = sprintf("%0{$length}d", $count);
         }
 
         $ref = implode('', $ref);
@@ -319,7 +315,7 @@ class CustomRef implements RefGeneratorInterface
                     break;
 
                 case 'MONTH':
-                    $regex[] = "(0[1-9]|1[012])";
+                    $regex[] = '(0[1-9]|1[012])';
                     break;
 
                 case 'DAY':
@@ -339,7 +335,7 @@ class CustomRef implements RefGeneratorInterface
                     break;
 
                 default:
-                    $regex[] = "(" . preg_quote(str_repeat($type, $length), '#') . ")";
+                    $regex[] = '('.preg_quote(str_repeat($type, $length), '#').')';
                     break;
             }
         }
@@ -353,12 +349,12 @@ class CustomRef implements RefGeneratorInterface
         return implode('', $regex);
     }
 
-
     /**
      * Check if a string is a valid ref format. This only checks
      * the format, no checking if it exists or anything like that.
      *
-     * @param  string $ref
+     * @param string $ref
+     *
      * @return bool
      */
     public function isRefMatch($ref, &$m = null)
@@ -375,6 +371,7 @@ class CustomRef implements RefGeneratorInterface
      * the first one should be the most likely match.
      *
      * @param $string
+     *
      * @return string[]
      */
     public function extractRefs($string, $ldelim = '\b', $rdelim = '\b')

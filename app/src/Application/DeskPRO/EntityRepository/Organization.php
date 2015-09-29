@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -46,9 +45,10 @@ class Organization extends AbstractEntityRepository
 
     /**
      * @param string $name
-     * @return OrganizationEntity
      *
      * @throws \Doctrine\ORM\NonUniqueResultException
+     *
+     * @return OrganizationEntity
      */
     public function findOneByName($name)
     {
@@ -64,7 +64,7 @@ class Organization extends AbstractEntityRepository
             return reset($res);
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -73,12 +73,12 @@ class Organization extends AbstractEntityRepository
     public function getOrganizationNames($for_ids = null)
     {
         if ($this->_organization_names == null) {
-            $db = $this->getEntityManager()->getConnection();
-            $this->_organization_names = $db->fetchAllKeyValue("
+            $db                        = $this->getEntityManager()->getConnection();
+            $this->_organization_names = $db->fetchAllKeyValue('
                 SELECT id, name
                 FROM organizations
                 ORDER BY name ASC
-            ");
+            ');
         }
 
         if ($for_ids === null) {
@@ -86,7 +86,7 @@ class Organization extends AbstractEntityRepository
         }
 
         $ret = array();
-        foreach ((array)$for_ids as $id) {
+        foreach ((array) $for_ids as $id) {
             if (isset($this->_organization_names[$id])) {
                 $ret[$id] = $this->_organization_names[$id];
             }
@@ -94,7 +94,6 @@ class Organization extends AbstractEntityRepository
 
         return $ret;
     }
-
 
     public function getOrganizationsFromIds(array $ids)
     {
@@ -109,35 +108,38 @@ class Organization extends AbstractEntityRepository
             return false;
         });
 
-        if (!$ids) return array();
+        if (!$ids) {
+            return array();
+        }
 
-        $orgs = $this->getEntityManager()->createQuery("
+        $orgs = $this->getEntityManager()->createQuery('
             SELECT o
             FROM DeskPRO:Organization o INDEX BY o.id
             WHERE o.id IN(?0)
             ORDER BY o.id ASC
-        ")->execute(array($ids));
+        ')->execute(array($ids));
 
         return $orgs;
     }
 
     /**
-     * Get a count of how many orgs there are
+     * Get a count of how many orgs there are.
      *
      * @return int
      */
     public function getCount()
     {
-        return App::getDb()->fetchColumn("
+        return App::getDb()->fetchColumn('
             SELECT COUNT(*)
             FROM organizations
-        ");
+        ');
     }
 
     /**
-     * Count how many people there are in an organization
+     * Count how many people there are in an organization.
      *
-     * @param  \Application\DeskPRO\Entity\Organization $org
+     * @param \Application\DeskPRO\Entity\Organization $org
+     *
      * @return int
      */
     public function countMembersFor(OrganizationEntity $org)
@@ -154,7 +156,7 @@ class Organization extends AbstractEntityRepository
     }
 
     /**
-     * Gets the list of organization managers
+     * Gets the list of organization managers.
      *
      * @param \Application\DeskPRO\Entity\Organization $org
      *
@@ -173,37 +175,39 @@ class Organization extends AbstractEntityRepository
     /**
      * Fetch an organization by its name.
      *
-     * @param  string                                   $name
+     * @param string $name
+     *
      * @return \Application\DeskPRO\Entity\Organization
      */
     public function getByName($name)
     {
         $name = trim($name);
 
-        return $this->getEntityManager()->createQuery("
+        return $this->getEntityManager()->createQuery('
             SELECT o
             FROM DeskPRO:Organization o
             WHERE
                 o.name = ?1
-        ")->setParameter(1, $name)->setMaxResults(1)->getOneOrNullResult();
+        ')->setParameter(1, $name)->setMaxResults(1)->getOneOrNullResult();
     }
 
     /**
      * @param $q
-     * @param  null  $limit
+     * @param null $limit
+     *
      * @return mixed
      */
     public function search($q, $limit = null, $hydrate = true)
     {
-        $q = '%' . str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
-        $q = strtolower($q);
+        $q    = '%'.str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q).'%';
+        $q    = strtolower($q);
         $mode = $hydrate ? null : Query::HYDRATE_ARRAY;
 
-        return $this->getEntityManager()->createQuery("
+        return $this->getEntityManager()->createQuery('
             SELECT o
             FROM DeskPRO:Organization o
             WHERE LOWER(o.name) LIKE ?1
             ORDER BY o.name ASC
-        ")->setMaxResults($limit)->execute(array(1=> $q), $mode);
+        ')->setMaxResults($limit)->execute(array(1 => $q), $mode);
     }
 }

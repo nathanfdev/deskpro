@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
-
+ * DeskPRO.
+ */
 namespace Application\InstallBundle\Install;
 
 class InstallDataReader implements \IteratorAggregate, \Countable
@@ -60,14 +58,16 @@ class InstallDataReader implements \IteratorAggregate, \Countable
     public function _read()
     {
         // Already read
-        if ($this->data !== null) return;
+        if ($this->data !== null) {
+            return;
+        }
 
         $this->tags = array();
         $this->data = array();
 
         // prefix here so the array_shift below gets rid of junk,
         // but doesnt bug out if theres a BEGIN right on the first line
-        $file = "\n\nxxx\n\n" . file_get_contents($this->filepath);
+        $file = "\n\nxxx\n\n".file_get_contents($this->filepath);
 
         $parts = preg_split('/^##BEGIN:(.*?)##\s*$/m', $file, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
         if (!$parts) {
@@ -79,9 +79,10 @@ class InstallDataReader implements \IteratorAggregate, \Countable
 
         $_desc_str = null;
         foreach ($parts as $part) {
-
             $part = trim($part);
-            if (!$part) continue;
+            if (!$part) {
+                continue;
+            }
 
             // The name of the part is before each part itself,
             // so we read it first and next time around we have the real content
@@ -90,20 +91,22 @@ class InstallDataReader implements \IteratorAggregate, \Countable
                 continue;
             }
 
-            $desc_str = $_desc_str;
+            $desc_str  = $_desc_str;
             $_desc_str = null;
 
             // something.some_name
             // Tag: something, name: some_name
             $desc_parts = explode('.', $desc_str, 2);
             if (count($desc_parts) == 1) {
-                $tag = 'default';
+                $tag  = 'default';
                 $name = $desc_parts;
             } else {
-                list ($tag, $name) = $desc_parts;
+                list($tag, $name) = $desc_parts;
             }
 
-            if (!isset($this->tags[$tag])) $this->tags[$tag] = array();
+            if (!isset($this->tags[$tag])) {
+                $this->tags[$tag] = array();
+            }
             $this->tags[$tag][] = "$tag.$name";
 
             $part = trim($part);
@@ -111,7 +114,7 @@ class InstallDataReader implements \IteratorAggregate, \Countable
                 $part = rtrim($part, ';'); // trailing ;'s
             }
 
-            $this->data[$tag . '.' . $name] = $part;
+            $this->data[$tag.'.'.$name] = $part;
         }
     }
 

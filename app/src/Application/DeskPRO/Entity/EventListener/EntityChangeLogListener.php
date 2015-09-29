@@ -1,43 +1,43 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\DeskPRO\Entity\EventListener;
 
-
+use Application\ApiBundle\Request\RequestAuth;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Domain\DomainObject;
-use Application\ApiBundle\Request\RequestAuth;
 use Application\DeskPRO\Entity\LogEvent;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\HttpFoundation\Session;
+use Application\DeskPRO\Log\Event\Base as BaseLogEvent;
 use Application\DeskPRO\ORM\StateChange\StateChangeRecorder;
 use Application\DeskPRO\People\PersonGuest;
 use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
-use Application\DeskPRO\Log\Event\Base as BaseLogEvent;
 
 abstract class EntityChangeLogListener
 {
@@ -59,7 +59,7 @@ abstract class EntityChangeLogListener
     public function __construct(DeskproContainer $container)
     {
         $this->container = $container;
-        $this->logger = $container->get('deskpro.logger.changelog');
+        $this->logger    = $container->get('deskpro.logger.changelog');
     }
 
     /**
@@ -71,7 +71,7 @@ abstract class EntityChangeLogListener
 
         // don't even return a PersonGuest
         if (!$person || $person instanceof PersonGuest) {
-            return null;
+            return;
         }
 
         return $person;
@@ -83,7 +83,7 @@ abstract class EntityChangeLogListener
     protected function tryToGetPersonFromContext()
     {
         $c = $this->container;
-        /** @var RequestAuth $auth */
+        /* @var RequestAuth $auth */
         try {
             if ($c->has('deskpro.api.request_auth') && ($auth = $c->get('deskpro.api.request_auth'))) {
                 if ($apiUser = $auth->getApiUser()) {
@@ -109,7 +109,7 @@ abstract class EntityChangeLogListener
     protected function tryToGetApiKeyFromContext()
     {
         $c = $this->container;
-        /** @var RequestAuth $auth */
+        /* @var RequestAuth $auth */
         try {
             if ($c->has('deskpro.api.request_auth') && ($auth = $c->get('deskpro.api.request_auth'))) {
                 if ($apiUser = $auth->getApiUser()) {
@@ -121,7 +121,8 @@ abstract class EntityChangeLogListener
     }
 
     /**
-     * @param  DomainObject $entity
+     * @param DomainObject $entity
+     *
      * @return array
      */
     protected function getChangesForEntity(DomainObject $entity)
@@ -135,7 +136,7 @@ abstract class EntityChangeLogListener
         }
 
         foreach ($changes as $change) {
-            if ($change->isSame() || ! isset($this->fields[$change->getField()])) {
+            if ($change->isSame() || !isset($this->fields[$change->getField()])) {
                 continue;
             }
 
@@ -148,7 +149,7 @@ abstract class EntityChangeLogListener
     protected function createLogEntry(BaseLogEvent $event, Person $performer = null)
     {
         $performer = $this->getContextPerson() ?: $performer;
-        $key = $this->tryToGetApiKeyFromContext();
+        $key       = $this->tryToGetApiKeyFromContext();
 
         return new LogEvent($event, $performer, $key);
     }
@@ -171,16 +172,16 @@ abstract class EntityChangeLogListener
      */
     protected function doFlush($oid, $type)
     {
-        if (!isset($this->{'queued_' . $type}[$oid])) {
+        if (!isset($this->{'queued_'.$type}[$oid])) {
             return;
         }
 
-        $entry = $this->{'queued_' . $type}[$oid];
+        $entry = $this->{'queued_'.$type}[$oid];
         $this->logger->info($entry);
         foreach ($entry->children as $child) {
             $this->logger->info($child);
         }
 
-        unset($this->{'queued_' . $type}[$oid]);
+        unset($this->{'queued_'.$type}[$oid]);
     }
 }

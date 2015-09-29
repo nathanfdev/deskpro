@@ -1,43 +1,43 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
+use DateTime;
 use Zendesk\API\Client;
 use Zendesk\API\ResponseException;
-use DateTime;
 
 /**
- * ZenDesk tickets fixtures
+ * ZenDesk tickets fixtures.
  *
  * Class Tickets
- * @package Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI
  */
 final class Tickets extends AbstractFixture
 {
@@ -52,7 +52,7 @@ final class Tickets extends AbstractFixture
     private $ticket_fields_loader;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Client             $client
      * @param PeopleLoader       $people_loader
@@ -85,7 +85,7 @@ final class Tickets extends AbstractFixture
 
         $type   = $types[rand(0, count($types) - 1)];
         $params = array(
-            'subject'       => 'Fake ticket ' . $num,
+            'subject'       => 'Fake ticket '.$num,
             'comment'       => array(
                 'type'   => 'Comment',
                 'body'   => 'Thanks for your help!',
@@ -107,20 +107,19 @@ final class Tickets extends AbstractFixture
         $this->logger->info('Ticket created successfully');
         $this->logger->debug(json_encode($response));
 
-        for ($i = 1; $i <= 100; $i++) {
+        for ($i = 1; $i <= 100; ++$i) {
             try {
                 $comment = $this->client->tickets()->update(array(
                     'id'      => $response->ticket->id,
                     'comment' => array(
                         'type'   => 'Comment',
-                        'body'   => 'Reply #' . $i,
+                        'body'   => 'Reply #'.$i,
                         'public' => true,
                     ),
                 ));
 
                 $this->logger->info('Ticket comment created successfully');
                 $this->logger->debug(json_encode($comment));
-
             } catch (ResponseException $e) {
                 $this->handleResponseException('ticket_comment');
             }

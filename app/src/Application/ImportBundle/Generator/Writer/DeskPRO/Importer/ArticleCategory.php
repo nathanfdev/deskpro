@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
@@ -32,8 +33,9 @@ use Application\ImportBundle\Entity;
 use Doctrine\ORM\EntityManager;
 
 /**
+ * Article category importer.
+ * 
  * Class ArticleCategory
- * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
  */
 final class ArticleCategory extends AbstractImporter
 {
@@ -43,7 +45,7 @@ final class ArticleCategory extends AbstractImporter
     private $entity_manager;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Mapper\Collection $mappers
      * @param EntityManager     $entity_manager
@@ -67,7 +69,7 @@ final class ArticleCategory extends AbstractImporter
      */
     public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
-        if ( ! $entity instanceof Entity\ArticleCategory) {
+        if (!$entity instanceof Entity\ArticleCategory) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
@@ -80,7 +82,7 @@ final class ArticleCategory extends AbstractImporter
     }
 
     /**
-     * Create categories tree
+     * Create categories tree.
      *
      * @param DeskPROEntity\ArticleCategory $parent_category
      * @param Entity\ArticleCategory        $entity
@@ -125,7 +127,7 @@ final class ArticleCategory extends AbstractImporter
     }
 
     /**
-     * Set article category properties
+     * Set article category properties.
      *
      * @param Entity\ArticleCategory             $entity
      * @param DeskPROEntity\ArticleCategory      $category
@@ -154,8 +156,8 @@ final class ArticleCategory extends AbstractImporter
     }
 
     /**
-     * Returns an article category by oid
-     * Creates a new article if not found
+     * Returns an article category by oid.
+     * Creates a new article if not found.
      *
      * @param int $entity_id
      *
@@ -166,10 +168,12 @@ final class ArticleCategory extends AbstractImporter
         $category = $this->getArticleCategoryMapper()->findOneBy(array('id' => $entity_id), false);
         if ($category) {
             $this->logDebug(sprintf('Found existing article category `%s`', $category->getRealTitle()));
+
             return $category;
         }
 
         $this->logDebug('Creating new article category');
+
         return new DeskPROEntity\ArticleCategory();
     }
 }

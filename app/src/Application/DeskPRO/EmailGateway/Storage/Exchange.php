@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package    DeskPRO
- * @subpackage EmailGateway
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway\Storage;
 
 use EWSType_BodyTypeResponseType;
@@ -51,23 +48,22 @@ use EWSType_FolderType;
 use EWSType_GetItemType;
 use EWSType_IndexedPageViewType;
 use EWSType_IsEqualToType;
+use EWSType_ItemChangeType;
 use EWSType_ItemIdType;
 use EWSType_ItemQueryTraversalType;
 use EWSType_ItemResponseShapeType;
+use EWSType_MessageType;
 use EWSType_MoveItemType;
 use EWSType_NonEmptyArrayOfBaseFolderIdsType;
-use EWSType_NonEmptyArrayOfFoldersType;
 use EWSType_NonEmptyArrayOfBaseItemIdsType;
+use EWSType_NonEmptyArrayOfFoldersType;
+use EWSType_NonEmptyArrayOfItemChangeDescriptionsType;
 use EWSType_NonEmptyArrayOfPathsToElementType;
 use EWSType_PathToUnindexedFieldType;
 use EWSType_RestrictionType;
-use ExchangeWebServices;
-use Orb\Util\Arrays;
-use EWSType_UpdateItemType;
-use EWSType_ItemChangeType;
 use EWSType_SetItemFieldType;
-use EWSType_MessageType;
-use EWSType_NonEmptyArrayOfItemChangeDescriptionsType;
+use EWSType_UpdateItemType;
+use Orb\Util\Arrays;
 
 class Exchange
 {
@@ -81,7 +77,6 @@ class Exchange
      */
     protected $folders;
 
-
     public function __construct($options = array())
     {
         if (!isset($options['host']) ||
@@ -92,18 +87,18 @@ class Exchange
         }
 
         $this->service = new \ExchangeWebServices(
-            $options['host'] . (!empty($options['port']) && $options['port'] != 443 ? ":{$options['port']}" : ''),
+            $options['host'].(!empty($options['port']) && $options['port'] != 443 ? ":{$options['port']}" : ''),
             $options['user'],
             $options['password']
         );
     }
 
-
     /**
-     * Creates a folder if it doesnt exist
+     * Creates a folder if it doesnt exist.
      *
-     * @param  string $name
-     * @return bool   True if it was created, false otherwise
+     * @param string $name
+     *
+     * @return bool True if it was created, false otherwise
      */
     public function ensureFolderExists($name)
     {
@@ -116,11 +111,11 @@ class Exchange
         return false;
     }
 
-
     /**
-     * @param  int   $limit
-     * @param  bool  $unread_only
-     * @param  null  $folder
+     * @param int  $limit
+     * @param bool $unread_only
+     * @param null $folder
+     *
      * @return mixed
      */
     public function searchIds($limit = 10, $unread_only = false, $folder = null)
@@ -137,7 +132,7 @@ class Exchange
 
             $constant                  = new EWSType_FieldURIOrConstantType();
             $constant->Constant        = new EWSType_ConstantValueType();
-            $constant->Constant->Value = "0";
+            $constant->Constant->Value = '0';
 
             $IsEqTo                     = new EWSType_IsEqualToType();
             $IsEqTo->FieldURIOrConstant = $constant;
@@ -161,8 +156,8 @@ class Exchange
         } else {
             $folder = $this->findFolder($folder);
             if ($folder) {
-                $request->ParentFolderIds           = new EWSType_NonEmptyArrayOfBaseFolderIdsType();
-                $request->ParentFolderIds->FolderId = new \EWSType_FolderIdType();
+                $request->ParentFolderIds               = new EWSType_NonEmptyArrayOfBaseFolderIdsType();
+                $request->ParentFolderIds->FolderId     = new \EWSType_FolderIdType();
                 $request->ParentFolderIds->FolderId->Id = $folder->FolderId->Id;
             }
         }
@@ -184,7 +179,7 @@ class Exchange
             foreach ($response->ResponseMessages->FindItemResponseMessage->RootFolder->Items->Message as $m) {
                 if (isset($m->Id)) {
                     $ids[] = $m->Id;
-                } elseif(isset ($m->ItemId->Id)) {
+                } elseif (isset($m->ItemId->Id)) {
                     $ids[] = $m->ItemId->Id;
                 }
             }
@@ -196,9 +191,9 @@ class Exchange
         return array();
     }
 
-
     /**
-     * @param  string $message_id
+     * @param string $message_id
+     *
      * @return string
      */
     public function getRawMessage($message_id)
@@ -234,12 +229,12 @@ class Exchange
             return base64_decode($response->ResponseMessages->GetItemResponseMessage->Items->Message->MimeContent->_);
         }
 
-        return null;
+        return;
     }
 
-
     /**
-     * @param  string $message_id
+     * @param string $message_id
+     *
      * @return string
      */
     public function getRawHeaders($message_id)
@@ -247,25 +242,25 @@ class Exchange
         $rawHeader = '';
 
         foreach ($this->getEmailParts($message_id)->InternetMessageHeaders->InternetMessageHeader as $header) {
-            $rawHeader .= $header->HeaderName . ':' . $header->_ . PHP_EOL;
+            $rawHeader .= $header->HeaderName.':'.$header->_.PHP_EOL;
         }
 
         return $rawHeader;
     }
 
-
     /**
-     * @param  string $name
+     * @param string $name
+     *
      * @return mixed
      */
     private function createFolder($name)
     {
-        $request                               = new EWSType_CreateFolderType();
-        $request->Folders                      = new EWSType_NonEmptyArrayOfFoldersType();
-        $request->Folders->Folder              = new EWSType_FolderType();
-        $request->Folders->Folder->DisplayName = $name;
-        $request->ParentFolderId               = new EWSType_NonEmptyArrayOfBaseFolderIdsType();
-        $request->ParentFolderId->DistinguishedFolderId = new \stdClass();
+        $request                                            = new EWSType_CreateFolderType();
+        $request->Folders                                   = new EWSType_NonEmptyArrayOfFoldersType();
+        $request->Folders->Folder                           = new EWSType_FolderType();
+        $request->Folders->Folder->DisplayName              = $name;
+        $request->ParentFolderId                            = new EWSType_NonEmptyArrayOfBaseFolderIdsType();
+        $request->ParentFolderId->DistinguishedFolderId     = new \stdClass();
         $request->ParentFolderId->DistinguishedFolderId->Id = EWSType_DistinguishedFolderIdNameType::MESSAGE_ROOT;
 
         $response = $this->service->CreateFolder($request);
@@ -277,10 +272,10 @@ class Exchange
         }
     }
 
-
     /**
-     * @param  string $name
-     * @param  bool   $force_reload
+     * @param string $name
+     * @param bool   $force_reload
+     *
      * @return mixed
      */
     private function findFolder($name, $force_reload = false)
@@ -295,9 +290,8 @@ class Exchange
             }
         }
 
-        return null;
+        return;
     }
-
 
     /**
      * @return mixed
@@ -333,9 +327,9 @@ class Exchange
         }
     }
 
-
     /**
      * @param $message
+     *
      * @return bool
      */
     public function moveMessage($message_id, $name)
@@ -344,9 +338,9 @@ class Exchange
 
         $request = new EWSType_MoveItemType();
 
-        @$request->ToFolderId->FolderId->Id = $folder->FolderId->Id;
+        @$request->ToFolderId->FolderId->Id        = $folder->FolderId->Id;
         @$request->ToFolderId->FolderId->ChangeKey = $folder->FolderId->ChangeKey;
-        @$request->ItemIds->ItemId->Id = $message_id;
+        @$request->ItemIds->ItemId->Id             = $message_id;
 
         // Generic execution sample code
         $response = $this->service->MoveItem($request);
@@ -360,9 +354,9 @@ class Exchange
         return false;
     }
 
-
     /**
-     * @param  string $message_id
+     * @param string $message_id
+     *
      * @return bool
      */
     public function deleteMessage($message_id)
@@ -386,31 +380,31 @@ class Exchange
         return false;
     }
 
-
     /**
      * @param $message_id
+     *
      * @return bool
      */
     public function markRead($message_id)
     {
-        $request = new EWSType_UpdateItemType();
+        $request                     = new EWSType_UpdateItemType();
         $request->ConflictResolution = 'AlwaysOverwrite';
         $request->MessageDisposition = 'SaveOnly';
-        $request->ItemChanges = array();
+        $request->ItemChanges        = array();
 
-        $change = new EWSType_ItemChangeType();
-        $change->ItemId = new EWSType_ItemIdType();
-        $change->ItemId->Id = $message_id;
+        $change                    = new EWSType_ItemChangeType();
+        $change->ItemId            = new EWSType_ItemIdType();
+        $change->ItemId->Id        = $message_id;
         $change->ItemId->ChangeKey = $this->getChangeKey($message_id);
 
-        $field = new EWSType_SetItemFieldType();
-        $field->FieldURI = new EWSType_PathToUnindexedFieldType();
-        $field->FieldURI->FieldURI = "message:IsRead";
-        $field->Message = new EWSType_MessageType();
-        $field->Message->IsRead = true;
+        $field                     = new EWSType_SetItemFieldType();
+        $field->FieldURI           = new EWSType_PathToUnindexedFieldType();
+        $field->FieldURI->FieldURI = 'message:IsRead';
+        $field->Message            = new EWSType_MessageType();
+        $field->Message->IsRead    = true;
 
-        $change->Updates = new EWSType_NonEmptyArrayOfItemChangeDescriptionsType();
-        $change->Updates->SetItemField = array();
+        $change->Updates                 = new EWSType_NonEmptyArrayOfItemChangeDescriptionsType();
+        $change->Updates->SetItemField   = array();
         $change->Updates->SetItemField[] = $field;
 
         $request->ItemChanges[] = $change;
@@ -426,34 +420,34 @@ class Exchange
         return false;
     }
 
-
     /**
-     * Gets email properties
+     * Gets email properties.
      *
-     * @param  string $message_id
+     * @param string $message_id
+     *
      * @return mixed
      */
     public function getEmailProps($message_id)
     {
         // Build the request for the parts.
-        $request = new EWSType_GetItemType();
-        $request->ItemShape = new EWSType_ItemResponseShapeType();
+        $request                       = new EWSType_GetItemType();
+        $request->ItemShape            = new EWSType_ItemResponseShapeType();
         $request->ItemShape->BaseShape = EWSType_DefaultShapeNamesType::ALL_PROPERTIES;
         // You can get the body as HTML, text or "best".
         $request->ItemShape->BodyType = EWSType_BodyTypeResponseType::HTML;
 
         // Add the body property.
-        $body_property = new EWSType_PathToUnindexedFieldType();
-        $body_property->FieldURI = 'item:Body';
-        $request->ItemShape->AdditionalProperties = new EWSType_NonEmptyArrayOfPathsToElementType();
+        $body_property                                      = new EWSType_PathToUnindexedFieldType();
+        $body_property->FieldURI                            = 'item:Body';
+        $request->ItemShape->AdditionalProperties           = new EWSType_NonEmptyArrayOfPathsToElementType();
         $request->ItemShape->AdditionalProperties->FieldURI = array($body_property);
 
-        $request->ItemIds = new EWSType_NonEmptyArrayOfBaseItemIdsType();
+        $request->ItemIds         = new EWSType_NonEmptyArrayOfBaseItemIdsType();
         $request->ItemIds->ItemId = array();
 
         // Add the message to the request.
-        $message_item = new EWSType_ItemIdType();
-        $message_item->Id = $message_id;
+        $message_item               = new EWSType_ItemIdType();
+        $message_item->Id           = $message_id;
         $request->ItemIds->ItemId[] = $message_item;
 
         $response = $this->service->GetItem($request);

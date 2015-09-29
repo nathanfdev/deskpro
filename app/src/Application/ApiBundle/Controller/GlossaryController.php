@@ -1,47 +1,43 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage ApiBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
-
 /**
-* @SWG\Resource(
-* 	resourcePath="/glossary",
-* 	description="Operations about Glossary Words",
-* 	basePath="/api"
-* )
-*/
+ * @SWG\Resource(
+ * 	resourcePath="/glossary",
+ * 	description="Operations about Glossary Words",
+ * 	basePath="/api"
+ * )
+ */
 class GlossaryController extends AbstractController
 {
     /**
@@ -135,11 +131,11 @@ class GlossaryController extends AbstractController
      */
     public function newWordAction()
     {
-        $def = new \Application\DeskPRO\Entity\GlossaryWordDefinition();
+        $def             = new \Application\DeskPRO\Entity\GlossaryWordDefinition();
         $def->definition = $this->in->getString('definition');
 
         $words = array();
-        foreach ($this->in->getCleanValueArray('word', 'string') AS $word) {
+        foreach ($this->in->getCleanValueArray('word', 'string') as $word) {
             $words[] = $def->addWord($word);
         }
 
@@ -151,7 +147,7 @@ class GlossaryController extends AbstractController
         $this->em->flush();
 
         $ids = array();
-        foreach ($words AS $word) {
+        foreach ($words as $word) {
             $ids[] = $word->id;
         }
 
@@ -274,7 +270,7 @@ class GlossaryController extends AbstractController
             $def->definition = $this->in->getString('definition');
         }
 
-        foreach ($this->in->getCleanValueArray('word', 'string') AS $word) {
+        foreach ($this->in->getCleanValueArray('word', 'string') as $word) {
             $def->addWord($word);
         }
 
@@ -314,9 +310,11 @@ class GlossaryController extends AbstractController
     }
 
     /**
-     * @param  integer                                                       $id
-     * @return \Application\DeskPRO\Entity\GlossaryWord
+     * @param int $id
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *
+     * @return \Application\DeskPRO\Entity\GlossaryWord
      */
     protected function _getWordOr404($id)
     {
@@ -330,9 +328,11 @@ class GlossaryController extends AbstractController
     }
 
     /**
-     * @param  integer                                                       $id
-     * @return \Application\DeskPRO\Entity\GlossaryWordDefinition
+     * @param int $id
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *
+     * @return \Application\DeskPRO\Entity\GlossaryWordDefinition
      */
     protected function _getDefinitionOr404($id)
     {

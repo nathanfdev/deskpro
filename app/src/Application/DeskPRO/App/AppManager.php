@@ -1,44 +1,42 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\App;
 
 use Application\DeskPRO\App\Native\NativeApp;
 use Application\DeskPRO\App\Native\NativePackageConfig;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
-use Application\DeskPRO\Entity\Person;
 
 class AppManager implements AppManagerInterface
 {
@@ -48,7 +46,8 @@ class AppManager implements AppManagerInterface
     private $packages = array();
 
     /**
-     * Apps grouped by package name
+     * Apps grouped by package name.
+     *
      * @var array
      */
     private $package_to_apps = array();
@@ -59,7 +58,8 @@ class AppManager implements AppManagerInterface
     private $apps = array();
 
     /**
-     * Cache of native configs per package
+     * Cache of native configs per package.
+     *
      * @var array
      */
     private $native_package_configs = array();
@@ -75,7 +75,8 @@ class AppManager implements AppManagerInterface
     private $app_service_container;
 
     /**
-     * Paths to apps on the filesystem
+     * Paths to apps on the filesystem.
+     *
      * @var array
      */
     private $app_paths = array();
@@ -84,7 +85,6 @@ class AppManager implements AppManagerInterface
      * @var \Application\DeskPRO\Entity\Usersource[]
      */
     private $usersources;
-
 
     /**
      * @param AppPackage[]        $packages
@@ -124,9 +124,9 @@ class AppManager implements AppManagerInterface
         $this->usersources = $usersources;
     }
 
-
     /**
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function hasPackage($name)
@@ -134,11 +134,12 @@ class AppManager implements AppManagerInterface
         return isset($this->packages[$name]);
     }
 
-
     /**
-     * @param  string                    $name
-     * @return AppPackage
+     * @param string $name
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return AppPackage
      */
     public function getPackage($name)
     {
@@ -149,7 +150,6 @@ class AppManager implements AppManagerInterface
         return $this->packages[$name];
     }
 
-
     /**
      * @return AppPackage[]
      */
@@ -158,9 +158,9 @@ class AppManager implements AppManagerInterface
         return array_values($this->packages);
     }
 
-
     /**
-     * @param  int  $id
+     * @param int $id
+     *
      * @return bool
      */
     public function hasApp($id)
@@ -168,11 +168,12 @@ class AppManager implements AppManagerInterface
         return isset($this->apps[$id]);
     }
 
-
     /**
-     * @param  int                       $id
-     * @return AppInstance
+     * @param int $id
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return AppInstance
      */
     public function getApp($id)
     {
@@ -183,7 +184,6 @@ class AppManager implements AppManagerInterface
         return $this->apps[$id];
     }
 
-
     /**
      * @return AppInstance[]
      */
@@ -192,9 +192,9 @@ class AppManager implements AppManagerInterface
         return array_values($this->apps);
     }
 
-
     /**
-     * @param  string|AppPackage $name
+     * @param string|AppPackage $name
+     *
      * @return AppInstance[]
      */
     public function getPackageApps($name)
@@ -210,11 +210,11 @@ class AppManager implements AppManagerInterface
         return $this->package_to_apps[$name];
     }
 
-
     /**
      * Gets a single app for a package.
      *
-     * @param  string|AppPackage $name
+     * @param string|AppPackage $name
+     *
      * @return AppInstance
      */
     public function getPackageApp($name)
@@ -224,17 +224,17 @@ class AppManager implements AppManagerInterface
         }
 
         if (!isset($this->package_to_apps[$name])) {
-            return null;
+            return;
         }
 
         return $this->package_to_apps[$name][0];
     }
 
-
     /**
-     * Checks if a package has been installed at least once
+     * Checks if a package has been installed at least once.
      *
-     * @param  string|AppPackage $name
+     * @param string|AppPackage $name
+     *
      * @return bool
      */
     public function isPackageInstalled($name)
@@ -246,13 +246,13 @@ class AppManager implements AppManagerInterface
         return isset($this->package_to_apps[$name]);
     }
 
-
     /**
-     * Gets an AppManager with a specific scope filter applied to it
+     * Gets an AppManager with a specific scope filter applied to it.
      *
-     * @param  string              $scope The scope to search for
-     * @param  callable            $package_filter Optionally specify a custom package filter
-     * @param  callable            $app_filter Optionally specify a custom app filter
+     * @param string   $scope          The scope to search for
+     * @param callable $package_filter Optionally specify a custom package filter
+     * @param callable $app_filter     Optionally specify a custom app filter
+     *
      * @return AppManagerInterface
      */
     public function getScopeFilter($scope, $package_filter = null, $app_filter = null)
@@ -271,9 +271,9 @@ class AppManager implements AppManagerInterface
         return $manager;
     }
 
-
     /**
-     * @param  AppInstance|int $app The app or app_id
+     * @param AppInstance|int $app The app or app_id
+     *
      * @return NativeApp
      */
     public function getNativeApp($app)
@@ -281,7 +281,7 @@ class AppManager implements AppManagerInterface
         if ($app instanceof AppInstance) {
             $app_id = $app->id;
         } else {
-            $app = $this->getApp($app);
+            $app    = $this->getApp($app);
             $app_id = $app->id;
         }
 
@@ -293,8 +293,8 @@ class AppManager implements AppManagerInterface
             return $this->native_apps[$app_id];
         }
 
-        $native_config = $this->getNativePackageConfig($app->package);
-        $native_app = new NativeApp($app, $native_config);
+        $native_config              = $this->getNativePackageConfig($app->package);
+        $native_app                 = new NativeApp($app, $native_config);
         $this->native_apps[$app_id] = $native_app;
 
         $this->app_service_container->registerNativeApp($native_app);
@@ -302,11 +302,12 @@ class AppManager implements AppManagerInterface
         return $native_app;
     }
 
-
     /**
-     * @param  AppPackage                $package
-     * @return NativePackageConfig
+     * @param AppPackage $package
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return NativePackageConfig
      */
     public function getNativePackageConfig(AppPackage $package)
     {
@@ -317,7 +318,7 @@ class AppManager implements AppManagerInterface
         if (isset($this->native_package_configs[$package->name])) {
             return $this->native_package_configs[$package->name];
         } else {
-            $native_config = NativePackageConfig::createFromPackage($package, $this->getAppPath($package->name, true));
+            $native_config                                = NativePackageConfig::createFromPackage($package, $this->getAppPath($package->name, true));
             $this->native_package_configs[$package->name] = $native_config;
         }
 
@@ -325,7 +326,6 @@ class AppManager implements AppManagerInterface
 
         return $native_config;
     }
-
 
     /**
      * @param NativePackageConfig $native_config
@@ -352,16 +352,16 @@ class AppManager implements AppManagerInterface
             $inc_name = str_replace('\\', DIRECTORY_SEPARATOR, $inc_name);
             $inc_name .= '.php';
 
-            include($directory . DIRECTORY_SEPARATOR . $inc_name);
+            include $directory.DIRECTORY_SEPARATOR.$inc_name;
 
             return true;
         });
     }
 
-
     /**
-     * @param  string                    $name
-     * @param  AppInstance|NativeApp|int $app
+     * @param string                    $name
+     * @param AppInstance|NativeApp|int $app
+     *
      * @return mixed
      */
     public function getService($name, $app = null)
@@ -369,19 +369,19 @@ class AppManager implements AppManagerInterface
         return $this->app_service_container->getService($name, $app);
     }
 
-
     /**
      * Gets the base app path for a given app name.
      *
-     * @param  string      $app_name
-     * @param  bool        $check_exists
+     * @param string $app_name
+     * @param bool   $check_exists
+     *
      * @return string|null
      */
     public function getAppPath($app_name, $check_exists = false)
     {
         if ($check_exists) {
             foreach ($this->app_paths as $path) {
-                $p = $path . '/' . $app_name;
+                $p = $path.'/'.$app_name;
                 if (file_exists($p)) {
                     return $p;
                 }
@@ -389,18 +389,19 @@ class AppManager implements AppManagerInterface
         } else {
             foreach ($this->app_paths as $prefix => $path) {
                 if ($prefix === 'default') {
-                    return $path . '/' . $app_name;
+                    return $path.'/'.$app_name;
                 } elseif (strpos($app_name, $prefix) === 0) {
-                    return $path . '/' . $app_name;
+                    return $path.'/'.$app_name;
                 }
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * @param  AppInstance                            $appId
+     * @param AppInstance $appId
+     *
      * @return \Application\DeskPRO\Entity\Usersource
      */
     public function getUsersourceForApp($appId, $type)
@@ -410,7 +411,6 @@ class AppManager implements AppManagerInterface
                 return $usersource;
             }
         }
-
     }
 
     /**

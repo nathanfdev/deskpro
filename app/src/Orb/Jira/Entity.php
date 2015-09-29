@@ -1,30 +1,56 @@
 <?php
 
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 namespace Orb\Jira;
 
 /**
- * The Base Entity class
+ * The Base Entity class.
  *
  * @author Abhinav Kumar <work@abhinavkumar.in>
  */
 abstract class Entity
 {
     /**
-     * Entity ID
+     * Entity ID.
      *
      * @var int
      */
     protected $_id;
 
     /**
-     * The Machine Name of the entity
+     * The Machine Name of the entity.
      *
      * @var String
      */
     protected $_key;
 
     /**
-     * Human Readable name of the entity
+     * Human Readable name of the entity.
      *
      * @var String
      */
@@ -32,14 +58,14 @@ abstract class Entity
 
     /**
      * Entity Avatars
-     * An array of relative URLs of the avatar on your Jira site
+     * An array of relative URLs of the avatar on your Jira site.
      *
      * @var array
      */
     protected $_avatars;
 
     /**
-     * Entity Description
+     * Entity Description.
      *
      * @var String
      */
@@ -47,18 +73,20 @@ abstract class Entity
 
     /**
      * The default constructor<br/>
-     * takes array of values and constucts the entity
+     * takes array of values and constucts the entity.
      *
-     * @param  type                        $array An array of entity values
-     * @return boolean|\Jira\Entity\Entity
+     * @param type $array An array of entity values
+     *
+     * @return bool|\Jira\Entity\Entity
      */
     abstract public function __construct(array $params = array());
 
     /**
      * Factory method which initializes the entity<br/>
-     * from a given array
+     * from a given array.
      *
-     * @param  array  $array The params array
+     * @param array $array The params array
+     *
      * @return Entity The new entity object
      */
     public static function fromArray(array $array = array())
@@ -77,9 +105,10 @@ abstract class Entity
     }
 
     /**
-     * Set the ID
+     * Set the ID.
      *
-     * @param  type             $id
+     * @param type $id
+     *
      * @return \Orb\Jira\Entity
      */
     public function setId($id)
@@ -90,7 +119,7 @@ abstract class Entity
     }
 
     /**
-     * Get the Key
+     * Get the Key.
      *
      * @return The Entity Key
      */
@@ -130,9 +159,10 @@ abstract class Entity
     }
 
     /**
-     * Sets the key
+     * Sets the key.
      *
-     * @param  String       $key The key to set
+     * @param String $key The key to set
+     *
      * @return \Jira\Entity
      */
     public function setKey($key)
@@ -143,9 +173,10 @@ abstract class Entity
     }
 
     /**
-     * Sets the name
+     * Sets the name.
      *
-     * @param  String       $name They name to set
+     * @param String $name They name to set
+     *
      * @return \Jira\Entity
      */
     public function setName($name)
@@ -156,9 +187,10 @@ abstract class Entity
     }
 
     /**
-     * Sets the description
+     * Sets the description.
      *
-     * @param  type         $description The description to set
+     * @param type $description The description to set
+     *
      * @return \Jira\Entity
      */
     public function setDescription($description)
@@ -169,7 +201,7 @@ abstract class Entity
     }
 
     /**
-     * Adds an avatar URL
+     * Adds an avatar URL.
      *
      * @param String $url The Avatar URL
      */
@@ -179,7 +211,7 @@ abstract class Entity
     }
 
     /**
-     * Serializes an Entity to an Array
+     * Serializes an Entity to an Array.
      *
      * @return array The serialized array
      */
@@ -207,7 +239,7 @@ abstract class Entity
     }
 
     /**
-     * Serializes an Entity to JSON
+     * Serializes an Entity to JSON.
      *
      * @return String The encode JSON String
      */

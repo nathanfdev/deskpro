@@ -1,5 +1,31 @@
 <?php
 
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 namespace DpIntegrationTests\DeskPRO\JIRA;
 
 use Application\DeskPRO\JIRA\ApiErrorsException;
@@ -32,13 +58,14 @@ class APITest extends \DpIntegrationTestCase
         if (!$this->service) {
             $this->service = $this->helper->getSymfonyContainer()->get(JIRA::NAME);
         }
+
         return $this->service;
     }
 
     public function testJiraAPI()
     {
         $service = $this->js();
-        $api = $service->getApi();
+        $api     = $service->getApi();
 
         // test API connection
         $response = $this->js()->getApi()->call('rest/auth/1/session', 'GET');
@@ -60,7 +87,7 @@ class APITest extends \DpIntegrationTestCase
         $createmeta = $this->js()->getCreateMeta();
         $this->assertArrayHasKey('projects', $createmeta);
 
-        $project = null;
+        $project   = null;
         $issuetype = null;
 
         foreach ($createmeta['projects'] as $val) {
@@ -81,34 +108,30 @@ class APITest extends \DpIntegrationTestCase
         $this->assertNotNull($issuetype);
         $this->assertArrayHasKey('fields', $issuetype);
 
-
-
-
-        /** issues tests */
+        /* issues tests */
 
         $service->updateMeta(array('default_fields_summary' => array('comment')));
 
-        $duedate = new \DateTime('+1 week');
-        $user = 'test-user';
-        $summary = 'Auto test issue';
-        $url = 'http://example.com';
+        $duedate        = new \DateTime('+1 week');
+        $user           = 'test-user';
+        $summary        = 'Auto test issue';
+        $url            = 'http://example.com';
         $ticketGlobalId = 'deskpro_ticket_test';
-        $commentBody = sprintf('[%s via DeskPRO #%s|%s]: test comment message', $user, $ticketGlobalId, $url);
-        $renderedBody = '<p><a href="http://example.com" class="external-link" rel="nofollow">test-user via DeskPRO #deskpro_ticket_test</a>: test comment message</p>';
+        $commentBody    = sprintf('[%s via DeskPRO #%s|%s]: test comment message', $user, $ticketGlobalId, $url);
+        $renderedBody   = '<p><a href="http://example.com" class="external-link" rel="nofollow">test-user via DeskPRO #deskpro_ticket_test</a>: test comment message</p>';
 
         // test create issue
         $issue = array(
             'fields' => array(
-                'duedate' => $duedate->format('Y-m-d'),
+                'duedate'   => $duedate->format('Y-m-d'),
                 'issuetype' => array('id' => 10100),
-                'project' => array('id' => 10200),
-                'summary' => $summary,
+                'project'   => array('id' => 10200),
+                'summary'   => $summary,
             ),
         );
 
-
         // test validation error
-        $invalidIssue = $issue;
+        $invalidIssue                      = $issue;
         $invalidIssue['fields']['duedate'] = time() + 3600;
         $invalidIssue['fields']['summary'] = null;
         try {
@@ -118,14 +141,13 @@ class APITest extends \DpIntegrationTestCase
             $this->assertArrayHasKey('summary', $e->errors);
         }
 
-
         $issue = $service->createIssueJson(json_encode($issue));
         $this->assertArrayHasKey('id', $issue);
         $this->assertArrayHasKey('key', $issue);
         $this->assertArrayHasKey('self', $issue);
 
         // test add comment
-        $api->post('/issue/' . $issue['id'] . '/comment?expand=renderedBody', array(
+        $api->post('/issue/'.$issue['id'].'/comment?expand=renderedBody', array(
             'body' => $commentBody,
         ));
 
@@ -154,22 +176,22 @@ class APITest extends \DpIntegrationTestCase
 
         // test create remote link
         $link = array(
-            'globalId' => $ticketGlobalId,
+            'globalId'     => $ticketGlobalId,
             'relationship' => 'linked with',
-            'object' => array(
-                'title' => 'DeskPRO #test',
+            'object'       => array(
+                'title'   => 'DeskPRO #test',
                 'summary' => $summary,
-                'url' => $url,
+                'url'     => $url,
             ),
         );
-        $link = $api->post('/issue/' . $issue['id'] . '/remotelink', $link);
+        $link = $api->post('/issue/'.$issue['id'].'/remotelink', $link);
         $this->assertArrayHasKey('id', $link);
         $this->assertArrayHasKey('self', $link);
 
         // test remove remote link
-        $api->delete('/issue/' . $issue['id'] . '/remotelink?globalId=' . $ticketGlobalId);
+        $api->delete('/issue/'.$issue['id'].'/remotelink?globalId='.$ticketGlobalId);
 
         // cleanup
-        $api->delete('/issue/' . $issue['id']);
+        $api->delete('/issue/'.$issue['id']);
     }
 }

@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\App;
@@ -39,12 +38,12 @@ use Application\DeskPRO\Translate\HasPhraseName;
 use Orb\Util\Util;
 
 /**
- * The basic entity class
+ * The basic entity class.
  */
 abstract class DomainObject extends BasicDomainObject
 {
     const API_MODE_OPT_OUT = 1;
-    const API_MODE_OPT_IN = 2;
+    const API_MODE_OPT_IN  = 2;
 
     /** @var int */
     protected $_api_mode = self::API_MODE_OPT_OUT;
@@ -61,7 +60,6 @@ abstract class DomainObject extends BasicDomainObject
      */
     public $_presave_state = array();
 
-
     /**
      * @return \Doctrine\ORM\EntityRepository
      */
@@ -76,9 +74,8 @@ abstract class DomainObject extends BasicDomainObject
         return $em->getRepository("DeskPRO:$entity");
     }
 
-
     /**
-     * Get the table name for this entity
+     * Get the table name for this entity.
      *
      * @return string
      */
@@ -86,7 +83,6 @@ abstract class DomainObject extends BasicDomainObject
     {
         return App::getOrm()->getClassMetadata(get_called_class())->getTableName();
     }
-
 
     /**
      * @return string
@@ -98,37 +94,35 @@ abstract class DomainObject extends BasicDomainObject
             $name = $m[1];
         }
 
-        $name = 'DeskPRO:' . $name;
+        $name = 'DeskPRO:'.$name;
 
         return $name;
     }
 
-
     /**
      * Get an object ref for this entity. This is the table name and the entity ID.
-     * For example, "tickets.1234"
+     * For example, "tickets.1234".
+     *
+     * @throws \RuntimeException
      *
      * @return string
-     * @throws \RuntimeException
      */
     public function getObjectRef()
     {
         if (method_exists($this, 'getId')) {
-            return $this->getTableName() . '.' . $this->getId();
+            return $this->getTableName().'.'.$this->getId();
         } elseif (method_exists($this, 'getRef')) {
-            return $this->getTableName() . '.' . $this->getRef();
+            return $this->getTableName().'.'.$this->getRef();
         } else {
-            throw new \RuntimeException("Object does not implement getObjectRef");
+            throw new \RuntimeException('Object does not implement getObjectRef');
         }
     }
 
-
     /**
-     * Sets the value of a field, and calls the property changed tracker
+     * Sets the value of a field, and calls the property changed tracker.
      *
      * @param $field
      * @param $value
-     * @return void
      */
     protected function setModelField($field, $value)
     {
@@ -167,20 +161,18 @@ abstract class DomainObject extends BasicDomainObject
         $this->_onPropertyChanged($field, $old, $value);
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function offsetSet($offset, $value)
     {
-        $func = "set" . str_replace('_', '', $offset);
+        $func = 'set'.str_replace('_', '', $offset);
         if (method_exists($this, $func) || $this->_isCustomCallable(strtolower($func))) {
             $this->$func($value);
         } else {
             $this->setModelField($offset, $value);
         }
     }
-
 
     /**
      * Sets a model field value but does not mark it as changed so it wont be persisted.
@@ -193,11 +185,11 @@ abstract class DomainObject extends BasicDomainObject
         $this->$field = $value;
     }
 
-
     /**
-     * @param  bool  $primary
-     * @param  bool  $deep
-     * @param  array $visited
+     * @param bool  $primary
+     * @param bool  $deep
+     * @param array $visited
+     *
      * @return array
      */
     public function toApiData($primary = true, $deep = true, array $visited = array())
@@ -207,10 +199,10 @@ abstract class DomainObject extends BasicDomainObject
             return array();
         }
 
-        $values = array();
+        $values    = array();
         $visited[] = $this;
 
-        foreach ($repository->getFieldMappings() AS $name => $field) {
+        foreach ($repository->getFieldMappings() as $name => $field) {
             if ($this->_api_mode == self::API_MODE_OPT_IN && empty($field['dpApi'])) {
                 continue;
             } elseif ($this->_api_mode == self::API_MODE_OPT_OUT && isset($field['dpApi']) && !$field['dpApi']) {
@@ -229,12 +221,12 @@ abstract class DomainObject extends BasicDomainObject
 
             if ($val instanceof \DateTime || $field['type'] == 'datetime') {
                 if ($val) {
-                    $values[$name] = $val->format('Y-m-d H:i:s');
-                    $values["{$name}_ts"] = $val->getTimestamp();
+                    $values[$name]           = $val->format('Y-m-d H:i:s');
+                    $values["{$name}_ts"]    = $val->getTimestamp();
                     $values["{$name}_ts_ms"] = $val->getTimestamp() * 1000;
                 } else {
-                    $values[$name] = null;
-                    $values["{$name}_ts"] = 0;
+                    $values[$name]           = null;
+                    $values["{$name}_ts"]    = 0;
                     $values["{$name}_ts_ms"] = 0;
                 }
             } else {
@@ -249,14 +241,14 @@ abstract class DomainObject extends BasicDomainObject
                         }
                     }
                     if ($translated) {
-                        $values[$name . '_translated'] = $translated;
+                        $values[$name.'_translated'] = $translated;
                     }
                 }
             }
         }
 
         if ($deep) {
-            foreach ($repository->getAssociationMappings() AS $name => $association) {
+            foreach ($repository->getAssociationMappings() as $name => $association) {
                 if (empty($association['dpApi'])) {
                     continue;
                 }
@@ -272,12 +264,12 @@ abstract class DomainObject extends BasicDomainObject
                     $subDeep = false;
                 }
 
-                if ($val instanceof DomainObject) {
+                if ($val instanceof self) {
                     $values[$name] = $val->toApiData(false, $subDeep, $visited);
                 } elseif (is_array($val) || $val instanceof \Traversable) {
                     $output = array();
 
-                    foreach ($val AS $key => $sub) {
+                    foreach ($val as $key => $sub) {
                         if ($sub instanceof \Application\DeskPRO\Domain\DomainObject) {
                             $output[$key] = $sub->toApiData(false, $subDeep, $visited);
                         }
@@ -293,7 +285,6 @@ abstract class DomainObject extends BasicDomainObject
         return $values;
     }
 
-
     /**
      * @return array
      */
@@ -306,7 +297,7 @@ abstract class DomainObject extends BasicDomainObject
 
         $values = array();
 
-        foreach ($repository->getFieldMappings() AS $name => $field) {
+        foreach ($repository->getFieldMappings() as $name => $field) {
             $val = $this[$name];
 
             if ($val instanceof \DateTime) {
@@ -321,18 +312,17 @@ abstract class DomainObject extends BasicDomainObject
         return $values;
     }
 
-
     /**
-     * Sets the special no persist flag that causes an error if this object is persisted
+     * Sets the special no persist flag that causes an error if this object is persisted.
      */
     public function _setNoPersist()
     {
         $this->_no_persist = true;
     }
 
-
     /**
-     * Check the current status of the no persist flag
+     * Check the current status of the no persist flag.
+     *
      * @return bool
      */
     public function _isNoPersist()
@@ -351,12 +341,12 @@ abstract class DomainObject extends BasicDomainObject
 
         if (property_exists($this, 'id')) {
             if ($this->id) {
-                return "<$me:#" . $this->id . ">";
+                return "<$me:#".$this->id.'>';
             } else {
-                return "<$me:#0:" . spl_object_hash($this) . ">";
+                return "<$me:#0:".spl_object_hash($this).'>';
             }
         } else {
-            return "<$me:" . spl_object_hash($this) . ">";
+            return "<$me:".spl_object_hash($this).'>';
         }
     }
 }

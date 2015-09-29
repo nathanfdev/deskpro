@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\InstallBundle\Upgrade\Build\Helper201405\LayoutGenerator;
@@ -44,18 +41,19 @@ class Build1400056728 extends AbstractBuild
         require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/LayoutGenerator.php';
         require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/LayoutUpgrader.php';
 
-        $this->out("Upgrade ticket layouts");
+        $this->out('Upgrade ticket layouts');
 
         $em = $this->container->getEm();
         $db = $this->container->getDb();
-        $db->exec("DELETE FROM ticket_layouts");
+        $db->exec('DELETE FROM ticket_layouts');
 
         // Hack: Later upgrade modifies departments table
         // but we're using entities below, which means doctrine will try to
         // use the new schema before its been upgraded
         try {
-            $db->exec("ALTER TABLE departments ADD avatar_blob_id INT DEFAULT NULL");
-        } catch (\Exception $e) {}
+            $db->exec('ALTER TABLE departments ADD avatar_blob_id INT DEFAULT NULL');
+        } catch (\Exception $e) {
+        }
 
         #------------------------------
         # Get current layouts
@@ -72,7 +70,7 @@ class Build1400056728 extends AbstractBuild
         }
 
         $dep_ids = array_keys($old_layouts);
-        $deps = array();
+        $deps    = array();
         if ($dep_ids) {
             $deps = $em->getRepository('DeskPRO:Department')->getByIds($dep_ids);
         }
@@ -82,9 +80,9 @@ class Build1400056728 extends AbstractBuild
         #------------------------------
 
         if (!isset($old_layouts[0])) {
-            $this->out("No default layout exists, generating one");
-            $gen = new LayoutGenerator($this->container);
-            $layout = $gen->getTicketLayout();
+            $this->out('No default layout exists, generating one');
+            $gen                = new LayoutGenerator($this->container);
+            $layout             = $gen->getTicketLayout();
             $layout->department = null;
             $em->persist($layout);
             $em->flush();
@@ -102,7 +100,7 @@ class Build1400056728 extends AbstractBuild
 
             $this->out("Upgrading layout for dep $dep_id ...");
 
-            $up = new LayoutUpgrader($form_new, $form_view, $form_edit, $this->container->getTicketFieldManager());
+            $up     = new LayoutUpgrader($form_new, $form_view, $form_edit, $this->container->getTicketFieldManager());
             $layout = $up->getTicketLayout();
 
             if ($dep_id) {
@@ -114,7 +112,8 @@ class Build1400056728 extends AbstractBuild
         }
 
         try {
-            $db->exec("ALTER TABLE departments DROP avatar_blob_id");
-        } catch (\Exception $e) {}
+            $db->exec('ALTER TABLE departments DROP avatar_blob_id');
+        } catch (\Exception $e) {
+        }
     }
 }

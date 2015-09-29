@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Twig\Extension;
 
 use Symfony\Component\Form\Exception\FormException;
@@ -62,19 +59,19 @@ class FormExtension extends \Symfony\Bridge\Twig\Extension\FormExtension
             }
         }
 
-        $custom = '_'.$view->get('id');
+        $custom    = '_'.$view->get('id');
         $rendering = $custom.$section;
-        $blocks = $this->getBlocks($view);
+        $blocks    = $this->getBlocks($view);
 
         if (isset($this->varStack[$rendering])) {
-            $typeIndex = $this->varStack[$rendering]['typeIndex'] - 1;
-            $types = $this->varStack[$rendering]['types'];
+            $typeIndex                               = $this->varStack[$rendering]['typeIndex'] - 1;
+            $types                                   = $this->varStack[$rendering]['types'];
             $this->varStack[$rendering]['variables'] = array_replace_recursive($this->varStack[$rendering]['variables'], $variables);
         } else {
-            $types = $view->get('types');
-            $types[] = $custom;
-            $typeIndex = count($types) - 1;
-            $this->varStack[$rendering] = array (
+            $types                      = $view->get('types');
+            $types[]                    = $custom;
+            $typeIndex                  = count($types) - 1;
+            $this->varStack[$rendering] = array(
                 'variables' => array_replace_recursive($view->all(), $variables),
                 'types'     => $types,
             );
@@ -84,7 +81,6 @@ class FormExtension extends \Symfony\Bridge\Twig\Extension\FormExtension
             $types[$typeIndex] .= '_'.$section;
 
             if (isset($blocks[$types[$typeIndex]])) {
-
                 $this->varStack[$rendering]['typeIndex'] = $typeIndex;
 
                 // we do not call renderBlock here to avoid too many nested level calls (XDebug limits the level to 100 by default)

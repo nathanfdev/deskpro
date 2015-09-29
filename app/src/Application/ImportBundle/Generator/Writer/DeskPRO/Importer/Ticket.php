@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
@@ -33,10 +34,9 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper\OidEntityMap;
 
 /**
- * DeskPRO ticket importer
+ * DeskPRO ticket importer.
  *
  * Class Ticket
- * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
  */
 final class Ticket extends AbstractImporter
 {
@@ -51,7 +51,7 @@ final class Ticket extends AbstractImporter
     private $blob_adapter;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Mapper\Collection    $mappers
      * @param TicketManager        $manager
@@ -78,7 +78,7 @@ final class Ticket extends AbstractImporter
      */
     public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
-        if ( ! $entity instanceof Entity\Ticket) {
+        if (!$entity instanceof Entity\Ticket) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
 
@@ -112,18 +112,16 @@ final class Ticket extends AbstractImporter
                 $this->logWarning(sprintf('Unable to set ticket agent, `%s` is not an agent', $entity->getAgentEmail()));
                 $ticket->setAgent(null);
             }
-
         } else {
             $ticket->setAgent(null);
         }
 
-        if ( ! $entity->getMessages()->hasImportMapKey()) {
+        if (!$entity->getMessages()->hasImportMapKey()) {
             $ticket->resetMessages();
             foreach ($entity->getMessages() as $message) {
                 $this->logDebug(sprintf('Creating a new ticket message oid=`%d`', $message->getOid()));
                 $ticket->addMessage($this->createTicketMessage($message, $ticket));
             }
-
         } else {
             foreach ($entity->getMessages() as $message) {
                 $exist_message = $this->getTicketMessageMapper()->findOneBy(array('entity' => $message), false);
@@ -151,14 +149,15 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns a ticket entity
-     * Creates a new ticket if not found
+     * Returns a ticket entity.
+     * Creates a new ticket if not found.
      *
      * @param Entity\Ticket $entity
      * @param int           $entity_id
      *
-     * @return DeskPROEntity\Ticket
      * @throws \Exception
+     *
+     * @return DeskPROEntity\Ticket
      */
     private function findOrCreateTicket(Entity\Ticket $entity, $entity_id)
     {
@@ -178,7 +177,7 @@ final class Ticket extends AbstractImporter
             }
         }
 
-        if ( ! $ticket) {
+        if (!$ticket) {
             $ticket = new DeskPROEntity\Ticket();
             $this->logInfo(sprintf('Creating new ticket with ref `%s`', $entity->getRef()));
 
@@ -187,7 +186,7 @@ final class Ticket extends AbstractImporter
                 ->setTicket($ticket)
                 ->setActionType('free')
                 ->setDetails(array(
-                    'message' => $entity->getLogMessage() ? : sprintf('Imported (old ticket ID #%s)', $entity->getOid()),
+                    'message' => $entity->getLogMessage() ?: sprintf('Imported (old ticket ID #%s)', $entity->getOid()),
                 ))
             ;
 
@@ -199,7 +198,7 @@ final class Ticket extends AbstractImporter
 
     /**
      * Returns the importing DeskPRO doctrine ticket message entity
-     * We should pass ticket entity due to set attachment ticket_id field
+     * We should pass ticket entity due to set attachment ticket_id field.
      *
      * @param Entity\TicketMessage $entity
      * @param DeskPROEntity\Ticket $ticket
@@ -219,7 +218,7 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Update ticket message
+     * Update ticket message.
      *
      * @param Entity\TicketMessage        $entity
      * @param DeskPROEntity\TicketMessage $message
@@ -245,11 +244,12 @@ final class Ticket extends AbstractImporter
         }
 
         $this->records->addRelatedEntity($message);
+
         return $message;
     }
 
     /**
-     * Returns the importing DeskPRO doctrine ticket message attachment entity
+     * Returns the importing DeskPRO doctrine ticket message attachment entity.
      *
      * @param Entity\Attachment $entity
      * @param string            $person_email
@@ -258,7 +258,7 @@ final class Ticket extends AbstractImporter
      */
     private function createAttachment(Entity\Attachment $entity, $person_email)
     {
-        $email = $entity->getPersonEmail() ? : $person_email;
+        $email = $entity->getPersonEmail() ?: $person_email;
 
         $attachment = new DeskPROEntity\TicketAttachment();
         $attachment
@@ -270,9 +270,10 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns the importing DeskPRO doctrine ticket participant entity
+     * Returns the importing DeskPRO doctrine ticket participant entity.
      *
      * @param string $email
+     *
      * @return DeskPROEntity\TicketParticipant
      */
     private function createParticipant($email)
@@ -281,14 +282,16 @@ final class Ticket extends AbstractImporter
         $participant->setPerson($this->getPersonMapper()->findOneByEmail($email));
 
         $this->records->addRelatedEntity($participant);
+
         return $participant;
     }
 
     /**
      * Returns a department by title
-     * Creates a new department if not found
+     * Creates a new department if not found.
      *
      * @param string $title
+     *
      * @return DeskPROEntity\Department|null
      */
     private function findOrCreateTicketDepartment($title)
@@ -315,9 +318,10 @@ final class Ticket extends AbstractImporter
 
     /**
      * Returns a ticket priority by title
-     * Creates a new ticket priority if not found
+     * Creates a new ticket priority if not found.
      *
      * @param Entity\TicketPriority $entity
+     *
      * @return DeskPROEntity\TicketPriority|null
      */
     private function findOrCreateTicketPriority(Entity\TicketPriority $entity = null)
@@ -344,9 +348,10 @@ final class Ticket extends AbstractImporter
 
     /**
      * Returns a ticket category by title
-     * Creates a new ticket category if not found
+     * Creates a new ticket category if not found.
      *
      * @param string $title
+     *
      * @return DeskPROEntity\TicketCategory|null
      */
     private function findOrCreateTicketCategory($title)
@@ -369,9 +374,10 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns a ticket custom data entity
+     * Returns a ticket custom data entity.
      *
      * @param Entity\CustomField $entity
+     *
      * @return DeskPROEntity\CustomDataTicket
      */
     private function createTicketCustomData(Entity\CustomField $entity)
@@ -380,7 +386,7 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns the ticket department mapper
+     * Returns the ticket department mapper.
      *
      * @return Mapper\TicketDepartment
      */
@@ -390,7 +396,7 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns the ticket priority mapper
+     * Returns the ticket priority mapper.
      *
      * @return Mapper\TicketPriority
      */
@@ -400,7 +406,7 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns the ticket category mapper
+     * Returns the ticket category mapper.
      *
      * @return Mapper\TicketCategory
      */
@@ -410,7 +416,7 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns the ticket message mapper
+     * Returns the ticket message mapper.
      *
      * @return Mapper\TicketMessage
      */

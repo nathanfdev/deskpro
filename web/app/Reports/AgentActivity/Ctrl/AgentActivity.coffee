@@ -34,7 +34,7 @@ define [
     # This method updates current parameters that are used for sending request to API
     ###
     updateFilter: ->
-      @filter.date = new Date()
+      @filter.date = new Date() if !@filter.date
       @loadResults()
 
 

@@ -1,41 +1,39 @@
 <?php
 
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
-
-
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Kernel;
 
-if (!defined('DP_ROOT')) exit('No access');
+if (!defined('DP_ROOT')) {
+    exit('No access');
+}
 
 use Application\DeskPRO\Entity\SendmailQueue;
 
@@ -48,7 +46,7 @@ require_once DP_ROOT.'/sys/serve_abstract.php';
  * We save the payload as-is, but parse out the 'data' (json encoded array) just
  * so we can save the proper subject/address data on the SendmailQueue record.
  */
-class FailedSendmailJob extends LoaderAbstract
+class failed_sendmail_job extends LoaderAbstract
 {
     public function runAction()
     {
@@ -59,7 +57,7 @@ class FailedSendmailJob extends LoaderAbstract
         }
 
         if (!isset($_FILES['mailfile']) || !empty($_FILES['mailfile']['error']) || empty($_FILES['mailfile']['tmp_name'])) {
-            echo "DP_MAILFILE_INVALID";
+            echo 'DP_MAILFILE_INVALID';
             exit(1);
         }
 
@@ -70,12 +68,12 @@ class FailedSendmailJob extends LoaderAbstract
 
         $data = '';
         $mode = 0; // 0 = headers, 1 = data
-        $fp = fopen($_FILES['mailfile']['tmp_name'], 'r');
+        $fp   = fopen($_FILES['mailfile']['tmp_name'], 'r');
 
         while (!feof($fp)) {
             $l = fgets($fp);
             if ($l == "\n") {
-                $mode++;
+                ++$mode;
             } elseif ($mode == 1) {
                 $data .= $l;
             }
@@ -88,11 +86,11 @@ class FailedSendmailJob extends LoaderAbstract
 
         // $data may include a header of <DP_SMTP_DEBUG>...</DP_SMTP_DEBUG>
         $debug_data = '';
-        $m = null;
+        $m          = null;
 
         if (preg_match('#\s*<DP_SMTP_DEBUG>(.*?)</DP_SMTP_DEBUG>\s*#s', $data, $m)) {
             $debug_data = trim($m[1]);
-            $data = substr($data, strlen($m[0]));
+            $data       = substr($data, strlen($m[0]));
         }
 
         $data = @json_decode($data, true);
@@ -106,9 +104,9 @@ class FailedSendmailJob extends LoaderAbstract
         #------------------------------
 
         $container = $this->bootFullSystem();
-        $blob = $container->getBlobStorage()->createBlobRecordFromFile($_FILES['mailfile']['tmp_name'], 'sendmail.job', 'plain/text');
+        $blob      = $container->getBlobStorage()->createBlobRecordFromFile($_FILES['mailfile']['tmp_name'], 'sendmail.job', 'plain/text');
 
-        $email = new SendmailQueue();
+        $email               = new SendmailQueue();
         $email->blob         = $blob;
         $email->subject      = $data['subject'];
         $email->to_address   = array_merge($data['to_addresses'], $data['cc_addresses'], $data['bcc_addresses']);

@@ -1,17 +1,43 @@
 <?php
-/* This file has been auto-generated. See build-vendors-mutate.php */
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 namespace Application\DeskPRO\ORM\Unprivate;
-use Doctrine\ORM\Proxy\ProxyException;
+
+use Application\DeskPRO\ORM\Proxy\ProxyGenerator;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Proxy\AbstractProxyFactory;
+use Doctrine\Common\Proxy\Proxy as BaseProxy;
 use Doctrine\Common\Proxy\ProxyDefinition;
 use Doctrine\Common\Util\ClassUtils;
-use Doctrine\Common\Proxy\Proxy as BaseProxy;
-use Application\DeskPRO\ORM\Proxy\ProxyGenerator;
-use Doctrine\ORM\ORMInvalidArgumentException;
-use Doctrine\ORM\Persisters\BasicEntityPersister;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityNotFoundException;
+use Doctrine\ORM\Persisters\BasicEntityPersister;
+
 class UnprivateProxyFactory extends AbstractProxyFactory
 {
     protected $em;
@@ -34,6 +60,7 @@ class UnprivateProxyFactory extends AbstractProxyFactory
     {
         $classMetadata   = $this->em->getClassMetadata($className);
         $entityPersister = $this->uow->getEntityPersister($className);
+
         return new ProxyDefinition(
             ClassUtils::generateProxyClassName($className, $this->proxyNs),
             $classMetadata->getIdentifierFieldNames(),
@@ -69,6 +96,7 @@ class UnprivateProxyFactory extends AbstractProxyFactory
                 }
             };
         }
+
         return function (BaseProxy $proxy) use ($entityPersister, $classMetadata) {
             $initializer = $proxy->__getInitializer();
             $cloner      = $proxy->__getCloner();
@@ -100,7 +128,7 @@ class UnprivateProxyFactory extends AbstractProxyFactory
             }
             $proxy->__setInitialized(true);
             $proxy->__setInitializer(null);
-            $class = $entityPersister->getClassMetadata();
+            $class    = $entityPersister->getClassMetadata();
             $original = $entityPersister->load($classMetadata->getIdentifierValues($proxy));
             if (null === $original) {
                 throw new EntityNotFoundException();

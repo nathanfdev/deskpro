@@ -1,45 +1,43 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Article
+ * Article.
  */
 class RoundRobinAgent extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -49,14 +47,14 @@ class RoundRobinAgent extends \Application\DeskPRO\Domain\DomainObject
     protected $robin;
 
     /**
-     * Next agent in queue
+     * Next agent in queue.
      *
      * @var \Application\DeskPRO\Entity\Person
      */
     protected $agent;
 
     /**
-     * Sort field
+     * Sort field.
      *
      * @var int
      */
@@ -69,15 +67,13 @@ class RoundRobinAgent extends \Application\DeskPRO\Domain\DomainObject
 
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
-//		$data = parent::toApiData($primary, $deep, $visited);
+        //		$data = parent::toApiData($primary, $deep, $visited);
         $data = array(
             'id' => $this->agent ? $this->agent['id'] : null,
         );
 
         return $data;
     }
-
-
 
     ############################################################################
     # Doctrine Metadata
@@ -86,42 +82,42 @@ class RoundRobinAgent extends \Application\DeskPRO\Domain\DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(array( 'name' => 'round_robin_agents', ));
+        $metadata->setPrimaryTable(array('name' => 'round_robin_agents'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\RoundRobinAgent';
 
-        $metadata->mapField(array( 'fieldName' => 'sort', 'type' => 'integer', 'nullable' => false, 'columnName' => 'sort',));
+        $metadata->mapField(array('fieldName' => 'sort', 'type' => 'integer', 'nullable' => false, 'columnName' => 'sort'));
 
         $metadata->mapOneToOne(array(
-            'id' => true,
-            'fieldName' => 'agent',
+            'id'           => true,
+            'fieldName'    => 'agent',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-            'mappedBy' => NULL,
-            'inversedBy' => NULL,
-            'joinColumns' => array(
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => array(
                 0 => array(
-                    'name' => 'agent_id',
+                    'name'                 => 'agent_id',
                     'referencedColumnName' => 'id',
-                    'nullable' => false,
-                    'onDelete' => 'cascade',
-                    'columnDefinition' => NULL,
+                    'nullable'             => false,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
                 ),
             ),
         ));
 
         $metadata->mapManyToOne(array(
-            'id' => true,
-            'fieldName' => 'robin',
+            'id'           => true,
+            'fieldName'    => 'robin',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\RoundRobin',
-            'mappedBy' => NULL,
-            'inversedBy' => 'agents',
-            'joinColumns' => array(
+            'mappedBy'     => null,
+            'inversedBy'   => 'agents',
+            'joinColumns'  => array(
                 0 => array(
-                    'name' => 'robin_id',
+                    'name'                 => 'robin_id',
                     'referencedColumnName' => 'id',
-                    'nullable' => false,
-                    'onDelete' => 'cascade',
-                    'columnDefinition' => NULL,
+                    'nullable'             => false,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
                 ),
             ),
         ));

@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -73,29 +70,30 @@ class TicketPriorityDataService extends BaseRepositoryService
      */
     protected $default_id;
 
-
     /**
-     * @param  \Application\DeskPRO\DependencyInjection\DeskproContainer $container
-     * @param  array                                                     $options
+     * @param \Application\DeskPRO\DependencyInjection\DeskproContainer $container
+     * @param array                                                     $options
+     *
      * @return BaseRepositoryService|TicketPriorityDataService
      */
     public static function create(DeskproContainer $container, array $options = null)
     {
-        if (!$options) $options = array();
-        $options['entity'] = 'Application\\DeskPRO\\Entity\\TicketPriority';
+        if (!$options) {
+            $options = array();
+        }
+        $options['entity']     = 'Application\\DeskPRO\\Entity\\TicketPriority';
         $options['translator'] = $container->getTranslator();
         $options['default_id'] = $container->getSetting('core.default_ticket_pri');
         $options['container']  = $container;
 
         $em = $container->getEm();
-        $o = new static($em, $options);
+        $o  = new static($em, $options);
 
         return $o;
     }
 
-
     /**
-     * Sets some useful objects from options
+     * Sets some useful objects from options.
      */
     protected function init()
     {
@@ -104,9 +102,9 @@ class TicketPriorityDataService extends BaseRepositoryService
         $this->continer   = $this->options['container'];
     }
 
-
     /**
-     * @param  int                                        $pri_id
+     * @param int $pri_id
+     *
      * @return \Application\DeskPRO\Entity\TicketPriority
      */
     public function get($pri_id)
@@ -115,7 +113,6 @@ class TicketPriorityDataService extends BaseRepositoryService
 
         return isset($this->pris[$pri_id]) ? $this->pris[$pri_id] : null;
     }
-
 
     /**
      * @return \Application\DeskPRO\Entity\TicketPriority[]
@@ -127,9 +124,8 @@ class TicketPriorityDataService extends BaseRepositoryService
         return $this->pris;
     }
 
-
     /**
-     * Loads all tikcet priorities into this object
+     * Loads all tikcet priorities into this object.
      */
     protected function preload()
     {
@@ -138,11 +134,11 @@ class TicketPriorityDataService extends BaseRepositoryService
         }
         $this->has_init = true;
 
-        $this->pris = $this->em->createQuery("
+        $this->pris = $this->em->createQuery('
             SELECT p
             FROM DeskPRO:TicketPriority p INDEX BY p.id
             ORDER BY p.priority ASC
-        ")->execute();
+        ')->execute();
         $this->em->getUnitOfWork()->markAsPreloaded('DeskPRO:TicketPriority');
 
         $this->pri_ids = array();
@@ -150,15 +146,15 @@ class TicketPriorityDataService extends BaseRepositoryService
 
         // force hydration
         foreach ($this->pris as $p) {
-            $this->pri_ids[] = $p->getId();
+            $this->pri_ids[]            = $p->getId();
             $this->pri_map[$p->getId()] = $p->getPriority();
             $p->getTitle();
         }
     }
 
-
     /**
-     * @param  int[]    $for_ids
+     * @param int[] $for_ids
+     *
      * @return string[]
      */
     public function getNames($for_ids = null)
@@ -181,7 +177,7 @@ class TicketPriorityDataService extends BaseRepositoryService
     }
 
     /**
-     * Gets a map of id=>priority
+     * Gets a map of id=>priority.
      *
      * @return array
      */
@@ -193,7 +189,8 @@ class TicketPriorityDataService extends BaseRepositoryService
     }
 
     /**
-     * @param  array                                        $ids
+     * @param array $ids
+     *
      * @return \Application\DeskPRO\Entity\TicketPriority[]
      */
     public function getByIds(array $ids)
@@ -214,7 +211,8 @@ class TicketPriorityDataService extends BaseRepositoryService
      * Calls a method on the repository class and caches the result.
      *
      * @param $method
-     * @param  array $args
+     * @param array $args
+     *
      * @return mixed
      */
     public function __call($method, array $args = array())

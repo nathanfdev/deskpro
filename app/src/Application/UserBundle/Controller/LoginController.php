@@ -1,53 +1,49 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage UserBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
-use Application\DeskPRO\EntityRepository\LoginLog;
-use Application\DeskPRO\Form\Captcha\Recaptcha;
-use Application\DeskPRO\Service\RateLimit;
-use Application\DeskPRO\People\PersonGuest;
-use Application\DeskPRO\Settings\LoginRateLimitSettings;
-use Application\DeskPRO\Translate\SystemLanguage;
-use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use Application\DeskPRO\Controller\Helper\LoginHelper;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
-use Application\DeskPRO\Service\CheckWhitelistedIP;
 use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\EntityRepository\LoginLog;
+use Application\DeskPRO\HttpFoundation\Request;
+use Application\DeskPRO\People\PersonGuest;
+use Application\DeskPRO\Service\CheckWhitelistedIP;
+use Application\DeskPRO\Service\RateLimit;
+use Application\DeskPRO\Settings\LoginRateLimitSettings;
+use Application\DeskPRO\Translate\SystemLanguage;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Orb\Auth\Adapter\SamlAdapterInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
@@ -57,7 +53,6 @@ use Orb\Log\Writer\ArrayWriter;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
 use Orb\Validator\StringEmail;
-use Application\DeskPRO\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -67,7 +62,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
     protected $tpl_prefix = 'UserBundle:Login';
     /** @var string */
     protected $route_prefix = 'user';
-    const USERSOURCE_TEST = 'usersource_test';
+    const USERSOURCE_TEST   = 'usersource_test';
 
     /**
      * @var \Application\DeskPRO\Controller\Helper\LoginHelper
@@ -94,7 +89,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
             $this->route_prefix
         );
 
-        $this->auth_manager = $this->container->getSystemService('authentication_manager');
+        $this->auth_manager       = $this->container->getSystemService('authentication_manager');
         $this->usersource_manager = $this->container->getSystemService('usersource_manager');
 
         $GLOBALS['DP_SET_SKIP_CACHE'] = true;
@@ -103,20 +98,19 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
     protected function loginViaToken()
     {
         if (($token = $this->in->getString('tok')) && strpos($token, '-')) {
-
             list($person_id, $login_token) = explode('-', $token, 2);
-            $person = $this->em->find('DeskPRO:Person', $person_id);
+            $person                        = $this->em->find('DeskPRO:Person', $person_id);
             if (!$person || !$person->checkPassword($login_token)) {
                 $person = null;
             }
 
             // If this is a brand new install, we could have an automatic login token to check
             if (!$person) {
-                $first = Arrays::getFirstItem($this->container->getAgentData()->getAgents());
+                $first        = Arrays::getFirstItem($this->container->getAgentData()->getAgents());
                 $install_time = $this->settings->get('core.install_timestamp');
 
                 if ($first && $install_time && $install_time > (time() - 3600)) {
-                    $secret = sha1($first->secret_string . $first->salt);
+                    $secret = sha1($first->secret_string.$first->salt);
                     if (Util::checkStaticSecurityToken($token, $secret)) {
                         $person = $first;
                     }
@@ -145,7 +139,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
                 if ($this->in->getBool('remember_me')) {
                     $cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie(
                         'dpreme',
-                        $person->getId() . '-' . $person->getRememberMeCookieCode(),
+                        $person->getId().'-'.$person->getRememberMeCookieCode(),
                         'never',
                         true,
                         \Orb\Util\Web::getRequestProtocol() == 'HTTPS' ? true : false
@@ -173,7 +167,6 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
         return false;
     }
 
-
     /**
      * Handles showing the login form, and on POST handles login credentials
      * through the auth adapters.
@@ -183,8 +176,11 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
         $return = $this->request->getReturnParam();
 
         if ($this->loginViaToken() || $this->session->getPerson()->getId()) {
-            if ($return) return $this->redirect($return);
-            else return $this->redirectRoute('user');
+            if ($return) {
+                return $this->redirect($return);
+            } else {
+                return $this->redirectRoute('user');
+            }
         }
 
         if (!$this->session->getPerson()->getId()) {
@@ -196,14 +192,14 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
             }
         }
 
-        $register = new \Application\UserBundle\Form\Model\Register();
+        $register    = new \Application\UserBundle\Form\Model\Register();
         $tpl_globals = $this->container->get('templating.globals');
         if ($tpl_globals->getVariable('login_with_email')) {
             $register->email = $tpl_globals->getVariable('login_with_email');
         }
 
         $reg_formtype = new \Application\UserBundle\Form\RegisterType();
-        $form = $this->get('form.factory')->create($reg_formtype, $register);
+        $form         = $this->get('form.factory')->create($reg_formtype, $register);
 
         $failed_login_name = false;
         if ($this->session->has('failed_login_name')) {
@@ -231,13 +227,13 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
             unset($GLOBALS['DP_SET_SKIP_CACHE']);
         }
 
-        return $this->render($this->tpl_prefix . ':index.html.twig', array(
-            'return' => $return,
-            'route_prefix' => $this->route_prefix,
-            'form' => $form->createView(),
+        return $this->render($this->tpl_prefix.':index.html.twig', array(
+            'return'            => $return,
+            'route_prefix'      => $this->route_prefix,
+            'form'              => $form->createView(),
             'failed_login_name' => $failed_login_name,
-            'account_disabled' => $account_disabled,
-            'captcha' => $captcha,
+            'account_disabled'  => $account_disabled,
+            'captcha'           => $captcha,
         ));
     }
 
@@ -246,10 +242,10 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
         // When an agent actually logs out, we should be clearing the state
         $person = $this->session->getPerson();
         if ($person['is_agent']) {
-            $this->db->executeUpdate("
+            $this->db->executeUpdate('
                 DELETE FROM people_prefs
                 WHERE person_id = ? AND name = ?
-            ", array($person['id'], 'agent.ui.state'));
+            ', array($person['id'], 'agent.ui.state'));
         }
 
         $this->session->invalidate();
@@ -279,7 +275,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
     public function logoutAction($auth)
     {
-        if (!\Orb\Util\Util::checkStaticSecurityToken($auth, md5(App::getAppSecret() . 'user_logout'))) {
+        if (!\Orb\Util\Util::checkStaticSecurityToken($auth, md5(App::getAppSecret().'user_logout'))) {
             return $this->redirectRoute('user');
         }
 
@@ -317,13 +313,13 @@ HTML;
                 return $res;
             }
 
-            return $this->redirect($this->request->getBaseUrl() . '/admin/login?o=1');
+            return $this->redirect($this->request->getBaseUrl().'/admin/login?o=1');
         } elseif ($this->in->getString('to') == 'agent') {
             if ($res = $this->checkAuthSystemForResponse($this->getAgentAuthSettings(), true)) {
                 return $res;
             }
 
-            return $this->redirect($this->request->getBaseUrl() . '/agent/login?o=1');
+            return $this->redirect($this->request->getBaseUrl().'/agent/login?o=1');
         } else {
             if ($this->in->getString('via') == 'user_chat') {
                 return $this->redirectRoute('user_widget_chat');
@@ -338,8 +334,10 @@ HTML;
 
     /**
      * @param $usersource_id
-     * @return Response
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *
+     * @return Response
      */
     public function samlSingleLogoutServiceAction($usersource_id)
     {
@@ -360,8 +358,10 @@ HTML;
 
     /**
      * @param $usersource_id
-     * @return Response
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *
+     * @return Response
      */
     public function samlMetadataAction($usersource_id)
     {
@@ -385,24 +385,26 @@ HTML;
         }
 
         if (!$this->in->getBool('agent_login') && !$this->consumeRequest('user_login')) {
-            return $this->redirectRoute($this->route_prefix . '_login');
+            return $this->redirectRoute($this->route_prefix.'_login');
         }
 
         $return = $this->request->getReturnParam();
 
         if ($lockTime = $this->getLoginLockoutTime($this->in->getString('email'))) {
             $this->session->setFlash('failed_login_rate', $lockTime);
-            return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
+
+            return $this->redirectRoute($this->route_prefix.'_login', array('return' => $return));
         }
 
         /** @var RateLimit $rateLimit */
         $rateLimit = $this->get(RateLimit::KEY);
-        $captcha = null;
+        $captcha   = null;
         if ($rateLimit->isActionLimited(RateLimit::ACT_LOGIN)) {
             $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_login'));
             if (!$captcha->validate()) {
                 $this->session->setFlash('captcha_login_error', true);
-                return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
+
+                return $this->redirectRoute($this->route_prefix.'_login', array('return' => $return));
             }
         }
 
@@ -415,10 +417,10 @@ HTML;
                 $this->session->set('failed_login_name', true);
                 $this->session->save();
 
-                return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
+                return $this->redirectRoute($this->route_prefix.'_login', array('return' => $return));
             }
 
-            return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
+            return $this->redirectRoute($this->route_prefix.'_login', array('return' => $return));
         }
 
         if (!$result->isValid()) {
@@ -429,7 +431,7 @@ HTML;
                     if (!extension_loaded('ldap')) {
                         return $this->render('UserBundle:Main:error-standard.html.twig', array(
                             'error_message' => 'LDAP Extension Required',
-                            'error_title' => 'Your server does not have the LDAP extension enabled so your login could not be processed. See: http://www.php.net/manual/en/ldap.installation.php',
+                            'error_title'   => 'Your server does not have the LDAP extension enabled so your login could not be processed. See: http://www.php.net/manual/en/ldap.installation.php',
                         ));
                     }
                 }
@@ -449,20 +451,20 @@ HTML;
             // Save login log
             if ($attempt_person) {
                 $this->db->insert('login_log', array(
-                    'person_id' => $attempt_person->getId(),
-                    'area' => defined('DP_INTERFACE') ? DP_INTERFACE : 'unknown',
-                    'is_success' => 0,
-                    'ip_address' => dp_get_user_ip_address(),
-                    'hostname' => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
-                    'user_agent' => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
-                    'date_created' => date('Y-m-d H:i:s')
+                    'person_id'    => $attempt_person->getId(),
+                    'area'         => defined('DP_INTERFACE') ? DP_INTERFACE : 'unknown',
+                    'is_success'   => 0,
+                    'ip_address'   => dp_get_user_ip_address(),
+                    'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
+                    'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
+                    'date_created' => date('Y-m-d H:i:s'),
                 ));
             }
 
             $this->session->set('failed_login_name', $this->in->getString('email'));
             $this->session->save();
 
-            return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
+            return $this->redirectRoute($this->route_prefix.'_login', array('return' => $return));
         }
 
         $identity = $result->getIdentity();
@@ -478,7 +480,7 @@ HTML;
             $this->session->set('account_disabled', $person->id);
             $this->session->save();
 
-            return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
+            return $this->redirectRoute($this->route_prefix.'_login', array('return' => $return));
         }
 
         if (!isset($GLOBALS['DP_LOGIN_VIA_TOKEN'])) {
@@ -515,16 +517,16 @@ HTML;
                 }
 
                 $data = array(
-                    'agent_id' => $person['id'],
-                    'agent_name' => $person['display_name'],
+                    'agent_id'         => $person['id'],
+                    'agent_name'       => $person['display_name'],
                     'agent_short_name' => $person->getDisplayContactShort(4),
-                    'picture_url' => $person->getPictureUrl(10)
+                    'picture_url'      => $person->getPictureUrl(10),
                 );
 
                 $cm = new \Application\DeskPRO\Entity\ClientMessage();
                 $cm->fromArray(array(
-                    'channel' => 'agent.new-agent-online',
-                    'data' => $data,
+                    'channel'           => 'agent.new-agent-online',
+                    'data'              => $data,
                     'created_by_client' => $this->session->getEntityId(),
                 ));
 
@@ -538,13 +540,13 @@ HTML;
 
                 // Login log
                 $this->db->insert('login_log', array(
-                    'person_id' => $person->getId(),
-                    'area' => defined('DP_INTERFACE') ? DP_INTERFACE : 'unknown',
-                    'is_success' => 1,
-                    'ip_address' => dp_get_user_ip_address(),
-                    'hostname' => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
-                    'user_agent' => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
-                    'date_created' => date('Y-m-d H:i:s')
+                    'person_id'    => $person->getId(),
+                    'area'         => defined('DP_INTERFACE') ? DP_INTERFACE : 'unknown',
+                    'is_success'   => 1,
+                    'ip_address'   => dp_get_user_ip_address(),
+                    'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
+                    'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
+                    'date_created' => date('Y-m-d H:i:s'),
                 ));
 
                 $this->em->persist($cm);
@@ -556,7 +558,7 @@ HTML;
         if ($this->in->getBool('remember_me')) {
             $cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie(
                 'dpreme',
-                $person->getId() . '-' . $person->getRememberMeCookieCode(),
+                $person->getId().'-'.$person->getRememberMeCookieCode(),
                 'never',
                 true,
                 \Orb\Util\Web::getRequestProtocol() == 'HTTPS' ? true : false
@@ -568,7 +570,6 @@ HTML;
         \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
 
         if ($login_validate_comments = App::getSession()->get('login_validate_comments')) {
-
             foreach ($login_validate_comments as $validate_info) {
                 $comment = $this->em->find($validate_info[0], $validate_info[1]);
                 if (!$comment) {
@@ -606,7 +607,7 @@ HTML;
     {
         if (!CheckWhitelistedIP::checkIP($this->container, $person)) {
             return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
-                'ip' => dp_get_user_ip_address()
+                'ip' => dp_get_user_ip_address(),
             ));
         }
     }
@@ -700,9 +701,8 @@ HTML;
 
             // The user is already logged in
             if ($result->isValid()) {
-
                 $login_processor = new LoginProcessor($usersource, $result->getIdentity());
-                $person = $login_processor->getPerson();
+                $person          = $login_processor->getPerson();
                 $person->setLastLoginAt();
 
                 $this->em->persist($person);
@@ -711,10 +711,10 @@ HTML;
                 $this->_setupUsersourceSession($usersource, $person, $result);
 
                 if ($this->in->getString('js_tell')) {
-                    $return = $this->generateUrl($route_type . '_jstell_login', array(
-                        'jstell' => $this->in->getString('js_tell'),
+                    $return = $this->generateUrl($route_type.'_jstell_login', array(
+                        'jstell'         => $this->in->getString('js_tell'),
                         'security_token' => $this->session->getEntity()->generateSecurityToken('jstell'),
-                        'usersource_id' => $usersource_id
+                        'usersource_id'  => $usersource_id,
                     ));
 
                     return $this->redirect($return);
@@ -733,17 +733,21 @@ HTML;
                 // We expect a redirect to be rquired
             } elseif ($result->isRedirectRequired()) {
                 if (!$return = $this->request->getReturnParam()) {
-                    if (!$return = $this->request->server->get('HTTP_REFERER')) {
+                    if ($return = $this->request->server->get('HTTP_REFERER')) {
+                        if (false !== stripos($return, '/login')) {
+                            $return = null;
+                        }
+                    } else {
                         $return = null;
                     }
                 }
                 $this->session->set('auth_return', $return);
 
                 if ($this->in->getString('js_tell')) {
-                    $return = $this->generateUrl($route_type . '_jstell_login', array(
-                        'jstell' => $this->in->getString('js_tell'),
+                    $return = $this->generateUrl($route_type.'_jstell_login', array(
+                        'jstell'         => $this->in->getString('js_tell'),
                         'security_token' => $this->session->getEntity()->generateSecurityToken('jstell'),
-                        'usersource_id' => $usersource_id
+                        'usersource_id'  => $usersource_id,
                     ), true);
                     $this->session->set('auth_return', $return);
                 }
@@ -756,21 +760,19 @@ HTML;
             } else {
                 $this->session->setFlash('login_failed', true);
 
-                return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
+                return $this->redirectRoute($this->route_prefix.'_login', array('return' => $return));
             }
 
             #------------------------------
             # Other types should return a result right away
             #------------------------------
-
         } else {
             $result = $adapter->authenticate();
 
             // Valid
             if ($result->isValid()) {
-
                 $login_processor = new LoginProcessor($usersource, $result->getIdentity());
-                $person = $login_processor->getPerson();
+                $person          = $login_processor->getPerson();
 
                 $this->_setupUsersourceSession($usersource, $person, $result);
 
@@ -785,14 +787,14 @@ HTML;
             } else {
                 $this->session->setFlash('login_failed', true);
 
-                return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
+                return $this->redirectRoute($this->route_prefix.'_login', array('return' => $return));
             }
         }
     }
 
     public function authenticateCallbackAction($usersource_id)
     {
-        $return = $this->request->getReturnParam();
+        $return     = $this->request->getReturnParam();
         $usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
 
         if (!$usersource) {
@@ -815,7 +817,7 @@ HTML;
         if (!($adapter instanceof \Orb\Auth\Adapter\CallbackInterface)) {
             $this->session->setFlash('login_failed', true);
 
-            return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
+            return $this->redirectRoute($this->route_prefix.'_login', array('return' => $return));
         }
 
         $adapter->setCallbackContext($_REQUEST);
@@ -824,9 +826,8 @@ HTML;
 
         // Valid
         if ($result->isValid()) {
-
             $login_processor = new LoginProcessor($usersource, $result->getIdentity(), $usersource_test);
-            $person = $login_processor->getPerson();
+            $person          = $login_processor->getPerson();
 
             if ($usersource_test) {
                 //--------------------------------------
@@ -835,7 +836,7 @@ HTML;
                 return $this->render(
                     'DeskPRO:Auth:_sso_test_verified.html.twig', array(
                         'person' => $person,
-                        'log' => $arr_writer->getMessagesAsString()
+                        'log'    => $arr_writer->getMessagesAsString(),
                     )
                 );
             }
@@ -857,14 +858,14 @@ HTML;
             if ($usersource_test) {
                 return $this->render(
                     'DeskPRO:Auth:_sso_test_failed.html.twig', array(
-                        'log' => implode("\n", $arr_writer->getMessages())
+                        'log' => implode("\n", $arr_writer->getMessages()),
                     )
                 );
             }
 
             $this->session->setFlash('login_failed', true);
 
-            return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
+            return $this->redirectRoute($this->route_prefix.'_login', array('return' => $return));
         }
     }
 
@@ -882,7 +883,7 @@ HTML;
         }
 
         $reg_formtype = new \Application\UserBundle\Form\RegisterType();
-        $form = $this->get('form.factory')->create($reg_formtype, $register);
+        $form         = $this->get('form.factory')->create($reg_formtype, $register);
 
         $captcha = null;
         /** @var RateLimit $rateLimit */
@@ -891,19 +892,20 @@ HTML;
             $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_reset_password'));
         }
 
-        return $this->render($this->tpl_prefix . ':reset-password.html.twig', array(
-            'route_prefix' => $this->route_prefix,
+        return $this->render($this->tpl_prefix.':reset-password.html.twig', array(
+            'route_prefix'  => $this->route_prefix,
             'invalid_email' => $invalid_email,
-            'invalid_code' => $invalid_code,
-            'form' => $form->createView(),
-            'invalid' => $this->in->getBool('inv'),
-            'captcha' => $captcha,
+            'invalid_code'  => $invalid_code,
+            'form'          => $form->createView(),
+            'invalid'       => $this->in->getBool('inv'),
+            'captcha'       => $captcha,
         ));
     }
 
     /**
-     * @param  Usersource $usersource
-     * @param  null $displayContext
+     * @param Usersource $usersource
+     * @param null       $displayContext
+     *
      * @return \Orb\Auth\Adapter\AdapterInterface
      */
     protected function _initUserSourceAdapter(Usersource $usersource, $displayContext = null, $useInterface = null)
@@ -936,7 +938,8 @@ HTML;
                     return $this->createJsonResponse(array('success' => 1));
                 } else {
                     $this->session->setFlash('captcha_reset_error', true);
-                    return $this->redirectRoute($this->route_prefix . '_login_resetpass', array('return' => $request->getReturnParam()));
+
+                    return $this->redirectRoute($this->route_prefix.'_login_resetpass', array('return' => $request->getReturnParam()));
                 }
             }
         }
@@ -954,12 +957,12 @@ HTML;
         /** @var \Application\DeskPRO\EntityRepository\TmpData $rep */
         $rep = $this->em->getRepository('DeskPRO:TmpData');
         // hardcoded rate-limit for reset password request
-        if (2 <= $rep->getCountByName('reset-password:' . DP_INTERFACE . ':' . $person['id'], 30 * 60)) {
+        if (2 <= $rep->getCountByName('reset-password:'.DP_INTERFACE.':'.$person['id'], 30 * 60)) {
             return $_format == 'json'
                 ? $this->createJsonResponse(array('success' => 1))
-                : $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
+                : $this->render($this->tpl_prefix.':reset-password-sent.html.twig', array(
                     'route_prefix' => $this->route_prefix,
-                    'did_send' => true
+                    'did_send'     => true,
                 ));
         }
 
@@ -992,7 +995,7 @@ HTML;
             }
 
             // Default is to just show standard message to not reveal if account exists
-            return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
+            return $this->render($this->tpl_prefix.':reset-password-sent.html.twig', array(
                 'route_prefix' => $this->route_prefix,
             ));
         }
@@ -1003,7 +1006,7 @@ HTML;
         if (!$person->password) {
             // TODO: this needs to be fixed, with new userassoc finder, and needs to be checked in order
             $associations = $this->em->getRepository('DeskPRO:PersonUsersourceAssoc')->getAssociationsForPerson($person);
-            $us_names = array();
+            $us_names     = array();
 
             foreach ($associations as $assoc) {
                 $us_names[] = $assoc->usersource->getTitle();
@@ -1025,9 +1028,9 @@ HTML;
                     }
 
                     // No other user sources for the user
-                    return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
+                    return $this->render($this->tpl_prefix.':reset-password-sent.html.twig', array(
                         'route_prefix' => $this->route_prefix,
-                        'did_send' => false
+                        'did_send'     => false,
                     ));
                 }
             }
@@ -1039,7 +1042,7 @@ HTML;
             if ($person->can_admin && $person->is_agent && !$person->is_deleted) {
                 $vars = array(
                     'person' => $person,
-                    'email' => $email
+                    'email'  => $email,
                 );
 
                 $this->container->getTranslator()->setDefaultPersonContext($person);
@@ -1053,25 +1056,25 @@ HTML;
                     return $this->createJsonResponse(array('success' => 1));
                 }
 
-                return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
+                return $this->render($this->tpl_prefix.':reset-password-sent.html.twig', array(
                     'route_prefix' => $this->route_prefix,
-                    'did_send' => true
+                    'did_send'     => true,
                 ));
             }
         }
 
         // If they're still here, then we just send them through the normal DeskPRO reset procedure
 
-        $code_data = TmpData::create('reset-password', array('person_id' => $person['id'], 'interface' => DP_INTERFACE), '+3 days');
-        $code_data['name'] = 'reset-password:' . DP_INTERFACE . ':' . $person['id'];
+        $code_data         = TmpData::create('reset-password', array('person_id' => $person['id'], 'interface' => DP_INTERFACE), '+3 days');
+        $code_data['name'] = 'reset-password:'.DP_INTERFACE.':'.$person['id'];
         $this->em->persist($code_data);
         $this->em->flush();
 
         $vars = array(
-            'code' => $code_data->getCode(),
-            'person' => $person,
-            'email' => $email,
-            'interface' => DP_INTERFACE
+            'code'      => $code_data->getCode(),
+            'person'    => $person,
+            'email'     => $email,
+            'interface' => DP_INTERFACE,
         );
 
         $this->container->getTranslator()->setDefaultPersonContext($person);
@@ -1091,9 +1094,9 @@ HTML;
         $this->session->remove('auth_person_id');
         $this->session->save();
 
-        return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
+        return $this->render($this->tpl_prefix.':reset-password-sent.html.twig', array(
             'route_prefix' => $this->route_prefix,
-            'did_send' => true
+            'did_send'     => true,
         ));
     }
 
@@ -1101,6 +1104,7 @@ HTML;
     {
         if (!$this->session->getPerson() instanceof PersonGuest) {
             $this->_logoutPerson();
+
             return $this->redirectRoute('user_login_resetpass_newpass', array('code' => $code));
         }
 
@@ -1112,7 +1116,7 @@ HTML;
             $person = $this->em->find('DeskPRO:Person', $code_data->getData('person_id', 0));
         }
 
-        if (!$code_data OR !$person OR $code_data->getData('is_used')) {
+        if (!$code_data or !$person or $code_data->getData('is_used')) {
             return $this->render('UserBundle:Login:reset-password-badcode.html.twig', array(
                 'route_prefix' => $this->route_prefix,
             ));
@@ -1120,7 +1124,7 @@ HTML;
 
         $errors = array();
         if ($this->in->getBool('process')) {
-            $pass = $this->in->getString('password');
+            $pass  = $this->in->getString('password');
             $pass2 = $this->in->getString('password2');
 
             if ($pass != $pass2) {
@@ -1130,7 +1134,6 @@ HTML;
             }
 
             if (!$errors) {
-
                 $is_new_user = !$person->is_user;
 
                 $person->setPassword($pass);
@@ -1160,14 +1163,14 @@ HTML;
                     return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket_ref));
                 }
 
-                return $this->redirectRoute($this->route_prefix . '_login');
+                return $this->redirectRoute($this->route_prefix.'_login');
             }
         }
 
-        return $this->render($this->tpl_prefix . ':reset-password-newpass.html.twig', array(
-            'code' => $code_data->getCode(),
+        return $this->render($this->tpl_prefix.':reset-password-newpass.html.twig', array(
+            'code'         => $code_data->getCode(),
             'route_prefix' => $this->route_prefix,
-            'errors' => $errors
+            'errors'       => $errors,
         ));
     }
 
@@ -1175,7 +1178,6 @@ HTML;
     {
         return $this->resetPasswordNewPassAction($this->in->getString('reset_code'));
     }
-
 
     ############################################################################
     # Inline login
@@ -1203,11 +1205,11 @@ HTML;
         $person = $identity['person'];
         $person->setLastLoginAt();
         $person->loadHelper('FeedbackVotes', array(
-            'visitor' => $this->session->getVisitor()
+            'visitor' => $this->session->getVisitor(),
         ));
         $person->loadHelper('HelpdeskUser', array(
             'session' => $this->session,
-            'visitor' => $this->session->getVisitor()
+            'visitor' => $this->session->getVisitor(),
         ));
 
         $this->person = $person;
@@ -1223,10 +1225,10 @@ HTML;
         $html = $this->renderView('UserBundle:Common:form-email-login-row.html.twig', array('person' => $person, 'mode' => $this->in->getString('mode')));
 
         return $this->createJsonResponse(array(
-            'html' => $html,
+            'html'             => $html,
             'sections_replace' => array(),
-            'person_id' => $person['id'],
-            'name' => $person['name']
+            'person_id'        => $person['id'],
+            'name'             => $person['name'],
         ));
     }
 
@@ -1241,7 +1243,7 @@ HTML;
             throw $this->createNotFoundException();
         }
 
-        $agent = $this->container->getAgentData()->get($tmp->getData('agent_id'));
+        $agent  = $this->container->getAgentData()->get($tmp->getData('agent_id'));
         $person = $this->em->getRepository('DeskPRO:Person')->find($tmp->getData('person_id'));
 
         if (!$agent || !$agent->is_agent || !$agent->hasPerm('agent_people.login_as') || !$person || $person->is_agent) {
@@ -1256,26 +1258,26 @@ HTML;
         \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
 
         $this->db->insert('login_log', array(
-            'person_id' => $person->getId(),
-            'area' => 'user',
-            'is_success' => 1,
-            'ip_address' => dp_get_user_ip_address(),
-            'hostname' => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
-            'user_agent' => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
-            'note' => "Agent login by Admin #{$agent->id} {$agent->display_name} <{$agent->email_address}>",
-            'date_created' => date('Y-m-d H:i:s')
+            'person_id'    => $person->getId(),
+            'area'         => 'user',
+            'is_success'   => 1,
+            'ip_address'   => dp_get_user_ip_address(),
+            'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
+            'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
+            'note'         => "Agent login by Admin #{$agent->id} {$agent->display_name} <{$agent->email_address}>",
+            'date_created' => date('Y-m-d H:i:s'),
         ));
 
         // Log to activity log
         $this->db->insert('person_activity', array(
-            'person_id' => $person->id,
-            'action_type' => 'agent_login_as',
+            'person_id'    => $person->id,
+            'action_type'  => 'agent_login_as',
             'date_created' => date('Y-m-d H:i:s'),
-            'details' => serialize(array(
-                'agent_id' => $agent->id,
-                'agent_name' => $agent->display_name,
-                'agent_email' => $agent->email_address
-            ))
+            'details'      => serialize(array(
+                'agent_id'    => $agent->id,
+                'agent_name'  => $agent->display_name,
+                'agent_email' => $agent->email_address,
+            )),
         ));
 
         return $this->redirectRoute('user_profile');
@@ -1297,7 +1299,7 @@ HTML;
 
         $whitelist_ip = new \Application\DeskPRO\Entity\WhiteListedIp();
 
-        $whitelist_ip['person'] = $person;
+        $whitelist_ip['person']     = $person;
         $whitelist_ip['ip_address'] = $data['ip'];
 
         $this->em->persist($whitelist_ip);
@@ -1318,7 +1320,7 @@ HTML;
     {
         // TODO: user auth_manager for this
         $interface = $this->getInterface();
-        $source = $this
+        $source    = $this
             ->usersource_manager
             ->getAll()
             ->forInterface($interface)// TODO: will always be user interface since this is always a user URL
@@ -1336,7 +1338,7 @@ HTML;
             return new NotFoundHttpException();
         }
 
-        $arr_writer = new ArrayWriter();
+        $arr_writer      = new ArrayWriter();
         $usersource_test = $this->session->getFlash(self::USERSOURCE_TEST, array());
         if (!$usersource_test) {
             $usersource_test = $this->in->getBool(self::USERSOURCE_TEST);
@@ -1349,8 +1351,7 @@ HTML;
 
         if ($result->isValid()) {
             $login_processor = new LoginProcessor($source, $result->getIdentity(), $usersource_test);
-            $person = $login_processor->getPerson();
-
+            $person          = $login_processor->getPerson();
 
             if ($usersource_test) {
                 //--------------------------------------
@@ -1358,7 +1359,7 @@ HTML;
                 //--------------------------------------
                 return $this->render('DeskPRO:Auth:_sso_test_verified.html.twig', array(
                         'person' => $person,
-                        'log' => $arr_writer->getMessagesAsString()
+                        'log'    => $arr_writer->getMessagesAsString(),
                     )
                 );
             }
@@ -1377,8 +1378,8 @@ HTML;
             //--------------------------------------
             if ($usersource_test) {
                 return $this->render('DeskPRO:Auth:_sso_test_failed.html.twig', array(
-                        'log' => implode("\n", $arr_writer->getMessages()),
-                        'display_errors' => $result->getMessages('display_errors')
+                        'log'            => implode("\n", $arr_writer->getMessages()),
+                        'display_errors' => $result->getMessages('display_errors'),
                     )
                 );
             }
@@ -1396,8 +1397,7 @@ HTML;
         \Application\DeskPRO\Entity\Usersource $usersource,
         \Application\DeskPRO\Entity\Person $person,
         \Orb\Auth\Result $result
-    )
-    {
+    ) {
         $this->session->set('auth_person_id', $person['id']);
         $this->session->setFlash('is_from_login', 'yes');
         $this->session->set('dp_interface', DP_INTERFACE);
@@ -1413,7 +1413,6 @@ HTML;
         \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
     }
 
-
     /**
      * @return bool
      */
@@ -1422,13 +1421,15 @@ HTML;
         if (defined('DP_INTERFACE')) {
             return DP_INTERFACE;
         } else {
-            return null;
+            return;
         }
     }
 
     /**
-     * get current login lockout time
+     * get current login lockout time.
+     *
      * @param null $email
+     *
      * @return int|mixed
      */
     protected function getLoginLockoutTime($email = null)
@@ -1444,15 +1445,15 @@ HTML;
         $context = $person['is_agent'] ? 'agent' : 'user';
 
         // 0 if disabled
-        if (!$this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.enabled')) {
+        if (!$this->settings->get($context.'.'.LoginRateLimitSettings::KEY.'.enabled')) {
             return 0;
         }
 
         /** @var LoginLog $rep */
-        $rep = $this->em->getRepository('DeskPRO:LoginLog');
-        $maxAttempts = $this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.' . 'attempts');
-        $checkTime = $this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.' . 'attempts_time');
-        $lockTime = $this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.' . 'lock_time');
+        $rep         = $this->em->getRepository('DeskPRO:LoginLog');
+        $maxAttempts = $this->settings->get($context.'.'.LoginRateLimitSettings::KEY.'.'.'attempts');
+        $checkTime   = $this->settings->get($context.'.'.LoginRateLimitSettings::KEY.'.'.'attempts_time');
+        $lockTime    = $this->settings->get($context.'.'.LoginRateLimitSettings::KEY.'.'.'lock_time');
 
         return $rep->getLoginLockoutTime($person, $maxAttempts, $checkTime, $lockTime);
     }

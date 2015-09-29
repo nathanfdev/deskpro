@@ -44,7 +44,8 @@
     "react/child-process": "0.4.*",
     "react/stream": "0.4.*",
     "zendesk/zendesk_api_client_php": "1.2.*",
-    "defuse/php-encryption": "^1.2"
+    "defuse/php-encryption": "^1.2",
+    "fabpot/php-cs-fixer": "^1.10"
   },
   "preferred-install": "dist"
 }

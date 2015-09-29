@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Tree;
 
 /**
@@ -52,10 +49,11 @@ class TreeProxy implements \ArrayAccess
     protected $__child_cache;
 
     /**
-     * Go over each item in an array and wrap it with this tree proxy and $filter
+     * Go over each item in an array and wrap it with this tree proxy and $filter.
      *
-     * @param  array    $array
-     * @param  callback $filter
+     * @param array    $array
+     * @param callback $filter
+     *
      * @return array
      */
     public static function makeTreeProxyArray($array, $filter)
@@ -67,13 +65,12 @@ class TreeProxy implements \ArrayAccess
                 continue;
             }
 
-            $c_obj = new static($c, $filter);
+            $c_obj   = new static($c, $filter);
             $ret[$k] = $c_obj;
         }
 
         return $ret;
     }
-
 
     /**
      * @param mixed    $obj
@@ -81,10 +78,9 @@ class TreeProxy implements \ArrayAccess
      */
     public function __construct($obj, $filter)
     {
-        $this->__obj = $obj;
+        $this->__obj    = $obj;
         $this->__filter = $filter;
     }
-
 
     /**
      * @return mixed
@@ -93,7 +89,6 @@ class TreeProxy implements \ArrayAccess
     {
         return $this->__obj;
     }
-
 
     /**
      * Get the children that pas the filter, with each child itself being wrapped with the same filter.
@@ -130,7 +125,6 @@ class TreeProxy implements \ArrayAccess
 
         return $this->__child_cache;
     }
-
 
     ####################################################################################################################
     # Implementations of magic methods
@@ -177,7 +171,7 @@ class TreeProxy implements \ArrayAccess
         if (is_callable(array($this->__obj, $name))) {
             return call_user_func_array(array($this->__obj, $name), $arguments);
         } else {
-            return null;
+            return;
         }
     }
 

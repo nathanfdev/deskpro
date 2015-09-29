@@ -1,38 +1,38 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @category Input
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ *
+ * @category Input
+ */
 namespace Orb\Input\Reader\Source;
+
 use Orb\Util\OptionsArray;
 use Orb\Util\Web;
 
@@ -42,13 +42,15 @@ use Orb\Util\Web;
 class Superglobal implements SourceInterface, ResetSourceInterface
 {
     /**
-     * The superglobal name
+     * The superglobal name.
+     *
      * @var string
      */
     protected $superglobal;
 
     /**
-     * Array of data
+     * Array of data.
+     *
      * @var array
      */
     protected $array = null;
@@ -67,21 +69,18 @@ class Superglobal implements SourceInterface, ResetSourceInterface
     public function __construct($sg_name, array $options = null)
     {
         $this->superglobal = $sg_name;
-        $this->options = new OptionsArray($options ?: array());
+        $this->options     = new OptionsArray($options ?: array());
     }
 
-
     /**
-     * @return void
      */
     public function resetSource()
     {
         $this->array = null;
     }
 
-
     /**
-     * Get all data
+     * Get all data.
      *
      * @return array|null
      */
@@ -92,12 +91,12 @@ class Superglobal implements SourceInterface, ResetSourceInterface
         return $this->array;
     }
 
-
     /**
-     * Get the value of some variable
+     * Get the value of some variable.
      *
-     * @param  string|array $name    The name of the variable
-     * @param  mixed        $options Any options there may be
+     * @param string|array $name    The name of the variable
+     * @param mixed        $options Any options there may be
+     *
      * @return mixed
      */
     public function getValue($name, $options = null)
@@ -107,19 +106,18 @@ class Superglobal implements SourceInterface, ResetSourceInterface
         $parts = array();
         if (is_array($name)) {
             $parts = $name;
-            $name = array_shift($parts);
+            $name  = array_shift($parts);
         }
 
         if (isset($this->array[$name])) {
             $value = $this->array[$name];
         } else {
-            return null;
+            return;
         }
 
         if ($parts) {
             foreach ($parts as $part) {
-
-                if (!is_array($value) OR !isset($value[$part])) {
+                if (!is_array($value) or !isset($value[$part])) {
                     $value = null;
                     break;
                 }
@@ -133,7 +131,9 @@ class Superglobal implements SourceInterface, ResetSourceInterface
 
     protected function _initArray()
     {
-        if ($this->array !== null) return; // already done
+        if ($this->array !== null) {
+            return;
+        } // already done
 
         // We'll enforce our own request array
         if ($this->superglobal == '_REQUEST') {
@@ -145,7 +145,9 @@ class Superglobal implements SourceInterface, ResetSourceInterface
                 $this->array = $GLOBALS[$this->superglobal];
             }
         }
-        if (!$this->array) $this->array = array();
+        if (!$this->array) {
+            $this->array = array();
+        }
     }
 
     private function _getPostArray()
@@ -164,8 +166,9 @@ class Superglobal implements SourceInterface, ResetSourceInterface
     /**
      * Check if a value of some variable is set.
      *
-     * @param  string|array $name    The name of the variable
-     * @param  mixed        $options Any options there may be
+     * @param string|array $name    The name of the variable
+     * @param mixed        $options Any options there may be
+     *
      * @return bool
      */
     public function checkIsset($name, $options = null)

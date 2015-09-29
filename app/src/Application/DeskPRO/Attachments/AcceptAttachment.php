@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category DependencyInjection
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category DependencyInjection
+ */
 namespace Application\DeskPRO\Attachments;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
@@ -66,10 +65,9 @@ class AcceptAttachment
 
     public function __construct(EntityManager $em, DeskproBlobStorage $blobstorage)
     {
-        $this->em = $em;
+        $this->em          = $em;
         $this->blobstorage = $blobstorage;
     }
-
 
     /**
      * @param $id
@@ -80,11 +78,12 @@ class AcceptAttachment
         $this->restriction_sets[$id] = $set;
     }
 
-
     /**
      * @param $id
-     * @return \Application\DeskPRO\Attachments\RestrictionSet
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return \Application\DeskPRO\Attachments\RestrictionSet
      */
     public function getRestrictionSet($id)
     {
@@ -95,10 +94,10 @@ class AcceptAttachment
         return $this->restriction_sets[$id];
     }
 
-
     /**
-     * @param  \Symfony\Component\HttpFoundation\File\UploadedFile $file
+     * @param \Symfony\Component\HttpFoundation\File\UploadedFile $file
      * @param $restriction_set_id
+     *
      * @return array|null
      */
     public function getError(UploadedFile $file = null, $restriction_set_id = null)
@@ -122,49 +121,49 @@ class AcceptAttachment
         }
 
         $log_error = false;
-        $error = array(
-            'error_code' => null,
-            'error_detail' => null
+        $error     = array(
+            'error_code'   => null,
+            'error_detail' => null,
         );
 
         if (!$file->isValid()) {
             switch ($file->getError()) {
                 case \UPLOAD_ERR_INI_SIZE:
-                    $error['error_code'] = self::ERR_SIZE;
+                    $error['error_code']   = self::ERR_SIZE;
                     $error['error_detail'] = Numbers::filesizeDisplay($max_size);
                     break;
 
                 case \UPLOAD_ERR_PARTIAL:
-                    $error['error_code'] = self::ERR_FAILED;
+                    $error['error_code']   = self::ERR_FAILED;
                     $error['error_detail'] = '';
                     break;
 
                 case \UPLOAD_ERR_NO_FILE:
-                    $error['error_code'] = self::ERR_NO_FILE;
+                    $error['error_code']   = self::ERR_NO_FILE;
                     $error['error_detail'] = '';
                     break;
 
                 case \UPLOAD_ERR_NO_TMP_DIR:
-                    $log_error = true;
-                    $error['error_code'] = self::ERR_SERVER;
+                    $log_error             = true;
+                    $error['error_code']   = self::ERR_SERVER;
                     $error['error_detail'] = 'bad_tmp_dir';
                     break;
 
                 case \UPLOAD_ERR_CANT_WRITE:
-                    $log_error = true;
-                    $error['error_code'] = self::ERR_SERVER;
+                    $log_error             = true;
+                    $error['error_code']   = self::ERR_SERVER;
                     $error['error_detail'] = 'failed_write';
                     break;
 
                 case \UPLOAD_ERR_EXTENSION:
-                    $log_error = true;
-                    $error['error_code'] = self::ERR_SERVER;
+                    $log_error             = true;
+                    $error['error_code']   = self::ERR_SERVER;
                     $error['error_detail'] = 'ext_stopped';
                     break;
 
                 default:
-                    $log_error = true;
-                    $error['error_code'] = self::ERR_SERVER;
+                    $log_error             = true;
+                    $error['error_code']   = self::ERR_SERVER;
                     $error['error_detail'] = $file->getError();
                     break;
             }
@@ -172,7 +171,7 @@ class AcceptAttachment
 
         if (!$error['error_code']) {
             if (!is_uploaded_file($file->getRealPath()) || !file_exists($file->getRealPath())) {
-                $error['error_code'] = self::ERR_NO_FILE;
+                $error['error_code']   = self::ERR_NO_FILE;
                 $error['error_detail'] = '';
             }
         }
@@ -186,18 +185,18 @@ class AcceptAttachment
         }
 
         if (!$error || !$error['error_code']) {
-            return null;
+            return;
         }
 
         if ($log_error) {
             $info = "Upload of {$file->getClientOriginalName()} failed because {$error['error_code']}\n";
             $info .= Arrays::implodeTemplate(array(
-                'error_code' => $error['error_code'],
-                'error_detail' => $error['error_detail'],
-                'filename' => $file->getClientOriginalName(),
-                'type' => $file->getClientMimeType(),
-                'size' => $file->getClientSize(),
-                'file_err_code' => $file->getError()
+                'error_code'    => $error['error_code'],
+                'error_detail'  => $error['error_detail'],
+                'filename'      => $file->getClientOriginalName(),
+                'type'          => $file->getClientMimeType(),
+                'size'          => $file->getClientSize(),
+                'file_err_code' => $file->getError(),
             ), "{KEY}: {VAL}\n");
 
             $e = new \Exception($info, 0);
@@ -207,10 +206,10 @@ class AcceptAttachment
         return $error;
     }
 
-
     /**
-     * @param  \Symfony\Component\HttpFoundation\File\UploadedFile $file
-     * @param  bool                                                $is_temp
+     * @param \Symfony\Component\HttpFoundation\File\UploadedFile $file
+     * @param bool                                                $is_temp
+     *
      * @return \Application\DeskPRO\Entity\Blob
      */
     public function accept(UploadedFile $file, $is_temp = false)
@@ -231,10 +230,10 @@ class AcceptAttachment
 
         $filename = $file->getClientOriginalName();
         if (!$filename) {
-            $filename = crc32(mt_rand(1111,9999) . mt_rand(1111,9999) . mt_rand(1111,9999) . mt_rand(1111,9999));
-            $ext = ContentTypes::findExtensionForContentType($mime_type);
+            $filename = crc32(mt_rand(1111, 9999).mt_rand(1111, 9999).mt_rand(1111, 9999).mt_rand(1111, 9999));
+            $ext      = ContentTypes::findExtensionForContentType($mime_type);
             if ($ext) {
-                $filename .= '.' . $ext;
+                $filename .= '.'.$ext;
             }
         }
 

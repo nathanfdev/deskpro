@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\DBAL\SchemaHelper;
@@ -62,7 +59,6 @@ abstract class AbstractBuild
      */
     protected $logger;
 
-
     /**
      * @param DeskproContainer $container
      * @param LoggerInterface  $logger
@@ -79,21 +75,21 @@ abstract class AbstractBuild
         $this->init();
     }
 
-
     /**
      * Saves data to the filesystem (into the tmp dir). Will be overwritten if it already exists.
      *
-     * @param  string       $tag
-     * @param  string       $name
-     * @param  string|array $data Array data will be json_encoded, string data will be written as-is
+     * @param string       $tag
+     * @param string       $name
+     * @param string|array $data Array data will be json_encoded, string data will be written as-is
+     *
      * @return string|false Filename written when successful, or false if failed to write
      */
     public function saveUpgradeData($tag, $name, $data, $throw_exception = true)
     {
         if (is_array($data)) {
-            $fname = 'updata-' . $tag . '.' . $name . '.json';
-            $path = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $fname;
-            $data = json_encode($data);
+            $fname = 'updata-'.$tag.'.'.$name.'.json';
+            $path  = dp_get_tmp_dir().DIRECTORY_SEPARATOR.$fname;
+            $data  = json_encode($data);
             if (file_put_contents($path, $data) === false) {
                 if ($throw_exception) {
                     throw new \RuntimeException("Failed to write upgrade data file to: $path");
@@ -102,9 +98,9 @@ abstract class AbstractBuild
                 return false;
             }
         } else {
-            $fname = 'updata-' . $tag . '.' . $name . '.dat';
-            $path = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $fname;
-            $data = (string)$data;
+            $fname = 'updata-'.$tag.'.'.$name.'.dat';
+            $path  = dp_get_tmp_dir().DIRECTORY_SEPARATOR.$fname;
+            $data  = (string) $data;
             if (file_put_contents($path, $data) === false) {
                 if ($throw_exception) {
                     throw new \RuntimeException("Failed to write upgrade data file to: $path");
@@ -119,18 +115,18 @@ abstract class AbstractBuild
         return $path;
     }
 
-
     /**
      * Read previously saved upgrade data.
      *
-     * @param  string            $tag
-     * @param  string            $name
+     * @param string $tag
+     * @param string $name
+     *
      * @return array|null|string Array for JSON-encoded array data, string for string data or null if file could not be found
      */
     public function getUpgradeData($tag, $name)
     {
-        $name_part = 'updata-' . $tag . '.' . $name . '.';
-        $path_part = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $name_part;
+        $name_part = 'updata-'.$tag.'.'.$name.'.';
+        $path_part = dp_get_tmp_dir().DIRECTORY_SEPARATOR.$name_part;
 
         if (file_exists($path_part.'json')) {
             $data = file_get_contents($path_part.'json');
@@ -142,38 +138,35 @@ abstract class AbstractBuild
 
             return $data;
         } else {
-            return null;
+            return;
         }
     }
-
 
     /**
      * Empty hook into the constructor.
      */
-    protected function init() { }
-
+    protected function init()
+    {
+    }
 
     /**
-     * Run through the upgrade
-     *
-     * @return void
+     * Run through the upgrade.
      */
     abstract public function run();
-
 
     /**
      * Set this build handler to run again.
      * This allows "pages" to run. The "runcount" (fetch with getStatus('runcount')) will be
      * incremented automatically.
      *
-     * @param  bool $rerun
+     * @param bool $rerun
+     *
      * @return bool
      */
     public function setRerun($rerun = true)
     {
-        return $this->rerun = (bool)$rerun;
+        return $this->rerun = (bool) $rerun;
     }
-
 
     /**
      * @return bool
@@ -183,9 +176,8 @@ abstract class AbstractBuild
         return $this->rerun;
     }
 
-
     /**
-     * Write to output
+     * Write to output.
      *
      * @param string $string
      */
@@ -193,7 +185,6 @@ abstract class AbstractBuild
     {
         $this->logger->info($string);
     }
-
 
     /**
      * @param $sql
@@ -204,8 +195,8 @@ abstract class AbstractBuild
         try {
             $this->container->getDb()->exec($sql);
         } catch (\Exception $e) {
-            $this->logger->info("SQL: " . $sql);
-            $this->logger->info("Ignored: " . $e->getMessage());
+            $this->logger->info('SQL: '.$sql);
+            $this->logger->info('Ignored: '.$e->getMessage());
             if (!$ignore_err) {
                 throw $e;
             }
@@ -242,25 +233,24 @@ abstract class AbstractBuild
     public function execSlowAlterTable($table, $alter)
     {
         if (dp_get_config('online_schema_upgrade')) {
-
             $logger = $this->logger;
-            $logger->info("Using online_schema_update");
+            $logger->info('Using online_schema_update');
 
             if (dp_get_config('online_schema_upgrade') === true) {
                 $tool = 'pt-online-schema-change';
             } elseif (is_string(dp_get_config('online_schema_upgrade')) && is_executable(dp_get_config('online_schema_upgrade'))) {
                 $tool = dp_get_config('online_schema_upgrade');
             } else {
-                throw new \RuntimeException("Unknown path to pt-online-schema-change");
+                throw new \RuntimeException('Unknown path to pt-online-schema-change');
             }
 
             $logger->info("Tool path: $tool");
 
             $cmd_base = '{tool} --alter {query} --alter-foreign-keys-method auto --no-version-check --host {db_host} --database {db_name} --user {db_user} --password {db_pass} --port {db_port} {mode_param} {dsn}';
 
-            $port = '';
+            $port   = '';
             $dbhost = DP_DATABASE_HOST;
-            $m = null;
+            $m      = null;
             if (preg_match('#^(.*?):([0-9]+)$#', $dbhost, $m)) {
                 $dbhost = $m[1];
                 $port   = $m[2];
@@ -274,29 +264,29 @@ abstract class AbstractBuild
                 '{db_name}' => escapeshellarg(DP_DATABASE_NAME),
                 '{db_user}' => escapeshellarg(@$GLOBALS['DP_CONFIG']['online_schema_upgrade_user'] ?: DP_DATABASE_USER),
                 '{db_pass}' => escapeshellarg(@$GLOBALS['DP_CONFIG']['online_schema_upgrade_password'] ?: DP_DATABASE_PASSWORD),
-                '{dsn}'     => "t=$table"
+                '{dsn}'     => "t=$table",
             );
 
-            $params_test = $params;
+            $params_test                 = $params;
             $params_test['{mode_param}'] = '--dry-run --print';
 
-            $params_exec = $params;
+            $params_exec                 = $params;
             $params_exec['{mode_param}'] = '--execute';
 
             $cmd_exec = str_replace(array_keys($params_exec), array_values($params_exec), $cmd_base);
 
-            $logger->info("BEGIN: LIVE");
+            $logger->info('BEGIN: LIVE');
             $proc = new Process($cmd_exec, DP_ROOT);
             $proc->setTimeout(600);
-            $proc->run(function($type, $data) use ($logger) {
+            $proc->run(function ($type, $data) use ($logger) {
                 $logger->info(sprintf("\t%s\n", str_replace("\n", "\n\t", trim($data))));
             });
-            $logger->info("DONE: LIVE");
-            $logger->info("Exit status: " . $proc->getExitCode());
+            $logger->info('DONE: LIVE');
+            $logger->info('Exit status: '.$proc->getExitCode());
 
             if (!$proc->isSuccessful()) {
-                $logger->critical("!!!!!!!!!!!!!!!");
-                throw new \RuntimeException("LIVE run failed with status: " . $proc->getExitCode());
+                $logger->critical('!!!!!!!!!!!!!!!');
+                throw new \RuntimeException('LIVE run failed with status: '.$proc->getExitCode());
             }
         } else {
             $sql = "ALTER TABLE `$table` $alter";
@@ -304,9 +294,8 @@ abstract class AbstractBuild
         }
     }
 
-
     /**
-     * Save status data (ex. steps completed etc)
+     * Save status data (ex. steps completed etc).
      *
      * @param $key
      * @param $val
@@ -314,24 +303,24 @@ abstract class AbstractBuild
     public function saveStatus($key, $val)
     {
         $this->container->getDb()->replace('import_datastore', array(
-            'typename' => 'up.' . $this->getBuildId() . '.' . $key,
-            'data' => $val
+            'typename' => 'up.'.$this->getBuildId().'.'.$key,
+            'data'     => $val,
         ));
     }
 
-
     /**
-     * @param  string $key
-     * @param  mixed  $default
+     * @param string $key
+     * @param mixed  $default
+     *
      * @return mixed
      */
     public function getStatus($key, $default = null)
     {
-        $val = $this->container->getDb()->fetchArray("
+        $val = $this->container->getDb()->fetchArray('
             SELECT data
             FROM import_datastore
             WHERE typename = ?
-        ", array('up.' . $this->getBuildId() . '.' . $key));
+        ', array('up.'.$this->getBuildId().'.'.$key));
 
         if (!$val) {
             return $default;
@@ -342,10 +331,10 @@ abstract class AbstractBuild
 
     public function recompileCustomTemplates()
     {
-        $templates = $this->container->getDb()->fetchAll("
+        $templates = $this->container->getDb()->fetchAll('
             SELECT id, name, template_code
             FROM templates
-        ");
+        ');
 
         $twig = $this->container->get('twig');
 
@@ -355,19 +344,19 @@ abstract class AbstractBuild
 
             try {
                 if (strpos($name, 'DeskPRO:emails_') !== false || strpos($name, 'DeskPRO:custom_emails_') !== false) {
-                    $proc = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
+                    $proc         = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
                     $compile_code = $proc->process($compile_code, $name);
                 }
 
                 $compile_code = preg_replace('#\{%\s*include\s+(.*?)\s*%\}#', '{% include $1 ignore missing %}', $compile_code);
-                $compiled = $twig->compileSource($compile_code, $name);
+                $compiled     = $twig->compileSource($compile_code, $name);
 
                 $this->container->getDb()->update('templates', array(
                     'template_compiled' => $compiled,
                 ), array('id' => $tpl['id']));
             } catch (\Exception $e) {
                 @file_put_contents(
-                    dp_get_backup_dir() . DIRECTORY_SEPARATOR . 'tpl-backup-' . str_replace(':', '_', $tpl['name']),
+                    dp_get_backup_dir().DIRECTORY_SEPARATOR.'tpl-backup-'.str_replace(':', '_', $tpl['name']),
                     $tpl['template_code']
                 );
                 $this->container->getDb()->delete('templates', array('id' => $tpl['id']));
@@ -386,9 +375,9 @@ abstract class AbstractBuild
         return $collation ?: 'utf8_general_ci';
     }
 
-
     /**
      * @static
+     *
      * @return string
      */
     public function getBuildId()
@@ -409,7 +398,6 @@ abstract class AbstractBuild
     {
         if ($this->schema_helper) {
             return $this->schema_helper;
-
         }
 
         $this->schema_helper = new SchemaHelper($this->container->getDb());

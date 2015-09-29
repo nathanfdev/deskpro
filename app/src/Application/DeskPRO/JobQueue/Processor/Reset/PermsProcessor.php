@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\DeskPRO\JobQueue\Processor\Reset;
 
@@ -33,47 +34,47 @@ class PermsProcessor extends Base
 
     protected function doProcess(array $data)
     {
-        $this->connection->executeUpdate("DELETE FROM permissions");
-        $this->connection->executeUpdate("DELETE FROM permissions_cache");
-        $this->connection->executeUpdate("DELETE FROM usergroups");
+        $this->connection->executeUpdate('DELETE FROM permissions');
+        $this->connection->executeUpdate('DELETE FROM permissions_cache');
+        $this->connection->executeUpdate('DELETE FROM usergroups');
 
         $translate = $this->container->getTranslator();
 
         ##BEGIN:usergroups.everyone##
-        $g = new \Application\DeskPRO\Entity\Usergroup();
-        $g['title'] = $translate->phrase('agent.defaults.usergroup_everyone');
-        $g['note'] = $translate->phrase('agent.defaults.usergroup_everyone_note');
+        $g             = new \Application\DeskPRO\Entity\Usergroup();
+        $g['title']    = $translate->phrase('agent.defaults.usergroup_everyone');
+        $g['note']     = $translate->phrase('agent.defaults.usergroup_everyone_note');
         $g['sys_name'] = 'everyone';
         $this->em->persist($g);
         $this->em->flush();
         $USERGROUP_EVERYONE = $g;
 
         ##BEGIN:usergroups.register##
-        $g = new \Application\DeskPRO\Entity\Usergroup();
-        $g['title'] = $translate->phrase('agent.defaults.usergroup_registered');
-        $g['note'] = $translate->phrase('agent.defaults.usergroup_registered_note');
+        $g             = new \Application\DeskPRO\Entity\Usergroup();
+        $g['title']    = $translate->phrase('agent.defaults.usergroup_registered');
+        $g['note']     = $translate->phrase('agent.defaults.usergroup_registered_note');
         $g['sys_name'] = 'registered';
         $this->em->persist($g);
         $this->em->flush();
         $USERGROUP_REG = $g;
 
         ##BEGIN:usergroups.agent_all##
-        $AGENTGROUP_ALL = new \Application\DeskPRO\Entity\Usergroup();
-        $AGENTGROUP_ALL['title'] = $translate->phrase('agent.defaults.usergroup_agent_all_perms');
-        $AGENTGROUP_ALL['note'] = $translate->phrase('agent.defaults.usergroup_agent_all_perms_note');
+        $AGENTGROUP_ALL                   = new \Application\DeskPRO\Entity\Usergroup();
+        $AGENTGROUP_ALL['title']          = $translate->phrase('agent.defaults.usergroup_agent_all_perms');
+        $AGENTGROUP_ALL['note']           = $translate->phrase('agent.defaults.usergroup_agent_all_perms_note');
         $AGENTGROUP_ALL['is_agent_group'] = true;
-        $AGENTGROUP_ALL['sys_name'] = 'agent_all_perms';
+        $AGENTGROUP_ALL['sys_name']       = 'agent_all_perms';
         $this->em->persist($AGENTGROUP_ALL);
         $this->em->flush();
 
         $this->connection->executeUpdate(sprintf('INSERT INTO person2usergroups VALUES (%d, %d)', $data['context_person_id'], $AGENTGROUP_ALL->id));
 
         ##BEGIN:usergroups.agent_all_nondestructive##
-        $AGENTGROUP_ALL_ND = new \Application\DeskPRO\Entity\Usergroup();
-        $AGENTGROUP_ALL_ND['title'] = $translate->phrase('agent.defaults.usergroup_agent_all_non_destructive');
-        $AGENTGROUP_ALL_ND['note'] = $translate->phrase('agent.defaults.usergroup_agent_all_non_destructive_note');
+        $AGENTGROUP_ALL_ND                   = new \Application\DeskPRO\Entity\Usergroup();
+        $AGENTGROUP_ALL_ND['title']          = $translate->phrase('agent.defaults.usergroup_agent_all_non_destructive');
+        $AGENTGROUP_ALL_ND['note']           = $translate->phrase('agent.defaults.usergroup_agent_all_non_destructive_note');
         $AGENTGROUP_ALL_ND['is_agent_group'] = true;
-        $AGENTGROUP_ALL_ND['sys_name'] = 'agent_all_safe_perms';
+        $AGENTGROUP_ALL_ND['sys_name']       = 'agent_all_safe_perms';
         $this->em->persist($AGENTGROUP_ALL_ND);
         $this->em->flush();
 
@@ -167,10 +168,10 @@ class PermsProcessor extends Base
 
         $scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
         foreach ($scanner->getNames() as $p_name) {
-            $p = new \Application\DeskPRO\Entity\Permission();
+            $p            = new \Application\DeskPRO\Entity\Permission();
             $p->usergroup = $USERGROUP_EVERYONE;
-            $p->name = $p_name;
-            $p->value = 1;
+            $p->name      = $p_name;
+            $p->value     = 1;
             $this->em->persist($p);
         }
         $this->em->flush();

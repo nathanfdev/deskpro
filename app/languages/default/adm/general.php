@@ -1,52 +1,80 @@
-<?php return array(
-    'adm.general.agent_perms'                        => 'Agent Permissions',
-    'adm.general.apps'                               => 'Apps',
-    'adm.general.api_keys'                           => 'API Keys',
-    'adm.general.tasks'                              => 'Tasks',
-    'adm.general.apps_agents'                        => 'Agents',
-    'adm.general.apps_chat'                          => 'Chat',
-    'adm.general.apps_crm'                           => 'CRM',
-    'adm.general.apps_portal'                        => 'Portal',
-    'adm.general.apps_server'                        => 'Server',
-    'adm.general.apps_setup'                         => 'Setup',
-    'adm.general.apps_tickets'                       => 'Tickets',
-    'adm.general.apps_twitter'                       => 'Twitter',
-    'adm.general.back_to_agent'                      => 'Back to the Agent Interface',
-    'adm.general.builtin_fields'                     => 'Built-In Fields',
-    'adm.general.count_custom_fields'                => '{{count}} Custom Field|{{count}} Custom Fields',
-    'adm.general.count_labels'                       => '{{count}} Label|{{count}} Labels',
-    'adm.general.deskpro_admin_interface'            => 'DeskPRO Admin Interface',
-    'adm.general.discard_changes_continue'           => 'Discard unsaved changes and continue',
-    'adm.general.home'                               => 'Home',
-    'adm.general.label_edit_error'                   => 'You must enter a valid label',
-    'adm.general.labels'                             => 'Labels',
-    'adm.general.layout'                             => 'Layout',
-    'adm.general.new_label'                          => 'New Label',
-    'adm.general.no_labels_yet'                      => 'No labels yet',
-    'adm.general.perm_assign'                        => 'Assign',
-    'adm.general.perm_full_access'                   => 'Full Access',
-    'adm.general.perm_use'                           => 'Use',
-    'adm.general.please_correct_errors'              => 'Please correct the following error(s):',
-    'adm.general.save_settings'                      => 'Save Settings',
-    'adm.general.save_settings_success'              => 'Your settings were saved successfully.',
-    'adm.general.tabchange_unsaved_changes_warning'  => 'You have unsaved changes on this page. Are you sure you want to change to another page? Your unsaved changes will be lost.',
-    'adm.general.translate'                          => 'Translate',
-    'adm.general.usergroup_perms'                    => 'Usergroup Permissions',
-    'adm.general.website_embed'                      => 'Website Embed',
-    'adm.general.x_departments'                      => '{{count}} Department|{{count}} Departments',
-    'adm.general.action_cannot_be_undone'            => 'This action cannot be undone.',
-    'adm.general.x_feedback_statuses'                => '{{count}} Feedback Status|{{count}} Feedback Statuses',
-    'adm.general.x_feedback_active_statuses'         => '{{count}} Feedback Active Status|{{count}} Feedback Active Statuses',
-    'adm.general.x_feedback_closed_statuses'         => '{{count}} Feedback Closed Status|{{count}} Feedback Closed Statuses',
-    'adm.general.delete_label'                       => 'Delete Ticket Label',
-    'adm.general.delete_label_confirm'               => 'Are you sure you want to delete this label?',
-    'adm.general.x_feedback_types'                   => '{{count}} Feedback Type|{{count}} Feedback Types',
-    'adm.general.x_feedback_categories'              => '{{count}} Feedback Category|{{count}} Feedback Categories',
-    'adm.general.x_ticket_filters'                   => '{{count}} Ticket Filter|{{count}} Ticket Filters',
-    'adm.general.x_ticket_escalations'               => '{{count}} Ticket Escalation|{{count}} Ticket Escalations',
-    'adm.general.x_twitter_accounts'                 => '{{count}} Twitter Account|{{count}} Twitter Accounts',
-    'adm.general.x_api_keys'                         => '{{count}} API Key|{{count}} API Keys',
-    'adm.general.x_ip_bans'                          => '{{count}} IP Ban|{{count}} IP Bans',
-    'adm.general.x_email_bans'                       => '{{count}} Email Ban|{{count}} Email Bans',
-    'adm.general.x_user_rules'                       => '{{count}} User Rule|{{count}} User Rules',
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+return array(
+    'adm.general.agent_perms'                       => 'Agent Permissions',
+    'adm.general.apps'                              => 'Apps',
+    'adm.general.api_keys'                          => 'API Keys',
+    'adm.general.tasks'                             => 'Tasks',
+    'adm.general.apps_agents'                       => 'Agents',
+    'adm.general.apps_chat'                         => 'Chat',
+    'adm.general.apps_crm'                          => 'CRM',
+    'adm.general.apps_portal'                       => 'Portal',
+    'adm.general.apps_server'                       => 'Server',
+    'adm.general.apps_setup'                        => 'Setup',
+    'adm.general.apps_tickets'                      => 'Tickets',
+    'adm.general.apps_twitter'                      => 'Twitter',
+    'adm.general.back_to_agent'                     => 'Back to the Agent Interface',
+    'adm.general.builtin_fields'                    => 'Built-In Fields',
+    'adm.general.count_custom_fields'               => '{{count}} Custom Field|{{count}} Custom Fields',
+    'adm.general.count_labels'                      => '{{count}} Label|{{count}} Labels',
+    'adm.general.deskpro_admin_interface'           => 'DeskPRO Admin Interface',
+    'adm.general.discard_changes_continue'          => 'Discard unsaved changes and continue',
+    'adm.general.home'                              => 'Home',
+    'adm.general.label_edit_error'                  => 'You must enter a valid label',
+    'adm.general.labels'                            => 'Labels',
+    'adm.general.layout'                            => 'Layout',
+    'adm.general.new_label'                         => 'New Label',
+    'adm.general.no_labels_yet'                     => 'No labels yet',
+    'adm.general.perm_assign'                       => 'Assign',
+    'adm.general.perm_full_access'                  => 'Full Access',
+    'adm.general.perm_use'                          => 'Use',
+    'adm.general.please_correct_errors'             => 'Please correct the following error(s):',
+    'adm.general.save_settings'                     => 'Save Settings',
+    'adm.general.save_settings_success'             => 'Your settings were saved successfully.',
+    'adm.general.tabchange_unsaved_changes_warning' => 'You have unsaved changes on this page. Are you sure you want to change to another page? Your unsaved changes will be lost.',
+    'adm.general.translate'                         => 'Translate',
+    'adm.general.usergroup_perms'                   => 'Usergroup Permissions',
+    'adm.general.website_embed'                     => 'Website Embed',
+    'adm.general.x_departments'                     => '{{count}} Department|{{count}} Departments',
+    'adm.general.action_cannot_be_undone'           => 'This action cannot be undone.',
+    'adm.general.x_feedback_statuses'               => '{{count}} Feedback Status|{{count}} Feedback Statuses',
+    'adm.general.x_feedback_active_statuses'        => '{{count}} Feedback Active Status|{{count}} Feedback Active Statuses',
+    'adm.general.x_feedback_closed_statuses'        => '{{count}} Feedback Closed Status|{{count}} Feedback Closed Statuses',
+    'adm.general.delete_label'                      => 'Delete Ticket Label',
+    'adm.general.delete_label_confirm'              => 'Are you sure you want to delete this label?',
+    'adm.general.x_feedback_types'                  => '{{count}} Feedback Type|{{count}} Feedback Types',
+    'adm.general.x_feedback_categories'             => '{{count}} Feedback Category|{{count}} Feedback Categories',
+    'adm.general.x_ticket_filters'                  => '{{count}} Ticket Filter|{{count}} Ticket Filters',
+    'adm.general.x_ticket_escalations'              => '{{count}} Ticket Escalation|{{count}} Ticket Escalations',
+    'adm.general.x_twitter_accounts'                => '{{count}} Twitter Account|{{count}} Twitter Accounts',
+    'adm.general.x_api_keys'                        => '{{count}} API Key|{{count}} API Keys',
+    'adm.general.x_ip_bans'                         => '{{count}} IP Ban|{{count}} IP Bans',
+    'adm.general.x_email_bans'                      => '{{count}} Email Ban|{{count}} Email Bans',
+    'adm.general.x_user_rules'                      => '{{count}} User Rule|{{count}} User Rules',
 );

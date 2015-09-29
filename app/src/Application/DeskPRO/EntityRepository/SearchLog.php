@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -40,11 +39,11 @@ class SearchLog extends AbstractEntityRepository
 {
     public function getRatedSearchesFor($object_type, $object_id, $structure = 'all')
     {
-        $search_ids_to_rating = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+        $search_ids_to_rating = $this->getEntityManager()->getConnection()->fetchAllKeyValue('
             SELECT searchlog_id, rating
             FROM ratings
             WHERE object_type = ? AND object_id = ? AND searchlog_id IS NOT NULL
-        ", array($object_type, $object_id));
+        ', array($object_type, $object_id));
 
         $logs = $this->getByIds(array_keys($search_ids_to_rating));
 
@@ -67,22 +66,19 @@ class SearchLog extends AbstractEntityRepository
             }
 
             return $ret;
-
         } elseif ($structure == 'counted') {
-
             $ret = array('helpful' => array(), 'unhelpful' => array());
             foreach ($logs as $l) {
-
                 if ($search_ids_to_rating[$l['id']] >= 1) {
                     if (!isset($ret['helpful'][$l['query']])) {
                         $ret['helpful'][$l['query']] = 0;
                     }
-                    $ret['helpful'][$l['query']]++;
+                    ++$ret['helpful'][$l['query']];
                 } else {
                     if (!isset($ret['unhelpful'][$l['query']])) {
                         $ret['unhelpful'][$l['query']] = 0;
                     }
-                    $ret['unhelpful'][$l['query']]++;
+                    ++$ret['unhelpful'][$l['query']];
                 }
             }
 
@@ -92,7 +88,7 @@ class SearchLog extends AbstractEntityRepository
             return $ret;
         }
 
-        return null;
+        return;
     }
 
     public function popularSearchTerms($limit = 100)
@@ -135,11 +131,11 @@ class SearchLog extends AbstractEntityRepository
             return array();
         }
 
-        return $this->getEntityManager()->createQuery("
+        return $this->getEntityManager()->createQuery('
             SELECT l
             FROM DeskPRO:SearchLog l
             WHERE l.id IN (?0)
             ORDER BY l.id DESC
-        ")->execute(array($ids));
+        ')->execute(array($ids));
     }
 }

@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Languages;
 
 use Application\DeskPRO\App;
@@ -65,10 +64,10 @@ class PhraseData
         $this->lang_dir     = rtrim($lang_dir, '/');
     }
 
-
     /**
-     * @param  TicketDepartments $ticket_deps
-     * @param  Language          $language
+     * @param TicketDepartments $ticket_deps
+     * @param Language          $language
+     *
      * @return array
      */
     public function getTicketDepartmentPhrases(TicketDepartments $ticket_deps, Language $language = null)
@@ -82,7 +81,7 @@ class PhraseData
         }
 
         $phrase_data = array();
-        $flat_array = $ticket_deps->getFlatArray();
+        $flat_array  = $ticket_deps->getFlatArray();
 
         foreach (array('agent', 'user') as $type) {
             foreach ($flat_array as $dep_row) {
@@ -90,14 +89,14 @@ class PhraseData
                 $dep = $dep_row['object'];
 
                 if ($type == 'user') {
-                    $id = $phrase_group . '.' . $dep->id . '_user';
-                    $id2 = $phrase_group . '.' . $dep->id . '_title';
+                    $id     = $phrase_group.'.'.$dep->id.'_user';
+                    $id2    = $phrase_group.'.'.$dep->id.'_title';
                     $custom = isset($custom_phrases[$id]) ? $custom_phrases[$id] : null;
                     if (!$custom) {
                         $custom = isset($custom_phrases[$id2]) ? $custom_phrases[$id2] : null;
                     }
                 } else {
-                    $id = $phrase_group . '.' . $dep->id . '_title';
+                    $id     = $phrase_group.'.'.$dep->id.'_title';
                     $custom = isset($custom_phrases[$id]) ? $custom_phrases[$id] : null;
                 }
 
@@ -107,16 +106,16 @@ class PhraseData
                     'type'    => 'ticket_department',
                     'type_id' => $dep->id,
                     'default' => $dep->title,
-                    'lang'    => $dep->user_title ? : $dep->title,
+                    'lang'    => $dep->user_title ?: $dep->title,
                     'custom'  => $custom,
                     'type'    => $type,
                 );
 
                 // The default for the language
-                $row['lang_default'] = $row['lang'] ? : $row['default'];
+                $row['lang_default'] = $row['lang'] ?: $row['default'];
 
                 // The actual set value that will be used
-                $row['set'] = $row['custom'] ? : $row['lang_default'];
+                $row['set'] = $row['custom'] ?: $row['lang_default'];
 
                 $phrase_data[] = $row;
             }
@@ -125,10 +124,10 @@ class PhraseData
         return $phrase_data;
     }
 
-
     /**
-     * @param  TicketCategories $ticket_cats
-     * @param  Language         $language
+     * @param TicketCategories $ticket_cats
+     * @param Language         $language
+     *
      * @return array
      */
     public function getTicketCategoryPhrases(TicketCategories $ticket_cats, Language $language = null)
@@ -147,7 +146,7 @@ class PhraseData
             /** @var \Application\DeskPRO\Entity\TicketCategory $cat */
             $cat = $cat_row['object'];
 
-            $id = $phrase_group . '.' . $cat->id . '_title';
+            $id = $phrase_group.'.'.$cat->id.'_title';
 
             $row = array(
                 'id'      => $id,
@@ -171,10 +170,10 @@ class PhraseData
         return $phrase_data;
     }
 
-
     /**
-     * @param  TicketWorkflows $ticket_works
-     * @param  Language        $language
+     * @param TicketWorkflows $ticket_works
+     * @param Language        $language
+     *
      * @return array
      */
     public function getTicketWorkflowPhrases(TicketWorkflows $ticket_works, Language $language = null)
@@ -190,7 +189,7 @@ class PhraseData
         $phrase_data = array();
 
         foreach ($ticket_works->getAll() as $work) {
-            $id = $phrase_group . '.' . $work->id . '_title';
+            $id = $phrase_group.'.'.$work->id.'_title';
 
             $row = array(
                 'id'      => $id,
@@ -214,10 +213,10 @@ class PhraseData
         return $phrase_data;
     }
 
-
     /**
-     * @param  TicketPriorities $ticket_pris
-     * @param  Language         $language
+     * @param TicketPriorities $ticket_pris
+     * @param Language         $language
+     *
      * @return array
      */
     public function getTicketPriorityPhrases(TicketPriorities $ticket_pris, Language $language = null)
@@ -233,7 +232,7 @@ class PhraseData
         $phrase_data = array();
 
         foreach ($ticket_pris->getAll() as $pri) {
-            $id = $phrase_group . '.' . $pri->id . '_title';
+            $id = $phrase_group.'.'.$pri->id.'_title';
 
             $row = array(
                 'id'      => $id,
@@ -257,10 +256,10 @@ class PhraseData
         return $phrase_data;
     }
 
-
     /**
-     * @param  ChatDepartments $chat_deps
-     * @param  Language        $language
+     * @param ChatDepartments $chat_deps
+     * @param Language        $language
+     *
      * @return array
      */
     public function getChatDepartmentPhrases(ChatDepartments $chat_deps, Language $language = null)
@@ -277,9 +276,9 @@ class PhraseData
 
         foreach ($chat_deps->getFlatArray() as $dep_row) {
             /** @var \Application\DeskPRO\Entity\Department $dep */
-            $dep   = $dep_row['object'];
+            $dep = $dep_row['object'];
 
-            $id = $phrase_group . '.' . $dep->id . '_title';
+            $id = $phrase_group.'.'.$dep->id.'_title';
 
             $row = array(
                 'id'      => $id,
@@ -303,10 +302,10 @@ class PhraseData
         return $phrase_data;
     }
 
-
     /**
-     * @param  Products $products
-     * @param  Language $language
+     * @param Products $products
+     * @param Language $language
+     *
      * @return array
      */
     public function getProductPhrases(Products $products, Language $language = null)
@@ -323,9 +322,9 @@ class PhraseData
 
         foreach ($products->getFlatArray() as $prod_row) {
             /** @var \Application\DeskPRO\Entity\Product $prod */
-            $prod   = $prod_row['object'];
+            $prod = $prod_row['object'];
 
-            $id = $phrase_group . '.' . $prod->id . '_title';
+            $id = $phrase_group.'.'.$prod->id.'_title';
 
             $row = array(
                 'id'      => $id,
@@ -349,10 +348,10 @@ class PhraseData
         return $phrase_data;
     }
 
-
     /**
-     * @param  FieldManager $fm
-     * @param  Language     $language
+     * @param FieldManager $fm
+     * @param Language     $language
+     *
      * @return array
      */
     public function getFieldPhrases(FieldManager $fm, Language $language = null)
@@ -380,7 +379,7 @@ class PhraseData
         }
 
         $fn_get_rows = function (CustomDefAbstract $field, $depth = 0) use ($phrase_group, $custom_phrases, $fm, &$fn_get_rows) {
-            $id = $phrase_group . '.' . $field->id . '_title';
+            $id = $phrase_group.'.'.$field->id.'_title';
 
             $row = array(
                 'id'      => $id,
@@ -393,13 +392,13 @@ class PhraseData
             );
 
             $row['lang_default'] = $row['lang'] ?: $row['default'];
-            $row['set'] = $row['custom'] ?: $row['lang_default'];
+            $row['set']          = $row['custom'] ?: $row['lang_default'];
 
             $phrase_data = array($row);
 
             if ($children = $fm->getFieldChildren($field)) {
                 foreach ($children as $child_field) {
-                    array_merge($phrase_data, $fn_get_rows($child_field, $depth+1));
+                    array_merge($phrase_data, $fn_get_rows($child_field, $depth + 1));
                 }
             }
 
@@ -415,9 +414,9 @@ class PhraseData
         return $phrase_data;
     }
 
-
     /**
-     * @param  Language $language
+     * @param Language $language
+     *
      * @return array
      */
     public function getFeedbackStatusPhrases(Language $language = null)
@@ -427,11 +426,11 @@ class PhraseData
 
         $phrase_group = 'obj_feedbackstatuscategory';
 
-        $all_statuses = $em->createQuery("
+        $all_statuses = $em->createQuery('
             SELECT s
             FROM DeskPRO:FeedbackStatusCategory s
             ORDER BY s.display_order ASC
-        ")->getResult();
+        ')->getResult();
 
         if ($language) {
             $custom_phrases = $this->loadCustomPhrases($language, $phrase_group);
@@ -442,7 +441,7 @@ class PhraseData
         $phrase_data = array();
 
         foreach ($all_statuses as $status) {
-            $id = $phrase_group . '.' . $status->id . '_title';
+            $id = $phrase_group.'.'.$status->id.'_title';
 
             $row = array(
                 'id'      => $id,
@@ -455,7 +454,7 @@ class PhraseData
             );
 
             $row['lang_default'] = $row['lang'] ?: $row['default'];
-            $row['set'] = $row['custom'] ?: $row['lang_default'];
+            $row['set']          = $row['custom'] ?: $row['lang_default'];
 
             $phrase_data[] = $row;
         }
@@ -464,7 +463,8 @@ class PhraseData
     }
 
     /**
-     * @param  Language $language
+     * @param Language $language
+     *
      * @return array
      */
     public function getFeedbackTypePhrases(Language $language = null)
@@ -474,11 +474,11 @@ class PhraseData
 
         $phrase_group = 'obj_feedbackcategory';
 
-        $all_types = $em->createQuery("
+        $all_types = $em->createQuery('
             SELECT s
             FROM DeskPRO:FeedbackCategory s
             ORDER BY s.display_order ASC
-        ")->getResult();
+        ')->getResult();
 
         if ($language) {
             $custom_phrases = $this->loadCustomPhrases($language, $phrase_group);
@@ -489,7 +489,7 @@ class PhraseData
         $phrase_data = array();
 
         foreach ($all_types as $type) {
-            $id = $phrase_group . '.' . $type->id . '_title';
+            $id = $phrase_group.'.'.$type->id.'_title';
 
             $row = array(
                 'id'      => $id,
@@ -502,7 +502,7 @@ class PhraseData
             );
 
             $row['lang_default'] = $row['lang'] ?: $row['default'];
-            $row['set'] = $row['custom'] ?: $row['lang_default'];
+            $row['set']          = $row['custom'] ?: $row['lang_default'];
 
             $phrase_data[] = $row;
         }
@@ -510,10 +510,10 @@ class PhraseData
         return $phrase_data;
     }
 
-
     /**
-     * @param  ArticleCategoryRepository $repos
-     * @param  Language                  $language
+     * @param ArticleCategoryRepository $repos
+     * @param Language                  $language
+     *
      * @return array
      */
     public function getKbCategoryPhrases(ArticleCategoryRepository $repos, Language $language = null)
@@ -526,7 +526,7 @@ class PhraseData
             $custom_phrases = array();
         }
 
-        $all = $repos->getAllIndexedById();
+        $all  = $repos->getAllIndexedById();
         $flat = $repos->getFlatHierarchy();
 
         $phrase_data = array();
@@ -535,7 +535,7 @@ class PhraseData
             /** @var \Application\DeskPRO\Entity\ArticleCategory $cat */
             $cat = $all[$cat_row['id']];
 
-            $id = $phrase_group . '.' . $cat->id . '_title';
+            $id = $phrase_group.'.'.$cat->id.'_title';
 
             $row = array(
                 'id'      => $id,
@@ -559,10 +559,10 @@ class PhraseData
         return $phrase_data;
     }
 
-
     /**
-     * @param  Language|null $language
-     * @param  string        $group_id
+     * @param Language|null $language
+     * @param string        $group_id
+     *
      * @return array
      */
     public function loadGroup(Language $language = null, $group_id)
@@ -570,10 +570,10 @@ class PhraseData
         $default_phrases = $this->loadSystemPhrases('default', $group_id);
 
         if ($language) {
-            $lang_phrases    = $this->loadSystemPhrases($language->sys_name, $group_id);
-            $custom_phrases  = $this->loadCustomPhrases($language, $group_id);
+            $lang_phrases   = $this->loadSystemPhrases($language->sys_name, $group_id);
+            $custom_phrases = $this->loadCustomPhrases($language, $group_id);
         } else {
-            $lang_phrases = array();
+            $lang_phrases   = array();
             $custom_phrases = array();
         }
 
@@ -606,9 +606,9 @@ class PhraseData
         return $phrase_data;
     }
 
-
     /**
-     * @param  Language $language
+     * @param Language $language
+     *
      * @return array
      */
     public function loadCustom(Language $language)
@@ -642,7 +642,7 @@ class PhraseData
         $phrase_data = array();
 
         foreach ($custom_phrases as $phr) {
-            $id = $phr->name;
+            $id  = $phr->name;
             $row = array(
                 'id'      => $id,
                 'default' => isset($default_phrases[$id]) ? $default_phrases[$id] : null,
@@ -662,12 +662,12 @@ class PhraseData
         return $phrase_data;
     }
 
-
     /**
-     * Returns a k=>v array of phrases from the system lang files
+     * Returns a k=>v array of phrases from the system lang files.
      *
-     * @param  string $lang_name
-     * @param  string $group_id
+     * @param string $lang_name
+     * @param string $group_id
+     *
      * @return array
      */
     private function loadSystemPhrases($lang_name, $group_id)
@@ -681,26 +681,27 @@ class PhraseData
         }
 
         $path = $this->lang_dir
-            . DIRECTORY_SEPARATOR
-            . $lang_name
-            . DIRECTORY_SEPARATOR
-            . $parts[0]
-            . DIRECTORY_SEPARATOR
-            . $parts[1]
-            . '.php';
+            .DIRECTORY_SEPARATOR
+            .$lang_name
+            .DIRECTORY_SEPARATOR
+            .$parts[0]
+            .DIRECTORY_SEPARATOR
+            .$parts[1]
+            .'.php';
 
         if (!file_exists($path)) {
             return array();
         }
 
-        $phrases = require($path);
+        $phrases = require $path;
 
         return $phrases;
     }
 
     /**
-     * @param  Language $language
-     * @param  string   $group_id
+     * @param Language $language
+     * @param string   $group_id
+     *
      * @return array
      */
     private function loadCustomPhrases(Language $language, $group_id)

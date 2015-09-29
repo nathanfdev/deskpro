@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @subpackage Doctrine
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ */
 namespace Orb\Doctrine\ORM\Mapping;
 
 use Doctrine\Common\Persistence\Mapping\ReflectionService;
@@ -41,7 +38,8 @@ class StaticRuntimeReflectionService implements ReflectionService
     /**
      * Return an array of the parent classes (not interfaces) for the given class.
      *
-     * @param  string $class
+     * @param string $class
+     *
      * @return array
      */
     public function getParentClasses($class)
@@ -52,7 +50,8 @@ class StaticRuntimeReflectionService implements ReflectionService
     /**
      * Return the shortname of a class.
      *
-     * @param  string $className
+     * @param string $className
+     *
      * @return string
      */
     public function getClassShortName($className)
@@ -67,7 +66,8 @@ class StaticRuntimeReflectionService implements ReflectionService
     /**
      * Return the namespace of a class.
      *
-     * @param  string $className
+     * @param string $className
+     *
      * @return string
      */
     public function getClassNamespace($className)
@@ -81,9 +81,10 @@ class StaticRuntimeReflectionService implements ReflectionService
     }
 
     /**
-     * Return a reflection class instance or null
+     * Return a reflection class instance or null.
      *
-     * @param  string                $class
+     * @param string $class
+     *
      * @return \ReflectionClass|null
      */
     public function getClass($class)
@@ -94,8 +95,9 @@ class StaticRuntimeReflectionService implements ReflectionService
     /**
      * Return an accessible property (setAccessible(true)) or null.
      *
-     * @param  string                   $class
-     * @param  string                   $property
+     * @param string $class
+     * @param string $property
+     *
      * @return \ReflectionProperty|null
      */
     public function getAccessibleProperty($class, $property)
@@ -109,8 +111,9 @@ class StaticRuntimeReflectionService implements ReflectionService
     /**
      * Check if the class have a public method with the given name.
      *
-     * @param  mixed $class
-     * @param  mixed $method
+     * @param mixed $class
+     * @param mixed $method
+     *
      * @return bool
      */
     public function hasPublicMethod($class, $method)

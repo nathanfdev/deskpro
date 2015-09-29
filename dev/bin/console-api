@@ -1,0 +1,7 @@
+#!/usr/bin/env php
+<?php
+define('DP_BOOT_MODE', 'cli');
+define('CLI_BOOT_KERNEL', 'api');
+require dirname(__FILE__) . '/../../index.php';
+exit;
+

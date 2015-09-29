@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Controller
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Controller
+ */
 namespace Application\DeskPRO\DBAL;
 
 use Doctrine\DBAL\DBALException;
@@ -102,7 +101,7 @@ class Connection extends \Doctrine\DBAL\Connection
             $params['driverOptions'] = array();
         }
 
-        $params['driverOptions'][PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
+        $params['driverOptions'][PDO::ATTR_ERRMODE]          = PDO::ERRMODE_EXCEPTION;
         $params['driverOptions'][PDO::ATTR_EMULATE_PREPARES] = true;
 
         if (!isset($params['platform'])) {
@@ -132,17 +131,17 @@ class Connection extends \Doctrine\DBAL\Connection
         if (isset($GLOBALS['DP_CONFIG']['debug']['enable_transaction_log']) && $GLOBALS['DP_CONFIG']['debug']['enable_transaction_log']) {
             $this->transaction_logger = new Logger();
             if ($GLOBALS['DP_CONFIG']['debug']['enable_transaction_log'] == 'separate_files') {
-                $fn = 'db-transactions.'. uniqid('') .'.log';
+                $fn = 'db-transactions.'.uniqid('').'.log';
             } else {
                 $fn = 'db-transactions.log';
             }
-            $this->transaction_logger->addWriter(new \Orb\Log\Writer\Stream(dp_get_log_dir().'/' . $fn));
-            $this->transaction_logger->logDebug("--- BEGIN PAGE ---");
+            $this->transaction_logger->addWriter(new \Orb\Log\Writer\Stream(dp_get_log_dir().'/'.$fn));
+            $this->transaction_logger->logDebug('--- BEGIN PAGE ---');
 
             if (php_sapi_name() == 'cli' && !empty($_SERVER['argv'])) {
-                $this->transaction_logger->logDebug("Command: " . implode(' ', $_SERVER['argv']));
+                $this->transaction_logger->logDebug('Command: '.implode(' ', $_SERVER['argv']));
             } else {
-                $this->transaction_logger->logDebug("URL: " . $_SERVER['PHP_SELF']);
+                $this->transaction_logger->logDebug('URL: '.$_SERVER['PHP_SELF']);
             }
         }
     }
@@ -163,20 +162,22 @@ class Connection extends \Doctrine\DBAL\Connection
     }
 
     /**
-     * Modifies the wait_timeout and "pings" the MySQL server to keep the connection alive
+     * Modifies the wait_timeout and "pings" the MySQL server to keep the connection alive.
      */
     public function avoidTimeout()
     {
         if (!$this->has_run_avoid) {
             try {
-                $this->exec("SET SESSION wait_timeout = 1800");
-            } catch (\Exception $e) {}
+                $this->exec('SET SESSION wait_timeout = 1800');
+            } catch (\Exception $e) {
+            }
             $this->has_run_avoid = true;
         }
 
         try {
-            $this->fetchColumn("SELECT 1");
-        } catch (\Exception $e) {}
+            $this->fetchColumn('SELECT 1');
+        } catch (\Exception $e) {
+        }
     }
 
     /**
@@ -186,9 +187,11 @@ class Connection extends \Doctrine\DBAL\Connection
      */
     public function getMaxPacketSize()
     {
-        if ($this->_max_packet_size !== null) return $this->_max_packet_size;
+        if ($this->_max_packet_size !== null) {
+            return $this->_max_packet_size;
+        }
 
-        $result = $this->fetchAssoc("SHOW variables LIKE 'max_allowed_packet'");
+        $result                 = $this->fetchAssoc("SHOW variables LIKE 'max_allowed_packet'");
         $this->_max_packet_size = $result['Value'];
 
         return $this->_max_packet_size;
@@ -197,15 +200,16 @@ class Connection extends \Doctrine\DBAL\Connection
     /**
      * Execute a query and return all results indexed with the specified column.
      *
-     * @param  string $statement
-     * @param  array  $params
-     * @param  string $index
+     * @param string $statement
+     * @param array  $params
+     * @param string $index
+     *
      * @return array
      */
     public function fetchAllKeyed($statement, array $params = array(), $index = 'id', $types = array())
     {
         $statement = $this->executeQuery($statement, $params, $types);
-        $array = array();
+        $array     = array();
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $array[$row[$index]] = $row;
@@ -219,20 +223,23 @@ class Connection extends \Doctrine\DBAL\Connection
      * Optionally, the sub-array can be indexed by $index_key.
      *
      * @param $statement
-     * @param  array $params
+     * @param array $params
      * @param $group_key
-     * @param  null  $index_key
-     * @param  null  $col_key
-     * @param  array $types
+     * @param null  $index_key
+     * @param null  $col_key
+     * @param array $types
+     *
      * @return array
      */
     public function fetchAllGrouped($statement, array $params = array(), $group_key, $index_key = null, $col_key = null, $types = array())
     {
         $statement = $this->executeQuery($statement, $params, $types);
-        $array = array();
+        $array     = array();
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            if (!isset($array[$row[$group_key]])) $array[$row[$group_key]] = array();
+            if (!isset($array[$row[$group_key]])) {
+                $array[$row[$group_key]] = array();
+            }
 
             $val = $row;
             if ($col_key !== null) {
@@ -251,19 +258,21 @@ class Connection extends \Doctrine\DBAL\Connection
 
     /**
      * Execute a query and return a key=>value pair.
+     *
      * @param $statement
-     * @param  array $params
-     * @param  array $types
-     * @param  int   $key_index
-     * @param  int   $val_index
-     * @param  int   $mode      Change to PDO::FETCH_ASSOC if you want to specify a string indexes
-     * @param  int   $nullkey
+     * @param array $params
+     * @param array $types
+     * @param int   $key_index
+     * @param int   $val_index
+     * @param int   $mode      Change to PDO::FETCH_ASSOC if you want to specify a string indexes
+     * @param int   $nullkey
+     *
      * @return array
      */
     public function fetchAllKeyValue($statement, array $params = array(), $types = array(), $key_index = 0, $val_index = 1, $mode = PDO::FETCH_NUM, $nullkey = 0)
     {
         $statement = $this->executeQuery($statement, $params, $types);
-        $array = array();
+        $array     = array();
 
         while ($row = $statement->fetch($mode)) {
             if ($row[$key_index] === null) {
@@ -279,16 +288,17 @@ class Connection extends \Doctrine\DBAL\Connection
     /**
      * Execute a query and return an array of all values from one column.
      *
-     * @param  string $statement
-     * @param  array  $params
-     * @param  string $index
-     * @param  int    $mode      Change to PDO::FETCH_ASSOC if you want to specify a string $index
+     * @param string $statement
+     * @param array  $params
+     * @param string $index
+     * @param int    $mode      Change to PDO::FETCH_ASSOC if you want to specify a string $index
+     *
      * @return array
      */
     public function fetchAllCol($statement, array $params = array(), $types = array(), $index = 0, $mode = PDO::FETCH_NUM)
     {
         $statement = $this->executeQuery($statement, $params, $types);
-        $array = array();
+        $array     = array();
 
         while ($row = $statement->fetch($mode)) {
             $array[] = $row[$index];
@@ -301,21 +311,21 @@ class Connection extends \Doctrine\DBAL\Connection
      * Builds SQL for multiple inserts in one go. All items in the values array
      * must be keyed the same.
      *
-     * @param string  $table
-     * @param array   $multiple_values
-     * @param boolean $ignore
+     * @param string $table
+     * @param array  $multiple_values
+     * @param bool   $ignore
      */
     public function batchInsert($table, array $multiple_values, $ignore = false)
     {
-        $cols = null;
+        $cols       = null;
         $cols_count = 0;
-        $params = array();
+        $params     = array();
 
         $value_parts = array();
-        $value_tpl = '';
+        $value_tpl   = '';
 
         if (!$multiple_values) {
-            throw new \InvalidArgumentException("No values");
+            throw new \InvalidArgumentException('No values');
         }
 
         #------------------------------
@@ -328,11 +338,11 @@ class Connection extends \Doctrine\DBAL\Connection
                     $cols[] = $k;
                 }
                 $cols_count = count($cols);
-                $value_tpl = '(' . implode(',', array_fill(0, $cols_count, '?')) . ')';
+                $value_tpl  = '('.implode(',', array_fill(0, $cols_count, '?')).')';
             }
 
             if (count($vals) != $cols_count) {
-                throw new \InvalidArgumentException("A value row has more columns than it should");
+                throw new \InvalidArgumentException('A value row has more columns than it should');
             }
 
             foreach ($cols as $c) {
@@ -350,7 +360,7 @@ class Connection extends \Doctrine\DBAL\Connection
         # Build sql
         #------------------------------
 
-        $sql = "INSERT " . ($ignore ? 'IGNORE' : '') . " INTO `$table` (`" . implode('`,`', $cols) ."`) VALUES " . implode(',', $value_parts);
+        $sql = 'INSERT '.($ignore ? 'IGNORE' : '')." INTO `$table` (`".implode('`,`', $cols).'`) VALUES '.implode(',', $value_parts);
 
         return $this->executeUpdate($sql, $params);
     }
@@ -358,8 +368,9 @@ class Connection extends \Doctrine\DBAL\Connection
     /**
      * Quote an array of values suitable for IN() clause.
      *
-     * @param  array  $values
-     * @param  int    $type
+     * @param array $values
+     * @param int   $type
+     *
      * @return string
      */
     public function quoteIn(array $values, $type = null)
@@ -378,9 +389,10 @@ class Connection extends \Doctrine\DBAL\Connection
     /**
      * Just like insert() except uses INSERT IGNORE.
      *
-     * @param  string $tableName
-     * @param  array  $data
-     * @param  array  $types
+     * @param string $tableName
+     * @param array  $data
+     * @param array  $types
+     *
      * @return int
      */
     public function insertIgnore($tableName, array $data, array $types = array())
@@ -389,17 +401,17 @@ class Connection extends \Doctrine\DBAL\Connection
 
         try {
             // column names are specified as array keys
-            $cols = array();
+            $cols         = array();
             $placeholders = array();
 
             foreach ($data as $columnName => $value) {
-                $cols[] = $columnName;
+                $cols[]         = $columnName;
                 $placeholders[] = '?';
             }
 
-            $query = 'INSERT IGNORE INTO ' . $tableName
-                . ' (' . implode(', ', $cols) . ')'
-                . ' VALUES (' . implode(', ', $placeholders) . ')';
+            $query = 'INSERT IGNORE INTO '.$tableName
+                .' ('.implode(', ', $cols).')'
+                .' VALUES ('.implode(', ', $placeholders).')';
 
             return $this->executeUpdate($query, array_values($data), $types);
         } catch (\Exception $e) {
@@ -411,8 +423,9 @@ class Connection extends \Doctrine\DBAL\Connection
      * Just like insert() except executes a REPLACE INTO instead.
      *
      * @param $tableName
-     * @param  array $data
-     * @param  array $types
+     * @param array $data
+     * @param array $types
+     *
      * @return int
      */
     public function replace($tableName, array $data, array $types = array())
@@ -420,23 +433,23 @@ class Connection extends \Doctrine\DBAL\Connection
         $this->connect();
 
         // column names are specified as array keys
-        $cols = array();
+        $cols         = array();
         $placeholders = array();
 
         foreach ($data as $columnName => $value) {
-            $cols[] = $columnName;
+            $cols[]         = $columnName;
             $placeholders[] = '?';
         }
 
-        $query = 'REPLACE INTO ' . $tableName
-               . ' (' . implode(', ', $cols) . ')'
-               . ' VALUES (' . implode(', ', $placeholders) . ')';
+        $query = 'REPLACE INTO '.$tableName
+               .' ('.implode(', ', $cols).')'
+               .' VALUES ('.implode(', ', $placeholders).')';
 
         return $this->executeUpdate($query, array_values($data), $types);
     }
 
     /**
-     * Fetch a COUNT(*) on $tableName with $where condition
+     * Fetch a COUNT(*) on $tableName with $where condition.
      *
      * @param string       $tableName
      * @param string|array $where     A string where or an array of field=>value
@@ -466,19 +479,21 @@ class Connection extends \Doctrine\DBAL\Connection
         $this->connect();
 
         $where = $where ?: '1';
-        $sql = "SELECT COUNT(*) FROM `$tableName` WHERE " . $where;
+        $sql   = "SELECT COUNT(*) FROM `$tableName` WHERE ".$where;
 
         return $this->fetchColumn($sql, $params);
     }
 
     /**
-     * @param  string                                                                                                        $query
-     * @param  array                                                                                                         $params
-     * @param  array                                                                                                         $types
-     * @param  \Doctrine\DBAL\Cache\QueryCacheProfile                                                                        $qcp
-     * @param  int                                                                                                           $is_retry
-     * @return \Doctrine\DBAL\Cache\ArrayStatement|\Doctrine\DBAL\Cache\ResultCacheStatement|\Doctrine\DBAL\Driver\Statement
+     * @param string                                 $query
+     * @param array                                  $params
+     * @param array                                  $types
+     * @param \Doctrine\DBAL\Cache\QueryCacheProfile $qcp
+     * @param int                                    $is_retry
+     *
      * @throws \Exception
+     *
+     * @return \Doctrine\DBAL\Cache\ArrayStatement|\Doctrine\DBAL\Cache\ResultCacheStatement|\Doctrine\DBAL\Driver\Statement
      */
     public function executeQuery($query, array $params = array(), $types = array(), \Doctrine\DBAL\Cache\QueryCacheProfile $qcp = null, $is_retry = 0)
     {
@@ -560,7 +575,7 @@ class Connection extends \Doctrine\DBAL\Connection
                         $v = substr($v, 0, 100);
                     }
 
-                    $params[] = 'string:' . $v;
+                    $params[] = 'string:'.$v;
                 } elseif ($v === null) {
                     $params[] = 'NULL';
                 } elseif (is_array($v)) {
@@ -573,42 +588,43 @@ class Connection extends \Doctrine\DBAL\Connection
             }
         }
 
-        $write = array();
-        $write[] = "[" . date("Y-m-d H:i:s") . "]";
+        $write   = array();
+        $write[] = '['.date('Y-m-d H:i:s').']';
 
         if (defined('DP_REQUEST_URL')) {
-            $write[] = "Page_Url: " . DP_REQUEST_URL;
+            $write[] = 'Page_Url: '.DP_REQUEST_URL;
             if (!empty($_SERVER['REQUEST_METHOD'])) {
-                $writep[] = "Method: " . $_SERVER['REQUEST_METHOD'];
+                $writep[] = 'Method: '.$_SERVER['REQUEST_METHOD'];
             }
         } elseif (defined('DP_INTERFACE') && DP_INTERFACE == 'cli') {
-            $write[] = "Command: " . implode(' ', $_SERVER['argv']);
+            $write[] = 'Command: '.implode(' ', $_SERVER['argv']);
         } else {
-            $write[] = "UnknownPage";
+            $write[] = 'UnknownPage';
         }
 
         if (!empty($_SERVER['REMOTE_ADDR'])) {
-            $write[] = "IP: " . $_SERVER['REMOTE_ADDR'];
+            $write[] = 'IP: '.$_SERVER['REMOTE_ADDR'];
         }
 
-        $write[] = "Query: " . $query;
+        $write[] = 'Query: '.$query;
         if ($params) {
-            $write[] = "Params: " . implode($params);
+            $write[] = 'Params: '.implode($params);
         }
 
         $write = implode("\t", $write);
         $write .= "\n";
 
-        @file_put_contents(dp_get_log_dir() . '/db_delete.log', $write, \FILE_APPEND);
+        @file_put_contents(dp_get_log_dir().'/db_delete.log', $write, \FILE_APPEND);
     }
 
     /**
      * Delete all records from table with an $field id in $ids.
      *
-     * @param  string       $table
-     * @param  array        $ids
-     * @param  string       $field
-     * @param  array|string $other_wheres
+     * @param string       $table
+     * @param array        $ids
+     * @param string       $field
+     * @param array|string $other_wheres
+     *
      * @return int
      */
     public function deleteIn($table, array $ids, $field = 'id', $not = false, $other_wheres = '')
@@ -626,24 +642,24 @@ class Connection extends \Doctrine\DBAL\Connection
         $more_where = '';
         if ($other_wheres) {
             if (is_array($other_wheres)) {
-                $more_where = 'AND ' . implode(' AND ', $other_wheres);
+                $more_where = 'AND '.implode(' AND ', $other_wheres);
             } else {
-                $more_where = 'AND ' . $other_wheres;
+                $more_where = 'AND '.$other_wheres;
             }
-
         }
 
-        return $this->executeUpdate("DELETE FROM `$table` WHERE `$field` $not IN (" . $this->quoteIn($ids) . ") $more_where");
+        return $this->executeUpdate("DELETE FROM `$table` WHERE `$field` $not IN (".$this->quoteIn($ids).") $more_where");
     }
 
     /**
      * Update all records with $data with a $field id in $ids.
      *
-     * @param  string $table
-     * @param  array  $data
-     * @param  array  $ids
-     * @param  string $field
-     * @param  array  $types
+     * @param string $table
+     * @param array  $data
+     * @param array  $ids
+     * @param string $field
+     * @param array  $types
+     *
      * @return int
      */
     public function updateIn($table, array $data, array $ids, $field = 'id', array $types = array())
@@ -654,18 +670,19 @@ class Connection extends \Doctrine\DBAL\Connection
 
         $set = array();
         foreach ($data as $columnName => $value) {
-            $set[] = $columnName . ' = ?';
+            $set[] = $columnName.' = ?';
         }
 
         $params = array_values($data);
 
-        $sql = "UPDATE `$table` SET " . implode(', ', $set) . " WHERE `$field` IN (" . $this->quoteIn($ids) . ")";
+        $sql = "UPDATE `$table` SET ".implode(', ', $set)." WHERE `$field` IN (".$this->quoteIn($ids).')';
 
         return $this->executeUpdate($sql, $params, $types);
     }
 
     /**
-     * @param  string $statement
+     * @param string $statement
+     *
      * @return int
      */
     public function exec($statement)
@@ -684,7 +701,8 @@ class Connection extends \Doctrine\DBAL\Connection
     }
 
     /**
-     * @param  string    $statement
+     * @param string $statement
+     *
      * @return Statement
      */
     public function prepare($statement)
@@ -703,13 +721,13 @@ class Connection extends \Doctrine\DBAL\Connection
 
         parent::beginTransaction();
         if ($this->transaction_logger) {
-            $e = new \Exception();
-            $backtrace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace());
-            $level = $this->getTransactionNestingLevel();
-            $trans_id = \Orb\Util\Util::baseEncode($this->trans_count++, \Orb\Util\Strings::CHARS_ALPHA_IU);
+            $e                 = new \Exception();
+            $backtrace         = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace());
+            $level             = $this->getTransactionNestingLevel();
+            $trans_id          = \Orb\Util\Util::baseEncode($this->trans_count++, \Orb\Util\Strings::CHARS_ALPHA_IU);
             $this->trans_ids[] = $trans_id;
-            $backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t\t", $level) . "\t\t");
-            $this->transaction_logger->logDebug("==> Level $level :: <$trans_id>\n" . str_repeat("\t\t", $level) . "TRANSACTION BEGIN\n$backtrace");
+            $backtrace         = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t\t", $level)."\t\t");
+            $this->transaction_logger->logDebug("==> Level $level :: <$trans_id>\n".str_repeat("\t\t", $level)."TRANSACTION BEGIN\n$backtrace");
         }
     }
 
@@ -721,7 +739,7 @@ class Connection extends \Doctrine\DBAL\Connection
             if ($this->writes_in_tx && $is_retry <= 1 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false)) {
                 usleep(500000);
 
-                $retry = $this->writes_in_tx;
+                $retry              = $this->writes_in_tx;
                 $this->writes_in_tx = array();
 
                 // Retry the trans
@@ -743,17 +761,17 @@ class Connection extends \Doctrine\DBAL\Connection
 
         if (!$this->running_trans_event && $this->_eventManager->hasListeners(self::EVENT_POST_COMMIT)) {
             $this->running_trans_event = true;
-            $eventArgs = new Event\PostCommit($this);
+            $eventArgs                 = new Event\PostCommit($this);
             $this->_eventManager->dispatchEvent(self::EVENT_POST_COMMIT, $eventArgs);
             $this->running_trans_event = false;
         }
 
         if ($this->transaction_logger) {
-            $e = new \Exception();
-            $trans_id = array_pop($this->trans_ids);
+            $e         = new \Exception();
+            $trans_id  = array_pop($this->trans_ids);
             $backtrace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace());
-            $backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t\t", $level) . "\t\t");
-            $this->transaction_logger->logDebug("<== Level $level :: <$trans_id>\n" . str_repeat("\t\t", $level) . "TRANSACTION COMMITTED\n$backtrace");
+            $backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t\t", $level)."\t\t");
+            $this->transaction_logger->logDebug("<== Level $level :: <$trans_id>\n".str_repeat("\t\t", $level)."TRANSACTION COMMITTED\n$backtrace");
         }
 
         if (!$this->getTransactionNestingLevel()) {
@@ -792,16 +810,16 @@ class Connection extends \Doctrine\DBAL\Connection
         if ($is_unexpected) {
             if (!$this->running_trans_event && $this->_eventManager->hasListeners(self::EVENT_POST_ROLLBACK)) {
                 $this->running_trans_event = true;
-                $eventArgs = new Event\PostCommit($this);
+                $eventArgs                 = new Event\PostCommit($this);
                 $this->_eventManager->dispatchEvent(self::EVENT_POST_ROLLBACK, $eventArgs);
                 $this->running_trans_event = false;
             }
 
             if ($this->transaction_logger) {
-                $e = new \Exception();
+                $e         = new \Exception();
                 $backtrace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace());
-                $backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t", $level) . "\t");
-                $this->transaction_logger->logDebug(str_repeat("\t", $level) . "TRANSACTION ROLLED BACK\n$backtrace");
+                $backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t", $level)."\t");
+                $this->transaction_logger->logDebug(str_repeat("\t", $level)."TRANSACTION ROLLED BACK\n$backtrace");
             }
         }
 
@@ -816,33 +834,33 @@ class Connection extends \Doctrine\DBAL\Connection
     }
 
     /**
-     * Set isolation level to REPEATABLE READ
+     * Set isolation level to REPEATABLE READ.
      *
      * @param bool $auto_reset True to auto-reset the isolation after the current transaction ends
      */
     public function setIsolationRepeatableRead($auto_reset = false)
     {
-        $this->exec("SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ");
+        $this->exec('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
         if ($auto_reset) {
             $this->do_reset_isolation = true;
         }
     }
 
     /**
-     * Set isolation level to READ COMMITTED
+     * Set isolation level to READ COMMITTED.
      *
      * @param bool $auto_reset True to auto-reset the isolation after the current transaction ends
      */
     public function setIsolationReadCommitted($auto_reset = false)
     {
-        $this->exec("SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED");
+        $this->exec('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
         if ($auto_reset) {
             $this->do_reset_isolation = true;
         }
     }
 
     /**
-     * Set isolation level back to default (REPEATABLE READ usually)
+     * Set isolation level back to default (REPEATABLE READ usually).
      */
     public function setIsolationDefault()
     {

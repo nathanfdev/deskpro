@@ -1,41 +1,37 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage UserBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\Service\RateLimit;
 use Application\UserBundle\Form\RegisterType;
@@ -78,7 +74,7 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
             $field_data = $fm->getStrucutredDataFromForm($_POST['custom_fields'], 'Application\\DeskPRO\\Entity\\CustomDataPerson');
 
             $field_form_data = $fm->createFieldDataFromArray($field_data);
-            $custom_fields = $fm->getDisplayArray($field_form_data, $custom_fields_form, false);
+            $custom_fields   = $fm->getDisplayArray($field_form_data, $custom_fields_form, false);
         } else {
             $custom_fields = $fm->getDisplayArray(array(), $custom_fields_form, true);
         }
@@ -99,7 +95,7 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 
         $from_ticket = false;
         if ($this->session->get('ticket_from_ptac_register')) {
-            $from_ticket = $this->em->find('DeskPRO:Ticket', $this->session->get('ticket_from_ptac_register'));
+            $from_ticket           = $this->em->find('DeskPRO:Ticket', $this->session->get('ticket_from_ptac_register'));
             $register->from_ticket = $from_ticket;
         }
 
@@ -111,7 +107,7 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
         }
 
         $error_fields = null;
-        $errors = null;
+        $errors       = null;
 
         if ($this->get('request')->getMethod() == 'POST' && !$this->in->getBool('no_submit') && !$trap_fail) {
             $this->ensureRequestToken('user_register');
@@ -165,7 +161,6 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 
                 // User not validating if they have an added email address already
                 if ($person->primary_email) {
-
                     $this->session->set('auth_person_id', $person->id);
                     $this->session->set('dp_interface', DP_INTERFACE);
 
@@ -192,19 +187,19 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
                 if ($validator->hasError('email.in_use')) {
                     $rateLimit->saveAction(RateLimit::ACT_REGISTRATION);
                 }
-                $errors = $validator->getErrors(true);
+                $errors       = $validator->getErrors(true);
                 $error_fields = $validator->getErrorGroups(true);
             }
         }
 
         return $this->render('UserBundle:Register:register.html.twig', array(
-            'form' => $form->createView(),
+            'form'          => $form->createView(),
             'custom_fields' => $custom_fields,
-            'errors' => $errors,
-            'error_fields' => $error_fields,
-            'from_ticket' => $from_ticket,
-            'this_page' => 'register',
-            'captcha' => $captcha,
+            'errors'        => $errors,
+            'error_fields'  => $error_fields,
+            'from_ticket'   => $from_ticket,
+            'this_page'     => 'register',
+            'captcha'       => $captcha,
         ));
     }
 }

@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\People\AgentNotifPrefs;
 
 use Application\DeskPRO\Entity\Person;
@@ -49,7 +48,6 @@ class PrefsTable
      */
     private $prefs;
 
-
     /**
      * @param Prefs     $prefs
      * @param Translate $tr
@@ -60,7 +58,6 @@ class PrefsTable
         $this->tr    = $tr;
     }
 
-
     /**
      * @return array
      */
@@ -68,7 +65,6 @@ class PrefsTable
     {
         return $this->buildAppTable('chat');
     }
-
 
     /**
      * @return array
@@ -78,7 +74,6 @@ class PrefsTable
         return $this->buildAppTable('task');
     }
 
-
     /**
      * @return array
      */
@@ -86,7 +81,6 @@ class PrefsTable
     {
         return $this->buildAppTable('twitter');
     }
-
 
     /**
      * @return array
@@ -96,7 +90,6 @@ class PrefsTable
         return $this->buildAppTable('feedback');
     }
 
-
     /**
      * @return array
      */
@@ -104,7 +97,6 @@ class PrefsTable
     {
         return $this->buildAppTable('publish');
     }
-
 
     /**
      * @return array
@@ -114,7 +106,6 @@ class PrefsTable
         return $this->buildAppTable('crm');
     }
 
-
     /**
      * @return array
      */
@@ -123,16 +114,16 @@ class PrefsTable
         return $this->buildAppTable('account');
     }
 
-
     /**
-     * @param  string $app_name
+     * @param string $app_name
+     *
      * @return array
      */
     private function buildAppTable($app_name)
     {
         $cols = array();
 
-        $method_name = 'get' . ucfirst($app_name) . 'NotifyTypes';
+        $method_name = 'get'.ucfirst($app_name).'NotifyTypes';
 
         $email_types = $this->prefs->$method_name('email');
         $alert_types = $this->prefs->$method_name('alert');
@@ -148,7 +139,7 @@ class PrefsTable
 
         $combined_types = array();
         foreach ($email_types as $type_name) {
-            $base_type_name = preg_replace('#_email$#', '', $type_name);
+            $base_type_name                  = preg_replace('#_email$#', '', $type_name);
             $combined_types[$base_type_name] = array('email');
 
             foreach ($this->prefs->getAppSubs('email', $app_name) as $k => $v) {
@@ -179,16 +170,16 @@ class PrefsTable
         $rows = array();
         foreach ($combined_types as $base_name => $types) {
             $row = array(
-                'name'   => $base_name,
-                'title'  => $this->tr->phrase("agent.prefs.apps_{$base_name}"),
-                'cols'   => array(),
+                'name'  => $base_name,
+                'title' => $this->tr->phrase("agent.prefs.apps_{$base_name}"),
+                'cols'  => array(),
             );
 
             foreach ($types as $t) {
-                $name = "{$base_name}_$t";
+                $name          = "{$base_name}_$t";
                 $row['cols'][] = array(
                     'name'  => $name,
-                    'value' => (isset($values[$name]) && $values[$name]) ? true : false
+                    'value' => (isset($values[$name]) && $values[$name]) ? true : false,
                 );
             }
 
@@ -202,11 +193,11 @@ class PrefsTable
         );
     }
 
-
     /**
-     * @param         $type
-     * @param  array  $sys_filters
-     * @param  Person $person_context
+     * @param        $type
+     * @param array  $sys_filters
+     * @param Person $person_context
+     *
      * @return array
      */
     public function buildSystemFiltersTable($type, array $sys_filters, Person $person_context = null)
@@ -225,12 +216,15 @@ class PrefsTable
         foreach (array('created', 'newleave', 'user_activity', 'agent_activity', 'agent_note', 'property_change') as $c) {
             $sys_table_cols[] = array(
                 'name'  => $c,
-                'title' => $this->tr->phrase("agent.prefs.inbox_{$c}_title")
+                'title' => $this->tr->phrase("agent.prefs.inbox_{$c}_title"),
             );
         }
 
         $sys_table_rows = array();
         foreach ($sys_filters as $f) {
+            if (0 === strpos($f->sys_name, 'problem_')) {
+                continue;
+            }
             if ($f->sys_name == 'all') {
                 $pref_opts = array(
                     array('created'),
@@ -272,7 +266,7 @@ class PrefsTable
                         $col[] = array(
                             'name'  => $opt,
                             'desc'  => $desc,
-                            'value' => (isset($values[$opt]) && $values[$opt]) ? true : false
+                            'value' => (isset($values[$opt]) && $values[$opt]) ? true : false,
                         );
                     }
                 }
@@ -288,10 +282,10 @@ class PrefsTable
         );
     }
 
-
     /**
-     * @param  string                                     $type
-     * @param  \Application\DeskPRO\Entity\TicketFilter[] $custom_filters
+     * @param string                                     $type
+     * @param \Application\DeskPRO\Entity\TicketFilter[] $custom_filters
+     *
      * @return array
      */
     public function buildCustomFiltersTable($type, array $custom_filters)
@@ -300,7 +294,7 @@ class PrefsTable
         foreach (array('created', 'new', 'user_activity', 'agent_activity', 'agent_note', 'property_change') as $c) {
             $custom_table_cols[] = array(
                 'name'  => $c,
-                'title' => $this->tr->phrase("agent.prefs.filter_{$c}_title")
+                'title' => $this->tr->phrase("agent.prefs.filter_{$c}_title"),
             );
         }
 
@@ -312,7 +306,7 @@ class PrefsTable
                 array('user_activity'),
                 array('agent_activity'),
                 array('agent_note'),
-                array('property_change')
+                array('property_change'),
             );
 
             $row = array(
@@ -328,7 +322,7 @@ class PrefsTable
                     $col[] = array(
                         'name'  => $opt,
                         'desc'  => $this->tr->phrase("agent.prefs.filter_{$type}_{$opt}_desc"),
-                        'value' => (isset($values[$opt]) && $values[$opt]) ? true : false
+                        'value' => (isset($values[$opt]) && $values[$opt]) ? true : false,
                     );
                 }
                 $row['cols'][] = $col;

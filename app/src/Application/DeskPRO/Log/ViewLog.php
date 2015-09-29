@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Log;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -56,17 +53,18 @@ class ViewLog
 
     public function __construct(Connection $db, Session $session = null)
     {
-        $this->db = $db;
+        $this->db      = $db;
         $this->session = $session;
     }
 
-
     /**
-     * Log a view on an object
+     * Log a view on an object.
      *
-     * @param  mixed                     $object
-     * @return int
+     * @param mixed $object
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return int
      */
     public function view($object, $action = 1)
     {
@@ -82,7 +80,7 @@ class ViewLog
         }
 
         if (!$type) {
-            throw new \InvalidArgumentException("Invalid object type. Got `" . get_class($object) . "`");
+            throw new \InvalidArgumentException('Invalid object type. Got `'.get_class($object).'`');
         }
 
         $person_id = null;
@@ -91,11 +89,11 @@ class ViewLog
         }
 
         $this->db->insert('page_view_log', array(
-            'object_type'   => $type,
-            'object_id'     => $object->getId(),
-            'view_action'   => $action,
-            'person_id'     => $person_id,
-            'date_created'  => date('Y-m-d H:i:s')
+            'object_type'  => $type,
+            'object_id'    => $object->getId(),
+            'view_action'  => $action,
+            'person_id'    => $person_id,
+            'date_created' => date('Y-m-d H:i:s'),
         ));
 
         return $this->db->lastInsertId();

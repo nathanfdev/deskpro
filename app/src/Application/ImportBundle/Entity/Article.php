@@ -1,42 +1,42 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Entity;
 
-use Symfony\Component\Validator\Constraints;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Application\DeskPRO;
 use DateTime;
+use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
- * Exporting article entity
+ * Exporting article entity.
  *
  * Class Article
- * @package Application\ImportBundle\Entity
  */
 final class Article extends AbstractContentEntity implements PersonAwareInterface, LabelAwareInterface
 {
@@ -91,7 +91,7 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     private $translations;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -123,11 +123,12 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     public function setPersonEmail($person_email)
     {
         $this->person_email = $person_email;
+
         return $this;
     }
 
     /**
-     * End action
+     * End action.
      *
      * @return string
      */
@@ -137,19 +138,21 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
-     * Set end action
+     * Set end action.
      *
      * @param string $end_action
+     *
      * @return $this
      */
     public function setEndAction($end_action)
     {
         $this->end_action = $end_action;
+
         return $this;
     }
 
     /**
-     * Checks if end action is valid
+     * Checks if end action is valid.
      *
      * @return bool
      */
@@ -180,7 +183,7 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
-     * Returns date end of publishing
+     * Returns date end of publishing.
      *
      * @return DateTime
      */
@@ -190,14 +193,16 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
-     * Set date end of publishing
+     * Set date end of publishing.
      *
      * @param DateTime $date_end
+     *
      * @return $this
      */
     public function setDateEnd(DateTime $date_end = null)
     {
         $this->date_end = $date_end;
+
         return $this;
     }
 
@@ -211,16 +216,18 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
 
     /**
      * @param DateTime $date_updated
+     *
      * @return $this
      */
     public function setDateUpdated(DateTime $date_updated = null)
     {
         $this->date_updated = $date_updated;
+
         return $this;
     }
 
     /**
-     * Returns article categories
+     * Returns article categories.
      *
      * @return array
      */
@@ -230,14 +237,16 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
-     * Add a new category
+     * Add a new category.
      *
      * @param string $category
+     *
      * @return $this
      */
     public function addCategory($category)
     {
-        $this->categories[] = (string)$category;
+        $this->categories[] = (string) $category;
+
         return $this;
     }
 
@@ -254,7 +263,8 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
      */
     public function addLabel($label)
     {
-        $this->labels[] = (string)$label;
+        $this->labels[] = (string) $label;
+
         return $this;
     }
 
@@ -268,11 +278,13 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
 
     /**
      * @param CustomField $custom_field
+     *
      * @return $this
      */
     public function addCustomField(CustomField $custom_field)
     {
         $this->custom_fields->attach($custom_field);
+
         return $this;
     }
 
@@ -290,11 +302,12 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     public function addAttachment(Attachment $attachment)
     {
         $this->attachments->attach($attachment);
+
         return $this;
     }
 
     /**
-     * Returns article comments
+     * Returns article comments.
      *
      * @return ArticleComment[]
      */
@@ -304,19 +317,21 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
-     * Add an article comment
+     * Add an article comment.
      *
      * @param ArticleComment $comment
+     *
      * @return $this
      */
     public function addComment(ArticleComment $comment)
     {
         $this->comments->attach($comment);
+
         return $this;
     }
 
     /**
-     * Returns article translations
+     * Returns article translations.
      *
      * @return ObjectLang[]
      */
@@ -326,7 +341,7 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
-     * Returns article translations grouped by language
+     * Returns article translations grouped by language.
      *
      * @return ObjectLang[]
      */
@@ -336,14 +351,16 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
-     * Add an article property translation
+     * Add an article property translation.
      *
      * @param ObjectLang $translation
+     *
      * @return $this
      */
     public function addTranslation(ObjectLang $translation)
     {
         $this->translations->attach($translation);
+
         return $this;
     }
 
@@ -352,7 +369,7 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
      */
     public function toArray()
     {
-        if ( ! $this->date_created) {
+        if (!$this->date_created) {
             throw new \Exception('Date created is not set up');
         }
 
