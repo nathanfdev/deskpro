@@ -198,6 +198,22 @@ class ZenDeskTest extends \DpIntegrationTestCase
     {
         $this->helper->seeFileFound('output.batch.json');
 
+        // Checking for organization custom def
+        $this->helper->seeFileFound('1/organizations_custom_def/organization_custom_def_1.json');
+        $this->helper->seeFileFound('1/organizations_custom_def/organization_custom_def_2.json');
+        $this->helper->seeFileFound('1/organizations_custom_def/organization_custom_def_3.json');
+        $this->helper->seeFileFound('1/organizations_custom_def/organization_custom_def_4.json');
+        $this->helper->seeFileFound('1/organizations_custom_def/organization_custom_def_5.json');
+        $this->helper->seeFileFound('1/organizations_custom_def/organization_custom_def_6.json');
+
+        // Checking for people custom def
+        $this->helper->seeFileFound('1/people_custom_def/person_custom_def_1.json');
+        $this->helper->seeFileFound('1/people_custom_def/person_custom_def_2.json');
+        $this->helper->seeFileFound('1/people_custom_def/person_custom_def_3.json');
+        $this->helper->seeFileFound('1/people_custom_def/person_custom_def_4.json');
+        $this->helper->seeFileFound('1/people_custom_def/person_custom_def_5.json');
+        $this->helper->seeFileFound('1/people_custom_def/person_custom_def_6.json');
+
         // Checking for people
         $this->helper->seeFileFound('1/people/person_1.json');
         $this->helper->seeInThisFile('Person 1');
@@ -215,6 +231,14 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->helper->seeInThisFile('"is_disabled":true');
         $this->helper->seeInThisFile('"timezone":"America\/Los_Angeles"');
         $this->helper->seeInThisFile('"emails":["imported.user.100000@example.com"]');
+
+        // Checking for ticket custom def
+        $this->helper->seeFileFound('1/tickets_custom_def/ticket_custom_def_1.json');
+        $this->helper->seeFileFound('1/tickets_custom_def/ticket_custom_def_2.json');
+        $this->helper->seeFileFound('1/tickets_custom_def/ticket_custom_def_3.json');
+        $this->helper->seeFileFound('1/tickets_custom_def/ticket_custom_def_4.json');
+        $this->helper->seeFileFound('1/tickets_custom_def/ticket_custom_def_5.json');
+        $this->helper->seeFileFound('1/tickets_custom_def/ticket_custom_def_6.json');
 
         // Checking for tickets
         $this->helper->seeFileFound('1/tickets/ticket_1.json');
