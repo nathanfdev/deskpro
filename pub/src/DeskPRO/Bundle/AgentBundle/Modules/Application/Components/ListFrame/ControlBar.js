@@ -5,8 +5,13 @@ import classNames from 'classnames';
 export class ControlBar extends Component {
   render() {
     return (
-      <div className="dpwd-navigation-dropdown-top-row">
-        {this.props.children}
+      <div className="control-bar">
+        <div className="ticket-controls-bulk-editing">
+          <div className="dpwd-navigation-dropdown-top-row">
+            <MassActionCheckbox count={this.props.count}/>
+            {this.props.children}
+          </div>
+        </div>
       </div>
     );
   }
@@ -25,10 +30,18 @@ export class ControlButtonsRow extends Component {
 export class ControlButton extends Component {
 
   static propTypes = {
+    toggleDropdown: PropTypes.func.isRequired,
     title: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     icon: PropTypes.string.isRequired
   };
+
+  handleClick(e) {
+    e.preventDefault();
+    const {toggleDropdown} = this.props;
+    const offset = $(e.target).closest('a').position();
+    toggleDropdown(offset);
+  }
 
   render() {
     const { title, label, icon } = this.props;
@@ -47,11 +60,39 @@ export class ControlButton extends Component {
     );
   }
 
-  handleClick(e) {
+}
+
+export class MassActionCheckbox extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      isChecked: false
+    };
+  }
+
+  handleClick = (e) => {
     e.preventDefault();
-    const {toggleDropdown} = this.props;
-    let offset = $(e.target).closest('a').position();
-    toggleDropdown(offset);
+    this.setState({
+      isChecked: !this.state.isChecked
+    });
+  };
+
+  render() {
+    var divClasses      = classNames('dpwd-navigation-top-row-mass-action-checkbox', {'active': this.state.isChecked === true});
+    var checkboxClasses = classNames('fa', {'fa-check': this.state.isChecked === true});
+
+    return (
+      <div className="dpwd-navigation-top-row-mass-action-checkbox-container">
+        <div className={divClasses} onClick={this.handleClick}>
+          <i className={checkboxClasses}></i>
+        </div>
+
+        <div className="dpwd-navigation-top-row-mass-action-checkbox-count">
+          <span>{this.props.count}</span>
+        </div>
+      </div>
+    );
   }
 
 }

@@ -16,12 +16,12 @@ export class FeedbackListControlBar extends React.Component {
       filterByDropdownIsExpanded: false,
       viewModeDropdownIsExpanded: false,
       dropdownOffset: {left: 0, top: 0}
-    }
+    };
   }
 
   render() {
     return (
-      <ControlBar>
+      <ControlBar count={this.props.count}>
         <ControlButtonsRow>
           <OrderByContainer toggleDropdown={this.toggleOrderByDropdown}/>
           <li>
