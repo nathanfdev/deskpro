@@ -116,6 +116,8 @@ class DeskProWriterFactory extends AbstractWriterFactory
         $ticket_layout_repository = $entity_manager->getRepository('DeskPRO:TicketLayout');
         /** @var EntityRepository\TicketWorkflow $ticket_workflow_repository */
         $ticket_workflow_repository = $entity_manager->getRepository('DeskPRO:TicketWorkflow');
+        /** @var EntityRepository\TicketMessage $ticket_message_repository */
+        $ticket_message_repository = $entity_manager->getRepository('DeskPRO:TicketMessage');
         /** @var EntityRepository\Usergroup $user_group_repository */
         $user_group_repository = $entity_manager->getRepository('DeskPRO:Usergroup');
         /** @var ObjectRepository $object_lang_repository */
@@ -154,7 +156,7 @@ class DeskProWriterFactory extends AbstractWriterFactory
             ->attach(new Importer\Mapper\PersonEmail($person_email_repository))
             ->attach(new Importer\Mapper\Product($product_repository))
             ->attach(new Importer\Mapper\Ticket($ticket_repository))
-            ->attach(new Importer\Mapper\TicketMessage($entity_manager))
+            ->attach(new Importer\Mapper\TicketMessage($ticket_message_repository, $import_map_repository))
             ->attach(new Importer\Mapper\TicketPriority($ticket_priority_repository))
             ->attach(new Importer\Mapper\TicketCategory($ticket_category_repository))
             ->attach(new Importer\Mapper\TicketLabel($ticket_label_repository))

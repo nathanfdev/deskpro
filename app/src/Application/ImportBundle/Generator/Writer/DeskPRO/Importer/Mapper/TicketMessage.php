@@ -28,28 +28,30 @@
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
-use Doctrine\ORM\EntityManager;
+use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Entity;
 
 /**
  * Class TicketMessage
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper
  */
-final class TicketMessage implements MapperInterface
+final class TicketMessage extends AbstractImportMapMapper
 {
     /**
-     * @var EntityManager
+     * @var EntityRepository\TicketMessage
      */
-    private $em;
+    private $ticket_message_repository;
 
     /**
      * Constructor
      *
-     * @param EntityManager $em
+     * @param EntityRepository\TicketMessage $ticket_message_repository
+     * @param EntityRepository\ImportMap     $import_map_repository
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityRepository\TicketMessage $ticket_message_repository, EntityRepository\ImportMap $import_map_repository)
     {
-        $this->em = $em;
+        $this->ticket_message_repository = $ticket_message_repository;
+        $this->import_map_repository     = $import_map_repository;
     }
 
     /**
@@ -66,34 +68,21 @@ final class TicketMessage implements MapperInterface
     public function findOneBy(array $criteria, $throw_exception = true)
     {
         $record = null;
-        if (isset($criteria['message'])) {
-            $entity = $criteria['message'];
-            if ( ! $entity instanceof Entity\TicketMessage) {
-                throw new \RuntimeException('Criteria `message` should be instance of Entity\TicketMessage');
+        $id     = $this->findImportMapNewId($criteria);
+
+        if ($id) {
+            $record = $this->ticket_message_repository->find($id);
+        } else {
+            if (isset($criteria['entity'])) {
+                unset($criteria['entity']);
             }
 
-            if ($entity->getImportMapKey()) {
-                $qb = $this->em->createQueryBuilder();
-                $qb
-                    ->select('i')
-                    ->from('DeskPRO:ImportMap', 'i')
-                    ->andWhere($qb->expr()->eq('i.typename', '?0'))
-                    ->andWhere($qb->expr()->eq('i.old_id', '?1'))
-                    ->setParameters(array(
-                        $entity->getImportMapKey(),
-                        $entity->getOid()
-                    ))
-                ;
-
-                /** @var DeskPROEntity\ImportMap $import_map */
-                $import_map = $qb->getQuery()->getOneOrNullResult();
-                if ($import_map) {
-                    /** @var DeskPROEntity\TicketMessage $record */
-                    $record = $this->em->getRepository('DeskPRO:TicketMessage')->find($import_map->getNewId());
-                }
+            if ( ! empty($criteria)) {
+                $record = $this->ticket_message_repository->findOneBy($criteria);
             }
         }
 
+        /** @var DeskPROEntity\TicketMessage $record */
         if ( ! $record && $throw_exception) {
             throw new MapperException('Ticket message not found', $criteria);
         }

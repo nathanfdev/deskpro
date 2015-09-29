@@ -126,7 +126,7 @@ final class Ticket extends AbstractImporter
 
         } else {
             foreach ($entity->getMessages() as $message) {
-                $exist_message = $this->getTicketMessageMapper()->findOneBy(array('message' => $message), false);
+                $exist_message = $this->getTicketMessageMapper()->findOneBy(array('entity' => $message), false);
                 if ($exist_message) {
                     $this->logDebug(sprintf('Found existing ticket message by oid=`%d`', $message->getOid()));
                     $this->updateTicketMessage($message, $exist_message);

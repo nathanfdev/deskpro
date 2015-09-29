@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\DeskPRO\EntityRepository;
-use Application\ImportBundle\Entity;
 
 /**
  * Class AbstractCustomDefMapper
