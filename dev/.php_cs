@@ -30,9 +30,10 @@ EOF;
 Symfony\CS\Fixer\Contrib\HeaderCommentFixer::setHeader($header);
 
 $finder = Symfony\CS\Finder\DefaultFinder::create()
-    ->exclude('docs')
-    ->exclude('vendor')
-    ->exclude('vendor-src')
+    ->exclude(PHP_CS_SRC_DIR.'/docs')
+    ->exclude(PHP_CS_SRC_DIR.'/sys/cache')
+    ->exclude(PHP_CS_SRC_DIR.'/vendor')
+    ->exclude(PHP_CS_SRC_DIR.'/vendor-src')
     ->notName('StaticReflectionProperty_Real.php')
     ->in(PHP_CS_SRC_DIR)
 ;
