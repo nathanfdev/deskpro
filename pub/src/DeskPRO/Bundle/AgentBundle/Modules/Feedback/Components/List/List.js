@@ -12,7 +12,7 @@ export class List extends Component {
     feedback: PropTypes.array.isRequired,
     comments: PropTypes.array.isRequired,
     currentContent: PropTypes.string.isRequired,
-    currentViewMode: PropTypes.object.isRequired,
+    currentViewMode: PropTypes.object.isRequired
   };
 
   contentChoice() {
@@ -24,11 +24,11 @@ export class List extends Component {
   }
 
   renderFeedback() {
-    const {currentViewMode, feedback, people, feedbackTypes, massAction} = this.props;
+    const {currentViewMode, feedback, people, feedbackTypes, massAction, feedbackLabels} = this.props;
     var viewMode = currentViewMode.field;
     if (viewMode === constants.VIEW_MODE_LIST) {
       return (
-        <FeedbackList elements={feedback} people={people} feedbackTypes={feedbackTypes} massAction={massAction}/>
+        <FeedbackList elements={feedback} people={people} feedbackLabels={feedbackLabels} feedbackTypes={feedbackTypes} massAction={massAction}/>
       );
     }
     return (

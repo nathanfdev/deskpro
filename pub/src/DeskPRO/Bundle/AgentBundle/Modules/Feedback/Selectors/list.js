@@ -1,7 +1,8 @@
 import { createSelector } from 'reselect';
 import { createPeopleRequestSelectors }
   from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Selectors/peopleSelectors';
-import{createFeedbackTypesRequestSelectors} from '../RecordStores/Selectors/feedbackTypesSelectors'
+import{createFeedbackTypesRequestSelectors} from '../RecordStores/Selectors/feedbackTypesSelectors';
+import{createFeedbackLabelsRequestSelectors} from '../RecordStores/Selectors/feedbackLabelsSelectors';
 
 const stateSelector = state => state.Feedback.list;
 
@@ -28,4 +29,9 @@ export const peopleSelector = createSelector(
 export const feedbackTypesSelector = createSelector(
   createFeedbackTypesRequestSelectors('all').recordsSel,
     types => types.toJS()
+);
+
+export const feedbackLabelsSelector = createSelector(
+  createFeedbackLabelsRequestSelectors('all').recordsSel,
+    labels => labels.toJS()
 );

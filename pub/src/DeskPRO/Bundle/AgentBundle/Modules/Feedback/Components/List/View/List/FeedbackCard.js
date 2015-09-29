@@ -9,7 +9,9 @@ export class FeedbackCard extends Component {
   };
 
   render() {
-    const {feedback, author, type,  massAction} = this.props;
+    const {feedback, author, type,  massAction, feedbackLabels} = this.props;
+    //const labels = feedbackLabels.filter((obj)=>obj.id === feedback.id);
+    const labels = feedbackLabels ? feedbackLabels.labels : [];
     return (
       <Card type="feedback">
 
@@ -20,6 +22,8 @@ export class FeedbackCard extends Component {
             <CardLineItem>#{feedback.id}</CardLineItem>
             <CardDisc/>
             <CardLineItem icon="fa-thumbs-up">{feedback.num_ratings}</CardLineItem>
+            <CardDisc/>
+            <CardTitle content={feedback.title}/>
           </CardLineLeft>
 
           <CardLineRight>
@@ -28,24 +32,14 @@ export class FeedbackCard extends Component {
         </CardLine>
 
         <CardLine>
-          <CardTitle content={feedback.title}/>
-        </CardLine>
-
-        <CardLine>
-          <CardTitle content={feedback.content}/>
-        </CardLine>
-
-        <CardLine>
           <CardLineLeft>
-            <CardLineItem icon="fa-calendar-plus-o"><CardDate date={feedback.date_created}/></CardLineItem>
+            <CardLineItem icon="fa-book">{type.title}</CardLineItem>
+            <CardDisc/>
+            {labels.map((label, index)=><CardLineItem key={index}>{label};&nbsp;</CardLineItem>)}
             <CardDisc/>
             <CardLineItem>
               <CardUser user={author}/>
             </CardLineItem>
-            <CardDisc/>
-            <CardLineItem icon="fa-book">{type.title}</CardLineItem>
-            <CardDisc/>
-            <CardLineItem icon="fa-link"><a href="#">Linked ticket</a></CardLineItem>
           </CardLineLeft>
 
           <CardLineRight>
