@@ -183,7 +183,10 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
             }
 
             if ($this->progress_bar && $collection->getSkippedCount()) {
-                $this->progress_bar->advance($collection->getSkippedCount() * 2);
+                $skip_count = $collection->getSkippedCount() * 2;
+                while ($skip_count-- > 0) {
+                    $this->advanceProgressBar();
+                }
             }
 
             if ($exporter instanceof Exporter\ExporterBatchInterface) {

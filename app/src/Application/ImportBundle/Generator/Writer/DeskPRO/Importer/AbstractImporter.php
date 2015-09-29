@@ -233,6 +233,10 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
                 break;
 
             case Entity\CustomField::FIELD_TYPE_CHOICE:
+                if (!$entity->getValue()) {
+                    return;
+                }
+
                 $choice = $mapper->findChoiceCustomDef($entity->getValue(), $custom_field_def);
                 $custom_field
                     ->setField($choice)
@@ -280,7 +284,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the person custom def mapper
+     * Returns the person custom def mapper.
      *
      * @return Mapper\CustomDefPerson
      */
@@ -290,7 +294,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the language mapper
+     * Returns the language mapper.
      *
      * @return Mapper\Language
      */
@@ -310,7 +314,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the article category mapper
+     * Returns the article category mapper.
      *
      * @return Mapper\ArticleCategory
      */
@@ -320,7 +324,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the article custom def mapper
+     * Returns the article custom def mapper.
      *
      * @return Mapper\CustomDefArticle
      */
@@ -330,7 +334,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the download mapper
+     * Returns the download mapper.
      *
      * @return Mapper\Download
      */
@@ -360,7 +364,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the feedback custom def mapper
+     * Returns the feedback custom def mapper.
      *
      * @return Mapper\CustomDefFeedback
      */
@@ -370,7 +374,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the feedback category mapper
+     * Returns the feedback category mapper.
      *
      * @return Mapper\FeedbackCategory
      */
@@ -380,7 +384,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the ticket mapper
+     * Returns the ticket mapper.
      *
      * @return Mapper\Ticket
      */
@@ -390,7 +394,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the ticket custom def mapper
+     * Returns the ticket custom def mapper.
      *
      * @return Mapper\CustomDefTicket
      */
@@ -400,7 +404,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the organization mapper
+     * Returns the organization mapper.
      *
      * @return Mapper\Organization
      */
@@ -410,7 +414,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the organization custom def mapper
+     * Returns the organization custom def mapper.
      *
      * @return Mapper\CustomDefOrganization
      */
@@ -420,7 +424,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the object lang mapper
+     * Returns the object lang mapper.
      *
      * @return Mapper\ObjectLang
      */
@@ -430,7 +434,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the import map mapper
+     * Returns the import map mapper.
      *
      * @return Mapper\ImportMap
      */

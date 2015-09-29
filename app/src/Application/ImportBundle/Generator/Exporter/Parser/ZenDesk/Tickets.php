@@ -132,10 +132,10 @@ final class Tickets extends AbstractParser
     {
         $entity    = new Entity\Ticket();
         $formatted = $this->formatter->format($data, array(
-            'id'               => TransformerInterface::TYPE_STRING,
-            'destination'      => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => $entity->getDestinationPrefix(),
-                'ref'    => 'id',
+            'id'          => TransformerInterface::TYPE_STRING,
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix'  => $entity->getDestinationPrefix(),
+                'ref'     => 'id',
             )),
             'requester_id'     => TransformerInterface::TYPE_STRING,
             'assignee_id'      => TransformerInterface::TYPE_STRING,
@@ -199,6 +199,9 @@ final class Tickets extends AbstractParser
         }
         foreach ($this->exportMessages($formatted) as $message) {
             $entity->addMessage($message);
+        }
+        foreach ($this->exportCustomFields($formatted) as $custom_field) {
+            $entity->addCustomField($custom_field);
         }
 
         return $entity;
@@ -272,8 +275,8 @@ final class Tickets extends AbstractParser
         $formatted = $this->formatter->format($data, array(
             'id'          => TransformerInterface::TYPE_STRING,
             'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => $entity->getDestinationPrefix(),
-                'ref'    => 'id',
+                'prefix'  => $entity->getDestinationPrefix(),
+                'ref'     => 'id',
             )),
             'author_id'   => TransformerInterface::TYPE_STRING,
             'body'        => TransformerInterface::TYPE_STRING,
@@ -308,6 +311,89 @@ final class Tickets extends AbstractParser
         }
 
         return $entity;
+    }
+
+    /**
+     * Returns a ticket custom field entity collection.
+     *
+     * @param array $ticket
+     *
+     * @return Entity\Collection|Entity\CustomField[]
+     */
+    protected function exportCustomFields(array $ticket)
+    {
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($ticket['custom_fields'])
+            ->setPrefix('ZDTicketCustomField')
+            ->setRefColumn('id')
+            ->setMethod('exportCustomField')
+        ;
+
+        return $this->exportCollection($config);
+    }
+
+    /**
+     * Returns a ticket custom field entity.
+     *
+     * @param array $data
+     *
+     * @return Entity\CustomField
+     */
+    protected function exportCustomField(array $data)
+    {
+        $entity    = new Entity\CustomField();
+        $formatted = $this->formatter->format($data, array(
+            'id'          => TransformerInterface::TYPE_STRING,
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix'  => $entity->getDestinationPrefix(),
+                'ref'     => 'id',
+            )),
+            'value' => TransformerInterface::TYPE_STRING,
+        ));
+
+        $custom_def = $this->getCustomDefById($formatted['id']);
+        if (!empty($custom_def['custom_field_options'])) {
+            foreach ($custom_def['custom_field_options'] as $option) {
+                if ($option['value'] == $formatted['value']) {
+                    $formatted['value'] = $option['name'];
+                }
+            }
+        }
+        if (!empty($custom_def['system_field_options'])) {
+            foreach ($custom_def['system_field_options'] as $option) {
+                if ($option['value'] == $formatted['value']) {
+                    $formatted['value'] = $option['name'];
+                }
+            }
+        }
+
+        $entity
+            ->setRawData($data)
+            ->setOid($formatted['id'])
+            ->setDestination($formatted['destination'])
+            ->setKey($custom_def['title_in_portal'] ?: $custom_def['title'])
+            ->setValue($formatted['value'] ?: '')
+        ;
+
+        return $entity;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return array
+     */
+    protected function getCustomDefById($id)
+    {
+        $custom_defs = $this->reader->getTicketFields();
+        foreach ($custom_defs as $custom_def) {
+            if ($custom_def['id'] == $id) {
+                return $custom_def;
+            }
+        }
+
+        throw new SkippingException(sprintf('No custom def found with id=%s', $id), $custom_defs);
     }
 
     /**
