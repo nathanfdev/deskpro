@@ -23,6 +23,14 @@ import AssignHover from "../Components/AssignHover";
 import TaskControlsViewSwitcher from '../Components/TaskControlsViewSwitcher';
 
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned';
+import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
+import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
+import ItemGroup from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemGroup';
+import ItemList from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemList';
+import MenuFooter from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooter';
+import MenuFooterOptions from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterOptions';
+import MenuFooterLink from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterLink';
+import TaskMassActions from '../Components/TaskMassActions';
 import ListFrameMenu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameMenu';
 import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 
@@ -51,7 +59,8 @@ export default class TasksListFrame extends React.Component {
       moment: new Moment(),
       showAssignWindow: false,
       position: {},
-      taskData: {}
+      taskData: {},
+      massActionable: {}
     };
     this.intl = IntlMixin;
     this.lastGrouping = '';
@@ -445,43 +454,8 @@ export default class TasksListFrame extends React.Component {
                     setSortOrder={this.setSortOrder.bind(this)}
               />
 
-            <span className="ticket-controls-bulk-editing">
-              <a href="#">
-                <span>Assign</span>
-                <hr />
-                <i className="fa fa-caret-down"/>
-              </a>
-              <a href="#">
-                <span>Statuses</span>
-                <hr />
-                <i className="fa fa-caret-down"/>
-              </a>
-              <a href="#">
-                <span>Macros</span>
-                <hr />
-                <i className="fa fa-caret-down"/>
-              </a>
-              <a href="#">
-                <span><i className="fa fa-reply"/></span>
-                <hr />
-                <i className="fa fa-caret-down"/>
-              </a>
-              <a href="#">
-                <span><i className="fa fa-asterisk"/></span>
-                <hr />
-                <i className="fa fa-caret-down"/>
-              </a>
-
-              <hr />
-
-              <a href="#" className="active">
-                <span>GO</span>
-              </a>
-
-              <a href="#" className="cancel" onClick={this.hideMassActionControls.bind(this)}>
-                <span>Cancel</span>
-              </a>
-            </span>
+            <TaskMassActions hideMassActionControls={this.hideMassActionControls.bind(this)}
+                             projects={this.projects} />
           </ListFrameMenu>
 
           <Positioned isOpen={this.state.changeView}
@@ -493,14 +467,14 @@ export default class TasksListFrame extends React.Component {
           <ListFrameContents>
             {this.state.view === 'kanban' ?
               <div className="kanban-columns">
-                  {rawGroupings ? rawGroupings.map((grouping) => {
+                  {rawGroupings ? rawGroupings.map((group) => {
                     return (<KanbanColumn projects={this.projects} agents={this.agents} teams={this.teams}
                               departments={this.departments}
-                              tasks={tasks[grouping.key]} key={grouping.id} taskList={grouping}
+                              tasks={tasks[group.key]} key={group.id} taskList={group}
                               dispatch={_this.props.dispatch.bind(_this)}
                               columnField={columnField}
-                              updateField={grouping.updateField}
-                              updateValue={grouping.updateValue}
+                              updateField={group.updateField}
+                              updateValue={group.updateValue}
                               source={taskFrameList.taskFrameSource}
                               updateMassActions={_this.updateMassActions.bind(_this)}
                               moveCard={this.moveCard.bind(this)}
@@ -527,26 +501,26 @@ export default class TasksListFrame extends React.Component {
                       : ''}</th>
                   </tr>
                   </thead>
-                  {rawGroupings ? rawGroupings.map((grouping) => {
-                      if (tasks[grouping.key]) {
-                          return (<TaskCardCondensedGroup tasks={tasks[grouping.key]} key={grouping.id}
-                                                          columnField={columnField}
-                                                          source={taskFrameList.taskFrameSource}
-                                                          dispatch={_this.props.dispatch.bind(_this)}
-                                                          updateField={grouping.updateField}
-                                                          updateValue={grouping.updateValue}
-                                                          teams={this.teams} projects={this.projects}
-                                                          linked_items={linkedItems}
-                                                          departments={this.departments}
-                                                          agents={this.agents} tickets={tickets}
-                                                          toggleDone={this.toggleDone.bind(this)}
-                                                          editTask={_this.editTask.bind(_this)}
-                                                          updateMassActions={_this.updateMassActions.bind(_this)}
-                                                          actionable={_this.state.actionable}
-                                                          order={this.state.order}
-                                                          divider={grouping.title}
-                                                          moveCard={this.moveCard.bind(this)} />);
-                      }
+                  {rawGroupings ? rawGroupings.map((group) => {
+                    if (tasks[group.key]) {
+                      return (<TaskCardCondensedGroup tasks={tasks[group.key]} key={group.id}
+                                                      columnField={columnField}
+                                                      source={taskFrameList.taskFrameSource}
+                                                      dispatch={_this.props.dispatch.bind(_this)}
+                                                      updateField={group.updateField}
+                                                      updateValue={group.updateValue}
+                                                      teams={this.teams} projects={this.projects}
+                                                      linked_items={linkedItems}
+                                                      departments={this.departments}
+                                                      agents={this.agents} tickets={tickets}
+                                                      toggleDone={this.toggleDone.bind(this)}
+                                                      editTask={_this.editTask.bind(_this)}
+                                                      updateMassActions={_this.updateMassActions.bind(_this)}
+                                                      actionable={_this.state.actionable}
+                                                      order={this.state.order}
+                                                      divider={group.title}
+                                                      moveCard={this.moveCard.bind(this)} />);
+                    }
                   }) : '' }
                 </table>
                 <Formsy.Form onSubmit={_this.createTask.bind(_this, taskFrameList.taskFrameSource)}>
@@ -576,13 +550,13 @@ export default class TasksListFrame extends React.Component {
                     <button type="submit" value="Save" className="button">Add</button>
                 </Formsy.Form>
 
-                {rawGroupings ? rawGroupings.map((grouping) => {
-                    return <TaskCardGroup tasks={tasks[grouping.key]} key={grouping.id}
+                {rawGroupings ? rawGroupings.map((group) => {
+                  return (<TaskCardGroup tasks={tasks[group.key]} key={group.id}
                                           columnField={columnField}
                                           source={taskFrameList.taskFrameSource}
                                           dispatch={_this.props.dispatch.bind(_this)}
-                                          updateField={grouping.updateField}
-                                          updateValue={grouping.updateValue}
+                                          updateField={group.updateField}
+                                          updateValue={group.updateValue}
                                           teams={this.teams} projects={this.projects}
                                           linked_items={linkedItems}
                                           departments={this.departments} agents={this.agents}
@@ -591,10 +565,10 @@ export default class TasksListFrame extends React.Component {
                                           editTask={_this.editTask.bind(_this)}
                                           updateMassActions={_this.updateMassActions.bind(_this)}
                                           actionable={_this.state.actionable}
-                                          divider={grouping.title}
+                                          divider={group.title}
                                           order={this.state.order}
                                           toggleAssignWindow={_this.toggleAssignWindow.bind(_this)}
-                                          moveCard={this.moveCard.bind(this)}/>
+                                          moveCard={this.moveCard.bind(this)}/>);
                 }) : '' }
 
               </div>

@@ -27,7 +27,9 @@ export default class ItemGroup extends React.Component {
     }
 
     return (<ul className={divClass}>
-        {this.props.children}
+        {React.Children.map(this.props.children, (child) => {
+          return React.cloneElement(child, this.props);
+        })}
       </ul>
     );
   }

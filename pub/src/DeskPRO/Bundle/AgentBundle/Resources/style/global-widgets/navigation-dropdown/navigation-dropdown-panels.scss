@@ -95,7 +95,9 @@ a.dpw--panel-button {
     height: 1px;
   }
 
-  @include add-corner(4px, #62ad8c, 15px, left, nohover);// navigation-mixins.scss
+  &.dpw-navigation-dropdown-panel-corner-left {
+    @include add-corner(4px, #62ad8c, 15px, left, nohover);// navigation-mixins.scss
+  }
 
   .dpw-navigation-dropdown-panel-content {
     .dpw-navigation-dropdown-panel-content-line {

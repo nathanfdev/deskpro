@@ -200,6 +200,12 @@
     }
   }
 
+  .dpw--popup-item-box.selected {
+    background: #62ad8c;
+    color: #fff;
+    border-radius: 2px;
+  }
+
   .dpw--avatar-face {// Resize the basic .dpw--avatar-face
     width: 17px;
     height: 17px;
