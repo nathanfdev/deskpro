@@ -63,7 +63,7 @@ class MultipleCustomFields extends AbstractParserFormatterHelper
             ->setData($data)
             ->setPrefix('CSVCustomField')
             ->setRefColumn($ref_column)
-            ->setMethod(function ($data, $num) use ($that, $destination_prefix,$ref_column) {
+            ->setMethod(function ($data, $num) use ($that, $destination_prefix, $ref_column) {
                 return $that->exportCustomField($num, $destination_prefix, $data, $ref_column);
             })
         ;

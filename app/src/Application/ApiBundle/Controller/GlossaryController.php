@@ -313,8 +313,8 @@ class GlossaryController extends AbstractController
      * @param int $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\GlossaryWord
      *
+     * @return \Application\DeskPRO\Entity\GlossaryWord
      */
     protected function _getWordOr404($id)
     {
@@ -331,8 +331,8 @@ class GlossaryController extends AbstractController
      * @param int $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\GlossaryWordDefinition
      *
+     * @return \Application\DeskPRO\Entity\GlossaryWordDefinition
      */
     protected function _getDefinitionOr404($id)
     {

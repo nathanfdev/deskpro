@@ -88,8 +88,8 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
      * @param string       $value     The value ID of the thing we are translating
      *
      * @throws \InvalidArgumentException
-     * @return \Application\DeskPRO\Entity\ObjectLang
      *
+     * @return \Application\DeskPRO\Entity\ObjectLang
      */
     public static function createObjectLang($lang, $object, $prop_name, $value)
     {

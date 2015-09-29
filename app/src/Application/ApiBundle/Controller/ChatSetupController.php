@@ -49,7 +49,7 @@ class ChatSetupController extends AbstractController implements ProtectedControl
 
     public function chatSetupAction()
     {
-        /**
+        /*
          * @var \Application\DeskPRO\ChatSetup\ChatSetup
          */
         $chat_setup = $this->container->getSystemService('chat_setup');
@@ -67,7 +67,7 @@ class ChatSetupController extends AbstractController implements ProtectedControl
 
     public function toggleChatAction($is_enabled)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\ChatSetup\ChatSetup
          */
         $chat_setup = $this->container->getSystemService('chat_setup');

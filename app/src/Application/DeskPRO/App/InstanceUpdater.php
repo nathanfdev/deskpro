@@ -105,8 +105,8 @@ class InstanceUpdater
      * @param DeskproContainer $container
      *
      * @throws \UnexpectedValueException
-     * @return InstallerContext
      *
+     * @return InstallerContext
      */
     protected function createInstallContext(AppPackage $package, AppInstance $app, array $settings, DeskproContainer $container)
     {

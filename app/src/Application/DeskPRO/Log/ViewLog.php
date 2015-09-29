@@ -63,8 +63,8 @@ class ViewLog
      * @param mixed $object
      *
      * @throws \InvalidArgumentException
-     * @return int
      *
+     * @return int
      */
     public function view($object, $action = 1)
     {

@@ -248,8 +248,8 @@ class Prefs
      * @param string       $type
      *
      * @throws \InvalidArgumentException
-     * @return array
      *
+     * @return array
      */
     public function getFilterNotifyTypes(TicketFilter $filter, $type)
     {
@@ -299,8 +299,8 @@ class Prefs
      * @param string $type
      *
      * @throws \InvalidArgumentException
-     * @return array
      *
+     * @return array
      */
     public function getFilterNotifyPrefNames($type)
     {

@@ -192,8 +192,8 @@ final class Article extends AbstractImporter
      * @param string $title
      *
      * @throws \Exception
-     * @return DeskPROEntity\ArticleCategory|null
      *
+     * @return DeskPROEntity\ArticleCategory|null
      */
     private function findOrCreateArticleCategory($title)
     {
@@ -220,8 +220,8 @@ final class Article extends AbstractImporter
      * @param Entity\CustomField $entity
      *
      * @throws ImporterException
-     * @return DeskPROEntity\CustomDataArticle
      *
+     * @return DeskPROEntity\CustomDataArticle
      */
     private function createArticleCustomData(Entity\CustomField $entity)
     {
@@ -235,8 +235,8 @@ final class Article extends AbstractImporter
      * Returns the article comment mapper.
      *
      * @throws \Exception
-     * @return Mapper\ArticleComment
      *
+     * @return Mapper\ArticleComment
      */
     private function getArticleCommentMapper()
     {

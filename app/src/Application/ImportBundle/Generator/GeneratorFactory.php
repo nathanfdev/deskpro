@@ -98,8 +98,8 @@ class GeneratorFactory
      * @param GeneratorConfig  $config
      *
      * @throws \RuntimeException
-     * @return ExporterInterface
      *
+     * @return ExporterInterface
      */
     private static function createExporter(DeskproContainer $container, GeneratorConfig $config)
     {
@@ -135,8 +135,8 @@ class GeneratorFactory
      * @param GeneratorConfig  $config
      *
      * @throws \RuntimeException
-     * @return WriterInterface
      *
+     * @return WriterInterface
      */
     private static function createWriter(DeskproContainer $container, GeneratorConfig $config)
     {

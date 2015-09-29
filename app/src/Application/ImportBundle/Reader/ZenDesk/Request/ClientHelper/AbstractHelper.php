@@ -61,8 +61,8 @@ abstract class AbstractHelper implements ClientHelperInterface
      * @param string $end_point
      *
      * @throws ResponseException
-     * @return mixed
      *
+     * @return mixed
      */
     protected function doGetRequest(Client $client, $end_point)
     {
@@ -86,8 +86,8 @@ abstract class AbstractHelper implements ClientHelperInterface
      * @param string $content_type
      *
      * @throws ResponseException
-     * @return mixed
      *
+     * @return mixed
      */
     protected function doPostRequest(Client $client, $end_point, array $params, $content_type = 'application/json')
     {
@@ -113,8 +113,8 @@ abstract class AbstractHelper implements ClientHelperInterface
      * @param string $end_point
      *
      * @throws ResponseException
-     * @return mixed
      *
+     * @return mixed
      */
     protected function doDeleteRequest(Client $client, $end_point)
     {

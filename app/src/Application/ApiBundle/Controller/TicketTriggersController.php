@@ -611,6 +611,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      *
      *
@@ -659,6 +660,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      *
      *
@@ -724,6 +726,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
      * @param $is_enabled - defined by route
      *
      * @throws \Exception
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      *
      *

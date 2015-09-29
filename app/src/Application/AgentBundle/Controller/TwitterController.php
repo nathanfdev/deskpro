@@ -261,8 +261,8 @@ class TwitterController extends AbstractController
      *
      * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\TwitterAccount
      *
+     * @return \Application\DeskPRO\Entity\TwitterAccount
      */
     protected function getAccount($id)
     {

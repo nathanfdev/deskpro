@@ -66,8 +66,8 @@ class PersonDetector
      * @param string $from_number
      *
      * @throws \Doctrine\DBAL\ConnectionException
-     * @return Person
      *
+     * @return Person
      */
     public function createPersonWithNumber($from_number)
     {

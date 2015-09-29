@@ -224,8 +224,8 @@ class RegistrationSettings
 
     /**
      * @throws \InvalidArgumentException
-     * @return TicketTrigger
      *
+     * @return TicketTrigger
      */
     private function _createTrigger()
     {

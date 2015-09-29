@@ -104,6 +104,7 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     *
      * @return Response
      *
      *
@@ -150,6 +151,7 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     *
      * @return Response
      *
      *
@@ -233,6 +235,7 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     *
      * @return Response
      *
      *

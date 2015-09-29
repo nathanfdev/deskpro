@@ -194,7 +194,7 @@ class ServerReportFile
      */
     protected function _createPhpInfoFile($file_name)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\ServerPhpInfo\ServerPhpInfo
          */
         $service = App::getSystemService('server_php_info');
@@ -214,7 +214,7 @@ class ServerReportFile
      */
     protected function _createCliInfoFile($file_name)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\ServerPhpInfo\ServerPhpInfo
          */
         $service = App::getSystemService('server_php_info');
@@ -425,7 +425,7 @@ class ServerReportFile
      */
     protected function _createMisc($file_name)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\ServerPhpInfo\ServerPhpInfo
          */
         $service = App::getSystemService('server_php_info');
@@ -654,8 +654,8 @@ class ServerReportFile
      * @param string $file_name
      *
      * @throws \Symfony\Component\Filesystem\Exception\IOException
-     * @return string
      *
+     * @return string
      */
     protected function _readFile($file_name)
     {

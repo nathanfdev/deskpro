@@ -104,8 +104,8 @@ abstract class DomainObject extends BasicDomainObject
      * For example, "tickets.1234".
      *
      * @throws \RuntimeException
-     * @return string
      *
+     * @return string
      */
     public function getObjectRef()
     {

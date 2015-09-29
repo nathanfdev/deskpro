@@ -39,8 +39,8 @@ class LocaleMapper
      * @param string $zd_locale
      *
      * @throws \RuntimeException
-     * @return string
      *
+     * @return string
      */
     public static function getLocale($zd_locale)
     {

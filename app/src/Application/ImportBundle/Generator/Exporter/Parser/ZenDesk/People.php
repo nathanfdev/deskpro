@@ -117,8 +117,8 @@ final class People extends AbstractParser
      * @param array $data
      *
      * @throws \RuntimeException
-     * @return Entity\Person
      *
+     * @return Entity\Person
      */
     protected function exportPerson(array $data)
     {

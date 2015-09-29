@@ -39,7 +39,7 @@ class ReportsOverviewController extends AbstractController
 
     public function getDataAction($type)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\Reports\Overview
          */
         $reports_overview = $this->container->getSystemService('reports_overview');
@@ -54,7 +54,7 @@ class ReportsOverviewController extends AbstractController
 
     public function getStatsAction($type)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\Reports\Overview
          */
         $reports_overview = $this->container->getSystemService('reports_overview');

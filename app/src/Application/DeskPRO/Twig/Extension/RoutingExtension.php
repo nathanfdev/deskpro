@@ -48,8 +48,8 @@ class RoutingExtension extends BaseRoutingExtension
      * @param bool   $relative
      *
      * @throws \Exception
-     * @return string
      *
+     * @return string
      */
     public function getPath($name, $parameters = array(), $relative = false)
     {

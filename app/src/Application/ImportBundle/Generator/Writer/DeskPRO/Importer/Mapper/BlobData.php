@@ -78,8 +78,8 @@ final class BlobData implements MapperInterface
      * @param bool   $throw_exception
      *
      * @throws MapperException
-     * @return mixed|null|string
      *
+     * @return mixed|null|string
      */
     public function findOneByParams($data, $path, $url, $throw_exception = true)
     {

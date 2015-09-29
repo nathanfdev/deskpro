@@ -54,8 +54,8 @@ class OsTicketReaderFactory implements ReaderFactoryInterface
 
     /**
      * @throws Exception
-     * @return \Application\ImportBundle\Reader\OsTicket\OsTicketConfig
      *
+     * @return \Application\ImportBundle\Reader\OsTicket\OsTicketConfig
      */
     public static function getDefaultConfig()
     {

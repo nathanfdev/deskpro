@@ -193,8 +193,8 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
      *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
-     * @return array
      *
+     * @return array
      */
     public function getDefaultGroup($group, $short = true)
     {
@@ -227,8 +227,8 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
      *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
-     * @return array
      *
+     * @return array
      */
     public function getGroup($group)
     {

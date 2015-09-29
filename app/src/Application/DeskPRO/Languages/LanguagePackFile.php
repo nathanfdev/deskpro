@@ -74,8 +74,8 @@ class LanguagePackFile
      * @param string $source
      *
      * @throws \RuntimeException
-     * @return \Application\DeskPRO\Languages\LanguagePackFile
      *
+     * @return \Application\DeskPRO\Languages\LanguagePackFile
      */
     public static function newFromString($source)
     {
@@ -93,8 +93,8 @@ class LanguagePackFile
      * @param string $source
      *
      * @throws \RuntimeException
-     * @return \Application\DeskPRO\Languages\LanguagePackFile
      *
+     * @return \Application\DeskPRO\Languages\LanguagePackFile
      */
     public static function newFromFile($path)
     {

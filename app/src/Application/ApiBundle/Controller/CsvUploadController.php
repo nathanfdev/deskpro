@@ -55,7 +55,7 @@ class CsvUploadController extends AbstractController implements ProtectedControl
     {
         $file = $this->request->files->get('file');
 
-        /**
+        /*
          * @var \Application\DeskPRO\CsvUpload\CsvUpload
          */
         $csv_upload = $this->container->getSystemService('csv_upload');
@@ -81,7 +81,7 @@ class CsvUploadController extends AbstractController implements ProtectedControl
         $filename         = $this->in->getUint('filename');
         $options          = $this->in->getArrayValue('options');
 
-        /**
+        /*
          * @var \Application\DeskPRO\CsvUpload\CsvUpload
          */
         $csv_upload = $this->container->getSystemService('csv_upload');
@@ -97,7 +97,7 @@ class CsvUploadController extends AbstractController implements ProtectedControl
 
     public function statusAction()
     {
-        /**
+        /*
          * @var \Application\DeskPRO\CsvUpload\CsvUpload
          */
         $csv_upload = $this->container->getSystemService('csv_upload');

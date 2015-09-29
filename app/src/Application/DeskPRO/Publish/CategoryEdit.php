@@ -52,6 +52,7 @@ class CategoryEdit
      *
      * @param $type
      * @param $title
+     *
      * @throws \InvalidArgumentException
      *
      * @return \Application\DeskPRO\Entity\ArticleCategory|\Application\DeskPRO\Entity\DownloadCategory|\Application\DeskPRO\Entity\NewsCategory|array
@@ -305,6 +306,7 @@ class CategoryEdit
      *
      * @param $type
      * @param $category_id
+     *
      * @throws \InvalidArgumentException
      */
     public static function deleteCategory($type, $category_id)
@@ -387,8 +389,8 @@ class CategoryEdit
      *
      * @static
      *
-     *
      * @param $type
+     *
      * @throws \InvalidArgumentException
      *
      * @return string

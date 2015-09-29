@@ -2413,8 +2413,8 @@ class PersonController extends AbstractController
      * @param int $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\Person
      *
+     * @return \Application\DeskPRO\Entity\Person
      */
     protected function _getPersonOr404($id, $check_perm = '')
     {

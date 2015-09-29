@@ -56,8 +56,8 @@ class JsonObjectSerializer
      * @param string $json_object
      *
      * @throws \InvalidArgumentException
-     * @return mixed
      *
+     * @return mixed
      */
     public static function unserialize($json_object)
     {

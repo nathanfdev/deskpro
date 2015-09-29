@@ -65,8 +65,8 @@ class CachedRdns implements RdnsInterface
      * @param string $ip
      *
      * @throws \RuntimeException
-     * @return string|null
      *
+     * @return string|null
      */
     public function lookup($ip)
     {

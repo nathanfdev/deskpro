@@ -56,7 +56,7 @@ class FeedbackCategoriesController extends AbstractController implements Protect
 
     public function listAction()
     {
-        /**
+        /*
          * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories
          */
         $feedback_categories = $this->container->getSystemService('feedback_categories');
@@ -74,7 +74,7 @@ class FeedbackCategoriesController extends AbstractController implements Protect
 
     public function getAction($id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories
          */
         $feedback_categories = $this->container->getSystemService('feedback_categories');
@@ -99,7 +99,7 @@ class FeedbackCategoriesController extends AbstractController implements Protect
 
     public function saveAction($id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories
          */
         $feedback_categories = $this->container->getSystemService('feedback_categories');
@@ -152,7 +152,7 @@ class FeedbackCategoriesController extends AbstractController implements Protect
 
     public function removeAction($id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories
          */
         $feedback_categories = $this->container->getSystemService('feedback_categories');
@@ -210,7 +210,7 @@ class FeedbackCategoriesController extends AbstractController implements Protect
     {
         $display_orders = $this->in->getArrayOfUInts('display_orders');
 
-        /**
+        /*
          * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories
          */
         $feedback_categories = $this->container->getSystemService('feedback_categories');

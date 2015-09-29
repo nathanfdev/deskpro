@@ -96,8 +96,8 @@ class ClientFactory
      * @param string $url
      *
      * @throws \Application\DeskPRO\Exception\MissingConfigurationException
-     * @return array
      *
+     * @return array
      */
     public static function createConfigFromUrl($url)
     {

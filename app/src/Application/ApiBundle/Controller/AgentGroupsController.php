@@ -117,6 +117,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     *
      * @return Response
      *
      *
@@ -175,6 +176,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Exception
+     *
      * @return Response
      *
      *
@@ -413,6 +415,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     *
      * @return Response
      *
      *

@@ -62,8 +62,8 @@ class GroupDbPersister
      * @param UserPermissions $perms
      *
      * @throws \Exception
-     * @return bool
      *
+     * @return bool
      */
     public function savePerms(Usergroup $group, UserPermissions $perms)
     {

@@ -46,8 +46,8 @@ interface ReaderInterface
      * Validates the reader config.
      *
      * @throws \RuntimeException
-     * @return bool
      *
+     * @return bool
      */
     public function checkConfig();
 }

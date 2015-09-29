@@ -103,8 +103,8 @@ class TmpData extends AbstractEntityRepository
      * @param $time
      *
      * @throws \Doctrine\DBAL\DBALException
-     * @return int
      *
+     * @return int
      */
     public function getCountByName($name, $time)
     {

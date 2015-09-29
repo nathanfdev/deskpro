@@ -43,8 +43,8 @@ class AppOptionsMapper
      * @param array|AppInstance $app_or_settings
      *
      * @throws \InvalidArgumentException
-     * @return array
      *
+     * @return array
      */
     public static function getOptions($app_or_settings)
     {

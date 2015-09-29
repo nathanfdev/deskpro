@@ -58,8 +58,8 @@ final class Collection extends AbstractCollection
      * @param string $type
      *
      * @throws Exception
-     * @return ParserInterface
      *
+     * @return ParserInterface
      */
     public function getByEntityType($type)
     {

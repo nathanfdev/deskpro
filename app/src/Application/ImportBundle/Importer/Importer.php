@@ -130,8 +130,8 @@ class Importer
      * @param string $id
      *
      * @throws \RuntimeException
-     * @return DataStore
      *
+     * @return DataStore
      */
     public function getImporter($id)
     {
@@ -192,8 +192,8 @@ class Importer
      * @param string $id
      *
      * @throws \Exception
-     * @return CsvConfig|DeskPROConfig|OsTicketConfig|ZenDeskConfig|null
      *
+     * @return CsvConfig|DeskPROConfig|OsTicketConfig|ZenDeskConfig|null
      */
     public function getReaderConfig($id)
     {

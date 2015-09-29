@@ -59,7 +59,7 @@ class FeedbackStatusesController extends AbstractController implements Protected
 
     public function listAction()
     {
-        /**
+        /*
          * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
          */
         $feedback_statuses = $this->container->getSystemService('feedback_statuses');
@@ -83,7 +83,7 @@ class FeedbackStatusesController extends AbstractController implements Protected
 
     public function getAction($id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
          */
         $feedback_statuses = $this->container->getSystemService('feedback_statuses');
@@ -102,7 +102,7 @@ class FeedbackStatusesController extends AbstractController implements Protected
 
     public function saveAction($id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
          */
         $feedback_statuses = $this->container->getSystemService('feedback_statuses');
@@ -146,7 +146,7 @@ class FeedbackStatusesController extends AbstractController implements Protected
 
     public function removeAction($id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
          */
         $feedback_statuses = $this->container->getSystemService('feedback_statuses');
@@ -203,7 +203,7 @@ class FeedbackStatusesController extends AbstractController implements Protected
     {
         $display_orders = $this->in->getArrayOfUInts('display_orders');
 
-        /**
+        /*
          * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
          */
         $feedback_statuses = $this->container->getSystemService('feedback_statuses');

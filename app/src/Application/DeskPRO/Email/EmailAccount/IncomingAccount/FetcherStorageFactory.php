@@ -44,8 +44,8 @@ class FetcherStorageFactory
      * @param AccountConfigInterface $config
      *
      * @throws \InvalidArgumentException
-     * @return FetcherStorageInterface
      *
+     * @return FetcherStorageInterface
      */
     public function createFetcherStorage(AccountConfigInterface $config)
     {

@@ -1043,8 +1043,8 @@ class TaskController extends AbstractController
      * @param int $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\Task
      *
+     * @return \Application\DeskPRO\Entity\Task
      */
     protected function _getTaskOr404($id)
     {

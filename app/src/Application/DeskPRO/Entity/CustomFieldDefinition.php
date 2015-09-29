@@ -188,8 +188,8 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
 
     /**
      * @throws \Exception
-     * @return \Application\DeskPRO\Form\Type\CustomFields\Definitions\CustomFieldDefinitionType
      *
+     * @return \Application\DeskPRO\Form\Type\CustomFields\Definitions\CustomFieldDefinitionType
      */
     public function createDefinitionType()
     {

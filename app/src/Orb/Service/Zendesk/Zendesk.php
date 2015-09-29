@@ -169,8 +169,8 @@ class Zendesk
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
-     * @return \Orb\Service\Zendesk\ApiResponse
      *
+     * @return \Orb\Service\Zendesk\ApiResponse
      */
     public function sendGet($id, array $query_data = null)
     {
@@ -252,8 +252,8 @@ class Zendesk
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
-     * @return array
      *
+     * @return array
      */
     public function sendGetAll($id, $key, array $query_data = null)
     {
@@ -290,8 +290,8 @@ class Zendesk
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
-     * @return \Orb\Service\Zendesk\ApiResponse
      *
+     * @return \Orb\Service\Zendesk\ApiResponse
      */
     public function sendDelete($id)
     {
@@ -307,8 +307,8 @@ class Zendesk
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
-     * @return \Orb\Service\Zendesk\ApiResponse
      *
+     * @return \Orb\Service\Zendesk\ApiResponse
      */
     public function sendPut($id, array $call_data)
     {
@@ -324,8 +324,8 @@ class Zendesk
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
-     * @return \Orb\Service\Zendesk\ApiResponse
      *
+     * @return \Orb\Service\Zendesk\ApiResponse
      */
     public function sendPost($id, array $call_data)
     {
@@ -342,8 +342,8 @@ class Zendesk
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
-     * @return \Orb\Service\Zendesk\ApiResponse
      *
+     * @return \Orb\Service\Zendesk\ApiResponse
      */
     public function sendRequest($id, $action, array $call_data = null, array $query_data = null, $no_exec = false)
     {

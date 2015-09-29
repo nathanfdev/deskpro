@@ -437,8 +437,8 @@ class Logger
      * @param $name
      *
      * @throws \InvalidArgumentException
-     * @return mixed
      *
+     * @return mixed
      */
     public function getStartTime($name)
     {
@@ -454,8 +454,8 @@ class Logger
      * @param bool   $reset
      *
      * @throws \InvalidArgumentException
-     * @return mixed
      *
+     * @return mixed
      */
     public function getTotalTime($name = 'default', $reset = true)
     {

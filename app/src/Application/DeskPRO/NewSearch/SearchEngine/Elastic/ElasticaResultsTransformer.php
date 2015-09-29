@@ -102,8 +102,8 @@ class ElasticaResultsTransformer
      * @param string $type
      *
      * @throws \InvalidArgumentException
-     * @return string
      *
+     * @return string
      */
     private function getEntityFromType($type)
     {

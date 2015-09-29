@@ -152,8 +152,8 @@ class JsonReader extends AbstractReader implements JsonReaderInterface
      * @param string $path
      *
      * @throws NotFoundException
-     * @return RecursiveIteratorIterator
      *
+     * @return RecursiveIteratorIterator
      */
     private function getIterator($path)
     {

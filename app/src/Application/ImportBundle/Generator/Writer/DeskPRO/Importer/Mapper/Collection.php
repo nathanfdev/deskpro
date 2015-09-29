@@ -57,8 +57,8 @@ final class Collection extends AbstractCollection
      * @param string $type
      *
      * @throws \Exception
-     * @return MapperInterface
      *
+     * @return MapperInterface
      */
     public function getMapperByType($type)
     {

@@ -83,8 +83,8 @@ class Html2Text
      * @param string $html
      *
      * @throws \InvalidArgumentException
-     * @return string
      *
+     * @return string
      */
     public function convert($html)
     {

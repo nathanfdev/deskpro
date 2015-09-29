@@ -199,8 +199,8 @@ class Api
      * @param $jql
      *
      * @throws \Exception
-     * @return array
      *
+     * @return array
      */
     public function searchIssues($jql, array $fields)
     {

@@ -126,8 +126,8 @@ class FinderFilter
      * @param $status
      *
      * @throws \InvalidArgumentException
-     * @return $this
      *
+     * @return $this
      */
     public function addStatus($status)
     {

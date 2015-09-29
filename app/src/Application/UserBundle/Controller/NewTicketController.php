@@ -522,8 +522,8 @@ class NewTicketController extends AbstractController
      * @param $ticket_ref
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
      *
+     * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
      */
     public function simpleThanksAction()
     {

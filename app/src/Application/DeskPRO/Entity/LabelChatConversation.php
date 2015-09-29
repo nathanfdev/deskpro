@@ -27,16 +27,16 @@
  */
 
 /**
-     * DeskPRO.
-     *
-     * @category Entities
-     */
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
-    use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-    /**
+/**
      * Labels on chats.
      */
     class LabelChatConversation extends LabelAssocAbstract

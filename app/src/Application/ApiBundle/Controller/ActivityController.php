@@ -106,6 +106,7 @@ class ActivityController extends AbstractController
 
     /**
      * @throws \Exception
+     *
      * @return Response
      *
      *

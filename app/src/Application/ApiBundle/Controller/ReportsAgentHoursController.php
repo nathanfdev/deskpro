@@ -39,7 +39,7 @@ class ReportsAgentHoursController extends AbstractController
 
     public function listAction($date1, $date2)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\Reports\AgentHours
          */
         $reports_agent_hours = $this->container->getSystemService('reports_agent_hours');

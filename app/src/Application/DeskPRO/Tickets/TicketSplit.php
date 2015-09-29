@@ -89,8 +89,8 @@ class TicketSplit implements PersonContextInterface
      * @param array  $message_ids
      *
      * @throws \Exception
-     * @return Ticket
      *
+     * @return Ticket
      */
     public function split($subject, array $message_ids)
     {
@@ -117,8 +117,8 @@ class TicketSplit implements PersonContextInterface
      * @param array  $message_ids
      *
      * @throws \InvalidArgumentException
-     * @return Ticket
      *
+     * @return Ticket
      */
     private function doSplit($subject, array $message_ids)
     {

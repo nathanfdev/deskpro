@@ -224,8 +224,8 @@ class Translate implements PersonContextInterface
      * @param        $func
      *
      * @throws \Exception
-     * @return mixed
      *
+     * @return mixed
      */
     public function callWithPersonContext(Person $person, $func)
     {
@@ -354,8 +354,8 @@ class Translate implements PersonContextInterface
      * @param          $func
      *
      * @throws \Exception
-     * @return mixed
      *
+     * @return mixed
      */
     public function callWithLanguage(LanguageEntity $language = null, $func)
     {

@@ -694,8 +694,8 @@ class UserChatController extends AbstractController
      * @param $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Symfony\Component\HttpFoundation\Response
      *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function getChatAlertAction($id)
     {

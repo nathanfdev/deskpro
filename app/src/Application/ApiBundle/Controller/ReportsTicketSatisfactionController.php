@@ -39,7 +39,7 @@ class ReportsTicketSatisfactionController extends AbstractController
 
     public function listAction($page)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\Reports\TicketSatisfaction
          */
         $reports_ticket_satisfaction = $this->container->getSystemService('reports_ticket_satisfaction');
@@ -63,7 +63,7 @@ class ReportsTicketSatisfactionController extends AbstractController
 
     public function summaryAction($date)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\Reports\TicketSatisfaction
          */
         $reports_ticket_satisfaction = $this->container->getSystemService('reports_ticket_satisfaction');

@@ -259,8 +259,8 @@ class GroupingField
      * @param array $values
      *
      * @throws \InvalidArgumentException
-     * @return array|null
      *
+     * @return array|null
      */
     public function getTitles(array $values = array())
     {

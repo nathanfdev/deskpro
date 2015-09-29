@@ -367,8 +367,8 @@ class StateChangeRecorder
      * @param string $field_id
      *
      * @throws \InvalidArgumentException
-     * @return mixed
      *
+     * @return mixed
      */
     public function getOriginalValueForField($field_id)
     {
@@ -384,8 +384,8 @@ class StateChangeRecorder
      * @param string $field_id
      *
      * @throws \InvalidArgumentException
-     * @return mixed
      *
+     * @return mixed
      */
     public function getPreviousValueForField($field_id)
     {

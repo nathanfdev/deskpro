@@ -105,8 +105,8 @@ class EscalationTicketMatcher
      * @param TicketEscalation $esc
      *
      * @throws \InvalidArgumentException
-     * @return TicketSearch
      *
+     * @return TicketSearch
      */
     private function _getSearcherForEscalation(TicketEscalation $esc)
     {

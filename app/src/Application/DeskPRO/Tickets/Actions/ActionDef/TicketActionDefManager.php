@@ -79,8 +79,8 @@ class TicketActionDefManager
      * @param int $id
      *
      * @throws \InvalidArgumentException
-     * @return TicketActionDef
      *
+     * @return TicketActionDef
      */
     public function getDef($id)
     {
@@ -105,8 +105,8 @@ class TicketActionDefManager
      * @param string $name
      *
      * @throws \InvalidArgumentException
-     * @return TicketActionDef
      *
+     * @return TicketActionDef
      */
     public function getNamedDef($name)
     {

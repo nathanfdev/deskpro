@@ -61,8 +61,8 @@ class SetAgent extends AbstractContainerAwareAction implements ActionInterface, 
      * @param ExecutorContextInterface $context
      *
      * @throws \InvalidArgumentException
-     * @return Person|null
      *
+     * @return Person|null
      */
     private function resolveAgent($set_agent_id, ExecutorContextInterface $context)
     {

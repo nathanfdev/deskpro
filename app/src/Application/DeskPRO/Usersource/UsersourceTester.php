@@ -106,8 +106,8 @@ class UsersourceTester
      * @param string $password
      *
      * @throws \RuntimeException
-     * @return bool
      *
+     * @return bool
      */
     public function test($username, $password)
     {
@@ -135,8 +135,8 @@ class UsersourceTester
      * @param string $password
      *
      * @throws \RuntimeException
-     * @return bool
      *
+     * @return bool
      */
     private function doTest($username, $password)
     {
@@ -205,8 +205,8 @@ class UsersourceTester
 
     /**
      * @throws \RuntimeException
-     * @return string
      *
+     * @return string
      */
     public function getLog()
     {
@@ -219,8 +219,8 @@ class UsersourceTester
 
     /**
      * @throws \RuntimeException
-     * @return array
      *
+     * @return array
      */
     public function getRawData()
     {
@@ -233,8 +233,8 @@ class UsersourceTester
 
     /**
      * @throws \RuntimeException
-     * @return bool
      *
+     * @return bool
      */
     public function isValid()
     {

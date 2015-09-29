@@ -47,8 +47,8 @@ class Organization extends AbstractEntityRepository
      * @param string $name
      *
      * @throws \Doctrine\ORM\NonUniqueResultException
-     * @return OrganizationEntity
      *
+     * @return OrganizationEntity
      */
     public function findOneByName($name)
     {

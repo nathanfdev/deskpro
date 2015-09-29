@@ -240,8 +240,8 @@ class Build1400056713 extends AbstractBuild
      * @param array $tr
      *
      * @throws \InvalidArgumentException
-     * @return OutgoingAccount\GmailConfig|OutgoingAccount\PhpMailConfig|OutgoingAccount\SmtpConfig
      *
+     * @return OutgoingAccount\GmailConfig|OutgoingAccount\PhpMailConfig|OutgoingAccount\SmtpConfig
      */
     private function _getTransportConfig(array $tr = null)
     {

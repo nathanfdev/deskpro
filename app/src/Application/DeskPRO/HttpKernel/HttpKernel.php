@@ -96,8 +96,8 @@ class HttpKernel extends BaseHttpKernel
      *
      * @throws \Exception
      * @throws \Exception
-     * @return Response
      *
+     * @return Response
      */
     public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
     {
@@ -149,8 +149,8 @@ class HttpKernel extends BaseHttpKernel
      *
      * @throws \LogicException
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return Response
      *
+     * @return Response
      */
     private function handleRaw(Request $request, $type = self::MASTER_REQUEST)
     {
@@ -337,8 +337,8 @@ class HttpKernel extends BaseHttpKernel
      *
      * @throws \Exception
      * @throws \InvalidArgumentException
-     * @return Response
      *
+     * @return Response
      */
     private function handleException(\Exception $e, $request, $type)
     {

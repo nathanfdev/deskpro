@@ -214,8 +214,8 @@ class CustomFieldManager
      * @param DomainObject $owner
      *
      * @throws \Symfony\Component\Form\Exception\InvalidArgumentException
-     * @return array|null
      *
+     * @return array|null
      */
     public function getFieldRawData($fieldId, DomainObject $owner)
     {

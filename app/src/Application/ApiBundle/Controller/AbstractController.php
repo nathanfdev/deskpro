@@ -387,8 +387,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      * @param int                                               $status The HTTP status code to return
      *
      * @throws \InvalidArgumentException
-     * @return Response
      *
+     * @return Response
      */
     public function createApiValidationErrorResponse($errors, array $extra = null, $status = 400)
     {
@@ -424,8 +424,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      * @param int   $status The HTTP status code to return
      *
      * @throws \InvalidArgumentException
-     * @return Response
      *
+     * @return Response
      */
     public function createApiFormErrorResponse(Form $form, array $extra = null, $status = 400)
     {

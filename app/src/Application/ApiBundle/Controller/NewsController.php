@@ -1290,8 +1290,8 @@ class NewsController extends AbstractController
      * @param int $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\News
      *
+     * @return \Application\DeskPRO\Entity\News
      */
     protected function _getNewsOr404($id, $check_perm = false)
     {
@@ -1318,8 +1318,8 @@ class NewsController extends AbstractController
      * @param int $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\NewsCategory
      *
+     * @return \Application\DeskPRO\Entity\NewsCategory
      */
     protected function _getCategoryOr404($id)
     {

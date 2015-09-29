@@ -64,8 +64,8 @@ class LoginLog extends AbstractEntityRepository
      * @param $maxLockTime
      *
      * @throws \Doctrine\DBAL\DBALException
-     * @return int|mixed
      *
+     * @return int|mixed
      */
     public function getLoginLockoutTime(PersonEntity $person, $maxAttempts, $time, $maxLockTime)
     {

@@ -268,6 +268,7 @@ class AgentsController extends AbstractController implements ProtectedController
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     *
      * @return Response
      *
      *
@@ -526,8 +527,8 @@ class AgentsController extends AbstractController implements ProtectedController
      * @param bool     $skip_email
      *
      * @throws \Exception
-     * @return Response
      *
+     * @return Response
      */
     protected function saveAgent($id = null, $agent_postdata = array(), $profile = array(), $filter_subs = array(),
         $other_subs = array(), $quick_add = false, $perm_overrides = array(),
@@ -1046,6 +1047,7 @@ class AgentsController extends AbstractController implements ProtectedController
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Exception
+     *
      * @return Response
      *
      *
@@ -1127,6 +1129,7 @@ class AgentsController extends AbstractController implements ProtectedController
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     *
      * @return Response
      *
      *
@@ -1231,6 +1234,7 @@ class AgentsController extends AbstractController implements ProtectedController
      * @param $id
      *
      * @throws \Exception
+     *
      * @return Response
      *
      *

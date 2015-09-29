@@ -74,8 +74,8 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
      * @param bool   $ssl
      *
      * @throws \Zend\Mail\Protocol\Exception\RuntimeException
-     * @return string
      *
+     * @return string
      */
     public function connect($host, $port = null, $ssl = false)
     {
@@ -185,8 +185,8 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
      * @param bool $multiline
      *
      * @throws \Zend\Mail\Protocol\Exception\RuntimeException
-     * @return string
      *
+     * @return string
      */
     public function readResponse($multiline = false)
     {
@@ -241,8 +241,8 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
      * @param $stream
      *
      * @throws \Zend\Mail\Protocol\Exception\RuntimeException
-     * @return int
      *
+     * @return int
      */
     public function readResponseToStream($stream)
     {

@@ -239,8 +239,8 @@ class Environment extends \Twig_Environment
      * @param array $vars
      *
      * @throws \Exception|null
-     * @return null|string
      *
+     * @return null|string
      */
     public function renderStringTemplate($template_code, array $vars = array())
     {

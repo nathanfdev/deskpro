@@ -153,9 +153,9 @@ abstract class CaptchaAbstract
     }
 
     /**
-     *
      * @param string $name         The option to try and get first
      * @param string $setting_name If $name option doesnt exist, try to fetch it from settings
+     *
      * @throws \RunTimeException
      *
      * @return mixed

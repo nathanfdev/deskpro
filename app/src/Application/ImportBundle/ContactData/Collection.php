@@ -57,8 +57,8 @@ class Collection extends AbstractCollection
      * @param string $type
      *
      * @throws \RuntimeException
-     * @return ContactDataInterface
      *
+     * @return ContactDataInterface
      */
     public function getByType($type)
     {

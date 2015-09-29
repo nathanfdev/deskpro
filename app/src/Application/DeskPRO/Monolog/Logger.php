@@ -126,8 +126,8 @@ class Logger extends BaseLogger
      * Gets an array of raw records.
      *
      * @throws \LogicException
-     * @return array
      *
+     * @return array
      */
     public function getSavedMessagesRaw()
     {

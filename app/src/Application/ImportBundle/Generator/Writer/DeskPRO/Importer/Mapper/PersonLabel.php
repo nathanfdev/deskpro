@@ -82,8 +82,8 @@ final class PersonLabel implements MapperInterface
      * @param bool $throw_exception
      *
      * @throws MapperException
-     * @return Entity\LabelPerson[]
      *
+     * @return Entity\LabelPerson[]
      */
     public function findByPersonId($id, $throw_exception = true)
     {

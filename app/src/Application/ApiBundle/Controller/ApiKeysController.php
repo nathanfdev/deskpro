@@ -203,8 +203,8 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
-     * @return Response
      *
+     * @return Response
      */
     public function replayLogEntryAction($logEntryId)
     {

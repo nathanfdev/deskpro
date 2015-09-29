@@ -63,8 +63,8 @@ class GroupDbPersister
      * @param AgentPermissions $perms
      *
      * @throws \Exception
-     * @return bool
      *
+     * @return bool
      */
     public function savePerms(Usergroup $group, AgentPermissions $perms)
     {
@@ -113,8 +113,8 @@ class GroupDbPersister
      * @param AgentPermissions $perms
      *
      * @throws \Exception
-     * @return bool
      *
+     * @return bool
      */
     public function saveOverridePerms(Person $person, AgentPermissions $perms)
     {

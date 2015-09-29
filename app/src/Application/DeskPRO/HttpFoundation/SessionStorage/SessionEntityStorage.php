@@ -235,8 +235,8 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
      * @param string $id A session ID
      *
      * @throws \RuntimeException If the session cannot be destroyed
-     * @return bool true, if the session was destroyed, otherwise an exception is thrown
      *
+     * @return bool true, if the session was destroyed, otherwise an exception is thrown
      */
     public function destroy($id)
     {
@@ -263,8 +263,8 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
      * @param int $lifetime The lifetime of a session in seconds
      *
      * @throws \RuntimeException If any old sessions cannot be cleaned
-     * @return bool true
      *
+     * @return bool true
      */
     public function gc($lifetime)
     {
@@ -277,8 +277,8 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
      * @param string $id A session ID
      *
      * @throws \RuntimeException If the session cannot be read
-     * @return string The session data if the session was read or created, otherwise an exception is thrown
      *
+     * @return string The session data if the session was read or created, otherwise an exception is thrown
      */
     public function read($id)
     {
@@ -304,8 +304,8 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
      * @param string $data A serialized chunk of session data
      *
      * @throws \RuntimeException If the session data cannot be written
-     * @return bool true, if the session was written, otherwise an exception is thrown
      *
+     * @return bool true, if the session was written, otherwise an exception is thrown
      */
     public function write($id, $data)
     {

@@ -869,8 +869,8 @@ class Runner
      * @param EmailAccount $account
      *
      * @throws \InvalidArgumentException
-     * @return Fetcher\Exchange|Fetcher\Imap|Fetcher\Pop3
      *
+     * @return Fetcher\Exchange|Fetcher\Imap|Fetcher\Pop3
      */
     private function createFetcher(EmailAccount $account)
     {

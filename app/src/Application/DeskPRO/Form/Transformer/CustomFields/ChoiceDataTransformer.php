@@ -68,8 +68,8 @@ class ChoiceDataTransformer  implements DataTransformerInterface
      * @param mixed $value
      *
      * @throws \Symfony\Component\Form\Exception\TransformationFailedException
-     * @return array|mixed
      *
+     * @return array|mixed
      */
     public function transform($value)
     {
@@ -107,8 +107,8 @@ class ChoiceDataTransformer  implements DataTransformerInterface
      * @param mixed $value
      *
      * @throws \Symfony\Component\Form\Exception\TransformationFailedException
-     * @return CustomFieldData|ArrayCollection|mixed|null
      *
+     * @return CustomFieldData|ArrayCollection|mixed|null
      */
     public function reverseTransform($value)
     {

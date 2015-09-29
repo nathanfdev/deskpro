@@ -60,7 +60,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getServerReqsAction()
     {
-        /**
+        /*
          * @var \Application\DeskPRO\ServerReqs\ServerReqs
          */
         $server_reqs = $this->container->getSystemService('server_reqs');
@@ -81,7 +81,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getPhpInfoAction()
     {
-        /**
+        /*
          * @var \Application\DeskPRO\ServerPhpInfo\ServerPhpInfo
          */
         $server_php_info = $this->container->getSystemService('server_php_info');
@@ -123,7 +123,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getMysqlStatusAction()
     {
-        /**
+        /*
          * @var \Application\DeskPRO\ServerMysqlStatus\ServerMysqlStatus
          */
         $server_mysql_status = $this->container->getSystemService('server_mysql_status');
@@ -181,7 +181,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function listErrorLogsAction()
     {
-        /**
+        /*
          * @var \Application\DeskPRO\ServerErrorLogs\ServerErrorLogs
          */
         $server_error_logs = $this->container->getSystemService('server_error_logs');
@@ -199,7 +199,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getErrorLogsAction($id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\ServerErrorLogs\ServerErrorLogs
          */
         $server_error_logs = $this->container->getSystemService('server_error_logs');
@@ -222,7 +222,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function removeErrorLogsAction()
     {
-        /**
+        /*
          * @var \Application\DeskPRO\ServerErrorLogs\ServerErrorLogs
          */
         $server_error_logs = $this->container->getSystemService('server_error_logs');
@@ -240,7 +240,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getTaskQueueAction()
     {
-        /**
+        /*
          * @var \Application\DeskPRO\ServerTaskQueue\ServerTaskQueue
          */
         $server_task_queue = $this->container->getSystemService('server_task_queue');
@@ -258,7 +258,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function listCronAction()
     {
-        /**
+        /*
          * @var \Application\DeskPRO\ServerCron\ServerCron
          */
         $server_cron = $this->container->getSystemService('server_cron');
@@ -279,7 +279,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function logsCronAction()
     {
-        /**
+        /*
          * @var \Application\DeskPRO\ServerCron\ServerCron
          */
         $server_cron = $this->container->getSystemService('server_cron');
@@ -315,7 +315,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function removeCronAction()
     {
-        /**
+        /*
          * @var \Application\DeskPRO\ServerCron\ServerCron
          */
         $server_cron = $this->container->getSystemService('server_cron');
@@ -330,7 +330,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getFileUploadsAction()
     {
-        /**
+        /*
          * @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads
          */
         $server_file_uploads = $this->container->getSystemService('server_file_uploads');
@@ -361,7 +361,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function testFileUploadAction()
     {
-        /**
+        /*
          * @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads
          */
         $server_file_uploads = $this->container->getSystemService('server_file_uploads');
@@ -379,7 +379,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function switchFileStorageAction()
     {
-        /**
+        /*
          * @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads
          */
         $server_file_uploads = $this->container->getSystemService('server_file_uploads');
@@ -394,7 +394,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function switchFileStorageStatusAction()
     {
-        /**
+        /*
          * @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads
          */
         $server_file_uploads = $this->container->getSystemService('server_file_uploads');

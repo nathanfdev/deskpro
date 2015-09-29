@@ -65,7 +65,7 @@ class BanningController extends AbstractController implements ProtectedControlle
         $email_ban_search_phrase = $this->in->getString('email_ban_search_phrase');
         $email_ban_wildcard      = $this->in->getUInt('email_ban_wildcard');
 
-        /**
+        /*
          * @var \Application\DeskPRO\Banning\IpBans
          */
         $ip_bans = $this->container->getSystemService('ip_bans');
@@ -73,7 +73,7 @@ class BanningController extends AbstractController implements ProtectedControlle
             ->setPage($ip_ban_page)
             ->setSearchPhrase($ip_ban_search_phrase);
 
-        /**
+        /*
          * @var \Application\DeskPRO\Banning\EmailBans
          */
         $email_bans = $this->container->getSystemService('email_bans');
@@ -110,7 +110,7 @@ class BanningController extends AbstractController implements ProtectedControlle
 
     public function getIpAction($id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\Banning\IpBans
          */
         $ip_bans = $this->container->getSystemService('ip_bans');
@@ -133,7 +133,7 @@ class BanningController extends AbstractController implements ProtectedControlle
 
     public function getEmailAction($id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\Banning\EmailBans
          */
         $email_bans = $this->container->getSystemService('email_bans');
@@ -156,7 +156,7 @@ class BanningController extends AbstractController implements ProtectedControlle
 
     public function saveIpAction($id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\Banning\IpBans
          */
         $ip_bans = $this->container->getSystemService('ip_bans');
@@ -198,7 +198,7 @@ class BanningController extends AbstractController implements ProtectedControlle
 
     public function saveEmailAction($id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\Banning\EmailBans
          */
         $email_bans = $this->container->getSystemService('email_bans');
@@ -236,7 +236,7 @@ class BanningController extends AbstractController implements ProtectedControlle
             return $this->createSuccessResponse();
         }
 
-        /**
+        /*
          * @var \Application\DeskPRO\Banning\IpBans
          */
         $ip_bans = $this->container->getSystemService('ip_bans');
@@ -355,8 +355,8 @@ class BanningController extends AbstractController implements ProtectedControlle
      * import emails from file.
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return Response
      *
+     * @return Response
      */
     public function importEmailsAction()
     {

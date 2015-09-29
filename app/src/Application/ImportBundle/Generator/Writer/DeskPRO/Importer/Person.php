@@ -133,8 +133,8 @@ final class Person extends AbstractImporter
      * @param array $emails
      *
      * @throws \Exception
-     * @return DeskPROEntity\Person
      *
+     * @return DeskPROEntity\Person
      */
     private function findOrCreatePerson(array $emails)
     {
@@ -191,8 +191,8 @@ final class Person extends AbstractImporter
      * @param Entity\CustomField $entity
      *
      * @throws ImporterException
-     * @return DeskPROEntity\CustomDataPerson
      *
+     * @return DeskPROEntity\CustomDataPerson
      */
     private function createPersonCustomData(Entity\CustomField $entity)
     {
@@ -206,8 +206,8 @@ final class Person extends AbstractImporter
      * Returns the email account mapper.
      *
      * @throws \Exception
-     * @return Mapper\EmailAccount
      *
+     * @return Mapper\EmailAccount
      */
     private function getEmailAccountMapper()
     {

@@ -131,7 +131,7 @@ class ChatDepsController extends AbstractController implements ProtectedControll
 
     public function getAction($id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\Departments\ChatDepartments
          */
         $chat_deps = $this->container->getSystemService('chat_departments');
@@ -160,7 +160,7 @@ class ChatDepsController extends AbstractController implements ProtectedControll
     {
         if ($id) {
 
-            /**
+            /*
              * @var \Application\DeskPRO\Departments\ChatDepartments
              */
             $chat_deps = $this->container->getSystemService('chat_departments');
@@ -207,7 +207,7 @@ class ChatDepsController extends AbstractController implements ProtectedControll
 
     public function removeAction($id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\Departments\ChatDepartments
          */
         $chat_deps = $this->container->getSystemService('chat_departments');

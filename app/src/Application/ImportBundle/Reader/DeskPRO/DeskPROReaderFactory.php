@@ -69,8 +69,8 @@ class DeskPROReaderFactory implements ReaderFactoryInterface
 
     /**
      * @throws \Exception
-     * @return DeskPROConfig
      *
+     * @return DeskPROConfig
      */
     public static function getDefaultConfig()
     {

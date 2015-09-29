@@ -170,8 +170,8 @@ class ExecutorContext implements ExecutorContextInterface
 
     /**
      * @throws \RuntimeException
-     * @return AbstractReader
      *
+     * @return AbstractReader
      */
     public function getEmailContext()
     {

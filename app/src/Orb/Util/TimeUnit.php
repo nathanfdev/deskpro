@@ -98,8 +98,8 @@ class TimeUnit
      * @param int|TimeUnit $val
      *
      * @throws \InvalidArgumentException
-     * @return bool
      *
+     * @return bool
      */
     public function equals($val)
     {
@@ -118,8 +118,8 @@ class TimeUnit
      * @param int|TimeUnit $val
      *
      * @throws \InvalidArgumentException
-     * @return int
      *
+     * @return int
      */
     public function compare($val)
     {

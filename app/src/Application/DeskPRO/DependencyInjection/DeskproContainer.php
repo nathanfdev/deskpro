@@ -121,6 +121,7 @@ class DeskproContainer extends Container
      *
      *
      * @param string $id
+     *
      * @throws \InvalidArgumentException
      *
      * @return mixed
@@ -185,6 +186,7 @@ class DeskproContainer extends Container
      *
      * @param string $id
      * @param array  $options
+     *
      * @throws \InvalidArgumentException
      *
      * @return mixed

@@ -57,8 +57,8 @@ final class DestinationCollection extends AbstractCollection
      * @param string $type
      *
      * @throws \RuntimeException
-     * @return Destination
      *
+     * @return Destination
      */
     public function getByEntityType($type)
     {

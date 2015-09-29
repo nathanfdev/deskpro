@@ -58,8 +58,8 @@ class RawTransportFactory
      * @param AccountConfigInterface $config
      *
      * @throws \InvalidArgumentException
-     * @return RawTransportInterface
      *
+     * @return RawTransportInterface
      */
     public function createTransport(AccountConfigInterface $config)
     {

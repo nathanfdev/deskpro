@@ -49,8 +49,8 @@ interface AppManagerInterface
      * @param string $name
      *
      * @throws \InvalidArgumentException
-     * @return AppPackage
      *
+     * @return AppPackage
      */
     public function getPackage($name);
 
@@ -70,8 +70,8 @@ interface AppManagerInterface
      * @param int $id
      *
      * @throws \InvalidArgumentException
-     * @return AppInstance
      *
+     * @return AppInstance
      */
     public function getApp($id);
 

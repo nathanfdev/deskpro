@@ -44,8 +44,8 @@ class PhoneNumberModelTransformer implements DataTransformerInterface
      * @param string $number
      *
      * @throws TransformationFailedException if object (issue) is not found.
-     * @return Issue|null
      *
+     * @return Issue|null
      */
     public function reverseTransform($number)
     {

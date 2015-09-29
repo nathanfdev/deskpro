@@ -138,8 +138,8 @@ class AppManager implements AppManagerInterface
      * @param string $name
      *
      * @throws \InvalidArgumentException
-     * @return AppPackage
      *
+     * @return AppPackage
      */
     public function getPackage($name)
     {
@@ -172,8 +172,8 @@ class AppManager implements AppManagerInterface
      * @param int $id
      *
      * @throws \InvalidArgumentException
-     * @return AppInstance
      *
+     * @return AppInstance
      */
     public function getApp($id)
     {
@@ -306,8 +306,8 @@ class AppManager implements AppManagerInterface
      * @param AppPackage $package
      *
      * @throws \InvalidArgumentException
-     * @return NativePackageConfig
      *
+     * @return NativePackageConfig
      */
     public function getNativePackageConfig(AppPackage $package)
     {

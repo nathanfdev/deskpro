@@ -724,8 +724,8 @@ class ChatController extends AbstractController
      * @param int $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\ChatConversation
      *
+     * @return \Application\DeskPRO\Entity\ChatConversation
      */
     protected function _getChatOr404($id)
     {

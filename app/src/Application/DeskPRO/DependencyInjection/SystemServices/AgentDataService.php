@@ -435,8 +435,8 @@ class AgentDataService
      * @param int|\Application\DeskPRO\Entity\Person $agent
      *
      * @throws \InvalidArgumentException
-     * @return \Application\DeskPRO\Entity\AgentTeam[]
      *
+     * @return \Application\DeskPRO\Entity\AgentTeam[]
      */
     public function getTeamsForAgent($agent)
     {
@@ -510,8 +510,8 @@ class AgentDataService
      * @param int|\Application\DeskPRO\Entity\Person $agent
      *
      * @throws \InvalidArgumentException
-     * @return \Application\DeskPRO\Entity\AgentTeam[]
      *
+     * @return \Application\DeskPRO\Entity\AgentTeam[]
      */
     public function getGroupIdsForAgent($agent)
     {
@@ -536,8 +536,8 @@ class AgentDataService
      * @param int|\Application\DeskPRO\Entity\AgentTeam $team
      *
      * @throws \InvalidArgumentException
-     * @return \Application\DeskPRO\Entity\Person[]
      *
+     * @return \Application\DeskPRO\Entity\Person[]
      */
     public function getAgentsForTeam($team)
     {

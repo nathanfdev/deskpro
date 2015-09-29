@@ -97,8 +97,8 @@ class Results
      * Gets the single result set (errors if multiple result sets).
      *
      * @throws \Exception
-     * @return array
      *
+     * @return array
      */
     public function getResults()
     {

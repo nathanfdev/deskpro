@@ -87,8 +87,8 @@ class LayoutCollection implements \Countable, \IteratorAggregate
      * @param string $key
      *
      * @throws \InvalidArgumentException
-     * @return Layout
      *
+     * @return Layout
      */
     public function getLayout($key)
     {
@@ -103,8 +103,8 @@ class LayoutCollection implements \Countable, \IteratorAggregate
 
     /**
      * @throws \InvalidArgumentException
-     * @return Layout
      *
+     * @return Layout
      */
     public function getDefaultLayout()
     {

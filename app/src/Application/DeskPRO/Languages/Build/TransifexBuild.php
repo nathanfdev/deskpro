@@ -89,8 +89,8 @@ class TransifexBuild extends AbstractBuild
      * @param string $path
      *
      * @throws \RuntimeException
-     * @return array
      *
+     * @return array
      */
     public function restGet($path, $silent = false)
     {
@@ -121,8 +121,8 @@ class TransifexBuild extends AbstractBuild
      * @param array  $data
      *
      * @throws \RuntimeException
-     * @return array
      *
+     * @return array
      */
     public function restPostJson($path, array $data)
     {
@@ -152,8 +152,8 @@ class TransifexBuild extends AbstractBuild
      * @param array  $data
      *
      * @throws \RuntimeException
-     * @return array
      *
+     * @return array
      */
     public function restPutJson($path, array $data)
     {
@@ -235,8 +235,8 @@ class TransifexBuild extends AbstractBuild
      * @param string $source_file If not specified, the default file from the default export dir will be used
      *
      * @throws \InvalidArgumentException
-     * @return array
      *
+     * @return array
      */
     public function updateSourcePhrases($section, $category, $source_file = null)
     {
@@ -291,8 +291,8 @@ class TransifexBuild extends AbstractBuild
      * @param string $section
      *
      * @throws \InvalidArgumentException
-     * @return string
      *
+     * @return string
      */
     public function getProjectName($section)
     {

@@ -62,8 +62,8 @@ class SetAgentTeam extends AbstractContainerAwareAction implements ActionInterfa
      *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
-     * @return \Application\DeskPRO\Entity\AgentTeam|null
      *
+     * @return \Application\DeskPRO\Entity\AgentTeam|null
      */
     private function resolveTeam($set_team_id, ExecutorContextInterface $context)
     {

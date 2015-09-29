@@ -39,7 +39,7 @@ class ReportsBillingController extends AbstractController
 
     public function getAction($id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\Reports\Billing
          */
         $reports_billing = $this->container->getSystemService('reports_billing');

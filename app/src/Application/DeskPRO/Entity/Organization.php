@@ -307,8 +307,8 @@ class Organization extends DomainObject implements HighlightableModelInterface
      * @param mixed $value
      *
      * @throws \Exception
-     * @return mixed
      *
+     * @return mixed
      */
     public function setCustomData($field_id, $value_type, $value)
     {

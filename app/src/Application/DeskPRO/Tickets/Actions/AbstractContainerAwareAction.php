@@ -55,8 +55,8 @@ abstract class AbstractContainerAwareAction extends AbstractAction implements De
      * Gets the set container.
      *
      * @throws \RuntimeException When no container has been set yet
-     * @return DeskproContainer
      *
+     * @return DeskproContainer
      */
     protected function getContainer()
     {

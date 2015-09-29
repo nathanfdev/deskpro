@@ -107,8 +107,8 @@ class TicketEscalation extends AbstractEntityRepository
      * @param $id
      *
      * @throws NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\TicketEscalation
      *
+     * @return \Application\DeskPRO\Entity\TicketEscalation
      */
     public function getSpecialEscalation($special_type, $id)
     {

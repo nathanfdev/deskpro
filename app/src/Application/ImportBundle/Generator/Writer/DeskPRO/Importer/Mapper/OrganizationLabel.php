@@ -82,8 +82,8 @@ final class OrganizationLabel implements MapperInterface
      * @param bool $throw_exception
      *
      * @throws MapperException
-     * @return Entity\LabelOrganization[]
      *
+     * @return Entity\LabelOrganization[]
      */
     public function findByOrganizationId($id, $throw_exception = true)
     {

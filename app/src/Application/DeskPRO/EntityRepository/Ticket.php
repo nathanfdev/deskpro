@@ -54,8 +54,8 @@ class Ticket extends AbstractEntityRepository
      * @param \DateTime    $date_last_reply
      *
      * @throws \Doctrine\ORM\NonUniqueResultException
-     * @return TicketEntity
      *
+     * @return TicketEntity
      */
     public function findMostRecentSmsTicketFromPerson(PersonEntity $person, $date_last_reply = null)
     {

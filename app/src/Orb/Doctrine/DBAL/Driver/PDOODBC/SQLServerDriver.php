@@ -35,8 +35,8 @@ class SQLServerDriver extends AbstractDriver
 {
     /**
      * @throws \InvalidArgumentException
-     * @return \Doctrine\DBAL\Platforms\AbstractPlatform
      *
+     * @return \Doctrine\DBAL\Platforms\AbstractPlatform
      */
     public function getDatabasePlatform()
     {

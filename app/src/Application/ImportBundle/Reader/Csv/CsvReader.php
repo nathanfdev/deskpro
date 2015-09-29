@@ -199,8 +199,8 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
      * @param string $entity_type
      *
      * @throws \RuntimeException
-     * @return LimitIterator
      *
+     * @return LimitIterator
      */
     private function getIterator($entity_type)
     {

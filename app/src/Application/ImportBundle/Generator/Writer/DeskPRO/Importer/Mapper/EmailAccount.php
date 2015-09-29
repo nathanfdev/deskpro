@@ -84,8 +84,8 @@ final class EmailAccount implements MapperInterface
      * @param bool   $throw_exception
      *
      * @throws MapperException
-     * @return \Application\DeskPRO\Entity\EmailAccount|null
      *
+     * @return \Application\DeskPRO\Entity\EmailAccount|null
      */
     public function findOneByEmail($email, $throw_exception = true)
     {

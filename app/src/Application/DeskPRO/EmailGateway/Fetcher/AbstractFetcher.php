@@ -195,8 +195,8 @@ abstract class AbstractFetcher
      * @param string $object_type
      *
      * @throws \Exception
-     * @return \Application\DeskPRO\Entity\EmailSource
      *
+     * @return \Application\DeskPRO\Entity\EmailSource
      */
     public function readNext($object_type = 'ticket')
     {

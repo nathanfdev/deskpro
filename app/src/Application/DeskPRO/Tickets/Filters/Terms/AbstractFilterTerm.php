@@ -156,8 +156,8 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
      * @param array  $check_ids
      *
      * @throws \InvalidArgumentException
-     * @return FilterQuery
      *
+     * @return FilterQuery
      */
     protected function getIdMatchQuery($field_name, array $check_ids)
     {
@@ -212,8 +212,8 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
      * @param int    $int
      *
      * @throws \InvalidArgumentException
-     * @return FilterQuery
      *
+     * @return FilterQuery
      */
     protected function getIntMatchQuery($field_name, $int)
     {
@@ -252,8 +252,8 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
      * @param int    $int2
      *
      * @throws \InvalidArgumentException
-     * @return FilterQuery
      *
+     * @return FilterQuery
      */
     protected function getIntRangeMatch($field_name, $int1, $int2)
     {
@@ -290,8 +290,8 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
      * @param \DateTime $date
      *
      * @throws \InvalidArgumentException
-     * @return FilterQuery
      *
+     * @return FilterQuery
      */
     protected function getDateMatchQuery($field_name, \DateTime $date)
     {
@@ -333,8 +333,8 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
      * @param \DateTime $date2
      *
      * @throws \InvalidArgumentException
-     * @return FilterQuery
      *
+     * @return FilterQuery
      */
     protected function getDateRangeMatch($field_name, \DateTime $date1, \DateTime $date2)
     {
@@ -373,8 +373,8 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
      * @param string|string[] $check_value
      *
      * @throws \InvalidArgumentException
-     * @return FilterQuery
      *
+     * @return FilterQuery
      */
     protected function getStringMatchQuery($field_name, $check_value)
     {

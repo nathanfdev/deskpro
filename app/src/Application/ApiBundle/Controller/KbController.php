@@ -1936,8 +1936,8 @@ class KbController extends AbstractController
      * @param int $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\Article
      *
+     * @return \Application\DeskPRO\Entity\Article
      */
     protected function _getArticleOr404($id, $check_perm = false)
     {
@@ -1964,8 +1964,8 @@ class KbController extends AbstractController
      * @param int $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\ArticleCategory
      *
+     * @return \Application\DeskPRO\Entity\ArticleCategory
      */
     protected function _getCategoryOr404($id)
     {

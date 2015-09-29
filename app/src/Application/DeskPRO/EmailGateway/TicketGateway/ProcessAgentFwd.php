@@ -382,8 +382,8 @@ class ProcessAgentFwd extends ProcessAbstract
      * @param Attachment $has_eml_attach
      *
      * @throws \Exception
-     * @return Ticket
      *
+     * @return Ticket
      */
     private function runNewForwardedEmailAsAttachTicket(Attachment $has_eml_attach)
     {

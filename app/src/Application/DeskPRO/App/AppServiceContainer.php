@@ -106,8 +106,8 @@ return $x; }, $app_services);
      * @param null   $app  The app the service belongs to. If the app is a single-install app, this can be left out.
      *
      * @throws \InvalidArgumentException
-     * @return mixed
      *
+     * @return mixed
      */
     public function getService($name, $app = null)
     {

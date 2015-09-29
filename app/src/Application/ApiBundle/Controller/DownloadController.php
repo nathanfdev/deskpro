@@ -1473,8 +1473,8 @@ class DownloadController extends AbstractController
      * @param int $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\Download
      *
+     * @return \Application\DeskPRO\Entity\Download
      */
     protected function _getDownloadOr404($id, $check_perm = false)
     {
@@ -1501,8 +1501,8 @@ class DownloadController extends AbstractController
      * @param int $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\DownloadCategory
      *
+     * @return \Application\DeskPRO\Entity\DownloadCategory
      */
     protected function _getCategoryOr404($id)
     {

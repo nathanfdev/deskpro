@@ -46,8 +46,8 @@ class AppsController extends AbstractController
      *
      * @throws NotFoundHttpException
      * @throws \Exception
-     * @return BinaryFileResponse
      *
+     * @return BinaryFileResponse
      */
     public function downloadPackageAction(Request $request, $name)
     {

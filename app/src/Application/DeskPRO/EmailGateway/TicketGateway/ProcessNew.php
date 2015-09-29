@@ -80,8 +80,8 @@ class ProcessNew extends ProcessAbstract
 
     /**
      * @throws \Exception
-     * @return Ticket|mixed
      *
+     * @return Ticket|mixed
      */
     public function run()
     {

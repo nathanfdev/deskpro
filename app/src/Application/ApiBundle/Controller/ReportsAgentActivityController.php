@@ -41,7 +41,7 @@ class ReportsAgentActivityController extends AbstractController
 
     public function listAction($agent_or_team_id, $date)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\Reports\AgentActivity
          */
         $reports_agent_activity = $this->container->getSystemService('reports_agent_activity');

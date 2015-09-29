@@ -455,8 +455,8 @@ class Message extends \Orb\Mail\Message
 
     /**
      * @throws \Exception
-     * @return string
      *
+     * @return string
      */
     public function __toString()
     {

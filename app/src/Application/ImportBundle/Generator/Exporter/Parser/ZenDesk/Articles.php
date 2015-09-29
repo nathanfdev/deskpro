@@ -110,8 +110,8 @@ final class Articles extends AbstractParser
      * @param array $data
      *
      * @throws SkippingException
-     * @return Entity\Article
      *
+     * @return Entity\Article
      */
     protected function exportArticle(array $data)
     {
@@ -267,8 +267,8 @@ final class Articles extends AbstractParser
      * @param bool $count_only
      *
      * @throws \Exception
-     * @return array
      *
+     * @return array
      */
     private function getArticles($count_only = false)
     {

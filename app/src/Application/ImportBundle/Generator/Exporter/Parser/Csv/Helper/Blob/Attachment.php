@@ -64,7 +64,7 @@ class Attachment extends AbstractParserFormatterHelper
             ->setData($data)
             ->setPrefix('CSVAttachment')
             ->setRefColumn($ref_column)
-            ->setMethod(function ($data, $num) use ($that, $destination_prefix,$ref_column) {
+            ->setMethod(function ($data, $num) use ($that, $destination_prefix, $ref_column) {
                 return $that->exportAttachment($num, $destination_prefix, $data, $ref_column);
             })
         ;

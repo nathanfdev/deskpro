@@ -196,6 +196,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      * @param int $dep_id
      *
      * @throws \Exception
+     *
      * @return Response
      *
      *
@@ -338,6 +339,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      * @param $dep_id
      *
      * @throws \Exception
+     *
      * @return Response
      *
      *

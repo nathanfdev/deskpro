@@ -111,8 +111,8 @@ final class JsonWriter extends AbstractWriter
      * Returns batch output path.
      *
      * @throws \RuntimeException
-     * @return string
      *
+     * @return string
      */
     private function getBatchOutputPath()
     {
@@ -145,8 +145,8 @@ final class JsonWriter extends AbstractWriter
      * @param Entity\EntityInterface $entity
      *
      * @throws \Exception
-     * @return string
      *
+     * @return string
      */
     private function getEntityPath(Entity\EntityInterface $entity)
     {

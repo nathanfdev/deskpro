@@ -103,8 +103,8 @@ class OneSkyBuild extends AbstractBuild
      * @param $category
      *
      * @throws \Exception|\RuntimeException
-     * @return array
      *
+     * @return array
      */
     public function getCategoryWords($id, $section, $category)
     {
@@ -156,8 +156,8 @@ class OneSkyBuild extends AbstractBuild
      * @param string $source_file If not specified, the default file is the default lang file for the category
      *
      * @throws \InvalidArgumentException
-     * @return array
      *
+     * @return array
      */
     public function updateSourcePhrases($section, $category, $source_file = null)
     {
@@ -242,8 +242,8 @@ class OneSkyBuild extends AbstractBuild
      * @param string $path
      *
      * @throws \RuntimeException
-     * @return array
      *
+     * @return array
      */
     public function restGet($path, array $vars = array())
     {
@@ -266,8 +266,8 @@ class OneSkyBuild extends AbstractBuild
      * @param string $path
      *
      * @throws \RuntimeException
-     * @return array
      *
+     * @return array
      */
     public function restPost($path, array $post_vars = array())
     {
@@ -305,8 +305,8 @@ class OneSkyBuild extends AbstractBuild
      * @param string $section
      *
      * @throws \InvalidArgumentException
-     * @return string
      *
+     * @return string
      */
     public function getPlatformId($section)
     {

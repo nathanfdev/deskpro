@@ -49,7 +49,7 @@ class WidgetSelectionsController extends AbstractController implements Protected
 
     public function getAction()
     {
-        /**
+        /*
          * @var \Application\DeskPRO\WidgetSelections\WidgetSelections
          */
         $widget_selections = $this->container->getSystemService('widget_selections');
@@ -67,7 +67,7 @@ class WidgetSelectionsController extends AbstractController implements Protected
     {
         $selections = $this->in->getCleanValueArray('selections', 'raw', 'raw');
 
-        /**
+        /*
          * @var \Application\DeskPRO\WidgetSelections\WidgetSelections
          */
         $widget_selections = $this->container->getSystemService('widget_selections');

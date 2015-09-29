@@ -332,8 +332,8 @@ class TicketDepsController extends AbstractController implements ProtectedContro
      * @param $id
      *
      * @throws
-     * @return TicketDepartmentEditor
      *
+     * @return TicketDepartmentEditor
      */
     private function _getDepartmentEditor()
     {

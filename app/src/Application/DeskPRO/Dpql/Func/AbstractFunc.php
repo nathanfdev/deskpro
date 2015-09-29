@@ -146,8 +146,8 @@ abstract class AbstractFunc
      * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $part
      *
      * @throws \Application\DeskPRO\Dpql\Exception
-     * @return mixed
      *
+     * @return mixed
      */
     protected function _toLiteral(\Application\DeskPRO\Dpql\Statement\Part\AbstractPart $part)
     {

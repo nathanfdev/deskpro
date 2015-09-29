@@ -164,8 +164,8 @@ class LangPackInfo
      * @param string $section
      *
      * @throws \InvalidArgumentException
-     * @return array
      *
+     * @return array
      */
     public function getDefaultCategories($section)
     {

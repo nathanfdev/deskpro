@@ -146,8 +146,8 @@ class DeskproBlobStorage implements Loggable
      * @param string $id
      *
      * @throws \InvalidArgumentException
-     * @return AbstractStorageAdapter
      *
+     * @return AbstractStorageAdapter
      */
     public function getAdapter($id)
     {
@@ -280,8 +280,8 @@ class DeskproBlobStorage implements Loggable
      * @param array  $props
      *
      * @throws \RuntimeException
-     * @return int The blob ID that was created
      *
+     * @return int The blob ID that was created
      */
     public function createBlobRowFromFile($source_path, $filename, $content_type, array $props = null)
     {
@@ -406,8 +406,8 @@ class DeskproBlobStorage implements Loggable
      * @param array  $props
      *
      * @throws \RuntimeException
-     * @return BlobEntity
      *
+     * @return BlobEntity
      */
     public function createBlobRecordFromFile($source_path, $filename, $content_type, array $props = null)
     {
@@ -424,8 +424,8 @@ class DeskproBlobStorage implements Loggable
      * @param array  $props
      *
      * @throws \RuntimeException
-     * @return array
      *
+     * @return array
      */
     public function createBlobRowFromString($source_data, $filename, $content_type, array $props = null)
     {
@@ -570,8 +570,8 @@ class DeskproBlobStorage implements Loggable
      * @param string $adapter_id
      *
      * @throws \Exception
-     * @return string
      *
+     * @return string
      */
     public function copyBlobToString(Blob $blob, $adapter_id)
     {
@@ -599,8 +599,8 @@ class DeskproBlobStorage implements Loggable
      * @param string $adapter_id
      *
      * @throws \Exception
-     * @return int
      *
+     * @return int
      */
     public function copyBlobToFile($target_path, Blob $blob, $adapter_id)
     {
@@ -745,8 +745,8 @@ class DeskproBlobStorage implements Loggable
      *                            Otherwise, you can still check error state based on the return value.
      *
      * @throws \Exception
-     * @return bool
      *
+     * @return bool
      */
     public function deleteBlob(Blob $blob, $adapter_id, $ex_on_error = false)
     {
@@ -776,8 +776,8 @@ class DeskproBlobStorage implements Loggable
      *                                Otherwise, you can still check error state based on the return value.
      *
      * @throws \Exception
-     * @return bool
      *
+     * @return bool
      */
     public function deleteBlobRecord(BlobEntity $blob_entity, $ex_on_error = false)
     {
@@ -809,8 +809,8 @@ class DeskproBlobStorage implements Loggable
      *                           Otherwise, you can still check error state based on the return value.
      *
      * @throws \Exception
-     * @return bool
      *
+     * @return bool
      */
     public function deleteBlobRow(array $blob_row, $ex_on_error = false)
     {
@@ -876,8 +876,8 @@ class DeskproBlobStorage implements Loggable
      * @param array $blob_row
      *
      * @throws \InvalidArgumentException
-     * @return Blob
      *
+     * @return Blob
      */
     public function getBlobFromBlobRow(array $blob_row)
     {

@@ -190,8 +190,8 @@ class TwitterStatusController extends AbstractController
      * @param int $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\TwitterAccountStatus
      *
+     * @return \Application\DeskPRO\Entity\TwitterAccountStatus
      */
     protected function _getAccountStatusOr404($id, $check_perm = '')
     {
@@ -245,8 +245,8 @@ class TwitterStatusController extends AbstractController
      *
      * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\TwitterAccount
      *
+     * @return \Application\DeskPRO\Entity\TwitterAccount
      */
     protected function _getAccountOr404($id)
     {

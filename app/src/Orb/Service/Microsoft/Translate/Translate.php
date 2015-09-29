@@ -209,8 +209,8 @@ class Translate
      * @param string|string $text A string or array of strings to detect
      *
      * @throws \InvalidArgumentException
-     * @return string|array The lang or array of lang IDs
      *
+     * @return string|array The lang or array of lang IDs
      */
     public function detect($text)
     {

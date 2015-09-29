@@ -71,8 +71,8 @@ class RateLimit
      * @param $action
      *
      * @throws \Exception
-     * @return bool
      *
+     * @return bool
      */
     public function saveAction($action)
     {
@@ -106,8 +106,8 @@ class RateLimit
      * @param null   $ip
      *
      * @throws \Exception
-     * @return bool
      *
+     * @return bool
      */
     public function getResponse($action, Person $person, $ip = null)
     {
@@ -167,8 +167,8 @@ class RateLimit
      * @param $action
      *
      * @throws \Exception
-     * @return bool
      *
+     * @return bool
      */
     public function isActionLimited($action)
     {

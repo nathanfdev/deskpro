@@ -451,6 +451,7 @@ class UserChatManager
      * @param \Application\DeskPRO\Entity\ChatConversation $convo
      * @param \Application\DeskPRO\Entity\Department|null  $dep
      * @param \Application\DeskPRO\Entity\Person           $who
+     *
      * @throws \Exception
      *
      * @return
@@ -631,6 +632,7 @@ class UserChatManager
      *
      *
      * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     *
      * @throws \Exception
      */
     public function agentTimeout(ChatConversation $convo, Person $person)
@@ -786,6 +788,7 @@ class UserChatManager
      *
      *
      * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     *
      * @throws \Exception
      */
     public function endChatUser(ChatConversation $convo, $ended_by = null)

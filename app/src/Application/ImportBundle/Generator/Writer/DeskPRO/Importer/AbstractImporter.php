@@ -77,8 +77,8 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
      * @param string $title
      *
      * @throws \Exception
-     * @return int
      *
+     * @return int
      */
     protected function findLanguageId($title)
     {
@@ -119,8 +119,8 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
      * @param string $title
      *
      * @throws \Exception
-     * @return DeskPROEntity\Organization|null
      *
+     * @return DeskPROEntity\Organization|null
      */
     protected function findOrCreateOrganization($title)
     {
@@ -153,8 +153,8 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
      * @param string $sys_name
      *
      * @throws \Exception
-     * @return DeskPROEntity\UserGroup|null
      *
+     * @return DeskPROEntity\UserGroup|null
      */
     protected function findUserGroup($sys_name)
     {
@@ -185,8 +185,8 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
      * @param DeskPROEntity\CustomDataAbstract $custom_field
      *
      * @throws ImporterException
-     * @return DeskPROEntity\CustomDataTicket
      *
+     * @return DeskPROEntity\CustomDataTicket
      */
     protected function createCustomData(AbstractCustomDefMapper $mapper, Entity\CustomField $entity, DeskPROEntity\CustomDataAbstract $custom_field)
     {
@@ -265,8 +265,8 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
      * Returns the person mapper.
      *
      * @throws \Exception
-     * @return Mapper\Person
      *
+     * @return Mapper\Person
      */
     protected function getPersonMapper()
     {
@@ -277,8 +277,8 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
      * Returns the language mapper.
      *
      * @throws \Exception
-     * @return Mapper\Language
      *
+     * @return Mapper\Language
      */
     protected function getLanguageMapper()
     {
@@ -289,8 +289,8 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
      * Returns the article mapper.
      *
      * @throws \Exception
-     * @return Mapper\Article
      *
+     * @return Mapper\Article
      */
     protected function getArticleMapper()
     {
@@ -301,8 +301,8 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
      * Returns the download mapper.
      *
      * @throws \Exception
-     * @return Mapper\Download
      *
+     * @return Mapper\Download
      */
     protected function getDownloadMapper()
     {
@@ -313,8 +313,8 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
      * Returns the news mapper.
      *
      * @throws \Exception
-     * @return Mapper\News
      *
+     * @return Mapper\News
      */
     protected function getNewsMapper()
     {
@@ -325,8 +325,8 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
      * Returns the feedback mapper.
      *
      * @throws \Exception
-     * @return Mapper\Feedback
      *
+     * @return Mapper\Feedback
      */
     protected function getFeedbackMapper()
     {
@@ -337,8 +337,8 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
      * Returns the ticket mapper.
      *
      * @throws \Exception
-     * @return Mapper\Ticket
      *
+     * @return Mapper\Ticket
      */
     protected function getTicketMapper()
     {
@@ -349,8 +349,8 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
      * Returns the organization mapper.
      *
      * @throws \Exception
-     * @return Mapper\Organization
      *
+     * @return Mapper\Organization
      */
     protected function getOrganizationMapper()
     {
@@ -361,8 +361,8 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
      * Returns the object lang mapper.
      *
      * @throws \Exception
-     * @return Mapper\ObjectLang
      *
+     * @return Mapper\ObjectLang
      */
     protected function getObjectLangMapper()
     {
@@ -373,8 +373,8 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
      * Returns the article category mapper.
      *
      * @throws \Exception
-     * @return Mapper\ArticleCategory
      *
+     * @return Mapper\ArticleCategory
      */
     protected function getArticleCategoryMapper()
     {

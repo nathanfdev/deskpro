@@ -648,6 +648,7 @@ class AgentHelper implements PersonContextInterface
      *
      *
      * @param $type
+     *
      * @throws \InvalidArgumentException
      *
      * @return string
@@ -677,6 +678,7 @@ class AgentHelper implements PersonContextInterface
      *
      *
      * @param $type
+     *
      * @throws \InvalidArgumentException
      *
      * @return string

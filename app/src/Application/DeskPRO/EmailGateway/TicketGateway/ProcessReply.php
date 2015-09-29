@@ -78,8 +78,8 @@ class ProcessReply extends ProcessAbstract
      * @param string $context
      *
      * @throws \Exception
-     * @return \Application\DeskPRO\Mail\Message|mixed|null|TicketMessage
      *
+     * @return \Application\DeskPRO\Mail\Message|mixed|null|TicketMessage
      */
     public function run($context = 'user')
     {

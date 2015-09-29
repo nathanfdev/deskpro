@@ -339,8 +339,8 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      * @param InputInterface $input
      *
      * @throws RuntimeException
-     * @return GeneratorConfig
      *
+     * @return GeneratorConfig
      */
     protected function createGeneratorConfig(InputInterface $input)
     {

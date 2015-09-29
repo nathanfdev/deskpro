@@ -100,8 +100,8 @@ class BasicXssTest extends \DpUnitTestCase
      * @param string $f
      *
      * @throws \Exception
-     * @return array
      *
+     * @return array
      */
     private function _readFile($f)
     {

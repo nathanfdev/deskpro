@@ -129,8 +129,8 @@ class Service
      * @param String $error The Error Message
      *
      * @throws \Exception if the debug mode is off
-     * @return \JIRA\Service
      *
+     * @return \JIRA\Service
      */
     public function addError($error, $code = 0)
     {

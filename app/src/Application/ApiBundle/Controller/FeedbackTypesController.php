@@ -59,7 +59,7 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
 
     public function listAction()
     {
-        /**
+        /*
          * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes
          */
         $feedback_types = $this->container->getSystemService('feedback_types');
@@ -77,7 +77,7 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
 
     public function getAction($id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes
          */
         $feedback_types = $this->container->getSystemService('feedback_types');
@@ -103,7 +103,7 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
 
     public function saveAction($id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes
          */
         $feedback_types = $this->container->getSystemService('feedback_types');
@@ -145,7 +145,7 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
 
     public function removeAction($id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes
          */
         $feedback_types = $this->container->getSystemService('feedback_types');
@@ -202,7 +202,7 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
     {
         $display_orders = $this->in->getArrayOfUInts('display_orders');
 
-        /**
+        /*
          * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes
          */
         $feedback_types = $this->container->getSystemService('feedback_types');

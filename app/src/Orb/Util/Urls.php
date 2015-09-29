@@ -53,8 +53,8 @@ class Urls
      * @param string $domain just a domain name
      *
      * @throws \InvalidArgumentException
-     * @return bool true if $domain is the extact domain used in the email of $email
      *
+     * @return bool true if $domain is the extact domain used in the email of $email
      */
     public static function verifyEmailDomain($email, $domain)
     {

@@ -355,6 +355,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     *
      * @return Response
      *
      *

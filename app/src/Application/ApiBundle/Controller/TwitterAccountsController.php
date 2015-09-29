@@ -52,7 +52,7 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
 
     public function listAction()
     {
-        /**
+        /*
          * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts
          */
         $twitter_accounts = $this->container->getSystemService('twitter_accounts');
@@ -68,7 +68,7 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
 
     public function getAction($id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts
          */
         $twitter_accounts = $this->container->getSystemService('twitter_accounts');
@@ -92,7 +92,7 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
 
     public function saveAction($id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts
          */
         $twitter_accounts = $this->container->getSystemService('twitter_accounts');
@@ -131,7 +131,7 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
 
     public function removeAction($id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts
          */
         $twitter_accounts = $this->container->getSystemService('twitter_accounts');

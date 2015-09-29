@@ -106,8 +106,8 @@ class LanguageInstaller
      * @param \Application\DeskPRO\Languages\LanguagePack $pack
      *
      * @throws \Exception
-     * @return \Application\DeskPRO\Entity\Language
      *
+     * @return \Application\DeskPRO\Entity\Language
      */
     public function installPack(LanguagePack $pack)
     {

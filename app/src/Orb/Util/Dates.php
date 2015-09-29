@@ -313,8 +313,8 @@ class Dates
      * @param array $lang    Phrases to use for each unit
      *
      * @throws \Exception
-     * @return string
      *
+     * @return string
      */
     public static function secsToReadable($seconds, $detail = 2, $lang = null)
     {
@@ -524,8 +524,8 @@ class Dates
      * @param string $unit
      *
      * @throws \InvalidArgumentException
-     * @return int
      *
+     * @return int
      */
     public static function getUnitInSeconds($num, $unit)
     {

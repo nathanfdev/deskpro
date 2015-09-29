@@ -174,8 +174,8 @@ class DiskKeyCache implements \Swift_KeyCache
      * @param string $itemKey
      *
      * @throws \Swift_IoException
-     * @return string
      *
+     * @return string
      */
     public function getString($nsKey, $itemKey)
     {

@@ -427,8 +427,8 @@ class Pop3 extends AbstractFetcher
      * Tests the connection and returns the number of messages on success.
      *
      * @throws \Exception
-     * @return bool
      *
+     * @return bool
      */
     public function test()
     {

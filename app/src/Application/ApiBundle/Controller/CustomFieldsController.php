@@ -157,8 +157,8 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
      * @param $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return Response
      *
+     * @return Response
      */
     public function addChildAction(Request $request, $id)
     {
@@ -275,8 +275,8 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
      * @param $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return null|object
      *
+     * @return null|object
      */
     protected function getDefinition($id)
     {
@@ -365,8 +365,8 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
-     * @return \Symfony\Component\HttpFoundation\Response
      *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function getCommonFieldsAction($objectType, $objectId, Request $request)
     {
@@ -420,8 +420,8 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
-     * @return \Symfony\Component\HttpFoundation\Response
      *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function setCommonFieldAction($objectType, $objectId, Request $request)
     {

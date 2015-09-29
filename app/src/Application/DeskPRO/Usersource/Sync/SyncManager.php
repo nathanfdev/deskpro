@@ -239,8 +239,8 @@ class SyncManager implements SyncerInterface
 
     /**
      * @throws \Doctrine\ORM\NonUniqueResultException
-     * @return \Application\DeskPRO\Entity\Job
      *
+     * @return \Application\DeskPRO\Entity\Job
      */
     public function getNextScheduledSyncJob()
     {

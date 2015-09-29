@@ -105,8 +105,8 @@ class Overview
      * @param array  $options
      *
      * @throws NotFoundHttpException
-     * @return array
      *
+     * @return array
      */
     public function getStats($type, $grouping_field = null, $options = array())
     {
@@ -252,8 +252,8 @@ class Overview
      * @param array $options
      *
      * @throws \InvalidArgumentException
-     * @return array
      *
+     * @return array
      */
     protected function getValues($type, array $options = array())
     {

@@ -221,8 +221,8 @@ class CsvExport extends AbstractJob
 
     /**
      * @throws \Doctrine\DBAL\DBALException
-     * @return mixed
      *
+     * @return mixed
      */
     protected function getContactDataHeaders()
     {

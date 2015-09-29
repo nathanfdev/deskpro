@@ -1294,8 +1294,8 @@ class FeedbackController extends AbstractController
      * @param int $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\Feedback
      *
+     * @return \Application\DeskPRO\Entity\Feedback
      */
     protected function _getFeedbackOr404($id, $check_perm = false)
     {

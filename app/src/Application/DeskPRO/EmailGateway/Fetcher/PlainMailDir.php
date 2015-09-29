@@ -242,8 +242,8 @@ class PlainMailDir extends AbstractFetcher
      * Tests the connection and returns the number of messages on success.
      *
      * @throws \InvalidArgumentException
-     * @return bool
      *
+     * @return bool
      */
     public function test()
     {

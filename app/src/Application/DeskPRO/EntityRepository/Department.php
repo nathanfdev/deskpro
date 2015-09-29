@@ -119,8 +119,8 @@ class Department extends AbstractCategoryRepository
      * @param string $context
      *
      * @throws \InvalidArgumentException
-     * @return \Application\DeskPRO\Entity\Department *
      *
+     * @return \Application\DeskPRO\Entity\Department *
      */
     public function getDefaultDepartment($context)
     {
@@ -167,8 +167,8 @@ class Department extends AbstractCategoryRepository
      * @param $context
      *
      * @throws \InvalidArgumentException
-     * @return \Application\DeskPRO\Entity\Department
      *
+     * @return \Application\DeskPRO\Entity\Department
      */
     public function getChildDepartments($context)
     {

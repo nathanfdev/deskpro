@@ -297,8 +297,8 @@ class Display
      * Gets the results from the database that match.
      *
      * @throws \Application\DeskPRO\Dpql\Exception
-     * @return \Application\DeskPRO\Dpql\Results
      *
+     * @return \Application\DeskPRO\Dpql\Results
      */
     public function getResults()
     {
@@ -830,8 +830,8 @@ class Display
      * Gets the entity repository for the from table.
      *
      * @throws \Application\DeskPRO\Dpql\Exception
-     * @return \Application\DeskPRO\EntityRepository\AbstractEntityRepository|bool
      *
+     * @return \Application\DeskPRO\EntityRepository\AbstractEntityRepository|bool
      */
     public function getFromEntityRepository()
     {

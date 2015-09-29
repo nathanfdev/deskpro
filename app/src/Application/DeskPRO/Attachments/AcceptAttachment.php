@@ -82,8 +82,8 @@ class AcceptAttachment
      * @param $id
      *
      * @throws \InvalidArgumentException
-     * @return \Application\DeskPRO\Attachments\RestrictionSet
      *
+     * @return \Application\DeskPRO\Attachments\RestrictionSet
      */
     public function getRestrictionSet($id)
     {

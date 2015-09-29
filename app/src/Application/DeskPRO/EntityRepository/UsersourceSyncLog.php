@@ -45,8 +45,8 @@ class UsersourceSyncLog extends AbstractEntityRepository
      * @param UsersourceEntity $usersource
      *
      * @throws \Doctrine\ORM\NonUniqueResultException
-     * @return UsersourceSyncLogEntity|null
      *
+     * @return UsersourceSyncLogEntity|null
      */
     public function getLastStartedLogForUsersource(UsersourceEntity $usersource)
     {
@@ -67,8 +67,8 @@ class UsersourceSyncLog extends AbstractEntityRepository
      * @param UsersourceEntity $usersource
      *
      * @throws \Doctrine\ORM\NonUniqueResultException
-     * @return UsersourceSyncLogEntity|null
      *
+     * @return UsersourceSyncLogEntity|null
      */
     public function getOrCreateLogInProgressForUsersource(UsersourceEntity $usersource)
     {

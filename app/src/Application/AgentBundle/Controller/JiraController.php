@@ -92,8 +92,8 @@ class JiraController extends AbstractController
      * @param $ticketId
      *
      * @throws NotFoundHttpException
-     * @return \Symfony\Component\HttpFoundation\Response
      *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function createIssueAction(Request $request, $ticketId)
     {
@@ -155,8 +155,8 @@ class JiraController extends AbstractController
      * @param $issueId
      *
      * @throws NotFoundHttpException
-     * @return \Symfony\Component\HttpFoundation\Response
      *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function addCommentAction(Request $request, $ticketId, $issueId)
     {
@@ -184,8 +184,8 @@ class JiraController extends AbstractController
      * @param $issueId
      *
      * @throws NotFoundHttpException
-     * @return \Symfony\Component\HttpFoundation\Response
      *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function linkAction($ticketId, $issueId)
     {
@@ -204,8 +204,8 @@ class JiraController extends AbstractController
      * @param $issueId
      *
      * @throws NotFoundHttpException
-     * @return \Symfony\Component\HttpFoundation\Response
      *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function unlinkAction($ticketId, $issueId)
     {

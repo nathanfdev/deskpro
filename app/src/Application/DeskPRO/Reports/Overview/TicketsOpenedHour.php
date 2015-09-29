@@ -86,8 +86,8 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
 
     /**
      * @throws \InvalidArgumentException
-     * @return array|mixed
      *
+     * @return array|mixed
      */
     public function getTitles()
     {
@@ -158,8 +158,8 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
 
     /**
      * @throws \InvalidArgumentException
-     * @return array|\int[]|mixed|null
      *
+     * @return array|\int[]|mixed|null
      */
     public function getValues()
     {

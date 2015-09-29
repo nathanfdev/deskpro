@@ -113,8 +113,8 @@ class QueueRunner
      * Timeout sources that have been marked as processing too long.
      *
      * @throws \Exception
-     * @return int
      *
+     * @return int
      */
     public function detectProblems()
     {
@@ -334,8 +334,8 @@ class QueueRunner
 
     /**
      * @throws \Exception
-     * @return array Array of id=>status of records to process
      *
+     * @return array Array of id=>status of records to process
      */
     private function reserveBatch()
     {
@@ -379,8 +379,8 @@ class QueueRunner
      * @param array $batch
      *
      * @throws \Exception
-     * @return int
      *
+     * @return int
      */
     private function releaseRemaining(array $batch)
     {

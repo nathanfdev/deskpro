@@ -213,8 +213,8 @@ class JIRA
      * @param array $properties
      *
      * @throws \Exception
-     * @return Meta
      *
+     * @return Meta
      */
     public function updateMeta(array $properties = array())
     {
@@ -296,8 +296,8 @@ class JIRA
      * @param $jql
      *
      * @throws \Exception
-     * @return array
      *
+     * @return array
      */
     public function searchIssues($q)
     {
@@ -413,8 +413,8 @@ class JIRA
      *
      * @throws \Exception
      * @throws \Exceptions
-     * @return array|null
      *
+     * @return array|null
      */
     public function link(Ticket $ticket, $issueId, Person $byPerson)
     {
@@ -465,8 +465,8 @@ class JIRA
      *
      * @throws \Exception
      * @throws \Exceptions
-     * @return bool|null
      *
+     * @return bool|null
      */
     public function unlink(Ticket $ticket, $issueId)
     {
@@ -541,8 +541,8 @@ class JIRA
      *
      * @throws \Exception
      * @throws \Exceptions
-     * @return array|void
      *
+     * @return array|void
      */
     public function addComment($message, $ticketId, Person $performer, $issueId = null)
     {

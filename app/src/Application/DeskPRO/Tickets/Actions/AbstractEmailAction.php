@@ -50,8 +50,8 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
      * @param ExecutorContextInterface $context
      *
      * @throws \InvalidArgumentException
-     * @return \Application\DeskPRO\Entity\EmailAccount
      *
+     * @return \Application\DeskPRO\Entity\EmailAccount
      */
     protected function getFromEmailAccountOption(Ticket $ticket, ExecutorContextInterface $context)
     {
@@ -89,8 +89,8 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
      * @param bool                     $allow_blank
      *
      * @throws \InvalidArgumentException
-     * @return string|null
      *
+     * @return string|null
      */
     protected function getEmailTemplateOption(Ticket $ticket, ExecutorContextInterface $context, $allow_blank = false)
     {

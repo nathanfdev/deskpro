@@ -54,8 +54,8 @@ class SmsAccountDetector
      * @param null $to_number
      *
      * @throws \Doctrine\ORM\NonUniqueResultException
-     * @return SmsAccount|null
      *
+     * @return SmsAccount|null
      */
     public function detect($sms_account_id, $to_number = null)
     {

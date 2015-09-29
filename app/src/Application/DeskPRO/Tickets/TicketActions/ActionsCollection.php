@@ -178,6 +178,7 @@ class ActionsCollection
      *
      *
      * @param  $name
+     *
      * @throws \InvalidArgumentException When the action doesnt exist
      *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
@@ -200,6 +201,7 @@ class ActionsCollection
      *
      *
      * @param string $name
+     *
      * @throws \InvalidArgumentException When action doesnt exist
      *
      * @return Application\DeskPRO\Tickets\TicketActions\ActionInterface

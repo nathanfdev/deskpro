@@ -61,10 +61,10 @@ class PersonMerge implements PersonContextInterface
     protected $em;
 
     /**
-     *
      * @param \Application\DeskPRO\Entity\Person   $person_performer
      * @param \Application\DeskPRO\Entity\Person   $person           The base person, this is the one that will still exist at the end
      * @param \Application\DeskPRO\Entity\Feedback $other_person     The other person, the one that will be merged into $person and then deleted
+     *
      * @throws \InvalidArgumentException
      */
     public function __construct(Person $person_performer, Person $person, Person $other_person)

@@ -49,8 +49,8 @@ class Files
      * @param int             $size       How many bytes from the end to read
      *
      * @throws \RuntimeException
-     * @return string
      *
+     * @return string
      */
     public static function readFromEnd($file_or_fp, $size)
     {

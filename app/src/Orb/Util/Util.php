@@ -281,8 +281,8 @@ class Util
      * @param string $sign_key The secret key it was signed with. You should most certainly provide this!
      *
      * @throws Exception
-     * @return mixed
      *
+     * @return mixed
      */
     public static function signedUnserialize($string, $sign_key = 'orb_util_sign_key')
     {

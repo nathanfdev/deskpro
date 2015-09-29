@@ -52,7 +52,7 @@ class UserRulesController extends AbstractController implements ProtectedControl
 
     public function listAction()
     {
-        /**
+        /*
          * @var \Application\DeskPRO\UserRules\UserRules
          */
         $user_rules = $this->container->getSystemService('user_rules');
@@ -70,7 +70,7 @@ class UserRulesController extends AbstractController implements ProtectedControl
 
     public function getAction($id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\UserRules\UserRules
          */
         $user_rules = $this->container->getSystemService('user_rules');
@@ -93,7 +93,7 @@ class UserRulesController extends AbstractController implements ProtectedControl
 
     public function saveAction($id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\UserRules\UserRules
          */
         $user_rules = $this->container->getSystemService('user_rules');
@@ -135,7 +135,7 @@ class UserRulesController extends AbstractController implements ProtectedControl
 
     public function removeAction($id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\UserRules\UserRules
          */
         $user_rules = $this->container->getSystemService('user_rules');
@@ -168,7 +168,7 @@ class UserRulesController extends AbstractController implements ProtectedControl
 
     public function applyAction($id, $page_id)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\UserRules\UserRules
          */
         $user_rules = $this->container->getSystemService('user_rules');

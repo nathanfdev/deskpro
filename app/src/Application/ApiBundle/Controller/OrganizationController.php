@@ -1893,8 +1893,8 @@ class OrganizationController extends AbstractController
      * @param string $check_perm
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\Organization
      *
+     * @return \Application\DeskPRO\Entity\Organization
      */
     protected function _getOrganizationOr404($id, $check_perm = '')
     {
