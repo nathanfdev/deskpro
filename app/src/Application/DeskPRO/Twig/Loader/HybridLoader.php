@@ -57,20 +57,11 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
             return false;
         }
 
-        $this->_initStyle();
-        if (isset($this->style_template_info[(string) $name])) {
-            return true;
-        }
-
         $this->_initTemplates();
     }
 
     public function exists($name)
     {
-        if (parent::exists($name)) {
-            return true;
-        }
-
         if (isset($this->template_info[(string) $name])) {
             return true;
         }
