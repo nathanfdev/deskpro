@@ -88,8 +88,8 @@ class TicketStatuses
      * @param string the status name.
      *
      * @throws UnknownTicketFlagException
-     * @return a list of tickets.
      *
+     * @return a list of tickets.
      */
     public function getAllTicketsForStatus($status)
     {

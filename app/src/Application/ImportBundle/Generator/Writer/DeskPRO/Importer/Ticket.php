@@ -126,8 +126,8 @@ final class Ticket extends AbstractImporter
      * @param Entity\Ticket $entity
      *
      * @throws \Exception
-     * @return DeskPROEntity\Ticket
      *
+     * @return DeskPROEntity\Ticket
      */
     private function findOrCreateTicket(Entity\Ticket $entity)
     {
@@ -218,8 +218,8 @@ final class Ticket extends AbstractImporter
      * @param string $email
      *
      * @throws Mapper\MapperException
-     * @return DeskPROEntity\TicketParticipant
      *
+     * @return DeskPROEntity\TicketParticipant
      */
     private function createParticipant($email)
     {
@@ -238,8 +238,8 @@ final class Ticket extends AbstractImporter
      * @param string $title
      *
      * @throws \Exception
-     * @return DeskPROEntity\Department|null
      *
+     * @return DeskPROEntity\Department|null
      */
     private function findOrCreateTicketDepartment($title)
     {
@@ -270,8 +270,8 @@ final class Ticket extends AbstractImporter
      * @param Entity\TicketPriority $entity
      *
      * @throws \Exception
-     * @return DeskPROEntity\TicketPriority|null
      *
+     * @return DeskPROEntity\TicketPriority|null
      */
     private function findOrCreateTicketPriority(Entity\TicketPriority $entity = null)
     {
@@ -301,8 +301,8 @@ final class Ticket extends AbstractImporter
      * @param string $title
      *
      * @throws \Exception
-     * @return DeskPROEntity\TicketCategory|null
      *
+     * @return DeskPROEntity\TicketCategory|null
      */
     private function findOrCreateTicketCategory($title)
     {
@@ -329,8 +329,8 @@ final class Ticket extends AbstractImporter
      * @param Entity\CustomField $entity
      *
      * @throws ImporterException
-     * @return DeskPROEntity\CustomDataTicket
      *
+     * @return DeskPROEntity\CustomDataTicket
      */
     private function createCustomData(Entity\CustomField $entity)
     {
@@ -385,8 +385,8 @@ final class Ticket extends AbstractImporter
      * Returns the ticket department mapper.
      *
      * @throws \Exception
-     * @return Mapper\TicketDepartment
      *
+     * @return Mapper\TicketDepartment
      */
     private function getTicketDepartmentMapper()
     {
@@ -397,8 +397,8 @@ final class Ticket extends AbstractImporter
      * Returns the ticket priority mapper.
      *
      * @throws \Exception
-     * @return Mapper\TicketPriority
      *
+     * @return Mapper\TicketPriority
      */
     private function getTicketPriorityMapper()
     {
@@ -409,8 +409,8 @@ final class Ticket extends AbstractImporter
      * Returns the ticket category mapper.
      *
      * @throws \Exception
-     * @return Mapper\TicketCategory
      *
+     * @return Mapper\TicketCategory
      */
     private function getTicketCategoryMapper()
     {
@@ -421,8 +421,8 @@ final class Ticket extends AbstractImporter
      * Returns the custom def person mapper.
      *
      * @throws \Exception
-     * @return Mapper\CustomDefTicket
      *
+     * @return Mapper\CustomDefTicket
      */
     private function getCustomDefTicketMapper()
     {

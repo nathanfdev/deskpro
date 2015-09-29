@@ -51,8 +51,8 @@ interface ImporterInterface
      * @param Entity\EntityInterface $entity
      *
      * @throws \Exception
-     * @return ArrayCollection
      *
+     * @return ArrayCollection
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity);
 }

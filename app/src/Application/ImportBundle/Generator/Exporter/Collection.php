@@ -60,8 +60,8 @@ final class Collection extends AbstractCollection implements TypeOrderInterface
      * @param string $type
      *
      * @throws Exception
-     * @return ExporterInterface
      *
+     * @return ExporterInterface
      */
     public function getByType($type)
     {

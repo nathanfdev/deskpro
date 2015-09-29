@@ -93,8 +93,8 @@ class FeedbackController extends BaseController
      * @param Request $request
      *
      * @throws \LogicException
-     * @return View
      *
+     * @return View
      */
     public function cgetAction(Request $request)
     {
@@ -134,8 +134,8 @@ class FeedbackController extends BaseController
      * @throws AccessException
      * @throws UndefinedOptionsException
      * @throws BadRequestHttpException
-     * @return View
      *
+     * @return View
      */
     public function getCountsAction(Request $request)
     {
@@ -185,8 +185,8 @@ class FeedbackController extends BaseController
      * @param Request $request
      *
      * @throws \LogicException
-     * @return View
      *
+     * @return View
      */
     public function getFilterValues(Request $request)
     {

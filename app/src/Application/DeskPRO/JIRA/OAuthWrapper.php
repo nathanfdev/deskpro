@@ -104,8 +104,8 @@ class OAuthWrapper
      *
      * @throws Exception
      * @throws \Exception
-     * @return array
      *
+     * @return array
      */
     public function requestAuthCredentials($token, $tokenSecret, $verifier)
     {
@@ -130,8 +130,8 @@ class OAuthWrapper
      *
      * @throws Exception
      * @throws \Exception
-     * @return array
      *
+     * @return array
      */
     protected function requestCredentials($url, $token = false, $tokenSecret = false)
     {
@@ -167,8 +167,8 @@ class OAuthWrapper
      * @param null $tokenSecret
      *
      * @throws \Exception
-     * @return Client
      *
+     * @return Client
      */
     public function getClient($token = null, $tokenSecret = null)
     {

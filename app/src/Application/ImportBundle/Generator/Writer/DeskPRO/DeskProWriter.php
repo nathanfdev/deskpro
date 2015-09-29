@@ -143,8 +143,8 @@ final class DeskProWriter extends AbstractWriter
      * @param EntityInterface $entity
      *
      * @throws \Exception
-     * @return Importer\Collection
      *
+     * @return Importer\Collection
      */
     private function getImporters(EntityInterface $entity)
     {

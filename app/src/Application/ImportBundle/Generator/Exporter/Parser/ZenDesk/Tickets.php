@@ -152,8 +152,8 @@ final class Tickets extends AbstractParser
      * @param array $ticket
      *
      * @throws SkippingException
-     * @return Entity\Ticket
      *
+     * @return Entity\Ticket
      */
     private function exportTicket(array $ticket)
     {
@@ -374,8 +374,8 @@ final class Tickets extends AbstractParser
      * Loads data from ZenDesk reader.
      *
      * @throws Exception
-     * @return array
      *
+     * @return array
      */
     private function getTickets()
     {
@@ -480,8 +480,8 @@ final class Tickets extends AbstractParser
      * @param string $status
      *
      * @throws Exception
-     * @return string
      *
+     * @return string
      */
     private function getStatus($status)
     {

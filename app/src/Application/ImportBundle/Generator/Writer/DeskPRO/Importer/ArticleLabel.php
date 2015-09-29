@@ -100,8 +100,8 @@ final class ArticleLabel extends AbstractImporter
      * @param int $id
      *
      * @throws Mapper\MapperException
-     * @return array
      *
+     * @return array
      */
     private function getExistingLabelsNames($id)
     {
@@ -119,8 +119,8 @@ final class ArticleLabel extends AbstractImporter
      * Returns the article label mapper.
      *
      * @throws \Exception
-     * @return Mapper\ArticleLabel
      *
+     * @return Mapper\ArticleLabel
      */
     private function getArticleLabelMapper()
     {

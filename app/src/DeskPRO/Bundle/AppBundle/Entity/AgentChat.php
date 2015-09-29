@@ -189,8 +189,8 @@ class AgentChat extends DomainObject implements PersonList
      * @param Chatable $participantPrototype
      *
      * @throws WrongChatableTypeException
-     * @return $this
      *
+     * @return $this
      */
     public function addParticipant(Chatable $participantPrototype)
     {

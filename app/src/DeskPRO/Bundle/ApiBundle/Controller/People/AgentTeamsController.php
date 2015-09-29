@@ -233,8 +233,8 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
      * @param AgentTeam $team
      *
      * @throws WrappedApiErrorException
-     * @return View
      *
+     * @return View
      */
     protected function handleFormSubmission(Request $request, AgentTeam $team)
     {

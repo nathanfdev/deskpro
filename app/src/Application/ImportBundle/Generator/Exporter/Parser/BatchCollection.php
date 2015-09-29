@@ -58,8 +58,8 @@ final class BatchCollection extends AbstractCollection
      * @param string $type
      *
      * @throws Exception
-     * @return BatchParserInterface
      *
+     * @return BatchParserInterface
      */
     public function getByType($type)
     {

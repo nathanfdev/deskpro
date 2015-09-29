@@ -525,8 +525,8 @@ class TasksController extends BaseController implements ClassResourceInterface
      * @param Task    $task
      *
      * @throws WrappedApiErrorException
-     * @return View
      *
+     * @return View
      */
     protected function handleFormSubmission(Request $request, Task $task)
     {

@@ -179,8 +179,8 @@ class JsonMockAdapter implements RequestAdapterInterface
      * @param string $type
      *
      * @throws RuntimeException
-     * @return array
      *
+     * @return array
      */
     private function getResponse($type)
     {

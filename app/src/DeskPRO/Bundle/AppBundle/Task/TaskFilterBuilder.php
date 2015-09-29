@@ -361,6 +361,7 @@ class TaskFilterBuilder
      *
      * @param ParameterBag $request
      * @param string       $default
+     *
      * @throws \LogicException
      *
      * @return string

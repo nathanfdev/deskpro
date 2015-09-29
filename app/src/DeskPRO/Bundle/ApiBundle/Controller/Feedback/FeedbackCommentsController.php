@@ -94,8 +94,8 @@ class FeedbackCommentsController extends BaseController
      * @Get("/feedback_comments/counts", name="api_feedback_comment_count")
      *
      * @throws \LogicException
-     * @return View
      *
+     * @return View
      */
     public function getCountAwaitingValidationAction()
     {
@@ -115,8 +115,8 @@ class FeedbackCommentsController extends BaseController
      * @throws AlreadySubmittedException
      * @throws \InvalidArgumentException
      * @throws \LogicException
-     * @return View
      *
+     * @return View
      */
     private function handleFormSubmission(Request $request, FeedbackComment $comment)
     {

@@ -42,8 +42,8 @@ abstract class AbstractController extends BaseController
      * @param $id
      *
      * @throws NotFoundHttpException;
-     * @return AgentChat|null
      *
+     * @return AgentChat|null
      */
     protected function getChat($id)
     {

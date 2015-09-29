@@ -227,8 +227,8 @@ class TaskSubtasksController extends BaseController implements ClassResourceInte
      * @param TaskSubtask $subtask
      *
      * @throws WrappedApiErrorException
-     * @return View
      *
+     * @return View
      */
     protected function handleFormSubmission(Request $request, TaskSubtask $subtask)
     {

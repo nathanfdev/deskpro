@@ -79,6 +79,7 @@ class UsersourceCollection extends \ArrayObject
      *
      *
      * @param int $id id
+     *
      * @return UsersourceCollection
      */
     public function mustHaveSyncEnabled()

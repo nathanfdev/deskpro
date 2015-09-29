@@ -94,8 +94,8 @@ class TicketFlags
      * @param string the flag name.
      *
      * @throws UnknownTicketFlagException
-     * @return a list of tickets.
      *
+     * @return a list of tickets.
      */
     public function getAllRecordsForFlag($person_id, $flag_name)
     {
@@ -116,8 +116,8 @@ class TicketFlags
      * @param string the flag name.
      *
      * @throws UnknownTicketFlagException
-     * @return a list of tickets.
      *
+     * @return a list of tickets.
      */
     public function getAllTicketsForFlag($person_id, $flag_name)
     {

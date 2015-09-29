@@ -114,8 +114,8 @@ class ContentCountsDataService
      * @param int        $depth
      *
      * @throws \Exception
-     * @return Count
      *
+     * @return Count
      */
     private function createNestedRecursively(Count $count, $childrenCategories, $groupToCount, $depth = 0)
     {

@@ -75,8 +75,8 @@ class DataPropertyTransformer
      * @param DeferredPropertyInterface $deferred_property
      *
      * @throws DataSerializerException
-     * @return mixed
      *
+     * @return mixed
      */
     public function resolveDeferredProperty(DeferredPropertyInterface $deferred_property)
     {

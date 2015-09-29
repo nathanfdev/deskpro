@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSla;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+
 class DbalTicketSlaTermCompiler extends AbstractDbalTermCompiler
 {
     public function doCompile(TermInterface $term)

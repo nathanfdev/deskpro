@@ -97,8 +97,8 @@ final class News extends AbstractImporter implements SkipDuplicateInterface
      * @param string $title
      *
      * @throws \Exception
-     * @return DeskPROEntity\NewsCategory|null
      *
+     * @return DeskPROEntity\NewsCategory|null
      */
     private function findOrCreateNewsCategory($title)
     {
@@ -123,8 +123,8 @@ final class News extends AbstractImporter implements SkipDuplicateInterface
      * Returns the news category mapper.
      *
      * @throws \Exception
-     * @return Mapper\NewsCategory
      *
+     * @return Mapper\NewsCategory
      */
     private function getNewsCategoryMapper()
     {

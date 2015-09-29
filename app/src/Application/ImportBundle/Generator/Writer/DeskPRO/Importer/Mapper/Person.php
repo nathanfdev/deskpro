@@ -80,8 +80,8 @@ final class Person implements MapperInterface
      * @param bool   $throw_exception
      *
      * @throws MapperException
-     * @return \Application\DeskPRO\Entity\Person
      *
+     * @return \Application\DeskPRO\Entity\Person
      */
     public function findOneByEmail($email, $throw_exception = true)
     {
@@ -100,8 +100,8 @@ final class Person implements MapperInterface
      * @param bool  $throw_exception
      *
      * @throws MapperException
-     * @return \Application\DeskPRO\Entity\Person
      *
+     * @return \Application\DeskPRO\Entity\Person
      */
     public function findOneByEmails(array $emails, $throw_exception = true)
     {

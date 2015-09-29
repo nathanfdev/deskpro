@@ -70,8 +70,8 @@ class ApiRestControllerReader extends RestControllerReader
      * @param \ReflectionClass $reflectionClass
      *
      * @throws \InvalidArgumentException
-     * @return RestRouteCollection
      *
+     * @return RestRouteCollection
      */
     public function read(\ReflectionClass $reflectionClass)
     {

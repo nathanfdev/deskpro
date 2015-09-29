@@ -146,9 +146,9 @@ class CrudController extends BaseController
     }
 
     /**
-     *
      * @param object  $model
      * @param Request $request
+     *
      * @throws InvalidFormException
      *
      * @return View

@@ -147,8 +147,8 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
      * Returns a random person id.
      *
      * @throws Exception
-     * @return int
      *
+     * @return int
      */
     private function getRandomPersonId()
     {

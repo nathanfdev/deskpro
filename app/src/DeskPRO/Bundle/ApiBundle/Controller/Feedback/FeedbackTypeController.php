@@ -52,8 +52,8 @@ class FeedbackTypeController extends BaseController
      * @Get("/feedback_types", name="api_feedback_types")
      *
      * @throws \LogicException
-     * @return View
      *
+     * @return View
      */
     public function cgetAction()
     {

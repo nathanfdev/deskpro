@@ -103,8 +103,8 @@ abstract class BaseKernel extends Kernel
      * @param $name
      *
      * @throws \Exception
-     * @return array
      *
+     * @return array
      */
     private function getUnusedBundle($name)
     {
@@ -121,8 +121,8 @@ abstract class BaseKernel extends Kernel
      * @param $name
      *
      * @throws \Exception
-     * @return ApiBundle|AppBundle|PortalBundle
      *
+     * @return ApiBundle|AppBundle|PortalBundle
      */
     private function instantiateBundle($name)
     {

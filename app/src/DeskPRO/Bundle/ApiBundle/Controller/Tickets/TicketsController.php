@@ -238,8 +238,8 @@ class TicketsController extends BaseController implements ClassResourceInterface
      * @param Ticket  $ticket
      *
      * @throws WrappedApiErrorException
-     * @return View
      *
+     * @return View
      */
     protected function handleFormSubmission(Request $request, Ticket $ticket)
     {

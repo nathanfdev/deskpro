@@ -287,8 +287,8 @@ class AgentsController extends AbstractController implements ProtectedController
      *      )
      *  )
      * )
-     * @return Response
      *
+     * @return Response
      */
     public function getDeletedAgentAction($id)
     {
@@ -526,8 +526,8 @@ class AgentsController extends AbstractController implements ProtectedController
      * @param bool     $skip_email
      *
      * @throws \Exception
-     * @return Response
      *
+     * @return Response
      */
     protected function saveAgent($id = null, $agent_postdata = array(), $profile = array(), $filter_subs = array(),
         $other_subs = array(), $quick_add = false, $perm_overrides = array(),
@@ -1084,8 +1084,8 @@ class AgentsController extends AbstractController implements ProtectedController
      *      )
      *  )
      * )
-     * @return Response
      *
+     * @return Response
      */
     public function deleteAgentAction($id, $mode)
     {
@@ -1145,8 +1145,8 @@ class AgentsController extends AbstractController implements ProtectedController
      *      )
      *  )
      * )
-     * @return Response
      *
+     * @return Response
      */
     public function undeleteAgentAction($id)
     {
@@ -1249,8 +1249,8 @@ class AgentsController extends AbstractController implements ProtectedController
      *      )
      *  )
      * )
-     * @return Response
      *
+     * @return Response
      */
     public function getNotifyPrefsAction($id)
     {

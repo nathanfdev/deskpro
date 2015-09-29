@@ -32,7 +32,8 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLabel;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\AbstractPhpTermCompiler; use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\AbstractPhpTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 class PhpTicketLabelTermCompiler extends AbstractPhpTermCompiler
 {

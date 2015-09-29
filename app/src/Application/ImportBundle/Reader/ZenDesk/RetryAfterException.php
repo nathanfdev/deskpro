@@ -103,8 +103,8 @@ final class RetryAfterException extends Exception
      * @param string $raw_headers
      *
      * @throws Exception
-     * @return int
      *
+     * @return int
      */
     public static function parseRetryAfterTimeout($raw_headers)
     {

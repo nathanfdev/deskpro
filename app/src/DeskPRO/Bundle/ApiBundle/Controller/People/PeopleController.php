@@ -284,8 +284,8 @@ class PeopleController extends BaseController implements ClassResourceInterface
      * @param Person  $person
      *
      * @throws WrappedApiErrorException
-     * @return View
      *
+     * @return View
      */
     protected function handleFormSubmission(Request $request, Person $person)
     {

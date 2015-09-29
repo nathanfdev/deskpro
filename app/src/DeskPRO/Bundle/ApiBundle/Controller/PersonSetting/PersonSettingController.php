@@ -113,8 +113,8 @@ class PersonSettingController extends BaseController
      *
      * @throws \LogicException
      * @throws \InvalidArgumentException
-     * @return View
      *
+     * @return View
      */
     public function getAction($name)
     {

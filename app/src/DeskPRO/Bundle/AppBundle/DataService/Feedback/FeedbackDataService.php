@@ -286,8 +286,8 @@ class FeedbackDataService extends AbstractDataService
      * @param FeedbackCountCriteria $criteria
      *
      * @throws \LogicException
-     * @return Count
      *
+     * @return Count
      */
     public function countFeedback(FeedbackCountCriteria $criteria)
     {
@@ -318,8 +318,8 @@ class FeedbackDataService extends AbstractDataService
      * @param FeedbackCountCriteria $criteria
      *
      * @throws \LogicException
-     * @return Count
      *
+     * @return Count
      */
     private function countGrouped(FeedbackCountCriteria $criteria)
     {

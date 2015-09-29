@@ -99,8 +99,8 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
      * @param string $type
      *
      * @throws Exception
-     * @return Parser\ParserInterface
      *
+     * @return Parser\ParserInterface
      */
     protected function getParserByType($type)
     {

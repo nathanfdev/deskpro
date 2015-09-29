@@ -192,8 +192,8 @@ class ZenDeskConfig extends BaseConfig
      * Returns a text value indicating the type of authorization configured.
      *
      * @throws Exception
-     * @return string
      *
+     * @return string
      */
     public function getAuthType()
     {
@@ -211,8 +211,8 @@ class ZenDeskConfig extends BaseConfig
      * Returns auth password or token by auth type.
      *
      * @throws Exception
-     * @return string
      *
+     * @return string
      */
     public function getAuthValue()
     {

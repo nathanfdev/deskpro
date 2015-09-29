@@ -82,8 +82,8 @@ final class FeedbackLabel implements MapperInterface
      * @param bool $throw_exception
      *
      * @throws MapperException
-     * @return Entity\LabelFeedback[]
      *
+     * @return Entity\LabelFeedback[]
      */
     public function findByFeedbackId($id, $throw_exception = true)
     {

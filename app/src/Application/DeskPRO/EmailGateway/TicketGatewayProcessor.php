@@ -85,8 +85,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
     /**
      * @throws \Exception
-     * @return \Application\DeskPRO\Entity\Ticket|\Application\DeskPRO\Entity\TicketMessage|null
      *
+     * @return \Application\DeskPRO\Entity\Ticket|\Application\DeskPRO\Entity\TicketMessage|null
      */
     public function run()
     {

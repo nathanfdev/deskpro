@@ -154,8 +154,8 @@ final class Articles extends AbstractParser
      * @param array $article
      *
      * @throws NotArrayException
-     * @return bool
      *
+     * @return bool
      */
     private function isArticleValid(array $article)
     {

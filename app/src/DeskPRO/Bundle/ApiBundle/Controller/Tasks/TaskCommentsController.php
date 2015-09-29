@@ -315,8 +315,8 @@ class TaskCommentsController extends BaseController implements ClassResourceInte
      * @param TaskComment $comment
      *
      * @throws WrappedApiErrorException
-     * @return View
      *
+     * @return View
      */
     protected function handleFormSubmission(Request $request, TaskComment $comment)
     {

@@ -100,8 +100,8 @@ final class FeedbackLabel extends AbstractImporter
      * @param int $id
      *
      * @throws Mapper\MapperException
-     * @return array
      *
+     * @return array
      */
     private function getExistingLabelsNames($id)
     {
@@ -119,8 +119,8 @@ final class FeedbackLabel extends AbstractImporter
      * Returns the feedback label mapper.
      *
      * @throws \Exception
-     * @return Mapper\FeedbackLabel
      *
+     * @return Mapper\FeedbackLabel
      */
     private function getFeedbackLabelMapper()
     {

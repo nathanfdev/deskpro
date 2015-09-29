@@ -108,8 +108,8 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
      * @param string $title
      *
      * @throws \Exception
-     * @return DeskPROEntity\ArticleCategory|null
      *
+     * @return DeskPROEntity\ArticleCategory|null
      */
     private function findOrCreateArticleCategory($title)
     {
@@ -134,8 +134,8 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
      * Returns the article category mapper.
      *
      * @throws \Exception
-     * @return Mapper\ArticleCategory
      *
+     * @return Mapper\ArticleCategory
      */
     private function getArticleCategoryMapper()
     {

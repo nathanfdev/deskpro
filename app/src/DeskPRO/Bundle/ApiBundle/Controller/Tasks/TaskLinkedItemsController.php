@@ -235,8 +235,8 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
      * @param TaskLinkedItem $link
      *
      * @throws WrappedApiErrorException
-     * @return View
      *
+     * @return View
      */
     protected function handleFormSubmission(Request $request, TaskLinkedItem $link)
     {

@@ -68,8 +68,8 @@ class DataSerializer
      *                                     find the correct transformer (if you are serializing an arbitrary array for example)
      *
      * @throws DataSerializerException
-     * @return array
      *
+     * @return array
      */
     public function serialize($data, $includes_string = null, $view = null, $type = null)
     {

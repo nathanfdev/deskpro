@@ -83,8 +83,8 @@ class DeferredPropertiesListener implements EventSubscriberInterface
      * @param array $data
      *
      * @throws DataSerializerException
-     * @return array
      *
+     * @return array
      */
     public function processArrayDeferredProperties(array $data)
     {

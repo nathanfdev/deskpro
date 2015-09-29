@@ -702,8 +702,8 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      * @param Project $project
      *
      * @throws WrappedApiErrorException
-     * @return View
      *
+     * @return View
      */
     protected function handleFormSubmission(Request $request, Project $project)
     {

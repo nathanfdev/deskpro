@@ -62,8 +62,8 @@ class LabelsController extends BaseController
      * @param string  $type
      *
      * @throws \LogicException
-     * @return View
      *
+     * @return View
      */
     public function getLabelsAction(Request $request, $type)
     {

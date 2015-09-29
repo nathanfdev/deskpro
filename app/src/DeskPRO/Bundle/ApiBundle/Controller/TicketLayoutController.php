@@ -31,7 +31,6 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
-
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;

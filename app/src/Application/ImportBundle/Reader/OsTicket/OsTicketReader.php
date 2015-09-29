@@ -437,8 +437,8 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
 
     /**
      * @throws OsTicketReaderException
-     * @return bool
      *
+     * @return bool
      */
     public function isReady()
     {

@@ -99,8 +99,8 @@ class DepartmentsController extends BaseController
      *
      * @Get("/departments/{id}", name="api_departments_get")
      *
-     *
      * @param int $id
+     *
      * @throws NotFoundHttpException
      *
      * @return View
@@ -140,8 +140,8 @@ class DepartmentsController extends BaseController
      * )
      * @Get("/departments/{id}/agents", name="api_departments_get_agents")
      *
-     *
      * @param int $id
+     *
      * @throws NotFoundHttpException
      *
      * @return View

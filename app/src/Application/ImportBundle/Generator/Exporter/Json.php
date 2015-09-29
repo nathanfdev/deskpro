@@ -98,8 +98,8 @@ final class Json extends AbstractExporter implements ExporterBatchInterface
      * Returns batch config.
      *
      * @throws Exception
-     * @return Parser\Json\BatchConfig
      *
+     * @return Parser\Json\BatchConfig
      */
     protected function getBatchConfig()
     {

@@ -125,8 +125,8 @@ class ActivityController extends AbstractController
      *      )
      *  )
      * )
-     * @return Response
      *
+     * @return Response
      */
     public function dismissAction()
     {

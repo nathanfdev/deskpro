@@ -35,6 +35,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+
 class DbalTicketFlaggedTermCompiler extends AbstractDbalTermCompiler
 {
     public function doCompile(TermInterface $term)

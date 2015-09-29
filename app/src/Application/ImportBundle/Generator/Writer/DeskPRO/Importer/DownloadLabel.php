@@ -100,8 +100,8 @@ final class DownloadLabel extends AbstractImporter
      * @param int $id
      *
      * @throws Mapper\MapperException
-     * @return array
      *
+     * @return array
      */
     private function getExistingLabelsNames($id)
     {
@@ -119,8 +119,8 @@ final class DownloadLabel extends AbstractImporter
      * Returns the download label mapper.
      *
      * @throws \Exception
-     * @return Mapper\DownloadLabel
      *
+     * @return Mapper\DownloadLabel
      */
     private function getDownloadLabelMapper()
     {

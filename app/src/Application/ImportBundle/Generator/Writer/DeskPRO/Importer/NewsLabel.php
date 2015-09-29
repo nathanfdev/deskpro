@@ -100,8 +100,8 @@ final class NewsLabel extends AbstractImporter
      * @param int $id
      *
      * @throws Mapper\MapperException
-     * @return array
      *
+     * @return array
      */
     private function getExistingLabelsNames($id)
     {
@@ -119,8 +119,8 @@ final class NewsLabel extends AbstractImporter
      * Returns the news label mapper.
      *
      * @throws \Exception
-     * @return Mapper\NewsLabel
      *
+     * @return Mapper\NewsLabel
      */
     private function getNewsLabelMapper()
     {

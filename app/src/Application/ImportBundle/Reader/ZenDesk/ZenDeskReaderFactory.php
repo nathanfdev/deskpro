@@ -46,8 +46,8 @@ class ZenDeskReaderFactory
      * Create a ZenDesk reader.
      *
      * @throws Exception
-     * @return ZenDeskReader
      *
+     * @return ZenDeskReader
      */
     public static function createReaderByDeskPROConfig()
     {
@@ -94,8 +94,8 @@ class ZenDeskReaderFactory
      * Create a ZenDesk fixtures collection.
      *
      * @throws Exception
-     * @return Fixtures\Collection
      *
+     * @return Fixtures\Collection
      */
     public static function createFixturesByDeskPROConfig()
     {
@@ -117,8 +117,8 @@ class ZenDeskReaderFactory
      * @param ZenDeskConfig $config
      *
      * @throws Exception
-     * @return Client
      *
+     * @return Client
      */
     private static function createClient(ZenDeskConfig $config)
     {
@@ -147,8 +147,8 @@ class ZenDeskReaderFactory
      * Create ZenDesk client config.
      *
      * @throws Exception
-     * @return ZenDeskConfig
      *
+     * @return ZenDeskConfig
      */
     public static function getZenDeskConfig()
     {

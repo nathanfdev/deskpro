@@ -58,8 +58,8 @@ final class Batch
      * @param array $config
      *
      * @throws Exception
-     * @return Parser\BatchConfigInterface
      *
+     * @return Parser\BatchConfigInterface
      */
     public function parse(array $config)
     {

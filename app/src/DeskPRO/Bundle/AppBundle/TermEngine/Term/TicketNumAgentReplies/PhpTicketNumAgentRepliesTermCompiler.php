@@ -32,7 +32,8 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumAgentReplies;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\AbstractPhpTermCompiler; use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\AbstractPhpTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 class PhpTicketNumAgentRepliesTermCompiler extends AbstractPhpTermCompiler
 {

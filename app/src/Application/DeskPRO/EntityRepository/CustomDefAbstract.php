@@ -132,8 +132,8 @@ class CustomDefAbstract extends AbstractEntityRepository
      * @param array $ids
      *
      * @throws \Doctrine\DBAL\DBALException
-     * @return bool
      *
+     * @return bool
      */
     public function hasData(array $ids)
     {
@@ -149,8 +149,8 @@ class CustomDefAbstract extends AbstractEntityRepository
      * @param array $ids
      *
      * @throws \Doctrine\ORM\NonUniqueResultException
-     * @return mixed
      *
+     * @return mixed
      */
     public function getByOptions(array $ids)
     {

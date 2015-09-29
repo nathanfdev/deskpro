@@ -70,8 +70,8 @@ class TextDateTransformer implements DataTransformerInterface
      * @param mixed $value The value in the original representation
      *
      * @throws TransformationFailedException When the transformation fails.
-     * @return mixed The value in the transformed representation
      *
+     * @return mixed The value in the transformed representation
      */
     public function transform($value)
     {
@@ -103,8 +103,8 @@ class TextDateTransformer implements DataTransformerInterface
      * @param mixed $value The value in the transformed representation
      *
      * @throws TransformationFailedException When the transformation fails.
-     * @return mixed The value in the original representation
      *
+     * @return mixed The value in the original representation
      */
     public function reverseTransform($value)
     {

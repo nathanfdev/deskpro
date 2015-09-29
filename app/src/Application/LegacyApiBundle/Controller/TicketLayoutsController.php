@@ -262,8 +262,8 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      *      )
      *  )
      * )
-     * @return Response
      *
+     * @return Response
      */
     public function saveAction($dep_id = 0)
     {
@@ -357,8 +357,8 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      *      )
      *  )
      * )
-     * @return Response
      *
+     * @return Response
      */
     public function deleteAction($dep_id)
     {

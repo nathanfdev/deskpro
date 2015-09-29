@@ -257,8 +257,8 @@ class TaskLabelsController extends BaseController implements ClassResourceInterf
      * @param LabelTask $label
      *
      * @throws WrappedApiErrorException
-     * @return View
      *
+     * @return View
      */
     protected function handleFormSubmission(Request $request, LabelTask $label)
     {

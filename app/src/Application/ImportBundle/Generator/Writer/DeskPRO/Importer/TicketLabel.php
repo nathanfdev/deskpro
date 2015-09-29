@@ -98,8 +98,8 @@ final class TicketLabel extends AbstractImporter
      * @param int $id
      *
      * @throws Mapper\MapperException
-     * @return array
      *
+     * @return array
      */
     private function getExistingLabelsNames($id)
     {
@@ -117,8 +117,8 @@ final class TicketLabel extends AbstractImporter
      * Returns the person label mapper.
      *
      * @throws \Exception
-     * @return Mapper\TicketLabel
      *
+     * @return Mapper\TicketLabel
      */
     private function getTicketLabelMapper()
     {

@@ -196,8 +196,8 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
      * Get exporter by configuration type.
      *
      * @throws Exception
-     * @return Exporter\ExporterInterface
      *
+     * @return Exporter\ExporterInterface
      */
     public function getExporter()
     {
@@ -210,8 +210,8 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
      * Returns a writer.
      *
      * @throws Exception
-     * @return Writer\WriterInterface|mixed
      *
+     * @return Writer\WriterInterface|mixed
      */
     private function getWriter()
     {
@@ -300,8 +300,8 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
      * Returns ordered entity types of the exporters.
      *
      * @throws Exception
-     * @return string[]
      *
+     * @return string[]
      */
     private function getRequiredExportersOrderedEntityTypes()
     {
@@ -312,8 +312,8 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
      * Returns ordered entity types of the writers.
      *
      * @throws Exception
-     * @return string[]
      *
+     * @return string[]
      */
     private function getRequiredWritersOrderedEntityTypes()
     {
@@ -327,8 +327,8 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
      * @param array $types
      *
      * @throws Exception
-     * @return array
      *
+     * @return array
      */
     private function getRequiredOrderedEntityTypes(array $types)
     {

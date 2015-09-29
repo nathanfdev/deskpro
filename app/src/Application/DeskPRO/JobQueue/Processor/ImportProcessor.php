@@ -160,8 +160,8 @@ class ImportProcessor extends AbstractJobProcessor
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
-     * @return GeneratorConfig
      *
+     * @return GeneratorConfig
      */
     public static function createGeneratorConfig(DataStore $importer, DeskproContainer $container)
     {

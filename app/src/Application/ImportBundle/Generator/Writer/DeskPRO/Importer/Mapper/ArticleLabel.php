@@ -82,8 +82,8 @@ final class ArticleLabel implements MapperInterface
      * @param bool $throw_exception
      *
      * @throws MapperException
-     * @return Entity\LabelArticle[]
      *
+     * @return Entity\LabelArticle[]
      */
     public function findByArticleId($id, $throw_exception = true)
     {

@@ -78,8 +78,8 @@ abstract class AbstractBatchParser implements BatchParserInterface
      * @param bool  $throw_exception
      *
      * @throws NoColumnException
-     * @return bool
      *
+     * @return bool
      */
     protected function hasRequiredColumns(array $config, array $columns, $throw_exception = true)
     {

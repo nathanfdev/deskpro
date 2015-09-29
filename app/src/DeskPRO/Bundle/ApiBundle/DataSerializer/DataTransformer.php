@@ -103,8 +103,8 @@ class DataTransformer
      * @param $type
      *
      * @throws Exception\DataSerializerException
-     * @return array
      *
+     * @return array
      */
     public function doTransform(DataTransformerRequest $transformation_request, $type)
     {

@@ -336,8 +336,8 @@ final class Tickets extends AbstractParser
      * @param array $priority
      *
      * @throws NoColumnException
-     * @return bool
      *
+     * @return bool
      */
     private function isPriorityValid(array $priority = null)
     {

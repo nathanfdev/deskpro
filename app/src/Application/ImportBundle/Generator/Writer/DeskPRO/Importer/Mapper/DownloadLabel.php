@@ -82,8 +82,8 @@ final class DownloadLabel implements MapperInterface
      * @param bool $throw_exception
      *
      * @throws MapperException
-     * @return Entity\LabelDownload[]
      *
+     * @return Entity\LabelDownload[]
      */
     public function findByDownloadId($id, $throw_exception = true)
     {

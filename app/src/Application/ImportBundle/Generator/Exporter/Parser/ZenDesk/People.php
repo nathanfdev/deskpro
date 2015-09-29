@@ -115,8 +115,8 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
      * @param array $person
      *
      * @throws \RuntimeException
-     * @return Entity\Person
      *
+     * @return Entity\Person
      */
     private function exportPerson(array $person)
     {

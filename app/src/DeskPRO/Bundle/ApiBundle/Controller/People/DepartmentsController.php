@@ -258,8 +258,8 @@ class DepartmentsController extends BaseController implements ClassResourceInter
      * @param Department $department
      *
      * @throws WrappedApiErrorException
-     * @return View
      *
+     * @return View
      */
     protected function handleFormSubmission(Request $request, Department $department)
     {

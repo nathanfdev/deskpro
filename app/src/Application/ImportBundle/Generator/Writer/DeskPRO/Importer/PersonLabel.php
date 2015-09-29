@@ -100,8 +100,8 @@ final class PersonLabel extends AbstractImporter
      * @param int $id
      *
      * @throws Mapper\MapperException
-     * @return array
      *
+     * @return array
      */
     private function getExistingLabelsNames($id)
     {
@@ -119,8 +119,8 @@ final class PersonLabel extends AbstractImporter
      * Returns the person label mapper.
      *
      * @throws \Exception
-     * @return Mapper\PersonLabel
      *
+     * @return Mapper\PersonLabel
      */
     private function getPersonLabelMapper()
     {

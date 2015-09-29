@@ -106,8 +106,8 @@ class ChatsController extends AbstractController
      * @param int $id
      *
      * @throws NotFoundHttpException
-     * @return View
      *
+     * @return View
      */
     public function getAction($id)
     {
@@ -132,8 +132,8 @@ class ChatsController extends AbstractController
      *
      * @throws InvalidFormException
      * @throws BadRequestHttpException
-     * @return View
      *
+     * @return View
      *
      * @todo looks like we have to implement some custom logic here, cause we have to handle agents/teams/departments
      * @todo manually, and just do it with form is too complicated, maybe we can auto generate form for every AgentChat

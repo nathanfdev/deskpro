@@ -348,8 +348,8 @@ HTML;
      * @param $usersource_id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return Response
      *
+     * @return Response
      */
     public function samlSingleLogoutServiceAction($usersource_id)
     {
@@ -372,8 +372,8 @@ HTML;
      * @param $usersource_id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return Response
      *
+     * @return Response
      */
     public function samlMetadataAction($usersource_id)
     {

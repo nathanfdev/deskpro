@@ -79,8 +79,8 @@ class DataTransformerFactory
      * @param string $type the object "type" string, like "ticket" or "person"
      *
      * @throws DataSerializerException
-     * @return AbstractDataSerializerTransformer
      *
+     * @return AbstractDataSerializerTransformer
      */
     public function findByType($type)
     {

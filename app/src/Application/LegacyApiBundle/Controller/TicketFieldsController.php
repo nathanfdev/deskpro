@@ -124,8 +124,8 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      *      )
      *  )
      * )
-     * @return Response
      *
+     * @return Response
      */
     public function getCustomFieldAction($id)
     {
@@ -180,8 +180,8 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      *		type="array",
      *  )
      * )
-     * @return Response
      *
+     * @return Response
      */
     public function saveCustomFieldAction($id)
     {
@@ -241,8 +241,8 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      *      )
      *  )
      * )
-     * @return Response
      *
+     * @return Response
      */
     public function deleteCustomFieldAction($id)
     {

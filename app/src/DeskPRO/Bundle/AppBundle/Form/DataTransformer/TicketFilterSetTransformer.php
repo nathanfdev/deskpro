@@ -73,8 +73,8 @@ class TicketFilterSetTransformer implements DataTransformerInterface
      * @param int $id
      *
      * @throws TransformationFailedException if object TicketFilterSet not found.
-     * @return TicketFilterSet|null
      *
+     * @return TicketFilterSet|null
      */
     public function reverseTransform($id)
     {

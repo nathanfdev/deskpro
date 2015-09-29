@@ -261,8 +261,8 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
      * @param ProjectMember $member
      *
      * @throws WrappedApiErrorException
-     * @return View
      *
+     * @return View
      */
     protected function handleFormSubmission(Request $request, ProjectMember $member)
     {

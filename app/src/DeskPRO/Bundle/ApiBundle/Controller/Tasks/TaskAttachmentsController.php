@@ -216,8 +216,8 @@ class TaskAttachmentsController extends BaseController implements ClassResourceI
      * @param TaskAttachment $attachment
      *
      * @throws WrappedApiErrorException
-     * @return View
      *
+     * @return View
      */
     protected function handleFormSubmission(Request $request, TaskAttachment $attachment)
     {

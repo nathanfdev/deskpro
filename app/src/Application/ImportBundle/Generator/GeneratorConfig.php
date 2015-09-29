@@ -116,8 +116,8 @@ class GeneratorConfig
      * Does defined exporter support for batching?
      *
      * @throws Exception
-     * @return bool
      *
+     * @return bool
      */
     public function isBatchExporter()
     {
@@ -153,8 +153,8 @@ class GeneratorConfig
      * @param ContainerInterface $container
      *
      * @throws Exception
-     * @return AbstractExporterFactory
      *
+     * @return AbstractExporterFactory
      */
     public function getExporterFactory(ContainerInterface $container)
     {
@@ -176,8 +176,8 @@ class GeneratorConfig
      * @param ContainerInterface $container
      *
      * @throws Exception
-     * @return AbstractWriterFactory
      *
+     * @return AbstractWriterFactory
      */
     public function getWriterFactory(ContainerInterface $container)
     {
@@ -235,8 +235,8 @@ class GeneratorConfig
      * @param BatchConfigInterface $config
      *
      * @throws Exception
-     * @return $this
      *
+     * @return $this
      */
     public function setExporterBatchConfig(BatchConfigInterface $config = null)
     {
@@ -357,8 +357,8 @@ class GeneratorConfig
      * Returns true if the input path must be specified.
      *
      * @throws Exception
-     * @return bool
      *
+     * @return bool
      */
     public function needInputPath()
     {

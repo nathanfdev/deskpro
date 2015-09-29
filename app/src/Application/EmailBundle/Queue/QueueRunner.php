@@ -379,8 +379,8 @@ class QueueRunner
      * @param array $batch
      *
      * @throws \Exception
-     * @return int
      *
+     * @return int
      */
     private function releaseRemaining(array $batch)
     {
