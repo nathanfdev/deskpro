@@ -298,6 +298,7 @@ abstract class AbstractCustomDef extends AbstractEntity
     {
         return array(
             'oid'             => $this->oid,
+            'import_map_key'  => $this->import_map_key,
             'title'           => $this->title,
             'description'     => $this->description,
             'handler_class'   => $this->handler_class,

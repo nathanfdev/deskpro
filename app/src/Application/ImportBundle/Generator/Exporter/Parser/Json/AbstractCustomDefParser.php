@@ -67,22 +67,24 @@ abstract class AbstractCustomDefParser extends AbstractParser
     {
         $entity    = new Entity\ArticleCustomDef();
         $formatted = $this->formatter->format($data, array(
-            'oid'           => TransformerInterface::TYPE_STRING,
-            'destination'   => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+            'oid'            => TransformerInterface::TYPE_STRING,
+            'import_map_key' => TransformerInterface::TYPE_STRING,
+            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
                 'prefix' => $entity->getDestinationPrefix(),
                 'ref'    => 'oid',
             )),
-            'title'         => TransformerInterface::TYPE_STRING,
-            'description'   => TransformerInterface::TYPE_STRING,
-            'handler_class' => TransformerInterface::TYPE_STRING,
-            'is_enabled'    => TransformerInterface::TYPE_BOOLEAN,
-            'options'       => TransformerInterface::TYPE_ARRAY,
-            'children'      => TransformerInterface::TYPE_ARRAY,
+            'title'          => TransformerInterface::TYPE_STRING,
+            'description'    => TransformerInterface::TYPE_STRING,
+            'handler_class'  => TransformerInterface::TYPE_STRING,
+            'is_enabled'     => TransformerInterface::TYPE_BOOLEAN,
+            'options'        => TransformerInterface::TYPE_ARRAY,
+            'children'       => TransformerInterface::TYPE_ARRAY,
         ));
 
         $entity
             ->setRawData($data)
             ->setOid($formatted['oid'])
+            ->setImportMapKey($formatted['import_map_key'])
             ->setDestination($formatted['destination'])
             ->setTitle($formatted['title'])
             ->setDescription($formatted['description'])
