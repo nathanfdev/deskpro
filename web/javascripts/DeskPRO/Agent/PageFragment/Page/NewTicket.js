@@ -468,6 +468,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
       }
     });
 
+		$toggle.children('li:first').trigger('click');
+
 
 		var $problems = this.getEl('select_problem');
 		$problems.on('change', function () {

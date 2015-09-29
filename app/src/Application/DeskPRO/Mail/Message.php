@@ -243,25 +243,24 @@ class Message extends \Orb\Mail\Message
                 // prevent running on really long messages
                 if (strlen($body) < 512000) {
                     try {
-                        $h2t = new Html2Text();
-                        $h2t->addElementProcessor(
-                            'a',
-                            function ($node) {
+                        try {
+                            $h2t = new Html2Text();
+                            $h2t->addElementProcessor('a', function ($node) {
                                 $classname = $node->getAttribute('class');
                                 if (strpos($classname, 'dp-reply-help-link') === false) {
                                     return;
                                 }
 
-                                return 'deskpro.com/go/reply';
-                            }
-                        )
-                        ;
-                        $plaintext = $h2t->convert($plaintext);
+                                return 'https://deskpro.com/go/reply';
+                            });
+                            $plaintext = $h2t->convert($plaintext);
+                        } catch (\Exception $e) {
+                            $plaintext = null;
+                        }
+                        if ($plaintext) {
+                            $this->addPart($plaintext, 'text/plain');
+                        }
                     } catch (\Exception $e) {
-                        $plaintext = null;
-                    }
-                    if ($plaintext) {
-                        $this->addPart($plaintext, 'text/plain');
                     }
 
                     // fallback on just simple strip tags

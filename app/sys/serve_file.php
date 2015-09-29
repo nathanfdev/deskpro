@@ -81,7 +81,7 @@ if (!isset($DP_LOG_MESSAGES)) {
  * Since we can now trust the filename, we can use it to guess a mime-type based on extension, and send the correct headers,
  * all without connecting to the database.
  */
-class serve_file extends LoaderAbstract
+class serve_file extends serve_abstract
 {
     /**
      * @var string
@@ -1461,5 +1461,5 @@ class serve_file extends LoaderAbstract
     }
 }
 
-$file_loader = new FilestorageLoader();
+$file_loader = new serve_file();
 $file_loader->run();

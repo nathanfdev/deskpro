@@ -814,9 +814,9 @@ class TicketSearch extends SearcherAbstract
             $count_sql = "
                 SELECT COUNT(DISTINCT ticket_id)
                 FROM (
-                    $sql
+                    ($sql)
                     UNION
-                    $sql2
+                    ($sql2)
                 ) a
             ";
         } else {
