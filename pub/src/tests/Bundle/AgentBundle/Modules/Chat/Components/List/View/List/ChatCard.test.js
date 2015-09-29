@@ -1,9 +1,9 @@
 jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/View/List/ChatCard');
 
-describe('ChatCard', () => {
+import React from 'react';
+import TestUtils from 'react-addons-test-utils';
 
-  const React = require('react/addons');
-  const TestUtils = React.addons.TestUtils;
+describe('ChatCard', () => {
   const ChatCard = require('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/View/List/ChatCard').ChatCard;
 
   it('should render a chat card', () => {
@@ -11,5 +11,4 @@ describe('ChatCard', () => {
     const cards = TestUtils.scryRenderedDOMComponentsWithClass(component, 'chat-card');
     expect(cards.length).toEqual(1);
   });
-
 });

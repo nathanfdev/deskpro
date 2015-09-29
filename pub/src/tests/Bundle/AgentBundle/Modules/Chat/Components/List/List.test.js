@@ -7,10 +7,10 @@ jest.dontMock('~List/List');
 jest.dontMock('~List/View/List/ChatsList');
 jest.dontMock('~List/ControlBar/ChatsListControlBar');
 
-describe('List', () => {
+import React from 'react';
+import TestUtils from 'react-addons-test-utils';
 
-  const React               = require('react/addons');
-  const TestUtils           = React.addons.TestUtils;
+describe('List', () => {
   const ListFrame           = require('~ListFrame/frame').ListFrame;
   const List                = require('~List/List').List;
   const ChatsListControlBar = require('~List/ControlBar/ChatsListControlBar').ChatsListControlBar;

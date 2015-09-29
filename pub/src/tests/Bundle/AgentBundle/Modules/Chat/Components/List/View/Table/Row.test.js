@@ -1,8 +1,9 @@
 jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/View/Table/Row');
 
+import React from 'react';
+import TestUtils from 'react-addons-test-utils';
+
 describe('Row', () => {
-  const React = require('react/addons');
-  const TestUtils = React.addons.TestUtils;
   const Row = require('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/View/Table/Row').Row;
 
   const Wrapper = React.createClass({

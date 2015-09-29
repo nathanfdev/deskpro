@@ -1,13 +1,12 @@
 jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/frame.js');
 
-describe('UI: NavFrame component', () => {
+import React from 'react';
+import TestUtils from 'react-addons-test-utils';
 
-  const React = require('react/addons');
-  const TestUtils = React.addons.TestUtils;
+describe('UI: NavFrame component', () => {
   const frame = require('DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/frame.js');
 
   describe('NavFrame', () => {
-
     const NavFrame = frame.NavFrame;
 
     it('should accept "inner" and "outer" parts HTML', () => {
@@ -26,11 +25,9 @@ describe('UI: NavFrame component', () => {
       const inner = TestUtils.findRenderedDOMComponentWithTag(component, 'aside');
       expect(inner.getDOMNode().textContent).toEqual('Content');
     });
-
   });
 
   describe('NavFrameHeader', () => {
-
     const NavFrameHeader = frame.NavFrameHeader;
 
     it("should render its' content inside h1 tag", () => {
@@ -44,7 +41,5 @@ describe('UI: NavFrame component', () => {
       const icons = TestUtils.scryRenderedDOMComponentsWithClass(component, 'test-icon-class');
       expect(icons.length).toEqual(1);
     });
-
   });
-
 });

@@ -7,9 +7,10 @@ jest.dontMock('~List/View/Table/ChatsTable');
 jest.dontMock('~List/View/Table/Row');
 jest.dontMock('~List/View/Table/TableHeader');
 
+import React from 'react';
+import TestUtils from 'react-addons-test-utils';
+
 describe('ChatsTable', () => {
-  const React = require('react/addons');
-  const TestUtils = React.addons.TestUtils;
   const ChatsTable = require('~List/View/Table/ChatsTable').ChatsTable;
   const Row = require('~List/View/Table/Row').Row;
   const TableHeader = require('~List/View/Table/TableHeader').TableHeader;

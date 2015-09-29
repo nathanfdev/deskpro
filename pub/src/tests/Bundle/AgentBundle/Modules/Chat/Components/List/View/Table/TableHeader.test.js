@@ -1,8 +1,9 @@
 jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/View/Table/TableHeader');
 
+import React from 'react';
+import TestUtils from 'react-addons-test-utils';
+
 describe('TableHeader', () => {
-  const React = require('react/addons');
-  const TestUtils = React.addons.TestUtils;
   const TableHeader = require('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/View/Table/TableHeader').TableHeader;
 
   const Wrapper = React.createClass({
