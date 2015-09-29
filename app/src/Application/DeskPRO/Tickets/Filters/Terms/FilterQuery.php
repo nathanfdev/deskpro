@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Orb\Util\Arrays;
@@ -51,7 +51,7 @@ class FilterQuery
     /**
      * @var array
      */
-    private $wheres_or  = array();
+    private $wheres_or = array();
 
     /**
      * @var array
@@ -77,7 +77,7 @@ class FilterQuery
     private function getUniqueName($base, $type)
     {
         static $count = 0;
-        $count++;
+        ++$count;
 
         return "__dp{$type}_{$base}_".Util::baseEncode($count, 'letters').'__';
     }
@@ -126,9 +126,9 @@ class FilterQuery
     {
         if (!$params) {
             if ($not) {
-                $this->andWhere("1");
+                $this->andWhere('1');
             } else {
-                $this->andWhere("0");
+                $this->andWhere('0');
             }
 
             return;
@@ -140,8 +140,8 @@ class FilterQuery
             $this->setParameter("in$k", $p);
         }
 
-        $not_str = $not ? "NOT " : "";
-        $this->andWhere("$field_name {$not_str}IN (".implode(',', $names).")");
+        $not_str = $not ? 'NOT ' : '';
+        $this->andWhere("$field_name {$not_str}IN (".implode(',', $names).')');
     }
 
     /**
@@ -155,9 +155,9 @@ class FilterQuery
     {
         if (!$params) {
             if ($not) {
-                $this->andWhere("1");
+                $this->andWhere('1');
             } else {
-                $this->andWhere("0");
+                $this->andWhere('0');
             }
 
             return;
@@ -169,8 +169,8 @@ class FilterQuery
             $this->setParameter("in$k", $p);
         }
 
-        $not_str = $not ? "NOT " : "";
-        $this->orWhere("$field_name {$not_str}IN (".implode(',', $names).")");
+        $not_str = $not ? 'NOT ' : '';
+        $this->orWhere("$field_name {$not_str}IN (".implode(',', $names).')');
     }
 
     /**
@@ -237,9 +237,9 @@ class FilterQuery
         }
 
         return array(
-            'joins'    => $joins,
-            'params'   => $params,
-            'where'    => $where,
+            'joins'  => $joins,
+            'params' => $params,
+            'where'  => $where,
         );
     }
 }

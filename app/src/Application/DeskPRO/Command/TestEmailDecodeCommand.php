@@ -1,35 +1,34 @@
 <?php
 
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
@@ -83,7 +82,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
         if ($input->getOption('source')) {
             $source_obj = App::getOrm()->find('DeskPRO:EmailSource', $this->file);
             if (!$source_obj || !$source_obj->blob) {
-                $output->writeln("<error>Invalid source ID</error>");
+                $output->writeln('<error>Invalid source ID</error>');
 
                 return 1;
             }
@@ -96,7 +95,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
                 }
             }
             if (!$this->file || !is_file($this->file)) {
-                $output->writeln("<error>Invalid file specified</error>");
+                $output->writeln('<error>Invalid file specified</error>');
 
                 return 1;
             }
@@ -128,36 +127,36 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 
         $r = $this->reader;
 
-        echo "Subject: ".$r->getSubject()->getSubjectUtf8();
+        echo 'Subject: '.$r->getSubject()->getSubjectUtf8();
         echo "\n";
 
         if ($r->getFromAddress()->getName()) {
-            echo "From: ".$r->getFromAddress()->getName()." <".$r->getFromAddress()->getEmail().">";
+            echo 'From: '.$r->getFromAddress()->getName().' <'.$r->getFromAddress()->getEmail().'>';
         } else {
-            echo "From: ".$r->getFromAddress()->getEmail();
+            echo 'From: '.$r->getFromAddress()->getEmail();
         }
         echo "\n";
 
         foreach ($r->getToAddresses() as $email) {
             if ($email->getNameUtf8()) {
-                echo "To: ".$email->getNameUtf8()." <".$email->getEmail().">";
+                echo 'To: '.$email->getNameUtf8().' <'.$email->getEmail().'>';
             } else {
-                echo "To: <".$email->getEmail().">";
+                echo 'To: <'.$email->getEmail().'>';
             }
             echo "\n";
         }
 
         foreach ($r->getCcAddresses() as $email) {
             if ($email->getNameUtf8()) {
-                echo "CC: ".$email->getNameUtf8()." <".$email->getEmail().">";
+                echo 'CC: '.$email->getNameUtf8().' <'.$email->getEmail().'>';
             } else {
-                echo "CC: <".$email->getEmail().">";
+                echo 'CC: <'.$email->getEmail().'>';
             }
             echo "\n";
         }
 
         if ($date = $r->getDate()) {
-            echo "Date: ".$date->format('Y-m-d H:i:s');
+            echo 'Date: '.$date->format('Y-m-d H:i:s');
             echo "\n";
         }
 
@@ -187,7 +186,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
             $cutter     = \Application\DeskPRO\EmailGateway\Cutter\CutterDefFactory::getDef($r);
             $fwd_cutter = new \Application\DeskPRO\EmailGateway\Cutter\ForwardCutter($email_info['body'], $email_info['body_is_html'], $cutter);
 
-            echo "IS VALID FORWARD: ".($fwd_cutter->isValid() ? "TRUE" : "FALSE");
+            echo 'IS VALID FORWARD: '.($fwd_cutter->isValid() ? 'TRUE' : 'FALSE');
             echo "\n\n\n\n\n";
 
             $data = $fwd_cutter->getData();

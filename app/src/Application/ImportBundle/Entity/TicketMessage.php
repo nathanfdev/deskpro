@@ -1,42 +1,42 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Entity;
 
-use Symfony\Component\Validator\Mapping\ClassMetadata;
-use Symfony\Component\Validator\Constraints;
 use DateTime;
 use Exception;
+use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
- * Exporting ticket message entity
+ * Exporting ticket message entity.
  *
  * Class TicketMessage
- * @package Application\ImportBundle\Entity
  */
 final class TicketMessage extends AbstractEntity implements PersonAwareInterface, AttachmentsAwareInterface
 {
@@ -71,7 +71,7 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
     private $attachments;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -100,11 +100,12 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
     public function setPersonEmail($person_email)
     {
         $this->person_email = $person_email;
+
         return $this;
     }
 
     /**
-     * Returns date created
+     * Returns date created.
      *
      * @return DateTime
      */
@@ -114,19 +115,21 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * Set date created
+     * Set date created.
      *
      * @param DateTime $date_created
+     *
      * @return $this
      */
     public function setDateCreated(DateTime $date_created)
     {
         $this->date_created = $date_created;
+
         return $this;
     }
 
     /**
-     * Returns text message content
+     * Returns text message content.
      *
      * @return string
      */
@@ -136,19 +139,21 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * Set text message content
+     * Set text message content.
      *
      * @param string $message_text
+     *
      * @return $this
      */
     public function setMessageText($message_text)
     {
         $this->message_text = $message_text;
+
         return $this;
     }
 
     /**
-     * Returns html message content
+     * Returns html message content.
      *
      * @return string
      */
@@ -158,14 +163,16 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * Set html message content
+     * Set html message content.
      *
      * @param string $message_html
+     *
      * @return $this
      */
     public function setMessageHtml($message_html)
     {
         $this->message_html = $message_html;
+
         return $this;
     }
 
@@ -182,7 +189,7 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
     /**
      * Is the ticket message a note?
      *
-     * @return boolean
+     * @return bool
      */
     public function isNote()
     {
@@ -190,14 +197,16 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * Set as note
+     * Set as note.
      *
-     * @param boolean $is_note
+     * @param bool $is_note
+     *
      * @return $this
      */
     public function setAsNote($is_note)
     {
-        $this->is_note = (bool)$is_note;
+        $this->is_note = (bool) $is_note;
+
         return $this;
     }
 
@@ -215,6 +224,7 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
     public function addAttachment(Attachment $attachment)
     {
         $this->attachments->attach($attachment);
+
         return $this;
     }
 
@@ -223,13 +233,13 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
      */
     public function toArray()
     {
-        if ( ! $this->date_created) {
+        if (!$this->date_created) {
             throw new Exception('Date created is not set up');
         }
 
         $attachments = array();
         foreach ($this->attachments as $attachment) {
-            /** @var Attachment $attachment */
+            /* @var Attachment $attachment */
             $attachments[] = $attachment->toArray();
         }
 

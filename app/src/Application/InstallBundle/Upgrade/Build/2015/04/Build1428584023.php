@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Doctrine\DBAL\Connection;
@@ -38,7 +38,7 @@ class Build1428584023 extends AbstractBuild
 {
     public function run()
     {
-        $this->out("slugify content categories");
+        $this->out('slugify content categories');
 
         /** var \Doctrine\DBAL\Connection $conn */
         $conn = $this->container->getDb();
@@ -58,10 +58,10 @@ class Build1428584023 extends AbstractBuild
                     $that->generateAndUpdateSlugForCategory($cat_table, $conn);
                 }
 
-                $that->execMutateSql("CREATE UNIQUE INDEX UNIQ_62A97E9989D9B62 ON article_categories (slug)");
-                $that->execMutateSql("CREATE UNIQUE INDEX UNIQ_3317F15989D9B62 ON download_categories (slug)");
-                $that->execMutateSql("CREATE UNIQUE INDEX UNIQ_66FE6832989D9B62 ON feedback_categories (slug)");
-                $that->execMutateSql("CREATE UNIQUE INDEX UNIQ_D68C9111989D9B62 ON news_categories (slug)");
+                $that->execMutateSql('CREATE UNIQUE INDEX UNIQ_62A97E9989D9B62 ON article_categories (slug)');
+                $that->execMutateSql('CREATE UNIQUE INDEX UNIQ_3317F15989D9B62 ON download_categories (slug)');
+                $that->execMutateSql('CREATE UNIQUE INDEX UNIQ_66FE6832989D9B62 ON feedback_categories (slug)');
+                $that->execMutateSql('CREATE UNIQUE INDEX UNIQ_D68C9111989D9B62 ON news_categories (slug)');
             }
         );
     }

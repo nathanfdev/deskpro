@@ -62,7 +62,7 @@ class VendorMutate
 
         foreach ($do_unprivate_classes as $unprivate_class) {
             if (!file_exists($unprivate_class['class_file'])) {
-                throw new \InvalidArgumentException("Class file does not exist: ".$unprivate_class['class_file']);
+                throw new \InvalidArgumentException('Class file does not exist: '.$unprivate_class['class_file']);
             }
 
             $source = file_get_contents($unprivate_class['class_file']);

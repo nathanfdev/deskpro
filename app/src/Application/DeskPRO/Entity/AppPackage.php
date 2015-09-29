@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -264,16 +264,16 @@ class AppPackage extends DomainObject
     public function getManifest()
     {
         return array(
-            'package_name'   => $this['name'],
-            'title'          => $this['title'],
-            'description'    => $this['description'],
-            'tags'           => $this['tags'],
-            'api_version'    => $this['api_version'],
-            'version'        => $this['version'],
-            'version_name'   => $this['version_name'],
-            'is_single'      => (bool) $this['is_single'],
-            'is_native'      => null !== $this['native_name'],
-            'author'         => array(
+            'package_name' => $this['name'],
+            'title'        => $this['title'],
+            'description'  => $this['description'],
+            'tags'         => $this['tags'],
+            'api_version'  => $this['api_version'],
+            'version'      => $this['version'],
+            'version_name' => $this['version_name'],
+            'is_single'    => (bool) $this['is_single'],
+            'is_native'    => null !== $this['native_name'],
+            'author'       => array(
                 'name'  => $this['author_name'],
                 'email' => $this['author_email'],
                 'link'  => $this['author_link'],
@@ -284,7 +284,7 @@ class AppPackage extends DomainObject
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
@@ -324,8 +324,8 @@ class AppPackage extends DomainObject
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
-        $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+        $metadata->inheritanceType      = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+        $metadata->changeTrackingPolicy = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->setPrimaryTable(array(
             'name' => 'app_packages',
         ));

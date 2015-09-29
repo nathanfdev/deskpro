@@ -1,4 +1,32 @@
-<?php if (!defined('DP_ROOT')) {
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+if (!defined('DP_ROOT')) {
     exit('No access');
 }
 
@@ -23,40 +51,40 @@ $em->getConnection()->executeUpdate(
 
 ##BEGIN:create_department.department2##
 if (!$IMPORT_INSTALL) {
-    $q = new \Application\DeskPRO\Entity\Department();
-    $q['title'] = $translate->phrase('user.defaults.department_support');
+    $q                       = new \Application\DeskPRO\Entity\Department();
+    $q['title']              = $translate->phrase('user.defaults.department_support');
     $q['is_tickets_enabled'] = true;
-    $q['is_chat_enabled'] = false;
+    $q['is_chat_enabled']    = false;
     $em->persist($q);
     $em->flush();
 }
 
 ##BEGIN:create_department.department1##
 if (!$IMPORT_INSTALL) {
-    $q = new \Application\DeskPRO\Entity\Department();
-    $q['title'] = $translate->phrase('user.defaults.department_sales');
+    $q                       = new \Application\DeskPRO\Entity\Department();
+    $q['title']              = $translate->phrase('user.defaults.department_sales');
     $q['is_tickets_enabled'] = true;
-    $q['is_chat_enabled'] = false;
+    $q['is_chat_enabled']    = false;
     $em->persist($q);
     $em->flush();
 }
 
 ##BEGIN:create_department.department3##
 if (!$IMPORT_INSTALL) {
-    $q = new \Application\DeskPRO\Entity\Department();
-    $q['title'] = $translate->phrase('user.defaults.department_support');
+    $q                       = new \Application\DeskPRO\Entity\Department();
+    $q['title']              = $translate->phrase('user.defaults.department_support');
     $q['is_tickets_enabled'] = false;
-    $q['is_chat_enabled'] = true;
+    $q['is_chat_enabled']    = true;
     $em->persist($q);
     $em->flush();
 }
 
 ##BEGIN:create_department.department4##
 if (!$IMPORT_INSTALL) {
-    $q = new \Application\DeskPRO\Entity\Department();
-    $q['title'] = $translate->phrase('user.defaults.department_sales');
+    $q                       = new \Application\DeskPRO\Entity\Department();
+    $q['title']              = $translate->phrase('user.defaults.department_sales');
     $q['is_tickets_enabled'] = false;
-    $q['is_chat_enabled'] = true;
+    $q['is_chat_enabled']    = true;
     $em->persist($q);
     $em->flush();
 }
@@ -67,16 +95,16 @@ if (!$IMPORT_INSTALL) {
 
 ##BEGIN:create_article.default##
 if (!$IMPORT_INSTALL) {
-    $DEFAULT_ARTICLE_CAT = new \Application\DeskPRO\Entity\ArticleCategory();
+    $DEFAULT_ARTICLE_CAT          = new \Application\DeskPRO\Entity\ArticleCategory();
     $DEFAULT_ARTICLE_CAT['title'] = $translate->phrase('user.defaults.article_category_general');
     $em->persist($DEFAULT_ARTICLE_CAT);
     $em->flush();
 
-    $DEFAULT_ARTICLE = new \Application\DeskPRO\Entity\Article();
-    $DEFAULT_ARTICLE->person = $AGENT;
-    $DEFAULT_ARTICLE->title = $translate->phrase('user.defaults.article_example_title');
+    $DEFAULT_ARTICLE          = new \Application\DeskPRO\Entity\Article();
+    $DEFAULT_ARTICLE->person  = $AGENT;
+    $DEFAULT_ARTICLE->title   = $translate->phrase('user.defaults.article_example_title');
     $DEFAULT_ARTICLE->content = $translate->phrase('user.defaults.article_example_content');
-    $DEFAULT_ARTICLE->status = 'published';
+    $DEFAULT_ARTICLE->status  = 'published';
     $DEFAULT_ARTICLE->addToCategory($DEFAULT_ARTICLE_CAT);
     $em->persist($DEFAULT_ARTICLE);
     $em->flush();
@@ -88,7 +116,7 @@ if (!$IMPORT_INSTALL) {
 
 ##BEGIN:create_download_cat.default##
 if (!$IMPORT_INSTALL) {
-    $q = new \Application\DeskPRO\Entity\DownloadCategory();
+    $q          = new \Application\DeskPRO\Entity\DownloadCategory();
     $q['title'] = $translate->phrase('user.defaults.downloads_category_general');
     $em->persist($q);
     $em->flush();
@@ -100,16 +128,16 @@ if (!$IMPORT_INSTALL) {
 
 ##BEGIN:create_news.default##
 if (!$IMPORT_INSTALL) {
-    $DEFAULT_NEWS_CAT = new \Application\DeskPRO\Entity\NewsCategory();
+    $DEFAULT_NEWS_CAT          = new \Application\DeskPRO\Entity\NewsCategory();
     $DEFAULT_NEWS_CAT['title'] = $translate->phrase('user.defaults.news_category_general');
     $em->persist($DEFAULT_NEWS_CAT);
     $em->flush();
 
-    $DEFAULT_NEWS = new \Application\DeskPRO\Entity\News();
-    $DEFAULT_NEWS->person = $AGENT;
-    $DEFAULT_NEWS->title = $translate->phrase('user.defaults.news_example_title');
-    $DEFAULT_NEWS->content = $translate->phrase('user.defaults.news_example_content');
-    $DEFAULT_NEWS->status = 'published';
+    $DEFAULT_NEWS           = new \Application\DeskPRO\Entity\News();
+    $DEFAULT_NEWS->person   = $AGENT;
+    $DEFAULT_NEWS->title    = $translate->phrase('user.defaults.news_example_title');
+    $DEFAULT_NEWS->content  = $translate->phrase('user.defaults.news_example_content');
+    $DEFAULT_NEWS->status   = 'published';
     $DEFAULT_NEWS->category = $DEFAULT_NEWS_CAT;
     $em->persist($DEFAULT_NEWS);
     $em->flush();
@@ -161,7 +189,6 @@ INSERT INTO `feedback` (`id`, `status_category_id`, `category_id`, `person_id`, 
 "
 );
 
-
 $em->getConnection()->executeUpdate(
     "
 INSERT INTO `labels_feedback` (`feedback_id`, `label`) VALUES
@@ -187,49 +214,49 @@ INSERT INTO `custom_data_feedback` (`id`, `feedback_id`, `field_id`, `root_field
 ################################################################################
 
 ##BEGIN:create_portal_block.news##
-$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section = 'portal';
-$b->type = 'news';
+$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section    = 'portal';
+$b->type       = 'news';
 $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
 ##BEGIN:create_portal_block.userinfo_sidebar##
-$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section = 'sidebar';
-$b->type = 'userinfo';
+$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section    = 'sidebar';
+$b->type       = 'userinfo';
 $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
 ##BEGIN:create_portal_block.kb_cat_list##
-$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section = 'sidebar';
-$b->type = 'kb_cat_list';
+$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section    = 'sidebar';
+$b->type       = 'kb_cat_list';
 $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
 ##BEGIN:create_portal_block.feedback_cat_list##
-$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section = 'sidebar';
-$b->type = 'feedback_cat_list';
+$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section    = 'sidebar';
+$b->type       = 'feedback_cat_list';
 $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
 ##BEGIN:create_portal_block.downloads_cat_list##
-$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section = 'sidebar';
-$b->type = 'downloads_cat_list';
+$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section    = 'sidebar';
+$b->type       = 'downloads_cat_list';
 $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
 ##BEGIN:create_portal_block.staff_sidebar##
-$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section = 'sidebar';
-$b->type = 'staff';
+$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section    = 'sidebar';
+$b->type       = 'staff';
 $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
@@ -239,26 +266,26 @@ $em->flush();
 ################################################################################
 
 ##BEGIN:agent_teams.default1##
-$t = new \Application\DeskPRO\Entity\AgentTeam();
+$t         = new \Application\DeskPRO\Entity\AgentTeam();
 $t['name'] = $translate->phrase('agent.defaults.team_support_managers');
 $em->persist($t);
 $em->flush();
 
 ##BEGIN:agent_teams.default2##
-$t = new \Application\DeskPRO\Entity\AgentTeam();
+$t         = new \Application\DeskPRO\Entity\AgentTeam();
 $t['name'] = $translate->phrase('agent.defaults.team_lvl1_support');
 $em->persist($t);
 $em->flush();
 
 ##BEGIN:agent_teams.default3##
-$t = new \Application\DeskPRO\Entity\AgentTeam();
+$t         = new \Application\DeskPRO\Entity\AgentTeam();
 $t['name'] = $translate->phrase('agent.defaults.team_lvl2_support');
 $em->persist($t);
 $em->flush();
 
 ##BEGIN:agent_teams.setting##
-$t = new \Application\DeskPRO\Entity\Setting();
-$t['name'] = 'core.use_agent_team';
+$t          = new \Application\DeskPRO\Entity\Setting();
+$t['name']  = 'core.use_agent_team';
 $t['value'] = '1';
 $em->persist($t);
 $em->flush();
@@ -268,38 +295,38 @@ $em->flush();
 ################################################################################
 
 ##BEGIN:usergroups.everyone##
-$g = new \Application\DeskPRO\Entity\Usergroup();
-$g['title'] = $translate->phrase('agent.defaults.usergroup_everyone');
-$g['note'] = $translate->phrase('agent.defaults.usergroup_everyone_note');
+$g             = new \Application\DeskPRO\Entity\Usergroup();
+$g['title']    = $translate->phrase('agent.defaults.usergroup_everyone');
+$g['note']     = $translate->phrase('agent.defaults.usergroup_everyone_note');
 $g['sys_name'] = 'everyone';
 $em->persist($g);
 $em->flush();
 $USERGROUP_EVERYONE = $g;
 
 ##BEGIN:usergroups.register##
-$g = new \Application\DeskPRO\Entity\Usergroup();
-$g['title'] = $translate->phrase('agent.defaults.usergroup_registered');
-$g['note'] = $translate->phrase('agent.defaults.usergroup_registered_note');
+$g             = new \Application\DeskPRO\Entity\Usergroup();
+$g['title']    = $translate->phrase('agent.defaults.usergroup_registered');
+$g['note']     = $translate->phrase('agent.defaults.usergroup_registered_note');
 $g['sys_name'] = 'registered';
 $em->persist($g);
 $em->flush();
 $USERGROUP_REG = $g;
 
 ##BEGIN:usergroups.agent_all##
-$AGENTGROUP_ALL = new \Application\DeskPRO\Entity\Usergroup();
-$AGENTGROUP_ALL['title'] = $translate->phrase('agent.defaults.usergroup_agent_all_perms');
-$AGENTGROUP_ALL['note'] = $translate->phrase('agent.defaults.usergroup_agent_all_perms_note');
+$AGENTGROUP_ALL                   = new \Application\DeskPRO\Entity\Usergroup();
+$AGENTGROUP_ALL['title']          = $translate->phrase('agent.defaults.usergroup_agent_all_perms');
+$AGENTGROUP_ALL['note']           = $translate->phrase('agent.defaults.usergroup_agent_all_perms_note');
 $AGENTGROUP_ALL['is_agent_group'] = true;
-$AGENTGROUP_ALL['sys_name'] = 'agent_all_perms';
+$AGENTGROUP_ALL['sys_name']       = 'agent_all_perms';
 $em->persist($AGENTGROUP_ALL);
 $em->flush();
 
 ##BEGIN:usergroups.agent_all_nondestructive##
-$AGENTGROUP_ALL_ND = new \Application\DeskPRO\Entity\Usergroup();
-$AGENTGROUP_ALL_ND['title'] = $translate->phrase('agent.defaults.usergroup_agent_all_non_destructive');
-$AGENTGROUP_ALL_ND['note'] = $translate->phrase('agent.defaults.usergroup_agent_all_non_destructive_note');
+$AGENTGROUP_ALL_ND                   = new \Application\DeskPRO\Entity\Usergroup();
+$AGENTGROUP_ALL_ND['title']          = $translate->phrase('agent.defaults.usergroup_agent_all_non_destructive');
+$AGENTGROUP_ALL_ND['note']           = $translate->phrase('agent.defaults.usergroup_agent_all_non_destructive_note');
 $AGENTGROUP_ALL_ND['is_agent_group'] = true;
-$AGENTGROUP_ALL_ND['sys_name'] = 'agent_all_safe_perms';
+$AGENTGROUP_ALL_ND['sys_name']       = 'agent_all_safe_perms';
 $em->persist($AGENTGROUP_ALL_ND);
 $em->flush();
 
@@ -399,23 +426,23 @@ $em->getConnection()->executeUpdate(
 
 function create_user($fname, $lname, $email, $pass, $agent = false, $admin = false, $is_deleted = false)
 {
-    $user = new \Application\DeskPRO\Entity\Person();
+    $user             = new \Application\DeskPRO\Entity\Person();
     $user->first_name = $fname;
-    $user->last_name = $lname;
+    $user->last_name  = $lname;
     $user->setEmail($email, true);
     $user->setPassword($pass);
-    $user->is_user = true;
+    $user->is_user      = true;
     $user->is_confirmed = true;
-    $user->is_deleted = $is_deleted;
+    $user->is_deleted   = $is_deleted;
 
     if ($agent || $admin) {
         $user->is_agent_confirmed = true;
-        $user->is_agent = true;
-        $user->can_agent = true;
+        $user->is_agent           = true;
+        $user->can_agent          = true;
     }
 
     if ($admin) {
-        $user->can_admin = true;
+        $user->can_admin   = true;
         $user->can_billing = true;
         $user->can_reports = true;
     }
@@ -686,7 +713,6 @@ $em->getConnection()->executeUpdate(
 "
 );
 
-
 ################################################################################
 # TEMPORARY TEST DATA: Projects
 ################################################################################
@@ -806,4 +832,3 @@ $em->getConnection()->executeUpdate(
     ;
 "
 );
-

@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
@@ -44,30 +44,30 @@ use Orb\Util\Util;
 
 abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTermInterface
 {
-    const OP_NOOP                 = null;
-    const OP_IS                   = 'is';
-    const OP_NOT                  = 'not';
-    const OP_LT                   = 'lt';
-    const OP_GT                   = 'gt';
-    const OP_LTE                  = 'lte';
-    const OP_GTE                  = 'gte';
-    const OP_BETWEEN              = 'between';
-    const OP_NOTBETWEEN           = 'notbetween';
-    const OP_CONTAINS             = 'contains';
-    const OP_NOTCONTAINS          = 'notcontains';
-    const OP_IS_REGEX             = 'is_regex';
-    const OP_NOT_REGEX            = 'not_regex';
-    const OP_ISSET                = 'isset';
-    const OP_NOTISSET             = 'not_isset';
+    const OP_NOOP        = null;
+    const OP_IS          = 'is';
+    const OP_NOT         = 'not';
+    const OP_LT          = 'lt';
+    const OP_GT          = 'gt';
+    const OP_LTE         = 'lte';
+    const OP_GTE         = 'gte';
+    const OP_BETWEEN     = 'between';
+    const OP_NOTBETWEEN  = 'notbetween';
+    const OP_CONTAINS    = 'contains';
+    const OP_NOTCONTAINS = 'notcontains';
+    const OP_IS_REGEX    = 'is_regex';
+    const OP_NOT_REGEX   = 'not_regex';
+    const OP_ISSET       = 'isset';
+    const OP_NOTISSET    = 'not_isset';
 
-    const OP_CHANGED              = 'changed';
-    const OP_CHANGED_TO           = 'changed_to';
-    const OP_CHANGED_FROM         = 'changed_from';
-    const OP_NOT_CHANGED_TO       = 'not_changed_to';
-    const OP_NOT_CHANGED_FROM     = 'not_changed_from';
+    const OP_CHANGED          = 'changed';
+    const OP_CHANGED_TO       = 'changed_to';
+    const OP_CHANGED_FROM     = 'changed_from';
+    const OP_NOT_CHANGED_TO   = 'not_changed_to';
+    const OP_NOT_CHANGED_FROM = 'not_changed_from';
 
-    const OP_TOUCHED              = 'touched';
-    const OP_NOT_TOUCHED          = 'nottouched';
+    const OP_TOUCHED     = 'touched';
+    const OP_NOT_TOUCHED = 'nottouched';
 
     /**
      * @var
@@ -660,7 +660,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
             $value_i = Strings::utf8_strtolower($value);
             switch ($op) {
                 case 'isset':
-                    if ($value_i !== "") {
+                    if ($value_i !== '') {
                         return true;
                     } else {
                         return false;
@@ -668,7 +668,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
                     break;
 
                 case 'not_isset':
-                    if ($value_i === "" || $value_i === null || $value_i === false) {
+                    if ($value_i === '' || $value_i === null || $value_i === false) {
                         return true;
                     } else {
                         return false;
@@ -770,9 +770,9 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
         $match_count = 0;
         $check_count = 0;
         foreach ($all_values as $v) {
-            $check_count++;
+            ++$check_count;
             if (call_user_func($check_fn, $v)) {
-                $match_count++;
+                ++$match_count;
             }
         }
 

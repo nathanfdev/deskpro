@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
 use Application\DeskPRO\EmailGateway\Storage;
@@ -126,7 +126,7 @@ class Exchange extends AbstractFetcher
                 break;
 
             default:
-                throw new \InvalidArgumentException("Unknown account type: ".$this->account->incoming_account->getType());
+                throw new \InvalidArgumentException('Unknown account type: '.$this->account->incoming_account->getType());
         }
 
         $this->mode            = $options['mode'];
@@ -161,7 +161,7 @@ class Exchange extends AbstractFetcher
             $this->messages = array();
         }
 
-        $this->logger->log(sprintf("Read %d messages", count($this->messages)), 'debug');
+        $this->logger->log(sprintf('Read %d messages', count($this->messages)), 'debug');
 
         return $this->storage;
     }
@@ -204,7 +204,7 @@ class Exchange extends AbstractFetcher
 
         $message_id = $this->messages[$this->next_index];
 
-        $this->next_index++;
+        ++$this->next_index;
 
         $message = $this->storage->getEmailProps($message_id);
 
@@ -228,10 +228,10 @@ class Exchange extends AbstractFetcher
 
         $headers = null;
 
-        $this->logger->log(sprintf("Message size: %s bytes", $raw_message->size), 'debug');
+        $this->logger->log(sprintf('Message size: %s bytes', $raw_message->size), 'debug');
 
         if ($raw_message->uid) {
-            $this->logger->log(sprintf("Message UID: %s", $raw_message->uid), 'debug');
+            $this->logger->log(sprintf('Message UID: %s', $raw_message->uid), 'debug');
         }
 
         $EOL = "\n";
@@ -239,13 +239,13 @@ class Exchange extends AbstractFetcher
         // Reads and formats the Message header
         // To be compatible with the RawMessage
         if (strpos($raw_message->content, $EOL.$EOL)) {
-            list($headers,) = explode($EOL.$EOL, $raw_message->content, 2);
+            list($headers) = explode($EOL.$EOL, $raw_message->content, 2);
         } elseif ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
-            list($headers,) = explode("\r\n\r\n", $raw_message->content, 2);
+            list($headers) = explode("\r\n\r\n", $raw_message->content, 2);
         } elseif ($EOL != "\n" && strpos($raw_message->content, "\n\n")) {
-            list($headers,) = explode("\n\n", $raw_message->content, 2);
+            list($headers) = explode("\n\n", $raw_message->content, 2);
         } else {
-            @list($headers,) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
+            @list($headers) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
         }
 
         $raw_message->headers = $headers;

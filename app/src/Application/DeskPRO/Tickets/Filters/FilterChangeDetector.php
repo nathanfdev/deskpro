@@ -1,43 +1,42 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Tickets\Filters;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Monolog\Logger;
 
 class FilterChangeDetector
 {
@@ -77,8 +76,8 @@ class FilterChangeDetector
      */
     public function __construct(array $filters, array $agents)
     {
-        $this->filters = $filters;
-        $this->agents  = array();
+        $this->filters        = $filters;
+        $this->agents         = array();
         $this->team_to_agents = array();
 
         foreach ($agents as $agent) {
@@ -168,7 +167,6 @@ class FilterChangeDetector
         return array_values($check_list);
     }
 
-
     /**
      * @param Ticket                   $ticket
      * @param ExecutorContextInterface $context
@@ -201,7 +199,7 @@ class FilterChangeDetector
         }
 
         if ($exist_set) {
-            $logger->info(sprintf("[FilterChangeDetector] Have exist set. Will try to use cached values from last run."));
+            $logger->info(sprintf('[FilterChangeDetector] Have exist set. Will try to use cached values from last run.'));
         }
 
         $is_dep_change = false;
@@ -229,23 +227,23 @@ class FilterChangeDetector
         $affected_filters = $checker->getNewAffectedFilters();
 
         if ($exist_set) {
-            $logger->info(sprintf("[FilterChangeDetector] Affected filters: %d -- Filters with affected changes since last run: %d", count($checker->getAffectedFilters()), count($affected_filters)));
+            $logger->info(sprintf('[FilterChangeDetector] Affected filters: %d -- Filters with affected changes since last run: %d', count($checker->getAffectedFilters()), count($affected_filters)));
         }
 
-        $logger->info(sprintf("[FilterChangeDetector] Affected filters took %.3fs", microtime(true)-$start));
+        $logger->info(sprintf('[FilterChangeDetector] Affected filters took %.3fs', microtime(true) - $start));
 
         $start         = microtime(true);
         $filter_checks = $this->buildFilterCheckList($affected_filters);
-        $logger->info(sprintf("[FilterChangeDetector] Build check list took %.3fs", microtime(true)-$start));
+        $logger->info(sprintf('[FilterChangeDetector] Build check list took %.3fs', microtime(true) - $start));
 
         $generic_match_cache  = array();
         $not_cachable_filters = array();
 
-        $logger->info(sprintf("[FilterChangeDetector] Checking %d filters", count($filter_checks)));
+        $logger->info(sprintf('[FilterChangeDetector] Checking %d filters', count($filter_checks)));
 
         // Calculate who could actually see it
         $agent_perm_cache = array();
-        $start = microtime(true);
+        $start            = microtime(true);
 
         $distinct_agents = array();
         foreach ($filter_checks as $filter_check) {
@@ -256,7 +254,6 @@ class FilterChangeDetector
 
         foreach ($distinct_agents as $agent) {
             /** @var Person $agent */
-
             if (!$agent->is_agent) {
                 $agent_perm_cache[$agent->id] = array('old' => false, 'new' => false);
                 continue;
@@ -283,7 +280,7 @@ class FilterChangeDetector
 
             $agent_perm_cache[$agent->id] = array('old' => $see_old, 'new' => $see_new);
         }
-        $logger->debug(sprintf("[FilterChangeDetector] Permissions of %d agents calculated in %.3fs", count($agent_perm_cache), microtime(true)-$start));
+        $logger->debug(sprintf('[FilterChangeDetector] Permissions of %d agents calculated in %.3fs', count($agent_perm_cache), microtime(true) - $start));
 
         $time = microtime(true);
         foreach ($filter_checks as $filter_check) {
@@ -307,7 +304,9 @@ class FilterChangeDetector
             $filter_change        = new FilterChange($filter);
             $changed[$filter->id] = $filter_change;
 
-            if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] ----- BEGIN #%d %s -- %d scopes -----", $filter->id, $filter->title, count($agent_scopes)));
+            if ($this->extended_log_info) {
+                $logger->debug(sprintf('[FilterChangeDetector] ----- BEGIN #%d %s -- %d scopes -----', $filter->id, $filter->title, count($agent_scopes)));
+            }
             $cached_terms = array();
 
             foreach ($agent_scopes as $agent_id => $agent) {
@@ -344,7 +343,7 @@ class FilterChangeDetector
                         $filter_change->newMatchForAgent($agent);
                     }
 
-                    $scope_cached_counts++;
+                    ++$scope_cached_counts;
 
                 // RESULT_NOT_CACHED
                 } else {
@@ -392,7 +391,7 @@ class FilterChangeDetector
                     }
 
                     if ($new_match_failterm === null) {
-                        $new_match = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm, $cached_terms);
+                        $new_match      = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm, $cached_terms);
                         $new_match_real = $new_match;
                     }
 
@@ -422,7 +421,7 @@ class FilterChangeDetector
                     }
 
                     if ($this->extended_log_info) {
-                        $logger->debug(sprintf("[FilterChangeDetector] New match: %s -- Orig match: %s", $new_match ? 'yes' : 'no', $orig_match ? 'yes' : 'no'));
+                        $logger->debug(sprintf('[FilterChangeDetector] New match: %s -- Orig match: %s', $new_match ? 'yes' : 'no', $orig_match ? 'yes' : 'no'));
                     }
                     if (!$orig_match) {
                         if ($this->extended_log_info) {
@@ -465,22 +464,32 @@ class FilterChangeDetector
                     }
                 } // end RESULT_NOT_CACHED
 
-                if (!$orig_match AND !$new_match) {
-                    if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: nochange (both no-match)", $agent_id));
-                } elseif ($orig_match AND $new_match) {
-                    if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: nochange (both match)", $agent_id));
-                } elseif ($orig_match AND !$new_match) {
-                    if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: removed from list", $agent_id));
+                if (!$orig_match and !$new_match) {
+                    if ($this->extended_log_info) {
+                        $logger->debug(sprintf('[FilterChangeDetector] Agent scope %d: nochange (both no-match)', $agent_id));
+                    }
+                } elseif ($orig_match and $new_match) {
+                    if ($this->extended_log_info) {
+                        $logger->debug(sprintf('[FilterChangeDetector] Agent scope %d: nochange (both match)', $agent_id));
+                    }
+                } elseif ($orig_match and !$new_match) {
+                    if ($this->extended_log_info) {
+                        $logger->debug(sprintf('[FilterChangeDetector] Agent scope %d: removed from list', $agent_id));
+                    }
                     $filter_change->removeForAgent($agent);
-                } elseif (!$orig_match AND $new_match) {
-                    if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: added to list", $agent_id));
+                } elseif (!$orig_match and $new_match) {
+                    if ($this->extended_log_info) {
+                        $logger->debug(sprintf('[FilterChangeDetector] Agent scope %d: added to list', $agent_id));
+                    }
                     $filter_change->addForAgent($agent);
                 }
 
-                $scope_counts++;
+                ++$scope_counts;
             }
 
-            if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] DONE FILTER #%d :: %.4fs", $filter_id, microtime(true)-$filter_ts));
+            if ($this->extended_log_info) {
+                $logger->debug(sprintf('[FilterChangeDetector] DONE FILTER #%d :: %.4fs', $filter_id, microtime(true) - $filter_ts));
+            }
         }
 
         $changed_filters = array();
@@ -490,9 +499,9 @@ class FilterChangeDetector
             }
         }
 
-        $logger->debug(sprintf("[FilterChangeDetector] The following filters could not be optimised: %s", implode(', ', $not_cachable_filters)));
+        $logger->debug(sprintf('[FilterChangeDetector] The following filters could not be optimised: %s', implode(', ', $not_cachable_filters)));
 
-        $logger->info(sprintf("[FilterChangeDetector] Found %d filters in %d iterations (%d of those were cached). Time: %.4fs", count($changed_filters), $scope_counts, $scope_cached_counts, microtime(true)-$time));
+        $logger->info(sprintf('[FilterChangeDetector] Found %d filters in %d iterations (%d of those were cached). Time: %.4fs', count($changed_filters), $scope_counts, $scope_cached_counts, microtime(true) - $time));
 
         // Add changed filters from previous set
         if ($exist_set) {
@@ -509,7 +518,7 @@ class FilterChangeDetector
             }
 
             if ($copied_ids) {
-                $logger->info(sprintf("[FilterChangeDetector] Found %d additional filters from previous detection set", count($copied_ids)));
+                $logger->info(sprintf('[FilterChangeDetector] Found %d additional filters from previous detection set', count($copied_ids)));
             }
         }
 
@@ -520,7 +529,7 @@ class FilterChangeDetector
         }
 
         foreach ($set->getChangedFilters() as $change) {
-            $added_aids   = array();
+            $added_aids = array();
             foreach ($change->getAgentsAdded() as $a) {
                 $added_aids[] = $a->getId();
             }
@@ -531,7 +540,7 @@ class FilterChangeDetector
 
             if ($added_aids || $removed_aids) {
                 $logger->info(sprintf(
-                    "[FilterChangeDetector] Summary: Filter %d -- AddedAgents(%s) -- RemovedAgents(%s)",
+                    '[FilterChangeDetector] Summary: Filter %d -- AddedAgents(%s) -- RemovedAgents(%s)',
                     $change->getFilter()->id,
                     implode(', ', $added_aids ?: array('none')),
                     implode(', ', $removed_aids ?: array('none'))

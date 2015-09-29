@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Writer\Json;
 
@@ -32,10 +33,9 @@ use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Exception;
 
 /**
- * Generator json writer
+ * Generator json writer.
  *
  * Class JsonWriter
- * @package Application\ImportBundle\Generator\Writer\Json
  */
 final class JsonWriter extends AbstractWriter
 {
@@ -45,7 +45,7 @@ final class JsonWriter extends AbstractWriter
     private $mapping;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Destination\Collection $mapping
      */
@@ -76,7 +76,7 @@ final class JsonWriter extends AbstractWriter
      */
     public function writeData(Entity\EntityInterface $entity)
     {
-        if ( ! $this->config) {
+        if (!$this->config) {
             throw new Exception('Generator configuration is not set up');
         }
 
@@ -87,9 +87,10 @@ final class JsonWriter extends AbstractWriter
     }
 
     /**
-     * Make output batch entity directories if not exist
+     * Make output batch entity directories if not exist.
      *
      * @param array $entity_types
+     *
      * @throws \Exception
      */
     private function createOutputEntityDirsIfNotExist(array $entity_types)
@@ -109,52 +110,55 @@ final class JsonWriter extends AbstractWriter
     }
 
     /**
-     * Returns batch output path
+     * Returns batch output path.
      *
-     * @return string
      * @throws Exception
+     * @return string
+     *
      */
     private function getBatchOutputPath()
     {
-        if ( ! $this->config) {
+        if (!$this->config) {
             throw new Exception('Generator configuration is not defined');
         }
         if ($this->config->isBatchExporter()) {
-            if ( ! $this->batch_config) {
+            if (!$this->batch_config) {
                 throw new Exception('Batch configuration is not defined');
             }
 
-            return $this->config->getOutputPath() . $this->batch_config->getId() . '/';
-
+            return $this->config->getOutputPath().$this->batch_config->getId().'/';
         } else {
-            return $this->config->getOutputPath() . '1/';
+            return $this->config->getOutputPath().'1/';
         }
     }
 
     /**
-     * Returns destination path
+     * Returns destination path.
      *
      * @param Destination\DestinationInterface $destination
      *
-     * @return string
      * @throws Exception
+     * @return string
+     *
      */
     private function getDestinationOutputPath(Destination\DestinationInterface $destination)
     {
-        return $this->getBatchOutputPath() . $destination->getEntityOutputPath();
+        return $this->getBatchOutputPath().$destination->getEntityOutputPath();
     }
 
     /**
-     * Returns the entity file path
+     * Returns the entity file path.
      *
      * @param Entity\EntityInterface $entity
      *
-     * @return string
      * @throws \Exception
+     * @return string
+     *
      */
     private function getEntityPath(Entity\EntityInterface $entity)
     {
         $destination = $this->mapping->getByEntityType($entity->getType());
-        return $this->getDestinationOutputPath($destination) . $entity->getDestination() . '.json';
+
+        return $this->getDestinationOutputPath($destination).$entity->getDestination().'.json';
     }
 }

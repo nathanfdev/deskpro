@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use Application\DeskPRO\App;
@@ -47,7 +47,7 @@ class Dp3Detector implements TicketDetectorInterface
     protected $_found_person = null;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function findExistingTicket(AbstractReader $reader)
     {
@@ -127,13 +127,13 @@ class Dp3Detector implements TicketDetectorInterface
         # Fetch map info
         #------------------------------
 
-        $map_info = App::getDb()->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array('dp3_ticketref_'.$old_ref));
+        $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', array('dp3_ticketref_'.$old_ref));
         if ($map_info) {
             $map_info = @unserialize($map_info);
 
         // Might have a merge record
         } else {
-            $map_info = App::getDb()->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array('dp3_ticketmerge_'.$old_ref));
+            $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', array('dp3_ticketmerge_'.$old_ref));
             if ($map_info) {
                 $map_info = @unserialize($map_info);
             }
@@ -174,13 +174,13 @@ class Dp3Detector implements TicketDetectorInterface
         # Fetch map info
         #------------------------------
 
-        $map_info = App::getDb()->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array('dp3_ticketref_'.$old_ref));
+        $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', array('dp3_ticketref_'.$old_ref));
         if ($map_info) {
             $map_info = @unserialize($map_info);
 
         // Might have a merge record
         } else {
-            $map_info = App::getDb()->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array('dp3_ticketmerge_'.$old_ref));
+            $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', array('dp3_ticketmerge_'.$old_ref));
             if ($map_info) {
                 $map_info = @unserialize($map_info);
             }
@@ -222,7 +222,7 @@ class Dp3Detector implements TicketDetectorInterface
         # Fetch map info
         #------------------------------
 
-        $map_info = App::getDb()->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array('dp3_ticketref_'.$old_ref));
+        $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', array('dp3_ticketref_'.$old_ref));
         if ($map_info) {
             $map_info = @unserialize($map_info);
         }
@@ -230,7 +230,7 @@ class Dp3Detector implements TicketDetectorInterface
             return;
         }
 
-        $techmap_info = App::getDb()->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array('dp3_techpass_'.$old_tech_id));
+        $techmap_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', array('dp3_techpass_'.$old_tech_id));
         if ($techmap_info) {
             $techmap_info = @unserialize($techmap_info);
         }
@@ -258,7 +258,7 @@ class Dp3Detector implements TicketDetectorInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
     {
@@ -266,7 +266,7 @@ class Dp3Detector implements TicketDetectorInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
     {

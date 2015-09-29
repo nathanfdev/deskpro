@@ -1,40 +1,39 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 
 class ReportBuilder extends AbstractEntityRepository
 {
@@ -218,7 +217,7 @@ class ReportBuilder extends AbstractEntityRepository
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function canManageBuiltInReports()
     {
@@ -247,18 +246,18 @@ class ReportBuilder extends AbstractEntityRepository
                     'user_replies'  => array('number of user replies', 'ALIAS(%s.count_user_replies, \'User Replies\')'),
                     'replies'       => array('number of replies', 'ALIAS(%1$s.count_user_replies + %1$s.count_agent_replies, \'Total Replies\')'),
                     // todo: ticket rating
-                    'hour_created'      => array('hour created', 'ALIAS(HOUR(%s.date_created), \'Hour Created\')'),
-                    'day_week_created'  => array('day of week created', 'ALIAS(DAYNAME(%s.date_created), \'Day of Week Created\')'),
-                    'day_month_created' => array('day of month created', 'ALIAS(DAYOFMONTH(%s.date_created), \'Day of Month Created\')'),
-                    'month_created'     => array('month created', 'ALIAS(MONTHNAME(%s.date_created), \'Month Created\')'),
-                    'year_created'      => array('year created', 'ALIAS(YEAR(%s.date_created), \'Year Created\')'),
-                    'date_created'      => array('date created', 'ALIAS(DATE(%s.date_created), \'Date Created\')'),
-                    'hour_resolved' => array('hour created', 'ALIAS(HOUR(%s.date_created), \'Hour Created\')'),
-                    'day_week_resolved' => array('day of week resolved', 'ALIAS(DAYNAME(%s.date_resolved), \'Day of Week Resolved\')'),
+                    'hour_created'       => array('hour created', 'ALIAS(HOUR(%s.date_created), \'Hour Created\')'),
+                    'day_week_created'   => array('day of week created', 'ALIAS(DAYNAME(%s.date_created), \'Day of Week Created\')'),
+                    'day_month_created'  => array('day of month created', 'ALIAS(DAYOFMONTH(%s.date_created), \'Day of Month Created\')'),
+                    'month_created'      => array('month created', 'ALIAS(MONTHNAME(%s.date_created), \'Month Created\')'),
+                    'year_created'       => array('year created', 'ALIAS(YEAR(%s.date_created), \'Year Created\')'),
+                    'date_created'       => array('date created', 'ALIAS(DATE(%s.date_created), \'Date Created\')'),
+                    'hour_resolved'      => array('hour created', 'ALIAS(HOUR(%s.date_created), \'Hour Created\')'),
+                    'day_week_resolved'  => array('day of week resolved', 'ALIAS(DAYNAME(%s.date_resolved), \'Day of Week Resolved\')'),
                     'day_month_resolved' => array('day of month resolved', 'ALIAS(DAYOFMONTH(%s.date_resolved), \'Day of Month Resolved\')'),
-                    'month_resolved' => array('month resolved', 'ALIAS(MONTHNAME(%s.date_resolved), \'Month Resolved\')'),
-                    'year_resolved' => array('year resolved', 'ALIAS(YEAR(%s.date_resolved), \'Year Resolved\')'),
-                    'date_resolved' => array('date resolved', 'ALIAS(DATE(%s.date_resolved), \'Date Resolved\')')
+                    'month_resolved'     => array('month resolved', 'ALIAS(MONTHNAME(%s.date_resolved), \'Month Resolved\')'),
+                    'year_resolved'      => array('year resolved', 'ALIAS(YEAR(%s.date_resolved), \'Year Resolved\')'),
+                    'date_resolved'      => array('date resolved', 'ALIAS(DATE(%s.date_resolved), \'Date Resolved\')'),
                 ),
                 'chats' => array(
                     'department'        => array('department', '%s.department'),

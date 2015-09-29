@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Tickets\TicketLog;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -99,7 +99,7 @@ class TicketLogGenerator
                 'event_method'    => $this->context->getEventMethod(),
             );
             if ($this->context->getEventMethod() == 'email' && $this->context->getEmailContext() && $this->context->getEmailContext()->getDeliveredAddresses()) {
-                $data['email_to']   = array_map(function ($a) { return $a->email; }, $this->context->getEmailContext()->getReceivedAddresses());
+                $data['email_to'] = array_map(function ($a) { return $a->email; }, $this->context->getEmailContext()->getReceivedAddresses());
                 $data['email_from'] = Util::flatMap($this->context->getEmailContext()->getRealFromAddress(), function ($v) { return $v->email; });
             }
             $log         = $this->getLogFromData($data);
@@ -110,7 +110,7 @@ class TicketLogGenerator
         foreach ($this->state->getChanges() as $change) {
             $log_data = $this->getLogDataForChange($change);
             if (!$log_data) {
-                $this->context->getLogger()->info(sprintf("[TicketLogGenerator] %s -> no data", $change->getField()));
+                $this->context->getLogger()->info(sprintf('[TicketLogGenerator] %s -> no data', $change->getField()));
                 continue;
             }
 
@@ -147,7 +147,7 @@ class TicketLogGenerator
                     }
                 }
 
-                $this->context->getLogger()->info(sprintf("[TicketLogGenerator] %s -> %s", $change->getField(), $log->action_type));
+                $this->context->getLogger()->info(sprintf('[TicketLogGenerator] %s -> %s', $change->getField(), $log->action_type));
 
                 $log->parent = $group;
 
@@ -229,10 +229,10 @@ class TicketLogGenerator
                     'id_before'   => $old ? $old->id : null,
                     'id_after'    => $new ? $new->id : null,
 
-                    'old_agent_team_id'    => $old ? $old->id : null,
-                    'old_agent_team_name'  => $old ? $old->name : null,
-                    'new_agent_team_id'    => $new ? $new->id : null,
-                    'new_agent_team_name'  => $new ? $new->name : null,
+                    'old_agent_team_id'   => $old ? $old->id : null,
+                    'old_agent_team_name' => $old ? $old->name : null,
+                    'new_agent_team_id'   => $new ? $new->id : null,
+                    'new_agent_team_name' => $new ? $new->name : null,
                 );
                 break;
 
@@ -308,8 +308,8 @@ class TicketLogGenerator
                     'id_before' => $old ? 1 : 0,
                     'id_after'  => $new ? 0 : 1,
 
-                    'was_hold'  => (bool) $old,
-                    'is_hold'   => (bool) $new,
+                    'was_hold' => (bool) $old,
+                    'is_hold'  => (bool) $new,
                 );
                 break;
 
@@ -378,18 +378,18 @@ class TicketLogGenerator
                     'id_before'   => $old ? $old->id : null,
                     'id_after'    => $new ? $new->id : null,
 
-                    'old_organization_id'    => $old ? $old->id : null,
-                    'old_organization_name'  => $old ? $old->name : null,
-                    'new_organization_id'    => $new ? $new->id : null,
-                    'new_organization_name'  => $new ? $new->name : null,
+                    'old_organization_id'   => $old ? $old->id : null,
+                    'old_organization_name' => $old ? $old->name : null,
+                    'new_organization_id'   => $new ? $new->id : null,
+                    'new_organization_name' => $new ? $new->name : null,
                 );
                 break;
 
             case 'participants':
-                $added_users    = array_filter($added, function ($part) { return !$part->person->is_agent; });
-                $added_agents   = array_filter($added, function ($part) { return $part->person->is_agent; });
+                $added_users = array_filter($added, function ($part) { return !$part->person->is_agent; });
+                $added_agents = array_filter($added, function ($part) { return $part->person->is_agent; });
 
-                $removed_users  = array_filter($removed, function ($part) { return !$part->person->is_agent; });
+                $removed_users = array_filter($removed, function ($part) { return !$part->person->is_agent; });
                 $removed_agents = array_filter($removed, function ($part) { return $part->person->is_agent; });
 
                 if ($added_users || $removed_users) {
@@ -565,41 +565,41 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
 
             case 'app_message':
                 return array(
-                    'action_type'    => 'app_message',
-                    'app_id'         => $new['app_id'],
-                    'app_title'      => $new['app_title'],
-                    'package_name'   => $new['package_name'],
-                    'package_title'  => $new['package_title'],
-                    'message'        => $new['message'],
+                    'action_type'   => 'app_message',
+                    'app_id'        => $new['app_id'],
+                    'app_title'     => $new['app_title'],
+                    'package_name'  => $new['package_name'],
+                    'package_title' => $new['package_title'],
+                    'message'       => $new['message'],
                 );
 
             case 'attachments':
                 $log_set = array();
 
                 if ($new && isset($new->blob) && !$new->is_inline) {
-                    $blob                        = $new->blob;
-                    $log_data                    = array();
-                    $log_data['action_type']     = 'attach_added';
-                    $log_data['id_after']        = $new->id;
-                    $log_data['attach_id']       = $new->id;
-                    $log_data['blob_id']         = $blob->id;
-                    $log_data['filename']        = $blob->filename;
-                    $log_data['filesize']        = $blob->filesize;
-                    $log_data['content_type']    = $blob->content_type;
-                    $log_set[]                   = $log_data;
+                    $blob                     = $new->blob;
+                    $log_data                 = array();
+                    $log_data['action_type']  = 'attach_added';
+                    $log_data['id_after']     = $new->id;
+                    $log_data['attach_id']    = $new->id;
+                    $log_data['blob_id']      = $blob->id;
+                    $log_data['filename']     = $blob->filename;
+                    $log_data['filesize']     = $blob->filesize;
+                    $log_data['content_type'] = $blob->content_type;
+                    $log_set[]                = $log_data;
                 }
 
                 if ($old && isset($old->blob) && !$old->is_inline) {
-                    $blob                        = $old->blob;
-                    $log_data                    = array();
-                    $log_data['action_type']     = 'attach_removed';
-                    $log_data['id_before']       = $old->id;
-                    $log_data['attach_id']       = $old->id;
-                    $log_data['blob_id']         = $blob->id;
-                    $log_data['filename']        = $blob->filename;
-                    $log_data['filesize']        = $blob->filesize;
-                    $log_data['content_type']    = $blob->content_type;
-                    $log_set[]                   = $log_data;
+                    $blob                     = $old->blob;
+                    $log_data                 = array();
+                    $log_data['action_type']  = 'attach_removed';
+                    $log_data['id_before']    = $old->id;
+                    $log_data['attach_id']    = $old->id;
+                    $log_data['blob_id']      = $blob->id;
+                    $log_data['filename']     = $blob->filename;
+                    $log_data['filesize']     = $blob->filesize;
+                    $log_data['content_type'] = $blob->content_type;
+                    $log_set[]                = $log_data;
                 }
 
                 return $log_set;

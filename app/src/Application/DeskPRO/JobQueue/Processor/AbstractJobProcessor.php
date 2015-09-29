@@ -1,38 +1,38 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\JobQueue\Processor;
 
-use Application\DeskPRO\JobQueue\JobProcessorInterface;
 use Application\DeskPRO\Entity\Job;
+use Application\DeskPRO\JobQueue\JobProcessorInterface;
 use Application\DeskPRO\JobQueue\JobQueueException;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\OptionsResolver\Exception\ExceptionInterface as OptionsResolverException;
@@ -101,7 +101,6 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
      *
      * @param array $data validated data (the payload)
      * @param array $job  the full job db row array
-     * @return void
      */
     abstract public function process(array $data, array $job);
 
@@ -245,6 +244,7 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
      * @param            $status_code
      * @param            $log_summary
      * @param \Exception $e
+     *
      * @throws \Doctrine\DBAL\DBALException
      */
     protected function markExceptionError(array $job, $status_code, $log_summary, \Exception $e)
@@ -261,20 +261,20 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
             WHERE id = :job_id
             ',
             array(
-                'log_summary'    => $log_summary,
-                'detailed_logs'  => $this->formatExceptionIntoString($e),
-                'error_status'   => Job::STATUS_ERROR,
-                'status_code'    => $status_code,
-                'date_touch'     => new \DateTime(),
-                'job_id'         => $job['id'],
+                'log_summary'   => $log_summary,
+                'detailed_logs' => $this->formatExceptionIntoString($e),
+                'error_status'  => Job::STATUS_ERROR,
+                'status_code'   => $status_code,
+                'date_touch'    => new \DateTime(),
+                'job_id'        => $job['id'],
             ),
             array(
-                'log_summary'    => 'string',
-                'detailed_logs'  => 'text',
-                'error_status'   => 'string',
-                'status_code'    => 'string',
-                'date_touch'     => 'datetime',
-                'job_id'         => 'integer',
+                'log_summary'   => 'string',
+                'detailed_logs' => 'text',
+                'error_status'  => 'string',
+                'status_code'   => 'string',
+                'date_touch'    => 'datetime',
+                'job_id'        => 'integer',
             )
         );
     }
@@ -284,6 +284,7 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
      *
      * @param array $job
      * @param       $date_string
+     *
      * @throws \Doctrine\DBAL\DBALException
      *
      * @deprecated this will be deleted soon, inject the JobQueue and use JobQueue->retry(Job) instead

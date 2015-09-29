@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Exception\ValidationException;
@@ -42,7 +42,7 @@ use Orb\Util\Arrays;
 class FeedbackStatusesController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
@@ -108,7 +108,7 @@ class FeedbackStatusesController extends AbstractController implements Protected
         $feedback_statuses = $this->container->getSystemService('feedback_statuses');
 
         if ($id) {
-            $feedback_status   = $feedback_statuses->getById($id);
+            $feedback_status = $feedback_statuses->getById($id);
 
             if (!$feedback_status) {
                 throw $this->createNotFoundException();
@@ -119,7 +119,7 @@ class FeedbackStatusesController extends AbstractController implements Protected
 
         $feedback_status_edit = new FeedbackStatusEdit($feedback_status);
 
-        $postData      = $this->in->getAll('post');
+        $postData = $this->in->getAll('post');
 
         $form = $this->createForm(new FeedbackStatusType(), $feedback_status_edit, array('cascade_validation' => true));
         $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'feedback_status'), true);
@@ -134,8 +134,8 @@ class FeedbackStatusesController extends AbstractController implements Protected
 
         return $this->createApiResponse(
             array(
-                 'success'     => true,
-                 'id'          => $feedback_status->getId(),
+                 'success' => true,
+                 'id'      => $feedback_status->getId(),
             )
         );
     }
@@ -161,15 +161,15 @@ class FeedbackStatusesController extends AbstractController implements Protected
 
         if (!$move_to_feedback_status) {
             throw ValidationException::create(
-                "feedback_status.remove.move_feedback_statuses",
-                "You must select a feedback status to move existing feedback into"
+                'feedback_status.remove.move_feedback_statuses',
+                'You must select a feedback status to move existing feedback into'
             );
         }
 
         if ($move_to_feedback_status->getId() == $feedback_status->getId()) {
             throw ValidationException::create(
-                "feedback_status.remove.move_feedback_statuses",
-                "You must choose a different feedback status"
+                'feedback_status.remove.move_feedback_statuses',
+                'You must choose a different feedback status'
             );
         }
 
@@ -179,7 +179,7 @@ class FeedbackStatusesController extends AbstractController implements Protected
 
         try {
             $this->db->executeUpdate(
-                "UPDATE feedback SET status_category_id = ? WHERE status_category_id = ?",
+                'UPDATE feedback SET status_category_id = ? WHERE status_category_id = ?',
                 array($move_to, $old_id)
             );
 

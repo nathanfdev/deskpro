@@ -1,45 +1,40 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\JobQueue\Processor;
-
 
 use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\Entity\UsersourceSyncLog;
 use Application\DeskPRO\JobQueue\JobQueue;
-use Application\DeskPRO\ORM\EntityManager;
 use Application\DeskPRO\Usersource\Sync\SyncCursor;
-use Application\DeskPRO\Usersource\Sync\SyncException;
 use Application\DeskPRO\Usersource\Sync\SyncManager;
 use Application\DeskPRO\Usersource\UsersourceManager;
 use DeskPRO\Kernel\KernelErrorHandler;
@@ -49,10 +44,10 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class UsersourceSyncProcessor extends AbstractJobProcessor
 {
-    const JOB_TYPE = 'usersource_sync';
+    const JOB_TYPE                = 'usersource_sync';
     const ABORT_JOB_TMP_DATA_NAME = 'abort_usersource_sync';
 
-    const MAX_TIME = 20;
+    const MAX_TIME  = 20;
     const MAX_COUNT = 1000;
     public static $max_time;
     public static $count;
@@ -79,12 +74,11 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
         JobQueue $job_queue,
         UsersourceManager $usersource_manager,
         SyncManager $sync_manager
-    )
-    {
+    ) {
         parent::__construct($connection);
         $this->usersource_manager = $usersource_manager;
-        $this->sync_manager = $sync_manager;
-        $this->job_queue = $job_queue;
+        $this->sync_manager       = $sync_manager;
+        $this->job_queue          = $job_queue;
     }
 
     public function setDataOptions(OptionsResolverInterface $resolver)
@@ -92,13 +86,13 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
         $resolver->setDefaults(
             array(
                 'original_start_timestamp' => time(),
-                'sync_cursor_location' => 1,
-                'sync_cursor_counter' => 0,
-                'sync_cursor_phase' => 1,
-                'phase_2_count' => 0,
-                'phase_2_usersource' => null,
-                'current_usersource_id' => null,
-                'phase' => 1
+                'sync_cursor_location'     => 1,
+                'sync_cursor_counter'      => 0,
+                'sync_cursor_phase'        => 1,
+                'phase_2_count'            => 0,
+                'phase_2_usersource'       => null,
+                'current_usersource_id'    => null,
+                'phase'                    => 1,
             )
         );
     }
@@ -107,17 +101,19 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
     {
         try {
             static::$max_time = time() + static::MAX_TIME;
-            static::$aborted = false;
-            static::$count = 0;
+            static::$aborted  = false;
+            static::$count    = 0;
 
             static::$max_memory_usage = min(Env::getMemoryLimit(), 500 * 1024 * 1024) * 0.8;
             if (1 == $data['phase']) {
                 $return = $this->runPhaseOne($data);
                 $this->sync_manager->getEm()->clear();
+
                 return $return;
             } else {
                 $return = $this->runPhaseTwo($data);
                 $this->sync_manager->getEm()->clear();
+
                 return $return;
             }
         } catch (\Exception $e) {
@@ -131,12 +127,12 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
         // we return true if we want to signal to the syncer to pause
 
         // condition 1: if we allocate 80% or greater of our max memory usage
-        if (memory_get_usage() > UsersourceSyncProcessor::$max_memory_usage) {
+        if (memory_get_usage() > self::$max_memory_usage) {
             return true;
         }
 
         // considtion 2: if we go over x seconds
-        if (time() > UsersourceSyncProcessor::$max_time) {
+        if (time() > self::$max_time) {
             return true;
         }
 
@@ -145,6 +141,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
             if ($this->sync_manager->isStopSignalPresent()) {
                 static::$aborted = true;
                 $this->sync_manager->clearStopSignal();
+
                 return true;
             }
         }
@@ -154,6 +151,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
 
     /**
      * @param array $data
+     *
      * @return bool
      */
     protected function runPhaseOne(array $data)
@@ -161,7 +159,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
         $start_timestamp = $data['original_start_timestamp'];
 
         $skip_to_usersource_id = $data['current_usersource_id'];
-        $cursor = new SyncCursor($data['sync_cursor_location'], $data['sync_cursor_counter'], $data['sync_cursor_phase']);
+        $cursor                = new SyncCursor($data['sync_cursor_location'], $data['sync_cursor_counter'], $data['sync_cursor_phase']);
 
         $last_processed_usersource_id = null;
         foreach ($this->getSyncEnabledUsersources() as $usersource) {
@@ -171,20 +169,19 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
             }
 
             // stop skipping now
-            $skip_to_usersource_id = false;
+            $skip_to_usersource_id        = false;
             $last_processed_usersource_id = $usersource->id;
-
 
             if (!$cursor) {
                 $cursor = new SyncCursor();
             }
-            
+
             $isStart = $cursor->getLocation() <= 1;
 
             // start or resume log
             // force a new log entry if this is not a resume
             $log = $this->sync_manager->getLogToUseDuringSync($usersource, $isStart);
-            
+
             if ($isStart) {
                 $log->startPhaseOne();
             }
@@ -196,12 +193,12 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                     // time to pause and re-run this phase at this usersource at the cursor location
                     $this->scheduleNextSync(
                         array(
-                            'phase' => 1,
+                            'phase'                    => 1,
                             'original_start_timestamp' => $start_timestamp,
-                            'sync_cursor_location' => $cursor->getLocation(),
-                            'sync_cursor_counter' => $cursor->getCounter(),
-                            'sync_cursor_phase' => $cursor->getPhase(),
-                            'current_usersource_id' => $last_processed_usersource_id
+                            'sync_cursor_location'     => $cursor->getLocation(),
+                            'sync_cursor_counter'      => $cursor->getCounter(),
+                            'sync_cursor_phase'        => $cursor->getPhase(),
+                            'current_usersource_id'    => $last_processed_usersource_id,
                         ),
                         new \DateTime('now + 20 seconds')
                     );
@@ -217,14 +214,13 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                 // log the errors but continue on to the next usersource
                 KernelErrorHandler::handleException($e, false);
                 $log->markErrorStatus();
-
             }
 
             if (static::$aborted) {
                 $this->abort();
+
                 return false;
             }
-
 
             // end log
             $log->setRecordCount($cursor->getCounter());
@@ -247,24 +243,24 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
     private function runPhaseTwo(array $data)
     {
         $original_start_timestamp = $data['original_start_timestamp'];
-        $start_at_usersource_id = $data['phase_2_usersource'];
-        $count = $data['phase_2_count'];
+        $start_at_usersource_id   = $data['phase_2_usersource'];
+        $count                    = $data['phase_2_count'];
 
         foreach ($this->getSyncEnabledUsersources() as $usersource) {
             if ($start_at_usersource_id && $usersource->getId() != $start_at_usersource_id) {
                 continue;
             }
             // stop skip
-            $start_at_usersource_id = null;
+            $start_at_usersource_id       = null;
             $last_processed_usersource_id = $usersource->getId();
-            $this_usersource_errors = 0;
-            
+            $this_usersource_errors       = 0;
+
             $associations = $this->usersource_manager->findAssociationsUpdatedBefore(
                 $usersource,
                 $ts = new \DateTime(sprintf('@%s', $original_start_timestamp))
             );
 
-            $log = $this->sync_manager->getLogToUseDuringSync($usersource);
+            $log                 = $this->sync_manager->getLogToUseDuringSync($usersource);
             $is_start_of_phase_2 = $count == 0;
             if ($is_start_of_phase_2) {
                 $log->startPhaseTwo();
@@ -272,29 +268,28 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
 
             $had_to_break = false;
             foreach ($associations as $association) {
-                    $identity = $association->getIdentity();
+                $identity = $association->getIdentity();
 
-                    try {
-                        if ($this->sync_manager->refreshIdentity($association->getUsersource(), $identity)) {
-                            $count++;
-                            $log->incrementRecordCount();
-                        }
-                    } catch (\Exception $e) {
-                        // log the error, but continue processing
-                        $this_usersource_errors++;
-                        KernelErrorHandler::handleException($e, false);
-                        if ($this_usersource_errors > 10) {
-                            $log->markErrorStatus();
-                            $this->sync_manager->saveLog($log);
-                            break;
-                        }
+                try {
+                    if ($this->sync_manager->refreshIdentity($association->getUsersource(), $identity)) {
+                        ++$count;
+                        $log->incrementRecordCount();
                     }
-
-                    if (static::pauseJobCondition(new SyncCursor())) {
-                        $had_to_break = true;
+                } catch (\Exception $e) {
+                    // log the error, but continue processing
+                        ++$this_usersource_errors;
+                    KernelErrorHandler::handleException($e, false);
+                    if ($this_usersource_errors > 10) {
+                        $log->markErrorStatus();
+                        $this->sync_manager->saveLog($log);
                         break;
                     }
+                }
 
+                if (static::pauseJobCondition(new SyncCursor())) {
+                    $had_to_break = true;
+                    break;
+                }
             }
 
             if ($had_to_break) {
@@ -302,6 +297,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
 
                 if (static::$aborted) {
                     $this->abort();
+
                     return false;
                 }
 
@@ -309,9 +305,9 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
 
                 $this->scheduleNextSync(
                     array(
-                        'phase' => 2,
-                        'phase_2_count' => $count,
-                        'phase_2_usersource' => $last_processed_usersource_id,
+                        'phase'                    => 2,
+                        'phase_2_count'            => $count,
+                        'phase_2_usersource'       => $last_processed_usersource_id,
                         'original_start_timestamp' => $data['original_start_timestamp'],
                     ),
                     new \DateTime('now + 20 seconds')
@@ -327,7 +323,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
             $this->sync_manager->saveLog($log);
             $count = 0;
         }
-        
+
         // phase 2 is complete
         // reschedule job one for 24 hours from now
         $this->scheduleNextSync(

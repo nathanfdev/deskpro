@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
@@ -32,7 +33,6 @@
  *
  * @copyright Copyright (c) 2011 DeskPRO (http://www.deskpro.com/)
  */
-
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -105,7 +105,7 @@ class Task extends AbstractEntityRepository
         /**
          * Count overdue tasks assigned to the person.
          *
-         * @param  Person $person The person
+         * @param Person $person The person
          *
          * @return int
          */
@@ -464,7 +464,7 @@ class Task extends AbstractEntityRepository
             $where_part = '1';
         }
 
-        $where_part .= " AND person_id = ? ";
+        $where_part .= ' AND person_id = ? ';
         $params[] = $person->id;
 
         $person->loadHelper('Agent');
@@ -618,7 +618,7 @@ class Task extends AbstractEntityRepository
         }
 
         if ($all) {
-            $task_ids = $this->getEntityManager()->getConnection()->fetchAllCol("
+            $task_ids = $this->getEntityManager()->getConnection()->fetchAllCol('
                 SELECT tasks.id
                 FROM tasks
                 LEFT JOIN task_associations ON task_associations.task_id = tasks.id
@@ -626,7 +626,7 @@ class Task extends AbstractEntityRepository
                     ((tasks.person_id = ? OR tasks.assigned_agent_id = ? OR tasks.assigned_agent_team_id IN (?)) OR tasks.visibility = 1)
                     AND task_associations.ticket_id = ?
                     ORDER BY tasks.date_due ASC
-            ", array(
+            ', array(
                 $person_context->getId(),
                 $person_context->getId(),
                 $team_ids,
@@ -638,7 +638,7 @@ class Task extends AbstractEntityRepository
                 \PDO::PARAM_INT,
             ));
         } else {
-            $task_ids = $this->getEntityManager()->getConnection()->fetchAllCol("
+            $task_ids = $this->getEntityManager()->getConnection()->fetchAllCol('
                 SELECT tasks.id
                 FROM tasks
                 LEFT JOIN task_associations ON task_associations.task_id = tasks.id
@@ -647,7 +647,7 @@ class Task extends AbstractEntityRepository
                     AND ((tasks.person_id = ? OR tasks.assigned_agent_id = ? OR tasks.assigned_agent_team_id IN (?)) OR tasks.visibility = 1)
                     AND task_associations.ticket_id = ?
                     ORDER BY tasks.date_due ASC
-            ", array(
+            ', array(
                 $person_context->getId(),
                 $person_context->getId(),
                 $team_ids,

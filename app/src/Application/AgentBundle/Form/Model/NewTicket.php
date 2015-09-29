@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
@@ -175,7 +175,6 @@ class NewTicket
         $this->layout = $layout;
     }
 
-
     /**
      * @return Ticket
      */
@@ -215,16 +214,16 @@ class NewTicket
         $this->category_id   = $ticket->getCategoryId();
         $this->status        = $ticket->status;
 
-        $field_manager = App::getSystemService('ticket_fields_manager');
-        $custom_fields = $field_manager->createFormArrayForObject($ticket);
+        $field_manager        = App::getSystemService('ticket_fields_manager');
+        $custom_fields        = $field_manager->createFormArrayForObject($ticket);
         $custom_person_fields = App::$container->getPersonFieldManager()->createFormArrayForObject($ticket->person);
-        $custom_org_fields = $ticket->person->organization
+        $custom_org_fields    = $ticket->person->organization
             ? App::$container->getOrgFieldManager()->createFormArrayForObject($ticket->person->organization)
             : array();
 
-        $this->ticket_fields = $custom_fields;
+        $this->ticket_fields        = $custom_fields;
         $this->custom_person_fields = $custom_person_fields;
-        $this->custom_org_fields = $custom_org_fields;
+        $this->custom_org_fields    = $custom_org_fields;
     }
 
     /**
@@ -376,7 +375,6 @@ class NewTicket
 
         $ticket->person = $person;
 
-
         #------------------------------
         # Message
         #------------------------------
@@ -394,7 +392,7 @@ class NewTicket
         $message_text = $formatter->formatText($message_text, $ticket);
 
         if ($this->is_html_reply) {
-            $message_text = App::get('deskpro.core.input_cleaner')->clean($message_text, 'html');
+            $message_text     = App::get('deskpro.core.input_cleaner')->clean($message_text, 'html');
             $message_text     = \Orb\Util\Strings::trimHtml($message_text);
             $message_text     = \Orb\Util\Strings::prepareWysiwygHtml($message_text);
             $message->message = $message_text;
@@ -455,7 +453,7 @@ class NewTicket
         if ($this->ticket_fields) {
             foreach ($this->ticket_fields as $k => $v) {
                 $id = Strings::extractRegexMatch('#(\d+)$#', $k);
-                if (!$this->layout || $this->layout->hasActiveField('ticket_field_' . $id, $ticket)) {
+                if (!$this->layout || $this->layout->hasActiveField('ticket_field_'.$id, $ticket)) {
                     $post_custom_fields[$k] = $v;
                 }
             }
@@ -464,12 +462,12 @@ class NewTicket
             $field_manager->saveFormToObject($post_custom_fields, $ticket);
         }
 
-        $manager = App::$container->getPersonFieldManager();
+        $manager                   = App::$container->getPersonFieldManager();
         $post_custom_person_fields = array();
         if ($this->custom_person_fields) {
             foreach ($this->custom_person_fields as $k => $v) {
                 $id = Strings::extractRegexMatch('#(\d+)$#', $k);
-                if (!$this->layout || $this->layout->hasActiveField('user_field_' . $id, $ticket)) {
+                if (!$this->layout || $this->layout->hasActiveField('user_field_'.$id, $ticket)) {
                     $post_custom_person_fields[$k] = $v;
                 }
             }
@@ -479,12 +477,12 @@ class NewTicket
         }
 
         if ($ticket->person->organization) {
-            $manager = App::$container->getOrgFieldManager();
+            $manager                = App::$container->getOrgFieldManager();
             $post_custom_org_fields = array();
             if ($this->custom_org_fields) {
                 foreach ($this->custom_org_fields as $k => $v) {
                     $id = Strings::extractRegexMatch('#(\d+)$#', $k);
-                    if (!$this->layout || $this->layout->hasActiveField('org_field_' . $id, $ticket)) {
+                    if (!$this->layout || $this->layout->hasActiveField('org_field_'.$id, $ticket)) {
                         $post_custom_org_fields[$k] = $v;
                     }
                 }

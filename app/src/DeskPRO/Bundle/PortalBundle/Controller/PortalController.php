@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
@@ -36,7 +36,6 @@ use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
 
 class PortalController extends AbstractController
 {
@@ -49,7 +48,7 @@ class PortalController extends AbstractController
     {
         return $this->renderThemeView('Theme:Portal:home.html.twig',
             array(
-                'page_title' => $this->createPageTitle()->homepage()
+                'page_title' => $this->createPageTitle()->homepage(),
             )
         );
     }
@@ -74,15 +73,15 @@ class PortalController extends AbstractController
         return $this->renderThemeView(
             'Theme:Portal:User/login.html.twig',
             array(
-                'auth_manager'  => $this->get('dp_authentication_manager.user'),
-                'login_error'   => $request->get('retry') == 'auth',
-                'saved_form' => $saved_form,
-                'saved_form_message' => $saved_form_message,
-                'last_username' => $this->getSession()->get('last_username'),
-                'reset_success' => $request->get('reset_success', 0),
+                'auth_manager'         => $this->get('dp_authentication_manager.user'),
+                'login_error'          => $request->get('retry') == 'auth',
+                'saved_form'           => $saved_form,
+                'saved_form_message'   => $saved_form_message,
+                'last_username'        => $this->getSession()->get('last_username'),
+                'reset_success'        => $request->get('reset_success', 0),
                 'set_password_success' => $request->get('set_password_success', 0),
-                'breadcrumbs' => $this->getBreadcrumbGenerator()->buildLogin(),
-                'page_title' => $this->createPageTitle()->loginPage()
+                'breadcrumbs'          => $this->getBreadcrumbGenerator()->buildLogin(),
+                'page_title'           => $this->createPageTitle()->loginPage(),
             )
         );
     }
@@ -92,7 +91,7 @@ class PortalController extends AbstractController
      */
     public function validateAction(Request $request, $object_type, $email_id, $object_id)
     {
-        switch($object_type) {
+        switch ($object_type) {
             case PersonValidator::TYPE_EMAIL:
                 $this->getPersonValidator()->validateEmail($email_id, true);
                 $this->addFlash('success', $this->phrase('portal.flashes.validated_email'));
@@ -117,6 +116,7 @@ class PortalController extends AbstractController
                 'last_username',
                $email ? $email->getEmail() : ''
             );
+
             return $this->redirectToRoute('portal_login');
         }
 
@@ -128,7 +128,7 @@ class PortalController extends AbstractController
      */
     public function resendValidationEmailAction(Request $request, $object_type, $email_id, $object_id)
     {
-        switch($object_type) {
+        switch ($object_type) {
             case PersonValidator::TYPE_EMAIL:
                 $this->getPersonValidator()->doResendLink(PersonValidator::TYPE_EMAIL, $email_id, null, true);
                 $this->addFlash('success', $this->phrase('portal.flashes.sent_verification_email_secondary'));

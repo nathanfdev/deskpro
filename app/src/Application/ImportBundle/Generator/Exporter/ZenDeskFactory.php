@@ -1,56 +1,55 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Exporter;
 
+use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Generator\Exporter\Parser\ZenDesk\TicketsMapper;
 use Application\ImportBundle\Reader\BaseConfig;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
-use Application\ImportBundle\Entity;
-use Application\DeskPRO\EntityRepository;
 use Guzzle\Http\Client;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * ZenDesk data exporter factory
+ * ZenDesk data exporter factory.
  *
  * Class ZenDeskFactory
- * @package Application\ImportBundle\Generator\Exporter
  */
 class ZenDeskFactory extends AbstractFactory
 {
     /**
      * {@inheritdoc}
      */
-    static public function createExporter(ContainerInterface $container, BaseConfig $config)
+    public static function createExporter(ContainerInterface $container, BaseConfig $config)
     {
         /** @var ZenDeskReaderInterface $reader */
-        $reader = ZenDeskReaderFactory::createReader($config);
+        $reader  = ZenDeskReaderFactory::createReader($config);
         $storage = new Parser\ZenDesk\PeopleStorage();
 
         // People parser

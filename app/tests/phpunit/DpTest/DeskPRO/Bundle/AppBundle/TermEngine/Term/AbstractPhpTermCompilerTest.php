@@ -1,45 +1,40 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term;
-
 
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TicketChecker;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
-use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
-use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionProvider;
 use DpTest\ApiTestCase;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
@@ -49,7 +44,7 @@ abstract class AbstractPhpTermCompilerTest extends ApiTestCase
     /**
      * @var Logger
      */
-    static $logger;
+    public static $logger;
 
     /**
      * @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool
@@ -58,7 +53,8 @@ abstract class AbstractPhpTermCompilerTest extends ApiTestCase
 
     /**
      * @param PhpCheck $check
-     * @param array $variables Extra vars you might need when making the helper pool
+     * @param array    $variables Extra vars you might need when making the helper pool
+     *
      * @return \DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool|object
      */
     protected function makeHelperPool(PhpCheck $check, array $variables)
@@ -72,7 +68,8 @@ abstract class AbstractPhpTermCompilerTest extends ApiTestCase
 
     /**
      * @param PhpCheck $check
-     * @param array $variables Extra vars you might need when making the checker
+     * @param array    $variables Extra vars you might need when making the checker
+     *
      * @return TicketChecker
      */
     protected function makeChecker(PhpCheck $check, array $variables)
@@ -91,10 +88,10 @@ abstract class AbstractPhpTermCompilerTest extends ApiTestCase
 
         // do some var replacing to emulate what the engine does...
         $check = clone $check;
-        $i = 1;
+        $i     = 1;
         foreach ($check->getVariables() as $var_name => $val) {
-            $check->renameVariable($var_name, 'var' . $i);
-            $i++;
+            $check->renameVariable($var_name, 'var'.$i);
+            ++$i;
         }
 
         if (!static::$logger) {
@@ -117,7 +114,7 @@ abstract class AbstractPhpTermCompilerTest extends ApiTestCase
         $ticket = $ticket_prophecy->reveal();
 
         $extra['ticket'] = $ticket;
-        $checker = $this->makeChecker($php_check, $extra);
+        $checker         = $this->makeChecker($php_check, $extra);
 
         $this->assertSame($expected, $checker->isTicketMatch($ticket), 'ticket check result is correct');
     }

@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\EmailBundle\Queue;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -113,8 +113,8 @@ class QueueRunner
      * Timeout sources that have been marked as processing too long.
      *
      * @throws \Exception
-     * @return int
      *
+     * @return int
      */
     public function detectProblems()
     {
@@ -146,7 +146,7 @@ class QueueRunner
                     $r['date_status'],
                     ceil((time() - $d->getTimestamp()) / 60)
                 );
-                $this->source_mapper->markSourceRetry($r, $msg, new \DateTime("+30 minutes"));
+                $this->source_mapper->markSourceRetry($r, $msg, new \DateTime('+30 minutes'));
 
                 $did = true;
             }
@@ -267,19 +267,19 @@ class QueueRunner
             if ($batch) {
                 while ($r = array_shift($batch)) {
                     $proc->process($r);
-                    $count++;
-                    $batch_count++;
+                    ++$count;
+                    ++$batch_count;
 
                     if ($count >= $this->proc_limit) {
-                        $this->logger->info("Reached limit, breaking");
-                        $did_break = true;
+                        $this->logger->info('Reached limit, breaking');
+                        $did_break       = true;
                         $did_early_break = true;
                         break;
                     }
 
                     if ((time() - $time_start) > $this->proc_time_limit) {
-                        $this->logger->info("Reached time limit, breaking");
-                        $did_break = true;
+                        $this->logger->info('Reached time limit, breaking');
+                        $did_break       = true;
                         $did_early_break = true;
                         break;
                     }
@@ -298,7 +298,7 @@ class QueueRunner
 
             if ((time() - $time_start) > $this->proc_time_limit) {
                 $did_early_break = true;
-                $this->logger->info("Reached time limit, breaking (outer)");
+                $this->logger->info('Reached time limit, breaking (outer)');
                 break;
             }
         }
@@ -334,8 +334,8 @@ class QueueRunner
 
     /**
      * @throws \Exception
-     * @return array      Array of id=>status of records to process
      *
+     * @return array Array of id=>status of records to process
      */
     private function reserveBatch()
     {
@@ -377,8 +377,10 @@ class QueueRunner
      * to their original status so they can be run next time.
      *
      * @param array $batch
-     * @return int
+     *
      * @throws \Exception
+     * @return int
+     *
      */
     private function releaseRemaining(array $batch)
     {

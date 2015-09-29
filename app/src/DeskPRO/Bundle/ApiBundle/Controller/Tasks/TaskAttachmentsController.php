@@ -1,57 +1,51 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAttachment;
-use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
+use FOS\RestBundle\Controller\Annotations\Delete;
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
-use Pagerfanta\Adapter\ArrayAdapter;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Delete;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class TaskAttachmentsController extends BaseController implements ClassResourceInterface
 {
@@ -79,14 +73,16 @@ class TaskAttachmentsController extends BaseController implements ClassResourceI
      *      }
      * )
      * @Get("/task_attachments", name="api_task_attachments")
+     *
      * @param Request $request
+     *
      * @return View
      */
     public function cgetAction(Request $request)
     {
         $task_attachments = $this->getDoctrine()->getManager()->createQueryBuilder()->select('a')->from('App:TaskAttachment', 'a');
 
-        $page = $request->query->get('page', 1);
+        $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
         $pager = new Pagerfanta(new DoctrineORMAdapter($task_attachments));
@@ -117,7 +113,9 @@ class TaskAttachmentsController extends BaseController implements ClassResourceI
      *      output="DeskPRO\Bundle\AppBundle\Entity\TaskAttachment"
      * )
      * @Get("/task_attachments/{id}", name="api_task_attachments_get")
+     *
      * @param int $id
+     *
      * @return View
      */
     public function getAction($id)
@@ -145,14 +143,18 @@ class TaskAttachmentsController extends BaseController implements ClassResourceI
      *      output="DeskPRO\Bundle\AppBundle\Entity\TaskAttachment"
      * )
      * @Post("/task_attachments", name="api_task_attachments_post")
+     *
      * @param Request $request
+     *
      * @throws WrappedApiErrorException
      * @throws InvalidFormException
+     *
      * @return View
      */
     public function postAction(Request $request)
     {
         $attachment = new TaskAttachment($this->getUser());
+
         return $this->handleFormSubmission($request, $attachment);
     }
 
@@ -173,7 +175,9 @@ class TaskAttachmentsController extends BaseController implements ClassResourceI
      *      }
      * )
      * @Delete("/task_attachments/{id}", name="api_task_attachments_delete")
+     *
      * @param $id
+     *
      * @return View
      */
     public function deleteAction($id)
@@ -190,11 +194,12 @@ class TaskAttachmentsController extends BaseController implements ClassResourceI
 
     /**
      * @param int $id
+     *
      * @return TaskAttachment
      */
     protected function getAttachment($id)
     {
-        $id = (int) $id;
+        $id         = (int) $id;
         $attachment = $this->getDoctrine()->getManager()->getRepository('App:TaskAttachment')->find($id);
 
         if (!$attachment) {
@@ -205,11 +210,14 @@ class TaskAttachmentsController extends BaseController implements ClassResourceI
     }
 
     /**
-     * Will be abstracted for use by other controllers
-     * @param Request $request
+     * Will be abstracted for use by other controllers.
+     *
+     * @param Request        $request
      * @param TaskAttachment $attachment
-     * @return View
+     *
      * @throws WrappedApiErrorException
+     * @return View
+     *
      */
     protected function handleFormSubmission(Request $request, TaskAttachment $attachment)
     {
@@ -227,8 +235,8 @@ class TaskAttachmentsController extends BaseController implements ClassResourceI
             /** @var \Application\DeskPRO\BlobStorage\DeskproBlobStorage $bs */
             $bs = $this->container->getBlobStorage();
 
-            $file_string = base64_decode($submitted['file']);
-            $file_name = $submitted['filename'];
+            $file_string  = base64_decode($submitted['file']);
+            $file_name    = $submitted['filename'];
             $content_type = $submitted['content_type'];
 
             $blob = $bs->createBlobRecordFromString($file_string, $file_name, $content_type);

@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * Orb.
  *
  * @category Util
  */
-
 namespace Orb\Util;
 
 /**
@@ -48,17 +48,17 @@ class Strings
      * Strings of some common character ranges.
      * @see Strings::randomString()
      */
-    const CHARS_ALPHANUM     = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-    const CHARS_ALPHANUM_I   = '0123456789abcdefghijklmnopqrstuvwxyz';
-    const CHARS_ALPHANUM_IU  = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const CHARS_NUM          = '0123456789';
-    const CHARS_ALPHA        = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-    const CHARS_ALPHA_I      = 'abcdefghijklmnopqrstuvwxyz';
-    const CHARS_ALPHA_IU     = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const CHARS_SECURE       = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()-_=+{}|[]:;,./<>?';
-    const CHARS_KEY          = '23456789ABCDGHJKMNPQRSTWXYZ';
-    const CHARS_KEY_ALPHA    = 'ABCDGHJKMNPQRSTWXYZ';
-    const CHARS_KEY_NUM      = '23456789';
+    const CHARS_ALPHANUM    = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    const CHARS_ALPHANUM_I  = '0123456789abcdefghijklmnopqrstuvwxyz';
+    const CHARS_ALPHANUM_IU = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const CHARS_NUM         = '0123456789';
+    const CHARS_ALPHA       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    const CHARS_ALPHA_I     = 'abcdefghijklmnopqrstuvwxyz';
+    const CHARS_ALPHA_IU    = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const CHARS_SECURE      = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()-_=+{}|[]:;,./<>?';
+    const CHARS_KEY         = '23456789ABCDGHJKMNPQRSTWXYZ';
+    const CHARS_KEY_ALPHA   = 'ABCDGHJKMNPQRSTWXYZ';
+    const CHARS_KEY_NUM     = '23456789';
     /**#@-*/
 
     /**#@+
@@ -124,7 +124,7 @@ class Strings
      */
     public static function addslashesJs($string)
     {
-        $str = str_replace(array('\\', '\'', '"', "\n", "\r"), array('\\\\', "\'", '\\"', "\\n", "\\r"), trim($string));
+        $str = str_replace(array('\\', '\'', '"', "\n", "\r"), array('\\\\', "\'", '\\"', '\\n', '\\r'), trim($string));
 
         // Can't have </script> or else browsers will interpret that as
         // ending the script. \x3C is hex for the '<' char, so turn </script> into
@@ -141,8 +141,8 @@ class Strings
      *
      * If a falsy value is provided, then CHARS_ALPHANUM is used.
      *
-     * @param integer $len
-     * @param string  $chars
+     * @param int    $len
+     * @param string $chars
      */
     public static function random($len = 8, $chars = null)
     {
@@ -153,7 +153,7 @@ class Strings
         $string    = '';
         $max_range = strlen($chars) - 1;
 
-        for ($i = 0; $i < $len; $i++) {
+        for ($i = 0; $i < $len; ++$i) {
             $string .= $chars[mt_rand(0, $max_range)];
         }
 
@@ -187,7 +187,7 @@ class Strings
         }
 
         $string = '';
-        for ($i = -1; $i < $len; $i++) {
+        for ($i = -1; $i < $len; ++$i) {
             $string .= $cons[mt_rand(0, $num_cons - 1)].$vowels[mt_rand(0, $num_vowels - 1)];
         }
 
@@ -238,7 +238,7 @@ class Strings
      */
     public static function collapseWhitespace($string)
     {
-        return preg_replace("#\\s+#", ' ', $string);
+        return preg_replace('#\\s+#', ' ', $string);
     }
 
     /**
@@ -354,7 +354,7 @@ class Strings
             return false;
         }
 
-        return Strings::startsWith(strrev($needle), strrev($haystack));
+        return self::startsWith(strrev($needle), strrev($haystack));
     }
 
     /**
@@ -546,7 +546,7 @@ class Strings
             return '';
         }
 
-        return substr($string, $pos+strlen($boundary));
+        return substr($string, $pos + strlen($boundary));
     }
 
     /**
@@ -628,7 +628,7 @@ class Strings
 
         // Convert some-string to someController
         $do_upper = false;
-        for ($i = 0; $i < strlen($str); $i++) {
+        for ($i = 0; $i < strlen($str); ++$i) {
             if ($str[$i] == '-') {
                 $do_upper = true;
             } elseif ($do_upper) {
@@ -758,35 +758,35 @@ class Strings
         $linebreak = "=0D=0A=\r\n";
 
         $line_max       = $line_max - strlen($linebreak);
-        $escape         = "=";
-        $output         = "";
-        $cur_conv_line  = "";
+        $escape         = '=';
+        $output         = '';
+        $cur_conv_line  = '';
         $length         = 0;
         $whitespace_pos = 0;
         $addtl_chars    = 0;
 
-        for ($j = 0; $j<count($lines); $j++) {
+        for ($j = 0; $j < count($lines); ++$j) {
             $line   = $lines[$j];
             $linlen = strlen($line);
 
-            for ($i = 0; $i < $linlen; $i++) {
+            for ($i = 0; $i < $linlen; ++$i) {
                 $c   = substr($line, $i, 1);
                 $dec = ord($c);
 
-                $length++;
+                ++$length;
 
                 if ($dec == 32) {
                     // space occurring at end of line, need to encode
                     if (($i == ($linlen - 1))) {
-                        $c = "=20";
+                        $c = '=20';
                         $length += 2;
                     }
 
                     $addtl_chars    = 0;
                     $whitespace_pos = $i;
                 } elseif (($dec == 61) || ($dec < 32) || ($dec > 126)) {
-                    $h2 = floor($dec/16);
-                    $h1 = floor($dec%16);
+                    $h2 = floor($dec / 16);
+                    $h1 = floor($dec % 16);
                     $c  = $escape.$hex["$h2"].$hex["$h1"];
                     $length += 2;
                     $addtl_chars += 2;
@@ -805,9 +805,9 @@ class Strings
                     /* the text after the whitespace will have to be read
                      * again ( + any additional characters that came into
                      * existence as a result of the encoding process after the whitespace) */
-                    $i =  $i - $whitesp_diff + $addtl_chars;
+                    $i = $i - $whitesp_diff + $addtl_chars;
 
-                    $cur_conv_line  = "";
+                    $cur_conv_line  = '';
                     $length         = 0;
                     $whitespace_pos = 0;
                 } else {
@@ -819,9 +819,9 @@ class Strings
             $length         = 0;
             $whitespace_pos = 0;
             $output .= $cur_conv_line;
-            $cur_conv_line = "";
+            $cur_conv_line = '';
 
-            if ($j <= count($lines)-1) {
+            if ($j <= count($lines) - 1) {
                 $output .= $linebreak;
             }
         }
@@ -990,7 +990,7 @@ class Strings
     {
         // Might be missing delims
         if (@preg_match($input, 'test') === false) {
-            $input = "/".str_replace('/', '\\/', $input)."/";
+            $input = '/'.str_replace('/', '\\/', $input).'/';
         }
 
         // Check if its still invalid
@@ -1014,7 +1014,7 @@ class Strings
             return false;
         }
 
-        $modifiers = substr($input, $pos+1);
+        $modifiers = substr($input, $pos + 1);
         if (strpos($modifiers, 'e') !== false) {
             return false;
         }
@@ -1069,7 +1069,7 @@ class Strings
     {
         $ret = '';
         $len = strlen($string);
-        for ($i = 0; $i < $len; $i++) {
+        for ($i = 0; $i < $len; ++$i) {
             $hex = hexdec(ord($string[$i]));
             if ($hex) {
                 $ret .= isset($hex[1]) ? '%'.strtoupper($hex) : '%0'.strtoupper($hex);
@@ -1093,15 +1093,15 @@ class Strings
     {
         $pattern  = '#\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))#';
         $callback = function ($matches) use ($short) {
-            $url       = array_shift($matches);
+            $url = array_shift($matches);
 
             $text = parse_url($url, PHP_URL_HOST).parse_url($url, PHP_URL_PATH);
-            $text = preg_replace("/^www./", "", $text);
+            $text = preg_replace('/^www./', '', $text);
 
             if ($short) {
-                $last = -(strlen(strrchr($text, "/"))) + 1;
+                $last = -(strlen(strrchr($text, '/'))) + 1;
                 if ($last < 0) {
-                    $text = substr($text, 0, $last)."&hellip;";
+                    $text = substr($text, 0, $last).'&hellip;';
                 }
             }
 
@@ -1124,7 +1124,7 @@ class Strings
         $ret = '';
         $len = strlen($string);
 
-        for ($i = 0; $i < $len; $i++) {
+        for ($i = 0; $i < $len; ++$i) {
             $enc = htmlentities($string[$i], ENT_QUOTES);
             $ret .= $string[$i] == $enc[0] ? '&#'.ord($string[$i]) : $enc;
         }
@@ -1250,8 +1250,8 @@ class Strings
             $string = preg_replace('#^\s*(<br>|<br />|<p></p>|<p>\s*</p>|<p><br\s*/?></p>|<p>&nbsp;</p>|&nsbp;)\s*#iu', '', $string);
 
             // Trailing whitespace in a trailing div wrapper
-            $string = preg_replace('#\s*(<br>|<br />|<p></p>|<p>\s*</p>|<p><br\s*/?></p>|<p>&nbsp;</p>|<p>&\#xA0;</p>|<p>'.Strings::chrUni(160).'</p>|&nsbp;)\s*</div>$#iu', '</div>', $string);
-            $string = preg_replace('#(<br>|<br />|<p></p>|<p>\s*</p>|<p><br\s*/?></p>|<p>&nbsp;</p>|<p>&\#xA0;</p>|<p>'.Strings::chrUni(160).'</p>|&nsbp;)$#i', '', $string);
+            $string = preg_replace('#\s*(<br>|<br />|<p></p>|<p>\s*</p>|<p><br\s*/?></p>|<p>&nbsp;</p>|<p>&\#xA0;</p>|<p>'.self::chrUni(160).'</p>|&nsbp;)\s*</div>$#iu', '</div>', $string);
+            $string = preg_replace('#(<br>|<br />|<p></p>|<p>\s*</p>|<p><br\s*/?></p>|<p>&nbsp;</p>|<p>&\#xA0;</p>|<p>'.self::chrUni(160).'</p>|&nsbp;)$#i', '', $string);
 
             // Trailing empty containers
             $string = preg_replace('#<div>\s*</div>\s*$#iu', '', $string);
@@ -1262,7 +1262,7 @@ class Strings
 
             $string = preg_replace('#(<hr />|<hr>|<hr></hr>)+$#iu', '', $string);
             $string = preg_replace('#(<hr />|<hr>|<hr></hr>)+$#iu', '', $string);
-        } while ($string != $old_string && $x++ < 1000 && (time()-$time_start) < 10);
+        } while ($string != $old_string && $x++ < 1000 && (time() - $time_start) < 10);
 
         return $string;
     }
@@ -1277,7 +1277,7 @@ class Strings
      */
     public static function trimHtmlAdvanced($html)
     {
-        $html = Strings::extractBodyTag($html);
+        $html = self::extractBodyTag($html);
         $html = str_replace('<span></span>', '', $html);
 
         // Always wrap with body, or else in an attempt to fix structure
@@ -1321,7 +1321,7 @@ class Strings
         ob_start();
         $qp->writeXHTML();
         $html = ob_get_clean();
-        $html = Strings::extractBodyTag($html);
+        $html = self::extractBodyTag($html);
 
         // Unwrap outer divs, p's, spans
         do {
@@ -1346,7 +1346,7 @@ class Strings
                     $html = preg_replace('#^<p.*?>#', '', $html);
                 }
 
-                $html = Strings::extractBodyTag($html);
+                $html = self::extractBodyTag($html);
                 $html = '<body>'.$html.'</body>';
             }
 
@@ -1357,7 +1357,7 @@ class Strings
         $qp->writeXHTML();
         $html = ob_get_clean();
 
-        $html = Strings::extractBodyTag($html);
+        $html = self::extractBodyTag($html);
         $html = str_replace('<br></br>', '<br />', $html);
 
         $html_before = $html;
@@ -1592,14 +1592,14 @@ class Strings
             do {
                 $changed = false;
 
-                $pos = strpos($value, "<body");
+                $pos = strpos($value, '<body');
                 if ($pos !== false) {
                     $changed = true;
                     $value   = substr($value, $pos);
 
                     // Cut out the rest of the body tag too, eg if it was <body class="abc"> we're finding the ">" part of that
-                    $pos   = strpos($value, ">");
-                    $value = substr($value, $pos+1);
+                    $pos   = strpos($value, '>');
+                    $value = substr($value, $pos + 1);
                 }
             } while ($changed);
 
@@ -1652,8 +1652,8 @@ class Strings
      * If $raw is enabled the format changes slightly:
      *    array('string' => $string, 'files' => array(array('token' => 'xxx', 'raw_data' => 'xxx')));
      *
-     * @param string  $string The string to process
-     * @param boolean $raw    Dont base64 decode the images, return the raw string
+     * @param string $string The string to process
+     * @param bool   $raw    Dont base64 decode the images, return the raw string
      *
      * @return array
      */
@@ -1725,11 +1725,11 @@ class Strings
             $data_url = substr($data_url, 5);
         }
 
-        $colon_pos  = strpos($data_url, ';');
-        $comma_pos  = strpos($data_url, ',');
-        $mime_type  = substr($data_url, 0, $colon_pos);
-        $data       = substr($data_url, $comma_pos+1);
-        $data       = @base64_decode($data);
+        $colon_pos = strpos($data_url, ';');
+        $comma_pos = strpos($data_url, ',');
+        $mime_type = substr($data_url, 0, $colon_pos);
+        $data      = substr($data_url, $comma_pos + 1);
+        $data      = @base64_decode($data);
 
         return array('type' => $mime_type, 'data' => $data);
     }
@@ -2062,7 +2062,7 @@ class Strings
     public static function trimLines($string, $chars = null, $mode = 'trim')
     {
         if ($mode != 'trim' && $mode != 'rtrim' && $mode != 'ltrim') {
-            throw new \InvalidArgumentException("Invalid trim mode. Must be trim, rtrim or ltrim");
+            throw new \InvalidArgumentException('Invalid trim mode. Must be trim, rtrim or ltrim');
         }
 
         $string = explode("\n", $string);
@@ -2107,6 +2107,7 @@ class Strings
      * Does a "real" trim, triming other whitespace like non-breaking spaces.
      *
      * @param $string
+     *
      * @return string
      */
     public static function trimWhitespace($string)
@@ -2128,24 +2129,24 @@ class Strings
     {
         $body = self::standardEol($string);
         $body = str_replace("\n", '', $body);
-        $body = preg_replace('#</div>\s*<br[^>]*>#i', "</div>", $body);
-        $body = preg_replace('#</div>#i', "<br />", $body);
+        $body = preg_replace('#</div>\s*<br[^>]*>#i', '</div>', $body);
+        $body = preg_replace('#</div>#i', '<br />', $body);
         $body = preg_replace('#<br[^>]*>#i', "\n", $body);
         $body = preg_replace('#<p[^>]*>#i', "\n", $body);
-        $body = Strings::stripTags($body);
-        $body = Strings::decodeHtmlEntities($body);
+        $body = self::stripTags($body);
+        $body = self::decodeHtmlEntities($body);
         $body = preg_replace('#\x{00a0}#u', ' ', $body); // nbsp's
         $body = trim($body);
 
         return $body;
     }
 
-
     /**
      * Converts a plain-text string into HTML.
      *
      * @param string $string
      * @param string $wrap_class
+     *
      * @return string
      */
     public static function text2html($string, $wrap_class = null)
@@ -2156,7 +2157,7 @@ class Strings
 
         $body = @htmlspecialchars($body, ENT_QUOTES, 'UTF-8');
         $body = nl2br($body, true);
-        $body = preg_replace_callback('#( {2,})#', function($m) {
+        $body = preg_replace_callback('#( {2,})#', function ($m) {
             return str_repeat('&nbsp;', strlen($m[1]));
         }, $body);
 
@@ -2166,7 +2167,6 @@ class Strings
             return $body;
         }
     }
-
 
     /**
      * Remove all empty lines in a string.
@@ -2223,7 +2223,7 @@ class Strings
 
         if ($titles) {
             foreach ($titles as $idx => $t) {
-                $tmp = Strings::utf8_strlen($t);
+                $tmp = self::utf8_strlen($t);
                 if (!isset($lens[$idx]) || $tmp > $lens[$idx]) {
                     $lens[$idx] = $tmp;
                 }
@@ -2232,7 +2232,7 @@ class Strings
 
         foreach ($array as $row) {
             foreach ($row as $idx => $t) {
-                $tmp = Strings::utf8_strlen($t);
+                $tmp = self::utf8_strlen($t);
                 if (!isset($lens[$idx]) || $tmp > $lens[$idx]) {
                     $lens[$idx] = $tmp;
                 }
@@ -2354,7 +2354,7 @@ class Strings
 
         $html = preg_replace('#(<br\s*/?>\s*)+$#', '', $html);
         $html = preg_replace('#\x{00a0}#u', ' ', $html);
-        $html = preg_replace_callback('#( {2,})#', function($m) {
+        $html = preg_replace_callback('#( {2,})#', function ($m) {
             return str_repeat('&nbsp;', strlen($m[1]));
         }, trim($html));
 
@@ -2446,8 +2446,8 @@ class Strings
             '&#xa;'  => "\n",
             '&#13;'  => "\r",
             '&#xd;'  => "\r",
-            '&#9;'   => "	",
-            '&#x9;'  => "	",
+            '&#9;'   => '	',
+            '&#x9;'  => '	',
             '&#32;'  => ' ',
             '&#x20;' => ' ',
             '&#160;' => '&nbsp;',
@@ -2649,49 +2649,49 @@ class Strings
         }
 
         static $funcmap = array(
-            'utf8_strlen'                      => '__CORE__',
-            'utf8_strpos'                      => '__CORE__',
-            'utf8_strrpos'                     => '__CORE__',
-            'utf8_substr'                      => '__CORE__',
-            'utf8_strtolower'                  => '__CORE__',
-            'utf8_strtoupper'                  => '__CORE__',
-            'utf8_ord'                         => 'ord.php',
-            'utf8_ireplace'                    => 'str_ireplace.php',
-            'utf8_str_pad'                     => 'str_pad.php',
-            'utf8_str_split'                   => 'str_split.php',
-            'utf8_strcasecmp'                  => 'strcasecmp.php',
-            'utf8_strcspn'                     => 'strcspn.php',
-            'utf8_stristr'                     => 'stristr.php',
-            'utf8_strrev'                      => 'strrev.php',
-            'utf8_strspn'                      => 'strspn.php',
-            'utf8_substr_replace'              => 'substr_replace.php',
-            'utf8_ltrim'                       => 'trim.php',
-            'utf8_rtrim'                       => 'trim.php',
-            'utf8_trim'                        => 'trim.php',
-            'utf8_ucfirst'                     => 'ucfirst.php',
-            'utf8_ucwords'                     => 'ucwords.php',
-            'utf8_is_ascii'                    => 'utils/ascii.php',
-            'utf8_is_ascii_ctrl'               => 'utils/ascii.php',
-            'utf8_strip_non_ascii'             => 'utils/ascii.php',
-            'utf8_strip_ascii_ctrl'            => 'utils/ascii.php',
-            'utf8_strip_non_ascii_ctrl'        => 'utils/ascii.php',
-            'utf8_accents_to_ascii'            => 'utils/ascii.php',
-            'utf8_bad_find'                    => 'utils/bad.php',
-            'utf8_bad_findall'                 => 'utils/bad.php',
-            'utf8_bad_strip'                   => 'utils/bad.php',
-            'utf8_bad_replace'                 => 'utils/bad.php',
-            'utf8_bad_identify'                => 'utils/bad.php',
-            'utf8_bad_explain'                 => 'utils/bad.php',
-            'utf8_byte_position'               => 'utils/position.php',
-            'utf8_locate_current_chr'          => 'utils/position.php',
-            'utf8_locate_next_chr'             => 'utils/position.php',
-            'utf8_specials_pattern'            => 'utils/specials.php',
-            'utf8_is_word_chars'               => 'utils/specials.php',
-            'utf8_strip_specials'              => 'utils/specials.php',
-            'utf8_to_unicode'                  => 'utils/unicode.php',
-            'utf8_from_unicode'                => 'utils/unicode.php',
-            'utf8_is_valid'                    => 'utils/validation.php',
-            'utf8_compliant'                   => 'utils/validation.php',
+            'utf8_strlen'               => '__CORE__',
+            'utf8_strpos'               => '__CORE__',
+            'utf8_strrpos'              => '__CORE__',
+            'utf8_substr'               => '__CORE__',
+            'utf8_strtolower'           => '__CORE__',
+            'utf8_strtoupper'           => '__CORE__',
+            'utf8_ord'                  => 'ord.php',
+            'utf8_ireplace'             => 'str_ireplace.php',
+            'utf8_str_pad'              => 'str_pad.php',
+            'utf8_str_split'            => 'str_split.php',
+            'utf8_strcasecmp'           => 'strcasecmp.php',
+            'utf8_strcspn'              => 'strcspn.php',
+            'utf8_stristr'              => 'stristr.php',
+            'utf8_strrev'               => 'strrev.php',
+            'utf8_strspn'               => 'strspn.php',
+            'utf8_substr_replace'       => 'substr_replace.php',
+            'utf8_ltrim'                => 'trim.php',
+            'utf8_rtrim'                => 'trim.php',
+            'utf8_trim'                 => 'trim.php',
+            'utf8_ucfirst'              => 'ucfirst.php',
+            'utf8_ucwords'              => 'ucwords.php',
+            'utf8_is_ascii'             => 'utils/ascii.php',
+            'utf8_is_ascii_ctrl'        => 'utils/ascii.php',
+            'utf8_strip_non_ascii'      => 'utils/ascii.php',
+            'utf8_strip_ascii_ctrl'     => 'utils/ascii.php',
+            'utf8_strip_non_ascii_ctrl' => 'utils/ascii.php',
+            'utf8_accents_to_ascii'     => 'utils/ascii.php',
+            'utf8_bad_find'             => 'utils/bad.php',
+            'utf8_bad_findall'          => 'utils/bad.php',
+            'utf8_bad_strip'            => 'utils/bad.php',
+            'utf8_bad_replace'          => 'utils/bad.php',
+            'utf8_bad_identify'         => 'utils/bad.php',
+            'utf8_bad_explain'          => 'utils/bad.php',
+            'utf8_byte_position'        => 'utils/position.php',
+            'utf8_locate_current_chr'   => 'utils/position.php',
+            'utf8_locate_next_chr'      => 'utils/position.php',
+            'utf8_specials_pattern'     => 'utils/specials.php',
+            'utf8_is_word_chars'        => 'utils/specials.php',
+            'utf8_strip_specials'       => 'utils/specials.php',
+            'utf8_to_unicode'           => 'utils/unicode.php',
+            'utf8_from_unicode'         => 'utils/unicode.php',
+            'utf8_is_valid'             => 'utils/validation.php',
+            'utf8_compliant'            => 'utils/validation.php',
         );
 
         if (isset($funcmap[$name])) {

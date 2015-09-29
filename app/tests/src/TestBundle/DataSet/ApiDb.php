@@ -1,49 +1,45 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\FeedbackCategory;
-use Application\DeskPRO\Entity\FeedbackComment;
-use Application\DeskPRO\Entity\LabelFeedback;
-use DeskPRO\Bundle\AppBundle\Entity\Task;
 use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Usersource;
-use Application\InstallBundle\Data\DefaultDataProcessor;
+use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 
@@ -106,39 +102,38 @@ class ApiDb extends AbstractDbSet
             true
         );
 
-
         // this will be refactored into a better "entity creator" once the api data set needs more elaborate data
         // we need a brand and some deps, and some other entities
-        $dep1 = new Department;
-        $dep1->title = "sales";
-        $dep2 = new Department;
-        $dep2->title = "support";
-        $brand = new Brand();
-        $team = new AgentTeam;
-        $team->name = "test team";
-        $ticket_def = new CustomDefTicket();
-        $ticket_def->title = "def";
+        $dep1              = new Department();
+        $dep1->title       = 'sales';
+        $dep2              = new Department();
+        $dep2->title       = 'support';
+        $brand             = new Brand();
+        $team              = new AgentTeam();
+        $team->name        = 'test team';
+        $ticket_def        = new CustomDefTicket();
+        $ticket_def->title = 'def';
 
         // Create a basic task
         $task = new Task($admin);
-        $task->setTitle("A demo task");
+        $task->setTitle('A demo task');
         $taskAssignment = new TaskAssignment();
         $taskAssignment->setTask($task);
         $taskAssignment->setPerson($admin);
 
         $unassignedTask = new Task($admin);
-        $unassignedTask->setTitle("An unassigned task");
+        $unassignedTask->setTitle('An unassigned task');
 
         // Create a new knowledge base article
-        $article = new Article();
-        $article->slug = 'test';
-        $article->title = 'A test article';
-        $article->content = 'This is a test article';
-        $article->view_count = 0;
+        $article               = new Article();
+        $article->slug         = 'test';
+        $article->title        = 'A test article';
+        $article->content      = 'This is a test article';
+        $article->view_count   = 0;
         $article->total_rating = 0;
         $article->num_comments = 0;
-        $article->num_ratings = 0;
-        $article->status = 'published';
+        $article->num_ratings  = 0;
+        $article->status       = 'published';
         $article->date_created = new \DateTime();
 
         // Persist them in the entity manager
@@ -157,13 +152,13 @@ class ApiDb extends AbstractDbSet
 
         $types = array('user', 'agent');
         foreach ($types as $type) {
-            $deskProUsers = new Usersource();
-            $deskProUsers->type = $type;
-            $deskProUsers->source_type = 'Application\\DeskPRO\\Usersource\\Adapter\\DeskPRO';
-            $deskProUsers->is_enabled = true;
+            $deskProUsers                = new Usersource();
+            $deskProUsers->type          = $type;
+            $deskProUsers->source_type   = 'Application\\DeskPRO\\Usersource\\Adapter\\DeskPRO';
+            $deskProUsers->is_enabled    = true;
             $deskProUsers->display_order = -10; // ensure #1 order (initially!)
-            $deskProUsers->title = 'DeskPRO';
-            $deskProUsers->options = array();
+            $deskProUsers->title         = 'DeskPRO';
+            $deskProUsers->options       = array();
             $this->getEm()->persist($deskProUsers);
         }
 
@@ -350,7 +345,6 @@ class ApiDb extends AbstractDbSet
             ;
         "
         );
-
 
         $this->getDb()->exec(
             "
@@ -685,7 +679,7 @@ class ApiDb extends AbstractDbSet
         );
         // end of ArticlePendingCreate
 
-        $count++;
+        ++$count;
 
         return $count;
     }

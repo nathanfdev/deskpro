@@ -1,39 +1,35 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder;
-
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpMethod;
 
 class PhpClass
 {
@@ -46,15 +42,15 @@ class PhpClass
     public function __construct()
     {
         $this->properties = array();
-        $this->methods = array();
+        $this->methods    = array();
         $this->implements = array();
     }
 
     public function __toString()
     {
-        $name = $this->getName();
-        $properties = $this->generatePropertiesString();
-        $methods = $this->generateMethodsString();
+        $name              = $this->getName();
+        $properties        = $this->generatePropertiesString();
+        $methods           = $this->generateMethodsString();
         $class_declaration = $this->generateClassDeclaration();
 
         return <<< PHPCODE
@@ -78,7 +74,7 @@ PHPCODE;
         $declaration = 'class ';
         $declaration .= $this->getName();
         if ($extends = $this->getExtends()) {
-            $declaration .= ' extends ' . $extends;
+            $declaration .= ' extends '.$extends;
         }
         if (count($implements = $this->getImplements())) {
             $declaration .= ' implements ';
@@ -93,7 +89,7 @@ PHPCODE;
         $return = array();
 
         foreach ($this->getMethods() as $method) {
-            $return[] = (string)$method;
+            $return[] = (string) $method;
         }
 
         return implode("\n\n", $return);
@@ -103,7 +99,7 @@ PHPCODE;
     {
         $return = array();
         foreach ($this->properties as $property_info) {
-            $string = $property_info['visibility'] . ' $' . $property_info['name'];
+            $string = $property_info['visibility'].' $'.$property_info['name'];
             if ($default = $property_info['default']) {
                 $string .= ' = ';
                 if (is_int($default) || is_float($default) || in_array(
@@ -117,7 +113,7 @@ PHPCODE;
                 }
             }
 
-            $return[] = $string . ';';
+            $return[] = $string.';';
         }
 
         return implode("\n", $return);
@@ -153,9 +149,9 @@ PHPCODE;
             $visibility = 'public';
         }
         $this->properties[$name] = array(
-            'name' => $name,
+            'name'       => $name,
             'visibility' => $visibility,
-            'default' => $default
+            'default'    => $default,
         );
     }
 
@@ -235,7 +231,7 @@ PHPCODE;
             return $this->properties[$property_name];
         }
 
-        return null;
+        return;
     }
 
     public function getMethod($method_name)
@@ -246,7 +242,7 @@ PHPCODE;
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -272,7 +268,7 @@ PHPCODE;
         $constructor->addArgument($property, $type);
 
         $code = $constructor->getCode();
-        $code .= '$this->' . $property . ' = $' . $property . ';';
+        $code .= '$this->'.$property.' = $'.$property.';';
         $constructor->setCode($code);
     }
 }

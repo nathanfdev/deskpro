@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\EmailBundle\SwiftMailer\Plugins;
 
 use Psr\Log\LoggerInterface;
@@ -157,9 +157,9 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
         $command = $evt->getCommand();
 
         if ($this->is_connected) {
-            $this->addMessageLog(sprintf(">> %s", $command));
+            $this->addMessageLog(sprintf('>> %s', $command));
         } else {
-            $this->addConnectionLog(sprintf(">> %s", $command));
+            $this->addConnectionLog(sprintf('>> %s', $command));
         }
     }
 
@@ -172,9 +172,9 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
     {
         $response = $evt->getResponse();
         if ($this->is_connected) {
-            $this->addMessageLog(sprintf("<< %s", $response));
+            $this->addMessageLog(sprintf('<< %s', $response));
         } else {
-            $this->addConnectionLog(sprintf("<< %s", $response));
+            $this->addConnectionLog(sprintf('<< %s', $response));
         }
     }
 
@@ -186,7 +186,7 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
     public function beforeTransportStarted(\Swift_Events_TransportChangeEvent $evt)
     {
         $transportName = get_class($evt->getSource());
-        $this->addConnectionLog(sprintf("++ Starting %s", $transportName));
+        $this->addConnectionLog(sprintf('++ Starting %s', $transportName));
     }
 
     /**
@@ -197,7 +197,7 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
     public function transportStarted(\Swift_Events_TransportChangeEvent $evt)
     {
         $transportName = get_class($evt->getSource());
-        $this->addConnectionLog(sprintf("++ %s started", $transportName));
+        $this->addConnectionLog(sprintf('++ %s started', $transportName));
         $this->is_connected = true;
     }
 
@@ -233,11 +233,11 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
     {
         // Reset message logger
         $this->message_logs = array();
-        $this->message_count++;
+        ++$this->message_count;
 
         // Prepend connection log so the log for a single message is 'complete'
         if ($this->connection_log) {
-            $this->addMessageLog(sprintf("%d messages were sent before this. Here is the connection log from the initial connection:", $this->message_count-1));
+            $this->addMessageLog(sprintf('%d messages were sent before this. Here is the connection log from the initial connection:', $this->message_count - 1));
             foreach ($this->connection_log as $l) {
                 $this->addMessageLog('<Connect History> '.$l);
             }
@@ -264,9 +264,9 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
         $message = $e->getMessage();
 
         if ($this->is_connected) {
-            $this->addMessageLog(sprintf("!! %s", $message));
+            $this->addMessageLog(sprintf('!! %s', $message));
         } else {
-            $this->addConnectionLog(sprintf("!! %s", $message));
+            $this->addConnectionLog(sprintf('!! %s', $message));
         }
 
         $message .= PHP_EOL;

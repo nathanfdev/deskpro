@@ -1,39 +1,39 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketTrigger;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
@@ -112,10 +112,10 @@ class TicketsController extends AbstractController
                 'resolved_tickets'          => $resolved_pager,
                 'resolved_tickets_pg_param' => $resolved_pg_param,
 
-                'type'   => $type,
-                'person' => $person,
+                'type'        => $type,
+                'person'      => $person,
                 'breadcrumbs' => $breadcrumbs,
-                'page_title' => $this->createPageTitle()->tickets()
+                'page_title'  => $this->createPageTitle()->tickets(),
             )
         );
     }
@@ -131,7 +131,7 @@ class TicketsController extends AbstractController
         }
 
         if (!$this->isGranted(TicketsVoter::TICKET_VIEW, $ticket)) {
-            throw new AccessDeniedException;
+            throw new AccessDeniedException();
         }
 
         $form_data = array(
@@ -149,7 +149,7 @@ class TicketsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            if ($form->getClickedButton()->getConfig()->getName() !== "more_attachments") {
+            if ($form->getClickedButton()->getConfig()->getName() !== 'more_attachments') {
                 // We don't continue here if they just clicked the "add more attachments" button
                 $this->saveNewReply($ticket, $message);
 
@@ -174,7 +174,7 @@ class TicketsController extends AbstractController
                 'can_edit'    => $this->isGranted('TICKET_EDIT', $ticket),
                 'form'        => $form->createView(),
                 'breadcrumbs' => $breadcrumbs,
-                'page_title' => $this->createPageTitle()->tickets($ticket)
+                'page_title'  => $this->createPageTitle()->tickets($ticket),
             )
         );
     }
@@ -205,7 +205,6 @@ class TicketsController extends AbstractController
         // BREADCRUMBS
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
 
-
         // TODO: if a user is logged in, we might want to allow SOME interaction on the ticket here...
 
         return $this->renderThemeView(
@@ -214,7 +213,7 @@ class TicketsController extends AbstractController
                 'ticket'      => $ticket_view,
                 'timeline'    => $timeline,
                 'breadcrumbs' => $breadcrumbs,
-                'page_title' => $this->createPageTitle()->tickets($ticket)
+                'page_title'  => $this->createPageTitle()->tickets($ticket),
             )
         );
     }
@@ -230,7 +229,7 @@ class TicketsController extends AbstractController
         }
 
         if (!$this->isGranted(TicketsVoter::TICKET_EDIT, $ticket)) {
-            throw new AccessDeniedException;
+            throw new AccessDeniedException();
         }
 
         $person = $this->getUser();
@@ -269,7 +268,7 @@ class TicketsController extends AbstractController
                 'form'        => $form->createView(),
                 'rerendering' => $rerendering,
                 'breadcrumbs' => $breadcrumbs,
-                'page_title' => $this->createPageTitle()->tickets($ticket)
+                'page_title'  => $this->createPageTitle()->tickets($ticket),
             )
         );
     }
@@ -285,7 +284,7 @@ class TicketsController extends AbstractController
         }
 
         if (!$this->isGranted(TicketsVoter::TICKET_EDIT, $ticket)) {
-            throw new AccessDeniedException;
+            throw new AccessDeniedException();
         }
 
         // already resolved, no need to proceed
@@ -306,12 +305,11 @@ class TicketsController extends AbstractController
         }
 
         return $this->renderThemeView('Theme:Tickets:resolve.html.twig', array(
-            'ticket' => $ticket,
+            'ticket'      => $ticket,
             'breadrcumbs' => $this->getBreadcrumbGenerator()->buildTicketEdit($ticket),
-            'page_title' => $this->createPageTitle()->tickets($ticket)
+            'page_title'  => $this->createPageTitle()->tickets($ticket),
         ));
     }
-
 
     /**
      * @Route("/tickets/{ticket_ref}/unresolve", name="portal_tickets_unresolve")
@@ -325,7 +323,7 @@ class TicketsController extends AbstractController
         }
 
         if (!$this->isGranted(TicketsVoter::TICKET_EDIT, $ticket)) {
-            throw new AccessDeniedException;
+            throw new AccessDeniedException();
         }
 
         $person = $this->getUser();
@@ -348,9 +346,10 @@ class TicketsController extends AbstractController
     }
 
     /**
-     * ticket_ref can either be an ID or a ref depending on settings
+     * ticket_ref can either be an ID or a ref depending on settings.
      *
      * @param $ticket_ref
+     *
      * @return Ticket|null
      */
     protected function getTicketByRefOrId($ticket_ref)
@@ -374,7 +373,7 @@ class TicketsController extends AbstractController
             $em->persist($ticket);
 
             $ticket_manager = $this->getTicketManager();
-            $context = $ticket_manager->createUserExecutorContext($person, $event_type, 'portal');
+            $context        = $ticket_manager->createUserExecutorContext($person, $event_type, 'portal');
 
             $ticket_manager->saveTicket($ticket, $context);
             $em->flush();
@@ -402,7 +401,7 @@ class TicketsController extends AbstractController
             $em->persist($message);
 
             $ticket_manager = $this->getTicketManager();
-            $context = $ticket_manager->createUserExecutorContext($person, $event_type, 'portal');
+            $context        = $ticket_manager->createUserExecutorContext($person, $event_type, 'portal');
 
             $ticket_manager->saveTicket($ticket, $context);
             $em->flush();

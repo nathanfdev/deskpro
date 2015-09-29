@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\Entity;
@@ -73,8 +73,9 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
     }
 
     /**
-     * @param  string                                  $caption
-     * @param  bool                                    $require_agent
+     * @param string $caption
+     * @param bool   $require_agent
+     *
      * @return \Application\DeskPRO\Entity\Person|null
      */
     private function askForAgent($caption, $require_agent = true)
@@ -85,7 +86,7 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
         $agent = $this->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($email);
 
         if (!$agent || ($require_agent && !$agent->can_agent)) {
-            $this->output->writeln("<error>There is no person with that email address.</error>");
+            $this->output->writeln('<error>There is no person with that email address.</error>');
 
             return;
         }
@@ -94,8 +95,9 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
     }
 
     /**
-     * @param  string                                  $caption
-     * @param  bool                                    $require_agent
+     * @param string $caption
+     * @param bool   $require_agent
+     *
      * @return \Application\DeskPRO\Entity\Person|null
      */
     private function getAgentFromInput($caption, $require_agent = true)
@@ -116,10 +118,10 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
             if (!$agent || ($require_agent && !$agent->can_agent)) {
                 if ($input_id) {
-                    $this->output->writeln("<error>There is no person with that ID.</error>");
+                    $this->output->writeln('<error>There is no person with that ID.</error>');
                 }
                 if ($input_email) {
-                    $this->output->writeln("<error>There is no person with that email address.</error>");
+                    $this->output->writeln('<error>There is no person with that email address.</error>');
                 }
 
                 return;
@@ -158,7 +160,7 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
             case 'list':
                 return $this->listAction();
             default:
-                $output->writeln("The following actions are supported:");
+                $output->writeln('The following actions are supported:');
                 $output->writeln("\treset-password");
                 $output->writeln("\tmake-admin");
                 $output->writeln("\tmake-billing");
@@ -200,7 +202,7 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
      */
     private function resetPasswordAction()
     {
-        $agent = $this->getAgentFromInput("Enter the email address of the agent to reset the password for");
+        $agent = $this->getAgentFromInput('Enter the email address of the agent to reset the password for');
         if (!$agent) {
             return 1;
         }
@@ -208,7 +210,7 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
         if ($this->input->getOption('value')) {
             $new_pass = trim($this->input->getOption('value'));
         } else {
-            $new_pass = $this->getHelper('dialog')->ask($this->output, "Enter the password to set> ", '');
+            $new_pass = $this->getHelper('dialog')->ask($this->output, 'Enter the password to set> ', '');
         }
         $agent->setPassword($new_pass);
 
@@ -225,17 +227,18 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
      */
     private function makeAgentAction()
     {
-        $agent = $this->getAgentFromInput("Enter the email address of the user you want to promote to an agent", false);
+        $agent = $this->getAgentFromInput('Enter the email address of the user you want to promote to an agent', false);
         if (!$agent) {
             return 1;
         }
 
         if ($agent->is_agent) {
             $this->output->writeln("{$agent->display_name} <$agent->email_address> is already an agent");
+
             return 0;
         }
 
-        $agent->is_agent = true;
+        $agent->is_agent  = true;
         $agent->can_admin = true;
         $this->getContainer()->getEm()->persist($agent);
         $this->getContainer()->getEm()->flush();
@@ -250,7 +253,7 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
      */
     private function makeAdminAction()
     {
-        $agent = $this->getAgentFromInput("Enter the email address of the agent you want to promote to admin");
+        $agent = $this->getAgentFromInput('Enter the email address of the agent you want to promote to admin');
         if (!$agent) {
             return 1;
         }
@@ -275,7 +278,7 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
      */
     private function makeBillingAction()
     {
-        $agent = $this->getAgentFromInput("Enter the email address of the agent you want to give billing permission to");
+        $agent = $this->getAgentFromInput('Enter the email address of the agent you want to give billing permission to');
         if (!$agent) {
             return 1;
         }
@@ -301,12 +304,12 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
     private function whitelistIpAction()
     {
         if (!$this->getContainer()->getSetting('agent.ip_security.enabled')) {
-            $this->output->writeln("IP Security is not enabled for your helpdesk.");
+            $this->output->writeln('IP Security is not enabled for your helpdesk.');
 
             return 0;
         }
 
-        $agent = $this->getAgentFromInput("Enter the email address of the agent to whitelist an IP for");
+        $agent = $this->getAgentFromInput('Enter the email address of the agent to whitelist an IP for');
         if (!$agent) {
             return 1;
         }
@@ -316,7 +319,7 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
         if ($this->input->getOption('value')) {
             $ip_address = trim($this->input->getOption('value'));
         } else {
-            $ip_address = $this->getHelper('dialog')->ask($this->output, "Enter the IP address to whitelist> ", '');
+            $ip_address = $this->getHelper('dialog')->ask($this->output, 'Enter the IP address to whitelist> ', '');
         }
 
         $existing_ips = $repo->getIpsForPerson($agent);
@@ -327,9 +330,9 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
             return 1;
         }
 
-        $whitelisted_ip                  = new Entity\WhiteListedIp();
-        $whitelisted_ip['person']        = $agent;
-        $whitelisted_ip['ip_address']    = $ip_address;
+        $whitelisted_ip               = new Entity\WhiteListedIp();
+        $whitelisted_ip['person']     = $agent;
+        $whitelisted_ip['ip_address'] = $ip_address;
 
         $this->getContainer()->getEm()->persist($whitelisted_ip);
         $this->getContainer()->getEm()->flush();

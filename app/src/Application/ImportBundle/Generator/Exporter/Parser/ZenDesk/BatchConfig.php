@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
@@ -33,10 +34,9 @@ use Application\ImportBundle\Generator\Exporter\Parser\BatchRetryAfterConfigInte
 use DateTime;
 
 /**
- * ZenDesk batch configuration
+ * ZenDesk batch configuration.
  *
  * Class BatchConfig
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
 final class BatchConfig extends AbstractBatchConfig implements BatchRetryAfterConfigInterface
 {
@@ -69,7 +69,7 @@ final class BatchConfig extends AbstractBatchConfig implements BatchRetryAfterCo
     }
 
     /**
-     * Returns people end time
+     * Returns people end time.
      *
      * @return DateTime
      */
@@ -79,19 +79,21 @@ final class BatchConfig extends AbstractBatchConfig implements BatchRetryAfterCo
     }
 
     /**
-     * Set people end time
+     * Set people end time.
      *
      * @param DateTime $end_time
+     *
      * @return $this
      */
     public function setPeopleEndTime(DateTime $end_time = null)
     {
         $this->people_end_time = $end_time;
+
         return $this;
     }
 
     /**
-     * Returns tickets end time
+     * Returns tickets end time.
      *
      * @return DateTime
      */
@@ -101,14 +103,16 @@ final class BatchConfig extends AbstractBatchConfig implements BatchRetryAfterCo
     }
 
     /**
-     * Set tickets end time
+     * Set tickets end time.
      *
      * @param DateTime $end_time
+     *
      * @return $this
      */
     public function setTicketsEndTime(DateTime $end_time = null)
     {
         $this->tickets_end_time = $end_time;
+
         return $this;
     }
 
@@ -126,16 +130,19 @@ final class BatchConfig extends AbstractBatchConfig implements BatchRetryAfterCo
     public function setRetryAfterTime(DateTime $retry_after_time = null)
     {
         $this->retry_after_time = $retry_after_time;
+
         return $this;
     }
 
     /**
      * @param bool $remaining
+     *
      * @return $this
      */
     public function setHasRemaining($remaining)
     {
-        $this->has_remaining = (bool)$remaining;
+        $this->has_remaining = (bool) $remaining;
+
         return $this;
     }
 
@@ -153,10 +160,10 @@ final class BatchConfig extends AbstractBatchConfig implements BatchRetryAfterCo
     public function toArray()
     {
         return array_merge(parent::toArray(), array(
-            'people_end_time'   => $this->getDateFormatOrNull($this->people_end_time),
-            'tickets_end_time'  => $this->getDateFormatOrNull($this->tickets_end_time),
-            'retry_after_time'  => $this->getDateFormatOrNull($this->retry_after_time),
-            'has_remaining'     => $this->has_remaining,
+            'people_end_time'  => $this->getDateFormatOrNull($this->people_end_time),
+            'tickets_end_time' => $this->getDateFormatOrNull($this->tickets_end_time),
+            'retry_after_time' => $this->getDateFormatOrNull($this->retry_after_time),
+            'has_remaining'    => $this->has_remaining,
         ));
     }
 }

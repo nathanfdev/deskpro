@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
 class DbalQueryBuilder
@@ -70,6 +68,7 @@ class DbalQueryBuilder
      *
      * @param $name_prefix
      * @param $value
+     *
      * @return string the parameter name
      */
     public function addParameter($name_prefix, $value)
@@ -79,7 +78,7 @@ class DbalQueryBuilder
 
     /**
      * This will do nothing if the table is already joined, else it will join the
-     * table with the given ON
+     * table with the given ON.
      *
      * @param $table_name
      * @param string $on
@@ -97,6 +96,7 @@ class DbalQueryBuilder
      * @param $table_name
      * @param string $on
      * @param string $type
+     *
      * @return string the join alias
      */
     public function addUniqueJoin($table_name, $on, $type = 'LEFT')
@@ -116,7 +116,7 @@ class DbalQueryBuilder
     }
 
     /**
-     * Take a DbalQueryPart, and add it to the query
+     * Take a DbalQueryPart, and add it to the query.
      *
      * @param DbalQueryPart $query_part
      */
@@ -135,14 +135,14 @@ class DbalQueryBuilder
         foreach ($query_part->getUniqueJoins() as $alias => $join_info) {
             // replace the proposed alias with "alias", because query will replace it with the real alias
             $on = $join_info['on'];
-            $on = str_replace('{' . $alias . '}', '{alias}', $on);
+            $on = str_replace('{'.$alias.'}', '{alias}', $on);
             // if any joins exist, replace the old alias with the new in the existing join ONs
             // this allows multiple unique joins to reference each other
             foreach ($join_renames as $old => $new) {
-                $on = str_replace('{' . $old . '}', $new, $on);
-                $on = str_replace('{' . $new . '}', $new, $on);
+                $on = str_replace('{'.$old.'}', $new, $on);
+                $on = str_replace('{'.$new.'}', $new, $on);
             }
-            $join_alias = $this->addUniqueJoin($join_info['table'], $on, $join_info['type']);
+            $join_alias           = $this->addUniqueJoin($join_info['table'], $on, $join_info['type']);
             $join_renames[$alias] = $join_alias;
             // everything still in the $query_part needs to be renamed to the real alias in the query
             $query_part->renameJoinAlias($alias, $join_alias);
@@ -155,8 +155,8 @@ class DbalQueryBuilder
         if ($where = $query_part->getWhereString()) {
             // now we must "inject" the proper join names into the WHERE clause
             foreach ($join_renames as $old => $new) {
-                $where = str_replace('{' . $old . '}', $new, $where);
-                $where = str_replace('{' . $new . '}', $new, $where);
+                $where = str_replace('{'.$old.'}', $new, $where);
+                $where = str_replace('{'.$new.'}', $new, $where);
             }
             $this->setWhereString($where);
         }

@@ -1,35 +1,34 @@
 <?php
 
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\EmailBundle\Command;
 
 use Application\EmailBundle\Entity\SendmailSource;
@@ -51,17 +50,17 @@ class SendSourceCommand extends ContainerAwareCommand
     const RETURN_SEND_FAILURE   = 500;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function configure()
     {
         $this->setName('dp:email:sendsource');
-        $this->addOption('info', 'i', InputOption::VALUE_NONE, "Do not actually process the source, just output info");
-        $this->addOption('source', 'u', InputOption::VALUE_NONE, "Output raw source. When used with --info, it will output info and the source at once.");
+        $this->addOption('info', 'i', InputOption::VALUE_NONE, 'Do not actually process the source, just output info');
+        $this->addOption('source', 'u', InputOption::VALUE_NONE, 'Output raw source. When used with --info, it will output info and the source at once.');
         $this->addOption('force', 'f', InputOption::VALUE_NONE, "Normally messages will only send if they are marked as 'pending' or 'retry'. Use --force if you want to send it even if it has some other status.");
-        $this->addOption('expect-pending', 'g', InputOption::VALUE_NONE, "Expect the status of the source to be PENDING. Use this when email messages are being queued and run from a queue server, and the queue server is executing this command.");
-        $this->addArgument('id', InputArgument::REQUIRED, "The record ID to send.");
-        $this->setHelp("Attempts to send an stored email source");
+        $this->addOption('expect-pending', 'g', InputOption::VALUE_NONE, 'Expect the status of the source to be PENDING. Use this when email messages are being queued and run from a queue server, and the queue server is executing this command.');
+        $this->addArgument('id', InputArgument::REQUIRED, 'The record ID to send.');
+        $this->setHelp('Attempts to send an stored email source');
     }
 
     /**
@@ -73,14 +72,14 @@ class SendSourceCommand extends ContainerAwareCommand
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         /** @var \Application\EmailBundle\Entity\SendmailSource $source */
         $source = $this->getContainer()->getEm()->find('EmailBundle:SendmailSource', $input->getArgument('id'));
         if (!$source) {
-            $output->writeln("<error>Unknown SendmailSource ID</error>");
+            $output->writeln('<error>Unknown SendmailSource ID</error>');
 
             return self::RETURN_NOT_FOUND;
         }
@@ -96,7 +95,7 @@ class SendSourceCommand extends ContainerAwareCommand
                     array('Ref', $source->getRef()),
                     array('Date', $source->getDateCreated()->format('Y-m-d H:i:s')),
                     array('Status', $source->getStatus()),
-                    array('Is Sent?', $source->getDateSent() ? "Yes :: ".$source->getDateSent()->format('Y-m-d H:i:s') : 'No'),
+                    array('Is Sent?', $source->getDateSent() ? 'Yes :: '.$source->getDateSent()->format('Y-m-d H:i:s') : 'No'),
                     array('Next Attempt', $source->getDateNextAttempt() ? $source->getDateNextAttempt()->format('Y-m-d H:i:s') : 'never'),
                     array('Send Attempts', $source->getExecCount()),
                 ));
@@ -134,17 +133,17 @@ class SendSourceCommand extends ContainerAwareCommand
         ################################################################################################################
 
         if ($input->getOption('expect-pending') && $source->getStatus() != SendmailSource::STATUS_PENDING) {
-            $output->writeln(sprintf("<info>Source is marked as %s</info>", $source->getStatus()));
-            $output->writeln("<error>Expected PENDING</error>.");
-            $output->writeln("Aborting. Use --force if you want to send this email anyway.");
+            $output->writeln(sprintf('<info>Source is marked as %s</info>', $source->getStatus()));
+            $output->writeln('<error>Expected PENDING</error>.');
+            $output->writeln('Aborting. Use --force if you want to send this email anyway.');
 
             return self::RETURN_EXPECT_PENDING;
         }
 
         if ($source->getStatus() != SendmailSource::STATUS_PENDING && $source->getStatus() != SendmailSource::STATUS_RETRY) {
-            $output->writeln(sprintf("<info>Source is marked as %s</info>", $source->getStatus()));
+            $output->writeln(sprintf('<info>Source is marked as %s</info>', $source->getStatus()));
             if (!$input->getOption('force')) {
-                $output->writeln("Aborting. Use --force if you want to send this email anyway.");
+                $output->writeln('Aborting. Use --force if you want to send this email anyway.');
 
                 return self::RETURN_STATUS_PREVENT;
             }

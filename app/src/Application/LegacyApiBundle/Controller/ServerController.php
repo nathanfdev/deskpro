@@ -1,50 +1,50 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Log\ErrorLog\ErrorLogReader;
+use Application\DeskPRO\Server\ApcStatus;
+use Application\DeskPRO\Server\CronStatus;
 use Application\DeskPRO\ServerFileCheck\ServerFileCheck;
 use Application\DeskPRO\ServerMysqlInfo\ServerMysqlInfo;
 use Application\DeskPRO\ServerMysqlSortOrder\ServerMysqlSortOrder;
 use Application\DeskPRO\ServerReportFile\ServerReportFile;
-use Application\DeskPRO\Server\ApcStatus;
-use Application\DeskPRO\Server\CronStatus;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 
 class ServerController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
@@ -502,24 +502,24 @@ class ServerController extends AbstractController implements ProtectedController
     {
         $status = new ApcStatus();
         $data   = array(
-            'is_enabled'          => $status->isEnabled(),
-            'is_problem'          => $status->guessIsProblem(),
-            'num_reqs'            => $status->getNumTotalReqs(),
-            'num_hits'            => $status->getNumHits(),
-            'num_misses'          => $status->getNumMisses(),
-            'perc_hit'            => $status->getHitPercent(),
-            'perc_hit_str'        => sprintf("%.1f", $status->getHitPercent()),
-            'perc_miss'           => $status->getMissPercent(),
-            'perc_miss_str'       => sprintf("%.1f", $status->getMissPercent()),
-            'mem_total'           => $status->getMemTotal(),
-            'mem_used'            => $status->getMemUsed(),
-            'mem_free'            => $status->getMemFree(),
-            'perc_mem_used'       => $status->getMemUsedPercent(),
-            'perc_mem_used_str'   => sprintf("%.1f", $status->getMemUsedPercent()),
-            'perc_mem_free'       => $status->getMemUsedPercent(),
-            'perc_mem_free_str'   => sprintf("%.1f", $status->getMemFreePercent()),
-            'hit_miss_chart_url'  => $status->getHitMissChartUrl(),
-            'mem_chart_url'       => $status->getMemChartUrl(),
+            'is_enabled'         => $status->isEnabled(),
+            'is_problem'         => $status->guessIsProblem(),
+            'num_reqs'           => $status->getNumTotalReqs(),
+            'num_hits'           => $status->getNumHits(),
+            'num_misses'         => $status->getNumMisses(),
+            'perc_hit'           => $status->getHitPercent(),
+            'perc_hit_str'       => sprintf('%.1f', $status->getHitPercent()),
+            'perc_miss'          => $status->getMissPercent(),
+            'perc_miss_str'      => sprintf('%.1f', $status->getMissPercent()),
+            'mem_total'          => $status->getMemTotal(),
+            'mem_used'           => $status->getMemUsed(),
+            'mem_free'           => $status->getMemFree(),
+            'perc_mem_used'      => $status->getMemUsedPercent(),
+            'perc_mem_used_str'  => sprintf('%.1f', $status->getMemUsedPercent()),
+            'perc_mem_free'      => $status->getMemUsedPercent(),
+            'perc_mem_free_str'  => sprintf('%.1f', $status->getMemFreePercent()),
+            'hit_miss_chart_url' => $status->getHitMissChartUrl(),
+            'mem_chart_url'      => $status->getMemChartUrl(),
         );
 
         return $this->createJsonResponse(array('apc_info' => $data));
@@ -555,7 +555,7 @@ class ServerController extends AbstractController implements ProtectedController
         if ($mins) {
             $agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
             $agent_ids  = array_keys($this->em->getRepository('DeskPRO:Person')->getAgents());
-            $agent_chat->sendAgentMessage("Warning: The helpdesk will go down for maintenance in ".$mins." minutes.", $agent_ids, 0);
+            $agent_chat->sendAgentMessage('Warning: The helpdesk will go down for maintenance in '.$mins.' minutes.', $agent_ids, 0);
         }
 
         return $this->createSuccessResponse();

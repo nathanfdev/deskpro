@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * Orb.
  *
  * @category Util
  */
-
 namespace Orb\Util;
 
 /**
@@ -205,7 +205,7 @@ class Web
 
         if ($content_type) {
             if (strpos($content_type, ';')) {
-                list($content_type,) = explode(';', $content_type, 2);
+                list($content_type) = explode(';', $content_type, 2);
             }
 
             return strtolower(trim($content_type));
@@ -350,7 +350,7 @@ class Web
     public static function getCountryFromIp($ip = null)
     {
         if (!$ip) {
-            $ip = Web::getUserIp();
+            $ip = self::getUserIp();
         }
 
         $country = null;
@@ -450,12 +450,12 @@ class Web
 
             foreach ($parts as $res) {
                 $matches = null;
-                if (preg_match("#^HTTP/1\\.\\d (\\d+)#", $res, $matches)) {
+                if (preg_match('#^HTTP/1\\.\\d (\\d+)#', $res, $matches)) {
                     $status = (int) $matches[1];
 
                     if ($status == 200 || ($status > 300 && $status <= 308)) {
                         $matches = null;
-                        if (preg_match("#Content-Length: (\\d+)#", $res, $matches)) {
+                        if (preg_match('#Content-Length: (\\d+)#', $res, $matches)) {
                             $content_length = (int) $matches[1];
 
                             return $content_length;
@@ -490,13 +490,13 @@ class Web
 
             foreach ($parts as $res) {
                 $matches = null;
-                if (preg_match("#^HTTP/1\\.\\d (\\d+)#", $res, $matches)) {
+                if (preg_match('#^HTTP/1\\.\\d (\\d+)#', $res, $matches)) {
                     $status = (int) $matches[1];
 
                     if ($status == 200 || ($status > 300 && $status <= 308)) {
                         $matches = null;
 
-                        if (preg_match("#filename\\s*=\\s*(.*?)$#", $res, $matches)) {
+                        if (preg_match('#filename\\s*=\\s*(.*?)$#', $res, $matches)) {
                             $file_name = trim($matches[1], '"\'');
                             $file_name = trim($file_name);
 

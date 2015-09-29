@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
@@ -179,7 +179,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         }
 
         if (!$input->getOption('range')) {
-            $output->writeln("A date range (--range) must be specified");
+            $output->writeln('A date range (--range) must be specified');
 
             return 3;
         }
@@ -200,8 +200,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         $db    = App::getDb();
         $begin = microtime(true);
 
-        $db->exec("SET unique_checks=0");
-        $db->exec("SET foreign_key_checks=0");
+        $db->exec('SET unique_checks=0');
+        $db->exec('SET foreign_key_checks=0');
         $db->beginTransaction();
 
         // loop through all to keep the order the same as we create some dependent stuff first
@@ -217,7 +217,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             $method = '_load'.str_replace('_', '', $type);
             if (!method_exists($this, $method)) {
                 echo str_pad(
-                    sprintf("[%02d/%02d] %s is unknown, skipping.", $count, $total, $type),
+                    sprintf('[%02d/%02d] %s is unknown, skipping.', $count, $total, $type),
                     60
                 )."\n";
                 continue;
@@ -226,11 +226,11 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             $memory = memory_get_usage() / 1024 / 1024;
 
             echo str_pad(
-                sprintf("[%02d/%02d] %s... 0/%d (%.2f MB)", $count, $total, $type, $amount, $memory),
+                sprintf('[%02d/%02d] %s... 0/%d (%.2f MB)', $count, $total, $type, $amount, $memory),
                 60
             )."\r";
 
-            for ($i = 0; $i < $amount; $i++) {
+            for ($i = 0; $i < $amount; ++$i) {
                 $this->$method($i);
 
                 if ($i > 0 && $i % 10 == 0) {
@@ -242,7 +242,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
                     }
 
                     echo str_pad(
-                        sprintf("[%02d/%02d] %s... %d/%d (%.2f s, %.2f MB)", $count, $total, $type, $i, $amount, $time, $memory),
+                        sprintf('[%02d/%02d] %s... %d/%d (%.2f s, %.2f MB)', $count, $total, $type, $i, $amount, $time, $memory),
                         60
                     )."\r";
                 }
@@ -251,7 +251,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             $time   = microtime(true) - $start;
             $memory = memory_get_usage() / 1024 / 1024;
             echo str_pad(
-                sprintf("[%02d/%02d] %s... completing (%.2f s, %.2f MB)", $count, $total, $type, $time, $memory),
+                sprintf('[%02d/%02d] %s... completing (%.2f s, %.2f MB)', $count, $total, $type, $time, $memory),
                 60
             )."\r";
 
@@ -265,19 +265,19 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             $time   = microtime(true) - $start;
             $memory = memory_get_usage() / 1024 / 1024;
             echo str_pad(
-                sprintf("[%02d/%02d] %s... Done, inserted %d (%.2f s, %.2f MB)", $count, $total, $type, $amount, $time, $memory),
+                sprintf('[%02d/%02d] %s... Done, inserted %d (%.2f s, %.2f MB)', $count, $total, $type, $amount, $time, $memory),
                 60
             )."\n";
         }
 
         $db->commit();
-        $db->exec("SET unique_checks=1");
-        $db->exec("SET foreign_key_checks=1");
+        $db->exec('SET unique_checks=1');
+        $db->exec('SET foreign_key_checks=1');
 
         $time   = microtime(true) - $begin;
         $memory = memory_get_usage() / 1024 / 1024;
         echo "\n".
-            sprintf("Data load completed (%.2f s, %.2f MB)", $time, $memory)
+            sprintf('Data load completed (%.2f s, %.2f MB)', $time, $memory)
             ."\n";
     }
 
@@ -299,13 +299,13 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             foreach ($labels as $label => $total) {
                 $batches[] = "('$type', '$label', $total)";
             }
-            $db->executeUpdate("
+            $db->executeUpdate('
                 INSERT INTO label_defs
                     (label_type, label, total)
                 VALUES
-                    ".implode(',', $batches)."
+                    '.implode(',', $batches).'
                 ON DUPLICATE KEY UPDATE total = VALUES(total);
-            ");
+            ');
         }
 
         $orm->commit();
@@ -335,7 +335,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         $db = App::getDb();
 
         // Default to non-destructive perm group, or if thats deleted, the default all perms group
-        $has_ug = $db->fetchColumn("SELECT id FROM usergroups WHERE id IN (4,3) ORDER BY id DESC");
+        $has_ug = $db->fetchColumn('SELECT id FROM usergroups WHERE id IN (4,3) ORDER BY id DESC');
         if ($has_ug) {
             $db->insert('person2usergroups', array(
                 'person_id'    => $agent->getId(),
@@ -449,14 +449,14 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
         if (mt_rand(1, 4) == 1) {
             $count = mt_rand(1, 3);
-            for ($i = 0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; ++$i) {
                 $ug_id = $this->_getRandomFromCache('usergroups', 'id');
-                $db->executeUpdate("
+                $db->executeUpdate('
                     INSERT IGNORE INTO organization2usergroups
                         (organization_id, usergroup_id)
                     VALUES
                         (?, ?)
-                ", array($org['id'], $ug_id));
+                ', array($org['id'], $ug_id));
             }
         }
 
@@ -544,7 +544,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
         if (mt_rand(1, 4) == 1) {
             $count = mt_rand(1, 3);
-            for ($i = 0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; ++$i) {
                 $this->_addBatchInsert('person2usergroups', array(
                     'person_id'    => $person['id'],
                     'usergroup_id' => $this->_getRandomFromCache('usergroups', 'id'),
@@ -584,7 +584,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         App::getOrm()->flush();
 
         $warning_trigger                = new Entity\TicketTrigger();
-        $warning_trigger->title         = $sla->title." - SLA Warning";
+        $warning_trigger->title         = $sla->title.' - SLA Warning';
         $warning_trigger->event_trigger = 'sla.warning';
         $warning_time                   = mt_rand(30, 500);
         $time                           = $warning_time.' minutes';
@@ -599,7 +599,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         App::getOrm()->persist($warning_trigger);
 
         $fail_trigger                = new Entity\TicketTrigger();
-        $fail_trigger->title         = $sla->title." - SLA Failure";
+        $fail_trigger->title         = $sla->title.' - SLA Failure';
         $fail_trigger->event_trigger = 'sla.fail';
         $time                        = mt_rand($warning_time, 600).' minutes';
         $fail_trigger->setEventTriggerOption('time', $time);
@@ -718,7 +718,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
                 $ticket['agent_id'] = $rand->id;
             }
         }
-        if (time() - $date_created->getTimestamp() > 90*86400) {
+        if (time() - $date_created->getTimestamp() > 90 * 86400) {
             $ticket['status'] = 'archived';
         } else {
             if (mt_rand(0, 100) == 0) {
@@ -756,7 +756,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         $message_count = mt_rand(0, 10);
         if ($message_count > 0) {
             $range = $date_created->getTimestamp() + mt_rand(200, max(201, time() - $date_created->getTimestamp()));
-            for ($j = 0; $j < $message_count; $j++) {
+            for ($j = 0; $j < $message_count; ++$j) {
                 $is_agent = !empty($ticket['agent_id']) && mt_rand(0, 1);
                 $message  = array(
                     'ticket_id'       => $ticket['id'],
@@ -801,7 +801,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         );
 
         $amount = mt_rand(1, 3);
-        for ($i = 0; $i < $amount; $i++) {
+        for ($i = 0; $i < $amount; ++$i) {
             $key  = array_rand($files);
             $name = $files[$key];
             $mime = substr($name, -3) == 'png' ? 'image/png' : 'text/plain';
@@ -825,16 +825,16 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
     protected function _loadTicketFilter()
     {
         $possible_terms = array(
-            0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             => array('type' => 'subject', 'op' => 'contains', 'options' => array('subject' => 'test')),
-            1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            => array('type' => 'urgency', 'op' => 'gte', 'options' => array('num' => '5')),
-            2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  => array('type' => 'label', 'op' => 'is', 'options' => array('labels' => array('test'))),
-            3                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             => array('type' => 'person_email_domain', 'op' => 'is', 'options' => array('email_domain' => 'example.com')),
-            4                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       => array('type' => 'person_contact_phone', 'op' => 'contains', 'options' => array('phone' => '123')),
-            5                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 => array('type' => 'org_label', 'op' => 'is', 'options' => array('label' => 'organization')),
-            6                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          => array('type' => 'org_email_domain', 'op' => 'is', 'options' => array('email_domain' => 'example.com')),
-            7                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 => array('type' => 'agent', 'op' => 'is', 'options' => array('agent' => '0')),
-            8                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      => array('type' => 'organization', 'op' => 'is', 'options' => array('organization' => $this->_getRandomOrgId())),
-            9                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         => array(
+            0 => array('type' => 'subject', 'op' => 'contains', 'options' => array('subject' => 'test')),
+            1 => array('type' => 'urgency', 'op' => 'gte', 'options' => array('num' => '5')),
+            2 => array('type' => 'label', 'op' => 'is', 'options' => array('labels' => array('test'))),
+            3 => array('type' => 'person_email_domain', 'op' => 'is', 'options' => array('email_domain' => 'example.com')),
+            4 => array('type' => 'person_contact_phone', 'op' => 'contains', 'options' => array('phone' => '123')),
+            5 => array('type' => 'org_label', 'op' => 'is', 'options' => array('label' => 'organization')),
+            6 => array('type' => 'org_email_domain', 'op' => 'is', 'options' => array('email_domain' => 'example.com')),
+            7 => array('type' => 'agent', 'op' => 'is', 'options' => array('agent' => '0')),
+            8 => array('type' => 'organization', 'op' => 'is', 'options' => array('organization' => $this->_getRandomOrgId())),
+            9 => array(
                 'type'    => 'date_created',
                 'op'      => 'lte',
                 'options' => array(
@@ -854,7 +854,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
         $terms = array();
         $count = mt_rand(1, 4);
-        for ($i = 0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; ++$i) {
             $k         = mt_rand(0, 9);
             $terms[$k] = $possible_terms[$k];
         }
@@ -1232,7 +1232,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         $def             = new Entity\GlossaryWordDefinition();
         $def->definition = $this->_getRandomText(mt_rand(50, 100));
         $word_count      = mt_rand(1, 5);
-        for ($i = 0; $i < $word_count; $i++) {
+        for ($i = 0; $i < $word_count; ++$i) {
             $start = chr(mt_rand(64, 90)); // @ and A-Z
             $def->addWord($start.$this->_getRandomWords(1));
         }
@@ -1301,11 +1301,11 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             'date_created' => $this->_getRandomDate('string'),
         );
 
-        $modified = $db->executeUpdate("
+        $modified = $db->executeUpdate('
             INSERT IGNORE INTO twitter_statuses
                 (id, user_id, text, is_truncated, date_created)
             VALUES (?, ?, ?, 0, ?)
-        ", array($data['id'], $data['user_id'], $data['text'], $data['date_created']));
+        ', array($data['id'], $data['user_id'], $data['text'], $data['date_created']));
 
         if ($modified == 2) {
             return;
@@ -1392,7 +1392,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
             $this->_person_hits = count($this->_data_cache['random_people_ids']);
         }
-        $this->_person_hits--;
+        --$this->_person_hits;
 
         return $this->_getRandomFromCache('random_people_ids');
     }
@@ -1400,12 +1400,12 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
     protected function _getRandomAgent($id = false)
     {
         if (!isset($this->_data_cache['agents'])) {
-            $this->_data_cache['agents'] = App::getOrm()->createQuery("
+            $this->_data_cache['agents'] = App::getOrm()->createQuery('
                 SELECT p
                 FROM DeskPRO:Person p INDEX BY p.id
                 WHERE p.is_agent = true AND p.is_deleted = false
                 ORDER BY p.first_name ASC, p.last_name ASC
-            ")->execute();
+            ')->execute();
         }
 
         return $this->_getRandomFromCache('agents', $id ? 'id' : null);
@@ -1447,7 +1447,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
             $this->_twitter_hits = count($this->_data_cache['random_twitter_user_ids']);
         }
-        $this->_twitter_hits--;
+        --$this->_twitter_hits;
 
         return $this->_getRandomFromCache('random_twitter_user_ids');
     }
@@ -1503,7 +1503,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
         $labels = mt_rand(0, 4);
         if ($labels && isset($this->_label_type_map[$type])) {
-            for ($i = 0; $i < $labels; $i++) {
+            for ($i = 0; $i < $labels; ++$i) {
                 list($table, $field) = $this->_label_type_map[$type];
 
                 $label = $this->_getRandomWords(1);
@@ -1521,7 +1521,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
                 if (!isset($this->_batch_insert_label_def[$type_name][$label])) {
                     $this->_batch_insert_label_def[$type_name][$label] = 1;
                 } else {
-                    $this->_batch_insert_label_def[$type_name][$label]++;
+                    ++$this->_batch_insert_label_def[$type_name][$label];
                 }
             }
         }
@@ -1540,7 +1540,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         if ($labels) {
             App::getOrm()->flush(); // must generate an ID first
 
-            for ($i = 0; $i < $labels; $i++) {
+            for ($i = 0; $i < $labels; ++$i) {
                 $label = $manager->addLabel($this->_getRandomWords(1));
                 App::getOrm()->persist($label);
             }
@@ -1558,7 +1558,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             $text = strip_tags($text);
             $text = preg_replace('#[^a-zA-Z0-9 ]#', '', $text);
             $text = Strings::standardEol($text);
-            $text = str_replace("\n", " ", $text);
+            $text = str_replace("\n", ' ', $text);
             $text = preg_replace('#[ ]{2,}#', ' ', $text);
             $text = explode(' ', $text);
             shuffle($text);
@@ -1579,7 +1579,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             $text = $this->_getRandomTextDb();
             $text = strip_tags($text);
             $text = Strings::standardEol($text);
-            $text = str_replace("\n", " ", $text);
+            $text = str_replace("\n", ' ', $text);
             $text = preg_replace('#[ ]{2,}#', ' ', $text);
             $text = explode(' ', $text);
             shuffle($text);
@@ -1606,11 +1606,11 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         global $DP_CONFIG;
         if ($this->_word_db === null) {
             $this->_word_db = $this->getContainer()->get('doctrine.dbal.connection_factory')->createConnection(array(
-                'driver'        => 'pdo_mysql',
-                'host'          => $DP_CONFIG['load_data_database']['db_host'],
-                'user'          => $DP_CONFIG['load_data_database']['db_user'],
-                'password'      => $DP_CONFIG['load_data_database']['db_password'],
-                'dbname'        => $DP_CONFIG['load_data_database']['db_name'],
+                'driver'   => 'pdo_mysql',
+                'host'     => $DP_CONFIG['load_data_database']['db_host'],
+                'user'     => $DP_CONFIG['load_data_database']['db_user'],
+                'password' => $DP_CONFIG['load_data_database']['db_password'],
+                'dbname'   => $DP_CONFIG['load_data_database']['db_name'],
             ));
         }
 
@@ -1648,7 +1648,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         }
 
         $output = array();
-        for ($i = 0; $i < $word_length; $i++) {
+        for ($i = 0; $i < $word_length; ++$i) {
             $output[] = $this->_words[mt_rand(0, $this->_max_word_index)];
         }
 

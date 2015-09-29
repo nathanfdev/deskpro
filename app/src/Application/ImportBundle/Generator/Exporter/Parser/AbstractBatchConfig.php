@@ -1,39 +1,39 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Exporter\Parser;
 
 use DateTime;
 
 /**
- * Common properties of batch config
+ * Common properties of batch config.
  *
  * Class AbstractBatchConfig
- * @package Application\ImportBundle\Generator\Exporter\Parser
  */
 abstract class AbstractBatchConfig implements BatchConfigInterface
 {
@@ -53,7 +53,7 @@ abstract class AbstractBatchConfig implements BatchConfigInterface
     protected $date_modified;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -74,6 +74,7 @@ abstract class AbstractBatchConfig implements BatchConfigInterface
     public function setId($id)
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -91,6 +92,7 @@ abstract class AbstractBatchConfig implements BatchConfigInterface
     public function setDateCreated(DateTime $date_created)
     {
         $this->date_created = $date_created;
+
         return $this;
     }
 
@@ -108,6 +110,7 @@ abstract class AbstractBatchConfig implements BatchConfigInterface
     public function setDateModified(DateTime $date_modified)
     {
         $this->date_modified = $date_modified;
+
         return $this;
     }
 
@@ -125,17 +128,18 @@ abstract class AbstractBatchConfig implements BatchConfigInterface
     public function toArray()
     {
         return array(
-            'id'             => $this->id,
-            'type'           => $this->getExporterType(),
-            'date_created'   => $this->getDateFormatOrNull($this->date_created),
-            'date_modified'  => $this->getDateFormatOrNull($this->date_modified),
+            'id'            => $this->id,
+            'type'          => $this->getExporterType(),
+            'date_created'  => $this->getDateFormatOrNull($this->date_created),
+            'date_modified' => $this->getDateFormatOrNull($this->date_modified),
         );
     }
 
     /**
-     * DateTime to string or null if not defined
+     * DateTime to string or null if not defined.
      *
      * @param DateTime $date_time
+     *
      * @return null|string
      */
     protected function getDateFormatOrNull(DateTime $date_time = null)

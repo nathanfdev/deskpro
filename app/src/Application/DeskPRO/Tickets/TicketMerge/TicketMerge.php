@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Tickets
  */
-
 namespace Application\DeskPRO\Tickets\TicketMerge;
 
 use Application\DeskPRO\App;
@@ -108,7 +108,7 @@ class TicketMerge implements PersonContextInterface
         $this->other_ticket_id = $other_ticket->id;
 
         if ($ticket === $other_ticket) {
-            throw new \InvalidArgumentException("You cannot merge a ticket with itself");
+            throw new \InvalidArgumentException('You cannot merge a ticket with itself');
         }
     }
 
@@ -174,8 +174,7 @@ class TicketMerge implements PersonContextInterface
         $this->mergeLogs();
         $this->mergeMisc();
 
-
-        /**
+        /*
          * merge dates:
          *
          * Take the EARLIEST date:
@@ -195,11 +194,16 @@ class TicketMerge implements PersonContextInterface
          * total_user_waiting should be max(ticket1, ticket2)
          */
 
-        $n = $this->ticket;
-        $o = $this->other_ticket;
-        $md = function($prop, $func) use ($n, $o) {
-            if (!$n->$prop) return $n->$prop = $o->$prop ?: null;
-            if (!$o->$prop) return;
+        $n  = $this->ticket;
+        $o  = $this->other_ticket;
+        $md = function ($prop, $func) use ($n, $o) {
+            if (!$n->$prop) {
+                return $n->$prop = $o->$prop ?: null;
+            }
+            if (!$o->$prop) {
+                return;
+            }
+
             return $n->$prop = $func($n->$prop, $o->$prop);
         };
         $md('date_feedback_rating', 'min');
@@ -227,7 +231,6 @@ class TicketMerge implements PersonContextInterface
             $map[implode('|', array($time['type'], $time['start'], $time['end']))] = $time;
         }
         $n->waiting_times = array_values($map);
-
 
         // non-merged fields that we want to log
         $lost_log = array(
@@ -305,7 +308,7 @@ class TicketMerge implements PersonContextInterface
 
         $ticket_del->new_ticket_id = $this->ticket['id'];
         $ticket_del->by_person     = $this->person;
-        $ticket_del->reason        = "Merge into ".$this->ticket['id'];
+        $ticket_del->reason        = 'Merge into '.$this->ticket['id'];
         $this->em->persist($ticket_del);
 
         $context = $this->ticket_manager->createAgentExecutorContext($this->person, 'update', 'web');
@@ -337,11 +340,11 @@ class TicketMerge implements PersonContextInterface
      */
     private function mergeLogs()
     {
-        $this->db->executeUpdate("
+        $this->db->executeUpdate('
             UPDATE tickets_logs
             SET ticket_id = ?
             WHERE ticket_id = ?
-        ", array($this->ticket['id'], $this->other_ticket['id']));
+        ', array($this->ticket['id'], $this->other_ticket['id']));
     }
 
     /**
@@ -371,78 +374,78 @@ class TicketMerge implements PersonContextInterface
     private function mergeMisc()
     {
         // Flags
-        $this->db->executeUpdate("
+        $this->db->executeUpdate('
             UPDATE IGNORE tickets_flagged
             SET ticket_id = ?
             WHERE ticket_id = ?
-        ", array($this->ticket['id'], $this->other_ticket['id']));
+        ', array($this->ticket['id'], $this->other_ticket['id']));
         $this->db->delete('tickets_flagged', array('ticket_id' => $this->other_ticket['id']));
 
         // Pending articles
-        $this->db->executeUpdate("
+        $this->db->executeUpdate('
             UPDATE IGNORE article_pending_create
             SET ticket_id = ?
             WHERE ticket_id = ?
-        ", array($this->ticket['id'], $this->other_ticket['id']));
+        ', array($this->ticket['id'], $this->other_ticket['id']));
         $this->db->delete('article_pending_create', array('ticket_id' => $this->other_ticket['id']));
 
         // Labels
-        $this->db->executeUpdate("
+        $this->db->executeUpdate('
             UPDATE IGNORE labels_tickets
             SET ticket_id = ?
             WHERE ticket_id = ?
-        ", array($this->ticket['id'], $this->other_ticket['id']));
+        ', array($this->ticket['id'], $this->other_ticket['id']));
         $this->db->delete('labels_tickets', array('ticket_id' => $this->other_ticket['id']));
 
         // Tasks
-        $this->db->executeUpdate("
+        $this->db->executeUpdate('
             UPDATE IGNORE task_associations
             SET ticket_id = ?
             WHERE ticket_id = ?
-        ", array($this->ticket['id'], $this->other_ticket['id']));
+        ', array($this->ticket['id'], $this->other_ticket['id']));
 
         // Billing
-        $this->db->executeUpdate("
+        $this->db->executeUpdate('
             UPDATE IGNORE ticket_charges
             SET ticket_id = ?
             WHERE ticket_id = ?
-        ", array($this->ticket['id'], $this->other_ticket['id']));
+        ', array($this->ticket['id'], $this->other_ticket['id']));
 
         // Feedback
-        $this->db->executeUpdate("
+        $this->db->executeUpdate('
             UPDATE IGNORE ticket_feedback
             SET ticket_id = ?
             WHERE ticket_id = ?
-        ", array($this->ticket['id'], $this->other_ticket['id']));
+        ', array($this->ticket['id'], $this->other_ticket['id']));
 
         // Delete SLAs from old ticket that already exist on new one
-        $sla_ids = $this->db->fetchAllCol("SELECT sla_id FROM ticket_slas WHERE ticket_id = ?", array($this->ticket['id']));
+        $sla_ids = $this->db->fetchAllCol('SELECT sla_id FROM ticket_slas WHERE ticket_id = ?', array($this->ticket['id']));
         if ($sla_ids) {
-            $this->db->executeQuery("
+            $this->db->executeQuery('
                 DELETE FROM ticket_slas
                 WHERE ticket_id = ? AND sla_id IN (?)
-            ", array($this->other_ticket['id'], $sla_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+            ', array($this->other_ticket['id'], $sla_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
         }
 
         // ... and then move the rest of the SLAs over
-        $this->db->executeUpdate("
+        $this->db->executeUpdate('
             UPDATE IGNORE ticket_slas
             SET ticket_id = ?
             WHERE ticket_id = ?
-        ", array($this->ticket['id'], $this->other_ticket['id']));
+        ', array($this->ticket['id'], $this->other_ticket['id']));
 
         // Parent links
-        $this->db->executeUpdate("
+        $this->db->executeUpdate('
             UPDATE IGNORE tickets
             SET parent_ticket_id = ?
             WHERE parent_ticket_id = ?
-        ", array($this->ticket['id'], $this->other_ticket['id']));
+        ', array($this->ticket['id'], $this->other_ticket['id']));
 
         // JIRA issues
-        $this->db->executeUpdate("
+        $this->db->executeUpdate('
             UPDATE IGNORE jira_issues
             SET ticket_id = ?
             WHERE ticket_id = ?
-        ", array($this->ticket['id'], $this->other_ticket['id']));
+        ', array($this->ticket['id'], $this->other_ticket['id']));
     }
 }

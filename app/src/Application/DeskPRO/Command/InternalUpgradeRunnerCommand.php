@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Command;
 
 namespace Application\DeskPRO\Command;
@@ -51,7 +51,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
             $output->setVerbosity(2);
         }
 
-        $check = App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('core.croncheck.dp-cron'));
+        $check = App::getDb()->fetchColumn('SELECT value FROM settings WHERE name = ?', array('core.croncheck.dp-cron'));
         if ($check) {
             $date     = new \DateTime('@'.$check);
             $date_cut = new \DateTime('-15 minutes');
@@ -82,7 +82,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
             // Wont ever happen, but best be sure
             $message = str_replace('<?', '< ?', $message);
 
-            if (!@fwrite($fp, "STATUS(".$code.")@$time#$message\n")) {
+            if (!@fwrite($fp, 'STATUS('.$code.")@$time#$message\n")) {
                 return false;
             }
             @fclose($fp);
@@ -122,8 +122,8 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 
         if (!dp_get_php_path(true)) {
             $write_status('error_php_path');
-            $write_status("error_unknown_binary", array('php'));
-            $write_status("error_basic_checks_fail");
+            $write_status('error_unknown_binary', array('php'));
+            $write_status('error_basic_checks_fail');
             $output->write('<error>Could not find path to PHP</error>');
             @unlink(DP_WEB_ROOT.'/auto-update-is-running.trigger');
             @unlink(dp_get_tmp_dir().'/auto-upgrade-started');
@@ -137,7 +137,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 
         if (dp_is_php_path_guessed()) {
             $cmd = sprintf(
-                "%s %s",
+                '%s %s',
                 dp_get_php_path(),
                 escapeshellarg(DP_ROOT.'/bin/phpinfo.php')
             );
@@ -157,8 +157,8 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 
             if ($fail) {
                 $write_status('error_php_path');
-                $write_status("error_unknown_binary", array('php'));
-                $write_status("error_basic_checks_fail");
+                $write_status('error_unknown_binary', array('php'));
+                $write_status('error_basic_checks_fail');
                 $output->write('<error>Could not find path to PHP (Detected PHP appears different than running PHP)</error>');
                 @unlink(DP_WEB_ROOT.'/auto-update-is-running.trigger');
                 @unlink(dp_get_tmp_dir().'/auto-upgrade-started');
@@ -172,7 +172,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
         #-------------------------
 
         $cmd = sprintf(
-            "%s %s",
+            '%s %s',
             dp_get_php_path(),
             escapeshellarg(DP_ROOT.'/bin/check-req.php')
         );
@@ -188,8 +188,8 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
         $out = implode("\n", $out);
 
         if ($ret || strpos($out, 'OKAY') === false) {
-            $write_status("error_php_binary_failcheck");
-            $write_status("error_basic_checks_fail", str_replace("\n", ' ', trim($out)));
+            $write_status('error_php_binary_failcheck');
+            $write_status('error_basic_checks_fail', str_replace("\n", ' ', trim($out)));
             $output->write('<error>PHP sub-command binary fails server checks: '.$out.'</error>');
             $output->write('<error>Check your config.php file to make sure $DP_CONFIG[\'php_path\'] is set to the correct PHP path.</error>');
 
@@ -207,7 +207,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
         #-------------------------
 
         $cmd = sprintf(
-            "%s %s --auto --quiet --write-status-file %s",
+            '%s %s --auto --quiet --write-status-file %s',
             dp_get_php_path(),
             escapeshellarg(DP_ROOT.'/bin/upgrade-util.php'),
             $skip_seg

@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -49,12 +49,12 @@ class Usergroup extends AbstractEntityRepository
      */
     public function getUserUsergroups()
     {
-        return $this->_em->createQuery("
+        return $this->_em->createQuery('
             SELECT ug
             FROM DeskPRO:Usergroup ug INDEX BY ug.id
             WHERE ug.is_agent_group = 0
             ORDER BY ug.title ASC
-        ")->execute();
+        ')->execute();
     }
 
     /**
@@ -62,12 +62,12 @@ class Usergroup extends AbstractEntityRepository
      */
     public function getAgentUsergroups()
     {
-        return $this->_em->createQuery("
+        return $this->_em->createQuery('
             SELECT ug
             FROM DeskPRO:Usergroup ug INDEX BY ug.id
             WHERE ug.is_agent_group = true
             ORDER BY ug.title ASC
-        ")->execute();
+        ')->execute();
     }
 
     /**
@@ -79,12 +79,12 @@ class Usergroup extends AbstractEntityRepository
     {
         if ($this->_usergroup_names === null) {
             $db                     = $this->_em->getConnection();
-            $this->_usergroup_names = $db->fetchAllKeyValue("
+            $this->_usergroup_names = $db->fetchAllKeyValue('
                 SELECT id, title
                 FROM usergroups
                 WHERE is_agent_group = 0 AND sys_name IS NULL
                 ORDER BY title ASC
-            ");
+            ');
         }
 
         if ($for_ids === null) {
@@ -118,12 +118,12 @@ class Usergroup extends AbstractEntityRepository
             return $this->_agent_usergroup_names;
         }
         $db                           = $this->getEntityManager()->getConnection();
-        $this->_agent_usergroup_names = $db->fetchAllKeyValue("
+        $this->_agent_usergroup_names = $db->fetchAllKeyValue('
             SELECT id, title
             FROM usergroups
             WHERE is_agent_group = 0 AND sys_name IS NULL
             ORDER BY title ASC
-        ");
+        ');
 
         return $this->_agent_usergroup_names;
     }
@@ -134,12 +134,12 @@ class Usergroup extends AbstractEntityRepository
             return array();
         }
 
-        return $this->getEntityManager()->createQuery("
+        return $this->getEntityManager()->createQuery('
             SELECT u
             FROM DeskPRO:Usergroup u INDEX BY u.id
             WHERE u.id IN (?0)
             ORDER BY u.id DESC
-        ")->execute(array($ids));
+        ')->execute(array($ids));
     }
 
     /**
@@ -151,17 +151,17 @@ class Usergroup extends AbstractEntityRepository
     {
         /** @var Connection $conn */
         $conn   = $this->getEntityManager()->getConnection();
-        $output = $conn->fetchAllKeyValue("
+        $output = $conn->fetchAllKeyValue('
             SELECT usergroup_id, COUNT(*)
             FROM person2usergroups
             GROUP BY usergroup_id
-        ");
+        ');
         $output = array_map('intval', $output);
 
-        $results = $conn->fetchAll("
+        $results = $conn->fetchAll('
             SELECT o2u.usergroup_id, (SELECT COUNT(*) FROM people WHERE people.organization_id = o2u.organization_id) AS total
             FROM organization2usergroups AS o2u
-        ");
+        ');
         foreach ($results as $result) {
             if (!$result['total']) {
                 continue;
@@ -259,11 +259,11 @@ class Usergroup extends AbstractEntityRepository
      */
     public function getSortedAgentIds()
     {
-        return $this->getEntityManager()->getConnection()->fetchAllGrouped("
+        return $this->getEntityManager()->getConnection()->fetchAllGrouped('
             SELECT person2usergroups.usergroup_id, person2usergroups.person_id
             FROM person2usergroups
             LEFT JOIN usergroups ON usergroups.id = person2usergroups.usergroup_id
             WHERE usergroups.is_agent_group = 1
-        ", array(), 'usergroup_id', null, 'person_id');
+        ', array(), 'usergroup_id', null, 'person_id');
     }
 }

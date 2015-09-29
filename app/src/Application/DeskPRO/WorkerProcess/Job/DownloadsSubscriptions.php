@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -91,8 +91,8 @@ class DownloadsSubscriptions extends AbstractJob
         $structure = App::getContainer()->getSystemService('publish_structure');
         $helper    = $structure->getDownloadCategoryHelper();
 
-        $category_ids   = array();
-        $downloads_ids  = array();
+        $category_ids  = array();
+        $downloads_ids = array();
 
         foreach ($published as $a) {
             $category_ids[] = $a->category->id;
@@ -121,19 +121,19 @@ class DownloadsSubscriptions extends AbstractJob
             $category_ids = array_merge($category_ids, $add_ids);
             $category_ids = array_unique($category_ids);
 
-            $cat_subs = App::getDb()->fetchAllGrouped("
+            $cat_subs = App::getDb()->fetchAllGrouped('
                 SELECT person_id, category_id
                 FROM download_subscriptions
                 WHERE category_id IN (?)
-            ", array($category_ids), 'person_id', null, 'category_id', array(Connection::PARAM_INT_ARRAY));
+            ', array($category_ids), 'person_id', null, 'category_id', array(Connection::PARAM_INT_ARRAY));
         }
 
         if ($downloads_ids) {
-            $article_subs = App::getDb()->fetchAllGrouped("
+            $article_subs = App::getDb()->fetchAllGrouped('
                 SELECT person_id, download_id
                 FROM download_subscriptions
                 WHERE download_id IN (?)
-            ", array($downloads_ids), 'person_id', null, 'download_id', array(Connection::PARAM_INT_ARRAY));
+            ', array($downloads_ids), 'person_id', null, 'download_id', array(Connection::PARAM_INT_ARRAY));
         }
 
         #------------------------------
@@ -255,7 +255,7 @@ class DownloadsSubscriptions extends AbstractJob
         }
 
         if ($user_to_downloads) {
-            $this->logStatus("Send ".count($user_to_downloads)." notifications");
+            $this->logStatus('Send '.count($user_to_downloads).' notifications');
         }
     }
 }

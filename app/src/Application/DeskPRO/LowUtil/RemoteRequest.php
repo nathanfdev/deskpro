@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
@@ -77,7 +78,7 @@ class DeskPRO_LowUtil_RemoteRequester implements DeskPRO_LowUtil_Requester
         $strategy = self::detectStrategy();
 
         if (!$strategy) {
-            throw new DeskPRO_LowUtil_Fetch_Exception("No supported fetchers", DeskPRO_LowUtil_Fetch_Exception::NO_SUPPORTED_FETCHER);
+            throw new DeskPRO_LowUtil_Fetch_Exception('No supported fetchers', DeskPRO_LowUtil_Fetch_Exception::NO_SUPPORTED_FETCHER);
         }
 
         switch ($strategy) {
@@ -150,7 +151,7 @@ class DeskPRO_LowUtil_RequestCurl implements DeskPRO_LowUtil_Requester
     public function __construct()
     {
         if (!function_exists('curl_init')) {
-            throw new DeskPRO_LowUtil_Fetch_Exception("curl is not supported on your server", DeskPRO_LowUtil_Fetch_Exception::FETCHER_UNSUPPORTED);
+            throw new DeskPRO_LowUtil_Fetch_Exception('curl is not supported on your server', DeskPRO_LowUtil_Fetch_Exception::FETCHER_UNSUPPORTED);
         }
     }
 
@@ -161,7 +162,7 @@ class DeskPRO_LowUtil_RequestCurl implements DeskPRO_LowUtil_Requester
     {
         $fp = @fopen($save_path, 'w');
         if (!$fp) {
-            throw new DeskPRO_LowUtil_Fetch_Exception("Failed to open stream for writing", DeskPRO_LowUtil_Fetch_Exception::WRITE_FAILED);
+            throw new DeskPRO_LowUtil_Fetch_Exception('Failed to open stream for writing', DeskPRO_LowUtil_Fetch_Exception::WRITE_FAILED);
         }
 
         $ch = curl_init();
@@ -175,7 +176,7 @@ class DeskPRO_LowUtil_RequestCurl implements DeskPRO_LowUtil_Requester
         fclose($fp);
 
         if (curl_error($ch)) {
-            $e = new DeskPRO_LowUtil_Fetch_Exception(sprintf("Curl error: %s %s", curl_errno($ch), curl_error($ch)), DeskPRO_LowUtil_Fetch_Exception::REQUEST_FAILED);
+            $e = new DeskPRO_LowUtil_Fetch_Exception(sprintf('Curl error: %s %s', curl_errno($ch), curl_error($ch)), DeskPRO_LowUtil_Fetch_Exception::REQUEST_FAILED);
             @curl_close($ch);
             throw $e;
         }
@@ -184,7 +185,7 @@ class DeskPRO_LowUtil_RequestCurl implements DeskPRO_LowUtil_Requester
         curl_close($ch);
 
         if ($http_code != 200) {
-            throw new DeskPRO_LowUtil_Fetch_Exception(sprintf("Server returned a non-success response code: %s", $http_code), DeskPRO_LowUtil_Fetch_Exception::REQUEST_FAILED);
+            throw new DeskPRO_LowUtil_Fetch_Exception(sprintf('Server returned a non-success response code: %s', $http_code), DeskPRO_LowUtil_Fetch_Exception::REQUEST_FAILED);
         }
 
         return filesize($save_path);
@@ -221,7 +222,7 @@ class DeskPRO_LowUtil_RequestCurl implements DeskPRO_LowUtil_Requester
         $result = curl_exec($ch);
 
         if (curl_error($ch)) {
-            $e = new DeskPRO_LowUtil_Fetch_Exception(sprintf("Curl error: %s %s", curl_errno($ch), curl_error($ch)), DeskPRO_LowUtil_Fetch_Exception::REQUEST_FAILED);
+            $e = new DeskPRO_LowUtil_Fetch_Exception(sprintf('Curl error: %s %s', curl_errno($ch), curl_error($ch)), DeskPRO_LowUtil_Fetch_Exception::REQUEST_FAILED);
             @curl_close($ch);
 
             throw $e;
@@ -231,7 +232,7 @@ class DeskPRO_LowUtil_RequestCurl implements DeskPRO_LowUtil_Requester
         curl_close($ch);
 
         if ($http_code != 200) {
-            throw new DeskPRO_LowUtil_Fetch_Exception(sprintf("Server returned a non-success response code: %s", $http_code), DeskPRO_LowUtil_Fetch_Exception::REQUEST_FAILED);
+            throw new DeskPRO_LowUtil_Fetch_Exception(sprintf('Server returned a non-success response code: %s', $http_code), DeskPRO_LowUtil_Fetch_Exception::REQUEST_FAILED);
         }
 
         return $result;
@@ -245,7 +246,7 @@ class DeskPRO_LowUtil_RequestNative implements DeskPRO_LowUtil_Requester
     public function __construct()
     {
         if (!in_array(ini_get('allow_url_fopen'), array('1', 'On'))) {
-            throw new DeskPRO_LowUtil_Fetch_Exception("allow_url_include is disabled in your php.ini, you cannot use native functions to download remote files", DeskPRO_LowUtil_Fetch_Exception::FETCHER_UNSUPPORTED);
+            throw new DeskPRO_LowUtil_Fetch_Exception('allow_url_include is disabled in your php.ini, you cannot use native functions to download remote files', DeskPRO_LowUtil_Fetch_Exception::FETCHER_UNSUPPORTED);
         }
     }
 
@@ -261,11 +262,11 @@ class DeskPRO_LowUtil_RequestNative implements DeskPRO_LowUtil_Requester
 
         if (!$res) {
             $e = error_get_last();
-            throw new DeskPRO_LowUtil_Fetch_Exception("Failed downloading remote file: ".@$e['message'], DeskPRO_LowUtil_Fetch_Exception::WRITE_FAILED);
+            throw new DeskPRO_LowUtil_Fetch_Exception('Failed downloading remote file: '.@$e['message'], DeskPRO_LowUtil_Fetch_Exception::WRITE_FAILED);
         }
 
         if (!$this->isSuccessResponse($http_response_header)) {
-            throw new DeskPRO_LowUtil_Fetch_Exception("Server returned a non-success response code", DeskPRO_LowUtil_Fetch_Exception::REQUEST_FAILED);
+            throw new DeskPRO_LowUtil_Fetch_Exception('Server returned a non-success response code', DeskPRO_LowUtil_Fetch_Exception::REQUEST_FAILED);
         }
 
         return filesize($save_path);
@@ -290,16 +291,16 @@ class DeskPRO_LowUtil_RequestNative implements DeskPRO_LowUtil_Requester
 
             $context = stream_context_create(array(
                 'http' => array(
-                    'timeout'  => $timeout,
+                    'timeout' => $timeout,
                 ),
             ));
         } else {
             $context = stream_context_create(array(
                 'http' => array(
-                    'timeout'  => $timeout,
-                    'method'   => 'POST',
-                    'header'   => 'Content-type: application/x-www-form-urlencoded',
-                    'content'  => http_build_query($data, null, '&'),
+                    'timeout' => $timeout,
+                    'method'  => 'POST',
+                    'header'  => 'Content-type: application/x-www-form-urlencoded',
+                    'content' => http_build_query($data, null, '&'),
                 ),
             ));
         }
@@ -310,7 +311,7 @@ class DeskPRO_LowUtil_RequestNative implements DeskPRO_LowUtil_Requester
         // But if its not set, then it means the request failed
 
         if (!isset($http_response_header) || !$this->isSuccessResponse($http_response_header)) {
-            throw new DeskPRO_LowUtil_Fetch_Exception("Server returned a non-success response code", DeskPRO_LowUtil_Fetch_Exception::REQUEST_FAILED);
+            throw new DeskPRO_LowUtil_Fetch_Exception('Server returned a non-success response code', DeskPRO_LowUtil_Fetch_Exception::REQUEST_FAILED);
         }
 
         return $res;

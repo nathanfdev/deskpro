@@ -1,5 +1,31 @@
 <?php
 
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 namespace DpIntegrationTests\DeskPRO\Import;
 
 use Application\DeskPRO\EntityRepository;
@@ -11,8 +37,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * Class JsonTest
- * @package DpIntegrationTests\DeskPRO\Import
+ * Class JsonTest.
  *
  * @group importer
  */
@@ -74,7 +99,7 @@ class JsonTest extends \DpIntegrationTestCase
     private $blob_repository;
 
     /**
-     * Set up
+     * Set up.
      */
     public function runBefore()
     {
@@ -93,10 +118,10 @@ class JsonTest extends \DpIntegrationTestCase
         $this->download_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Download');
         $this->blob_repository                = $entity_manager->getRepository('Application\DeskPRO\Entity\Blob');
 
-        $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/json';
-        $this->output_path = dp_get_data_dir() . '/import/json/export';
+        $this->input_path  = DP_ROOT.'/src/Application/ImportBundle/Resources/docs/data_example/json';
+        $this->output_path = dp_get_data_dir().'/import/json/export';
 
-        if ( ! is_dir($this->output_path)) {
+        if (!is_dir($this->output_path)) {
             mkdir($this->output_path, 0755, true);
         }
 
@@ -106,8 +131,8 @@ class JsonTest extends \DpIntegrationTestCase
         $this->helper->amInPath($this->output_path);
         $this->helper->cleanDir($this->output_path);
 
-        if (file_exists($this->input_path . '/input.batch.json')) {
-            $this->helper->deleteFile($this->input_path . '/input.batch.json');
+        if (file_exists($this->input_path.'/input.batch.json')) {
+            $this->helper->deleteFile($this->input_path.'/input.batch.json');
         }
 
         $this->overrideDpRootPath('/1/downloads/download1.json');
@@ -119,7 +144,7 @@ class JsonTest extends \DpIntegrationTestCase
         $application = new Application($this->helper->getSymfonyContainer()->getKernel());
         $application->add(new CheckExportCommand());
 
-        $command = $application->find('dp:export:check');
+        $command        = $application->find('dp:export:check');
         $command_tester = new CommandTester($command);
         $command_tester->execute(array(
             'command'      => $command->getName(),
@@ -149,7 +174,7 @@ class JsonTest extends \DpIntegrationTestCase
         $application = new Application($this->helper->getSymfonyContainer()->getKernel());
         $application->add(new ExportCommand());
 
-        $command = $application->find('dp:export:run');
+        $command        = $application->find('dp:export:run');
         $command_tester = new CommandTester($command);
         $command_tester->execute(array(
             'command'       => $command->getName(),
@@ -168,14 +193,14 @@ class JsonTest extends \DpIntegrationTestCase
         $application = new Application($this->helper->getSymfonyContainer()->getKernel());
         $application->add(new ImportCommand());
 
-        $command = $application->find('dp:import:run');
+        $command        = $application->find('dp:import:run');
         $command_tester = new CommandTester($command);
         $command_tester->execute(array(
-            'command'       => $command->getName(),
-            'script'        => 'json',
-            '--input-path'  => $this->input_path,
-            '--verbose'     => true,
-            '--batch'       => true,
+            'command'      => $command->getName(),
+            'script'       => 'json',
+            '--input-path' => $this->input_path,
+            '--verbose'    => true,
+            '--batch'      => true,
         ));
 
         $this->checkDbWriterOutput($command_tester);
@@ -188,7 +213,7 @@ class JsonTest extends \DpIntegrationTestCase
         $application = new Application($this->helper->getSymfonyContainer()->getKernel());
         $application->add(new ImportBatchCommand());
 
-        $command = $application->find('dp:import:batch');
+        $command        = $application->find('dp:import:batch');
         $command_tester = new CommandTester($command);
         $command_tester->execute(array(
             'command'       => $command->getName(),
@@ -237,7 +262,7 @@ class JsonTest extends \DpIntegrationTestCase
     private function checkJsonFile($input, $output)
     {
         $this->assertEquals(
-            json_decode(file_get_contents($this->input_path . $input)),
+            json_decode(file_get_contents($this->input_path.$input)),
             json_decode(file_get_contents($output))
         );
     }
@@ -309,9 +334,9 @@ class JsonTest extends \DpIntegrationTestCase
         $dp_root = str_replace('\'', '', $dp_root);
         $dp_root = str_replace('/', '\/', $dp_root);
 
-        $content = file_get_contents($this->input_path . $file);
+        $content = file_get_contents($this->input_path.$file);
         $content = str_replace('\/deskpro\/www\/', $dp_root, $content);
 
-        file_put_contents($this->input_path . $file, $content);
+        file_put_contents($this->input_path.$file, $content);
     }
 }

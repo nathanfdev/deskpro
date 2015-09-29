@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\AuditLog;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -155,7 +155,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
             }
 
             if (isset($this->defs[$table]['save_as_change'])) {
-                $save_as     = $this->defs[$table]['save_as_change'];
+                $save_as = $this->defs[$table]['save_as_change'];
 
                 if (is_string($save_as['object_field_id'])) {
                     $save_obj = $entity[$save_as['object_field_id']];
@@ -164,10 +164,10 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
                     $save_obj = $fn($entity);
                 }
 
-                $save_field  = $save_as['as_field_id'];
+                $save_field = $save_as['as_field_id'];
             } else {
-                $save_obj    = $entity;
-                $save_field  = $change_field;
+                $save_obj   = $entity;
+                $save_field = $change_field;
             }
 
             $this->audit_manager->recordChange(
@@ -224,7 +224,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
         # Saved on a different object as a change
         #------------------------------
         } else {
-            $save_as     = $this->defs[$table]['save_as_change'];
+            $save_as = $this->defs[$table]['save_as_change'];
 
             if (is_string($save_as['object_field_id'])) {
                 $save_obj = $entity[$save_as['object_field_id']];
@@ -233,8 +233,8 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
                 $save_obj = $fn($entity);
             }
 
-            $save_field  = $save_as['as_field_id'];
-            $save_table  = $save_obj->getTableName();
+            $save_field = $save_as['as_field_id'];
+            $save_table = $save_obj->getTableName();
 
             if (isset($this->defs[$save_table]['do_log_check'])) {
                 $fn = $this->defs[$save_table]['do_log_check'];
@@ -299,7 +299,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
         # Saved on a different object as a change
         #------------------------------
         } else {
-            $save_as     = $this->defs[$table]['save_as_change'];
+            $save_as = $this->defs[$table]['save_as_change'];
 
             if (is_string($save_as['object_field_id'])) {
                 $save_obj = $entity[$save_as['object_field_id']];
@@ -308,8 +308,8 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
                 $save_obj = $fn($entity);
             }
 
-            $save_field  = $save_as['as_field_id'];
-            $save_table  = $save_obj->getTableName();
+            $save_field = $save_as['as_field_id'];
+            $save_table = $save_obj->getTableName();
 
             if (isset($this->defs[$save_table]['do_log_check'])) {
                 $fn = $this->defs[$save_table]['do_log_check'];

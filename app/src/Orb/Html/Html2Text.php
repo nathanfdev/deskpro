@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Orb\Html;
 
 use DOMDocument;
@@ -56,7 +56,7 @@ class Html2Text
      */
     public static function convertHtml($html)
     {
-        $h2t = new Html2Text();
+        $h2t = new self();
 
         return $h2t->convert($html);
     }
@@ -67,8 +67,8 @@ class Html2Text
      * @param string $html
      *
      * @throws \InvalidArgumentException
-     * @return string
      *
+     * @return string
      */
     public function convert($html)
     {
@@ -83,7 +83,7 @@ class Html2Text
 
         $doc = new DOMDocument('1.0', 'UTF-8');
         if (!@$doc->loadHTML($html)) {
-            throw new \InvalidArgumentException("Error loading HTML into DOMDocument");
+            throw new \InvalidArgumentException('Error loading HTML into DOMDocument');
         }
 
         $this->bq_level = 0;
@@ -118,7 +118,7 @@ class Html2Text
         $output = '';
         switch ($name) {
             case 'hr':
-                return "<DP_BR>------<DP_BR>";
+                return '<DP_BR>------<DP_BR>';
 
             case 'style':
             case 'head':
@@ -152,17 +152,17 @@ class Html2Text
 
         if (!empty($node->childNodes)) {
             $len = $node->childNodes->length;
-            for ($i = 0; $i < $len; $i++) {
+            for ($i = 0; $i < $len; ++$i) {
                 $n = $node->childNodes->item($i);
                 if ($n) {
                     $is_bq = false;
                     if ($n instanceof DOMElement && ($n->getAttribute('data-dp-type') === 'blockquote' || strtolower($n->nodeName) == 'blockquote')) {
                         $is_bq = true;
-                        $this->bq_level++;
+                        ++$this->bq_level;
                     }
-                    $text = $this->convertNode($n, $_depth+1);
+                    $text = $this->convertNode($n, $_depth + 1);
                     if ($is_bq) {
-                        $this->bq_level--;
+                        --$this->bq_level;
                     }
                     $output .= $text;
                 }
@@ -193,10 +193,10 @@ class Html2Text
                 if (!trim(str_replace(array('<DP_BR>', '<DP_BR_P>', 'xxxDP_NBSP_PLACExxx'), '', $output))) {
                     $output = '';
                 } else {
-                    $href = $node->getAttribute("href");
+                    $href = $node->getAttribute('href');
                     if ($href == null) {
                         // it doesn't link anywhere
-                        if ($node->getAttribute("name") != null) {
+                        if ($node->getAttribute('name') != null) {
                             $output = "[$output]";
                         }
                     } else {
@@ -210,7 +210,7 @@ class Html2Text
 
                     // does the next node require additional whitespace?
                     switch ($nextName) {
-                        case "h1": case "h2": case "h3": case "h4": case "h5": case "h6":
+                        case 'h1': case 'h2': case 'h3': case 'h4': case 'h5': case 'h6':
                             $output .= '<DP_BR>';
                             break;
                     }
@@ -225,21 +225,22 @@ class Html2Text
         if ($node instanceof DOMElement && ($node->getAttribute('data-dp-type') === 'blockquote' || $name == 'blockquote')) {
             $output = '<DP_BLOCKQUOTE_BEGIN_'.$this->bq_level.'>'.$output.'<DP_BLOCKQUOTE_END_'.$this->bq_level.'>';
             if ($name == 'blockquote') {
-                $output .= "<DP_BR>"; // a real blockquote el has whitespace after it
+                $output .= '<DP_BR>'; // a real blockquote el has whitespace after it
             }
         }
 
         if ($_depth == 0) {
             $output = preg_replace('#<DP_BR_P>\s*<DP_BR>#m', '<DP_BR>', $output);
             $output = preg_replace('#<DP_BR>\s*<DP_BR_P>#m', '<DP_BR>', $output);
-            $output = preg_replace_callback('#(<DP_BR_P>\s*)+#m', function($m) {
+            $output = preg_replace_callback('#(<DP_BR_P>\s*)+#m', function ($m) {
                 return str_repeat("\n", min(2, substr_count($m[1], '<DP_BR_P>')));
             }, $output);
             $output = str_replace('<DP_BR>', "\n", $output);
-            $output = str_replace('<DP_SP>', " ", $output);
+            $output = str_replace('<DP_SP>', ' ', $output);
 
-            $output = preg_replace_callback('#<DP_BLOCKQUOTE_BEGIN_(\d+)>(.*?)<DP_BLOCKQUOTE_END_\\1>#ms', function($m) {
-                $s = str_repeat('>', $m[1]) . ' ';
+            $output = preg_replace_callback('#<DP_BLOCKQUOTE_BEGIN_(\d+)>(.*?)<DP_BLOCKQUOTE_END_\\1>#ms', function ($m) {
+                $s = str_repeat('>', $m[1]).' ';
+
                 return Strings::modifyLines(trim($m[2]), $s);
             }, $output);
         }

@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator;
 
@@ -31,16 +32,15 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\AbstractExporter;
 use Application\ImportBundle\Generator\Validator\ExceptionCollection;
 use Application\ImportBundle\Generator\Validator\ValidatorExceptionInterface;
-use Symfony\Component\Validator\Validator as SymfonyValidator;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Exception;
+use Symfony\Component\Validator\Validator as SymfonyValidator;
 
 /**
  * Generator importer service
- * Data exporter (what we call "generators") from 3rd party systems
+ * Data exporter (what we call "generators") from 3rd party systems.
  *
  * Class Generator
- * @package Application\ImportBundle\Generator
  */
 final class Generator extends AbstractGenerator implements GeneratorInterface, ExporterAwareInterface
 {
@@ -60,7 +60,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
     private $writer;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Exporter\ExporterInterface $exporter
      * @param Writer\WriterInterface     $writer
@@ -158,7 +158,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
                     foreach ($entities as $entity) {
                         $this->advanceProgressBar();
 
-                        /** @var Entity\EntityInterface $entity */
+                        /* @var Entity\EntityInterface $entity */
                         $outputWriter->writeData($entity);
                     }
                 }
@@ -193,52 +193,56 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
     }
 
     /**
-     * Get exporter by configuration type
+     * Get exporter by configuration type.
      *
-     * @return Exporter\ExporterInterface
      * @throws Exception
+     * @return Exporter\ExporterInterface
+     *
      */
     public function getExporter()
     {
         $this->setHelpers($this->exporter);
+
         return $this->exporter;
     }
 
     /**
-     * Returns a writer
+     * Returns a writer.
      *
-     * @return Writer\WriterInterface|mixed
      * @throws Exception
+     * @return Writer\WriterInterface|mixed
+     *
      */
     private function getWriter()
     {
         $this->setHelpers($this->writer);
+
         return $this->writer;
     }
 
     /**
-     * Attach helpers to handler
+     * Attach helpers to handler.
      *
      * @param mixed $handler
      */
     private function setHelpers($handler)
     {
         if ($this->config && $handler instanceof GeneratorConfigAwareInterface) {
-            /** @var GeneratorConfigAwareInterface $handler */
+            /* @var GeneratorConfigAwareInterface $handler */
             $handler->setConfig($this->config);
         }
         if ($this->logger && $handler instanceof LoggerAwareInterface) {
-            /** @var LoggerAwareInterface $handler */
+            /* @var LoggerAwareInterface $handler */
             $handler->setLogger($this->logger);
         }
         if ($this->progress_bar && $handler instanceof ProgressBarAwareInterface) {
-            /** @var ProgressBarAwareInterface $handler */
+            /* @var ProgressBarAwareInterface $handler */
             $handler->setProgressBarHelper($this->progress_bar);
         }
     }
 
     /**
-     * Validates exporting collection
+     * Validates exporting collection.
      *
      * @param string            $type
      * @param Entity\Collection $collection
@@ -255,9 +259,8 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
 
             foreach ($validators as $validator) {
                 try {
-                    /** @var Validator\ValidatorInterface $validator */
+                    /* @var Validator\ValidatorInterface $validator */
                     $validator->validate($entity);
-
                 } catch (ValidatorExceptionInterface $e) {
                     $exceptions->attach($e);
                 }
@@ -268,7 +271,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
     }
 
     /**
-     * Writes exporter log header
+     * Writes exporter log header.
      *
      * @param string $type
      */
@@ -281,7 +284,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
     }
 
     /**
-     * Writes output writer log header
+     * Writes output writer log header.
      *
      * @param string $type
      */
@@ -294,10 +297,11 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
     }
 
     /**
-     * Returns ordered entity types of the exporters
+     * Returns ordered entity types of the exporters.
      *
-     * @return string[]
      * @throws Exception
+     * @return string[]
+     *
      */
     private function getRequiredExportersOrderedEntityTypes()
     {
@@ -305,10 +309,11 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
     }
 
     /**
-     * Returns ordered entity types of the writers
+     * Returns ordered entity types of the writers.
      *
-     * @return string[]
      * @throws Exception
+     * @return string[]
+     *
      */
     private function getRequiredWritersOrderedEntityTypes()
     {
@@ -317,15 +322,17 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
 
     /**
      * Returns a list of ordered entity types
-     * Writers and exporters need different entities foreach order
+     * Writers and exporters need different entities foreach order.
      *
      * @param array $types
-     * @return array
+     *
      * @throws Exception
+     * @return array
+     *
      */
     private function getRequiredOrderedEntityTypes(array $types)
     {
-        if ( ! $this->config) {
+        if (!$this->config) {
             throw new Exception('Generator configuration is not defined');
         }
 

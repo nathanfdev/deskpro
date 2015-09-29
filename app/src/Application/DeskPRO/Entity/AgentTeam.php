@@ -1,52 +1,53 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
+use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
+use DeskPRO\Bundle\AppBundle\Entity\PersonList;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
-use JMS\Serializer\Annotation as Serializer;
-use DeskPRO\Bundle\AppBundle\Entity\PersonList;
-use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
-use Application\DeskPRO\Domain\DomainObject;
 
 /**
  * An agent team is a group of agents. Similar to usergroups but for agents.
+ *
  * @Serializer\ExclusionPolicy("ALL")
  */
 class AgentTeam extends DomainObject implements PersonList, Chatable
@@ -87,7 +88,7 @@ class AgentTeam extends DomainObject implements PersonList, Chatable
 
     public function __construct()
     {
-        $this->members = new ArrayCollection();
+        $this->members         = new ArrayCollection();
         $this->project_members = new ArrayCollection();
     }
 
@@ -117,7 +118,7 @@ class AgentTeam extends DomainObject implements PersonList, Chatable
             return App::get('router')->generate(
                 'serve_default_picture',
                 array(
-                    's' => $size,
+                    's'        => $size,
                     'size-fit' => 1,
                 ),
                 true
@@ -132,13 +133,12 @@ class AgentTeam extends DomainObject implements PersonList, Chatable
         return $this->members;
     }
     /**
-     * @return integer
+     * @return int
      */
     public function getChatableType()
     {
         return Chatable::PARTICIPANT_TYPE_TEAM;
     }
-
 
     ############################################################################
     # Validation Metadata
@@ -161,31 +161,31 @@ class AgentTeam extends DomainObject implements PersonList, Chatable
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(
-                'fieldName' => 'id',
-                'type' => 'integer',
-                'precision' => 0,
-                'scale' => 0,
-                'nullable' => false,
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
                 'columnName' => 'id',
-                'id' => true
+                'id'         => true,
             )
         );
         $metadata->mapField(
             array(
-                'fieldName' => 'name',
-                'type' => 'string',
-                'length' => 255,
-                'precision' => 0,
-                'scale' => 0,
-                'nullable' => false,
-                'columnName' => 'name'
+                'fieldName'  => 'name',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'name',
             )
         );
         $metadata->mapOneToMany(
             array(
-                'fieldName'                     => 'project_members',
-                'targetEntity'                  => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ProjectMember',
-                'mappedBy'                      => 'team',
+                'fieldName'    => 'project_members',
+                'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ProjectMember',
+                'mappedBy'     => 'team',
             )
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
@@ -193,12 +193,12 @@ class AgentTeam extends DomainObject implements PersonList, Chatable
             'fieldName'    => 'members',
             'mapedBy'      => 'teams',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-            'joinTable' => array(
-                'name' => 'agent_team_members',
-                'joinColumns' => array(array('name' => 'team_id', 'onDelete' => 'CASCADE',)),
-                'inverseJoinColumns' => array(array('name' => 'person_id', 'onDelete' => 'CASCADE',)),
+            'joinTable'    => array(
+                'name'               => 'agent_team_members',
+                'joinColumns'        => array(array('name' => 'team_id', 'onDelete' => 'CASCADE')),
+                'inverseJoinColumns' => array(array('name' => 'person_id', 'onDelete' => 'CASCADE')),
             ),
-            'orderBy' => array( 'name' => 'ASC'),
+            'orderBy' => array('name' => 'ASC'),
         ));
         $metadata->mapManyToOne(array(
             'fieldName'    => 'avatar',

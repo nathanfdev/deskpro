@@ -1,40 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Usersource\Sync;
 
-
-use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
@@ -73,12 +69,12 @@ class SyncerHelper
         }
         $user_info = array_merge(
             array(
-                'name' => null,
-                'first_name' => null,
-                'last_name' => null,
-                'email' => null,
+                'name'            => null,
+                'first_name'      => null,
+                'last_name'       => null,
+                'email'           => null,
                 'email_confirmed' => null,
-                'phone' => null
+                'phone'           => null,
             ),
             $user_info
         );
@@ -130,8 +126,7 @@ class SyncerHelper
         Usersource $usersource,
         Person $person,
         Identity $identity
-    )
-    {
+    ) {
         if (!$assoc = $this->getAssociation($usersource, $person)) {
             $assoc = new PersonUsersourceAssoc();
             $this->em->persist($assoc);
@@ -147,19 +142,20 @@ class SyncerHelper
     }
 
     /**
-     * @param Usersource $usersource
+     * @param Usersource  $usersource
      * @param Person|null $person_or_identifier
+     *
      * @return PersonUsersourceAssoc
      */
     public function getAssociation(Usersource $usersource, $person_or_identifier = null)
     {
         if (!$person_or_identifier) {
-            return null;
+            return;
         }
 
         if ($person_or_identifier instanceof Person) {
             if (!$person_or_identifier->getId()) {
-                return null; // not yet persisted person, cannot have an assocation yet
+                return; // not yet persisted person, cannot have an assocation yet
             }
 
             return $this->em->getRepository('DeskPRO:PersonUsersourceAssoc')
@@ -172,6 +168,7 @@ class SyncerHelper
     /**
      * @param Usersource $usersource
      * @param $identity
+     *
      * @return PersonUsersourceAssoc|null
      */
     public function getAssoc(Usersource $usersource, $identity)
@@ -182,11 +179,12 @@ class SyncerHelper
             return $assoc;
         }
 
-        return null;
+        return;
     }
 
     /**
      * @param string $email_string
+     *
      * @return Person|null
      */
     public function getPersonFromEmail($email_string)

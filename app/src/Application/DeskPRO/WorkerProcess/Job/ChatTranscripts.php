@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -52,11 +52,11 @@ class ChatTranscripts extends AbstractJob
             return;
         }
 
-        App::getDb()->executeUpdate("
+        App::getDb()->executeUpdate('
             UPDATE chat_conversations
             SET should_send_transcript = 0, date_transcript_sent = ?
             WHERE id IN (?)
-        ", array(date('Y-m-d H:i:s'), $chat_ids), array(\PDO::PARAM_STR, Connection::PARAM_INT_ARRAY));
+        ', array(date('Y-m-d H:i:s'), $chat_ids), array(\PDO::PARAM_STR, Connection::PARAM_INT_ARRAY));
 
         foreach ($chat_ids as $chat_id) {
             /** @var ChatConversation $chat */
@@ -66,7 +66,7 @@ class ChatTranscripts extends AbstractJob
             $name  = '';
             if ($person = $chat->person) {
                 $email = $person->getPrimaryEmailAddress();
-                $name = $person->name;
+                $name  = $person->name;
                 App::getTranslator()->setPersonContext($chat->person);
             }
             if (!$email && $chat->person_email) {
@@ -77,12 +77,12 @@ class ChatTranscripts extends AbstractJob
             }
 
             if ($email) {
-                $convo_messages = App::getOrm()->createQuery("
+                $convo_messages = App::getOrm()->createQuery('
                     SELECT m
                     FROM DeskPRO:ChatMessage m
                     WHERE m.conversation = ?1 AND m.is_user_hidden = false
                     ORDER BY m.id DESC
-                ")->setParameter(1, $chat)->execute();
+                ')->setParameter(1, $chat)->execute();
 
                 $vars = array(
                     'convo'          => $chat,
@@ -102,7 +102,7 @@ class ChatTranscripts extends AbstractJob
                     'is_user_hidden'  => 0,
                     'is_html'         => 0,
                     'metadata'        => serialize(array('phrase_id' => 'transcript_sent', 'email' => $email)),
-                    'date_created'                                   => date('Y-m-d H:i:s'),
+                    'date_created'    => date('Y-m-d H:i:s'),
                 ));
             }
 
@@ -111,6 +111,6 @@ class ChatTranscripts extends AbstractJob
             App::getTranslator()->setPersonContext();
         }
 
-        $this->logger->log("Sent ".count($chat_ids)." chat transcripts", Logger::INFO);
+        $this->logger->log('Sent '.count($chat_ids).' chat transcripts', Logger::INFO);
     }
 }

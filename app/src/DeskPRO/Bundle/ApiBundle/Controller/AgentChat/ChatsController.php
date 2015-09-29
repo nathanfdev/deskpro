@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
-/**
- * DeskPRO
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
 
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController as BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\AgentChat\History;
 use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
@@ -39,11 +38,8 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Pagerfanta\Adapter\ArrayAdapter;
-use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -60,18 +56,20 @@ class ChatsController extends AbstractController
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\AgentChat"
      * )
+     *
      * @param Request $request
      * @Annotations\Get("/agent_chats", name="agent_chats_list")
+     *
      * @return View
      */
     public function cgetAction(Request $request)
     {
         /** @var History $searchService */
         $searchService = $this->get('deskpro.agentchat.history');
-        $user = $this->getUser();
+        $user          = $this->getUser();
         $requestParams = $request->query->all();
 
-        if(isset($requestParams['search'])) {
+        if (isset($requestParams['search'])) {
             $searchString = $requestParams['search'];
         } else {
             $searchString = '';
@@ -105,9 +103,11 @@ class ChatsController extends AbstractController
      *
      * @Annotations\Get("/agent_chats/{id}", name="agent_chats_view_chat")
      *
-     * @param integer $id
-     * @return View
+     * @param int $id
+     *
      * @throws NotFoundHttpException
+     * @return View
+     *
      */
     public function getAction($id)
     {
@@ -129,71 +129,73 @@ class ChatsController extends AbstractController
      * @Annotations\Post("/agent_chats", name="agent_chats_add_chat")
      *
      * @param Request $request
-     * @return View
+     *
      * @throws InvalidFormException
      * @throws BadRequestHttpException
+     * @return View
+     *
+     *
      * @todo looks like we have to implement some custom logic here, cause we have to handle agents/teams/departments
      * @todo manually, and just do it with form is too complicated, maybe we can auto generate form for every AgentChat
      * @todo participant entity, and then a big one for this participants collection?
      */
     public function postAction(Request $request)
     {
-        $status = Response::HTTP_CREATED;
+        $status    = Response::HTTP_CREATED;
         $submitted = $request->request->all();
         if (!count($submitted)) {
             throw new BadRequestHttpException();
         }
         $participants = array();
-        if(isset($submitted['agents'])) {
-            foreach($submitted['agents'] as $agentId) {
+        if (isset($submitted['agents'])) {
+            foreach ($submitted['agents'] as $agentId) {
                 $participant = $this->em()
                     ->getRepository('DeskPRO:Person')
-                    ->find((int)$agentId);
-                if($participant) {
+                    ->find((int) $agentId);
+                if ($participant) {
                     $participants[] = $participant;
-                    $participant = null;
+                    $participant    = null;
                 }
             }
         }
-        if(isset($submitted['teams'])) {
-            foreach($submitted['teams'] as $teamId) {
+        if (isset($submitted['teams'])) {
+            foreach ($submitted['teams'] as $teamId) {
                 $participant = $this->em()
                     ->getRepository('DeskPRO:AgentTeam')
-                    ->find((int)$teamId);
-                if($participant) {
+                    ->find((int) $teamId);
+                if ($participant) {
                     $participants[] = $participant;
-                    $participant = null;
+                    $participant    = null;
                 }
             }
         }
-        if(isset($submitted['departments'])) {
-            foreach($submitted['departments'] as $departmentId) {
+        if (isset($submitted['departments'])) {
+            foreach ($submitted['departments'] as $departmentId) {
                 $participant = $this->em()
                     ->getRepository('DeskPRO:AgentTeam')
-                    ->find((int)$departmentId);
-                if($participant) {
+                    ->find((int) $departmentId);
+                if ($participant) {
                     $participants[] = $participant;
-                    $participant = null;
+                    $participant    = null;
                 }
             }
         }
-        if(!count($participants)) {
+        if (!count($participants)) {
             throw new BadRequestHttpException();
         }
         /** @var Messenger $messenger */
         $messenger = $this->get('deskpro.agentchat.messenger');
-        $user = $this->getUser();
-        $chat = $messenger->createChat($user, $participants);
+        $user      = $this->getUser();
+        $chat      = $messenger->createChat($user, $participants);
         $this->em()->persist($chat);
         $this->em()->flush();
+
         return View::create(
             $this->dataSerialize($chat),
             $status,
             array(
-                'Location' => $this->generateUrl('agent_chats_view_chat', array('id' => $chat->getId()))
+                'Location' => $this->generateUrl('agent_chats_view_chat', array('id' => $chat->getId())),
             )
         );
     }
-
-
 }

@@ -1,48 +1,45 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\PortalBundle\View\PageTitle;
-
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\CategoryAbstract;
-use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\NewsCategory;
-use Application\DeskPRO\Entity\News;
-use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
@@ -73,10 +70,10 @@ class PageTitleGenerator
 
     public function __construct(LanguageManager $language_manager, BrandStack $brand_stack, PortalPermissionsManager $permissions_manager, TokenStorage $token_storage)
     {
-        $this->language_manager = $language_manager;
-        $this->brand_stack = $brand_stack;
+        $this->language_manager    = $language_manager;
+        $this->brand_stack         = $brand_stack;
         $this->permissions_manager = $permissions_manager;
-        $this->token_storage = $token_storage;
+        $this->token_storage       = $token_storage;
     }
 
     public function homepage()
@@ -103,7 +100,7 @@ class PageTitleGenerator
 
         $builder->prependSection($this->phrase('portal.account.section-title-login'));
 
-        return (string)$builder;
+        return (string) $builder;
     }
 
     public function profile()
@@ -112,7 +109,7 @@ class PageTitleGenerator
 
         $builder->prependSection($this->phrase('portal.account.section-title-profile'));
 
-        return (string)$builder;
+        return (string) $builder;
     }
 
     public function register()
@@ -121,7 +118,7 @@ class PageTitleGenerator
 
         $builder->prependSection($this->phrase('portal.account.section-title-register'));
 
-        return (string)$builder;
+        return (string) $builder;
     }
 
     public function tickets($ticket = null)
@@ -134,7 +131,7 @@ class PageTitleGenerator
             $builder->prependSection($ticket->getTitle());
         }
 
-        return (string)$builder;
+        return (string) $builder;
     }
 
     public function newticket()
@@ -143,7 +140,7 @@ class PageTitleGenerator
 
         $builder->prependSection($this->phrase('portal.tickets.new-section-title'));
 
-        return (string)$builder;
+        return (string) $builder;
     }
 
     public function newticketGuestThankYou()
@@ -153,7 +150,7 @@ class PageTitleGenerator
         $builder->prependSection($this->phrase('portal.tickets.new-section-title'));
         $builder->prependSection($this->phrase('portal.tickets.guest-thanks-section-title'));
 
-        return (string)$builder;
+        return (string) $builder;
     }
 
     public function downloads($content_or_cat = null)
@@ -178,7 +175,7 @@ class PageTitleGenerator
             $builder->prependSection($section_title);
         }
 
-        return (string)$builder;
+        return (string) $builder;
     }
 
     public function news($content_or_cat = null)
@@ -203,7 +200,7 @@ class PageTitleGenerator
             $builder->prependSection($section_title);
         }
 
-        return (string)$builder;
+        return (string) $builder;
     }
 
     public function feedback($content_or_cat = null)
@@ -228,7 +225,7 @@ class PageTitleGenerator
             $builder->prependSection($section_title);
         }
 
-        return (string)$builder;
+        return (string) $builder;
     }
 
     public function kb($content_or_cat = null)
@@ -242,9 +239,8 @@ class PageTitleGenerator
                 $this->getCategorySection($content_or_cat, $section_title)
             );
         } elseif ($content_or_cat instanceof Article) {
-
             $permission_bag = $this->getCurrentUserPermissionBag();
-            $cat = $content_or_cat->getPrimaryCategory();
+            $cat            = $content_or_cat->getPrimaryCategory();
 
             // if no access to this cat, try our best to loop to one he can see
             if (!$permission_bag->hasContentCategoryAccess($cat)) {
@@ -273,7 +269,7 @@ class PageTitleGenerator
     public function createHelpdeskTitleBuilder()
     {
         $builder = new PageTitleBuilder();
-        $name = $this->setting('core.deskpro_name');
+        $name    = $this->setting('core.deskpro_name');
         $builder->appendSection($name);
 
         return $builder;

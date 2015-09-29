@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -43,7 +43,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  * 	resourcePath="/feedback",
  * 	description="Operations about Feedbacks",
  * 	basePath="/api"
- * )
+ * ).
  */
 class FeedbackController extends AbstractController
 {
@@ -107,7 +107,7 @@ class FeedbackController extends AbstractController
      *			)
      *		)
      * 	)
-     * )
+     * ).
      */
     public function searchAction()
     {
@@ -232,7 +232,7 @@ class FeedbackController extends AbstractController
      *			)
      *		)
      * 	)
-     * )
+     * ).
      */
     public function newFeedbackAction()
     {
@@ -319,7 +319,7 @@ class FeedbackController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
-     * )
+     * ).
      */
     public function getFeedbackAction($feedback_id)
     {
@@ -393,7 +393,7 @@ class FeedbackController extends AbstractController
      *			)
      *		)
      * 	)
-     * )
+     * ).
      */
     public function postFeedbackAction($feedback_id)
     {
@@ -477,7 +477,7 @@ class FeedbackController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteFeedbackAction($feedback_id)
     {
@@ -508,7 +508,7 @@ class FeedbackController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
-     * )
+     * ).
      */
     public function getFeedbackVotesAction($feedback_id)
     {
@@ -536,7 +536,7 @@ class FeedbackController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
-     * )
+     * ).
      */
     public function getFeedbackCommentsAction($feedback_id)
     {
@@ -585,7 +585,7 @@ class FeedbackController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
-     * )
+     * ).
      */
     public function newFeedbackCommentAction($feedback_id)
     {
@@ -604,13 +604,13 @@ class FeedbackController extends AbstractController
 
         $status = $this->in->getString('status');
 
-        $comment                  = new \Application\DeskPRO\Entity\FeedbackComment();
-        $comment->feedback        = $feedback;
-        $comment->person          = $person ?: $this->person;
-        $comment['content']       = $content;
-        $comment['status']        = $status ?: 'visible';
-        $comment['is_reviewed']   = ($comment['status'] == 'visible' && !$person);
-        $comment['date_created']  = new \DateTime();
+        $comment                 = new \Application\DeskPRO\Entity\FeedbackComment();
+        $comment->feedback       = $feedback;
+        $comment->person         = $person ?: $this->person;
+        $comment['content']      = $content;
+        $comment['status']       = $status ?: 'visible';
+        $comment['is_reviewed']  = ($comment['status'] == 'visible' && !$person);
+        $comment['date_created'] = new \DateTime();
 
         $this->em->persist($comment);
         $this->em->flush();
@@ -646,7 +646,7 @@ class FeedbackController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
-     * )
+     * ).
      */
     public function getFeedbackCommentAction($feedback_id, $comment_id)
     {
@@ -697,7 +697,7 @@ class FeedbackController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
-     * )
+     * ).
      */
     public function postFeedbackCommentAction($feedback_id, $comment_id)
     {
@@ -754,7 +754,7 @@ class FeedbackController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteFeedbackCommentAction($feedback_id, $comment_id)
     {
@@ -796,7 +796,7 @@ class FeedbackController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
-     * )
+     * ).
      */
     public function mergeFeedbackAction($feedback_id, $other_feedback_id)
     {
@@ -842,7 +842,7 @@ class FeedbackController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
-     * )
+     * ).
      */
     public function getFeedbackAttachmentsAction($feedback_id)
     {
@@ -883,7 +883,7 @@ class FeedbackController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
-     * )
+     * ).
      */
     public function newFeedbackAttachmentAction($feedback_id)
     {
@@ -948,7 +948,7 @@ class FeedbackController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
-     * )
+     * ).
      */
     public function getFeedbackAttachmentAction($feedback_id, $attachment_id)
     {
@@ -989,7 +989,7 @@ class FeedbackController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteFeedbackAttachmentAction($feedback_id, $attachment_id)
     {
@@ -1026,7 +1026,7 @@ class FeedbackController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
-     * )
+     * ).
      */
     public function getFeedbackLabelsAction($feedback_id)
     {
@@ -1060,7 +1060,7 @@ class FeedbackController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
-     * )
+     * ).
      */
     public function postFeedbackLabelsAction($feedback_id)
     {
@@ -1105,7 +1105,7 @@ class FeedbackController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
-     * )
+     * ).
      */
     public function getFeedbackLabelAction($feedback_id, $label)
     {
@@ -1142,7 +1142,7 @@ class FeedbackController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteFeedbackLabelAction($feedback_id, $label)
     {
@@ -1162,7 +1162,7 @@ class FeedbackController extends AbstractController
      * 		method="GET",
      * 		summary="Gets feedback comments that are awaiting validation."
      * 	)
-     * )
+     * ).
      */
     public function getValidatingCommentsAction()
     {
@@ -1186,7 +1186,7 @@ class FeedbackController extends AbstractController
      * 		method="GET",
      * 		summary="Gets available feedback categories."
      * 	)
-     * )
+     * ).
      */
     public function getCategoriesAction()
     {
@@ -1202,7 +1202,7 @@ class FeedbackController extends AbstractController
      * 		method="GET",
      * 		summary="Gets available feedback status categories."
      * 	)
-     * )
+     * ).
      */
     public function getStatusCategoriesAction()
     {
@@ -1218,7 +1218,7 @@ class FeedbackController extends AbstractController
      * 		method="GET",
      * 		summary="Gets available feedback user categories."
      * 	)
-     * )
+     * ).
      */
     public function getUserCategoriesAction()
     {
@@ -1291,11 +1291,11 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @param integer $id
+     * @param int $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\Feedback
      *
+     * @return \Application\DeskPRO\Entity\Feedback
      */
     protected function _getFeedbackOr404($id, $check_perm = false)
     {

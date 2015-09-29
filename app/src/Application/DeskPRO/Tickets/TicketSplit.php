@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Tickets
  */
-
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -89,17 +89,17 @@ class TicketSplit implements PersonContextInterface
      * @param array  $message_ids
      *
      * @throws \Exception
-     * @return Ticket
      *
+     * @return Ticket
      */
     public function split($subject, array $message_ids)
     {
         if (!$message_ids) {
-            throw new \InvalidArgumentException("No messages", 100);
+            throw new \InvalidArgumentException('No messages', 100);
         }
 
         if (!$this->person_context) {
-            throw new \InvalidArgumentException("Missing person context", 300);
+            throw new \InvalidArgumentException('Missing person context', 300);
         }
 
         $this->ticket_manager->markAsManaged($this->ticket);
@@ -117,8 +117,8 @@ class TicketSplit implements PersonContextInterface
      * @param array  $message_ids
      *
      * @throws \InvalidArgumentException
-     * @return Ticket
      *
+     * @return Ticket
      */
     private function doSplit($subject, array $message_ids)
     {
@@ -126,23 +126,23 @@ class TicketSplit implements PersonContextInterface
         # Get and verify messages
         #------------------------------
 
-        $messages = $this->em->createQuery("
+        $messages = $this->em->createQuery('
             SELECT m
             FROM DeskPRO:TicketMessage m
             WHERE m.id IN (?0) AND m.ticket = ?1
-        ")->execute(array($message_ids, $this->ticket->id));
+        ')->execute(array($message_ids, $this->ticket->id));
 
         if (!count($messages)) {
-            throw new \InvalidArgumentException("No messages", 100);
+            throw new \InvalidArgumentException('No messages', 100);
         }
 
-        $count_all = $this->em->getConnection()->fetchColumn("
+        $count_all = $this->em->getConnection()->fetchColumn('
             SELECT COUNT(*)
             FROM tickets_messages
             WHERE ticket_id = ?
-        ", array($this->ticket->id));
+        ', array($this->ticket->id));
         if ($count_all == count($messages)) {
-            throw new \InvalidArgumentException("Cannot split the entire ticket", 200);
+            throw new \InvalidArgumentException('Cannot split the entire ticket', 200);
         }
 
         #------------------------------
@@ -154,10 +154,10 @@ class TicketSplit implements PersonContextInterface
 
         $message_ids = array();
 
-        $first = null;
+        $first      = null;
         $firstAgent = null;
         foreach ($messages as $m) {
-            /** @var $m TicketMessage */
+            /* @var $m TicketMessage */
             $message_ids[] = $m->id;
             $this->ticket->messages->removeElement($m);
             $new_ticket->addMessage($m);
@@ -175,7 +175,7 @@ class TicketSplit implements PersonContextInterface
             }
         }
 
-        /**
+        /*
          * set dates:
          * date_feedback_rating -> copy (and make sure to copy feedback_rating as well)
          * date_created -> date_created of the first message in the ticket
@@ -189,18 +189,18 @@ class TicketSplit implements PersonContextInterface
          * total_to_first_reply should be seconds between date_created and date_first_agent_reply
          * total_user_waiting set to total_to_first_reply
          */
-        $new_ticket->date_feedback_rating = $this->ticket->date_feedback_rating;
-        $new_ticket->feedback_rating = $this->ticket->feedback_rating;
-            $new_ticket->date_created = $first->date_created;
+        $new_ticket->date_feedback_rating    = $this->ticket->date_feedback_rating;
+        $new_ticket->feedback_rating         = $this->ticket->feedback_rating;
+        $new_ticket->date_created            = $first->date_created;
         $new_ticket->date_first_agent_assign = null;
-        $new_ticket->date_first_agent_reply = $firstAgent ? $firstAgent->date_created : null;
-        $new_ticket->date_resolved = $this->ticket->date_resolved;
-        $new_ticket->date_archived = $this->ticket->date_archived;
-        $new_ticket->date_status = new \DateTime();
-        $new_ticket->date_agent_waiting = Ticket::STATUS_AWAITING_USER === $this->ticket->status ? new \DateTime() : null;
-        $new_ticket->date_user_waiting = Ticket::STATUS_AWAITING_AGENT === $this->ticket->status ? new \DateTime() : null;
-        $new_ticket->total_to_first_reply = $firstAgent ? $firstAgent->date_created->getTimestamp() - $first->date_created->getTimestamp() : 0;
-        $new_ticket->total_user_waiting = $new_ticket->total_to_first_reply ?: 0;
+        $new_ticket->date_first_agent_reply  = $firstAgent ? $firstAgent->date_created : null;
+        $new_ticket->date_resolved           = $this->ticket->date_resolved;
+        $new_ticket->date_archived           = $this->ticket->date_archived;
+        $new_ticket->date_status             = new \DateTime();
+        $new_ticket->date_agent_waiting      = Ticket::STATUS_AWAITING_USER === $this->ticket->status ? new \DateTime() : null;
+        $new_ticket->date_user_waiting       = Ticket::STATUS_AWAITING_AGENT === $this->ticket->status ? new \DateTime() : null;
+        $new_ticket->total_to_first_reply    = $firstAgent ? $firstAgent->date_created->getTimestamp() - $first->date_created->getTimestamp() : 0;
+        $new_ticket->total_user_waiting      = $new_ticket->total_to_first_reply ?: 0;
 
         $new_ticket->creation_system = Ticket::CREATED_WEB_AGENT;
 

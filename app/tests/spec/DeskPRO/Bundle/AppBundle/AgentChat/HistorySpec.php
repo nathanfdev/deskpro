@@ -1,33 +1,33 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
-/**
- * DeskPRO
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
  */
 namespace spec\DeskPRO\Bundle\AppBundle\AgentChat;
 
@@ -55,15 +55,14 @@ class HistorySpec extends ObjectBehavior
         AgentChatRepo $chatRepo,
         AgentChat $chat1,
         AgentChat $chat2
-    )
-    {
+    ) {
         $this->beConstructedWith($searcher, $em);
         $chat1->getId()->willReturn(1);
         $chat2->getId()->willReturn(2);
         $searcher->searchInChat(Argument::type('DeskPRO\Bundle\AppBundle\Entity\AgentChat'), Argument::any())->willReturn(array());
         $em->getRepository('App:AgentChatParticipant')->willReturn($participantRepo);
         $em->getRepository('App:AgentChat')->willReturn($chatRepo);
-        $participantRepo->findChatsIds(Argument::type('Application\DeskPRO\Entity\Person'))->willReturn(array(1,2));
+        $participantRepo->findChatsIds(Argument::type('Application\DeskPRO\Entity\Person'))->willReturn(array(1, 2));
         $chatRepo->findBy(Argument::any())->willReturn(array($chat1, $chat2));
         $this->shouldHaveType('DeskPRO\Bundle\AppBundle\AgentChat\History');
     }
@@ -93,8 +92,7 @@ class HistorySpec extends ObjectBehavior
         AgentChatMessage $message,
         AgentChat $FriendsChat,
         AgentChat $FoesChat
-    )
-    {
+    ) {
         $message->setMessage('where is Johnny?');
         $JohnnyMnemonic->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_PERSON);
         $FriendsChat->addMessage($message);

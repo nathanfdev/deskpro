@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\DataFixtures\ORM;
 
 use Application\DeskPRO\Entity\Article;
@@ -102,15 +102,15 @@ class FakeContentData implements FixtureInterface
             if ($i > 4) {
                 $i = 1;
             }
-            $article           = new Article();
-            $cat               = 'kb_category'.$i;
+            $article = new Article();
+            $cat     = 'kb_category'.$i;
             $article->setCategories(array($$cat));
-            $article->title    = $title;
-            $article->person   = $this->person;
-            $article->content  = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut lobortis velit id lobortis aliquet. In vel elit vel ex ornare viverra. Morbi scelerisque arcu eros, at varius turpis vulputate non. Praesent ultrices pharetra mattis. Nullam euismod nunc nulla, in cursus nibh aliquet nec. Cras a hendrerit ex. Donec sit amet lectus eu turpis lobortis commodo. Curabitur ut consequat turpis, quis tempus ipsum. Aenean aliquam turpis ligula, eu ullamcorper purus ultricies quis. Fusce eleifend lorem vel eros aliquam pretium. Pellentesque sodales dictum nulla volutpat egestas.';
+            $article->title   = $title;
+            $article->person  = $this->person;
+            $article->content = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut lobortis velit id lobortis aliquet. In vel elit vel ex ornare viverra. Morbi scelerisque arcu eros, at varius turpis vulputate non. Praesent ultrices pharetra mattis. Nullam euismod nunc nulla, in cursus nibh aliquet nec. Cras a hendrerit ex. Donec sit amet lectus eu turpis lobortis commodo. Curabitur ut consequat turpis, quis tempus ipsum. Aenean aliquam turpis ligula, eu ullamcorper purus ultricies quis. Fusce eleifend lorem vel eros aliquam pretium. Pellentesque sodales dictum nulla volutpat egestas.';
             $article->setStatus(Article::STATUS_PUBLISHED);
             $manager->persist($article);
-            $i++;
+            ++$i;
         }
     }
 
@@ -180,7 +180,7 @@ class FakeContentData implements FixtureInterface
             $feedback->category = $cat;
             $feedback->title    = $title;
             $feedback->recalculatePopularity();
-            $feedback->content  = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut lobortis velit id lobortis aliquet. In vel elit vel ex ornare viverra. Morbi scelerisque arcu eros, at varius turpis vulputate non. Praesent ultrices pharetra mattis. Nullam euismod nunc nulla, in cursus nibh aliquet nec. Cras a hendrerit ex. Donec sit amet lectus eu turpis lobortis commodo. Curabitur ut consequat turpis, quis tempus ipsum. Aenean aliquam turpis ligula, eu ullamcorper purus ultricies quis. Fusce eleifend lorem vel eros aliquam pretium. Pellentesque sodales dictum nulla volutpat egestas.';
+            $feedback->content = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut lobortis velit id lobortis aliquet. In vel elit vel ex ornare viverra. Morbi scelerisque arcu eros, at varius turpis vulputate non. Praesent ultrices pharetra mattis. Nullam euismod nunc nulla, in cursus nibh aliquet nec. Cras a hendrerit ex. Donec sit amet lectus eu turpis lobortis commodo. Curabitur ut consequat turpis, quis tempus ipsum. Aenean aliquam turpis ligula, eu ullamcorper purus ultricies quis. Fusce eleifend lorem vel eros aliquam pretium. Pellentesque sodales dictum nulla volutpat egestas.';
             $feedback->setStatus(Feedback::STATUS_PUBLISHED);
             $feedback->person = $this->person;
             $manager->persist($feedback);

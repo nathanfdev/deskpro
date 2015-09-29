@@ -1,39 +1,37 @@
 <?php
 
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Model;
 
 use DeskPRO\Bundle\AppBundle\Exception\UnknownTicketGroupingColumnException;
-use \ReflectionClass;
 
 /**
  * Defines grouping columns for the Ticket table.
@@ -41,15 +39,15 @@ use \ReflectionClass;
 class TicketGrouping
 {
     const DEPARTMENT       = 'department';
-    const ORGANIZATION     = "organization_id";
-    const PERSON           = "person";
-    const LANGUAGE         = "language_id";
-    const URGENCY          = "urgency";
-    const AGENT            = "agent";
-    const AGENT_TEAM       = "agent_team_id";
-    const WAITING_TIME     = "date_user_waiting";
-    const ALL_WAITING_TIME = "total_user_waiting";
-    const OPEN_TIME        = "open_time";
+    const ORGANIZATION     = 'organization_id';
+    const PERSON           = 'person';
+    const LANGUAGE         = 'language_id';
+    const URGENCY          = 'urgency';
+    const AGENT            = 'agent';
+    const AGENT_TEAM       = 'agent_team_id';
+    const WAITING_TIME     = 'date_user_waiting';
+    const ALL_WAITING_TIME = 'total_user_waiting';
+    const OPEN_TIME        = 'open_time';
     const DATE_CREATED     = 'date_created';
 
     /** @var Contains this grouping's value. */
@@ -65,12 +63,12 @@ class TicketGrouping
     protected function __construct($column)
     {
         $this->column = $column;
-        
+
         switch ($column) {
             case self::ALL_WAITING_TIME:
                 $this->select = [
                     'alias' => 'all_waiting_time',
-                    'sql' => "case when ticket.total_user_waiting between 0 and 30 then '30s' when ticket.total_user_waiting between 30 and 300 then '5min' when ticket.total_user_waiting between 300 and 3600 then '1h' when ticket.total_user_waiting between 3600 and 10800 then '3h' when ticket.total_user_waiting between 10800 and 86400 then '24h' when ticket.total_user_waiting between 86400 and 259200 then '3d' when ticket.total_user_waiting between 259200 and 604800 then '1w' when ticket.total_user_waiting between 604800 and 2419200 then '1m' else '>1m' end"
+                    'sql'   => "case when ticket.total_user_waiting between 0 and 30 then '30s' when ticket.total_user_waiting between 30 and 300 then '5min' when ticket.total_user_waiting between 300 and 3600 then '1h' when ticket.total_user_waiting between 3600 and 10800 then '3h' when ticket.total_user_waiting between 10800 and 86400 then '24h' when ticket.total_user_waiting between 86400 and 259200 then '3d' when ticket.total_user_waiting between 259200 and 604800 then '1w' when ticket.total_user_waiting between 604800 and 2419200 then '1m' else '>1m' end",
                 ];
                 $this->order_by = [
                     'ticket.total_user_waiting' => 'ASC',
@@ -79,7 +77,7 @@ class TicketGrouping
             case self::WAITING_TIME:
                 $this->select = [
                     'alias' => 'waiting_time',
-                    'sql' => "case when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 0 and 30 then '30s' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 30 and 300 then '5min' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 300 and 3600 then '1h' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 3600 and 10800 then '3h' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 10800 and 86400 then '24h' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 86400 and 259200 then '3d' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 259200 and 604800 then '1w' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 604800 and 2419200 then '1m' else '>1m' end"
+                    'sql'   => "case when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 0 and 30 then '30s' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 30 and 300 then '5min' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 300 and 3600 then '1h' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 3600 and 10800 then '3h' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 10800 and 86400 then '24h' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 86400 and 259200 then '3d' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 259200 and 604800 then '1w' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 604800 and 2419200 then '1m' else '>1m' end",
                 ];
                 $this->order_by = [
                     'ticket.date_user_waiting' => 'DESC',
@@ -88,11 +86,11 @@ class TicketGrouping
             case self::OPEN_TIME:
                 $this->select = [
                     'alias' => 'open_time',
-                    'sql' => "case when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 0 and 30 then '30s' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 30 and 300 then '5min' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 300 and 3600 then '1h' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 3600 and 10800 then '3h' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 10800 and 86400 then '24h' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 86400 and 259200 then '3d' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 259200 and 604800 then '1w' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 604800 and 2419200 then '1m' else '>1m' end"
+                    'sql'   => "case when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 0 and 30 then '30s' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 30 and 300 then '5min' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 300 and 3600 then '1h' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 3600 and 10800 then '3h' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 10800 and 86400 then '24h' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 86400 and 259200 then '3d' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 259200 and 604800 then '1w' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 604800 and 2419200 then '1m' else '>1m' end",
                 ];
                 $this->order_by = [
                     'ticket.date_archived' => 'DESC',
-                    'ticket.date_created' => 'DESC',
+                    'ticket.date_created'  => 'DESC',
                 ];
                 break;
             case self::DATE_CREATED:
@@ -111,7 +109,7 @@ class TicketGrouping
 
     public static function fromConst($value)
     {
-        $refl = new \ReflectionClass(__CLASS__);
+        $refl      = new \ReflectionClass(__CLASS__);
         $constants = $refl->getConstants();
 
         if (false === array_search($value, $constants)) {
@@ -121,17 +119,17 @@ class TicketGrouping
         return new self($value);
     }
 
-    function getSelect()
+    public function getSelect()
     {
         return $this->select;
     }
 
-    function getColumn()
+    public function getColumn()
     {
         return $this->column;
     }
-    
-    function getOrderBy()
+
+    public function getOrderBy()
     {
         return $this->order_by;
     }

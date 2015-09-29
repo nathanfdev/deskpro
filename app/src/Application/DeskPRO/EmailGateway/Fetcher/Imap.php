@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
 use Application\DeskPRO\EmailGateway\Storage;
@@ -143,7 +143,7 @@ class Imap extends AbstractFetcher
                 break;
 
             default:
-                throw new \InvalidArgumentException("Unknown account type: ".$this->account->incoming_account->getType());
+                throw new \InvalidArgumentException('Unknown account type: '.$this->account->incoming_account->getType());
         }
 
         $this->mode            = $options['mode'];
@@ -157,7 +157,7 @@ class Imap extends AbstractFetcher
         $this->storage = new Storage\Imap($options);
 
         if ($this->archive_mailbox === $this->storage->getMailbox()) {
-            throw new \Exception("The current mailbox is reserved for processed emails, it can not be used as the primary mailbox");
+            throw new \Exception('The current mailbox is reserved for processed emails, it can not be used as the primary mailbox');
         }
 
         if ($this->mode === self::MODE_ARCHIVE) {
@@ -175,7 +175,7 @@ class Imap extends AbstractFetcher
             $this->message_uids = $this->storage->getAllMessageUids();
         }
 
-        $this->logger->log("Read IDs: ".implode(', ', $this->message_uids), 'debug');
+        $this->logger->log('Read IDs: '.implode(', ', $this->message_uids), 'debug');
 
         return $this->storage;
     }
@@ -215,14 +215,14 @@ class Imap extends AbstractFetcher
         $raw_message->uid  = $message_uid;
         $raw_message->size = $this->storage->getMessageSize($message_uid) ?: 0;
 
-        $this->logger->log(sprintf("Message UID: %s", $raw_message->uid), 'debug');
-        $this->logger->log(sprintf("Message size: %s bytes", $raw_message->size), 'debug');
+        $this->logger->log(sprintf('Message UID: %s', $raw_message->uid), 'debug');
+        $this->logger->log(sprintf('Message size: %s bytes', $raw_message->size), 'debug');
 
         if ($this->max_size && $raw_message->size && $raw_message->size > $this->max_size) {
             // If we are here, it means that message is larger than the max size
             // So, we won't store the whole message, only the headers.
             $raw_message->content = $this->storage->getRawHeaders($message_uid)."\n\n";
-            $this->logger->log("Message too big, only fetching headers", 'debug');
+            $this->logger->log('Message too big, only fetching headers', 'debug');
         } else {
             // Otherwise store the whole message
             $raw_message->content = $this->storage->getRawMessage($message_uid);
@@ -232,13 +232,13 @@ class Imap extends AbstractFetcher
 
         $EOL = "\n";
         if (strpos($raw_message->content, $EOL.$EOL)) {
-            list($headers,) = explode($EOL.$EOL, $raw_message->content, 2);
+            list($headers) = explode($EOL.$EOL, $raw_message->content, 2);
         } elseif ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
-            list($headers,) = explode("\r\n\r\n", $raw_message->content, 2);
+            list($headers) = explode("\r\n\r\n", $raw_message->content, 2);
         } elseif ($EOL != "\n" && strpos($raw_message->content, "\n\n")) {
-            list($headers,) = explode("\n\n", $raw_message->content, 2);
+            list($headers) = explode("\n\n", $raw_message->content, 2);
         } else {
-            @list($headers,) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
+            @list($headers) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
         }
 
         $raw_message->headers = $headers;
@@ -272,7 +272,7 @@ class Imap extends AbstractFetcher
                 break;
 
             default:
-                throw new \InvalidArgumentException("Unvalid mode: ".$this->mode);
+                throw new \InvalidArgumentException('Unvalid mode: '.$this->mode);
         }
     }
 }

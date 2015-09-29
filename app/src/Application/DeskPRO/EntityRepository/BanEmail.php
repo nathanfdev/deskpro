@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -50,7 +50,7 @@ class BanEmail extends AbstractEntityRepository
         $params = array();
 
         if (!empty($search_phrase)) {
-            $where .= " AND banned_email LIKE :search";
+            $where .= ' AND banned_email LIKE :search';
             $params['search'] = '%'.str_replace('%', '\%', $search_phrase).'%';
         }
 
@@ -58,13 +58,13 @@ class BanEmail extends AbstractEntityRepository
             $where .= ' AND banned_email LIKE "%\%%"';
         }
 
-        $list = App::getDb()->fetchAllCol(sprintf("
+        $list = App::getDb()->fetchAllCol(sprintf('
             SELECT banned_email
             FROM ban_emails
             WHERE %s
             ORDER BY banned_email ASC
             LIMIT %d, %d
-        ", $where, $from, $limit), $params);
+        ', $where, $from, $limit), $params);
         $this->counts[$search_phrase] = count($list);
 
         return $list;
@@ -87,12 +87,12 @@ class BanEmail extends AbstractEntityRepository
         static $list;
 
         if ($reload || !$list) {
-            $list = App::getDb()->fetchAllCol("
+            $list = App::getDb()->fetchAllCol('
                 SELECT banned_email
                 FROM ban_emails
                 WHERE is_pattern = 1
                 ORDER BY banned_email ASC
-            ");
+            ');
         }
 
         return $list;
@@ -109,11 +109,11 @@ class BanEmail extends AbstractEntityRepository
     {
         $email = strtolower(trim($email));
 
-        $banned_email = App::getDb()->fetchColumn("
+        $banned_email = App::getDb()->fetchColumn('
             SELECT banned_email
             FROM ban_emails
             WHERE banned_email = ?
-        ", array($email));
+        ', array($email));
 
         if ($banned_email) {
             $match = $banned_email;
@@ -149,7 +149,7 @@ class BanEmail extends AbstractEntityRepository
         $params = array();
 
         if (!empty($search_phrase)) {
-            $where .= " AND banned_email LIKE :search";
+            $where .= ' AND banned_email LIKE :search';
             $params['search'] = '%'.str_replace('%', '\%', $search_phrase).'%';
         }
 

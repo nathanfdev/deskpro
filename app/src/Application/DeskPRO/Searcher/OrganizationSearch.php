@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
@@ -37,14 +37,14 @@ use Orb\Util\Util;
 
 class OrganizationSearch extends SearcherAbstract
 {
-    const TERM_ID                   = 'org_id';
-    const TERM_NAME                 = 'org_name';
-    const TERM_ORGANIZATION_FIELD   = 'org_field';
-    const TERM_LABEL                = 'org_label';
-    const TERM_CONTACT_PHONE        = 'org_contact_phone';
-    const TERM_CONTACT_ADDRESS      = 'org_contact_address';
-    const TERM_CONTACT_IM           = 'org_contact_im';
-    const TERM_EMAIL_DOMAIN         = 'org_email_domain';
+    const TERM_ID                 = 'org_id';
+    const TERM_NAME               = 'org_name';
+    const TERM_ORGANIZATION_FIELD = 'org_field';
+    const TERM_LABEL              = 'org_label';
+    const TERM_CONTACT_PHONE      = 'org_contact_phone';
+    const TERM_CONTACT_ADDRESS    = 'org_contact_address';
+    const TERM_CONTACT_IM         = 'org_contact_im';
+    const TERM_EMAIL_DOMAIN       = 'org_email_domain';
 
     /**
      * Summary of terms in phrases.
@@ -88,7 +88,7 @@ class OrganizationSearch extends SearcherAbstract
      */
     public function getSql()
     {
-        $sql = "SELECT organizations.id FROM organizations ";
+        $sql = 'SELECT organizations.id FROM organizations ';
 
         $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
@@ -99,7 +99,7 @@ class OrganizationSearch extends SearcherAbstract
 
         foreach ($parts['joins'] as $j) {
             if (is_array($j)) {
-                $sql .= $j[1]." ";
+                $sql .= $j[1].' ';
             } else {
                 $sql .= "LEFT JOIN $j ON $j.organization_id = organizations.id ";
             }
@@ -116,15 +116,15 @@ class OrganizationSearch extends SearcherAbstract
         #------------------------------
 
         if ($parts['wheres']) {
-            $sql .= "WHERE ";
-            $sql .= implode(" AND ", $parts['wheres']);
+            $sql .= 'WHERE ';
+            $sql .= implode(' AND ', $parts['wheres']);
         }
 
-        $sql .= " GROUP BY organizations.id ";
+        $sql .= ' GROUP BY organizations.id ';
         if ($order_by) {
             $sql .= " ORDER BY $order_by ";
         }
-        $sql .= " LIMIT 1000";
+        $sql .= ' LIMIT 1000';
 
         return $sql;
     }
@@ -164,7 +164,7 @@ class OrganizationSearch extends SearcherAbstract
 
             case 'organization.num_members':
                 $order_by = array(
-                    "INNER JOIN people AS sort_table ON (sort_table.organization_id = organizations.id)",
+                    'INNER JOIN people AS sort_table ON (sort_table.organization_id = organizations.id)',
                     "COUNT(sort_table.id) $dir, organizations.name DESC",
                 );
                 break;
@@ -228,7 +228,7 @@ class OrganizationSearch extends SearcherAbstract
                     break;
 
                 case self::TERM_NAME:
-                    $wheres[] = $this->_stringMatch("organizations.name", $op, $choice);
+                    $wheres[] = $this->_stringMatch('organizations.name', $op, $choice);
                     break;
 
                 case self::TERM_CONTACT_PHONE:
@@ -310,7 +310,7 @@ class OrganizationSearch extends SearcherAbstract
                         case self::OP_NOT:
                             $joins[] = array(
                                 'labels_organizations',
-                                "LEFT JOIN labels_organizations AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.label = ".$db->quote($choice).")",
+                                "LEFT JOIN labels_organizations AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.label = ".$db->quote($choice).')',
                             );
                             $wheres[] = "$join_name.person_id IS NULL";
                             break;

@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * Orb.
  *
  * @category Util
  */
-
 namespace Orb\Util;
 
 use Symfony\Component\PropertyAccess\Exception\AccessException;
@@ -149,7 +149,7 @@ class Arrays
         $new_array = array();
 
         if ($key_parts) {
-            $key_prefix = implode($sep, $key_parts). $sep;
+            $key_prefix = implode($sep, $key_parts).$sep;
         } else {
             $key_prefix = '';
         }
@@ -231,7 +231,7 @@ class Arrays
             if ($run_on_keys) {
                 $k = self::_func_run_func($func, $params, $k);
             }
-            $array[$k] = Arrays::func($v, $func, $params);
+            $array[$k] = self::func($v, $func, $params);
         }
 
         return $array;
@@ -281,7 +281,7 @@ class Arrays
     {
         $new_array = (array) func_get_arg(0);
 
-        for ($i = 1, $size = func_num_args(); $i < $size; $i++) {
+        for ($i = 1, $size = func_num_args(); $i < $size; ++$i) {
             $arr = (array) func_get_arg($i);
 
             foreach ($arr as $key => $val) {
@@ -593,7 +593,7 @@ class Arrays
             }
 
             if (is_array($v) && $max_depth == -1 || $_cur_depth < $max_depth) {
-                $v = self::multiRenameKey($v, $old_key, $new_key, $max_depth, $_cur_depth+1);
+                $v = self::multiRenameKey($v, $old_key, $new_key, $max_depth, $_cur_depth + 1);
             }
 
             $new[$k] = $v;
@@ -823,7 +823,7 @@ class Arrays
     {
         $num = func_num_args();
 
-        for ($i = 1; $i < $num; $i++) {
+        for ($i = 1; $i < $num; ++$i) {
             $val = func_get_arg($i);
 
             if (!in_array($val, $array)) {
@@ -848,7 +848,7 @@ class Arrays
     {
         $num = func_num_args();
 
-        for ($i = 1; $i < $num; $i++) {
+        for ($i = 1; $i < $num; ++$i) {
             $val = func_get_arg($i);
 
             if (!in_array($val, $array, true)) {
@@ -1023,11 +1023,11 @@ class Arrays
         $rows = array();
         foreach ($array as $k => $v) {
             if (is_array($v)) {
-                $v = self::prettyDump($v, $_level+1);
+                $v = self::prettyDump($v, $_level + 1);
                 $v = ltrim($v);
 
                 if (strlen($v) < 80) {
-                    $v = str_replace("\n", " ", $v);
+                    $v = str_replace("\n", ' ', $v);
                     $v = preg_replace('#\s*=>\s*#', ' => ', $v);
                     $v = preg_replace("#',\s*'#", '\', \'', $v);
                     $v = trim($v);
@@ -1040,9 +1040,9 @@ class Arrays
             }
 
             if ($is_numeric_array) {
-                $row = str_repeat("\t", $_level+1).$v;
+                $row = str_repeat("\t", $_level + 1).$v;
             } else {
-                $row = sprintf("%s%-{$max_keylen}s => %s", str_repeat("\t", $_level+1), var_export($k, true), $v);
+                $row = sprintf("%s%-{$max_keylen}s => %s", str_repeat("\t", $_level + 1), var_export($k, true), $v);
             }
 
             $rows[] = $row;
@@ -1106,7 +1106,7 @@ class Arrays
             $new_array[$id] = $array[$id];
 
             unset($array[$id]);
-            $new_array[$id][$child_key] = Arrays::intoHierarchy($array, $id, $parent_key, $child_key, $store_ids);
+            $new_array[$id][$child_key] = self::intoHierarchy($array, $id, $parent_key, $child_key, $store_ids);
         }
 
         return $new_array;
@@ -1158,7 +1158,7 @@ class Arrays
                 $index = $count;
             }
 
-            $count++;
+            ++$count;
 
             $new_array[$index]          = $arr;
             $new_array[$index]['depth'] = $current_depth;
@@ -1168,7 +1168,7 @@ class Arrays
                 if (!is_array($sub_array)) {
                     $sub_array = iterator_to_array($sub_array);
                 }
-                self::_flattenHierarcy($new_array, $sub_array, $index_key, $child_key, $depth_key, $current_depth+1, $count);
+                self::_flattenHierarcy($new_array, $sub_array, $index_key, $child_key, $depth_key, $current_depth + 1, $count);
             }
         }
     }
@@ -1406,7 +1406,7 @@ class Arrays
         }
 
         reset($array);
-        for ($i = 0; $i < $num; $i++) {
+        for ($i = 0; $i < $num; ++$i) {
             next($array);
         }
         $k = key($array);
@@ -1483,7 +1483,7 @@ class Arrays
      */
     public static function getLastItem($array)
     {
-        return self::getNthItem($array, sizeof($array)-1);
+        return self::getNthItem($array, sizeof($array) - 1);
     }
 
     /**
@@ -1648,9 +1648,10 @@ class Arrays
      *
      * You will not get an exception with this method if the path does not exist.
      *
-     * @param array $array
+     * @param array  $array
      * @param string $property_path
-     * @param mixed $not_found the value returned if the property path does not exist
+     * @param mixed  $not_found     the value returned if the property path does not exist
+     *
      * @return mixed
      */
     public static function findPropertyPath(array $array, $property_path, $not_found = null)
@@ -1796,7 +1797,7 @@ class Arrays
      * @param array $array The array to unset in
      * @paray  array $keys  The keys used to get to deep item to unset
      *
-     * @return boolean True if the unset was performed.
+     * @return bool True if the unset was performed.
      */
     public static function unsetKey(array &$array, $keys)
     {
@@ -1940,7 +1941,7 @@ class Arrays
         $new = array();
 
         foreach ($array as $k => $v) {
-            if ((string)$k === (string)$key) {
+            if ((string) $k === (string) $key) {
                 $v = $replace;
             } elseif (is_array($v)) {
                 $v = self::replaceKeyWithValueRecursive($v, $key, $replace);
@@ -1976,7 +1977,7 @@ class Arrays
 
         foreach ($array_of_arrays as $sub_array) {
             if ($cur_level < $max_level and is_array($sub_array)) {
-                $sub_array = self::_mergeSubArray_helper($sub_array, $levels, $cur_level+1);
+                $sub_array = self::_mergeSubArray_helper($sub_array, $levels, $cur_level + 1);
             }
 
             $array = array_merge($array, $sub_array);
@@ -2157,14 +2158,14 @@ class Arrays
 
         foreach ($array as $k => $v) {
             if ($start) {
-                $start--;
+                --$start;
                 continue;
             }
 
             $new_array[$k] = $v;
 
             if ($length !== null) {
-                $length--;
+                --$length;
                 if ($length == 0) {
                     break;
                 }

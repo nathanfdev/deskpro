@@ -1,45 +1,45 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataService\Content\Comment;
 
-use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupableCriteriaInterface;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupableCriteriaInterface;
+use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
 /**
- * Class CommentsDataService
+ * Class CommentsDataService.
  */
 class CommentsDataService
 {
@@ -59,8 +59,9 @@ class CommentsDataService
     }
 
     /**
-     * @param string $class Concrete comment entity class
+     * @param string                     $class    Concrete comment entity class
      * @param GroupableCriteriaInterface $criteria
+     *
      * @return Count
      */
     public function countComments($class, GroupableCriteriaInterface $criteria)
@@ -75,7 +76,7 @@ class CommentsDataService
             $criteria->applyGroupBy($qb);
 
             $result = $qb->getQuery()->getArrayResult();
-            $count = Count::fromGroupedBy($criteria->getGroupBy());
+            $count  = Count::fromGroupedBy($criteria->getGroupBy());
             foreach ($result as $group) {
                 $count->add($group['value']);
                 $count->addNested($group['value'], $group['group_name']);
@@ -89,10 +90,11 @@ class CommentsDataService
     }
 
     /**
-     * @param string $class
+     * @param string   $class
      * @param Criteria $criteria
-     * @param int $page
-     * @param int $count
+     * @param int      $page
+     * @param int      $count
+     *
      * @return Pagerfanta
      */
     public function selectComments($class, Criteria $criteria, $page, $count)

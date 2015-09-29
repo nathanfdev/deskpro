@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
 use Application\DeskPRO\App;
@@ -146,7 +146,7 @@ class Pop3 extends AbstractFetcher
                 break;
 
             default:
-                throw new \InvalidArgumentException("Unknown account type: ".$this->account->incoming_account->getType());
+                throw new \InvalidArgumentException('Unknown account type: '.$this->account->incoming_account->getType());
         }
 
         $options['logger'] = $this->logger;
@@ -209,7 +209,7 @@ class Pop3 extends AbstractFetcher
                 }
                 $this->logger->log("Email account does not support unique but keep_read is enabled. Capabilities: $capas", 'debug');
 
-                $e                      = new \InvalidArgumentException("Email account does not support uniqueid");
+                $e                      = new \InvalidArgumentException('Email account does not support uniqueid');
                 $einfo                  = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
                 $einfo['no_send_error'] = true;
                 \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
@@ -221,10 +221,10 @@ class Pop3 extends AbstractFetcher
 
             $id_to_num = array_flip($this->getStorage()->getUniqueId());
 
-            $this->logger->log("Server has ".count($id_to_num)." messages", 'debug');
+            $this->logger->log('Server has '.count($id_to_num).' messages', 'debug');
 
             if (count($id_to_num) > 2500) {
-                $this->logger->log("Server has >= 2500 messages, breaking", 'ERR');
+                $this->logger->log('Server has >= 2500 messages, breaking', 'ERR');
                 $this->message_list = array();
 
                 $e                      = new \InvalidArgumentException("POP3 server has >= 2500 messages and 'keep read' setting is enbaled. Clean out old messages and try again.");
@@ -235,22 +235,22 @@ class Pop3 extends AbstractFetcher
                 return;
             }
 
-            $read_ids = App::getDb()->fetchAllCol("
+            $read_ids = App::getDb()->fetchAllCol('
                 SELECT id
                 FROM email_uids
                 WHERE email_account_id = ?
-            ", array($this->account->getId()));
+            ', array($this->account->getId()));
 
-            $this->logger->log("System has ".count($read_ids)." tracked IDs", 'debug');
+            $this->logger->log('System has '.count($read_ids).' tracked IDs', 'debug');
 
             foreach ($read_ids as $id) {
                 if (isset($id_to_num[$id])) {
-                    $this->logger->log(sprintf("Skipping message #%s because UID %s", $id_to_num[$id], $id), 'debug');
+                    $this->logger->log(sprintf('Skipping message #%s because UID %s', $id_to_num[$id], $id), 'debug');
                     unset($id_to_num[$id]);
                 }
             }
 
-            $this->message_list_ids  = array_flip($id_to_num);
+            $this->message_list_ids = array_flip($id_to_num);
 
             $list = $this->getStorage()->getSize();
 
@@ -261,7 +261,7 @@ class Pop3 extends AbstractFetcher
                 }
             }
 
-            $this->logger->log("Message list contains ".count($this->message_list)." new messages", 'debug');
+            $this->logger->log('Message list contains '.count($this->message_list).' new messages', 'debug');
         } else {
             $list = $this->getStorage()->getSize();
 
@@ -270,7 +270,7 @@ class Pop3 extends AbstractFetcher
                 $this->message_list[] = array('num' => $num, 'size' => $size, 'uid' => null);
             }
 
-            $this->logger->log("Message list contains ".count($this->message_list)." messages", 'debug');
+            $this->logger->log('Message list contains '.count($this->message_list).' messages', 'debug');
         }
     }
 
@@ -286,7 +286,7 @@ class Pop3 extends AbstractFetcher
         $this->getStorage();
         $this->_initMessageList();
 
-        $this->read_count++;
+        ++$this->read_count;
         $this->logger->log("Trying to read next ({$this->read_count} call)", 'debug');
 
         $next = array_shift($this->message_list);
@@ -356,21 +356,21 @@ class Pop3 extends AbstractFetcher
         }
         $headers = null;
 
-        $this->logger->log(sprintf("Message size: %s bytes", $message_size), 'debug');
+        $this->logger->log(sprintf('Message size: %s bytes', $message_size), 'debug');
 
         if ($raw_message->uid) {
-            $this->logger->log(sprintf("Message UID: %s", $raw_message->uid), 'debug');
+            $this->logger->log(sprintf('Message UID: %s', $raw_message->uid), 'debug');
         }
 
         $EOL = "\n";
         if (strpos($raw_message->content, $EOL.$EOL)) {
-            list($headers,) = explode($EOL.$EOL, $raw_message->content, 2);
+            list($headers) = explode($EOL.$EOL, $raw_message->content, 2);
         } elseif ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
-            list($headers,) = explode("\r\n\r\n", $raw_message->content, 2);
+            list($headers) = explode("\r\n\r\n", $raw_message->content, 2);
         } elseif ($EOL != "\n" && strpos($raw_message->content, "\n\n")) {
-            list($headers,) = explode("\n\n", $raw_message->content, 2);
+            list($headers) = explode("\n\n", $raw_message->content, 2);
         } else {
-            @list($headers,) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
+            @list($headers) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
         }
 
         $raw_message->headers = $headers;
@@ -381,10 +381,10 @@ class Pop3 extends AbstractFetcher
 
         if ($this->max_size && $raw_message->size > $this->max_size) {
             $raw_message->too_big = true;
-            $this->logger->log("Setting too_big flag", 'debug');
+            $this->logger->log('Setting too_big flag', 'debug');
         }
 
-        $this->logger->log(sprintf("Got message %d %s. Took %0.2f seconds.", $message_num, $message_id, microtime(true) - $start_time), 'debug');
+        $this->logger->log(sprintf('Got message %d %s. Took %0.2f seconds.', $message_num, $message_id, microtime(true) - $start_time), 'debug');
 
         return $raw_message;
     }
@@ -406,7 +406,7 @@ class Pop3 extends AbstractFetcher
         }
 
         if ($this->account->getOption('keep_read')) {
-            $this->logger->log(sprintf("Done read, but keep_read is enabled"), 'debug');
+            $this->logger->log(sprintf('Done read, but keep_read is enabled'), 'debug');
 
             return;
         }
@@ -424,8 +424,8 @@ class Pop3 extends AbstractFetcher
      * Tests the connection and returns the number of messages on success.
      *
      * @throws \Exception
-     * @return bool
      *
+     * @return bool
      */
     public function test()
     {

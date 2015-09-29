@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Controller
  */
-
 namespace Application\DeskPRO\DBAL;
 
 use Doctrine\DBAL\DBALException;
@@ -136,12 +136,12 @@ class Connection extends \Doctrine\DBAL\Connection
                 $fn = 'db-transactions.log';
             }
             $this->transaction_logger->addWriter(new \Orb\Log\Writer\Stream(dp_get_log_dir().'/'.$fn));
-            $this->transaction_logger->logDebug("--- BEGIN PAGE ---");
+            $this->transaction_logger->logDebug('--- BEGIN PAGE ---');
 
             if (php_sapi_name() == 'cli' && !empty($_SERVER['argv'])) {
-                $this->transaction_logger->logDebug("Command: ".implode(' ', $_SERVER['argv']));
+                $this->transaction_logger->logDebug('Command: '.implode(' ', $_SERVER['argv']));
             } else {
-                $this->transaction_logger->logDebug("URL: ".$_SERVER['PHP_SELF']);
+                $this->transaction_logger->logDebug('URL: '.$_SERVER['PHP_SELF']);
             }
         }
     }
@@ -168,14 +168,14 @@ class Connection extends \Doctrine\DBAL\Connection
     {
         if (!$this->has_run_avoid) {
             try {
-                $this->exec("SET SESSION wait_timeout = 1800");
+                $this->exec('SET SESSION wait_timeout = 1800');
             } catch (\Exception $e) {
             }
             $this->has_run_avoid = true;
         }
 
         try {
-            $this->fetchColumn("SELECT 1");
+            $this->fetchColumn('SELECT 1');
         } catch (\Exception $e) {
         }
     }
@@ -311,9 +311,9 @@ class Connection extends \Doctrine\DBAL\Connection
      * Builds SQL for multiple inserts in one go. All items in the values array
      * must be keyed the same.
      *
-     * @param string  $table
-     * @param array   $multiple_values
-     * @param boolean $ignore
+     * @param string $table
+     * @param array  $multiple_values
+     * @param bool   $ignore
      */
     public function batchInsert($table, array $multiple_values, $ignore = false)
     {
@@ -325,7 +325,7 @@ class Connection extends \Doctrine\DBAL\Connection
         $value_tpl   = '';
 
         if (!$multiple_values) {
-            throw new \InvalidArgumentException("No values");
+            throw new \InvalidArgumentException('No values');
         }
 
         #------------------------------
@@ -342,7 +342,7 @@ class Connection extends \Doctrine\DBAL\Connection
             }
 
             if (count($vals) != $cols_count) {
-                throw new \InvalidArgumentException("A value row has more columns than it should");
+                throw new \InvalidArgumentException('A value row has more columns than it should');
             }
 
             foreach ($cols as $c) {
@@ -360,7 +360,7 @@ class Connection extends \Doctrine\DBAL\Connection
         # Build sql
         #------------------------------
 
-        $sql = "INSERT ".($ignore ? 'IGNORE' : '')." INTO `$table` (`".implode('`,`', $cols)."`) VALUES ".implode(',', $value_parts);
+        $sql = 'INSERT '.($ignore ? 'IGNORE' : '')." INTO `$table` (`".implode('`,`', $cols).'`) VALUES '.implode(',', $value_parts);
 
         return $this->executeUpdate($sql, $params);
     }
@@ -492,8 +492,8 @@ class Connection extends \Doctrine\DBAL\Connection
      * @param int                                    $is_retry
      *
      * @throws \Exception
-     * @return \Doctrine\DBAL\Cache\ArrayStatement|\Doctrine\DBAL\Cache\ResultCacheStatement|\Doctrine\DBAL\Driver\Statement
      *
+     * @return \Doctrine\DBAL\Cache\ArrayStatement|\Doctrine\DBAL\Cache\ResultCacheStatement|\Doctrine\DBAL\Driver\Statement
      */
     public function executeQuery($query, array $params = array(), $types = array(), \Doctrine\DBAL\Cache\QueryCacheProfile $qcp = null, $is_retry = 0)
     {
@@ -589,26 +589,26 @@ class Connection extends \Doctrine\DBAL\Connection
         }
 
         $write   = array();
-        $write[] = "[".date("Y-m-d H:i:s")."]";
+        $write[] = '['.date('Y-m-d H:i:s').']';
 
         if (defined('DP_REQUEST_URL')) {
-            $write[] = "Page_Url: ".DP_REQUEST_URL;
+            $write[] = 'Page_Url: '.DP_REQUEST_URL;
             if (!empty($_SERVER['REQUEST_METHOD'])) {
-                $writep[] = "Method: ".$_SERVER['REQUEST_METHOD'];
+                $writep[] = 'Method: '.$_SERVER['REQUEST_METHOD'];
             }
         } elseif (defined('DP_INTERFACE') && DP_INTERFACE == 'cli') {
-            $write[] = "Command: ".implode(' ', $_SERVER['argv']);
+            $write[] = 'Command: '.implode(' ', $_SERVER['argv']);
         } else {
-            $write[] = "UnknownPage";
+            $write[] = 'UnknownPage';
         }
 
         if (!empty($_SERVER['REMOTE_ADDR'])) {
-            $write[] = "IP: ".$_SERVER['REMOTE_ADDR'];
+            $write[] = 'IP: '.$_SERVER['REMOTE_ADDR'];
         }
 
-        $write[] = "Query: ".$query;
+        $write[] = 'Query: '.$query;
         if ($params) {
-            $write[] = "Params: ".implode($params);
+            $write[] = 'Params: '.implode($params);
         }
 
         $write = implode("\t", $write);
@@ -675,7 +675,7 @@ class Connection extends \Doctrine\DBAL\Connection
 
         $params = array_values($data);
 
-        $sql = "UPDATE `$table` SET ".implode(', ', $set)." WHERE `$field` IN (".$this->quoteIn($ids).")";
+        $sql = "UPDATE `$table` SET ".implode(', ', $set)." WHERE `$field` IN (".$this->quoteIn($ids).')';
 
         return $this->executeUpdate($sql, $params, $types);
     }
@@ -839,7 +839,7 @@ class Connection extends \Doctrine\DBAL\Connection
      */
     public function setIsolationRepeatableRead($auto_reset = false)
     {
-        $this->exec("SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ");
+        $this->exec('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
         if ($auto_reset) {
             $this->do_reset_isolation = true;
         }
@@ -852,7 +852,7 @@ class Connection extends \Doctrine\DBAL\Connection
      */
     public function setIsolationReadCommitted($auto_reset = false)
     {
-        $this->exec("SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED");
+        $this->exec('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
         if ($auto_reset) {
             $this->do_reset_isolation = true;
         }

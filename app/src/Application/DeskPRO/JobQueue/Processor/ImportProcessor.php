@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\DeskPRO\JobQueue\Processor;
 
@@ -51,7 +52,7 @@ class ImportProcessor extends AbstractJobProcessor
 {
     const JOB_TYPE = 'deskrpo.import';
 
-    static public $allowed = array(
+    public static $allowed = array(
         ExporterInterface::TYPE_CSV,
         ExporterInterface::TYPE_OS_TICKET,
         ExporterInterface::TYPE_ZENDESK,
@@ -68,17 +69,17 @@ class ImportProcessor extends AbstractJobProcessor
     protected $container;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __construct(DeskproContainer $container)
     {
         parent::__construct($container->getEm()->getConnection());
-        $this->em = $container->getEm();
+        $this->em        = $container->getEm();
         $this->container = $container;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function setDataOptions(OptionsResolverInterface $resolver)
     {
@@ -89,19 +90,18 @@ class ImportProcessor extends AbstractJobProcessor
     {
         $em = $this->container->getEm();
         try {
-            $importer = ImportProcessor::getImporter($data['id'], $this->container);
+            $importer = self::getImporter($data['id'], $this->container);
         } catch (\Exception $e) {
             return false;
         }
 
         try {
-
-            $config = ImportProcessor::createGeneratorConfig($importer, $this->container);
-            /** @var Generator $generator */
+            $config = self::createGeneratorConfig($importer, $this->container);
+            /* @var Generator $generator */
             $this->container->set('deskpro.import.config', $config);
             $generator = $this->container->get('deskpro.import.generator');
 
-            $logger = new Logger('importer');
+            $logger    = new Logger('importer');
             $formatter = new LineFormatter();
             $formatter->ignoreEmptyContextAndExtra(true);
             $handler = new ImporterHandler($importer, $em);
@@ -140,12 +140,11 @@ class ImportProcessor extends AbstractJobProcessor
             $progress->start();
             $generator->generate();
             $logger->info("\nDone");
-
         } catch (\Exception $e) {
             // todo?
             $logger->err("\n".$e->getMessage());
             $logger->info("\nFailed");
-            ImportProcessor::cleanup($importer, $this->container);
+            self::cleanup($importer, $this->container);
         }
 
         $importer->setData('status', 'done');
@@ -155,16 +154,18 @@ class ImportProcessor extends AbstractJobProcessor
     }
 
     /**
-     * @param DataStore $importer
+     * @param DataStore        $importer
      * @param DeskproContainer $container
-     * @return GeneratorConfig
+     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @return GeneratorConfig
+     *
      */
-    static public function createGeneratorConfig(DataStore $importer, DeskproContainer $container)
+    public static function createGeneratorConfig(DataStore $importer, DeskproContainer $container)
     {
-        $em = $container->getEm();
+        $em     = $container->getEm();
         $config = new GeneratorConfig();
         $config->setVerbose(true);
         $config->setExporterType(str_replace('importers.', '', $importer['name']));
@@ -184,12 +185,12 @@ class ImportProcessor extends AbstractJobProcessor
             $config->addEntityType($type);
         }
 
-        /**
+        /*
          * create temp dir
          */
         $tmp = @$readerConfigData['temp'];
         if (!$tmp) {
-            $tmp = dp_get_tmp_dir().'/importer-'.time();
+            $tmp                      = dp_get_tmp_dir().'/importer-'.time();
             $readerConfigData['temp'] = $tmp;
             $em->flush($importer);
         }
@@ -201,11 +202,10 @@ class ImportProcessor extends AbstractJobProcessor
         $config->setInputPath($tmp.'/in');
         $config->setOutputPath($tmp.'/out/');
 
-        /**
+        /*
          * copy blobs to temp dir
          */
         if (@$readerConfigData['blobs']) {
-
             $storage = $container->getBlobStorage();
 
             foreach ($readerConfigData['blobs'] as $blobData) {
@@ -238,21 +238,22 @@ class ImportProcessor extends AbstractJobProcessor
     /**
      * @param $id
      * @param DeskproContainer $container
+     *
      * @return DataStore
      */
-    static public function getImporter($id, DeskproContainer $container)
+    public static function getImporter($id, DeskproContainer $container)
     {
-        /** @var \Application\DeskPRO\EntityRepository\DataStore $rep */
-        /** @var Generator $generator */
-        $em = $container->getEm();
+        /* @var \Application\DeskPRO\EntityRepository\DataStore $rep */
+        /* @var Generator $generator */
+        $em  = $container->getEm();
         $rep = $em->getRepository('DeskPRO:DataStore');
 
         if (!in_array($id, self::$allowed)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         if (!$importer = $rep->getByName('importers.'.$id)) {
-            $importer = new DataStore();
+            $importer         = new DataStore();
             $importer['name'] = 'importers.'.$id;
             $importer->setData('id', $id);
             $importer->setData('title', ucfirst($id));
@@ -271,7 +272,7 @@ class ImportProcessor extends AbstractJobProcessor
         return $importer;
     }
 
-    static public function cleanup(DataStore $importer, DeskproContainer $container)
+    public static function cleanup(DataStore $importer, DeskproContainer $container)
     {
         $readerConfigData = $importer->getData('config');
 

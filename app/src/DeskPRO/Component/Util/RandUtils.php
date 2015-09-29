@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Component\Util;
 
 /**
@@ -36,20 +36,22 @@ namespace DeskPRO\Component\Util;
  */
 class RandUtils
 {
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     /**#@+
      * Strings of some common character ranges.
      * @see Strings::randomString()
      */
-    const CHARS_ALPHANUM     = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-    const CHARS_ALPHANUM_I   = '0123456789abcdefghijklmnopqrstuvwxyz';
-    const CHARS_ALPHANUM_IU  = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const CHARS_NUM          = '0123456789';
-    const CHARS_ALPHA        = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-    const CHARS_ALPHA_I      = 'abcdefghijklmnopqrstuvwxyz';
-    const CHARS_ALPHA_IU     = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const CHARS_SECURE       = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()-_=+{}|[]:;,./<>?';
+    const CHARS_ALPHANUM    = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    const CHARS_ALPHANUM_I  = '0123456789abcdefghijklmnopqrstuvwxyz';
+    const CHARS_ALPHANUM_IU = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const CHARS_NUM         = '0123456789';
+    const CHARS_ALPHA       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    const CHARS_ALPHA_I     = 'abcdefghijklmnopqrstuvwxyz';
+    const CHARS_ALPHA_IU    = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const CHARS_SECURE      = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()-_=+{}|[]:;,./<>?';
     /**#@-*/
 
     /**
@@ -61,44 +63,44 @@ class RandUtils
      *
      * If a falsy value is provided, then CHARS_ALPHANUM is used by default.
      *
-     * @param int     $len
-     * @param string  $chars
+     * @param int    $len
+     * @param string $chars
      */
     public static function randomString($len = 8, $chars = null)
     {
         if ($len < 1) {
-            throw new \InvalidArgumentException("Length must be at least 1 character");
+            throw new \InvalidArgumentException('Length must be at least 1 character');
         }
 
         if (!$chars) {
             $chars = self::CHARS_ALPHANUM;
         } else {
             switch (strtoupper($chars)) {
-                case 'ALPHANUM':    $chars = RandUtils::CHARS_ALPHANUM; break;
-                case 'ALPHANUM_I':  $chars = RandUtils::CHARS_ALPHANUM_I; break;
-                case 'ALPHANUM_IU': $chars = RandUtils::CHARS_ALPHANUM_IU; break;
-                case 'NUM':         $chars = RandUtils::CHARS_NUM; break;
-                case 'ALPHA':       $chars = RandUtils::CHARS_ALPHA; break;
-                case 'ALPHA_I':     $chars = RandUtils::CHARS_ALPHA_I; break;
-                case 'ALPHA_IU':    $chars = RandUtils::CHARS_ALPHA_IU; break;
-                case 'SECURE':      $chars = RandUtils::CHARS_SECURE; break;
+                case 'ALPHANUM':    $chars = self::CHARS_ALPHANUM; break;
+                case 'ALPHANUM_I':  $chars = self::CHARS_ALPHANUM_I; break;
+                case 'ALPHANUM_IU': $chars = self::CHARS_ALPHANUM_IU; break;
+                case 'NUM':         $chars = self::CHARS_NUM; break;
+                case 'ALPHA':       $chars = self::CHARS_ALPHA; break;
+                case 'ALPHA_I':     $chars = self::CHARS_ALPHA_I; break;
+                case 'ALPHA_IU':    $chars = self::CHARS_ALPHA_IU; break;
+                case 'SECURE':      $chars = self::CHARS_SECURE; break;
             }
         }
 
         $string    = '';
         $max_range = strlen($chars) - 1;
 
-        for ($i = 0; $i < $len; $i++) {
+        for ($i = 0; $i < $len; ++$i) {
             $string .= $chars[mt_rand(0, $max_range)];
         }
 
         return $string;
     }
 
-
     /**
      * @param string $body   The body to make sure the string is unique in
      * @param string $format The format of the random string format
+     *
      * @return string
      */
     public static function randomBodyToken($body, $format = '%h')
@@ -109,7 +111,6 @@ class RandUtils
 
         return $tok;
     }
-
 
     /**
      * Generate a random string in a given format.
@@ -128,7 +129,8 @@ class RandUtils
      * You can specify a number before the letter for length: %4n -- 4 numbers
      *
      * @param string $format
-     * @param array $custom_formatters
+     * @param array  $custom_formatters
+     *
      * @return string
      */
     public static function randomStringFormat($format)
@@ -137,8 +139,8 @@ class RandUtils
             return '';
         }
 
-        return preg_replace_callback('#%(\d*)(A|a|c|n|An|an|cn|g|h)#', function($m) {
-            $l = (int)$m[1] ?: 1;
+        return preg_replace_callback('#%(\d*)(A|a|c|n|An|an|cn|g|h)#', function ($m) {
+            $l = (int) $m[1] ?: 1;
             switch ($m[2]) {
                 case 'A':  return RandUtils::randomString($l, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
                 case 'a':  return RandUtils::randomString($l, 'abcdefghijklmnopqrstuvwxyz');
@@ -148,8 +150,9 @@ class RandUtils
                 case 'an': return RandUtils::randomString($l, 'abcdefghijklmnopqrstuvwxyz0123456789');
                 case 'cn': return RandUtils::randomString($l, 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789');
                 case 'g':  return RandUtils::randomString($l, '!@#$%^&*()-_=+{}|[]:;,./<>?');
-                case 'h':  return sha1(time() . mt_rand(1000, 9999) . mt_rand(1000, 9999) . mt_rand(1000, 9999) . mt_rand(1000, 9999));
+                case 'h':  return sha1(time().mt_rand(1000, 9999).mt_rand(1000, 9999).mt_rand(1000, 9999).mt_rand(1000, 9999));
             }
+
             return $m[0];
         }, $format);
     }

@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * Orb.
  *
  * @category Util
  */
-
 namespace Orb\Util;
 
 /**
@@ -42,14 +42,14 @@ class WorkHoursSet implements WorkHoursInterface
     /**
      * When the work day starts. This is stored as the number of seconds after 00:00:00.
      *
-     * @var integer
+     * @var int
      */
     protected $work_start;
 
     /**
      * When the work day ends. This is stored as the number of seconds after 00:00:00.
      *
-     * @var integer
+     * @var int
      */
     protected $work_end;
 
@@ -83,7 +83,7 @@ class WorkHoursSet implements WorkHoursInterface
     /**
      * @param int   $work_start    Seconds into the day when work day starts
      * @param int   $work_end      Seconds into the day when work day ends
-     * @param array $work_days          Array of days of days (1 = monday, 7 = sunday)
+     * @param array $work_days     Array of days of days (1 = monday, 7 = sunday)
      * @param int   $work_timezone Timezone string for the hours
      * @param array $work_holidays Array of holidays
      */
@@ -99,7 +99,7 @@ class WorkHoursSet implements WorkHoursInterface
         }
 
         $work_days_array = array_fill(1, 7, false);
-            foreach ($work_days as $k) {
+        foreach ($work_days as $k) {
             if ($k >= 1 && $k <= 7) {
                 if (isset($work_days_array[$k])) {
                     $work_days_array[$k] = true;

@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\PeopleResults;
@@ -88,16 +88,16 @@ class PeopleSearchController extends AbstractController
         $label_lister  = new \Application\DeskPRO\Labels\LabelLister('organizations');
         $org_tag_index = $label_lister->getIndexList();
 
-        $usergroup_names      = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
-        $usergroup_counts     = $this->em->getRepository('DeskPRO:Usergroup')->getCountsFor(array_keys($usergroup_names));
+        $usergroup_names  = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
+        $usergroup_counts = $this->em->getRepository('DeskPRO:Usergroup')->getCountsFor(array_keys($usergroup_names));
 
         $data['section_html'] = $this->renderView('AgentBundle:PeopleSearch:window-section.html.twig', array(
-            'usergroup_names'      => $usergroup_names,
-            'usergroup_counts'     => $usergroup_counts,
+            'usergroup_names'  => $usergroup_names,
+            'usergroup_counts' => $usergroup_counts,
 
-            'team_names'   => $team_names,
-            'team_counts'  => $team_counts,
-            'agent_count'  => $agent_count,
+            'team_names'  => $team_names,
+            'team_counts' => $team_counts,
+            'agent_count' => $agent_count,
 
             'people_count'           => $people_count,
             'validating_count'       => $validating_count,
@@ -213,14 +213,14 @@ class PeopleSearchController extends AbstractController
         $renderer       = new PeopleListRenderer($this->container);
 
         $vars = array_merge($vars, array(
-            'type'                    => $type,
-            'type_id'                 => $type_id,
-            'people'                  => $people,
-            'people_json'             => $renderer->renderJson($person_display),
-            'page'                    => $page,
-            'per_page'                => $results_helper->getPerPageCount(),
-            'load_first'              => $this->in->getBool('load_first'),
-            'alphabet'                => $letters,
+            'type'        => $type,
+            'type_id'     => $type_id,
+            'people'      => $people,
+            'people_json' => $renderer->renderJson($person_display),
+            'page'        => $page,
+            'per_page'    => $results_helper->getPerPageCount(),
+            'load_first'  => $this->in->getBool('load_first'),
+            'alphabet'    => $letters,
         ));
 
         if ('json' === $view_type) {
@@ -230,8 +230,8 @@ class PeopleSearchController extends AbstractController
 
             if ($is_partial) {
                 return $this->createJsonResponse(array(
-                    'html'              => $html,
-                    'page'              => $page,
+                    'html' => $html,
+                    'page' => $page,
                 ));
             } else {
                 return $this->createResponse($html);
@@ -274,10 +274,10 @@ class PeopleSearchController extends AbstractController
         $result_display = new \Application\DeskPRO\People\PeopleResultsDisplay($people);
 
         return $this->render("AgentBundle:PeopleSearch:$tpl", array(
-            'people'                  => $people,
-            'display_fields'          => $display_fields,
-            'person_field_defs'       => $person_field_defs,
-            'result_display'          => $result_display,
+            'people'            => $people,
+            'display_fields'    => $display_fields,
+            'person_field_defs' => $person_field_defs,
+            'result_display'    => $result_display,
         ));
     }
 
@@ -314,15 +314,15 @@ class PeopleSearchController extends AbstractController
             $terms      = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw', 'discard'));
 
             $set_terms_map = array(
-                'person_organization'       => array('op' => 'contains', 'options' => array()),
-                'person_usergroup'          => array('op' => 'contains', 'options' => array()),
-                'person_label'              => array('op' => 'contains', 'options' => array()),
-                'person_name'               => array('op' => 'contains', 'options' => array()),
-                'person_email'              => array('op' => 'contains', 'options' => array()),
-                'person_contact_phone'      => array('op' => 'contains', 'options' => array()),
-                'is_agent_confirmed'        => array('op' => 'is', 'options' => array()),
-                'is_confirmed'              => array('op' => 'is', 'options' => array()),
-                'any_mode'                  => array('op' => 'is', 'options' => array()),
+                'person_organization'  => array('op' => 'contains', 'options' => array()),
+                'person_usergroup'     => array('op' => 'contains', 'options' => array()),
+                'person_label'         => array('op' => 'contains', 'options' => array()),
+                'person_name'          => array('op' => 'contains', 'options' => array()),
+                'person_email'         => array('op' => 'contains', 'options' => array()),
+                'person_contact_phone' => array('op' => 'contains', 'options' => array()),
+                'is_agent_confirmed'   => array('op' => 'is', 'options' => array()),
+                'is_confirmed'         => array('op' => 'is', 'options' => array()),
+                'any_mode'             => array('op' => 'is', 'options' => array()),
             );
 
             foreach ($set_terms_map as $name => $info) {
@@ -510,7 +510,7 @@ class PeopleSearchController extends AbstractController
         $titles['usergroups']    = $this->container->getDataService('Usergroup')->getUsergroupNames();
 
         if ($this->container->getDataService('Language')->isMultiLang()) {
-            $titles['languages']     = $this->container->getDataService('Language')->getTitles();
+            $titles['languages'] = $this->container->getDataService('Language')->getTitles();
         }
 
         $vars['titles'] = $titles;
@@ -597,7 +597,7 @@ class PeopleSearchController extends AbstractController
         if ($numbers) {
             $numbers = array();
 
-            for ($i = 0; $i < 10; $i++) {
+            for ($i = 0; $i < 10; ++$i) {
                 $numbers[] = $i;
             }
 
@@ -606,7 +606,7 @@ class PeopleSearchController extends AbstractController
 
         $letters = array();
 
-        for ($i = ord('A'); $i <= ord('Z'); $i++) {
+        for ($i = ord('A'); $i <= ord('Z'); ++$i) {
             $letters[] = chr($i);
         }
 
@@ -763,10 +763,10 @@ class PeopleSearchController extends AbstractController
                 }
 
                 $output[] = array(
-                    'id'            => $p->id,
-                    'first_name'    => $p->first_name,
-                    'last_name'     => $p->last_name,
-                    'email'         => $p->getPrimaryEmailAddress(),
+                    'id'         => $p->id,
+                    'first_name' => $p->first_name,
+                    'last_name'  => $p->last_name,
+                    'email'      => $p->getPrimaryEmailAddress(),
                 );
             }
 
@@ -793,11 +793,11 @@ class PeopleSearchController extends AbstractController
         $format = $this->in->getString('format');
 
         if ($format == 'json' or (!$format and $this->in->getBool('ajax'))) {
-            $tpl = "AgentBundle:PeopleSearch:search_results.json.jsonphp";
+            $tpl = 'AgentBundle:PeopleSearch:search_results.json.jsonphp';
         } else {
-            $tpl = "AgentBundle:PeopleSearch:search_results.html.twig";
+            $tpl = 'AgentBundle:PeopleSearch:search_results.html.twig';
             if ($format == 'simplelist') {
-                $tpl = "AgentBundle:PeopleSearch:search-results-simplelist.html.twig";
+                $tpl = 'AgentBundle:PeopleSearch:search-results-simplelist.html.twig';
             }
         }
 
@@ -847,10 +847,10 @@ class PeopleSearchController extends AbstractController
                     }
 
                     // Make visible any content now
-                    $ticket_ids = $this->db->fetchAllCol("
+                    $ticket_ids = $this->db->fetchAllCol('
                         SELECT id FROM tickets
                         WHERE person_id = ? AND hidden_status = ?
-                    ", array($person->getId(), 'validating'));
+                    ', array($person->getId(), 'validating'));
 
                     foreach ($ticket_ids as $ticket_id) {
                         $ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);

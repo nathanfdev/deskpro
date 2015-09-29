@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -44,7 +44,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  * 	resourcePath="/news",
  * 	description="Operations about News Items",
  * 	basePath="/api"
- * )
+ * ).
  */
 class NewsController extends AbstractController
 {
@@ -87,7 +87,7 @@ class NewsController extends AbstractController
      *			)
      *		)
      * 	)
-     * )
+     * ).
      */
     public function searchAction()
     {
@@ -170,7 +170,7 @@ class NewsController extends AbstractController
      *			)
      *		)
      * 	)
-     * )
+     * ).
      */
     public function newNewsAction()
     {
@@ -252,7 +252,7 @@ class NewsController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * )
+     * ).
      */
     public function getNewsAction($news_id)
     {
@@ -314,7 +314,7 @@ class NewsController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * )
+     * ).
      */
     public function postNewsAction($news_id)
     {
@@ -387,7 +387,7 @@ class NewsController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteNewsAction($news_id)
     {
@@ -418,7 +418,7 @@ class NewsController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * )
+     * ).
      */
     public function getNewsCommentsAction($news_id)
     {
@@ -473,7 +473,7 @@ class NewsController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * )
+     * ).
      */
     public function newNewsCommentAction($news_id)
     {
@@ -492,13 +492,13 @@ class NewsController extends AbstractController
 
         $status = $this->in->getString('status');
 
-        $comment                  = new NewsComment();
-        $comment->news            = $news;
-        $comment->person          = $person ?: $this->person;
-        $comment['content']       = $content;
-        $comment['status']        = $status ?: 'visible';
-        $comment['is_reviewed']   = ($comment['status'] == 'visible' && !$person);
-        $comment['date_created']  = new \DateTime();
+        $comment                 = new NewsComment();
+        $comment->news           = $news;
+        $comment->person         = $person ?: $this->person;
+        $comment['content']      = $content;
+        $comment['status']       = $status ?: 'visible';
+        $comment['is_reviewed']  = ($comment['status'] == 'visible' && !$person);
+        $comment['date_created'] = new \DateTime();
 
         $this->em->persist($comment);
         $this->em->flush();
@@ -535,7 +535,7 @@ class NewsController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * )
+     * ).
      */
     public function getNewsCommentAction($news_id, $comment_id)
     {
@@ -586,7 +586,7 @@ class NewsController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * )
+     * ).
      */
     public function postNewsCommentAction($news_id, $comment_id)
     {
@@ -643,7 +643,7 @@ class NewsController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteNewsCommentAction($news_id, $comment_id)
     {
@@ -679,7 +679,7 @@ class NewsController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * )
+     * ).
      */
     public function getNewsLabelsAction($news_id)
     {
@@ -714,7 +714,7 @@ class NewsController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * )
+     * ).
      */
     public function postNewsLabelsAction($news_id)
     {
@@ -761,7 +761,7 @@ class NewsController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * )
+     * ).
      */
     public function getNewsLabelAction($news_id, $label)
     {
@@ -799,7 +799,7 @@ class NewsController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteNewsLabelAction($news_id, $label)
     {
@@ -819,7 +819,7 @@ class NewsController extends AbstractController
      * 		method="GET",
      * 		summary="Gets news comments that are awaiting validation"
      * 	)
-     * )
+     * ).
      */
     public function getValidatingCommentsAction()
     {
@@ -844,7 +844,7 @@ class NewsController extends AbstractController
      * 		summary="Gets available news categories",
      * 		notes="Retrieves all available news categories"
      * 	)
-     * )
+     * ).
      */
     public function getCategoriesAction()
     {
@@ -860,7 +860,7 @@ class NewsController extends AbstractController
      * 		method="POST",
      * 		summary="Creates a new News category"
      * 	)
-     * )
+     * ).
      */
     public function postCategoriesAction()
     {
@@ -942,7 +942,7 @@ class NewsController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="News Category not found")
      * 	)
-     * )
+     * ).
      */
     public function getCategoryAction($category_id)
     {
@@ -990,7 +990,7 @@ class NewsController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="News Category not found")
      * 	)
-     * )
+     * ).
      */
     public function postCategoryAction($category_id)
     {
@@ -1046,7 +1046,7 @@ class NewsController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="News Category not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteCategoryAction($category_id)
     {
@@ -1076,7 +1076,7 @@ class NewsController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="News Category not found")
      * 	)
-     * )
+     * ).
      */
     public function getCategoryNewsAction($category_id)
     {
@@ -1136,7 +1136,7 @@ class NewsController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="News Category not found")
      * 	)
-     * )
+     * ).
      */
     public function getCategoryGroupsAction($category_id)
     {
@@ -1169,7 +1169,7 @@ class NewsController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="News Category not found")
      * 	)
-     * )
+     * ).
      */
     public function postCategoryGroupsAction($category_id)
     {
@@ -1227,7 +1227,7 @@ class NewsController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="News Category not found")
      * 	)
-     * )
+     * ).
      */
     public function getCategoryGroupAction($category_id, $group_id)
     {
@@ -1268,7 +1268,7 @@ class NewsController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="News Category not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteCategoryGroupAction($category_id, $group_id)
     {
@@ -1287,11 +1287,11 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @param integer $id
+     * @param int $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\News
      *
+     * @return \Application\DeskPRO\Entity\News
      */
     protected function _getNewsOr404($id, $check_perm = false)
     {
@@ -1315,11 +1315,11 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @param integer $id
+     * @param int $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\NewsCategory
      *
+     * @return \Application\DeskPRO\Entity\NewsCategory
      */
     protected function _getCategoryOr404($id)
     {

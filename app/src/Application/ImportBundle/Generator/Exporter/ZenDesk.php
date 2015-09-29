@@ -1,34 +1,35 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Reader\ZenDesk\RetryAfterException;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Reader\ZenDesk\RetryAfterException;
 use DateTime;
 use Exception;
 
@@ -47,7 +48,7 @@ final class ZenDesk extends AbstractExporter implements ExporterBatchInterface
     /**
      * {@inheritdoc}
      */
-    static public function getType()
+    public static function getType()
     {
         return self::TYPE_ZENDESK;
     }
@@ -59,7 +60,6 @@ final class ZenDesk extends AbstractExporter implements ExporterBatchInterface
     {
         try {
             return parent::getCountByType($type);
-
         } catch (RetryAfterException $e) {
             $this->retry_date = $e->getRetryAfterTime();
             $this->logWarning(sprintf(
@@ -78,7 +78,6 @@ final class ZenDesk extends AbstractExporter implements ExporterBatchInterface
     {
         try {
             return parent::exportByType($type);
-
         } catch (RetryAfterException $e) {
             $this->retry_date = $e->getRetryAfterTime();
             $this->logWarning(sprintf(
@@ -98,7 +97,7 @@ final class ZenDesk extends AbstractExporter implements ExporterBatchInterface
         /** @var Parser\ZenDesk\Tickets $tickets_parser */
         $tickets_parser = $this->getParserByType(Entity\EntityInterface::TYPE_TICKET);
         /** @var Parser\ZenDesk\People $people_parser */
-        $people_parser  = $this->getParserByType(Entity\EntityInterface::TYPE_PERSON);
+        $people_parser = $this->getParserByType(Entity\EntityInterface::TYPE_PERSON);
 
         /** @var Parser\ZenDesk\BatchConfig $updated_config */
         $updated_config = clone $this->config->getExporterBatchConfig();
@@ -133,10 +132,11 @@ final class ZenDesk extends AbstractExporter implements ExporterBatchInterface
     }
 
     /**
-     * Returns batch config
+     * Returns batch config.
      *
-     * @return Parser\ZenDesk\BatchConfig
      * @throws Exception
+     * @return Parser\ZenDesk\BatchConfig
+     *
      */
     protected function getBatchConfig()
     {

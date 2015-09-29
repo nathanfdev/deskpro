@@ -1,49 +1,46 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery
  */
 class DbalQuerySpec extends ObjectBehavior
 {
-    function it_handles_select_from_part()
+    public function it_handles_select_from_part()
     {
         $this->getFromTable()->shouldBe(null);
         $this->setFromTable('tickets');
@@ -63,7 +60,7 @@ class DbalQuerySpec extends ObjectBehavior
         $this->__toString()->shouldBe('SELECT * FROM departments department');
     }
 
-    function it_handles_select_part()
+    public function it_handles_select_part()
     {
         $this->generateSelectString()->shouldBe('*');
         $this->setSelectPart('{from}.id');
@@ -72,7 +69,7 @@ class DbalQuerySpec extends ObjectBehavior
         $this->__toString()->shouldBe('SELECT tickets.id FROM tickets');
     }
 
-    function it_allows_appending_select_pieces()
+    public function it_allows_appending_select_pieces()
     {
         $this->setSelectPart('{from}.id');
         $this->addSelectPart('{from}.department_id AS department');
@@ -81,7 +78,7 @@ class DbalQuerySpec extends ObjectBehavior
         $this->__toString()->shouldBe('SELECT ticket.id, ticket.department_id AS department FROM tickets ticket');
     }
 
-    function it_handles_where_part()
+    public function it_handles_where_part()
     {
         $this->generateWhereString()->shouldBe(null);
         $this->setWherePart('{from}.id = 4');
@@ -92,7 +89,7 @@ class DbalQuerySpec extends ObjectBehavior
         $this->__toString()->shouldBe('SELECT * FROM tickets WHERE (tickets.id = 4)');
     }
 
-    function it_handles_shared_joins_using_no_alias_be_default()
+    public function it_handles_shared_joins_using_no_alias_be_default()
     {
         $this->setFrom('tickets');
 
@@ -108,7 +105,7 @@ class DbalQuerySpec extends ObjectBehavior
         );
     }
 
-    function it_handles_shared_joins_that_specify_an_alias()
+    public function it_handles_shared_joins_that_specify_an_alias()
     {
         $this->setFrom('tickets');
 
@@ -124,7 +121,7 @@ class DbalQuerySpec extends ObjectBehavior
         );
     }
 
-    function it_allows_unique_joins()
+    public function it_allows_unique_joins()
     {
         $this->setFrom('tickets');
 
@@ -145,7 +142,7 @@ class DbalQuerySpec extends ObjectBehavior
         );
     }
 
-    function it_can_accept_group_bys()
+    public function it_can_accept_group_bys()
     {
         $this->setFrom('tickets', 't');
         $this->addGroupBy('{from}.subject');
@@ -161,7 +158,7 @@ class DbalQuerySpec extends ObjectBehavior
         $this->__toString()->shouldBe('SELECT * FROM tickets t GROUP BY t.subject, t.date_created WITH ROLLUP');
     }
 
-    function it_can_accept_order_bys()
+    public function it_can_accept_order_bys()
     {
         $this->setFrom('tickets', 't');
         $this->addOrderBy(
@@ -173,8 +170,8 @@ class DbalQuerySpec extends ObjectBehavior
             array(
                 array(
                     '{from}.subject',
-                    \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery::ORDER_ASC
-                )
+                    \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery::ORDER_ASC,
+                ),
             )
         );
         $this->generateOrderByString()->shouldBe('{from}.subject ASC');
@@ -187,15 +184,15 @@ class DbalQuerySpec extends ObjectBehavior
                 array('{from}.subject', DbalQuery::ORDER_ASC),
                 array(
                     '{from}.date_created',
-                    \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery::ORDER_DESC
-                )
+                    \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery::ORDER_DESC,
+                ),
             )
         );
         $this->generateOrderByString()->shouldBe('{from}.subject ASC, {from}.date_created DESC');
         $this->__toString()->shouldBe('SELECT * FROM tickets t ORDER BY t.subject ASC, t.date_created DESC');
     }
 
-    function it_accepts_a_limit()
+    public function it_accepts_a_limit()
     {
         $this->getLimit()->shouldBe(null);
 
@@ -208,7 +205,7 @@ class DbalQuerySpec extends ObjectBehavior
         $this->__toString()->shouldReturn('SELECT * FROM tickets t LIMIT 10');
     }
 
-    function it_accepts_a_page_that_works_with_limit()
+    public function it_accepts_a_page_that_works_with_limit()
     {
         $this->setPage(3);
 
@@ -228,7 +225,7 @@ class DbalQuerySpec extends ObjectBehavior
         $this->__toString()->shouldBe('SELECT * FROM tickets LIMIT 30, 15');
     }
 
-    function it_starts_page_at_one()
+    public function it_starts_page_at_one()
     {
         $this->getPage()->shouldBe(1);
 
@@ -240,7 +237,7 @@ class DbalQuerySpec extends ObjectBehavior
         $this->__toString()->shouldBe('SELECT * FROM tickets LIMIT 10');
     }
 
-    function it_only_uses_page_if_limit_is_set()
+    public function it_only_uses_page_if_limit_is_set()
     {
         $this->getLimit()->shouldBe(null);
 
@@ -252,7 +249,7 @@ class DbalQuerySpec extends ObjectBehavior
         $this->__toString()->shouldBe('SELECT * FROM tickets');
     }
 
-    function it_lets_you_add_parameters_and_returns_your_parameter_name()
+    public function it_lets_you_add_parameters_and_returns_your_parameter_name()
     {
         $this->setFrom('tickets');
 
@@ -262,8 +259,8 @@ class DbalQuerySpec extends ObjectBehavior
 
         // you get the param names from the addParameter call. your "name" is just a prefix but not the actual parameter name
         $this->setWherePart(
-            't.id = :' . $p1_name->getWrappedObject() . ' OR t.subject = :' . $p2_name->getWrappedObject(
-            ) . ' AND t.name = :' . $p3_name->getWrappedObject()
+            't.id = :'.$p1_name->getWrappedObject().' OR t.subject = :'.$p2_name->getWrappedObject(
+            ).' AND t.name = :'.$p3_name->getWrappedObject()
         );
 
         $this->__toString()->shouldBe(
@@ -271,7 +268,7 @@ class DbalQuerySpec extends ObjectBehavior
         );
     }
 
-    function it_lets_you_add_query_params_and_returns_the_name_of_the_param()
+    public function it_lets_you_add_query_params_and_returns_the_name_of_the_param()
     {
         $param1 = $this->addParameter('param', 1);
         $param2 = $this->addParameter('param', 'bar');
@@ -282,7 +279,7 @@ class DbalQuerySpec extends ObjectBehavior
         $this->getParameters()->shouldBeLike(
             array(
                 'param_0' => 1,
-                'param_1' => 'bar'
+                'param_1' => 'bar',
             )
         );
 
@@ -292,14 +289,14 @@ class DbalQuerySpec extends ObjectBehavior
 
         $this->getParameters()->shouldBeLike(
             array(
-                'param_0' => 1,
-                'param_1' => 'bar',
-                'new_param_0' => 'new value'
+                'param_0'     => 1,
+                'param_1'     => 'bar',
+                'new_param_0' => 'new value',
             )
         );
     }
 
-    function it_throws_an_exception_if_you_set_a_non_existant_param()
+    public function it_throws_an_exception_if_you_set_a_non_existant_param()
     {
         $this->shouldThrow('\InvalidArgumentException')
             ->during(
@@ -308,24 +305,24 @@ class DbalQuerySpec extends ObjectBehavior
             );
     }
 
-    function it_also_allows_a_term_engine_expression_as_a_param_value()
+    public function it_also_allows_a_term_engine_expression_as_a_param_value()
     {
         $this->setFrom('agents', 'agent');
 
         $p1_name = $this->addParameter('my_name', new TermEngineExpression('agent.name'));
 
-        $this->setWherePart('agent.name = :' . $p1_name->getWrappedObject());
+        $this->setWherePart('agent.name = :'.$p1_name->getWrappedObject());
 
         $this->__toString()->shouldBe(
             'SELECT * FROM agents agent WHERE (agent.name = :my_name_0)'
         );
     }
 
-    function it_lets_you_get_and_manipulate_parameters()
+    public function it_lets_you_get_and_manipulate_parameters()
     {
         $agent_p_name = $this->addParameter('agent', 1);
-        $time_p_name = $this->addParameter('time', new TermEngineExpression('agent.dateLastLogin'));
-        $foo_p_name = $this->addParameter('foo', 'bar');
+        $time_p_name  = $this->addParameter('time', new TermEngineExpression('agent.dateLastLogin'));
+        $foo_p_name   = $this->addParameter('foo', 'bar');
 
         // remember, the name is generated, so it wont be 'agent'
         $this->replaceParameter($agent_p_name, 2);
@@ -339,13 +336,13 @@ class DbalQuerySpec extends ObjectBehavior
         $this->getParameters()->shouldBeLike(
             array(
                 'agent_0' => 2,
-                'time_0' => new TermEngineExpression('agent.dateLastLogin'),
-                'foo_0' => new TermEngineExpression('func(my.expression)')
+                'time_0'  => new TermEngineExpression('agent.dateLastLogin'),
+                'foo_0'   => new TermEngineExpression('func(my.expression)'),
             )
         );
     }
 
-    function it_does_allow_you_to_append_to_the_where_string()
+    public function it_does_allow_you_to_append_to_the_where_string()
     {
         $this->setWherePart($initial_where = '(agent.id = 5 AND agent.name = "Jim")');
 
@@ -353,12 +350,12 @@ class DbalQuerySpec extends ObjectBehavior
 
         $this->appendWhere($appended = 'AND agent.fav_color = :fav_color_param');
 
-        $this->generateWhereString()->shouldBe($initial_where . ' ' . $appended);
+        $this->generateWhereString()->shouldBe($initial_where.' '.$appended);
 
         $this->appendWhere($second_append = 'OR (x.foo = x.bar AND y.baz = 89');
 
         $this->generateWhereString()->shouldBe(
-            $initial_where . ' ' . $appended . ' ' . $second_append
+            $initial_where.' '.$appended.' '.$second_append
         );
 
         $this->setFrom('tickets');
@@ -373,7 +370,7 @@ class DbalQuerySpec extends ObjectBehavior
         );
     }
 
-    function it_does_everything_at_once()
+    public function it_does_everything_at_once()
     {
         $this->setSelectPart('{from}.id');
         $this->setFrom('tickets', 't');

@@ -1,62 +1,56 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
-use DeskPRO\Bundle\AppBundle\Task\TaskFilterBuilder;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Query;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
-use DeskPRO\Bundle\AppBundle\Entity\Task;
-use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
 use DeskPRO\Bundle\ApiBundle\Task\DisplayOrder;
+use DeskPRO\Bundle\AppBundle\Entity\Task;
+use DeskPRO\Bundle\AppBundle\Task\TaskFilterBuilder;
+use Doctrine\ORM\Query;
+use FOS\RestBundle\Controller\Annotations\Delete;
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Delete;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class TasksController extends BaseController implements ClassResourceInterface
 {
@@ -84,7 +78,9 @@ class TasksController extends BaseController implements ClassResourceInterface
      *      }
      * )
      * @Get("/tasks", name="api_tasks")
+     *
      * @param Request $request
+     *
      * @return View
      */
     public function cgetAction(Request $request)
@@ -95,7 +91,7 @@ class TasksController extends BaseController implements ClassResourceInterface
 
         $tasks = $this->filterTasks($request, $entityManager);
 
-        $page = $request->query->get('page', 1);
+        $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
         $pager = new Pagerfanta(new DoctrineORMAdapter($tasks));
@@ -119,9 +115,12 @@ class TasksController extends BaseController implements ClassResourceInterface
      *      }
      * )
      * @Put("/tasks/mass", name="api_tasks_mass_put")
+     *
      * @param Request $request
      * @param $id
+     *
      * @throws WrappedApiErrorException
+     *
      * @return View
      */
     public function massActionAction(Request $request)
@@ -144,10 +143,10 @@ class TasksController extends BaseController implements ClassResourceInterface
             $dql = "UPDATE DeskPRO\Bundle\AppBundle\Entity\Task t SET";
 
             foreach ($submitted as $field => $value) {
-                $dql .= " t." . $field . " = :" . $field;
+                $dql .= ' t.'.$field.' = :'.$field;
             }
 
-            $dql .= " WHERE t.id IN (:ids)";
+            $dql .= ' WHERE t.id IN (:ids)';
 
             /** @var \Doctrine\ORM\Query $query */
             $query = $this->getDoctrine()->getManager()->createQuery($dql);
@@ -184,8 +183,10 @@ class TasksController extends BaseController implements ClassResourceInterface
      *      output="DeskPRO\Bundle\AppBundle\Entity\Task"
      * )
      * @Get("/tasks/{taskId}", name="api_tasks_get")
+     *
      * @param Request $request
-     * @param int $taskId
+     * @param int     $taskId
+     *
      * @return View
      */
     public function getAction(Request $request, $taskId)
@@ -213,14 +214,18 @@ class TasksController extends BaseController implements ClassResourceInterface
      *      output="DeskPRO\Bundle\AppBundle\Entity\Task"
      * )
      * @Post("/tasks", name="api_tasks_post")
+     *
      * @param Request $request
+     *
      * @throws WrappedApiErrorException
      * @throws InvalidFormException
+     *
      * @return View
      */
     public function postAction(Request $request)
     {
         $task = new Task($this->getUser());
+
         return $this->handleFormSubmission($request, $task);
     }
 
@@ -243,9 +248,12 @@ class TasksController extends BaseController implements ClassResourceInterface
      *      }
      * )
      * @Put("/tasks/{id}", name="api_tasks_put")
+     *
      * @param Request $request
      * @param $id
+     *
      * @throws WrappedApiErrorException
+     *
      * @return View
      */
     public function putAction(Request $request, $id)
@@ -272,7 +280,9 @@ class TasksController extends BaseController implements ClassResourceInterface
      *      }
      * )
      * @Delete("/tasks/{id}", name="api_tasks_delete")
+     *
      * @param $id
+     *
      * @return View
      */
     public function deleteAction($id)
@@ -307,6 +317,7 @@ class TasksController extends BaseController implements ClassResourceInterface
      *
      * @param Request $request
      * @param $id
+     *
      * @return View
      */
     public function getSubtasksAction(Request $request, $id)
@@ -361,6 +372,7 @@ class TasksController extends BaseController implements ClassResourceInterface
      *
      * @param Request $request
      * @param $id
+     *
      * @return View
      */
     public function getCommentsAction(Request $request, $id)
@@ -373,7 +385,7 @@ class TasksController extends BaseController implements ClassResourceInterface
 
         $comments = $task->getComments();
 
-        $page = $request->query->get('page', 1);
+        $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
         $pager = new Pagerfanta(new ArrayAdapter($comments->toArray()));
@@ -422,6 +434,7 @@ class TasksController extends BaseController implements ClassResourceInterface
      *
      * @param Request $request
      * @param $id
+     *
      * @return View
      */
     public function getAttachmentsAction(Request $request, $id)
@@ -434,7 +447,7 @@ class TasksController extends BaseController implements ClassResourceInterface
 
         $comments = $task->getAttachments();
 
-        $page = $request->query->get('page', 1);
+        $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
         $pager = new Pagerfanta(new ArrayAdapter($comments->toArray()));
@@ -467,6 +480,7 @@ class TasksController extends BaseController implements ClassResourceInterface
      *
      * @param Request $request
      * @param $id
+     *
      * @return View
      */
     public function getLinksAction(Request $request, $id)
@@ -486,13 +500,15 @@ class TasksController extends BaseController implements ClassResourceInterface
     }
 
     /**
-     * Retrieve a single task
+     * Retrieve a single task.
+     *
      * @param int $id
+     *
      * @return Task
      */
     protected function getTask($id)
     {
-        $id = (int) $id;
+        $id   = (int) $id;
         $task = $this->getDoctrine()->getManager()->getRepository('App:Task')->find($id);
 
         if (!$task) {
@@ -503,11 +519,14 @@ class TasksController extends BaseController implements ClassResourceInterface
     }
 
     /**
-     * Will be abstracted for use by other controllers
+     * Will be abstracted for use by other controllers.
+     *
      * @param Request $request
-     * @param Task $task
-     * @return View
+     * @param Task    $task
+     *
      * @throws WrappedApiErrorException
+     * @return View
+     *
      */
     protected function handleFormSubmission(Request $request, Task $task)
     {
@@ -547,12 +566,15 @@ class TasksController extends BaseController implements ClassResourceInterface
     }
 
     /**
-     * Validate the form
-     * @param  Request              $request   The request object
-     * @param  Task                 $task      The task to update
-     * @param  array                $submitted The submitted data
-     * @throws InvalidFormException            If form is invalid
-     * @return boolean                         True if valid
+     * Validate the form.
+     *
+     * @param Request $request   The request object
+     * @param Task    $task      The task to update
+     * @param array   $submitted The submitted data
+     *
+     * @throws InvalidFormException If form is invalid
+     *
+     * @return bool True if valid
      */
     protected function validateForm(Request $request, Task $task, $submitted)
     {
@@ -575,8 +597,10 @@ class TasksController extends BaseController implements ClassResourceInterface
     }
 
     /**
-     * Get the datatype to use for creating the Fractal Representation
+     * Get the datatype to use for creating the Fractal Representation.
+     *
      * @param Request $request
+     *
      * @return int
      */
     protected function getDatatype(Request $request)
@@ -591,9 +615,11 @@ class TasksController extends BaseController implements ClassResourceInterface
     }
 
     /**
-     * Retrieve tasks from the entity manager according to the request parameters
+     * Retrieve tasks from the entity manager according to the request parameters.
+     *
      * @param Request $request
      * @param $em
+     *
      * @return Query
      */
     protected function filterTasks(Request $request, $entityManager)

@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -41,7 +41,7 @@ use Orb\Util\Numbers;
  * 	resourcePath="/tasks",
  * 	description="Operations about Tasks",
  * 	basePath="/api"
- * )
+ * ).
  */
 class TaskController extends AbstractController
 {
@@ -161,7 +161,7 @@ class TaskController extends AbstractController
      *			)
      *		)
      * 	)
-     * )
+     * ).
      */
     public function searchAction()
     {
@@ -314,7 +314,7 @@ class TaskController extends AbstractController
      *			)
      *		)
      * 	)
-     * )
+     * ).
      */
     public function newTaskAction()
     {
@@ -416,7 +416,7 @@ class TaskController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
-     * )
+     * ).
      */
     public function getTaskAction($task_id)
     {
@@ -463,7 +463,7 @@ class TaskController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Task definition not found")
      * 	)
-     * )
+     * ).
      */
     public function postTaskAction($task_id)
     {
@@ -546,7 +546,7 @@ class TaskController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteTaskAction($task_id)
     {
@@ -580,7 +580,7 @@ class TaskController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
-     * )
+     * ).
      */
     public function getTaskAssociationsAction($task_id)
     {
@@ -615,7 +615,7 @@ class TaskController extends AbstractController
      *		SWG\ResponseMessage(code=404, message="Task not found"),
      *		SWG\ResponseMessage(code=500, message="ticket_id is not valid")
      * 	)
-     * )
+     * ).
      */
     public function postTaskAssociationsAction($task_id)
     {
@@ -671,7 +671,7 @@ class TaskController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
-     * )
+     * ).
      */
     public function getTaskAssociationAction($task_id, $assoc_id)
     {
@@ -712,7 +712,7 @@ class TaskController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteTaskAssociationAction($task_id, $assoc_id)
     {
@@ -748,7 +748,7 @@ class TaskController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
-     * )
+     * ).
      */
     public function getTaskCommentsAction($task_id)
     {
@@ -781,7 +781,7 @@ class TaskController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
-     * )
+     * ).
      */
     public function postTaskCommentsAction($task_id)
     {
@@ -830,7 +830,7 @@ class TaskController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
-     * )
+     * ).
      */
     public function getTaskCommentAction($task_id, $comment_id)
     {
@@ -871,7 +871,7 @@ class TaskController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteTaskCommentAction($task_id, $comment_id)
     {
@@ -911,7 +911,7 @@ class TaskController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
-     * )
+     * ).
      */
     public function getTaskLabelsAction($task_id)
     {
@@ -944,7 +944,7 @@ class TaskController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
-     * )
+     * ).
      */
     public function postTaskLabelsAction($task_id)
     {
@@ -989,7 +989,7 @@ class TaskController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
-     * )
+     * ).
      */
     public function getTaskLabelAction($task_id, $label)
     {
@@ -1026,7 +1026,7 @@ class TaskController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteTaskLabelAction($task_id, $label)
     {
@@ -1040,11 +1040,11 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @param integer $id
+     * @param int $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\Task
      *
+     * @return \Application\DeskPRO\Entity\Task
      */
     protected function _getTaskOr404($id)
     {

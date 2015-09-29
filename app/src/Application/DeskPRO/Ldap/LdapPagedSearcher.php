@@ -1,38 +1,35 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Ldap;
-
 
 use Zend\Ldap\Exception\LdapException;
 use Zend\Ldap\Ldap as ZendLdap;
@@ -51,7 +48,7 @@ class LdapPagedSearcher implements \Iterator
     private $filter;
     private $basedn;
     /**
-     * most recently fetched ldap entry
+     * most recently fetched ldap entry.
      */
     private $current;
     /**
@@ -62,16 +59,16 @@ class LdapPagedSearcher implements \Iterator
     public function __construct(ZendLdap $wrapped_ldap, $filter, $per_page, $basedn = null, $paged = true)
     {
         $this->wrapped_ldap = $wrapped_ldap;
-        $this->resource = $wrapped_ldap->getResource();
-        $this->page_size = (int)$per_page;
-        $this->basedn = $basedn;
-        $this->filter = $filter;
-        $this->result = null;
-        $this->cookie = '';
+        $this->resource     = $wrapped_ldap->getResource();
+        $this->page_size    = (int) $per_page;
+        $this->basedn       = $basedn;
+        $this->filter       = $filter;
+        $this->result       = null;
+        $this->cookie       = '';
         if ($paged) {
             ldap_set_option($this->resource, LDAP_OPT_PROTOCOL_VERSION, 3);
         }
-        $this->paged = (bool)$paged;
+        $this->paged = (bool) $paged;
     }
 
     public function executePagedSearch()
@@ -104,11 +101,11 @@ class LdapPagedSearcher implements \Iterator
         if (!is_resource($this->current)) {
             $this->nextPage();
             if (!is_resource($this->current)) {
-                return null;
+                return;
             }
         }
 
-        $entry = array('dn' => $this->key());
+        $entry         = array('dn' => $this->key());
         $berIdentifier = null;
 
         $resource = $this->resource;
@@ -132,7 +129,7 @@ class LdapPagedSearcher implements \Iterator
                 unset($data['count']);
             }
 
-            $attrName = strtolower($name);
+            $attrName         = strtolower($name);
             $entry[$attrName] = $data;
 
             ErrorHandler::start();
@@ -174,7 +171,7 @@ class LdapPagedSearcher implements \Iterator
 
             return $currentDn;
         } else {
-            return null;
+            return;
         }
     }
 
@@ -194,7 +191,7 @@ class LdapPagedSearcher implements \Iterator
     }
 
     /**
-     * Closes the current result set
+     * Closes the current result set.
      *
      * @return bool
      */
@@ -206,9 +203,10 @@ class LdapPagedSearcher implements \Iterator
             $isClosed = ldap_free_result($this->result);
             ErrorHandler::stop();
 
-            $this->result = null;
+            $this->result  = null;
             $this->current = null;
         }
+
         return $isClosed;
     }
 }

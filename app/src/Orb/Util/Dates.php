@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * Orb.
  *
  * @category Util
  */
-
 namespace Orb\Util;
 
 /**
@@ -161,7 +161,7 @@ class Dates
         $month = (int) $month;
         $year  = (int) $year;
 
-        return new \DateTime('@'.mktime(23, 59, 59, $month+1, 0, $year));
+        return new \DateTime('@'.mktime(23, 59, 59, $month + 1, 0, $year));
     }
 
     /**
@@ -216,16 +216,16 @@ class Dates
 
         do {
             if ($neg) {
-                $month--;
+                --$month;
                 if ($month < 1) {
                     $month = 12;
-                    $year--;
+                    --$year;
                 }
             } else {
-                $month++;
+                ++$month;
                 if ($month > 12) {
                     $month = 1;
-                    $year++;
+                    ++$year;
                 }
             }
         } while (--$mod_months);
@@ -313,8 +313,8 @@ class Dates
      * @param array $lang    Phrases to use for each unit
      *
      * @throws \Exception
-     * @return string
      *
+     * @return string
      */
     public static function secsToReadable($seconds, $detail = 2, $lang = null)
     {
@@ -511,9 +511,9 @@ class Dates
         $hours = $offset / 60 / 60;
 
         if ($hours < 0) {
-            return "UTC".$hours;
+            return 'UTC'.$hours;
         } else {
-            return "UTC+".$hours;
+            return 'UTC+'.$hours;
         }
     }
 
@@ -524,8 +524,8 @@ class Dates
      * @param string $unit
      *
      * @throws \InvalidArgumentException
-     * @return int
      *
+     * @return int
      */
     public static function getUnitInSeconds($num, $unit)
     {

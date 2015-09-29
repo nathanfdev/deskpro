@@ -1,45 +1,44 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
-use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
 use DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidCaptcha;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -70,7 +69,7 @@ class PersonRegistrationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('name', 'text', array(
-            'label' => $this->language_manager->phrase('portal.forms.label_name'),
+            'label'       => $this->language_manager->phrase('portal.forms.label_name'),
             'required'    => true,
             'constraints' => array(
                 new NotBlank(),
@@ -83,18 +82,18 @@ class PersonRegistrationType extends AbstractType
         ));
 
         $builder->add('password', 'repeated', array(
-            'first_name'     => 'password',
-            'first_options'  => array(
-                'label' => $this->language_manager->phrase('portal.forms.label_password')
+            'first_name'    => 'password',
+            'first_options' => array(
+                'label' => $this->language_manager->phrase('portal.forms.label_password'),
             ),
-            'second_name'                     => 'confirm',
-            'second_options'                  => array(
-                'label' => $this->language_manager->phrase('portal.forms.label_password_confirm')
+            'second_name'    => 'confirm',
+            'second_options' => array(
+                'label' => $this->language_manager->phrase('portal.forms.label_password_confirm'),
             ),
-            'type'                                             => 'password',
-            'mapped'                                           => false,
-            'required'                                         => true,
-            'constraints'                                      => array(
+            'type'        => 'password',
+            'mapped'      => false,
+            'required'    => true,
+            'constraints' => array(
                 new NotBlank(),
             ),
         ));
@@ -107,7 +106,7 @@ class PersonRegistrationType extends AbstractType
         if ($this->language_manager->isMultiLanguagePortal()) {
             $builder->add('language_id', 'deskpro_language', array(
                 'view_context' => 'user',
-                'label' => $this->language_manager->phrase('portal.forms.label_language'),
+                'label'        => $this->language_manager->phrase('portal.forms.label_language'),
             ));
         }
 

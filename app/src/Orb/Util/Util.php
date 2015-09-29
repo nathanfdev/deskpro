@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * Orb.
  *
  * @category Util
  */
-
 namespace Orb\Util;
 
 /**
@@ -281,8 +281,8 @@ class Util
      * @param string $sign_key The secret key it was signed with. You should most certainly provide this!
      *
      * @throws Exception
-     * @return mixed
      *
+     * @return mixed
      */
     public static function signedUnserialize($string, $sign_key = 'orb_util_sign_key')
     {
@@ -531,7 +531,7 @@ class Util
 
         $pos = 0;
         while ($pos < $len) {
-            $bin_string .= pack("H*", substr($hex_string, $pos, 2));
+            $bin_string .= pack('H*', substr($hex_string, $pos, 2));
             $pos += 2;
         }
 
@@ -557,7 +557,7 @@ class Util
                 fclose($fp);
             } else {
                 // Fallback on just rand
-                for ($x = 0; $x < $len; $x++) {
+                for ($x = 0; $x < $len; ++$x) {
                     $data .= chr(mt_rand(0, 255));
                 }
             }
@@ -624,12 +624,12 @@ class Util
             if ($state == 0) {
                 $read_len = self::baseDecode($encoded_string[$pos], $alphabet);
                 $state    = 1;
-                $pos++;
+                ++$pos;
             } elseif ($state == 1) {
                 $read = '';
-                for ($i = 0; $i < $read_len; $i++) {
+                for ($i = 0; $i < $read_len; ++$i) {
                     $read .= $encoded_string[$pos];
-                    $pos++;
+                    ++$pos;
                     if ($pos > $len) {
                         return array();
                     } // invalid
@@ -710,17 +710,17 @@ class Util
     {
         if (is_object($var)) {
             if (method_exists($var, '__tostring')) {
-                return str_repeat("\t", $d)."[".get_class($var).":".$var->__tostring()."]";
+                return str_repeat("\t", $d).'['.get_class($var).':'.$var->__tostring().']';
             } else {
-                return str_repeat("\t", $d)."[".get_class($var)."]";
+                return str_repeat("\t", $d).'['.get_class($var).']';
             }
         } elseif (is_array($var)) {
             $str   = array();
-            $str[] = str_repeat("\t", $d)."array(";
+            $str[] = str_repeat("\t", $d).'array(';
             foreach ($var as $k => $v) {
-                $str[] = str_repeat("\t", $d+1)."$k: ".self::debugVar($v, $d + 1);
+                $str[] = str_repeat("\t", $d + 1)."$k: ".self::debugVar($v, $d + 1);
             }
-            $str[] = str_repeat("\t", $d).")";
+            $str[] = str_repeat("\t", $d).')';
 
             return implode("\n", $str);
         } else {

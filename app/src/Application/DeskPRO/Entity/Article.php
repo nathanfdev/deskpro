@@ -1,41 +1,39 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\ObjectTranslatable;
-use Application\DeskPRO\Entity;
 use DateTime;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -54,7 +52,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface
 {
     const CONTENT_TYPE = 'article';
 
-    const END_ACTION_DELETE = 'delete';
+    const END_ACTION_DELETE  = 'delete';
     const END_ACTION_ARCHIVE = 'archive';
 
     /**
@@ -117,11 +115,11 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     {
         parent::__construct();
 
-        $this->products = new ArrayCollection();
-        $this->categories = new ArrayCollection();
+        $this->products    = new ArrayCollection();
+        $this->categories  = new ArrayCollection();
         $this->attachments = new ArrayCollection();
         $this->custom_data = new ArrayCollection();
-        $this->labels = new ArrayCollection();
+        $this->labels      = new ArrayCollection();
     }
 
     /**
@@ -146,11 +144,13 @@ class Article extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * @param $end_action
+     *
      * @return $this
      */
     public function setEndAction($end_action)
     {
         $this->setModelField('end_action', $end_action);
+
         return $this;
     }
 
@@ -245,7 +245,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         $ids = array();
 
         foreach ($this->categories as $cat) {
-            /** @var ArticleCategory $cat */
+            /* @var ArticleCategory $cat */
             $ids[] = $cat->getId();
         }
 
@@ -256,10 +256,10 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     {
         $path = array();
 
-        $cat = $this->categories[$index];
+        $cat    = $this->categories[$index];
         $path[] = $cat;
         while ($cat['parent']) {
-            $cat = $cat['parent'];
+            $cat    = $cat['parent'];
             $path[] = $cat;
         }
 
@@ -294,7 +294,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     public function _invalidatePageCache()
     {
         $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
-        $cache->invalidateRegex('/_kb(-|_articles_' . intval($this->getId()) . '-|_\d+)/');
+        $cache->invalidateRegex('/_kb(-|_articles_'.intval($this->getId()).'-|_\d+)/');
     }
 
     public function toApiData($primary = true, $deep = true, array $visited = array())
@@ -371,7 +371,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     {
         return array(
             'with_lang_prop' => 'language',
-            'fields' => array('title', 'content'),
+            'fields'         => array('title', 'content'),
         );
     }
 
@@ -381,12 +381,12 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Article';
         $metadata->setPrimaryTable(
             array(
-                'name' => 'articles',
+                'name'    => 'articles',
                 'indexes' => array(
-                    'date_published_idx' => array('columns' => array('date_published')),
-                    'date_updated_idx' => array('columns' => array('date_updated')),
+                    'date_published_idx'    => array('columns' => array('date_published')),
+                    'date_updated_idx'      => array('columns' => array('date_updated')),
                     'date_last_comment_idx' => array('columns' => array('date_last_comment')),
-                    'status_idx' => array('columns' => array('status')),
+                    'status_idx'            => array('columns' => array('status')),
                 ),
             )
         );
@@ -394,196 +394,196 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(
-                'fieldName' => 'date_end',
-                'type' => 'datetime',
-                'precision' => 0,
-                'scale' => 0,
-                'nullable' => true,
+                'fieldName'  => 'date_end',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
                 'columnName' => 'date_end',
             )
         );
         $metadata->mapField(
             array(
-                'fieldName' => 'end_action',
-                'type' => 'string',
-                'length' => 10,
-                'precision' => 0,
-                'scale' => 0,
-                'nullable' => true,
+                'fieldName'  => 'end_action',
+                'type'       => 'string',
+                'length'     => 10,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
                 'columnName' => 'end_action',
             )
         );
         $metadata->mapField(
             array(
-                'fieldName' => 'id',
-                'type' => 'integer',
-                'precision' => 0,
-                'scale' => 0,
-                'nullable' => false,
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
                 'columnName' => 'id',
-                'id' => true,
+                'id'         => true,
             )
         );
         $metadata->mapField(
             array(
-                'fieldName' => 'slug',
-                'type' => 'string',
-                'length' => 100,
-                'precision' => 0,
-                'scale' => 0,
-                'nullable' => false,
+                'fieldName'  => 'slug',
+                'type'       => 'string',
+                'length'     => 100,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
                 'columnName' => 'slug',
-                'unique' => true,
+                'unique'     => true,
             )
         );
         $metadata->mapField(
             array(
-                'fieldName' => 'title',
-                'type' => 'string',
-                'length' => 255,
-                'precision' => 0,
-                'scale' => 0,
-                'nullable' => false,
+                'fieldName'  => 'title',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
                 'columnName' => 'title',
             )
         );
         $metadata->mapField(
             array(
-                'fieldName' => 'content',
-                'type' => 'text',
-                'precision' => 0,
-                'scale' => 0,
-                'nullable' => false,
+                'fieldName'  => 'content',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
                 'columnName' => 'content',
             )
         );
         $metadata->mapField(
             array(
-                'fieldName' => 'view_count',
-                'type' => 'integer',
-                'precision' => 0,
-                'scale' => 0,
-                'nullable' => false,
+                'fieldName'  => 'view_count',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
                 'columnName' => 'view_count',
             )
         );
         $metadata->mapField(
             array(
-                'fieldName' => 'total_rating',
-                'type' => 'integer',
-                'precision' => 0,
-                'scale' => 0,
-                'nullable' => false,
+                'fieldName'  => 'total_rating',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
                 'columnName' => 'total_rating',
             )
         );
         $metadata->mapField(
             array(
-                'fieldName' => 'num_comments',
-                'type' => 'integer',
-                'precision' => 0,
-                'scale' => 0,
-                'nullable' => false,
+                'fieldName'  => 'num_comments',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
                 'columnName' => 'num_comments',
             )
         );
         $metadata->mapField(
             array(
-                'fieldName' => 'num_ratings',
-                'type' => 'integer',
-                'precision' => 0,
-                'scale' => 0,
-                'nullable' => false,
+                'fieldName'  => 'num_ratings',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
                 'columnName' => 'num_ratings',
             )
         );
         $metadata->mapField(
             array(
-                'fieldName' => 'status',
-                'type' => 'string',
-                'length' => 15,
-                'precision' => 0,
-                'scale' => 0,
-                'nullable' => false,
+                'fieldName'  => 'status',
+                'type'       => 'string',
+                'length'     => 15,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
                 'columnName' => 'status',
             )
         );
         $metadata->mapField(
             array(
-                'fieldName' => 'hidden_status',
-                'type' => 'string',
-                'length' => 15,
-                'precision' => 0,
-                'scale' => 0,
-                'nullable' => true,
+                'fieldName'  => 'hidden_status',
+                'type'       => 'string',
+                'length'     => 15,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
                 'columnName' => 'hidden_status',
             )
         );
         $metadata->mapField(
             array(
-                'fieldName' => 'date_created',
-                'type' => 'datetime',
-                'precision' => 0,
-                'scale' => 0,
-                'nullable' => false,
+                'fieldName'  => 'date_created',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
                 'columnName' => 'date_created',
             )
         );
         $metadata->mapField(
             array(
-                'fieldName' => 'date_published',
-                'type' => 'datetime',
-                'precision' => 0,
-                'scale' => 0,
-                'nullable' => true,
+                'fieldName'  => 'date_published',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
                 'columnName' => 'date_published',
             )
         );
         $metadata->mapField(
             array(
-                'fieldName' => 'date_updated',
-                'type' => 'datetime',
-                'precision' => 0,
-                'scale' => 0,
-                'nullable' => true,
+                'fieldName'  => 'date_updated',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
                 'columnName' => 'date_updated',
             )
         );
         $metadata->mapField(
             array(
-                'fieldName' => 'date_last_comment',
-                'type' => 'datetime',
-                'precision' => 0,
-                'scale' => 0,
-                'nullable' => true,
+                'fieldName'  => 'date_last_comment',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
                 'columnName' => 'date_last_comment',
             )
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToMany(
             array(
-                'fieldName' => 'categories',
+                'fieldName'    => 'categories',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleCategory',
-                'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
-                'joinTable' => array(
-                    'name' => 'article_to_categories',
-                    'schema' => null,
+                'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                'joinTable'    => array(
+                    'name'        => 'article_to_categories',
+                    'schema'      => null,
                     'joinColumns' => array(
                         0 => array(
-                            'name' => 'article_id',
+                            'name'                 => 'article_id',
                             'referencedColumnName' => 'id',
-                            'nullable' => true,
-                            'onDelete' => 'cascade',
-                            'columnDefinition' => null,
+                            'nullable'             => true,
+                            'onDelete'             => 'cascade',
+                            'columnDefinition'     => null,
                         ),
                     ),
                     'inverseJoinColumns' => array(
                         0 => array(
-                            'name' => 'category_id',
+                            'name'                 => 'category_id',
                             'referencedColumnName' => 'id',
-                            'nullable' => true,
-                            'onDelete' => 'cascade',
-                            'columnDefinition' => null,
+                            'nullable'             => true,
+                            'onDelete'             => 'cascade',
+                            'columnDefinition'     => null,
                         ),
                     ),
                 ),
@@ -592,28 +592,28 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         );
         $metadata->mapManyToMany(
             array(
-                'fieldName' => 'products',
+                'fieldName'    => 'products',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Product',
-                'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
-                'joinTable' => array(
-                    'name' => 'article_to_product',
-                    'schema' => null,
+                'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                'joinTable'    => array(
+                    'name'        => 'article_to_product',
+                    'schema'      => null,
                     'joinColumns' => array(
                         0 => array(
-                            'name' => 'article_id',
+                            'name'                 => 'article_id',
                             'referencedColumnName' => 'id',
-                            'nullable' => true,
-                            'onDelete' => 'cascade',
-                            'columnDefinition' => null,
+                            'nullable'             => true,
+                            'onDelete'             => 'cascade',
+                            'columnDefinition'     => null,
                         ),
                     ),
                     'inverseJoinColumns' => array(
                         0 => array(
-                            'name' => 'product_id',
+                            'name'                 => 'product_id',
                             'referencedColumnName' => 'id',
-                            'nullable' => true,
-                            'onDelete' => 'cascade',
-                            'columnDefinition' => null,
+                            'nullable'             => true,
+                            'onDelete'             => 'cascade',
+                            'columnDefinition'     => null,
                         ),
                     ),
                 ),
@@ -622,52 +622,52 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         );
         $metadata->mapOneToMany(
             array(
-                'fieldName' => 'revisions',
+                'fieldName'    => 'revisions',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleRevision',
-                'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
-                'mappedBy' => 'article',
+                'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                'mappedBy'     => 'article',
             )
         );
         $metadata->mapOneToMany(
             array(
-                'fieldName' => 'attachments',
+                'fieldName'    => 'attachments',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleAttachment',
-                'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
-                'mappedBy' => 'article',
+                'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                'mappedBy'     => 'article',
             )
         );
         $metadata->mapOneToMany(
             array(
-                'fieldName' => 'custom_data',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataArticle',
-                'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
-                'mappedBy' => 'article',
+                'fieldName'     => 'custom_data',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\CustomDataArticle',
+                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                'mappedBy'      => 'article',
                 'orphanRemoval' => true,
-                'dpApi' => true,
+                'dpApi'         => true,
             )
         );
         $metadata->mapOneToMany(
             array(
-                'fieldName' => 'labels',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelArticle',
-                'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
-                'mappedBy' => 'article',
+                'fieldName'     => 'labels',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\LabelArticle',
+                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                'mappedBy'      => 'article',
                 'orphanRemoval' => true,
             )
         );
         $metadata->mapManyToOne(
             array(
-                'fieldName' => 'person',
+                'fieldName'    => 'person',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-                'mappedBy' => null,
-                'inversedBy' => null,
-                'joinColumns' => array(
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => array(
                     0 => array(
-                        'name' => 'person_id',
+                        'name'                 => 'person_id',
                         'referencedColumnName' => 'id',
-                        'nullable' => true,
-                        'onDelete' => 'set null',
-                        'columnDefinition' => null,
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
                     ),
                 ),
                 'dpApi' => true,
@@ -675,17 +675,17 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         );
         $metadata->mapManyToOne(
             array(
-                'fieldName' => 'language',
+                'fieldName'    => 'language',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language',
-                'mappedBy' => null,
-                'inversedBy' => null,
-                'joinColumns' => array(
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => array(
                     0 => array(
-                        'name' => 'language_id',
+                        'name'                 => 'language_id',
                         'referencedColumnName' => 'id',
-                        'nullable' => true,
-                        'onDelete' => 'cascade',
-                        'columnDefinition' => null,
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
                     ),
                 ),
                 'dpApi' => true,
@@ -693,10 +693,10 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         );
         $metadata->mapOneToMany(
             array(
-                'fieldName' => 'slug_history',
+                'fieldName'    => 'slug_history',
                 'targetEntity' => 'Application\DeskPRO\Entity\ArticleSlugHistory',
-                'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
-                'mappedBy' => 'article',
+                'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                'mappedBy'     => 'article',
             )
         );
 

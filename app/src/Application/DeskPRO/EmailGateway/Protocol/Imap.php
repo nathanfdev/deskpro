@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\EmailGateway\Protocol;
 
 use Orb\Log\Loggable;
@@ -74,7 +74,7 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function connect($host, $port = null, $ssl = false)
     {
@@ -113,23 +113,23 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function _nextLine()
     {
         $line = fgets($this->socket);
         if ($line === false) {
-            $this->logger->logDebug("<== !!! cannot read - connection closed?");
+            $this->logger->logDebug('<== !!! cannot read - connection closed?');
             throw new Exception\RuntimeException('cannot read - connection closed?');
         }
 
-        $this->logger->logDebug("<== ".$line);
+        $this->logger->logDebug('<== '.$line);
 
         return $line;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function sendRequest($command, $tokens = array(), &$tag = null)
     {
@@ -142,13 +142,13 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
 
         foreach ($tokens as $token) {
             if (is_array($token)) {
-                $this->logger->logDebug("==> ".$line.' '.$token[0]);
+                $this->logger->logDebug('==> '.$line.' '.$token[0]);
                 if (fwrite($this->socket, $line.' '.$token[0]."\r\n") === false) {
-                    $this->logger->logDebug("==> !!! cannot write - connection closed?");
+                    $this->logger->logDebug('==> !!! cannot write - connection closed?');
                     throw new Exception\RuntimeException('cannot write - connection closed?');
                 }
                 if (!$this->_assumedNextLine('+ ')) {
-                    $this->logger->logDebug("<== !!! cannot send literal string");
+                    $this->logger->logDebug('<== !!! cannot send literal string');
                     throw new Exception\RuntimeException('cannot send literal string');
                 }
                 $line = $token[1];
@@ -157,9 +157,9 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
             }
         }
 
-        $this->logger->logDebug("==> ".$line);
+        $this->logger->logDebug('==> '.$line);
         if (fwrite($this->socket, $line."\r\n") === false) {
-            $this->logger->logDebug("==> !!! cannot write - connection closed?");
+            $this->logger->logDebug('==> !!! cannot write - connection closed?');
             throw new Exception\RuntimeException('cannot write - connection closed?');
         }
     }
@@ -223,7 +223,7 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
             if ($uid_token_pos === false || $uid_token_pos === null) {
                 continue;
             }
-            if ($to === null && !is_array($from) && $tokens[2][$uid_token_pos+1] != $from) {
+            if ($to === null && !is_array($from) && $tokens[2][$uid_token_pos + 1] != $from) {
                 continue;
             }
             // if we only want one item we return that one directly
@@ -250,7 +250,7 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
                 }
             }
             // if we want only one message we can ignore everything else and just return
-            if ($to === null && !is_array($from) && $tokens[2][$uid_token_pos+1] == $from) {
+            if ($to === null && !is_array($from) && $tokens[2][$uid_token_pos + 1] == $from) {
                 // we still need to read all lines
                 while (!$this->readLine($tokens, $tag));
 
@@ -271,9 +271,9 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
      *
      * @param array $flags
      * @param $from
-     * @param null  $to
-     * @param null  $mode
-     * @param bool  $silent
+     * @param null $to
+     * @param null $mode
+     * @param bool $silent
      *
      * @return array|bool
      */

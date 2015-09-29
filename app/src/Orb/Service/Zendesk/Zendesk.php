@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * Orb.
  *
  * @category Zendesk
  */
-
 namespace Orb\Service\Zendesk;
 
 /**
@@ -169,8 +169,8 @@ class Zendesk
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
-     * @return \Orb\Service\Zendesk\ApiResponse
      *
+     * @return \Orb\Service\Zendesk\ApiResponse
      */
     public function sendGet($id, array $query_data = null)
     {
@@ -215,11 +215,11 @@ class Zendesk
             $ev['response']  = null;
 
             if (@curl_errno($ev['ch'])) {
-                $ev['exception'] = new \RuntimeException(sprintf("cURL Error: %s: %s", curl_errno($ev['ch']), curl_error($ev['ch'])));
+                $ev['exception'] = new \RuntimeException(sprintf('cURL Error: %s: %s', curl_errno($ev['ch']), curl_error($ev['ch'])));
             }
 
             if ($ev['output'] === false || !$ev['http_code']) {
-                $ev['exception'] = new ApiException("Request failed", ApiException::REQUEST_FAILED, null, $ev['output']);
+                $ev['exception'] = new ApiException('Request failed', ApiException::REQUEST_FAILED, null, $ev['output']);
             }
 
             if (!$ev['exception']) {
@@ -252,8 +252,8 @@ class Zendesk
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
-     * @return array
      *
+     * @return array
      */
     public function sendGetAll($id, $key, array $query_data = null)
     {
@@ -267,7 +267,7 @@ class Zendesk
 
             if ($res->isError()) {
                 throw new ApiException(
-                    "Could not complete: ".$res->getErrorDescription(),
+                    'Could not complete: '.$res->getErrorDescription(),
                     ApiException::API_ERROR,
                     $res->getErrorCode(),
                     $res->getRaw()
@@ -290,8 +290,8 @@ class Zendesk
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
-     * @return \Orb\Service\Zendesk\ApiResponse
      *
+     * @return \Orb\Service\Zendesk\ApiResponse
      */
     public function sendDelete($id)
     {
@@ -307,8 +307,8 @@ class Zendesk
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
-     * @return \Orb\Service\Zendesk\ApiResponse
      *
+     * @return \Orb\Service\Zendesk\ApiResponse
      */
     public function sendPut($id, array $call_data)
     {
@@ -324,8 +324,8 @@ class Zendesk
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
-     * @return \Orb\Service\Zendesk\ApiResponse
      *
+     * @return \Orb\Service\Zendesk\ApiResponse
      */
     public function sendPost($id, array $call_data)
     {
@@ -342,8 +342,8 @@ class Zendesk
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
-     * @return \Orb\Service\Zendesk\ApiResponse
      *
+     * @return \Orb\Service\Zendesk\ApiResponse
      */
     public function sendRequest($id, $action, array $call_data = null, array $query_data = null, $no_exec = false)
     {
@@ -364,7 +364,7 @@ class Zendesk
         if ($call_data) {
             $call_json = json_encode($call_data);
             if (!$call_json) {
-                throw new \InvalidArgumentException("Could not encode call data", -1);
+                throw new \InvalidArgumentException('Could not encode call data', -1);
             }
         } else {
             $call_json = '[]';
@@ -389,9 +389,9 @@ class Zendesk
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_USERPWD, $this->user_id."/".$this->api_key);
+        curl_setopt($ch, CURLOPT_USERPWD, $this->user_id.'/'.$this->api_key);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
-        curl_setopt($ch, CURLOPT_USERAGENT, "DeskPRO_Orb/1.0");
+        curl_setopt($ch, CURLOPT_USERAGENT, 'DeskPRO_Orb/1.0');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
 
@@ -444,11 +444,11 @@ class Zendesk
         extract($ev_data, \EXTR_OVERWRITE);
 
         if (curl_errno($ch)) {
-            throw new \RuntimeException(sprintf("cURL Error: %s: %s", curl_errno($ch), curl_error($ch)));
+            throw new \RuntimeException(sprintf('cURL Error: %s: %s', curl_errno($ch), curl_error($ch)));
         }
 
         if ($output === false || !$http_code) {
-            throw new ApiException("Request failed", ApiException::REQUEST_FAILED, null, $output);
+            throw new ApiException('Request failed', ApiException::REQUEST_FAILED, null, $output);
         }
 
         curl_close($ch);

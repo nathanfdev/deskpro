@@ -30,4 +30,4 @@ $checker->dumpToStardnardFile();
 $count = $checker->count();
 
 $end = microtime(true);
-echo sprintf("\nDone :: $count files :: %.f seconds\n", $end-$start);
+echo sprintf("\nDone :: $count files :: %.f seconds\n", $end - $start);

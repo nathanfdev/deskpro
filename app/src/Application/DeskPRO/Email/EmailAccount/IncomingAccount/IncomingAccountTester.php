@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Email\EmailAccount\IncomingAccount;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
@@ -160,8 +160,8 @@ class IncomingAccountTester
 
             $this->is_success = true;
         } catch (\Exception $e) {
-            $this->logger->logError(sprintf("Error: %s", $e->getMessage()));
-            $this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
+            $this->logger->logError(sprintf('Error: %s', $e->getMessage()));
+            $this->logger->logError(sprintf('(Code: %s:%s)', get_class($e), $e->getCode()));
             $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
             $this->is_success = false;
         }
@@ -196,13 +196,13 @@ class IncomingAccountTester
                 $ids = $storage->getAllMessageUids();
             }
 
-            $this->logger->logInfo("Read IDs: ".implode(', ', $ids));
+            $this->logger->logInfo('Read IDs: '.implode(', ', $ids));
             $this->message_count = count($ids);
 
             $this->is_success = true;
         } catch (\Exception $e) {
-            $this->logger->logError(sprintf("Error: %s", $e->getMessage()));
-            $this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
+            $this->logger->logError(sprintf('Error: %s', $e->getMessage()));
+            $this->logger->logError(sprintf('(Code: %s:%s)', get_class($e), $e->getCode()));
             $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
             $this->is_success = false;
         }
@@ -240,13 +240,13 @@ class IncomingAccountTester
 
             $ids = $storage->searchIds(100, $unread_only, $folder);
 
-            $this->logger->logInfo("Read IDs: ".implode(', ', $ids));
+            $this->logger->logInfo('Read IDs: '.implode(', ', $ids));
             $this->message_count = count($ids);
 
             $this->is_success = true;
         } catch (\Exception $e) {
-            $this->logger->logError(sprintf("Error: %s", $e->getMessage()));
-            $this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
+            $this->logger->logError(sprintf('Error: %s', $e->getMessage()));
+            $this->logger->logError(sprintf('(Code: %s:%s)', get_class($e), $e->getCode()));
             $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
             $this->is_success = false;
         }
@@ -278,8 +278,8 @@ class IncomingAccountTester
             $this->is_success = true;
         } catch (\Exception $e) {
             $this->exception = $e;
-            $this->logger->logError(sprintf("Error: %s", $e->getMessage()));
-            $this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
+            $this->logger->logError(sprintf('Error: %s', $e->getMessage()));
+            $this->logger->logError(sprintf('(Code: %s:%s)', get_class($e), $e->getCode()));
             $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
             $this->is_success = false;
         }
@@ -311,8 +311,8 @@ class IncomingAccountTester
             $this->is_success = true;
         } catch (\Exception $e) {
             $this->exception = $e;
-            $this->logger->logError(sprintf("Error: %s", $e->getMessage()));
-            $this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
+            $this->logger->logError(sprintf('Error: %s', $e->getMessage()));
+            $this->logger->logError(sprintf('(Code: %s:%s)', get_class($e), $e->getCode()));
             $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
             $this->is_success = false;
         }

@@ -1,39 +1,35 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
-
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
 
 /**
  * The DataSerializer package is mostly stateless services, however there is a lot of state to
@@ -58,7 +54,7 @@ class DataSerializerContext
     protected $main_type;
 
     /**
-     * @var string|null the view that we should transform the $main_data on (this is simply passed to the transformer)
+     * @var string|null the view that we should transform the on (this is simply passed to the transformer)
      */
     protected $main_view;
 
@@ -91,15 +87,15 @@ class DataSerializerContext
 
     public function __construct($source_data, array $requested_includes = [], $main_view = null, $main_type = null, DataTypeIdFinder $id_finder)
     {
-        $this->source_data = $source_data;
-        $this->main_data = $source_data; // main data starts the same as source data, but event listneres can change this
+        $this->source_data        = $source_data;
+        $this->main_data          = $source_data; // main data starts the same as source data, but event listneres can change this
         $this->requested_includes = $requested_includes;
-        $this->main_type = $main_type;
-        $this->includes = [];
-        $this->main_view = $main_view;
-        $this->serialized_array = [];
-        $this->sideloads = new DataSideloads($id_finder);
-        $this->id_finder = $id_finder;
+        $this->main_type          = $main_type;
+        $this->includes           = [];
+        $this->main_view          = $main_view;
+        $this->serialized_array   = [];
+        $this->sideloads          = new DataSideloads($id_finder);
+        $this->id_finder          = $id_finder;
     }
 
     /**
@@ -107,10 +103,11 @@ class DataSerializerContext
      * and it will be parsed into the array for you.
      *
      * @param $source_data
-     * @param null $requested_includes_string
-     * @param null $main_view
-     * @param null $main_type
+     * @param null             $requested_includes_string
+     * @param null             $main_view
+     * @param null             $main_type
      * @param DataTypeIdFinder $id_finder
+     *
      * @return DataSerializerContext
      */
     public static function create($source_data, $requested_includes_string = null, $main_view = null, $main_type = null, DataTypeIdFinder $id_finder)
@@ -140,9 +137,10 @@ class DataSerializerContext
     }
 
     /**
-     * True if we need to include this type
+     * True if we need to include this type.
      *
      * @param $type
+     *
      * @return bool
      */
     public function isTypeIncluded($type)
@@ -167,7 +165,7 @@ class DataSerializerContext
     }
 
     /**
-     * @var mixed $main_data
+     * @var mixed
      */
     public function setMainData($main_data)
     {

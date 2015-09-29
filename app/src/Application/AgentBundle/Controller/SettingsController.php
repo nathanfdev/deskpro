@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -176,9 +176,9 @@ class SettingsController extends AbstractController
         }
 
         return $this->render('AgentBundle:Settings:signature.html.twig', array(
-            'signature'          => $this->person->getSignature(),
-            'signature_html'     => $this->person->getSignatureHtml(),
-            'tweet_signature'    => $this->person->getTweetSignature(),
+            'signature'       => $this->person->getSignature(),
+            'signature_html'  => $this->person->getSignatureHtml(),
+            'tweet_signature' => $this->person->getTweetSignature(),
         ));
     }
 
@@ -261,8 +261,8 @@ class SettingsController extends AbstractController
 
     public function ticketNotificationsAction()
     {
-        $loader    = new AgentNotifPrefsLoader($this->person, $this->em);
-        $prefs     = $loader->getPrefs();
+        $loader = new AgentNotifPrefsLoader($this->person, $this->em);
+        $prefs  = $loader->getPrefs();
 
         $filters = new TicketFilterCollection($this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person));
 
@@ -441,7 +441,7 @@ class SettingsController extends AbstractController
     {
         $filter = $this->em->find('DeskPRO:TicketFilter', $filter_id);
         if (!$filter) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Could not find filter");
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Could not find filter');
         }
 
         $this->em->remove($filter);
@@ -476,7 +476,7 @@ class SettingsController extends AbstractController
             $is_new = false;
             $macro  = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
             if (!$macro || (!$macro->is_global && $macro->person->id != $this->person->id)) {
-                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Could not find macro");
+                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Could not find macro');
             }
         } else {
             $macro           = new Entity\TicketMacro();
@@ -506,7 +506,7 @@ class SettingsController extends AbstractController
             $is_new = false;
             $macro  = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
             if (!$macro || (!$macro->is_global && $macro->person->id != $this->person->id)) {
-                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Could not find macro");
+                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Could not find macro');
             }
         } else {
             $macro           = new Entity\TicketMacro();
@@ -537,7 +537,7 @@ class SettingsController extends AbstractController
     {
         $macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
         if (!$macro || (!$macro->is_global && $macro->person->id != $this->person->id)) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Could not find macro");
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Could not find macro');
         }
 
         $this->em->remove($macro);

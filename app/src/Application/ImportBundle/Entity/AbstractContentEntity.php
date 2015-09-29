@@ -1,18 +1,43 @@
 <?php
 
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 namespace Application\ImportBundle\Entity;
 
 use Application\DeskPRO\Entity\ContentAbstract;
+use DateTime;
+use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
-use Orb\Util\Strings;
-use DateTime;
 
 /**
- * Basic properties on content
+ * Basic properties on content.
  *
  * Class AbstractContentEntity
- * @package Application\ImportBundle\Entity
  */
 abstract class AbstractContentEntity extends AbstractEntity implements ContentAwareInterface
 {
@@ -85,6 +110,7 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     public function setTitle($title)
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -102,6 +128,7 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     public function setContent($content)
     {
         $this->content = $content;
+
         return $this;
     }
 
@@ -123,6 +150,7 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     public function setSlug($slug)
     {
         $this->slug = $slug;
+
         return $this;
     }
 
@@ -140,6 +168,7 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     public function setLanguage($language)
     {
         $this->language = $language;
+
         return $this;
     }
 
@@ -161,11 +190,12 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     public function setStatus($status)
     {
         $this->status = $status;
+
         return $this;
     }
 
     /**
-     * Checks if status is valid
+     * Checks if status is valid.
      *
      * @return bool
      */
@@ -178,13 +208,13 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
             ContentAbstract::STATUS_ARCHIVED,
             ContentAbstract::STATUS_HIDDEN,
 
-            $hidden_prefix . ContentAbstract::HIDDEN_STATUS_UNPUBLISHED,
-            $hidden_prefix . ContentAbstract::HIDDEN_STATUS_VALIDATING,
-            $hidden_prefix . ContentAbstract::HIDDEN_STATUS_USER_VALIDATING,
-            $hidden_prefix . ContentAbstract::HIDDEN_STATUS_DELETED,
-            $hidden_prefix . ContentAbstract::HIDDEN_STATUS_SPAM,
-            $hidden_prefix . ContentAbstract::HIDDEN_STATUS_DRAFT,
-            $hidden_prefix . ContentAbstract::HIDDEN_STATUS_TEMP,
+            $hidden_prefix.ContentAbstract::HIDDEN_STATUS_UNPUBLISHED,
+            $hidden_prefix.ContentAbstract::HIDDEN_STATUS_VALIDATING,
+            $hidden_prefix.ContentAbstract::HIDDEN_STATUS_USER_VALIDATING,
+            $hidden_prefix.ContentAbstract::HIDDEN_STATUS_DELETED,
+            $hidden_prefix.ContentAbstract::HIDDEN_STATUS_SPAM,
+            $hidden_prefix.ContentAbstract::HIDDEN_STATUS_DRAFT,
+            $hidden_prefix.ContentAbstract::HIDDEN_STATUS_TEMP,
         );
 
         return in_array($this->status, $statuses, true);
@@ -203,7 +233,8 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
      */
     public function setViewCount($view_count)
     {
-        $this->view_count = (int)$view_count;
+        $this->view_count = (int) $view_count;
+
         return $this;
     }
 
@@ -220,7 +251,8 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
      */
     public function setTotalRating($total_rating)
     {
-        $this->total_rating = (int)$total_rating;
+        $this->total_rating = (int) $total_rating;
+
         return $this;
     }
 
@@ -237,7 +269,8 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
      */
     public function setNumComments($num_comments)
     {
-        $this->num_comments = (int)$num_comments;
+        $this->num_comments = (int) $num_comments;
+
         return $this;
     }
 
@@ -254,7 +287,8 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
      */
     public function setNumRatings($num_ratings)
     {
-        $this->num_ratings = (int)$num_ratings;
+        $this->num_ratings = (int) $num_ratings;
+
         return $this;
     }
 
@@ -272,6 +306,7 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     public function setDateCreated(DateTime $date_created)
     {
         $this->date_created = $date_created;
+
         return $this;
     }
 
@@ -289,6 +324,7 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     public function setDatePublished(DateTime $date_published)
     {
         $this->date_published = $date_published;
+
         return $this;
     }
 

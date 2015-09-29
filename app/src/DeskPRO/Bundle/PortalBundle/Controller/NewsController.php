@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\News;
@@ -54,7 +54,7 @@ class NewsController extends AbstractController
      */
     public function indexAction(Request $request, $_format)
     {
-        $page = $request->query->get('page', 1);
+        $page   = $request->query->get('page', 1);
         $person = $this->getCurrentPerson();
 
         //
@@ -70,8 +70,8 @@ class NewsController extends AbstractController
 
             return $this->render('PortalBundle:News:feed.rss.twig', array(
                 'page_title' => $this->createPageTitle()->news(),
-                'pager'    => $pager,
-                'category' => null,
+                'pager'      => $pager,
+                'category'   => null,
             ));
         }
         $rss_link = $this->generateUrl(
@@ -90,11 +90,11 @@ class NewsController extends AbstractController
         return $this->renderThemeView(
             'Theme:News:index.html.twig',
             array(
-                'page'  => $page,
-                'count' => $this->getBrandSetting('portal.per_page_content'),
-                'page_title' => $this->createPageTitle()->news(),
+                'page'        => $page,
+                'count'       => $this->getBrandSetting('portal.per_page_content'),
+                'page_title'  => $this->createPageTitle()->news(),
                 'breadcrumbs' => $breadcrumbs,
-                'rss_link' => $rss_link
+                'rss_link'    => $rss_link,
             )
         );
     }
@@ -108,7 +108,7 @@ class NewsController extends AbstractController
      */
     public function browseAction(Request $request, NewsCategory $category, $_format)
     {
-        $page = $request->query->get('page', 1);
+        $page   = $request->query->get('page', 1);
         $person = $this->getCurrentPerson();
 
         //
@@ -123,8 +123,8 @@ class NewsController extends AbstractController
             );
 
             return $this->render('PortalBundle:News:feed.rss.twig', array(
-                'pager'    => $pager,
-                'category' => $category,
+                'pager'      => $pager,
+                'category'   => $category,
                 'page_title' => $this->createPageTitle()->news($category),
             ));
         }
@@ -165,14 +165,14 @@ class NewsController extends AbstractController
         return $this->renderThemeView(
             'Theme:News:browse.html.twig',
             array(
-                'category'        => $category,
-                'is_subscribed'   => $is_subscribed,
-                'pager'           => $pager,
-                'page'            => $page,
-                'count'           => $count,
-                'page_title' => $this->createPageTitle()->news($category),
-                'breadcrumbs' => $breadcrumbs,
-                'rss_link' => $rss_link
+                'category'      => $category,
+                'is_subscribed' => $is_subscribed,
+                'pager'         => $pager,
+                'page'          => $page,
+                'count'         => $count,
+                'page_title'    => $this->createPageTitle()->news($category),
+                'breadcrumbs'   => $breadcrumbs,
+                'rss_link'      => $rss_link,
             )
         );
     }
@@ -191,8 +191,8 @@ class NewsController extends AbstractController
         //
         $new_comment_form = null;
         if ($this->isGranted(ContentCommentVoter::COMMENT_NEWS, $post)) {
-            $form_handler = $this->get('form_handler.comment');
-            $comment = new NewsComment();
+            $form_handler     = $this->get('form_handler.comment');
+            $comment          = new NewsComment();
             $new_comment_form = $form_handler->createForm($comment);
             if ($form_result = $form_handler->handle($new_comment_form, $request, $post, $comment)) {
                 if ($form_result instanceof Response) {
@@ -237,8 +237,8 @@ class NewsController extends AbstractController
                 'content_id'       => $post->getId(),
                 'content_type'     => News::CONTENT_TYPE,
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
-                'page_title' => $this->createPageTitle()->news($post),
-                'breadcrumbs' => $breadcrumbs
+                'page_title'       => $this->createPageTitle()->news($post),
+                'breadcrumbs'      => $breadcrumbs,
             )
         );
     }

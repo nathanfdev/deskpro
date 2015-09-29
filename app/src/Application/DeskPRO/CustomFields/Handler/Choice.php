@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
@@ -84,11 +84,11 @@ class Choice extends HandlerAbstract
 
     protected function _getRenderableString($data)
     {
-        $val = array();
+        $val      = array();
         $children = $this->getFieldChildren();
 
         if (!isset($data['children'])) {
-            return null;
+            return;
         }
 
         foreach ($data['children'] as $id => $v) {
@@ -111,39 +111,40 @@ class Choice extends HandlerAbstract
     public function getFormField($data = null, $availableOnly = false)
     {
         $children = $this->getFieldChildren();
-        $choices = array();
+        $choices  = array();
         $selected = array();
-        $map = array();
+        $map      = array();
         // client-side hierarchy
-        $root = array();
+        $root      = array();
         $max_depth = 1;
-        $sort_map = array();
+        $sort_map  = array();
 
         foreach ($children as $id => $child) {
 
             // map for client-side
-            $map[$id] = new \StdClass();
-            $map[$id]->id = $id;
+            $map[$id]        = new \StdClass();
+            $map[$id]->id    = $id;
             $map[$id]->title = $child['title'];
 
             // add choices
-            $title = $child['title'];
+            $title         = $child['title'];
             $sort_map[$id] = array($child['display_order']);
-            $d = 1;
+            $d             = 1;
 
             $sub_child = $child;
             while ($parent = @$children[$sub_child->getOption('parent_id')]) {
-                $d++;
-                if ($d > $max_depth) $max_depth = $d;
+                ++$d;
+                if ($d > $max_depth) {
+                    $max_depth = $d;
+                }
 
-                $title = $parent['title'].' > '.$title;
+                $title           = $parent['title'].' > '.$title;
                 $sort_map[$id][] = $parent['display_order'];
 
                 $sub_child = $parent;
             }
             $sort_map[$id] = array_reverse($sort_map[$id]);
-            $choices[$id] = $title;
-
+            $choices[$id]  = $title;
 
             // set values
             if (!isset($data['children'][$id]['value'])) {
@@ -152,14 +153,14 @@ class Choice extends HandlerAbstract
             $selected[] = $id;
         }
 
-        uksort($choices, function($a_opt, $b_opt) use ($sort_map) {
+        uksort($choices, function ($a_opt, $b_opt) use ($sort_map) {
             $a_depth = count($sort_map[$a_opt]);
             $b_depth = count($sort_map[$b_opt]);
 
             $max_depth = max($a_depth, $b_depth);
 
             $an = $bn = 0;
-            for ($i = 0; $i < $max_depth; $i++) {
+            for ($i = 0; $i < $max_depth; ++$i) {
                 $an = @$sort_map[$a_opt][$i] ?: 0;
                 $bn = @$sort_map[$b_opt][$i] ?: 0;
 
@@ -171,6 +172,7 @@ class Choice extends HandlerAbstract
             if ($an == $bn) {
                 return 0;
             }
+
             return $an < $bn ? -1 : 1;
         });
 
@@ -213,10 +215,10 @@ class Choice extends HandlerAbstract
         $attr = array(
             'data-map' => json_encode($root),
         $field_opts = array(
-            'choices'  => $options,
+            'choices'           => $options,
             'data-custom-field' => 'choice-'.($this->expanded ? 'expanded' : 'collapsed').($this->multiple ? '-multiple' : null),
-            'data-max-depth' => $max_depth
-        ));
+            'data-max-depth'    => $max_depth,
+        ), );
 
         if (!$this->multiple) {
             // turns off legacy select2 handler
@@ -240,12 +242,12 @@ class Choice extends HandlerAbstract
         }
 
         $field_opts = array(
-            'choices' => $choices,
-            'required' => $required,
-            'multiple' => $this->multiple,
-            'expanded' => $this->expanded,
+            'choices'     => $choices,
+            'required'    => $required,
+            'multiple'    => $this->multiple,
+            'expanded'    => $this->expanded,
             'empty_value' => $empty_val,
-            'attr' => $attr
+            'attr'        => $attr,
         );
 
         if (!$this->multiple) {
@@ -380,5 +382,3 @@ class Choice extends HandlerAbstract
         return 'id';
     }
 }
-
-

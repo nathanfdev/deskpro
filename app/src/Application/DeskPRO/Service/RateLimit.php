@@ -1,46 +1,45 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\DeskPRO\Service;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\EntityRepository\RateLimitLog;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\EntityRepository\RateLimitLog;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\People\PersonGuest;
-use Leth\IPAddress\IP\Address;
-use Leth\IPAddress\IP\NetworkAddress;
 
 class RateLimit
 {
     const KEY = 'rate_limit';
 
-	const DISABLED = 'core.rate_limit_disabled';
-    const IPS = 'core.rate_limit_ips';
+    const DISABLED = 'core.rate_limit_disabled';
+    const IPS      = 'core.rate_limit_ips';
 
     const ACT_LOGIN          = 'login';
     const ACT_REGISTRATION   = 'registration';
@@ -61,10 +60,10 @@ class RateLimit
         $this->container = $continer;
     }
 
-	protected function isNoop()
-	{
-		return (int) $this->container->getSetting(self::DISABLED);
-	}
+    protected function isNoop()
+    {
+        return (int) $this->container->getSetting(self::DISABLED);
+    }
 
     /**
      * save action.
@@ -72,14 +71,14 @@ class RateLimit
      * @param $action
      *
      * @throws \Exception
-     * @return bool
      *
+     * @return bool
      */
     public function saveAction($action)
     {
-		if ($this->isNoop()) {
-			return false;
-		}
+        if ($this->isNoop()) {
+            return false;
+        }
 
         if (!$this->container->isScopeActive('request')) {
             return false;
@@ -107,8 +106,8 @@ class RateLimit
      * @param null   $ip
      *
      * @throws \Exception
-     * @return bool
      *
+     * @return bool
      */
     public function getResponse($action, Person $person, $ip = null)
     {
@@ -167,14 +166,14 @@ class RateLimit
      * @param $action
      *
      * @throws \Exception
-     * @return bool
      *
+     * @return bool
      */
     public function isActionLimited($action)
     {
-		if ($this->isNoop()) {
-			return false;
-		}
+        if ($this->isNoop()) {
+            return false;
+        }
 
         if (!$this->container->isScopeActive('request')) {
             return false;
@@ -183,7 +182,7 @@ class RateLimit
         /** @var Request $request */
         $request = $this->container->get('request');
         $person  = $request->getSession()->getPerson();
-		if ($this->isWhitelisted($ip = $request->getClientIp())) {
+        if ($this->isWhitelisted($ip = $request->getClientIp())) {
             return false;
         }
 
@@ -192,20 +191,25 @@ class RateLimit
 
     protected function isWhitelisted($ip)
     {
-        $ip = ip2long($ip);
+        $ip          = ip2long($ip);
         $whitelisted = json_decode($this->container->getSetting(self::IPS), 1) ?: array();
         foreach ($whitelisted as $wip) {
-            @list ($subnet, $bits) = explode('/', $wip);
-            $subnet = ip2long($subnet);
+            @list($subnet, $bits) = explode('/', $wip);
+            $subnet               = ip2long($subnet);
 
             if (!$bits) {
-                if ($ip === $subnet) return true;
+                if ($ip === $subnet) {
+                    return true;
+                }
             } else {
                 $mask = -1 << (32 - $bits);
                 $subnet &= $mask; # nb: in case the supplied subnet wasn't correctly aligned
-                if (($ip & $mask) === $subnet) return true;
+                if (($ip & $mask) === $subnet) {
+                    return true;
+                }
             }
         }
+
         return false;
     }
 }

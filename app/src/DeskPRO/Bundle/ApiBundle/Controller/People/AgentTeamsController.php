@@ -1,55 +1,50 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\AgentTeam;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
+use FOS\RestBundle\Controller\Annotations\Delete;
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
-use Pagerfanta\Adapter\ArrayAdapter;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
-use Pagerfanta\Pagerfanta;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Delete;
 
 class AgentTeamsController extends BaseController implements ClassResourceInterface
 {
@@ -61,7 +56,9 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
      *      }
      * )
      * @Get("/agent_teams", name="api_agent_teams")
+     *
      * @param Request $request
+     *
      * @return View
      */
     public function cgetAction(Request $request)
@@ -99,7 +96,9 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
      *      output="Application\DeskPRO\Entity\AgentTeam"
      * )
      * @Get("/agent_teams/{id}", name="api_agent_teams_get")
+     *
      * @param int $id
+     *
      * @return View
      */
     public function getAction($id)
@@ -127,14 +126,18 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
      *      output="Application\DeskPRO\Entity\AgentTeam"
      * )
      * @Post("/agent_teams", name="api_agent_teams_post")
+     *
      * @param Request $request
+     *
      * @throws WrappedApiErrorException
      * @throws InvalidFormException
+     *
      * @return View
      */
     public function postAction(Request $request)
     {
         $team = new AgentTeam($this->getUser());
+
         return $this->handleFormSubmission($request, $team);
     }
 
@@ -157,9 +160,12 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
      *      }
      * )
      * @Put("/agent_teams/{id}", name="api_agent_teams_put")
+     *
      * @param Request $request
      * @param $id
+     *
      * @throws WrappedApiErrorException
+     *
      * @return View
      */
     public function putAction(Request $request, $id)
@@ -186,7 +192,9 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
      *      }
      * )
      * @Delete("/agent_teams/{id}", name="api_agent_teams_delete")
+     *
      * @param $id
+     *
      * @return View
      */
     public function deleteAction($id)
@@ -203,11 +211,12 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
 
     /**
      * @param int $id
+     *
      * @return AgentTeam
      */
     protected function getAgentTeam($id)
     {
-        $id = (int) $id;
+        $id   = (int) $id;
         $team = $this->getDoctrine()->getManager()->getRepository('DeskPRO:AgentTeam')->find($id);
 
         if (!$team) {
@@ -218,11 +227,14 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
     }
 
     /**
-     * Will be abstracted for use by other controllers
-     * @param Request $request
+     * Will be abstracted for use by other controllers.
+     *
+     * @param Request   $request
      * @param AgentTeam $team
-     * @return View
+     *
      * @throws WrappedApiErrorException
+     * @return View
+     *
      */
     protected function handleFormSubmission(Request $request, AgentTeam $team)
     {
@@ -254,8 +266,10 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
     }
 
     /**
-     * Get specific teams
+     * Get specific teams.
+     *
      * @param $teamIds
+     *
      * @return mixed
      */
     protected function selectTeams($teamIds)
@@ -263,7 +277,7 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
         $entityManager = $this->getDoctrine()->getManager();
 
         // Clean the IDs
-        $teamIds = array_map(function($value) {
+        $teamIds = array_map(function ($value) {
             return (int) $value;
         }, $teamIds);
 

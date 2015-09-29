@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Languages\Build;
 
 use Zend\Http\Request as HttpRequest;
@@ -89,8 +89,8 @@ class TransifexBuild extends AbstractBuild
      * @param string $path
      *
      * @throws \RuntimeException
-     * @return array
      *
+     * @return array
      */
     public function restGet($path, $silent = false)
     {
@@ -121,8 +121,8 @@ class TransifexBuild extends AbstractBuild
      * @param array  $data
      *
      * @throws \RuntimeException
-     * @return array
      *
+     * @return array
      */
     public function restPostJson($path, array $data)
     {
@@ -152,8 +152,8 @@ class TransifexBuild extends AbstractBuild
      * @param array  $data
      *
      * @throws \RuntimeException
-     * @return array
      *
+     * @return array
      */
     public function restPutJson($path, array $data)
     {
@@ -235,8 +235,8 @@ class TransifexBuild extends AbstractBuild
      * @param string $source_file If not specified, the default file from the default export dir will be used
      *
      * @throws \InvalidArgumentException
-     * @return array
      *
+     * @return array
      */
     public function updateSourcePhrases($section, $category, $source_file = null)
     {
@@ -249,7 +249,7 @@ class TransifexBuild extends AbstractBuild
 
         if (!file_exists($source_file)) {
             $this->getLogger()->logDebug("$section.$category invalid source file: ".$source_file);
-            throw new \InvalidArgumentException("PO file does not exist: ".$source_file);
+            throw new \InvalidArgumentException('PO file does not exist: '.$source_file);
         }
 
         $this->getLogger()->logDebug("$section.$category source file: $source_file");
@@ -266,11 +266,11 @@ class TransifexBuild extends AbstractBuild
             $this->getLogger()->logDebug("$section.$category does not exist, creating it instead");
 
             return $this->restPostJson("/project/$project_url/resources/", array(
-                'slug'                 => $category_url,
-                'name'                 => ucfirst($category),
-                'accept_translations'  => true,
-                'content'              => file_get_contents($source_file),
-                'i18n_type'            => 'PO',
+                'slug'                => $category_url,
+                'name'                => ucfirst($category),
+                'accept_translations' => true,
+                'content'             => file_get_contents($source_file),
+                'i18n_type'           => 'PO',
             ));
         }
 
@@ -291,8 +291,8 @@ class TransifexBuild extends AbstractBuild
      * @param string $section
      *
      * @throws \InvalidArgumentException
-     * @return string
      *
+     * @return string
      */
     public function getProjectName($section)
     {

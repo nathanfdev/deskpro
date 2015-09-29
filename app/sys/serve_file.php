@@ -1,35 +1,34 @@
 <?php
 
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Kernel;
 
 use Application\DeskPRO\App;
@@ -82,7 +81,7 @@ if (!isset($DP_LOG_MESSAGES)) {
  * Since we can now trust the filename, we can use it to guess a mime-type based on extension, and send the correct headers,
  * all without connecting to the database.
  */
-class FilestorageLoader extends LoaderAbstract
+class serve_file extends LoaderAbstract
 {
     /**
      * @var string
@@ -103,7 +102,7 @@ class FilestorageLoader extends LoaderAbstract
         try {
             $pathinfo = $this->getPathInfo();
 
-            $this->addLogMessage("pathinfo: %s", $pathinfo);
+            $this->addLogMessage('pathinfo: %s', $pathinfo);
 
             // local URLs just disable redirection action on remote URLs (e.g., S3)
             // Used to serve app assets where serving from a remote domain
@@ -158,7 +157,7 @@ class FilestorageLoader extends LoaderAbstract
             // That is: /(batch)(authcode)(id)(namehash)/name.zip
             //0XNSNTQHTNR43DD567
             } elseif (preg_match('#^/([0-9]+)([A-Z]+)([0-9]+)([A-Z0-9]{6})(?:/|\-)(.*?)$#', $pathinfo, $m)) {
-                $this->addLogMessage("handleFilesystemBlobRequest: %s", implode(', ', $m));
+                $this->addLogMessage('handleFilesystemBlobRequest: %s', implode(', ', $m));
                 $this->handleFilesystemBlobRequest(
                     $m[1],
                     $m[2],
@@ -171,7 +170,7 @@ class FilestorageLoader extends LoaderAbstract
             // That is (id)(authcode0)
             // The trailing 0 denotes it as a database storage authcode
             } elseif (preg_match('#^/([0-9]+)([A-Z]+0)(?:/|\-)(.*?)$#', $pathinfo, $m)) {
-                $this->addLogMessage("handleDbBlobRequest: %s", implode(', ', $m));
+                $this->addLogMessage('handleDbBlobRequest: %s', implode(', ', $m));
                 $this->handleDbBlobRequest($m[1], $m[2], $m[3]);
             } elseif (preg_match('#^/gradient$#', $pathinfo)) {
                 $this->handleGradientRequest();
@@ -179,10 +178,10 @@ class FilestorageLoader extends LoaderAbstract
                 $this->handleAppsRequest($m[1], $m[2], $m[3]);
             } else {
                 if ($this->error_mode == 'exception') {
-                    throw new \Exception("File not found. (bad_route)", 400);
+                    throw new \Exception('File not found. (bad_route)', 400);
                 }
-                header("HTTP/1.0 404 Not Found");
-                echo "File not found. (bad_route)";
+                header('HTTP/1.0 404 Not Found');
+                echo 'File not found. (bad_route)';
             }
         } catch (\Exception $exception) {
             if (isset($GLOBALS['DP_CONFIG']['debug']['dev']) || isset($GLOBALS['DP_CONFIG']['serve_file_debug']) && $GLOBALS['DP_CONFIG']['serve_file_debug']) {
@@ -230,17 +229,17 @@ class FilestorageLoader extends LoaderAbstract
     {
         if ($path == 'DeskPRO/Bundle/Build/Resources/style/DeskPRO_PortalBundle_style.css') {
             $path = DP_WEB_ROOT.'/pub/build/DeskPRO_PortalBundle_style.css';
-            $src = file_get_contents($path);
+            $src  = file_get_contents($path);
             $size = strlen($src);
 
             header('Content-Type: text/css; filename="DeskPRO_PortalBundle_style.css"');
-            header('Content-Length: ' . $size);
+            header('Content-Length: '.$size);
             echo $src;
             exit;
         }
 
-        header("HTTP/1.0 404 Not Found");
-        echo "File not found -- " . htmlspecialchars($path);
+        header('HTTP/1.0 404 Not Found');
+        echo 'File not found -- '.htmlspecialchars($path);
 
         return;
     }
@@ -410,7 +409,7 @@ class FilestorageLoader extends LoaderAbstract
                     $css = str_replace("\x1a$key\x1a", $replace_css, $css);
                 }
 
-                $css .= "/* RTL filter */";
+                $css .= '/* RTL filter */';
             } else {
                 $css = str_replace('/*@no_rtl*/', '', $css);
                 $css = str_replace('/*@/no_rtl*/', '', $css);
@@ -425,22 +424,22 @@ class FilestorageLoader extends LoaderAbstract
 
             $container->getDb()->update('styles', array($blob_column => $blob_id), array('id' => 1));
 
-            $sth = $this->getPdoRead()->prepare("
+            $sth = $this->getPdoRead()->prepare('
                 SELECT blobs.*
                 FROM blobs
                 WHERE blobs.id =?
                 LIMIT 1
-            ");
+            ');
             $sth->execute(array($blob_id));
             $blob = $sth->fetch(\PDO::FETCH_ASSOC);
         }
 
         if (!$blob) {
             if ($this->error_mode == 'exception') {
-                throw new \Exception("File not found. (no_css_blob_id)", 400);
+                throw new \Exception('File not found. (no_css_blob_id)', 400);
             }
-            header("HTTP/1.0 404 Not Found");
-            echo "File not found (no_css_blob_id)";
+            header('HTTP/1.0 404 Not Found');
+            echo 'File not found (no_css_blob_id)';
 
             return;
         }
@@ -464,10 +463,10 @@ class FilestorageLoader extends LoaderAbstract
     {
         if (!function_exists('imagepng') || (!function_exists('imagecreatetruecolor') && !function_exists('imagecreate'))) {
             if ($this->error_mode == 'exception') {
-                throw new \Exception("File not found. (no_image_manip)", 400);
+                throw new \Exception('File not found. (no_image_manip)', 400);
             }
-            header("HTTP/1.0 404 Not Found");
-            echo "File not found (no_image_manip)";
+            header('HTTP/1.0 404 Not Found');
+            echo 'File not found (no_image_manip)';
 
             return;
         }
@@ -531,7 +530,7 @@ class FilestorageLoader extends LoaderAbstract
         header('Expires: '.date('D, d M Y H:i:s', 1366187657).' GMT');
         header('Cache-Control: max-age=31556926,public');
         header('Content-Disposition: inline; filename='.$desc);
-        header("Content-type: image/png");
+        header('Content-type: image/png');
         header('X-Content-Type-Options: nosniff');
         header('X-Robots-Tag: noindex, nofollow');
 
@@ -554,10 +553,10 @@ class FilestorageLoader extends LoaderAbstract
 
         if (!$blob) {
             if ($this->error_mode == 'exception') {
-                throw new \Exception("File not found. (no_sitemap_blob)", 400);
+                throw new \Exception('File not found. (no_sitemap_blob)', 400);
             }
-            header("HTTP/1.0 404 Not Found");
-            echo "File not found. (no_sitemap_blob)";
+            header('HTTP/1.0 404 Not Found');
+            echo 'File not found. (no_sitemap_blob)';
 
             return;
         }
@@ -576,12 +575,12 @@ class FilestorageLoader extends LoaderAbstract
      */
     public function personAvatarAction($person_id)
     {
-        $sth = $this->getPdoRead()->prepare("
+        $sth = $this->getPdoRead()->prepare('
             SELECT *
             FROM blobs
             LEFT JOIN people ON (blobs.id = people.picture_blob_id)
             WHERE people.id = :person_id
-        ");
+        ');
         $sth->execute(array('person_id' => $person_id));
         $blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
@@ -610,12 +609,12 @@ class FilestorageLoader extends LoaderAbstract
      */
     public function orgAvatarAction($org_id)
     {
-        $sth = $this->getPdoRead()->prepare("
+        $sth = $this->getPdoRead()->prepare('
             SELECT *
             FROM blobs
             LEFT JOIN organizations ON (blobs.id = organizations.picture_blob_id)
             WHERE organizations.id = :org_id
-        ");
+        ');
         $sth->execute(array('org_id' => $org_id));
         $blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
@@ -647,7 +646,7 @@ class FilestorageLoader extends LoaderAbstract
             $name = 'picture-default-dep';
         }
 
-        $sth = $this->getPdoRead()->prepare("SELECT * FROM blobs WHERE sys_name = :sys_name");
+        $sth = $this->getPdoRead()->prepare('SELECT * FROM blobs WHERE sys_name = :sys_name');
         $sth->execute(array('sys_name' => $name));
         $blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
@@ -703,10 +702,10 @@ class FilestorageLoader extends LoaderAbstract
 
             default:
                 if ($this->error_mode == 'exception') {
-                    throw new \Exception("File not found. (300)", 400);
+                    throw new \Exception('File not found. (300)', 400);
                 }
-                header("HTTP/1.0 404 Not Found");
-                echo "File not found. (300)";
+                header('HTTP/1.0 404 Not Found');
+                echo 'File not found. (300)';
 
                 return;
         }
@@ -732,7 +731,7 @@ class FilestorageLoader extends LoaderAbstract
     {
         $name = 'orgpicture-default';
 
-        $sth = $this->getPdoRead()->prepare("SELECT * FROM blobs WHERE sys_name = :sys_name");
+        $sth = $this->getPdoRead()->prepare('SELECT * FROM blobs WHERE sys_name = :sys_name');
         $sth->execute(array('sys_name' => $name));
         $blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
@@ -783,21 +782,21 @@ class FilestorageLoader extends LoaderAbstract
         $check_namehash = strtoupper(substr(sha1($filename_safe.$blob_id), 0, 3));
         $check_namehash .= strtoupper(substr(md5($filename_safe.$blob_id), 0, 3));
 
-        $this->addLogMessage("Expecting file path: %s", $filepath);
+        $this->addLogMessage('Expecting file path: %s', $filepath);
 
         $size = null;
         if (isset($_GET['s']) && ((is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] <= 600) || preg_match('#^\d+x\d+$#', $_GET['s']))) {
             $size = $_GET['s'];
-            $this->addLogMessage("With size: %s", $size);
+            $this->addLogMessage('With size: %s', $size);
         }
 
         // Invalid name hash
         // But we have to double-check before failing since the filename could
         // possibly be custom in the case of downloads
         if ($check_namehash != $namehash) {
-            $this->addLogMessage("Hash mismatch: %s !=", $check_namehash, $namehash);
+            $this->addLogMessage('Hash mismatch: %s !=', $check_namehash, $namehash);
 
-            $sth = $this->getPdoRead()->prepare("SELECT * FROM blobs WHERE id = :id");
+            $sth = $this->getPdoRead()->prepare('SELECT * FROM blobs WHERE id = :id');
             $sth->execute(array('id' => $blob_id));
             $blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
@@ -809,10 +808,10 @@ class FilestorageLoader extends LoaderAbstract
 
             if (!$blob || ($blob['filename'] != $filename && $blob['filename_safe'] != $filename && $blob['filename_safe'] != $filename_safe)) {
                 if ($this->error_mode == 'exception') {
-                    throw new \Exception("File not found. (2.1)", 400);
+                    throw new \Exception('File not found. (2.1)', 400);
                 }
-                header("HTTP/1.0 404 Not Found");
-                echo "File not found. (2.1)";
+                header('HTTP/1.0 404 Not Found');
+                echo 'File not found. (2.1)';
 
                 return;
             }
@@ -820,7 +819,7 @@ class FilestorageLoader extends LoaderAbstract
 
         // The file doesnt exist on disk
         if (!file_exists($filepath)) {
-            $sth = $this->getPdoRead()->prepare("SELECT * FROM blobs WHERE id = :id");
+            $sth = $this->getPdoRead()->prepare('SELECT * FROM blobs WHERE id = :id');
             $sth->execute(array('id' => $blob_id));
             $blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
@@ -905,16 +904,16 @@ class FilestorageLoader extends LoaderAbstract
         if (!is_array($blob)) {
             $blob_id = $blob;
 
-            $this->addLogMessage("Loading blob %d", $blob_id);
+            $this->addLogMessage('Loading blob %d', $blob_id);
 
-            $sth = $this->getPdoRead()->prepare("SELECT * FROM blobs WHERE id = :id");
+            $sth = $this->getPdoRead()->prepare('SELECT * FROM blobs WHERE id = :id');
             $sth->execute(array('id' => $blob_id));
             $blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
             if (!$blob) {
-                $this->addLogMessage("Could not load blob record");
+                $this->addLogMessage('Could not load blob record');
             } elseif ($blob_auth && $blob['authcode'] != $blob_auth) {
-                $this->addLogMessage("bad authcode: %s != %s", $blob['authcode'], $blob_auth);
+                $this->addLogMessage('bad authcode: %s != %s', $blob['authcode'], $blob_auth);
             }
 
             if (!$blob || ($blob_auth && $blob['authcode'] != $blob_auth)) {
@@ -933,10 +932,10 @@ class FilestorageLoader extends LoaderAbstract
 
                 if (!$okay) {
                     if ($this->error_mode == 'exception') {
-                        throw new \Exception("File not found. (3)", 400);
+                        throw new \Exception('File not found. (3)', 400);
                     }
-                    header("HTTP/1.0 404 Not Found");
-                    echo "File not found. (3)";
+                    header('HTTP/1.0 404 Not Found');
+                    echo 'File not found. (3)';
 
                     return;
                 }
@@ -967,16 +966,16 @@ class FilestorageLoader extends LoaderAbstract
         }
 
         if ($is_image && $size) {
-            $this->addLogMessage("Showing resized: ".$size);
+            $this->addLogMessage('Showing resized: '.$size);
 
             $is_fit = false;
 
             if (isset($_GET['size-fit'])) {
                 $is_fit = (boolean) $_GET['size-fit'];
-                $this->addLogMessage("Is fit: %d", $is_fit);
+                $this->addLogMessage('Is fit: %d', $is_fit);
             }
 
-            $sth = $this->getPdoRead()->prepare("SELECT * FROM blobs WHERE original_blob_id = :original_blob_id AND sys_name = :sys_name");
+            $sth = $this->getPdoRead()->prepare('SELECT * FROM blobs WHERE original_blob_id = :original_blob_id AND sys_name = :sys_name');
             $sth->execute(array('original_blob_id' => $blob_id, 'sys_name' => $this->getSizedBlobSysName($blob_id, $size, $is_fit)));
             $sub_blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
@@ -1041,7 +1040,7 @@ class FilestorageLoader extends LoaderAbstract
                 $buf = null;
             }
 
-            header("HTTP/1.1 301 Moved Permanently");
+            header('HTTP/1.1 301 Moved Permanently');
             header("Location: {$blob['file_url']}");
             exit;
         }
@@ -1098,14 +1097,14 @@ class FilestorageLoader extends LoaderAbstract
         $filepath_part = $blob['save_path'];
         $filepath      = $base_path.DIRECTORY_SEPARATOR.$blob['save_path'];
 
-        $this->addLogMessage("Expecting file path: %s", $filepath);
+        $this->addLogMessage('Expecting file path: %s', $filepath);
 
         if (!file_exists($filepath)) {
             if ($this->error_mode == 'exception') {
-                throw new \Exception("File not found. (4)", 400);
+                throw new \Exception('File not found. (4)', 400);
             }
-            header("HTTP/1.0 404 Not Found");
-            echo "File not found. (4)";
+            header('HTTP/1.0 404 Not Found');
+            echo 'File not found. (4)';
 
             return;
         }
@@ -1133,7 +1132,7 @@ class FilestorageLoader extends LoaderAbstract
     {
         $this->sendHeaders($blob);
 
-        $sth = $this->getPdoRead()->prepare("SELECT data FROM blobs_storage WHERE blob_id = :blob_id ORDER BY id ASC");
+        $sth = $this->getPdoRead()->prepare('SELECT data FROM blobs_storage WHERE blob_id = :blob_id ORDER BY id ASC');
         $sth->execute(array('blob_id' => $blob['id']));
 
         while (($seg = $sth->fetchColumn(0)) !== false) {
@@ -1152,7 +1151,7 @@ class FilestorageLoader extends LoaderAbstract
             $sys_name .= '-fit';
         }
 
-        $this->addLogMessage("Sized blob sys_name: %s", $sys_name);
+        $this->addLogMessage('Sized blob sys_name: %s', $sys_name);
 
         return $sys_name;
     }
@@ -1169,13 +1168,13 @@ class FilestorageLoader extends LoaderAbstract
         $file = $bs->copyBlobRecordToString($blob);
 
         if (!$file) {
-            $this->addLogMessage("Could not load blob file descriptor");
+            $this->addLogMessage('Could not load blob file descriptor');
 
             if ($this->error_mode == 'exception') {
-                throw new \Exception("File not found. (no_exist)", 400);
+                throw new \Exception('File not found. (no_exist)', 400);
             }
-            header("HTTP/1.0 404 Not Found");
-            echo "File not found. (no_exist)";
+            header('HTTP/1.0 404 Not Found');
+            echo 'File not found. (no_exist)';
             exit;
         }
 
@@ -1184,10 +1183,10 @@ class FilestorageLoader extends LoaderAbstract
             // So @ to get rid of those exceptions
             $image = @$container->getImagine()->load($file);
         } catch (\Imagine\Exception\InvalidArgumentException $e) {
-            $this->addLogMessage("Failed to resize: %s", $e->getMessage());
+            $this->addLogMessage('Failed to resize: %s', $e->getMessage());
             if ($die_fail) {
-                header("HTTP/1.0 500 Internal Server Error");
-                echo "Invalid image file. (invalid_image_data)";
+                header('HTTP/1.0 500 Internal Server Error');
+                echo 'Invalid image file. (invalid_image_data)';
                 exit;
             }
 
@@ -1245,7 +1244,7 @@ class FilestorageLoader extends LoaderAbstract
                     $width  = $req_w;
                     $height = $req_h;
 
-                    $size_box  = new \Imagine\Image\Box($req_w, $req_h);
+                    $size_box = new \Imagine\Image\Box($req_w, $req_h);
 
                     $mode      = \Imagine\Image\ImageInterface::THUMBNAIL_INSET;
                     $resizeimg = $image->thumbnail($size_box, $mode);
@@ -1253,8 +1252,8 @@ class FilestorageLoader extends LoaderAbstract
                     $widthR    = $sizeR->getWidth();
                     $heightR   = $sizeR->getHeight();
 
-                    $preserve  = $container->getImagine()->create($size_box);
-                    $startX    = $startY    = 0;
+                    $preserve = $container->getImagine()->create($size_box);
+                    $startX   = $startY   = 0;
                     if ($widthR < $width) {
                         $startX = ($width - $widthR) / 2;
                     }
@@ -1324,11 +1323,11 @@ class FilestorageLoader extends LoaderAbstract
         }
 
         $new_blob = $bs->createBlobRecordFromString($file, $blob->filename, $blob->content_type, array(
-            'sys_name'       => $this->getSizedBlobSysName($blob->id, $size, $is_fit),
-            'original_blob'  => $blob,
+            'sys_name'      => $this->getSizedBlobSysName($blob->id, $size, $is_fit),
+            'original_blob' => $blob,
         ));
 
-        $this->addLogMessage("Cached resize as blob %d", $new_blob->getId());
+        $this->addLogMessage('Cached resize as blob %d', $new_blob->getId());
 
         $new_blob_info                  = $new_blob->toArray(DomainObject::TOARRAY_ONLY_PRIMATIVES);
         $new_blob_info['filename_safe'] = $blob->getFilenameSafe();
@@ -1342,7 +1341,7 @@ class FilestorageLoader extends LoaderAbstract
     public function handleAppsRequest($app_name, $type, $filename)
     {
         if ($type == 'app' && ($filename == 'app.js' || $filename == 'module.js')) {
-            $type_f = "";
+            $type_f = '';
         } else {
             $type_f = "{$type}/";
         }
@@ -1350,10 +1349,10 @@ class FilestorageLoader extends LoaderAbstract
         $path_info = $this->_getAppsPath($app_name, $type_f, $filename);
         if (!$path_info) {
             if ($this->error_mode == 'exception') {
-                throw new \Exception("App file not found. (bad_path)", 400);
+                throw new \Exception('App file not found. (bad_path)', 400);
             }
-            header("HTTP/1.0 404 Not Found");
-            echo "App file not found. (bad_path)";
+            header('HTTP/1.0 404 Not Found');
+            echo 'App file not found. (bad_path)';
 
             return;
         }
@@ -1391,7 +1390,7 @@ class FilestorageLoader extends LoaderAbstract
 
         header('Content-Type: '.$mimetype.'; filename="'.addslashes($filename).'"');
         header('Content-Length: '.$filesize);
-        header('Last-Modified: '.date('D, d M Y H:i:s', time()-3600).' GMT');
+        header('Last-Modified: '.date('D, d M Y H:i:s', time() - 3600).' GMT');
         header('Expires: '.date('D, d M Y H:i:s', time() - 3600).' GMT');
         header('Cache-Control: '.(@$GLOBALS['DP_CONFIG']['debug']['dev'] ? 'no-cache' : 'max-age=31556926,private'));
         header('X-Robots-Tag: noindex, nofollow');

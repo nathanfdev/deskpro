@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\ServerReportFile;
 
 use Application\DeskPRO\App;
@@ -106,7 +106,7 @@ class ServerReportFile
         $this->tmpdir = dp_get_tmp_dir().DIRECTORY_SEPARATOR.uniqid('dpd', true);
 
         if (!mkdir($this->tmpdir, 0777, true)) {
-            die("Could not create temp dir: ".$this->tmpdir);
+            die('Could not create temp dir: '.$this->tmpdir);
         }
 
         $this->archive_file = $this->tmpdir.'/deskpro-report.zip';
@@ -168,7 +168,7 @@ class ServerReportFile
         );
 
         if ($list == 0) {
-            die("Error : ".$archive->errorInfo(true));
+            die('Error : '.$archive->errorInfo(true));
         }
 
         return $this->archive_file;
@@ -179,8 +179,7 @@ class ServerReportFile
      */
     protected function _addFilesToArchive()
     {
-        foreach($this->files_added_to_archive as $file_name => $func) {
-
+        foreach ($this->files_added_to_archive as $file_name => $func) {
             $this->oi && $this->oi->writeln(sprintf('Generating "%s"', $file_name));
             if (false === $this->$func($file_name)) {
                 $this->oi && $this->oi->writeln('');
@@ -205,6 +204,7 @@ class ServerReportFile
             $this->_createFile($this->tmpdir.'/'.$file_name, $info['web_php']['phpinfo']);
         } catch (IOException $e) {
             echo $e->getMessage();
+
             return false;
         }
     }
@@ -224,6 +224,7 @@ class ServerReportFile
             $this->_createFile($this->tmpdir.'/'.$file_name, $info['cli_php']['phpinfo']);
         } catch (IOException $e) {
             echo $e->getMessage();
+
             return false;
         }
     }
@@ -245,6 +246,7 @@ class ServerReportFile
             $this->_createFile($this->tmpdir.'/'.$file_name, $file);
         } catch (IOException $e) {
             echo $e->getMessage();
+
             return false;
         }
     }
@@ -272,6 +274,7 @@ class ServerReportFile
             $this->_createFile($this->tmpdir.'/'.$file_name, $file);
         } catch (IOException $e) {
             echo $e->getMessage();
+
             return false;
         }
     }
@@ -293,6 +296,7 @@ class ServerReportFile
             $this->_createFile($this->tmpdir.'/'.$file_name, $file);
         } catch (IOException $e) {
             echo $e->getMessage();
+
             return false;
         }
     }
@@ -313,6 +317,7 @@ class ServerReportFile
             $this->_createFile($this->tmpdir.'/'.$file_name, $file);
         } catch (IOException $e) {
             echo $e->getMessage();
+
             return false;
         }
     }
@@ -328,7 +333,7 @@ class ServerReportFile
         $sql[] = '### DeskPRO Build: '.DP_BUILD_TIME."\n";
         $sql[] = '### Generated: '.date('Y-m-d H:i:s')."\n\n";
 
-        $tables = App::getDb()->fetchAllCol("SHOW TABLES");
+        $tables = App::getDb()->fetchAllCol('SHOW TABLES');
 
         foreach ($tables as $table) {
             $sql[] = "### TABLE: $table\n";
@@ -342,6 +347,7 @@ class ServerReportFile
             $this->_createFile($this->tmpdir.'/'.$file_name, $sql);
         } catch (IOException $e) {
             echo $e->getMessage();
+
             return false;
         }
     }
@@ -354,7 +360,7 @@ class ServerReportFile
         $sections = array();
 
         try {
-            $mysqlstatus              = App::getDb()->fetchAllKeyValue("SHOW STATUS", array(), array(), 0, 1);
+            $mysqlstatus              = App::getDb()->fetchAllKeyValue('SHOW STATUS', array(), array(), 0, 1);
             $sections['MySQL Status'] = Strings::keyValueAsciiTable($mysqlstatus);
         } catch (\Exception $e) {
         }
@@ -375,6 +381,7 @@ class ServerReportFile
             $this->_createFile($this->tmpdir.'/'.$file_name, $out);
         } catch (IOException $e) {
             echo $e->getMessage();
+
             return false;
         }
     }
@@ -387,7 +394,7 @@ class ServerReportFile
         $sections = array();
 
         try {
-            $mysqlinfo                   = App::getDb()->fetchAllKeyValue("SHOW VARIABLES", array(), array(), 0, 1);
+            $mysqlinfo                   = App::getDb()->fetchAllKeyValue('SHOW VARIABLES', array(), array(), 0, 1);
             $sections['MySQL Variables'] = Strings::keyValueAsciiTable($mysqlinfo);
         } catch (\Exception $e) {
         }
@@ -408,6 +415,7 @@ class ServerReportFile
             $this->_createFile($this->tmpdir.'/'.$file_name, $out);
         } catch (IOException $e) {
             echo $e->getMessage();
+
             return false;
         }
     }
@@ -465,13 +473,14 @@ class ServerReportFile
             $this->_createFile($this->tmpdir.'/'.$file_name, $out);
         } catch (IOException $e) {
             echo $e->getMessage();
+
             return false;
         }
     }
 
     protected function _createTemplates()
     {
-        $templates = App::getDb()->fetchAll("SELECT name, template_code, date_created, date_updated FROM templates");
+        $templates = App::getDb()->fetchAll('SELECT name, template_code, date_created, date_updated FROM templates');
         $out       = array();
 
         foreach ($templates as $t) {
@@ -486,6 +495,7 @@ class ServerReportFile
             $this->_createFile($this->tmpdir.'/'.'templates.txt', $out);
         } catch (IOException $e) {
             echo $e->getMessage();
+
             return false;
         }
     }
@@ -499,7 +509,7 @@ class ServerReportFile
             $schemadiff = Util::getUpdateSchemaSql();
 
             if ($schemadiff) {
-                $schemadiff = implode(";\n", $schemadiff).";";
+                $schemadiff = implode(";\n", $schemadiff).';';
             }
         } catch (\Exception $e) {
             $schemadiff = null;
@@ -509,6 +519,7 @@ class ServerReportFile
             $this->_createFile($this->tmpdir.'/'.$file_name, $schemadiff);
         } catch (IOException $e) {
             echo $e->getMessage();
+
             return false;
         }
     }
@@ -552,6 +563,7 @@ class ServerReportFile
             $this->_createFile($this->tmpdir.'/'.$file_name, $content);
         } catch (IOException $e) {
             echo $e->getMessage();
+
             return false;
         }
     }
@@ -592,6 +604,7 @@ class ServerReportFile
             $this->_createFile($this->tmpdir.'/'.$file_name, $content);
         } catch (IOException $e) {
             echo $e->getMessage();
+
             return false;
         }
     }
@@ -611,8 +624,8 @@ class ServerReportFile
                 );
             } catch (IOException $e) {
                 die(
-                    "Could not create File Integrity file under this location - ".$this->tmpdir.'/'.$file_name.
-                        ". More info:".$e->getMessage()
+                    'Could not create File Integrity file under this location - '.$this->tmpdir.'/'.$file_name.
+                        '. More info:'.$e->getMessage()
                 );
             }
         }
@@ -641,8 +654,8 @@ class ServerReportFile
      * @param string $file_name
      *
      * @throws \Symfony\Component\Filesystem\Exception\IOException
-     * @return string
      *
+     * @return string
      */
     protected function _readFile($file_name)
     {

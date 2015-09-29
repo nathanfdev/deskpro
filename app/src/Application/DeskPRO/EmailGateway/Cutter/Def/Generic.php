@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\EmailGateway\Cutter\Def;
 
 use Application\DeskPRO\App;
@@ -103,7 +103,7 @@ class Generic implements ForwardDef, QuoteDef
                     if ($start_line === null) {
                         $start_line = $ln;
                     }
-                    $found++;
+                    ++$found;
                     if ($found >= 2) {
                         break;
                     }
@@ -148,13 +148,13 @@ class Generic implements ForwardDef, QuoteDef
     public function getForwardInfo($body, $is_html = false)
     {
         $forward_data = array(
-            'message_body'         => null,
-            'fwd_message_body'     => null,
-            'fwd_message_headers'  => null,
-            'fwd_from_email'       => null,
-            'fwd_from_name'        => null,
-            'fwd_cc_addresses'     => null,
-            'fwd_cc_unknown'       => null,
+            'message_body'        => null,
+            'fwd_message_body'    => null,
+            'fwd_message_headers' => null,
+            'fwd_from_email'      => null,
+            'fwd_from_name'       => null,
+            'fwd_cc_addresses'    => null,
+            'fwd_cc_unknown'      => null,
         );
 
         $parts_pattern = null;
@@ -242,7 +242,7 @@ class Generic implements ForwardDef, QuoteDef
             $pos2 = strlen($forward_data['fwd_message_headers']);
         }
 
-        $from_str = substr($forward_data['fwd_message_headers'], $pos, $pos2-$pos);
+        $from_str = substr($forward_data['fwd_message_headers'], $pos, $pos2 - $pos);
         $m        = null;
 
         if (preg_match('#mailto:(.*?)@([a-zA-Z0-9\.\-_]+)#', $from_str.' ', $m)) {
@@ -335,7 +335,7 @@ class Generic implements ForwardDef, QuoteDef
         // We also want to cut from is the < character, so we dont
         // cut mid-way into an html tag
         if ($is_html) {
-            $pos = strrpos($body, "<");
+            $pos = strrpos($body, '<');
             if ($pos) {
                 $body = substr($body, 0, $pos);
             }
@@ -370,9 +370,9 @@ class Generic implements ForwardDef, QuoteDef
         if ($pos !== false) {
             $body_btm = substr($body, $pos);
             if ($is_html) {
-                $pos = strpos($body_btm, ">");
+                $pos = strpos($body_btm, '>');
                 if ($pos) {
-                    $body_btm = substr($body_btm, $pos+1);
+                    $body_btm = substr($body_btm, $pos + 1);
                 }
             }
 

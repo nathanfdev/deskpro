@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Reports\Overview;
 
 use Application\DeskPRO\App;
@@ -36,20 +36,20 @@ use Orb\Util\Arrays;
 
 class GroupingField
 {
-    const DEPARTMENT            = 'department';
-    const TICKET_CATEGORY       = 'ticket_category';
-    const TICKET_WORKFLOW       = 'ticket_workflow';
-    const TICKET_PRIORITY       = 'ticket_priority';
-    const LANGUAGE              = 'language';
-    const PRODUCT               = 'product';
-    const TICKET_FIELD          = 'ticket_field';
-    const USER_FIELD            = 'user_field';
-    const AGENT                 = 'agent';
-    const AGENT_TEAM            = 'agent_team';
-    const TICKET_URGENCY        = 'ticket_urgency';
-    const ORGANIZATION          = 'organization';
-    const USER                  = 'user';
-    const USERGROUP             = 'usergroup';
+    const DEPARTMENT      = 'department';
+    const TICKET_CATEGORY = 'ticket_category';
+    const TICKET_WORKFLOW = 'ticket_workflow';
+    const TICKET_PRIORITY = 'ticket_priority';
+    const LANGUAGE        = 'language';
+    const PRODUCT         = 'product';
+    const TICKET_FIELD    = 'ticket_field';
+    const USER_FIELD      = 'user_field';
+    const AGENT           = 'agent';
+    const AGENT_TEAM      = 'agent_team';
+    const TICKET_URGENCY  = 'ticket_urgency';
+    const ORGANIZATION    = 'organization';
+    const USER            = 'user';
+    const USERGROUP       = 'usergroup';
 
     /**
      * @var string
@@ -203,7 +203,7 @@ class GroupingField
                             LEFT JOIN custom_data_ticket ON (custom_data_ticket.ticket_id = tickets.id AND custom_data_ticket.field_id IN($ids))
                             LEFT JOIN custom_def_ticket ON (custom_def_ticket.id = custom_data_ticket.field_id)
                         ",
-                        'where'    => '',
+                        'where' => '',
                     );
                 } else {
                     return array(
@@ -238,7 +238,7 @@ class GroupingField
                             LEFT JOIN custom_data_person ON (custom_data_person.person_id = tickets.person_id AND custom_data_person.field_id IN($ids))
                             LEFT JOIN custom_def_people ON (custom_def_people.id = custom_data_person.field_id)
                         ",
-                        'where'    => '',
+                        'where' => '',
                     );
                 } else {
                     return array(
@@ -259,8 +259,8 @@ class GroupingField
      * @param array $values
      *
      * @throws \InvalidArgumentException
-     * @return array|null
      *
+     * @return array|null
      */
     public function getTitles(array $values = array())
     {

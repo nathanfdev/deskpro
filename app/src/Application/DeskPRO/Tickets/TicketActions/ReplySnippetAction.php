@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -151,13 +151,13 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
                 $this->person_context = $ticket->agent;
             } else {
                 // Try to find last agent to replied in tikcet
-                $agent_id = App::getDb()->fetchColumn("
+                $agent_id = App::getDb()->fetchColumn('
                     SELECT tickets_messages.person_id
                     FROM tickets_messages
                     LEFT JOIN people ON (people.id = tickets_messages.person_id)
                     WHERE tickets_messages.ticket_id = 1 AND people.is_agent = 1
                     ORDER BY tickets_messages.id DESC
-                ");
+                ');
 
                 if ($agent_id) {
                     $this->person_context = App::getDataService('Agent')->get($agent_id);
@@ -247,7 +247,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
     public function getDescription($as_html = true)
     {
         if (!$this->snippet_items) {
-            return "<error>No snippet</error>";
+            return '<error>No snippet</error>';
         }
 
         // Hack ot append the proper position
@@ -262,11 +262,11 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
                     $reply_pos = $item->reply_pos;
                 }
                 if ($item->reply_pos == 'overwrite') {
-                    $ret[] = "Reply with snippet: ".$item->snippet->title;
+                    $ret[] = 'Reply with snippet: '.$item->snippet->title;
                 } elseif ($item->reply_pos == 'append') {
-                    $ret[] = "Append snippet to reply: ".$item->snippet->title;
+                    $ret[] = 'Append snippet to reply: '.$item->snippet->title;
                 } else {
-                    $ret[] = "Prepend snippet to reply: ".$item->snippet->title;
+                    $ret[] = 'Prepend snippet to reply: '.$item->snippet->title;
                 }
             }
 
@@ -312,7 +312,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
             return $ret;
         }
 
-        return "Reply with snippet: ".implode(', ', $this->getSnippetTitles());
+        return 'Reply with snippet: '.implode(', ', $this->getSnippetTitles());
     }
 }
 

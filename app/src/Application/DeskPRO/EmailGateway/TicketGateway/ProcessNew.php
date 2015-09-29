@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category EmailGateway
  */
-
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
@@ -70,18 +70,18 @@ class ProcessNew extends ProcessAbstract
     public function __construct(EmailAccount $account, Person $person, TicketIncomingEmail $ticket_email,
         Translate $translator
     ) {
-        $this->account       = $account;
-        $this->person        = $person;
-        $this->ticket_email  = $ticket_email;
-        $this->reader        = $ticket_email->reader;
-        $this->cleaner       = App::get('deskpro.core.input_cleaner');
-        $this->translator    = $translator;
+        $this->account      = $account;
+        $this->person       = $person;
+        $this->ticket_email = $ticket_email;
+        $this->reader       = $ticket_email->reader;
+        $this->cleaner      = App::get('deskpro.core.input_cleaner');
+        $this->translator   = $translator;
     }
 
     /**
      * @throws \Exception
-     * @return Ticket|mixed
      *
+     * @return Ticket|mixed
      */
     public function run()
     {
@@ -152,7 +152,7 @@ class ProcessNew extends ProcessAbstract
                     $txt = substr($txt, 0, 25000);
                 }
 
-                $email_info->body = Strings::text2html($txt, 'plaintext-email');
+                $email_info->body         = Strings::text2html($txt, 'plaintext-email');
                 $email_info->body_is_html = false;
             }
 
@@ -181,9 +181,9 @@ class ProcessNew extends ProcessAbstract
         $use_lang = null;
 
         if (!App::getDataService('Language')->isLangSystemEnabled()) {
-            $this->logMessage("Helpdesk is in single-language mode");
+            $this->logMessage('Helpdesk is in single-language mode');
         } elseif ($this->person->getRealLanguage()) {
-            $this->logMessage("Person has language set: ".$this->person->getRealLanguage()->id." ".$this->person->getRealLanguage()->title);
+            $this->logMessage('Person has language set: '.$this->person->getRealLanguage()->id.' '.$this->person->getRealLanguage()->title);
         } else {
             $detect_body = strip_tags($email_info->body);
             if (strlen($detect_body) < 300) {
@@ -191,7 +191,7 @@ class ProcessNew extends ProcessAbstract
             } else {
                 /** @var $lang_detect \Application\DeskPRO\Languages\Detect */
                 $lang_detect = App::getSystemService('language_detect');
-                $this->logMessage("Detectable languages: ".implode(', ', $lang_detect->getDetectableLanguages()));
+                $this->logMessage('Detectable languages: '.implode(', ', $lang_detect->getDetectableLanguages()));
 
                 $lang = $lang_detect->detectLanguage($detect_body);
                 if ($lang) {

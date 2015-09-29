@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -44,7 +44,7 @@ use Orb\Util\Strings;
 class UserChatController extends AbstractController
 {
     /** @var array */
-    protected $filters  = array('mine', 'assigned', 'missed');
+    protected $filters = array('mine', 'assigned', 'missed');
     /** @var array */
     protected $groups = array('none', 'department', 'agent', 'date_created', 'total_to_ended');
 
@@ -67,12 +67,12 @@ class UserChatController extends AbstractController
             }
         }
 
-        $convo_messages = $this->em->createQuery("
+        $convo_messages = $this->em->createQuery('
             SELECT m
             FROM DeskPRO:ChatMessage m
             WHERE m.conversation = ?1
             ORDER BY m.id DESC
-        ")->setParameter(1, $convo)->execute();
+        ')->setParameter(1, $convo)->execute();
 
         $session     = $convo->session;
         $visitor     = null;
@@ -249,8 +249,8 @@ class UserChatController extends AbstractController
         $custom_fields = $field_manager->getDisplayArrayForObject($convo);
 
         return $this->render('AgentBundle:UserChat:view-page-display-holders.html.twig', array(
-            'convo'          => $convo,
-            'custom_fields'  => $custom_fields,
+            'convo'         => $convo,
+            'custom_fields' => $custom_fields,
         ));
     }
 
@@ -484,7 +484,7 @@ class UserChatController extends AbstractController
             return $this->createJsonCmResponse();
         }
 
-        $msg = "File: <a href=\"{$blob->getDownloadUrl(true)}\" target=\"_blank\">".htmlspecialchars($blob->filename)."</a> (".$blob->getReadableFilesize().")";
+        $msg = "File: <a href=\"{$blob->getDownloadUrl(true)}\" target=\"_blank\">".htmlspecialchars($blob->filename).'</a> ('.$blob->getReadableFilesize().')';
         if ($blob->isImage()) {
             $msg .= '<div class="file-thumb"><img src="'.$blob->getThumbnailUrl(50, true).'" /></div>';
         }
@@ -690,8 +690,8 @@ class UserChatController extends AbstractController
      * @param $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Symfony\Component\HttpFoundation\Response
      *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function getChatAlertAction($id)
     {
@@ -710,13 +710,13 @@ class UserChatController extends AbstractController
         $url = null;
 
         return $this->render('AgentBundle:UserChat:chat-alert.html.twig', array(
-            'convo'         => $convo,
-            'person'        => $convo->person,
-            'tickets'       => $tickets,
-            'session'       => $convo->session,
-            'visitor'       => null,
-            'waiting_secs'  => $waiting_secs,
-            'url'           => $url,
+            'convo'        => $convo,
+            'person'       => $convo->person,
+            'tickets'      => $tickets,
+            'session'      => $convo->session,
+            'visitor'      => null,
+            'waiting_secs' => $waiting_secs,
+            'url'          => $url,
         ));
     }
 
@@ -831,15 +831,15 @@ class UserChatController extends AbstractController
         $chats = $this->container->getEm()->getRepository('DeskPRO:ChatConversation')->getByIds($chat_ids, true);
 
         return $this->render('AgentBundle:UserChat:list.html.twig', array(
-            'chat_ids'       => $chat_ids,
-            'chats'          => $chats,
-            'total'          => $total,
-            'page'           => $page,
-            'max_page'       => $max_page,
-            'filter_id'      => $filter_id,
-            'filter_param'   => $filter_param,
-            'group_var'      => $group_by,
-            'group_val'      => $group_id,
+            'chat_ids'     => $chat_ids,
+            'chats'        => $chats,
+            'total'        => $total,
+            'page'         => $page,
+            'max_page'     => $max_page,
+            'filter_id'    => $filter_id,
+            'filter_param' => $filter_param,
+            'group_var'    => $group_by,
+            'group_val'    => $group_id,
         ));
     }
 

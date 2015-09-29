@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Writer;
 
@@ -33,10 +34,9 @@ use Application\ImportBundle\Generator\Exporter\Parser\BatchConfigInterface;
 use RuntimeException;
 
 /**
- * Base generator writer
+ * Base generator writer.
  *
  * Class AbstractWriter
- * @package Application\ImportBundle\Generator\Writer
  */
 abstract class AbstractWriter extends AbstractGenerator implements WriterInterface
 {
@@ -56,6 +56,7 @@ abstract class AbstractWriter extends AbstractGenerator implements WriterInterfa
     public function setBatchConfig(BatchConfigInterface $config)
     {
         $this->batch_config = $config;
+
         return $this;
     }
 
@@ -65,6 +66,7 @@ abstract class AbstractWriter extends AbstractGenerator implements WriterInterfa
     public function setWritingEntityTypes(array $types)
     {
         $this->entity_types = $types;
+
         return $this;
     }
 
@@ -73,13 +75,13 @@ abstract class AbstractWriter extends AbstractGenerator implements WriterInterfa
      */
     public function writeBatchConfig()
     {
-        if ( ! $this->config) {
+        if (!$this->config) {
             throw new RuntimeException('Generator configuration is not defined');
         }
-        if ( ! $this->batch_config) {
+        if (!$this->batch_config) {
             throw new RuntimeException('Batch configuration is not defined');
         }
-        if ( ! $this->config->getBatchFilePath()) {
+        if (!$this->config->getBatchFilePath()) {
             throw new RuntimeException('Batch config file path is not defined');
         }
 
@@ -90,16 +92,16 @@ abstract class AbstractWriter extends AbstractGenerator implements WriterInterfa
     }
 
     /**
-     * Creates output directory if not exist
+     * Creates output directory if not exist.
      *
      * @throws RuntimeException
      */
     protected function createOutputDirIfNotExist()
     {
-        if ( ! $this->config) {
+        if (!$this->config) {
             throw new RuntimeException('Generator configuration is not defined');
         }
-        if ( ! $this->config->getOutputPath()) {
+        if (!$this->config->getOutputPath()) {
             throw new RuntimeException('Output path is not defined');
         }
 
@@ -107,9 +109,10 @@ abstract class AbstractWriter extends AbstractGenerator implements WriterInterfa
     }
 
     /**
-     * Creates a directory if not exist
+     * Creates a directory if not exist.
      *
      * @param string $dir
+     *
      * @throws RuntimeException
      */
     protected function createDirIfNotExist($dir)
@@ -123,7 +126,7 @@ abstract class AbstractWriter extends AbstractGenerator implements WriterInterfa
 
     /**
      * Writes data to json file
-     * Returns true on success
+     * Returns true on success.
      *
      * @param array  $data
      * @param string $path
@@ -150,7 +153,7 @@ abstract class AbstractWriter extends AbstractGenerator implements WriterInterfa
         return true;
     }
 
-    static public function getOrderedTypes()
+    public static function getOrderedTypes()
     {
         return array(
             EntityInterface::TYPE_PERSON,

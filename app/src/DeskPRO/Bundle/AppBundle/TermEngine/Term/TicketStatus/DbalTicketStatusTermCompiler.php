@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -44,13 +42,13 @@ class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
     {
         $query_part = new DbalQueryPart();
 
-        $op = $term->getOp();
+        $op    = $term->getOp();
         $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
 
         $statuses = $term->getOption('status');
 
         $non_hidden = array();
-        $hidden = array();
+        $hidden     = array();
         foreach ($statuses as $status) {
             $status = str_replace('hidden.', '', $status); // internally we use the shorter hidden status
             if ($this->isHiddenStatus($status)) {
@@ -62,7 +60,7 @@ class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
 
         $this->logDebug('Processed options', array(
             'non-hidden' => $non_hidden,
-            'hidden' => $hidden
+            'hidden'     => $hidden,
         ));
 
         // only non hidden
@@ -108,7 +106,6 @@ class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
             $query_part->setParameter('hidden_status', $hidden);
 
             if ($this->isOp($op, TermInterface::OP_NOT)) {
-
                 $query_part->setWhereString(
                     'ticket.status != :status_hidden OR (ticket.status = :status_hidden AND ticket.hidden_status NOT IN (:hidden_status))'
                 );
@@ -116,9 +113,7 @@ class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
                 $this->logQueryPart($query_part);
 
                 return $query_part;
-
             } else {
-
                 $query_part->setWhereString(
                     'ticket.status = :status_hidden AND ticket.hidden_status IN (:hidden_status)'
                 );
@@ -132,6 +127,7 @@ class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
 
     /**
      * @param $status
+     *
      * @return bool
      */
     protected function isHiddenStatus($status)
@@ -142,7 +138,7 @@ class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
                 Ticket::HIDDEN_STATUS_VALIDATING,
                 Ticket::HIDDEN_STATUS_SPAM,
                 Ticket::HIDDEN_STATUS_DELETED,
-                Ticket::HIDDEN_STATUS_TEMP
+                Ticket::HIDDEN_STATUS_TEMP,
             )
         );
     }

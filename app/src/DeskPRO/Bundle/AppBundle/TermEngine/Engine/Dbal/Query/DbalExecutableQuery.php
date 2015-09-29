@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
 use DeskPRO\Bundle\AppBundle\Util\SimpleTimer;
@@ -41,10 +39,10 @@ use Psr\Log\LoggerInterface;
 class DbalExecutableQuery
 {
     public static $groupAliases = array(
-        'agent' => '{from}.agent_id',
-        'department' => '{from}.department_id',
-        'person' => '{from}.person_id',
-        'date_created' => '{from}.date_created'
+        'agent'        => '{from}.agent_id',
+        'department'   => '{from}.department_id',
+        'person'       => '{from}.person_id',
+        'date_created' => '{from}.date_created',
     );
 
     /**
@@ -81,7 +79,7 @@ class DbalExecutableQuery
 
     /**
      * @var additional custom select fields; defined as:
-     * ['alias' => 'SQL bit']
+     *                 ['alias' => 'SQL bit']
      */
     private $additional_selects;
 
@@ -92,16 +90,16 @@ class DbalExecutableQuery
 
     public function __construct(DbalQuery $query, Connection $connection, LoggerInterface $logger = null)
     {
-        $this->query = $query;
+        $this->query      = $query;
         $this->connection = $connection;
 
-        $this->order_by = array();
-        $this->and_where = array();
-        $this->and_group_where = array();
-        $this->group_by = array();
-        $this->page = 1;
-        $this->count = null;
-        $this->logger = $logger;
+        $this->order_by           = array();
+        $this->and_where          = array();
+        $this->and_group_where    = array();
+        $this->group_by           = array();
+        $this->page               = 1;
+        $this->count              = null;
+        $this->logger             = $logger;
         $this->additional_selects = [];
     }
 
@@ -114,7 +112,7 @@ class DbalExecutableQuery
     }
 
     /**
-     * Fetches all the paged tickets in an array like: [Ticket, Ticket]
+     * Fetches all the paged tickets in an array like: [Ticket, Ticket].
      *
      * @return array
      */
@@ -141,7 +139,7 @@ class DbalExecutableQuery
         // various WHERE manipulations
         $this->manipulateWhere($query);
         $stmt = $this->execute($query);
-        $all = $stmt->fetchAll();
+        $all  = $stmt->fetchAll();
 
         $this->log(Logger::DEBUG, 'row count', array('count' => $stmt->rowCount()));
         $this->log(Logger::DEBUG, 'finished fetechAll()', array('time' => $timer->getElapsedTime()));
@@ -150,7 +148,7 @@ class DbalExecutableQuery
     }
 
     /**
-     * Fetches the entity ids like: [ [ 'id' => 1 ], [ 'id' => 2 ] ]
+     * Fetches the entity ids like: [ [ 'id' => 1 ], [ 'id' => 2 ] ].
      *
      * @return array
      */
@@ -181,7 +179,6 @@ class DbalExecutableQuery
         // various WHERE manipulations
         $this->manipulateWhere($query);
 
-
         $stmt = $this->execute($query);
 
         $ids = array();
@@ -199,7 +196,7 @@ class DbalExecutableQuery
     }
 
     /**
-     * Gets the total count, ignoring any pagination
+     * Gets the total count, ignoring any pagination.
      *
      * @return int
      */
@@ -210,7 +207,6 @@ class DbalExecutableQuery
         $query->setSelectPart('COUNT(ticket.id) AS count');
         $query->setPage(null);
         $query->setLimit(null);
-
 
         // various WHERE manipulations
         $this->manipulateWhere($query);
@@ -223,10 +219,10 @@ class DbalExecutableQuery
             return 0;
         }
 
-        return (int)$res['count'];
+        return (int) $res['count'];
     }
 
-    function fetchGroupedCount()
+    public function fetchGroupedCount()
     {
         $query = clone $this->query;
 
@@ -246,7 +242,7 @@ class DbalExecutableQuery
 
         if (count($this->additional_selects) > 0) {
             foreach ($this->additional_selects as $alias => $sql) {
-                if(is_numeric($alias) || !trim($alias)) {
+                if (is_numeric($alias) || !trim($alias)) {
                     continue; // We don't want ridiculous aliases.
                 }
                 $query->addSelectPart(sprintf('(%s) as %s', $sql, $alias));
@@ -293,7 +289,7 @@ class DbalExecutableQuery
         if (null === $optional_select_alias) {
             if ($sql = $this->transformAliasGroupName($group)) {
                 $optional_select_alias = $group;
-                $group = $sql;
+                $group                 = $sql;
             } else {
                 $optional_select_alias = $group;
             }
@@ -309,11 +305,14 @@ class DbalExecutableQuery
 
     /**
      * Adds a custom select item.
+     *
      * @param string $alias is the new select item's alias
-     * @param string $sql is the sql clause that defines the new select item
+     * @param string $sql   is the sql clause that defines the new select item
      */
-    public function addSelect($alias, $sql) {
+    public function addSelect($alias, $sql)
+    {
         $this->additional_selects[$alias] = $sql;
+
         return $this;
     }
 
@@ -332,20 +331,22 @@ class DbalExecutableQuery
 
     /**
      * @param DbalQuery $query
-     * @return \Doctrine\DBAL\Driver\Statement
+     *
      * @throws \Doctrine\DBAL\DBALException
+     * @return \Doctrine\DBAL\Driver\Statement
+     *
      */
     protected function execute(DbalQuery $query)
     {
-        $this->last_run_sql = (string)$query;
-        $this->last_run_parameters = $query->getParameters();
+        $this->last_run_sql             = (string) $query;
+        $this->last_run_parameters      = $query->getParameters();
         $this->last_run_parameter_types = $this->determineParameterTypes($this->last_run_parameters);
 
         $timer = new SimpleTimer();
 
         $this->log(Logger::DEBUG, 'running execution', array(
-            'sql' => $this->last_run_sql,
-            'params' => $this->last_run_parameters
+            'sql'    => $this->last_run_sql,
+            'params' => $this->last_run_parameters,
         ));
 
         $stmt = $this->connection->executeQuery(
@@ -355,16 +356,17 @@ class DbalExecutableQuery
         );
 
         $this->log(Logger::DEBUG, 'finished execution', array(
-            'time' => $timer->getElapsedTime()
+            'time' => $timer->getElapsedTime(),
         ));
 
         return $stmt;
     }
 
     /**
-     * Get an array of pdo/dbal types to use to execute the query
+     * Get an array of pdo/dbal types to use to execute the query.
      *
      * @param array $params
+     *
      * @return array
      */
     public function determineParameterTypes(array $params)
@@ -389,9 +391,9 @@ class DbalExecutableQuery
                 // we need to determine if its all ints or not
                 foreach ($param as $child) {
                     if ($this->isNum($child)) {
-                        $num_int++;
+                        ++$num_int;
                     } elseif ($this->isStr($child)) {
-                        $num_str++;
+                        ++$num_str;
                     }
                 }
 
@@ -407,7 +409,7 @@ class DbalExecutableQuery
             }
 
             // last attempt before erroring
-            $param = (string)$param;
+            $param = (string) $param;
 
             if (is_string($param)) {
                 $types[] = \PDO::PARAM_STR;
@@ -425,6 +427,7 @@ class DbalExecutableQuery
 
     /**
      * @param $param
+     *
      * @return bool
      */
     protected function isNum($param)
@@ -434,6 +437,7 @@ class DbalExecutableQuery
 
     /**
      * @param $param
+     *
      * @return bool
      */
     protected function isStr($param)
@@ -444,7 +448,7 @@ class DbalExecutableQuery
     protected function transformAliasGroupName($potentially_an_alias)
     {
         if (!array_key_exists($potentially_an_alias, self::$groupAliases)) {
-            return null;
+            return;
         }
 
         return self::$groupAliases[$potentially_an_alias];
@@ -468,7 +472,6 @@ class DbalExecutableQuery
     }
 
     /**
-     * @return null
      */
     public function getCount()
     {
@@ -548,9 +551,7 @@ class DbalExecutableQuery
             $param_name = $query->addParameter('group_name', $value);
             $and_clause = sprintf('(%s = :%s)', $this->transformAliasGroupName($group_name), $param_name);
             $this->log(Logger::DEBUG, 'and group by clause', array('where' => $and_clause));
-            $query->appendWhere('AND ' . $and_clause);
+            $query->appendWhere('AND '.$and_clause);
         }
     }
-
-
 }

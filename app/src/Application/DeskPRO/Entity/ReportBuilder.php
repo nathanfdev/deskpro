@@ -1,41 +1,40 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
-use Application\DeskPRO\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -48,9 +47,9 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @property string $title
  * @property string $description
  * @property string $query
- * @property boolean $is_custom
+ * @property bool $is_custom
  * @property string $category
- * @property integer $display_order
+ * @property int $display_order
  */
 class ReportBuilder extends DomainObject
 {
@@ -178,7 +177,7 @@ class ReportBuilder extends DomainObject
                 return $default[0];
             }
 
-            return "<date>";
+            return '<date>';
         }, $title);
 
         $title = preg_replace_callback('/<(\d+):(field group):([a-zA-Z0-9_]+)([^>]*)>/', function ($match) use ($params, $groupParams, $getDefault) {
@@ -193,7 +192,7 @@ class ReportBuilder extends DomainObject
                 return $default[0];
             }
 
-            return "<field>";
+            return '<field>';
         }, $title);
 
         $title = preg_replace_callback('/<(\d+):(status group):([a-zA-Z0-9_]+)([^>]*)>/', function ($match) use ($params, $groupParams, $getDefault) {
@@ -208,7 +207,7 @@ class ReportBuilder extends DomainObject
                 return $default[0];
             }
 
-            return "<status>";
+            return '<status>';
         }, $title);
 
         $title = preg_replace_callback('/<(\d+):(order group):([a-zA-Z0-9_]+)([^>]*)>/', function ($match) use ($params, $groupParams, $getDefault) {
@@ -223,7 +222,7 @@ class ReportBuilder extends DomainObject
                 return $default[0];
             }
 
-            return "<order>";
+            return '<order>';
         }, $title);
 
         $title = preg_replace('/<chart:[a-zA-Z0-9_-]+>/', '', $title);
@@ -327,8 +326,8 @@ class ReportBuilder extends DomainObject
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ReportBuilder';
         $metadata->setPrimaryTable(
             array(
-                 'name'              => 'report_builder',
-                 'indexes'           => array(
+                 'name'    => 'report_builder',
+                 'indexes' => array(
                      'parent_id_idx' => array('columns' => array('parent_id')),
                  ),
                  'uniqueConstraints' => array(

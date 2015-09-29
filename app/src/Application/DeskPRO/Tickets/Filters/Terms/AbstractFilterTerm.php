@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
@@ -71,7 +71,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
      */
     public function __construct($op, array $options)
     {
-        $this->op      = $op;
+        $this->op = $op;
         $this->_initOptions($options);
     }
 
@@ -133,7 +133,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFilterQuery(ExecutorContextInterface $context = null)
     {
@@ -156,8 +156,8 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
      * @param array  $check_ids
      *
      * @throws \InvalidArgumentException
-     * @return FilterQuery
      *
+     * @return FilterQuery
      */
     protected function getIdMatchQuery($field_name, array $check_ids)
     {
@@ -212,8 +212,8 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
      * @param int    $int
      *
      * @throws \InvalidArgumentException
-     * @return FilterQuery
      *
+     * @return FilterQuery
      */
     protected function getIntMatchQuery($field_name, $int)
     {
@@ -240,7 +240,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
                 $query->andWhere("$field_name >= {param.int}");
                 break;
             default:
-                throw new \InvalidArgumentException("Invalid operator: ".$this->getTermOperator());
+                throw new \InvalidArgumentException('Invalid operator: '.$this->getTermOperator());
         }
 
         return $query;
@@ -252,8 +252,8 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
      * @param int    $int2
      *
      * @throws \InvalidArgumentException
-     * @return FilterQuery
      *
+     * @return FilterQuery
      */
     protected function getIntRangeMatch($field_name, $int1, $int2)
     {
@@ -279,7 +279,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
                 $query->andWhere("$field_name NOT BETWEEN {param.int1} AND {param.int2}");
                 break;
             default:
-                throw new \InvalidArgumentException("Invalid operator: ".$this->getTermOperator());
+                throw new \InvalidArgumentException('Invalid operator: '.$this->getTermOperator());
         }
 
         return $query;
@@ -290,8 +290,8 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
      * @param \DateTime $date
      *
      * @throws \InvalidArgumentException
-     * @return FilterQuery
      *
+     * @return FilterQuery
      */
     protected function getDateMatchQuery($field_name, \DateTime $date)
     {
@@ -321,7 +321,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
                 $query->andWhere("$field_name >= {param.date}");
                 break;
             default:
-                throw new \InvalidArgumentException("Invalid operator: ".$this->getTermOperator());
+                throw new \InvalidArgumentException('Invalid operator: '.$this->getTermOperator());
         }
 
         return $query;
@@ -333,8 +333,8 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
      * @param \DateTime $date2
      *
      * @throws \InvalidArgumentException
-     * @return FilterQuery
      *
+     * @return FilterQuery
      */
     protected function getDateRangeMatch($field_name, \DateTime $date1, \DateTime $date2)
     {
@@ -362,7 +362,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
                 $query->andWhere("$field_name NOT BETWEEN {param.date1} AND {param.date2}");
                 break;
             default:
-                throw new \InvalidArgumentException("Invalid operator: ".$this->getTermOperator());
+                throw new \InvalidArgumentException('Invalid operator: '.$this->getTermOperator());
         }
 
         return $query;
@@ -373,8 +373,8 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
      * @param string|string[] $check_value
      *
      * @throws \InvalidArgumentException
-     * @return FilterQuery
      *
+     * @return FilterQuery
      */
     protected function getStringMatchQuery($field_name, $check_value)
     {

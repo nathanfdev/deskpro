@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\InstallBundle\Upgrade;
 
 use Application\DeskPRO\App\Native\NativeAppsSync;
@@ -119,7 +119,7 @@ class Manager
             $build->run();
         } catch (\Exception $e) {
             if ($this->logger) {
-                $this->logger->error(sprintf("EXCEPTION: %s [%s] %s", get_class($e), $e->getCode(), $e->getMessage()));
+                $this->logger->error(sprintf('EXCEPTION: %s [%s] %s', get_class($e), $e->getCode(), $e->getMessage()));
                 $trace = KernelErrorHandler::formatBacktrace($e->getTrace());
                 $this->logger->debug($trace);
             }
@@ -129,18 +129,18 @@ class Manager
 
         if ($build->shouldRerun()) {
             $current_run = $build->getStatus('runcount', 0);
-            $next_run    = $current_run+1;
+            $next_run    = $current_run + 1;
             if ($this->logger) {
-                $this->logger->debug(sprintf("runBuild(%d.%d)", $build_id, $next_run));
+                $this->logger->debug(sprintf('runBuild(%d.%d)', $build_id, $next_run));
             }
-            $build->saveStatus('runcount', $current_run+1);
+            $build->saveStatus('runcount', $current_run + 1);
         } else {
             if ($this->logger) {
-                $this->logger->debug(sprintf("Set core.deskpro_build = %s", $build_id));
+                $this->logger->debug(sprintf('Set core.deskpro_build = %s', $build_id));
             }
             $this->db_version = $build_id;
             $this->container->getDb()->update('settings', array('value' => $build_id), array('name' => 'core.deskpro_build'));
-            $this->container->getDb()->executeUpdate("DELETE FROM import_datastore WHERE typename LIKE ?", array(
+            $this->container->getDb()->executeUpdate('DELETE FROM import_datastore WHERE typename LIKE ?', array(
                 'up.'.$build->getBuildId().'.%',
             ));
         }
@@ -152,7 +152,7 @@ class Manager
     public function postUpgrade()
     {
         if ($this->logger) {
-            $this->logger->debug("Post upgrade begin");
+            $this->logger->debug('Post upgrade begin');
         }
 
         \Application\DeskPRO\DataSync\AbstractDataSync::syncAllBaseToLive();
@@ -162,12 +162,12 @@ class Manager
 
         foreach ($langpacks->getLangTitles(true) as $id => $title) {
             if ($this->logger) {
-                $this->logger->debug(sprintf("lang(%s).title = %s", $title, $id));
+                $this->logger->debug(sprintf('lang(%s).title = %s', $title, $id));
             }
             $this->container->getDb()->executeUpdate("UPDATE languages SET title = ? WHERE sys_name = ? AND title = ''", array($title, $id));
 
             $info = $langpacks->getLangInfo($id);
-            $this->container->getDb()->executeUpdate("UPDATE languages SET has_user = ?, has_agent = ?, has_admin = ? WHERE sys_name = ?", array($info['has_user'], $info['has_agent'], $info['has_admin'], $id));
+            $this->container->getDb()->executeUpdate('UPDATE languages SET has_user = ?, has_agent = ?, has_admin = ? WHERE sys_name = ?', array($info['has_user'], $info['has_agent'], $info['has_admin'], $id));
         }
 
         // Update flags if theyre blank
@@ -180,9 +180,9 @@ class Manager
             $flag = $langpacks->getLangInfo($sys_name, 'flag_image');
             if ($flag) {
                 if ($this->logger) {
-                    $this->logger->debug(sprintf("lang(%s).flag = %s", $flag, $sys_name));
+                    $this->logger->debug(sprintf('lang(%s).flag = %s', $flag, $sys_name));
                 }
-                $this->container->getDb()->executeUpdate("UPDATE languages SET flag_image = ? WHERE sys_name = ?", array($flag, $sys_name));
+                $this->container->getDb()->executeUpdate('UPDATE languages SET flag_image = ? WHERE sys_name = ?', array($flag, $sys_name));
             }
         }
 
@@ -190,19 +190,19 @@ class Manager
         $auto_install = $this->container->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.lang_auto_install'");
         if ($auto_install) {
             if ($this->logger) {
-                $this->logger->debug("running lang auto-install");
+                $this->logger->debug('running lang auto-install');
             }
             $this->container->getEm()->getRepository('DeskPRO:Language')->installAll($langpacks);
         }
 
         if ($this->logger) {
-            $this->logger->debug("invalidate lang cache");
+            $this->logger->debug('invalidate lang cache');
         }
         $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
         $cache->invalidateLanguageCache();
 
         if ($this->logger) {
-            $this->logger->debug("invalidate lang js cache");
+            $this->logger->debug('invalidate lang js cache');
         }
         $cache = new \Application\DeskPRO\CacheInvalidator\LanguageJsCache();
         $cache->invalidateAll();
@@ -250,7 +250,7 @@ class Manager
         $app_syncer->runSync();
 
         if ($this->logger) {
-            $this->logger->debug("Post upgrade done");
+            $this->logger->debug('Post upgrade done');
         }
     }
 

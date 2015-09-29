@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Reader;
 
 class VCard extends \File_IMC
@@ -146,24 +146,24 @@ class VCard extends \File_IMC
                     $fields['instant_message'] = array();
                     foreach ($vc['IMPP'] as $IM) {
                         if (isset($IM['value'])) {
-                            $iMFields = explode(":", $IM['value'][0][0]);
+                            $iMFields = explode(':', $IM['value'][0][0]);
 
                             if (isset($IM['param']['X-SERVICE-TYPE'][0]) && $IM['param']['X-SERVICE-TYPE'][0] == 'GoogleTalk') {
                                 $fields['instant_message'][] = array(
-                                    'username'  => $iMFields[1],
-                                    'service'   => 'gtalk',
-                                    'comment'   => @$IM['param']['TYPE'][0],
+                                    'username' => $iMFields[1],
+                                    'service'  => 'gtalk',
+                                    'comment'  => @$IM['param']['TYPE'][0],
                                 );
                             } elseif (isset($IM['param']['X-SERVICE-TYPE'][0])) {
                                 $fields['instant_message'][] = array(
-                                    'username'  => $iMFields[1],
-                                    'service'   => strtolower($IM['param']['X-SERVICE-TYPE'][0]),
-                                    'comment'   => @$IM['param']['TYPE'][0],
+                                    'username' => $iMFields[1],
+                                    'service'  => strtolower($IM['param']['X-SERVICE-TYPE'][0]),
+                                    'comment'  => @$IM['param']['TYPE'][0],
                                 );
                             } else {
                                 $fields['instant_message'][] = array(
-                                    'username'  => $iMFields[1],
-                                    'service'   => $iMFields[0],
+                                    'username' => $iMFields[1],
+                                    'service'  => $iMFields[0],
                                 );
                             }
                         }
@@ -175,11 +175,11 @@ class VCard extends \File_IMC
                     $fields['phone'] = array();
                     foreach ($vc['TEL'] as $TEL) {
                         if (isset($TEL['value'][0][0])) {
-                            $countryCode    = null;
+                            $countryCode = null;
 
-                            $type           = @$TEL['param']['TYPE'][1];
+                            $type = @$TEL['param']['TYPE'][1];
 
-                            $comment        = @$TEL['param']['TYPE'][0];
+                            $comment = @$TEL['param']['TYPE'][0];
 
                             if ($TEL['value'][0][0][0] === '+') {
                                 // International number with a plus sign and a country code
@@ -196,10 +196,10 @@ class VCard extends \File_IMC
                             }
 
                             $fields['phone'][] = array(
-                                'comment'               => $comment,
-                                'country_calling_code'  => $countryCode,
-                                'number'                => $phoneNumber,
-                                'type'                  => $type,
+                                'comment'              => $comment,
+                                'country_calling_code' => $countryCode,
+                                'number'               => $phoneNumber,
+                                'type'                 => $type,
                             );
                         }
                     }
@@ -211,7 +211,7 @@ class VCard extends \File_IMC
                     foreach ($vc['URL'] as $Url) {
                         if (isset($Url['value'][0][0])) {
                             $fields['website'][] = array(
-                                'url'   => $Url['value'][0][0],
+                                'url' => $Url['value'][0][0],
                             );
                         }
                     }
@@ -229,7 +229,7 @@ class VCard extends \File_IMC
     protected function _lookupOrganizationByName($name)
     {
         return \Application\DeskPRO\Entity\Organization::getRepository()->findOneBy(array(
-            'name'  => $name,
+            'name' => $name,
         ));
     }
 

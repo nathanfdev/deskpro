@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1349107085 extends AbstractBuild
@@ -39,7 +39,7 @@ class Build1349107085 extends AbstractBuild
         # Time trigger options
         #----------------------------------------
 
-        $this->out("Update time trigger options");
+        $this->out('Update time trigger options');
 
         $time_trigger_options = $this->container->getDb()->fetchAll("
             SELECT id, event_trigger, event_trigger_option
@@ -76,7 +76,7 @@ class Build1349107085 extends AbstractBuild
             WHERE event_trigger NOT LIKE 'time_%'
         ");
 
-        $this->out("Update existing triggers to new event types");
+        $this->out('Update existing triggers to new event types');
 
         foreach ($triggers as $trigger) {
             $trigger['terms'] = unserialize($trigger['terms']);
@@ -205,7 +205,7 @@ class Build1349107085 extends AbstractBuild
         # Set empty arrays for empty options
         #----------------------------------------
 
-        $this->out("Set default empty option arrays");
+        $this->out('Set default empty option arrays');
         $this->execMutateSql("UPDATE ticket_triggers SET event_trigger_options = 'a:0:{}' WHERE event_trigger_options IS NULL OR event_trigger_options = ''");
         $this->execMutateSql("UPDATE ticket_triggers SET terms_any = 'a:0:{}' WHERE terms_any IS NULL OR terms_any = ''");
     }

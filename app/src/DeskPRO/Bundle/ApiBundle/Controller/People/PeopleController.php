@@ -1,59 +1,53 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
-use Doctrine\ORM\EntityManager;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
-use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
+use Doctrine\ORM\EntityManager;
+use FOS\RestBundle\Controller\Annotations\Delete;
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
-use Pagerfanta\Adapter\ArrayAdapter;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Delete;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class PeopleController extends BaseController implements ClassResourceInterface
 {
@@ -81,25 +75,27 @@ class PeopleController extends BaseController implements ClassResourceInterface
      *      }
      * )
      * @Get("/people", name="api_people")
+     *
      * @param Request $request
+     *
      * @return View
      */
     public function cgetAction(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $query = $request->query->all();
+        $query         = $request->query->all();
 
         $filter = $this->getFilter($request);
         if (!empty($query['ids'])) {
             $people = $this->selectPeople(explode(',', $query['ids']));
-        } else if (!empty($filter)) {
+        } elseif (!empty($filter)) {
             $people = $this->getByFilter($entityManager, $filter);
         } else {
             $people = $entityManager->createQueryBuilder()
                 ->select('p')->from('DeskPRO:Person', 'p')->getQuery();
         }
 
-        $page = $request->query->get('page', 1);
+        $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
         $pager = new Pagerfanta(new DoctrineORMAdapter($people));
@@ -120,6 +116,7 @@ class PeopleController extends BaseController implements ClassResourceInterface
      *      }
      * )
      * @Get("/agents", name="api_agents")
+     *
      * @return View
      */
     public function getAllAgentsAction()
@@ -150,7 +147,9 @@ class PeopleController extends BaseController implements ClassResourceInterface
      *      output="Application\DeskPRO\Entity\Person"
      * )
      * @Get("/people/{id}", name="api_people_get", requirements={"id" = "\d+"})
+     *
      * @param int $id
+     *
      * @return View
      */
     public function getAction($id)
@@ -178,14 +177,18 @@ class PeopleController extends BaseController implements ClassResourceInterface
      *      output="Application\DeskPRO\Entity\Person"
      * )
      * @Post("/people", name="api_people_post")
+     *
      * @param Request $request
+     *
      * @throws WrappedApiErrorException
      * @throws InvalidFormException
+     *
      * @return View
      */
     public function postAction(Request $request)
     {
         $person = new Person($this->getUser());
+
         return $this->handleFormSubmission($request, $person);
     }
 
@@ -208,9 +211,12 @@ class PeopleController extends BaseController implements ClassResourceInterface
      *      }
      * )
      * @Put("/people/{id}", name="api_people_put", requirements={"id" = "\d+"})
+     *
      * @param Request $request
      * @param $id
+     *
      * @throws WrappedApiErrorException
+     *
      * @return View
      */
     public function putAction(Request $request, $id)
@@ -237,7 +243,9 @@ class PeopleController extends BaseController implements ClassResourceInterface
      *      }
      * )
      * @Delete("/people/{id}", name="api_people_delete", requirements={"id" = "\d+"})
+     *
      * @param $id
+     *
      * @return View
      */
     public function deleteAction($id)
@@ -254,11 +262,12 @@ class PeopleController extends BaseController implements ClassResourceInterface
 
     /**
      * @param int $id
+     *
      * @return Person
      */
     protected function getPerson($id)
     {
-        $id = (int) $id;
+        $id     = (int) $id;
         $person = $this->getDoctrine()->getManager()->getRepository('DeskPRO:Person')->find($id);
 
         if (!$person) {
@@ -269,11 +278,14 @@ class PeopleController extends BaseController implements ClassResourceInterface
     }
 
     /**
-     * Will be abstracted for use by other controllers
+     * Will be abstracted for use by other controllers.
+     *
      * @param Request $request
-     * @param Person $person
-     * @return View
+     * @param Person  $person
+     *
      * @throws WrappedApiErrorException
+     * @return View
+     *
      */
     protected function handleFormSubmission(Request $request, Person $person)
     {
@@ -306,7 +318,7 @@ class PeopleController extends BaseController implements ClassResourceInterface
 
     public function getFilter(Request $request)
     {
-        $filter = array();
+        $filter       = array();
         $validFilters = array(
             'not_me', 'is_agent',
         );
@@ -325,12 +337,13 @@ class PeopleController extends BaseController implements ClassResourceInterface
     /**
      * @param $em
      * @param $filter
+     *
      * @return mixed
      */
     protected function getByFilter($em, $filter)
     {
         // Get the entity manager for tasks, and join the assigned table
-        /** @var EntityManager $em */
+        /* @var EntityManager $em */
         $query = $em->createQueryBuilder()->select('p')
             ->from('DeskPRO:Person', 'p');
 
@@ -340,7 +353,7 @@ class PeopleController extends BaseController implements ClassResourceInterface
         }
 
         if (!empty($filter['not_me'])) {
-            $user = $this->getUser();
+            $user  = $this->getUser();
             $query = $query->andWhere('p.id != :id');
             $query = $query->setParameter('id', $user->getId());
         }
@@ -349,8 +362,10 @@ class PeopleController extends BaseController implements ClassResourceInterface
     }
 
     /**
-     * Get specific teams
+     * Get specific teams.
+     *
      * @param $peopleIds
+     *
      * @return mixed
      */
     protected function selectPeople($peopleIds)
@@ -358,7 +373,7 @@ class PeopleController extends BaseController implements ClassResourceInterface
         $entityManager = $this->getDoctrine()->getManager();
 
         // Clean the IDs
-        $peopleIds = array_map(function($value) {
+        $peopleIds = array_map(function ($value) {
             return (int) $value;
         }, $peopleIds);
 
@@ -368,5 +383,4 @@ class PeopleController extends BaseController implements ClassResourceInterface
 
         return $query->getQuery();
     }
-
 }

@@ -1,44 +1,44 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Reader\ZenDesk\Fixtures;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\PeopleIncrementalExport;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
-use Zendesk\API\ResponseException;
 use DateTime;
 use Exception;
+use Zendesk\API\ResponseException;
 
 /**
- * ZenDesk tickets fixtures
+ * ZenDesk tickets fixtures.
  *
  * Class Tickets
- * @package Application\ImportBundle\Reader\ZenDesk\Fixtures
  */
 final class Tickets extends AbstractFixture implements FixturePrepareInterface
 {
@@ -66,10 +66,9 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
 
         try {
             $people = $people_incremental->request($this->client);
-            foreach($people->users as $person) {
+            foreach ($people->users as $person) {
                 $this->people_ids[] = $person->id;
             }
-
         } catch (ResponseException $e) {
             $this->handleResponseException();
         }
@@ -86,7 +85,7 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
 
         $type   = $types[rand(0, count($types) - 1)];
         $params = array(
-            'subject' => 'Fake ticket ' . $prefix,
+            'subject' => 'Fake ticket '.$prefix,
             'comment' => array(
                 'type'       => 'Comment',
                 'body'       => 'Thanks for your help!',
@@ -108,13 +107,13 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
         $this->logger->info('Ticket created successfully');
         $this->logger->debug(json_encode($response->ticket));
 
-        for ($i = 1; $i <= 100; $i++) {
+        for ($i = 1; $i <= 100; ++$i) {
             try {
                 $comment = $this->client->tickets()->update(array(
                     'id'      => $response->ticket->id,
                     'comment' => array(
                         'type'       => 'Comment',
-                        'body'       => 'Reply #' . $i,
+                        'body'       => 'Reply #'.$i,
                         'public'     => true,
                         'created_at' => $this->getRandomDateTime($initial_time, $end_time)->format('Y-m-d\TH:i:s\Z'),
                     ),
@@ -122,7 +121,6 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
 
                 $this->logger->info('Ticket comment created successfully');
                 $this->logger->debug(json_encode($comment));
-
             } catch (ResponseException $e) {
                 $this->handleResponseException();
             }
@@ -130,7 +128,7 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
     }
 
     /**
-     * Returns a random datetime
+     * Returns a random datetime.
      *
      * @param DateTime $initial_time
      * @param DateTime $end_time
@@ -146,10 +144,11 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
     }
 
     /**
-     * Returns a random person id
+     * Returns a random person id.
      *
-     * @return int
      * @throws Exception
+     * @return int
+     *
      */
     private function getRandomPersonId()
     {
@@ -161,7 +160,7 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
     }
 
     /**
-     * Shows error output to log
+     * Shows error output to log.
      */
     private function handleResponseException()
     {

@@ -1,61 +1,61 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
+use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
+use DeskPRO\Bundle\AppBundle\Entity\PersonList;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
-use JMS\Serializer\Annotation as Serializer;
-use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
-use DeskPRO\Bundle\AppBundle\Entity\PersonList;
 
 /**
  * Departments.
  *
  * @property string title
  * @property string $user_title
- * @property boolean $is_tickets_enabled
- * @property boolean $is_chat_enabled
+ * @property bool $is_tickets_enabled
+ * @property bool $is_chat_enabled
  * @property int $display_order
  * @property Department $parent
  * @property Department $children
@@ -236,7 +236,7 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Chat
     public function getAllParents()
     {
         $parents = array();
-        $d = $this;
+        $d       = $this;
         while ($d = $d->getParent()) {
             $parents[] = $d;
         }
@@ -460,7 +460,7 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Chat
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getChatableType()
     {
@@ -491,7 +491,7 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Chat
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
@@ -625,19 +625,19 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Chat
         );
         $metadata->mapOneToMany(
             array(
-                 'fieldName'                             => 'children',
-                 'targetEntity'                          => 'Application\\DeskPRO\\Entity\\Department',
-                 'mappedBy'                              => 'parent',
-                 'orderBy'                               => array('display_order' => 'ASC'),
-                 'indexBy'                                                        => 'id',
+                 'fieldName'    => 'children',
+                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department',
+                 'mappedBy'     => 'parent',
+                 'orderBy'      => array('display_order' => 'ASC'),
+                 'indexBy'      => 'id',
             )
         );
 
         $metadata->mapOneToMany(
             array(
-                'fieldName'                     => 'project_members',
-                'targetEntity'                  => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ProjectMember',
-                'mappedBy'                      => 'department',
+                'fieldName'    => 'project_members',
+                'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ProjectMember',
+                'mappedBy'     => 'department',
             )
         );
 

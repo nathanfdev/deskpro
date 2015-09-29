@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Templating
  */
-
 namespace Application\EmailBundle\Twig\Extension;
 
 use Application\DeskPRO\App;
@@ -80,149 +80,149 @@ class TemplatingExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            'constant'                         => new \Twig_Function_Method($this, 'getConstant', array()),
-            'phrase'                           => new \Twig_Function_Method($this, 'getPhrase', array('is_safe' => array('html'), 'needs_context' => true)),
-            'phrase_code'                                                                                                                         => new \Twig_Function_Method($this, 'getPhraseText', array()),
-            'has_phrase'                       => new \Twig_Function_Method($this, 'hasPhrase', array('is_safe' => array('html'))),
-            'phrase_object'                    => new \Twig_Function_Method($this, 'getPhraseObject'),
-            'phrase_dev'                       => new \Twig_Function_Method($this, 'getPhraseDev'),
-            'language_html_attr'               => new \Twig_Function_Method($this, 'getLanguageHtmlAttributes', array('is_safe' => array('html'))),
-            'language_arrow'                   => new \Twig_Function_Method($this, 'getLanguageArrow', array('is_safe' => array('html'))),
-            'is_rtl'                           => new \Twig_Function_Method($this, 'isRtl'),
-            'url_fragment'                     => new \Twig_Function_Method($this, 'urlFragment'),
-            'asset_full'                       => new \Twig_Function_Method($this, 'assetFull'),
-            'asset_url'                        => new \Twig_Function_Method($this, 'assetFull'),
-            'url_full'                         => new \Twig_Function_Method($this, 'urlFull'),
-            'url_display'                      => new \Twig_Function_Method($this, 'urlDisplay'),
-            'helpdesk_url'                     => new \Twig_Function_Method($this, 'helpdeskUrl'),
-            'is_helpdesk_path'                 => new \Twig_Function_Method($this, 'isHelpdeskPath'),
-            'deskpro_debug'                    => new \Twig_Function_Method($this, 'isDebugMode'),
-            'render_custom_field'              => new \Twig_Function_Method($this, 'renderCustomField', array('is_safe' => array('html'))),
-            'render_custom_field_text'         => new \Twig_Function_Method($this, 'renderCustomFieldText'),
-            'render_custom_field_form'         => new \Twig_Function_Method($this, 'renderCustomFieldForm', array('is_safe' => array('html'))),
-            'el_uid'                           => new \Twig_Function_Method($this, 'elUid', array('is_safe' => array('html'))),
-            'rand'                             => new \Twig_Function_Method($this, 'rand', array('is_safe' => array('html'))),
-            'is_partial_request'               => new \Twig_Function_Method($this, 'isPartialRequest'),
-            'str_repeat'                       => new \Twig_Function_Method($this, 'strRepeat'),
-            'is_user_guest'                    => new \Twig_Function_Method($this, 'isUserGuest'),
-            'is_user_loggedin'                 => new \Twig_Function_Method($this, 'isUserUser'),
-            'is_user_agent'                    => new \Twig_Function_Method($this, 'isUserAgent'),
-            'is_user_admin'                    => new \Twig_Function_Method($this, 'isUserAdmin'),
-            'flash_message'                    => new \Twig_Function_Method($this, 'flashMessage'),
-            'compare_type'                     => new \Twig_Function_Method($this, 'compareType'),
-            'object_path'                      => new \Twig_Function_Method($this, 'getObjectPath'),
-            'object_path_agent'                => new \Twig_Function_Method($this, 'getObjectPathAgent'),
-            'get_type'                         => new \Twig_Function_Method($this, 'getType'),
-            'debug_var'                        => new \Twig_Function_Method($this, 'debugVar'),
-            'security_token'                   => new \Twig_Function_Method($this, 'securityToken'),
-            'static_security_token'            => new \Twig_Function_Method($this, 'staticSecurityToken'),
-            'static_security_token_secret'     => new \Twig_Function_Method($this, 'staticSecurityTokenSecret'),
-            'render_usersource'                => new \Twig_Function_Method($this, 'renderUsersource', array('is_safe' => array('html'))),
-            'get_data'                         => new \Twig_Function_Method($this, 'getData'),
-            'dp_asset'                         => new \Twig_Function_Method($this, 'getAssetic'),
-            'dp_asset_raw'                     => new \Twig_Function_Method($this, 'getAsseticRaw'),
-            'dp_asset_html'                    => new \Twig_Function_Method($this, 'htmlGetAssetic', array('is_safe' => array('html'))),
-            'start_counter'                    => new \Twig_Function_Method($this, 'startCounter'),
-            'get_counter'                      => new \Twig_Function_Method($this, 'getCounter'),
-            'inc_counter'                      => new \Twig_Function_Method($this, 'incCounter'),
-            'form_token'                       => new \Twig_Function_Method($this, 'formToken', array('is_safe' => array('html'))),
-            'relative_time'                    => new \Twig_Function_Method($this, 'relativeTime', array('is_safe' => array('html'))),
-            'get_service_url'                  => new \Twig_Function_Method($this, 'getServiceUrl', array('is_safe' => array('html'))),
-            'get_service_url_raw'              => new \Twig_Function_Method($this, 'getServiceUrlRaw', array('is_safe' => array('html'))),
-            'get_instance_ability'             => new \Twig_Function_Method($this, 'getInstanceAbility'),
-            'is_array'                         => new \Twig_Function_Method($this, 'isArray'),
-            'gravatar_for_email'               => new \Twig_Function_Method($this, 'gravatar'),
-            'time_group_phrase'                => new \Twig_Function_Method($this, 'getTimeGroupPhrase'),
-            'captcha_html'                     => new \Twig_Function_Method($this, 'captchaHtml', array('is_safe' => array('html'))),
-            'include_file'                     => new \Twig_Function_Method($this, 'includeFile', array('is_safe' => array('html'))),
-            'include_php_file'                 => new \Twig_Function_Method($this, 'includePhpFile', array('is_safe' => array('html'))),
-            'var_dump'                         => new \Twig_Function_Method($this, 'dumpVar'),
-            'dp_copyright'                     => new \Twig_Function_Function('DeskPRO\\Kernel\\License::staticGetUserCopyrightHtml', array('is_safe' => array('html'))),
-            'dp_widgets'                       => new \Twig_Function_Method($this, 'getWidgets', array('is_safe' => array('html'))),
-            'dp_widgets_raw'                   => new \Twig_Function_Method($this, 'getWidgetsRaw'),
-            'dp_widget_id'                     => new \Twig_Function_Method($this, 'getWidgetHtmlId'),
-            'dp_widget_tabs_header'            => new \Twig_Function_Method($this, 'getWidgetTabsHeader', array('is_safe' => array('html'))),
-            'dp_app_loc'                       => new \Twig_Function_Method($this, 'getDpAppLocation', array('is_safe' => array('html'))),
-            'dp_widget_tabs'                   => new \Twig_Function_Method($this, 'getWidgetTabsBody', array('is_safe' => array('html'))),
-            'dp_js_sso_loader'                 => new \Twig_Function_Method($this, 'getJsSsoLoader', array('is_safe' => array('html'))),
-            'dp_js_sso_share'                  => new \Twig_Function_Method($this, 'getJsSsoShare', array('is_safe' => array('html'))),
-            'base_template_name'               => new \Twig_Function_Method($this, 'getBaseTemplateName', array('is_safe' => array('html'))),
-            'array_attr'                       => new \Twig_Function_Method($this, 'getArrayAttribute'),
-            'min'                              => new \Twig_Function_Method($this, 'min'),
-            'max'                              => new \Twig_Function_Method($this, 'max'),
-            'match'                            => new \Twig_Function_Method($this, 'match'),
-            'set_tplvar'                       => new \Twig_Function_Method($this, 'set_tplvar', array('is_safe' => array('html'), 'needs_context' => true)),
-            'tpl_source'                                                                                                                           => new \Twig_Function_Method($this, 'getTplSourceTemplate', array('is_safe' => array('html'))),
-            'ng_plural_phrase'                 => new \Twig_Function_Method($this, 'ngPluralPhrase', array()),
-            'ng_href'                          => new \Twig_Function_Method($this, 'ngHref', array('is_safe' => array('html'))),
-            'ng_href_var'                      => new \Twig_Function_Method($this, 'ngHrefVar', array('is_safe' => array('html'))),
-            'server_capable'                   => new \Twig_Function_Method($this, 'serverCapable', array('is_safe' => array('html'))),
+            'constant'                     => new \Twig_Function_Method($this, 'getConstant', array()),
+            'phrase'                       => new \Twig_Function_Method($this, 'getPhrase', array('is_safe' => array('html'), 'needs_context' => true)),
+            'phrase_code'                  => new \Twig_Function_Method($this, 'getPhraseText', array()),
+            'has_phrase'                   => new \Twig_Function_Method($this, 'hasPhrase', array('is_safe' => array('html'))),
+            'phrase_object'                => new \Twig_Function_Method($this, 'getPhraseObject'),
+            'phrase_dev'                   => new \Twig_Function_Method($this, 'getPhraseDev'),
+            'language_html_attr'           => new \Twig_Function_Method($this, 'getLanguageHtmlAttributes', array('is_safe' => array('html'))),
+            'language_arrow'               => new \Twig_Function_Method($this, 'getLanguageArrow', array('is_safe' => array('html'))),
+            'is_rtl'                       => new \Twig_Function_Method($this, 'isRtl'),
+            'url_fragment'                 => new \Twig_Function_Method($this, 'urlFragment'),
+            'asset_full'                   => new \Twig_Function_Method($this, 'assetFull'),
+            'asset_url'                    => new \Twig_Function_Method($this, 'assetFull'),
+            'url_full'                     => new \Twig_Function_Method($this, 'urlFull'),
+            'url_display'                  => new \Twig_Function_Method($this, 'urlDisplay'),
+            'helpdesk_url'                 => new \Twig_Function_Method($this, 'helpdeskUrl'),
+            'is_helpdesk_path'             => new \Twig_Function_Method($this, 'isHelpdeskPath'),
+            'deskpro_debug'                => new \Twig_Function_Method($this, 'isDebugMode'),
+            'render_custom_field'          => new \Twig_Function_Method($this, 'renderCustomField', array('is_safe' => array('html'))),
+            'render_custom_field_text'     => new \Twig_Function_Method($this, 'renderCustomFieldText'),
+            'render_custom_field_form'     => new \Twig_Function_Method($this, 'renderCustomFieldForm', array('is_safe' => array('html'))),
+            'el_uid'                       => new \Twig_Function_Method($this, 'elUid', array('is_safe' => array('html'))),
+            'rand'                         => new \Twig_Function_Method($this, 'rand', array('is_safe' => array('html'))),
+            'is_partial_request'           => new \Twig_Function_Method($this, 'isPartialRequest'),
+            'str_repeat'                   => new \Twig_Function_Method($this, 'strRepeat'),
+            'is_user_guest'                => new \Twig_Function_Method($this, 'isUserGuest'),
+            'is_user_loggedin'             => new \Twig_Function_Method($this, 'isUserUser'),
+            'is_user_agent'                => new \Twig_Function_Method($this, 'isUserAgent'),
+            'is_user_admin'                => new \Twig_Function_Method($this, 'isUserAdmin'),
+            'flash_message'                => new \Twig_Function_Method($this, 'flashMessage'),
+            'compare_type'                 => new \Twig_Function_Method($this, 'compareType'),
+            'object_path'                  => new \Twig_Function_Method($this, 'getObjectPath'),
+            'object_path_agent'            => new \Twig_Function_Method($this, 'getObjectPathAgent'),
+            'get_type'                     => new \Twig_Function_Method($this, 'getType'),
+            'debug_var'                    => new \Twig_Function_Method($this, 'debugVar'),
+            'security_token'               => new \Twig_Function_Method($this, 'securityToken'),
+            'static_security_token'        => new \Twig_Function_Method($this, 'staticSecurityToken'),
+            'static_security_token_secret' => new \Twig_Function_Method($this, 'staticSecurityTokenSecret'),
+            'render_usersource'            => new \Twig_Function_Method($this, 'renderUsersource', array('is_safe' => array('html'))),
+            'get_data'                     => new \Twig_Function_Method($this, 'getData'),
+            'dp_asset'                     => new \Twig_Function_Method($this, 'getAssetic'),
+            'dp_asset_raw'                 => new \Twig_Function_Method($this, 'getAsseticRaw'),
+            'dp_asset_html'                => new \Twig_Function_Method($this, 'htmlGetAssetic', array('is_safe' => array('html'))),
+            'start_counter'                => new \Twig_Function_Method($this, 'startCounter'),
+            'get_counter'                  => new \Twig_Function_Method($this, 'getCounter'),
+            'inc_counter'                  => new \Twig_Function_Method($this, 'incCounter'),
+            'form_token'                   => new \Twig_Function_Method($this, 'formToken', array('is_safe' => array('html'))),
+            'relative_time'                => new \Twig_Function_Method($this, 'relativeTime', array('is_safe' => array('html'))),
+            'get_service_url'              => new \Twig_Function_Method($this, 'getServiceUrl', array('is_safe' => array('html'))),
+            'get_service_url_raw'          => new \Twig_Function_Method($this, 'getServiceUrlRaw', array('is_safe' => array('html'))),
+            'get_instance_ability'         => new \Twig_Function_Method($this, 'getInstanceAbility'),
+            'is_array'                     => new \Twig_Function_Method($this, 'isArray'),
+            'gravatar_for_email'           => new \Twig_Function_Method($this, 'gravatar'),
+            'time_group_phrase'            => new \Twig_Function_Method($this, 'getTimeGroupPhrase'),
+            'captcha_html'                 => new \Twig_Function_Method($this, 'captchaHtml', array('is_safe' => array('html'))),
+            'include_file'                 => new \Twig_Function_Method($this, 'includeFile', array('is_safe' => array('html'))),
+            'include_php_file'             => new \Twig_Function_Method($this, 'includePhpFile', array('is_safe' => array('html'))),
+            'var_dump'                     => new \Twig_Function_Method($this, 'dumpVar'),
+            'dp_copyright'                 => new \Twig_Function_Function('DeskPRO\\Kernel\\License::staticGetUserCopyrightHtml', array('is_safe' => array('html'))),
+            'dp_widgets'                   => new \Twig_Function_Method($this, 'getWidgets', array('is_safe' => array('html'))),
+            'dp_widgets_raw'               => new \Twig_Function_Method($this, 'getWidgetsRaw'),
+            'dp_widget_id'                 => new \Twig_Function_Method($this, 'getWidgetHtmlId'),
+            'dp_widget_tabs_header'        => new \Twig_Function_Method($this, 'getWidgetTabsHeader', array('is_safe' => array('html'))),
+            'dp_app_loc'                   => new \Twig_Function_Method($this, 'getDpAppLocation', array('is_safe' => array('html'))),
+            'dp_widget_tabs'               => new \Twig_Function_Method($this, 'getWidgetTabsBody', array('is_safe' => array('html'))),
+            'dp_js_sso_loader'             => new \Twig_Function_Method($this, 'getJsSsoLoader', array('is_safe' => array('html'))),
+            'dp_js_sso_share'              => new \Twig_Function_Method($this, 'getJsSsoShare', array('is_safe' => array('html'))),
+            'base_template_name'           => new \Twig_Function_Method($this, 'getBaseTemplateName', array('is_safe' => array('html'))),
+            'array_attr'                   => new \Twig_Function_Method($this, 'getArrayAttribute'),
+            'min'                          => new \Twig_Function_Method($this, 'min'),
+            'max'                          => new \Twig_Function_Method($this, 'max'),
+            'match'                        => new \Twig_Function_Method($this, 'match'),
+            'set_tplvar'                   => new \Twig_Function_Method($this, 'set_tplvar', array('is_safe' => array('html'), 'needs_context' => true)),
+            'tpl_source'                   => new \Twig_Function_Method($this, 'getTplSourceTemplate', array('is_safe' => array('html'))),
+            'ng_plural_phrase'             => new \Twig_Function_Method($this, 'ngPluralPhrase', array()),
+            'ng_href'                      => new \Twig_Function_Method($this, 'ngHref', array('is_safe' => array('html'))),
+            'ng_href_var'                  => new \Twig_Function_Method($this, 'ngHrefVar', array('is_safe' => array('html'))),
+            'server_capable'               => new \Twig_Function_Method($this, 'serverCapable', array('is_safe' => array('html'))),
 
-            'ng_var'                           => new \Twig_Function_Method($this, 'ngVar', array()),
-            'ng_bind'                          => new \Twig_Function_Method($this, 'ngBind', array('is_safe' => array('html'))),
-            'ng_static_var'                    => new \Twig_Function_Method($this, 'ngStaticVar', array('is_safe' => array('html'))),
-            'ng_tpl'                           => new \Twig_Function_Method($this, 'ngIncTpl', array('is_safe' => array('html'), 'needs_context' => true)),
+            'ng_var'        => new \Twig_Function_Method($this, 'ngVar', array()),
+            'ng_bind'       => new \Twig_Function_Method($this, 'ngBind', array('is_safe' => array('html'))),
+            'ng_static_var' => new \Twig_Function_Method($this, 'ngStaticVar', array('is_safe' => array('html'))),
+            'ng_tpl'        => new \Twig_Function_Method($this, 'ngIncTpl', array('is_safe' => array('html'), 'needs_context' => true)),
 
-            'js_error_tracking'                => new \Twig_Function_Method($this, 'js_error_tracking', array('is_safe' => array('html'))),
+            'js_error_tracking' => new \Twig_Function_Method($this, 'js_error_tracking', array('is_safe' => array('html'))),
 
-            'is_action_limited'                => new \Twig_Function_Method($this, 'isActionLimited'),
+            'is_action_limited' => new \Twig_Function_Method($this, 'isActionLimited'),
 
             // override so we can suppress errors where templates are out of date
-            'url'  => new \Twig_Function_Method($this, 'getUrl'),
+            'url' => new \Twig_Function_Method($this, 'getUrl'),
         );
     }
 
     public function getFilters()
     {
         return array(
-            'safe_link_urls'              => new \Twig_Filter_Method($this, 'safeLinkUrls', array('is_safe' => array('html'))),
-            'safe_link_urls_html'         => new \Twig_Filter_Method($this, 'safeLinkUrlsHtml', array('is_safe' => array('html'))),
-            'link_agent_short_code_html'  => new \Twig_Filter_Method($this, 'linkAgentShortCodeHtml', array('is_safe' => array('html'))),
-            'raw_url_encode'         => new \Twig_Filter_Method($this, 'rawUrlEncode', array('is_safe' => array('html'))),
-            'repeat'                 => new \Twig_Filter_Method($this, 'strRepeat'),
-            'trim'                   => new \Twig_Filter_Method($this, 'strTrim'),
-            'ltrim'                  => new \Twig_Filter_Method($this, 'strLtrim'),
-            'rtrim'                  => new \Twig_Filter_Method($this, 'strRtrim'),
-            'encode_number'          => new \Twig_Filter_Method($this, 'encNum', array('is_safe' => array('html'))),
-            'decode_number'          => new \Twig_Filter_Method($this, 'decNum', array('is_safe' => array('html'))),
-            'md5_hash'               => new \Twig_Filter_Method($this, 'getMd5', array('is_safe' => array('html'))),
-            'date'                   => new \Twig_Filter_Method($this, 'userDate', array('needs_context' => true)),
-            'to_jqueryui_dateformat' => new \Twig_Filter_Method($this, 'jqueryUiDateFormat'),
-            'time_length'            => new \Twig_Filter_Method($this, 'timeLength'),
-            'momentjs_format'        => new \Twig_Filter_Method($this, 'momentJsFormat'),
-            'slugify'                => new \Twig_Filter_Method($this, 'slugify'),
-            'emphasize_words'        => new \Twig_Filter_Method($this, 'emphasizeWords', array('is_safe' => array('html'))),
-            'strip_linebreaks'       => new \Twig_Filter_Method($this, 'stripLinebreaks'),
-            'explode'                => new \Twig_Filter_Method($this, 'explodeString'),
-            'split'                  => new \Twig_Filter_Method($this, 'explodeString'),
-            'join'                   => new \Twig_Filter_Method($this, 'implodeArray'),
-            'implode'                => new \Twig_Filter_Method($this, 'implodeArray'),
-            'crc32'                  => new \Twig_Filter_Method($this, 'crc32'),
-            'url_domain'             => new \Twig_Filter_Method($this, 'getUrlDomain'),
-            'truncate'               => new \Twig_Filter_Method($this, 'strTruncate'),
-            'first'                  => new \Twig_Filter_Method($this, 'getFirst'),
-            'last'                   => new \Twig_Filter_Method($this, 'getLast'),
-            'filesize_display'       => new \Twig_Filter_Method($this, 'filesizeDisplay'),
-            'url_trim_scheme'        => new \Twig_Filter_Method($this, 'urlTrimScheme'),
-            'country_name'           => new \Twig_Filter_Method($this, 'countryName'),
-            'count_lines'            => new \Twig_Filter_Method($this, 'countLines'),
-            'smart_wrap'             => new \Twig_Filter_Method($this, 'smartWrap'),
-            'json_encode_inhtml'     => new \Twig_Filter_Method($this, 'jsonEncodeInHtml', array('is_safe' => array('html'))),
-            'strip_html'             => new \Twig_Filter_Method($this, 'stripHtml'),
+            'safe_link_urls'             => new \Twig_Filter_Method($this, 'safeLinkUrls', array('is_safe' => array('html'))),
+            'safe_link_urls_html'        => new \Twig_Filter_Method($this, 'safeLinkUrlsHtml', array('is_safe' => array('html'))),
+            'link_agent_short_code_html' => new \Twig_Filter_Method($this, 'linkAgentShortCodeHtml', array('is_safe' => array('html'))),
+            'raw_url_encode'             => new \Twig_Filter_Method($this, 'rawUrlEncode', array('is_safe' => array('html'))),
+            'repeat'                     => new \Twig_Filter_Method($this, 'strRepeat'),
+            'trim'                       => new \Twig_Filter_Method($this, 'strTrim'),
+            'ltrim'                      => new \Twig_Filter_Method($this, 'strLtrim'),
+            'rtrim'                      => new \Twig_Filter_Method($this, 'strRtrim'),
+            'encode_number'              => new \Twig_Filter_Method($this, 'encNum', array('is_safe' => array('html'))),
+            'decode_number'              => new \Twig_Filter_Method($this, 'decNum', array('is_safe' => array('html'))),
+            'md5_hash'                   => new \Twig_Filter_Method($this, 'getMd5', array('is_safe' => array('html'))),
+            'date'                       => new \Twig_Filter_Method($this, 'userDate', array('needs_context' => true)),
+            'to_jqueryui_dateformat'     => new \Twig_Filter_Method($this, 'jqueryUiDateFormat'),
+            'time_length'                => new \Twig_Filter_Method($this, 'timeLength'),
+            'momentjs_format'            => new \Twig_Filter_Method($this, 'momentJsFormat'),
+            'slugify'                    => new \Twig_Filter_Method($this, 'slugify'),
+            'emphasize_words'            => new \Twig_Filter_Method($this, 'emphasizeWords', array('is_safe' => array('html'))),
+            'strip_linebreaks'           => new \Twig_Filter_Method($this, 'stripLinebreaks'),
+            'explode'                    => new \Twig_Filter_Method($this, 'explodeString'),
+            'split'                      => new \Twig_Filter_Method($this, 'explodeString'),
+            'join'                       => new \Twig_Filter_Method($this, 'implodeArray'),
+            'implode'                    => new \Twig_Filter_Method($this, 'implodeArray'),
+            'crc32'                      => new \Twig_Filter_Method($this, 'crc32'),
+            'url_domain'                 => new \Twig_Filter_Method($this, 'getUrlDomain'),
+            'truncate'                   => new \Twig_Filter_Method($this, 'strTruncate'),
+            'first'                      => new \Twig_Filter_Method($this, 'getFirst'),
+            'last'                       => new \Twig_Filter_Method($this, 'getLast'),
+            'filesize_display'           => new \Twig_Filter_Method($this, 'filesizeDisplay'),
+            'url_trim_scheme'            => new \Twig_Filter_Method($this, 'urlTrimScheme'),
+            'country_name'               => new \Twig_Filter_Method($this, 'countryName'),
+            'count_lines'                => new \Twig_Filter_Method($this, 'countLines'),
+            'smart_wrap'                 => new \Twig_Filter_Method($this, 'smartWrap'),
+            'json_encode_inhtml'         => new \Twig_Filter_Method($this, 'jsonEncodeInHtml', array('is_safe' => array('html'))),
+            'strip_html'                 => new \Twig_Filter_Method($this, 'stripHtml'),
 
-            'text_wrap_marks'        => new \Twig_Filter_Method($this, 'textWrapMarks'),
+            'text_wrap_marks' => new \Twig_Filter_Method($this, 'textWrapMarks'),
 
-            'regex_replace'          => new \Twig_Filter_Method($this, 'regexReplace'),
+            'regex_replace' => new \Twig_Filter_Method($this, 'regexReplace'),
 
-            'hex2rgb'                => new \Twig_Filter_Method($this, 'hex2rgb'),
+            'hex2rgb' => new \Twig_Filter_Method($this, 'hex2rgb'),
 
-            'trans'                  => new \Twig_Filter_Function('\\Application\\DeskPRO\\Twig\\Extension\\deskpro_twig_filter_dummy'),
-            'transchoice'            => new \Twig_Filter_Function('\\Application\\DeskPRO\\Twig\\Extension\\deskpro_twig_filter_dummy'),
-            'plain_template_filter'  => new \Twig_Filter_Method($this, 'plain_template_filter'),
+            'trans'                 => new \Twig_Filter_Function('\\Application\\DeskPRO\\Twig\\Extension\\deskpro_twig_filter_dummy'),
+            'transchoice'           => new \Twig_Filter_Function('\\Application\\DeskPRO\\Twig\\Extension\\deskpro_twig_filter_dummy'),
+            'plain_template_filter' => new \Twig_Filter_Method($this, 'plain_template_filter'),
 
             // Override for custom UTF-8 handling
-            'upper'                  => new \Twig_Filter_Method($this, 'strUpper'),
-            'lower'                  => new \Twig_Filter_Method($this, 'strLower'),
+            'upper' => new \Twig_Filter_Method($this, 'strUpper'),
+            'lower' => new \Twig_Filter_Method($this, 'strLower'),
         );
     }
 
@@ -264,16 +264,16 @@ class TemplatingExtension extends \Twig_Extension
     public function getConstant($name = '')
     {
         static $whitelist = array(
-            'DP_BUILD_NUM'          => true,
-            'DP_BUILD_TIME'         => true,
-            'DPC_SITE_ID'           => true,
-            'DPC_SITE_DOMAIN'       => true,
-            'DPC_SITE_DOMAIN_ALT'   => true,
-            'DPC_SITE_BUILD_NUM'    => true,
-            'DPC_ACCOUNT_ID'        => true,
-            'DPC_BILL_OVERDUE'      => true,
-            'DPC_BILL_DATE'         => true,
-            'DP_NOTIFY_LOGIN_SCRIPT' => true,
+            'DP_BUILD_NUM'            => true,
+            'DP_BUILD_TIME'           => true,
+            'DPC_SITE_ID'             => true,
+            'DPC_SITE_DOMAIN'         => true,
+            'DPC_SITE_DOMAIN_ALT'     => true,
+            'DPC_SITE_BUILD_NUM'      => true,
+            'DPC_ACCOUNT_ID'          => true,
+            'DPC_BILL_OVERDUE'        => true,
+            'DPC_BILL_DATE'           => true,
+            'DP_NOTIFY_LOGIN_SCRIPT'  => true,
             'DP_NOTIFY_LOGOUT_SCRIPT' => true,
         );
 
@@ -296,30 +296,30 @@ class TemplatingExtension extends \Twig_Extension
     public function getTimeGroupPhrase($time)
     {
         static $time_phrases = array(
-            300        => '< 5 minutes',
-            900        => '5 - 15 minutes',
-            1800       => '15 - 30 minutes',
-            3600       => '30 - 60 minutes',
-            7200       => '1 - 2 hours',
-            10800      => '2 - 3 hours',
-            14400      => '3 - 4 hours',
-            21600      => '4 - 6 hours',
-            43200      => '6 - 12 hours',
-            86400      => '12 - 24 hours',
-            172800     => '1 - 2 days',
-            259200     => '2 - 3 days',
-            345600     => '3 - 4 days',
-            432000     => '4 - 5 days',
-            518400     => '5 - 6 days',
-            604800     => '6 - 7 days',
-            1209600    => '1 - 2 weeks',
-            1814400    => '2 - 3 weeks',
-            2419200    => '3 - 4 weeks',
-            4838400    => '1 - 2 months',
-            7257600    => '2 - 3 months',
-            9676800    => '3 - 4 months',
-            12096000   => '4 - 5 months',
-            14515200   => '5 - 6 months',
+            300      => '< 5 minutes',
+            900      => '5 - 15 minutes',
+            1800     => '15 - 30 minutes',
+            3600     => '30 - 60 minutes',
+            7200     => '1 - 2 hours',
+            10800    => '2 - 3 hours',
+            14400    => '3 - 4 hours',
+            21600    => '4 - 6 hours',
+            43200    => '6 - 12 hours',
+            86400    => '12 - 24 hours',
+            172800   => '1 - 2 days',
+            259200   => '2 - 3 days',
+            345600   => '3 - 4 days',
+            432000   => '4 - 5 days',
+            518400   => '5 - 6 days',
+            604800   => '6 - 7 days',
+            1209600  => '1 - 2 weeks',
+            1814400  => '2 - 3 weeks',
+            2419200  => '3 - 4 weeks',
+            4838400  => '1 - 2 months',
+            7257600  => '2 - 3 months',
+            9676800  => '3 - 4 months',
+            12096000 => '4 - 5 months',
+            14515200 => '5 - 6 months',
         );
 
         foreach ($time_phrases as $min => $phrase) {
@@ -446,7 +446,7 @@ class TemplatingExtension extends \Twig_Extension
     {
         $string = (string) $string;
 
-        return sprintf("%u", crc32($string));
+        return sprintf('%u', crc32($string));
     }
 
     public function safeLinkUrlsHtml($text)
@@ -529,9 +529,9 @@ class TemplatingExtension extends \Twig_Extension
 
     public function stripLinebreaks($str)
     {
-        $str = str_replace(array("\r\n", "\n"), " ", $str);
-        $str = str_replace(array("<br />", "<br/>", "<br>"), " ", $str);
-        $str = str_replace(array("<p>", "</p>", "<p />", "<p/>"), " ", $str);
+        $str = str_replace(array("\r\n", "\n"), ' ', $str);
+        $str = str_replace(array('<br />', '<br/>', '<br>'), ' ', $str);
+        $str = str_replace(array('<p>', '</p>', '<p />', '<p/>'), ' ', $str);
 
         return $str;
     }
@@ -647,7 +647,7 @@ class TemplatingExtension extends \Twig_Extension
 
         // get template name
         $name = $usersource->getAdapter()->getTypename();
-        $tpl  = "DeskPRO:Auth:".$name."-".$type.".html.twig";
+        $tpl  = 'DeskPRO:Auth:'.$name.'-'.$type.'.html.twig';
 
         $html = $this->getTemplating()->render($tpl, $params);
 
@@ -772,10 +772,10 @@ class TemplatingExtension extends \Twig_Extension
         $new_format = array();
         $escaping   = false;
 
-        for ($i = 0; $i < $format_len; $i++) {
+        for ($i = 0; $i < $format_len; ++$i) {
             $char = $format[$i];
             if ($char === '\\') {
-                $i++;
+                ++$i;
                 if ($escaping) {
                     $new_format[] = $format[$i];
                 } else {
@@ -1270,10 +1270,10 @@ class TemplatingExtension extends \Twig_Extension
         // If the current request is https, then all urls sholud be https even if the
         // helpdesk url isn't explicitly set to use https
         if ($r && $r->isSecure() && strtolower(substr($url, 0, 7)) === 'http://') {
-            $url = 'https://' . substr($url, 7);
+            $url = 'https://'.substr($url, 7);
         }
 
-        return $url . ltrim($location, '/');
+        return $url.ltrim($location, '/');
     }
 
     public function rawUrlEncode($str)
@@ -1293,7 +1293,7 @@ class TemplatingExtension extends \Twig_Extension
 
     public function hex2rgb($hex)
     {
-        $hex = preg_replace("/[^0-9A-Fa-f]/", '', $hex);
+        $hex = preg_replace('/[^0-9A-Fa-f]/', '', $hex);
         $rgb = array();
         if (strlen($hex) == 6) {
             $color_val    = hexdec($hex);
@@ -1335,7 +1335,7 @@ class TemplatingExtension extends \Twig_Extension
         }
 
         if (!file_exists($path)) {
-            $e = new \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException("File does not exist: ".$path);
+            $e = new \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException('File does not exist: '.$path);
             \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($e);
 
             return '';
@@ -1355,7 +1355,7 @@ class TemplatingExtension extends \Twig_Extension
         }
 
         if (!file_exists($path)) {
-            $e = new \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException("File does not exist: ".$path);
+            $e = new \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException('File does not exist: '.$path);
             \DeskPRO\Kernel\KernelErrorHandler::logException($e, false, 'tpl_include_php_file');
 
             return '';
@@ -1589,7 +1589,7 @@ class TemplatingExtension extends \Twig_Extension
         $sources    = $us_manager->getAll()->forInterface($interface)->withCapability(
             UsersourceInfo::CAPABILITY_SSO_JS
         );
-        $output     = array();
+        $output = array();
         foreach ($sources as $source) {
             /** @var \Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory $factory */
             $factory = $this->container->getSystemService('usersource_auth_adapter_factory');
@@ -1716,12 +1716,12 @@ class TemplatingExtension extends \Twig_Extension
     {
         $positions = array();
 
-        for ($i = 0; $i < 5; $i++) {
-            $text          = App::getTranslator()->getPhraseTextCount($phrase_name, $i);
-            $text          = str_replace('{{count}}', '{}', $text);
+        for ($i = 0; $i < 5; ++$i) {
+            $text = App::getTranslator()->getPhraseTextCount($phrase_name, $i);
+            $text = str_replace('{{count}}', '{}', $text);
             if (!in_array($text, $positions, true)) {
-            $positions[$i] = $text;
-        }
+                $positions[$i] = $text;
+            }
         }
 
         if (count($positions) == 2) {

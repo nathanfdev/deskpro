@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;
@@ -36,7 +36,7 @@ use Application\DeskPRO\Searcher\ChatConversationSearch;
 
 class GroupingCounter
 {
-    const LAST_TIME_MARKER   = 1893456000;
+    const LAST_TIME_MARKER = 1893456000;
 
     /** @var string */
     protected $group_by;
@@ -146,14 +146,14 @@ class GroupingCounter
     {
         $times = array_keys(\Application\DeskPRO\Tickets\GroupingCounter::getTimeTitles());
 
-        $sql = "CASE ";
+        $sql = 'CASE ';
 
         $parts = array();
         foreach ($times as $t) {
             $parts[] = " WHEN chat_conversations.total_to_ended < $t THEN $t ";
         }
 
-        $sql .= implode('', $parts)." ELSE ".self::LAST_TIME_MARKER." END AS $select_name";
+        $sql .= implode('', $parts).' ELSE '.self::LAST_TIME_MARKER." END AS $select_name";
 
         return $sql;
     }
