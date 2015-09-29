@@ -122,15 +122,16 @@ interface ZenDeskReaderInterface extends ReaderInterface
     public function getPeopleByIds(array $ids);
 
     /**
-     * Returns user fields collection
+     * Returns user fields collection.
+     *
+     * @throws RetryAfterException
      *
      * @return array
-     * @throws RetryAfterException
      */
     public function getPeopleFields();
 
     /**
-     * Returns an organization by id
+     * Returns an organization by id.
      *
      * @param int $id
      *
@@ -139,14 +140,14 @@ interface ZenDeskReaderInterface extends ReaderInterface
     public function getOrganizationById($id);
 
     /**
-     * Returns organization fields collection
+     * Returns organization fields collection.
      *
      * @return mixed
      */
     public function getOrganizationFields();
 
     /**
-     * Returns a batch count of users tickets
+     * Returns a batch count of users tickets.
      *
      * @param DateTime $start_time
      *
@@ -168,17 +169,18 @@ interface ZenDeskReaderInterface extends ReaderInterface
     public function getTickets(DateTime $start_time = null);
 
     /**
-     * Returns a batch end time of the tickets collection
+     * Returns a batch end time of the tickets collection.
      *
      * @param DateTime $start_time
      *
-     * @return DateTime
      * @throws RetryAfterException
+     *
+     * @return DateTime
      */
     public function getTicketsEndTime(DateTime $start_time = null);
 
     /**
-     * Returns a collection of ticket comments
+     * Returns a collection of ticket comments.
      *
      * @param int $id
      *
@@ -187,15 +189,12 @@ interface ZenDeskReaderInterface extends ReaderInterface
     public function getTicketComments($id);
 
     /**
-     * Returns ticket fields collection
+     * Returns ticket fields collection.
      * Returns a batch end time of the tickets collection.
-     *
-     * @return array
-     * @param DateTime $start_time
      *
      * @throws RetryAfterException
      *
-     * @return DateTime
+     * @return array
      */
     public function getTicketFields();
 
