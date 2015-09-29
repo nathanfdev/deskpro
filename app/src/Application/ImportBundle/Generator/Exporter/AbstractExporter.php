@@ -36,7 +36,7 @@ use Application\ImportBundle\Reader\ReaderInterface;
 use Exception;
 
 /**
- * Base data exporter class methods.
+ * Base generator exporter.
  *
  * Class AbstractExporter
  */

@@ -237,8 +237,8 @@ class Magento extends Adapter\PluginAdapter implements Adapter\FormLoginInterfac
 
     public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller = null)
     {
-        $id  = intval($_REQUEST['id']);
-        $key = strval($_REQUEST['key']);
+        $id  = intval($controller->getRequest()->get('id'));
+        $key = strval($controller->getRequest()->get('key'));
 
         $record = $this->_callMagentoApi('dp_sso.validate', array('id' => $id, 'key' => $key));
 

@@ -309,6 +309,10 @@ class KernelErrorHandler
         }
         self::$is_logging = true;
 
+        if (!empty($GLOBALS['DP_CONTAINER_IS_BUILDING'])) {
+            return;
+        }
+
         if (!class_exists('Application\DeskPRO\App')) {
             return;
         }

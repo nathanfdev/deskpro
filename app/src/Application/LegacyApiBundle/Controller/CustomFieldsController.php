@@ -162,7 +162,7 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
      */
     public function addChildAction(Request $request, $id)
     {
-        /* @var $definition CustomFieldDefinition */
+        /** @var $definition CustomFieldDefinition */
         if (!$definition = $this->em->find('DeskPRO:CustomFieldDefinition', $id)) {
             throw new NotFoundHttpException();
         }

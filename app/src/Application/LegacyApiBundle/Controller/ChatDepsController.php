@@ -159,6 +159,7 @@ class ChatDepsController extends AbstractController implements ProtectedControll
     public function saveAction($id)
     {
         if ($id) {
+
             /*
              * @var \Application\DeskPRO\Departments\ChatDepartments
              */

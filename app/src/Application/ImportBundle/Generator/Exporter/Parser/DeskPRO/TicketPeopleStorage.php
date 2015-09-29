@@ -26,28 +26,38 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Generator\Writer\Json\Destination;
+namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
-use Application\ImportBundle\Entity;
+use Application\DeskPRO\Entity\Ticket;
 
 /**
- * Class ArticleCategory.
+ * Class TicketPeopleStorage.
  */
-final class ArticleCategory implements DestinationInterface
+class TicketPeopleStorage extends AbstractParserPeopleStorage
 {
     /**
      * {@inheritdoc}
      */
-    public function getEntityType()
+    protected function getPeopleIds($data)
     {
-        return Entity\EntityInterface::TYPE_ARTICLE_CATEGORY;
-    }
+        $people_ids = array();
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getEntityOutputPath()
-    {
-        return self::ENTITY_ARTICLE_CATEGORY_PATH;
+        foreach ($data as $ticket) {
+            /* @var Ticket $ticket */
+            $people_ids[] = $ticket->person->getId();
+
+            if ($ticket->agent) {
+                $people_ids[] = $ticket->agent->getId();
+            }
+
+            foreach ($ticket->messages as $message) {
+                $people_ids[] = $message->person->getId();
+            }
+            foreach ($ticket->participants as $participant) {
+                $people_ids[] = $participant->getPerson()->getId();
+            }
+        }
+
+        return array_unique($people_ids);
     }
 }

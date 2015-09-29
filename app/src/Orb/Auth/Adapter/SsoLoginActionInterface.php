@@ -41,7 +41,7 @@ interface SsoLoginActionInterface
     const TOKEN_ATTRIBUTE_BACKGROUND_REFRESH = 'background_refresh';
 
     /**
-     * TODO: Depending on a controller is odd, this should be cleaned up eventually
+     * TODO: Depending on a controller is odd, this should be cleaned up eventually.
      * TODO: no current implementers actually use this $controller arg. should replace with $request instead.
      *
      *

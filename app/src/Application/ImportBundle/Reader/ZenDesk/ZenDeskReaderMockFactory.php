@@ -28,12 +28,15 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
+use Application\ImportBundle\Reader\ReaderConfigInterface;
+use Application\ImportBundle\Reader\ReaderFactoryInterface;
+
 /**
  * Create a ZenDesk reader for testing.
  *
  * Class ZenDeskReaderMockFactory
  */
-class ZenDeskReaderMockFactory implements ZenDeskReaderFactoryInterface
+class ZenDeskReaderMockFactory implements ReaderFactoryInterface
 {
     /**
      * @var Request\RequestAdapterInterface
@@ -51,12 +54,14 @@ class ZenDeskReaderMockFactory implements ZenDeskReaderFactoryInterface
     }
 
     /**
-     * @param ZenDeskConfig $config
-     *
-     * @return ZenDeskReader
+     * {@inheritdoc}
      */
-    public function createReader(ZenDeskConfig $config)
+    public function createReader(ReaderConfigInterface $config)
     {
+        if (!$config instanceof ZenDeskConfig) {
+            throw new \RuntimeException('Config expected to be instance of ZenDeskConfig');
+        }
+
         return new ZenDeskReader(new Request\RequestCacheAdapter($this->adapter), $config);
     }
 }

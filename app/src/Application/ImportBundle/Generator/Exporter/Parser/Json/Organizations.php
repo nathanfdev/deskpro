@@ -32,7 +32,7 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
-use Application\ImportBundle\Generator\Writer\Json\Destination;
+use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 
 /**
  * Organizations json file parser.
@@ -54,7 +54,7 @@ final class Organizations extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getDirectoryFilesCount($this->getOrganizationsReaderConfig());
+        return $this->reader->getDirectoryFilesCount(JsonReaderInterface::ENTITY_ORGANIZATION_PATH, $this->getBatchNum());
     }
 
     /**
@@ -64,7 +64,7 @@ final class Organizations extends AbstractParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->reader->getData($this->getOrganizationsReaderConfig()))
+            ->setData($this->reader->getData(JsonReaderInterface::ENTITY_ORGANIZATION_PATH, $this->getBatchNum()))
             ->setPrefix('JSONOrganization')
             ->setRefColumn('oid')
             ->setMethod('exportOrganization')
@@ -125,15 +125,5 @@ final class Organizations extends AbstractParser
         }
 
         return $entity;
-    }
-
-    /**
-     * Returns record type reader config.
-     *
-     * @return \Application\ImportBundle\Reader\Json\JsonConfig
-     */
-    private function getOrganizationsReaderConfig()
-    {
-        return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_ORGANIZATION_PATH);
     }
 }

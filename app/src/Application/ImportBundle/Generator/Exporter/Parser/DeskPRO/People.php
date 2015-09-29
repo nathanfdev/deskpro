@@ -30,6 +30,9 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
 use Application\DeskPRO\Entity\Person;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Generator\Exporter\Parser\PeopleStorage;
+use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderInterface;
 
 /**
  * DeskPRO people parser.
@@ -42,6 +45,23 @@ final class People extends AbstractParser
      * @var int
      */
     private $users_min_id = 0;
+
+    /**
+     * @var PeopleStorage
+     */
+    private $people_storage;
+
+    /**
+     * Constructor.
+     *
+     * @param DeskPROReaderInterface $reader
+     * @param PeopleStorage          $tickets_people
+     */
+    public function __construct(DeskPROReaderInterface $reader, PeopleStorage $tickets_people)
+    {
+        parent::__construct($reader);
+        $this->people_storage = $tickets_people;
+    }
 
     /**
      * {@inheritdoc}
@@ -58,7 +78,7 @@ final class People extends AbstractParser
      */
     public function getCurrentUsersMinId()
     {
-        return $this->users_min_id ?: $this->getBatchConfig()->getUsersMinId();
+        return max($this->users_min_id, $this->getBatchConfig()->getUsersMinId());
     }
 
     /**
@@ -66,6 +86,10 @@ final class People extends AbstractParser
      */
     public function getCount()
     {
+        if ($this->people_storage->getPeople()) {
+            return count($this->people_storage->getPeople());
+        }
+
         return $this->reader->getUsersCount($this->getCurrentUsersMinId());
     }
 
@@ -74,34 +98,53 @@ final class People extends AbstractParser
      */
     public function export()
     {
-        $this->entities_loaded = 0;
-        $collection            = new Entity\Collection();
+        if (count($this->people_storage->getPeople()) > 0) {
+            $collection = $this->exportBatch($this->people_storage->getPeople());
+        } else {
+            $collection            = new Entity\Collection();
+            $this->entities_loaded = 0;
 
-        do {
-            $batch = $this->reader->findUsers($this->getReaderBatchSize(), $this->getCurrentUsersMinId());
+            do {
+                $batch = $this->reader->findUsers($this->getReaderBatchSize(), $this->getCurrentUsersMinId());
+                $collection->merge($this->exportBatch($batch));
 
-            foreach ($batch as $num => $person) {
-                $this->advanceProgressBar();
-
-                $entity = $this->exportUser($person);
-                $collection->attach($entity);
-
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                $this->users_min_id = $person->getId();
-            }
-
-            $this->entities_loaded += count($batch);
-        } while (count($batch) > 0);
+                $this->users_min_id = max($this->users_min_id, $collection->getMaxOid());
+                $this->entities_loaded += count($batch);
+            } while (count($batch) > 0);
+        }
 
         return $collection;
     }
 
     /**
+     * Returns a collection of people entities.
+     *
+     * @param array|\Traversable $data
+     *
+     * @return Entity\Collection
+     */
+    protected function exportBatch($data)
+    {
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($data)
+            ->setPrefix('DPUser')
+            ->setRefColumn('id')
+            ->setMethod('exportUser')
+            ->setAdvanceProgressbar(true)
+        ;
+
+        return $this->exportCollection($config);
+    }
+
+    /**
+     * Returns a person entity.
+     *
      * @param Person $person
      *
      * @return Entity\Person
      */
-    private function exportUser(Person $person)
+    protected function exportUser(Person $person)
     {
         $entity = new Entity\Person();
         $entity
@@ -116,15 +159,15 @@ final class People extends AbstractParser
             ->setAsUser(!$person['is_agent'])
             ->setAsAdmin((bool) $person['can_admin'])
 
-            ->setOrganization($person->organization['name'])
+            ->setOrganization($person->organization ? $person->organization['name'] : null)
             ->setOrganizationPosition($person['organization_position'])
 
             ->setLanguage($person->language ? $person->language['title'] : null)
             ->setPassword($person['password'])
             ->setPasswordScheme(Entity\Person::PASSWORD_SCHEME_BCRYPT)
 
-            ->setTimezone(new \DateTimeZone($person->timezone))
-            ->setDateCreated($person['date_created'])
+            ->setTimezone($person->getDateTimezone())
+            ->setDateCreated($person->getDateCreated())
         ;
 
         foreach ($person->emails as $email) {

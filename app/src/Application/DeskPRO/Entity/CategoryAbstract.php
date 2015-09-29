@@ -185,16 +185,6 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     }
 
     /**
-     * @return string
-     *
-     * @deprecated use getSlug instead
-     */
-    public function getUrlSlug()
-    {
-        return $this->id.'-'.Strings::slugifyTitle($this->title);
-    }
-
-    /**
      * Get an array of titles from parents down to this.
      *
      * @return array
@@ -300,6 +290,16 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         }
 
         return $this->parent;
+    }
+
+    /**
+     * @return string
+     *
+     * @deprecated use getSlug instead
+     */
+    public function getUrlSlug()
+    {
+        return $this->id.'-'.Strings::slugifyTitle($this->title);
     }
 
     /**

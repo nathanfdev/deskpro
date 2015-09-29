@@ -26,30 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Generator\Writer\Json\Destination;
-
-use Application\ImportBundle\Entity;
+namespace Application\ImportBundle\Generator\Writer;
 
 /**
- * Article entity destination.
+ * Generator writer factory interface.
  *
- * Class Article
+ * Interface WriterFactoryInterface
  */
-final class Article implements DestinationInterface
+interface WriterFactoryInterface
 {
     /**
-     * {@inheritdoc}
+     * Returns a writer.
+     *
+     * @return WriterInterface
      */
-    public function getEntityType()
-    {
-        return Entity\EntityInterface::TYPE_ARTICLE;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getEntityOutputPath()
-    {
-        return self::ENTITY_ARTICLE_PATH;
-    }
+    public function createWriter();
 }

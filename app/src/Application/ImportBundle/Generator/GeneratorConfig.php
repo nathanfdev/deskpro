@@ -29,15 +29,12 @@
 namespace Application\ImportBundle\Generator;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\AbstractFactory as AbstractExporterFactory;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\BatchConfigInterface;
-use Application\ImportBundle\Generator\Writer\AbstractFactory as AbstractWriterFactory;
 use Application\ImportBundle\Generator\Writer\WriterInterface;
 use Application\ImportBundle\Reader\ReaderConfigInterface;
 use DateTime;
 use Exception;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Configuration of generator importer service.
@@ -142,55 +139,6 @@ class GeneratorConfig
         $this->exporter_type = $exporter_type;
 
         return $this;
-    }
-
-    /**
-     * @param ContainerInterface $container
-     *
-     * @throws Exception
-     *
-     * @return AbstractExporterFactory
-     */
-    public function getExporterFactory(ContainerInterface $container)
-    {
-        $factories = array(
-            ExporterInterface::TYPE_CSV       => 'Application\ImportBundle\Generator\Exporter\CsvFactory',
-            ExporterInterface::TYPE_JSON      => 'Application\ImportBundle\Generator\Exporter\JsonFactory',
-            ExporterInterface::TYPE_OS_TICKET => 'Application\ImportBundle\Generator\Exporter\OsTicketFactory',
-            ExporterInterface::TYPE_ZENDESK   => 'Application\ImportBundle\Generator\Exporter\ZenDeskFactory',
-            ExporterInterface::TYPE_DESKPRO   => 'Application\ImportBundle\Generator\Exporter\DeskPROFactory',
-        );
-
-        if (!isset($factories[$this->exporter_type])) {
-            throw new \Exception('Invalid exporter type');
-        }
-
-        return new $factories[$this->exporter_type]($container);
-    }
-
-    /**
-     * @param ContainerInterface $container
-     *
-     * @throws Exception
-     *
-     * @return AbstractWriterFactory
-     */
-    public function getWriterFactory(ContainerInterface $container)
-    {
-        $factories = array(
-            WriterInterface::TYPE_DESK_PRO => 'Application\ImportBundle\Generator\Writer\DeskPRO\DeskProWriterFactory',
-            WriterInterface::TYPE_JSON     => 'Application\ImportBundle\Generator\Writer\Json\JsonWriterFactory',
-        );
-
-        if (!$this->writer_type) {
-            return;
-        }
-
-        if (!isset($factories[$this->writer_type])) {
-            throw new \Exception('Invalid writer type');
-        }
-
-        return new $factories[$this->writer_type]($container);
     }
 
     /**

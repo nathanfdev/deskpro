@@ -43,6 +43,11 @@ class OsTicketConfig implements ReaderConfigInterface
     /**
      * @var string
      */
+    protected $port;
+
+    /**
+     * @var string
+     */
     protected $database;
 
     /**
@@ -59,13 +64,15 @@ class OsTicketConfig implements ReaderConfigInterface
      * Constructor.
      *
      * @param string $host
+     * @param string $port
      * @param string $db
      * @param string $user
      * @param string $password
      */
-    public function __construct($host, $db, $user, $password)
+    public function __construct($host, $port, $db, $user, $password)
     {
         $this->host     = $host;
+        $this->port     = $port;
         $this->database = $db;
         $this->user     = $user;
         $this->password = $password;
@@ -77,6 +84,14 @@ class OsTicketConfig implements ReaderConfigInterface
     public function getHost()
     {
         return $this->host;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPort()
+    {
+        return $this->port;
     }
 
     /**
@@ -110,6 +125,7 @@ class OsTicketConfig implements ReaderConfigInterface
     {
         return new self(
             $data['host'],
+            $data['port'],
             $data['db'],
             $data['user'],
             $data['password']

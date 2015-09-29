@@ -26,29 +26,21 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Generator\Exporter;
+namespace Application\DeskPRO\Form\Type\CriteriaFilterField;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 
-/**
- * Base exporter factory.
- *
- * Class AbstractFactory
- */
-abstract class AbstractFactory implements FactoryInterface
+class DateTimeType extends AbstractType
 {
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    /**
-     * Constructor.
-     *
-     * @param ContainerInterface $container
-     */
-    public function __construct(ContainerInterface $container)
+    public function getName()
     {
-        $this->container = $container;
+        return 'criteria_filter_datetime';
+    }
+
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        $view->vars['rule_handler'] = ' data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTimeTerm"';
     }
 }

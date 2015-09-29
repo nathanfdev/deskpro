@@ -110,14 +110,11 @@ class Message extends \Orb\Mail\Message
                     // Agent email sent to an unknown email address for agent ticket replies
                     // ("your reply was not accepted because it was sent from an unknown address")
                     'DeskPRO:emails_agent:error-unknown-from.html.twig' => 1,
-
                     // If you created a new agent after calling the AgentDataServer,
                     // then the repository wont contain the new agent when sending this welcome.
                     'DeskPRO:emails_agent:agent-welcome.html.twig' => 1,
-
                     // When an agent is created via a usersource, they are not yet in the agent repository
                     'DeskPRO:emails_agent:agent-welcome-usersource.html.twig' => 1,
-
                     // Server / Test email can be sent to anyone
                     'DeskPRO:emails_agent:test-email.html.twig' => 1,
                 );
@@ -134,7 +131,9 @@ class Message extends \Orb\Mail\Message
                         // - TO DO: Can implement custom swiftmailer classes to allow cancelling of messages so the blank
                         // email isn't sent.
 
-                        $e = new \InvalidArgumentException("Agent email being sent to a non-agent. Template: {$this->template}, Person: {$this->template_vars['to_contact']}");
+                        $e = new \InvalidArgumentException(
+                            "Agent email being sent to a non-agent. Template: {$this->template}, Person: {$this->template_vars['to_contact']}"
+                        );
                         KernelErrorHandler::logException($e, true);
 
                         $this->template        = null;
@@ -145,7 +144,11 @@ class Message extends \Orb\Mail\Message
                         $this->embed_only      = true;
                         $this->setBody('');
                         $this->setSubject('');
-                        $this->getHeaders()->addTextHeader('X-DeskPRO-Error', "Agent email being sent to a non-agent. Template: {$this->template}, Person: {$this->template_vars['to_contact']}");
+                        $this->getHeaders()->addTextHeader(
+                            'X-DeskPRO-Error',
+                            "Agent email being sent to a non-agent. Template: {$this->template}, Person: {$this->template_vars['to_contact']}"
+                        )
+                        ;
 
                         return;
                     }
@@ -153,11 +156,15 @@ class Message extends \Orb\Mail\Message
             }
 
             if (!$this->set_to_person && $this->template_vars['to_email']) {
-                $this->set_to_person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($this->template_vars['to_email']);
+                $this->set_to_person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail(
+                    $this->template_vars['to_email']
+                )
+                ;
             }
 
             $this->template_vars['to_person']       = $this->set_to_person;
-            $this->template_vars['person_timezone'] = $this->set_to_person ? $this->set_to_person->getDateTimezone() : App::getContainer()->getSettingsHandler()->getDefaultTimezone();
+            $this->template_vars['person_timezone'] = $this->set_to_person ? $this->set_to_person->getDateTimezone(
+            ) : App::getContainer()->getSettingsHandler()->getDefaultTimezone();
 
             $this->template_vars['site_url']    = App::getSetting('core.site_url');
             $this->template_vars['site_name']   = App::getSetting('core.site_name');
@@ -217,7 +224,9 @@ class Message extends \Orb\Mail\Message
             if (
                 !$this->set_to_person
                 || ($this->set_to_person && !$this->set_to_person->is_agent)
-                || ($this->set_to_person && $this->set_to_person->is_agent && $this->set_to_person->getPref('agent.enable_plaintext_email'))
+                || ($this->set_to_person && $this->set_to_person->is_agent && $this->set_to_person->getPref(
+                        'agent.enable_plaintext_email'
+                    ))
             ) {
                 $plaintext = $body;
                 $plaintext = str_replace('<!--DP_NEWMSG_AS_NOTE-->', '[DP_NEWMSG_AS_NOTE]', $plaintext);
@@ -230,20 +239,23 @@ class Message extends \Orb\Mail\Message
                     $plaintext   = Strings::cut($plaintext, $start_pos, $end_pos + $end_pos_len);
                 }
 
-            // This is a slow process and can crash on complex documents so
-            // prevent running on really long messages
-            if (strlen($body) < 512000) {
-                try {
+                // This is a slow process and can crash on complex documents so
+                // prevent running on really long messages
+                if (strlen($body) < 512000) {
                     try {
                         $h2t = new Html2Text();
-                        $h2t->addElementProcessor('a', function ($node) {
+                        $h2t->addElementProcessor(
+                            'a',
+                            function ($node) {
                                 $classname = $node->getAttribute('class');
                                 if (strpos($classname, 'dp-reply-help-link') === false) {
                                     return;
                                 }
 
                                 return 'deskpro.com/go/reply';
-                            });
+                            }
+                        )
+                        ;
                         $plaintext = $h2t->convert($plaintext);
                     } catch (\Exception $e) {
                         $plaintext = null;
@@ -251,60 +263,65 @@ class Message extends \Orb\Mail\Message
                     if ($plaintext) {
                         $this->addPart($plaintext, 'text/plain');
                     }
-                } catch (\Exception $e) {
-                }
 
-            // fallback on just simple strip tags
+                    // fallback on just simple strip tags
+                } else {
+                    $plaintext = str_replace("\n", '', $plaintext);
+                    $plaintext = str_replace(array('<br/>', '<br />', '<p>', '</p>', '<div>'), "\n", $plaintext);
+                    $plaintext = preg_replace(
+                        '#<a[^>]+dp-reply-help-link[^>]+>[^<]+</a>#',
+                        'deskpro.com/go/reply',
+                        $plaintext
+                    );
+                    $plaintext = Strings::stripTags($plaintext);
+                    if ($plaintext) {
+                        $this->addPart($plaintext, 'text/plain');
+                    }
+                }
             } else {
-                $plaintext = str_replace("\n", '', $plaintext);
-                $plaintext = str_replace(array('<br/>', '<br />', '<p>', '</p>', '<div>'), "\n", $plaintext);
-                $plaintext = preg_replace('#<a[^>]+dp-reply-help-link[^>]+>[^<]+</a>#', 'deskpro.com/go/reply', $plaintext);
-                $plaintext = Strings::stripTags($plaintext);
-                if ($plaintext) {
-                    $this->addPart($plaintext, 'text/plain');
+                if ($this->getContentType() == 'text/html') {
+                    $body = $this->getBody();
+                    $body = $this->replaceEmbeds($body);
+                    $this->setBody($body, 'text/html');
                 }
             }
+
+            // These need to be unset so the message can be properly serialized
+            // if it needs to be inserted as a queued message
+            $this->template        = null;
+            $this->template_vars   = null;
+            $this->template_engine = null;
+            $this->set_to_person   = null;
+
+            // Attach blobs
+            foreach ($this->attach_blobs as $src => $blob) {
+                if (isset($this->embed_only[$src])) {
+                    continue;
+                }
+
+                $type = $blob->content_type;
+
+                // Bug in attaching message/rfc822 messages
+                // results in invalid emails.
+                // See open bug: https://github.com/swiftmailer/swiftmailer/issues/258
+                if ($type == 'message/rfc822') {
+                    $type = 'application/octet-stream';
+                }
+
+                $this->attach(
+                    \Swift_Attachment::newInstance(
+                        App::getContainer()->getBlobStorage()->copyBlobRecordToString($blob),
+                        $blob->filename,
+                        $type
+                    )
+                )
+                ;
             }
-        } else {
-            if ($this->getContentType() == 'text/html') {
-                $body = $this->getBody();
-                $body = $this->replaceEmbeds($body);
-                $this->setBody($body, 'text/html');
-            }
+            $this->attach_blobs = null;
+            $this->embed_only   = true;
+
+            $this->getHeaders()->addTextHeader('X-DeskPRO-Build', defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 1);
         }
-
-        // These need to be unset so the message can be properly serialized
-        // if it needs to be inserted as a queued message
-        $this->template        = null;
-        $this->template_vars   = null;
-        $this->template_engine = null;
-        $this->set_to_person   = null;
-
-        // Attach blobs
-        foreach ($this->attach_blobs as $src => $blob) {
-            if (isset($this->embed_only[$src])) {
-                continue;
-            }
-
-            $type = $blob->content_type;
-
-            // Bug in attaching message/rfc822 messages
-            // results in invalid emails.
-            // See open bug: https://github.com/swiftmailer/swiftmailer/issues/258
-            if ($type == 'message/rfc822') {
-                $type = 'application/octet-stream';
-            }
-
-            $this->attach(\Swift_Attachment::newInstance(
-                App::getContainer()->getBlobStorage()->copyBlobRecordToString($blob),
-                $blob->filename,
-                $type
-            ));
-        }
-        $this->attach_blobs = null;
-        $this->embed_only   = true;
-
-        $this->getHeaders()->addTextHeader('X-DeskPRO-Build', defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 1);
     }
 
     /**

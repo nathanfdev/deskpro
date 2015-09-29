@@ -26,24 +26,28 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Service;
+namespace Application\ImportBundle\Importer;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\DataStore;
+use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator\GeneratorConfig;
+use Application\ImportBundle\Generator\GeneratorInterface;
 use Application\ImportBundle\Generator\ImporterProgressBar;
 use Application\ImportBundle\Generator\Writer\WriterInterface;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\DeskPRO\DeskPROConfig;
 use Application\ImportBundle\Reader\OsTicket\OsTicketConfig;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskConfig;
+use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
+use Orb\Zip\Zip;
 
 /**
- * Class Import.
+ * Class Importer.
  */
-class Import
+class Importer
 {
     public static $allowed = array(
         ExporterInterface::TYPE_CSV,
@@ -53,48 +57,49 @@ class Import
         ExporterInterface::TYPE_DESKPRO,
     );
 
-    const STATUS_PENDING    = 'pending';
-    const STATUS_EXPORT     = 'export';
-    const STATUS_VALIDATION = 'validation';
-    const STATUS_IMPORT     = 'import';
-    const STATUS_ERROR      = 'error';
-    const STATUS_DONE       = 'done';
-
-    /**
-     * @var DeskproContainer
-     */
-    protected $c;
-
     /**
      * @var \Doctrine\ORM\EntityManager
      */
-    protected $em;
+    protected $entity_manager;
 
     /**
-     * @var \Application\DeskPRO\EntityRepository\DataStore
+     * @var EntityRepository\DataStore
      */
-    protected $rep;
+    protected $data_store_repository;
+
+    /**
+     * @var DeskproBlobStorage
+     */
+    protected $blob_storage;
+
+    /**
+     * @var Zip
+     */
+    protected $zipper;
 
     /**
      * Constructor.
      *
-     * @param DeskproContainer $container
+     * @param EntityManager      $entity_manager
+     * @param DeskproBlobStorage $blob_storage
+     * @param Zip                $zipper
      */
-    public function __construct(DeskproContainer $container)
+    public function __construct(EntityManager $entity_manager, DeskproBlobStorage $blob_storage, Zip $zipper)
     {
-        $this->c   = $container;
-        $this->em  = $container->getEm();
-        $this->rep = $container->getEm()->getRepository('DeskPRO:DataStore');
+        $this->entity_manager        = $entity_manager;
+        $this->blob_storage          = $blob_storage;
+        $this->data_store_repository = $this->entity_manager->getRepository('DeskPRO:DataStore');
     }
 
     /**
-     * get current importer name.
+     * Get current importer name.
      *
      * @return DataStore
      */
     public function getCurrentName()
     {
-        if (!$data = $this->rep->getByName('importers.main')) {
+        $data = $this->data_store_repository->getByName('importers.main');
+        if (!$data) {
             return;
         }
 
@@ -102,20 +107,21 @@ class Import
     }
 
     /**
-     * set current importer name.
+     * Set current importer name.
      *
-     * @param $name
+     * @param string $name
      */
     public function setCurrentName($name)
     {
-        if (!$data = $this->rep->getByName('importers.main')) {
+        $data = $this->data_store_repository->getByName('importers.main');
+        if (!$data) {
             $data         = new DataStore();
             $data['name'] = 'importers.main';
-            $this->em->persist($data);
+            $this->entity_manager->persist($data);
         }
 
         $data->setData('current', $name);
-        $this->em->flush($data);
+        $this->entity_manager->flush($data);
     }
 
     /**
@@ -134,7 +140,7 @@ class Import
         }
 
         $name     = 'importers.'.$id;
-        $importer = $this->rep->getByName($name);
+        $importer = $this->data_store_repository->getByName($name);
 
         if ($importer) {
             return $importer;
@@ -157,6 +163,10 @@ class Import
                 $title = 'ZenDesk';
                 $desc  = 'Import from a ZenDesk helpdesk.';
                 break;
+            case ExporterInterface::TYPE_DESKPRO:
+                $title = 'DeskPRO';
+                $desc  = 'Import from a DeskPRO helpdesk.';
+                break;
             default:
                 $title = ucfirst($id);
                 $desc  = "Import from $title";
@@ -170,14 +180,16 @@ class Import
             $importer->setData('config', $data);
         }
 
-        $this->em->persist($importer);
-        $this->em->flush($importer);
+        $this->entity_manager->persist($importer);
+        $this->entity_manager->flush($importer);
 
         return $importer;
     }
 
     /**
-     * @param $id
+     * Returns reader config.
+     *
+     * @param string $id
      *
      * @throws \Exception
      *
@@ -210,13 +222,9 @@ class Import
     }
 
     /**
-     * create/copy all necessary dirs/files for import.
+     * Create/copy all necessary dirs/files for import.
      *
-     * @param $id
-     *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @param string $id
      *
      * @return DataStore
      */
@@ -225,55 +233,49 @@ class Import
         $importer = $this->getImporter($id);
         $config   = $importer->getData('config');
 
-        /*
-         * create temp dir
-         */
-        if (!$tmp = @$config['temp']) {
+        // Create temp dir
+        $tmp = @$config['temp'];
+        if (!$tmp) {
             $tmp            = dp_get_tmp_dir().'/importer-'.time();
             $config['temp'] = $tmp;
-            $this->em->flush($importer);
+            $this->entity_manager->flush($importer);
         }
+
         if (!file_exists($tmp)) {
             mkdir($tmp.'/in', 0777, true);
             mkdir($tmp.'/out', 0777, true);
 
-            /*
-             * copy blobs to temp dir
-             */
+            // Copy blobs to temp dir
             if (@$config['blobs']) {
-                $storage = $this->c->getBlobStorage();
-
                 foreach ($config['blobs'] as $blobData) {
-                    if (!$blob = $this->em->find('DeskPRO:Blob', $blobData['id'])) {
+                    if (!$blob = $this->entity_manager->find('DeskPRO:Blob', $blobData['id'])) {
                         continue;
                     }
-                    $storage->copyBlobRecordToFile($tmp.'/in/'.$blob['filename'], $blob);
+
+                    $this->blob_storage->copyBlobRecordToFile($tmp.'/in/'.$blob['filename'], $blob);
 
                     if ('application/zip' === $blob['content_type']) {
-                        /** @var \Orb\Zip\Zip $zipper */
-                        $zipper = $this->c->getSystemService('zipper');
-                        $zipper->decompressZip($tmp.'/in/'.$blob['filename'], $tmp.'/in');
+                        $this->zipper->decompressZip($tmp.'/in/'.$blob['filename'], $tmp.'/in');
                     }
                 }
             }
         }
 
-        /*
-         * log file
-         */
-        if (!$log_file = $importer->getData('logfile')) {
+        // Log file
+        $log_file = $importer->getData('logfile');
+        if (!$log_file) {
             $log_file = dp_get_log_dir().'/importlog-'.date('Ymd-His').'-'.Strings::random(6, Strings::CHARS_ALPHA_IU);
             $importer->setData('logfile', $log_file);
         }
 
         $importer->setData('config', $config);
-        $this->em->flush($importer);
+        $this->entity_manager->flush($importer);
 
         return $importer;
     }
 
     /**
-     * set state of import.
+     * Set state of import.
      *
      * @param $state
      * @param null $id
@@ -285,11 +287,11 @@ class Import
         $importer = $this->getImporter($id);
         $importer->setData('status', $state);
         $importer->setData('updated', time());
-        $this->em->flush($importer);
+        $this->entity_manager->flush($importer);
     }
 
     /**
-     * @param $id
+     * @param string $id
      *
      * @return DataStore
      */
@@ -298,7 +300,7 @@ class Import
         $importer = $this->initReader($id);
 
         // set pointer to current import
-        $this->setStatus($id, self::STATUS_PENDING);
+        $this->setStatus($id, GeneratorInterface::STATUS_PENDING);
         $this->setCurrentName($id);
 
         // trigger cron to start console command
@@ -309,8 +311,6 @@ class Import
 
     /**
      * @param DataStore $importer
-     *
-     * @throws \Exception
      *
      * @return GeneratorConfig
      */
@@ -342,7 +342,7 @@ class Import
                 : exec("rm -rf {$tmp}");
 
             unset($readerConfigData['temp']);
-            $this->em->flush($importer);
+            $this->entity_manager->flush($importer);
         }
 
         $importer->setData('status', null);
@@ -352,7 +352,7 @@ class Import
         $importer->setData('progress_step', null);
         $importer->setData('progress_max', null);
 
-        $this->em->flush($importer);
+        $this->entity_manager->flush($importer);
     }
 
     /**
@@ -364,6 +364,6 @@ class Import
     {
         $importer = $this->getImporter($this->getCurrentName());
 
-        return new ImporterProgressBar($importer, $this->em, $total_count);
+        return new ImporterProgressBar($importer, $this->entity_manager, $total_count);
     }
 }

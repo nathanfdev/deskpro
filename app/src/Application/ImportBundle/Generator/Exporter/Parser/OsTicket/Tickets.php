@@ -30,9 +30,11 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Reader\OsTicket\OsTicketReaderInterface;
 use Orb\Util\Strings;
 
 /**
@@ -46,6 +48,24 @@ final class Tickets extends AbstractParser
      * @var int
      */
     private $tickets_min_id;
+
+    /**
+     * @var TicketPeopleStorage
+     */
+    private $tickets_people;
+
+    /**
+     * Constructor.
+     *
+     * @param OsTicketReaderInterface $reader
+     * @param FormatterInterface      $formatter
+     * @param TicketPeopleStorage     $tickets_people
+     */
+    public function __construct(OsTicketReaderInterface $reader, FormatterInterface $formatter, TicketPeopleStorage $tickets_people)
+    {
+        parent::__construct($reader, $formatter);
+        $this->tickets_people = $tickets_people;
+    }
 
     /**
      * {@inheritdoc}
@@ -70,7 +90,7 @@ final class Tickets extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getTicketsCount($this->getCurrentTicketsMinId());
+        return count($this->getTickets());
     }
 
     /**
@@ -78,27 +98,16 @@ final class Tickets extends AbstractParser
      */
     public function export()
     {
-        $this->entities_loaded = 0;
-        $collection            = new Entity\Collection();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->getTickets())
+            ->setPrefix('OSTicket')
+            ->setRefColumn('ticket_id')
+            ->setMethod('exportTicket')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        do {
-            $batch  = $this->reader->findTickets($this->getReaderBatchSize(), $this->getCurrentTicketsMinId());
-            $config = new ExportCollectionConfig();
-            $config
-                ->setData($batch)
-                ->setPrefix('OSTicket')
-                ->setRefColumn('ticket_id')
-                ->setMethod('exportTicket')
-                ->setAdvanceProgressbar(true)
-            ;
-
-            $collection->merge($this->exportCollection($config));
-
-            $this->entities_loaded += count($batch);
-            $this->tickets_min_id = max($this->tickets_min_id, $collection->getMaxOid());
-        } while (count($batch) > 0);
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
@@ -126,6 +135,7 @@ final class Tickets extends AbstractParser
             'priority_id' => TransformerInterface::TYPE_INT,
             'isanswered'  => TransformerInterface::TYPE_BOOLEAN,
             'closed'      => TransformerInterface::TYPE_BOOLEAN,
+            'messages'    => TransformerInterface::TYPE_ARRAY,
         ));
 
         $entity = new Entity\Ticket();
@@ -136,15 +146,15 @@ final class Tickets extends AbstractParser
             ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
             ->setDepartment($this->reader->findDepartmentById($formatted['dept_id']))
             ->setPersonEmail($this->reader->findUserEmailById($formatted['user_id']))
-            ->setAgentEmail($this->reader->findUserEmailById($formatted['staff_id']))
-            ->setAgentTeam($this->reader->findUserEmailById($formatted['team_id']))
+            ->setAgentEmail($this->reader->findStaffEmailById($formatted['staff_id']))
+            ->setAgentTeam($this->reader->findTeamNameById($formatted['team_id']))
             ->setStatus($this->getTicketStatus($formatted))
             ->setDateCreated($formatted['created'])
             ->setSubject($formatted['subject'])
             ->setPriority($this->exportPriority($formatted['priority_id']))
         ;
 
-        $messages = $this->exportMessages($formatted['ticket_id']);
+        $messages = $this->exportMessages($formatted['messages']);
         foreach ($messages as $message) {
             $entity->addMessage($message);
         }
@@ -327,5 +337,38 @@ final class Tickets extends AbstractParser
         }
 
         return $email;
+    }
+
+    /**
+     * Returns tickets
+     * Loads from osTicket database.
+     *
+     * @return array
+     */
+    private function getTickets()
+    {
+        $this->entities_loaded = 0;
+
+        $tickets = array();
+        $min_id  = $this->getBatchConfig()->getTicketsMinId();
+
+        do {
+            $batch = $this->reader->findTickets($this->getReaderBatchSize(), $min_id);
+            $this->entities_loaded += count($batch);
+
+            foreach ($batch as &$ticket) {
+                if (isset($ticket['ticket_id'])) {
+                    $ticket['messages'] = $this->reader->findMessages($ticket['ticket_id']);
+                    $min_id             = max($min_id, $ticket['ticket_id']);
+                }
+            }
+
+            $tickets = array_merge($tickets, $batch);
+        } while (count($batch) > 0);
+
+        $this->tickets_people->loadBy($tickets);
+        $this->tickets_min_id = $min_id;
+
+        return $tickets;
     }
 }

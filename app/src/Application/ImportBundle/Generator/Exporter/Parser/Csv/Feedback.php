@@ -32,6 +32,7 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
 
 /**
  * Feedback csv file parser.
@@ -55,7 +56,7 @@ final class Feedback extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount($this->getFeedbackReaderConfig());
+        return $this->getReaderCount(CsvReaderInterface::FILE_FEEDBACK);
     }
 
     /**
@@ -65,7 +66,7 @@ final class Feedback extends AbstractParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->getReaderData($this->getFeedbackReaderConfig()))
+            ->setData($this->getReaderData(CsvReaderInterface::FILE_FEEDBACK))
             ->setPrefix('CSVFeedback')
             ->setRefColumn('id')
             ->setMethod('exportFeedback')
@@ -160,8 +161,7 @@ final class Feedback extends AbstractParser
      */
     private function exportFeedbackAttachments()
     {
-        $config = $this->getFeedbackAttachmentsReaderConfig();
-        $data   = $this->getReaderData($config);
+        $data = $this->getReaderData(CsvReaderInterface::FILE_FEEDBACK_ATTACHMENTS);
 
         return $this->getAttachmentParser()->exportAttachments($data, self::FEEDBACK_PREFIX, 'feedback_id');
     }
@@ -173,39 +173,8 @@ final class Feedback extends AbstractParser
      */
     private function exportFeedbackCustomFields()
     {
-        $config = $this->getFeedbackCustomFieldReaderConfig();
-        $data   = $this->getReaderData($config);
+        $data = $this->getReaderData(CsvReaderInterface::FILE_FEEDBACK_CUSTOM_FIELDS);
 
         return $this->getMultipleCustomFieldsParser()->export($data, self::FEEDBACK_PREFIX, 'feedback_id');
-    }
-
-    /**
-     * Returns record type reader config.
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getFeedbackReaderConfig()
-    {
-        return $this->getReaderConfig(self::FILE_FEEDBACK);
-    }
-
-    /**
-     * Returns reader config of feedback attachment records.
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getFeedbackAttachmentsReaderConfig()
-    {
-        return $this->getReaderConfig(self::FILE_FEEDBACK_ATTACHMENTS);
-    }
-
-    /**
-     * Returns reader config for feedback custom field records.
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getFeedbackCustomFieldReaderConfig()
-    {
-        return $this->getReaderConfig(self::FILE_FEEDBACK_CUSTOM_FIELDS);
     }
 }

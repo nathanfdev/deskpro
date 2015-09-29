@@ -40,45 +40,45 @@ use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
- * SWG\Resource(
+ * @SWG\Resource(
  * 	resourcePath="/news",
  * 	description="Operations about News Items",
  * 	basePath="/api"
- * ).
+ * )
  */
 class NewsController extends AbstractController
 {
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Get list of all News Items",
      * 		notes="Returns array of all existing News Items",
      *		type="array",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="category_id",
      *				description="Category ID that needs to be searched",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			SWG\Parameter(
+     *			@SWG\Parameter(
      *				name="category_id_specific",
      *				description="Specific Category ID that needs to be searched",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			SWG\Parameter(
+     *			@SWG\Parameter(
      *				name="label",
      *				description="News label that needs to be searched",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			SWG\Parameter(
+     *			@SWG\Parameter(
      *				name="status",
      *				description="News status that needs to be searched",
      *				paramType="query",
@@ -87,7 +87,7 @@ class NewsController extends AbstractController
      *			)
      *		)
      * 	)
-     * ).
+     * )
      */
     public function searchAction()
     {
@@ -154,14 +154,14 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Add a new News Item",
      * 		notes="Creates a new News Item and returns the ID",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="body",
      *				description="News Object to Add",
      *				paramType="body",
@@ -170,7 +170,7 @@ class NewsController extends AbstractController
      *			)
      *		)
      * 	)
-     * ).
+     * )
      */
     public function newNewsAction()
     {
@@ -234,15 +234,15 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news/{news_id}",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Find News by ID",
      * 		notes="Returns a News Item based on ID",
      *		type="News",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="news_id",
      *				description="ID of the news item that needs to be fetched",
      *				paramType="path",
@@ -250,9 +250,9 @@ class NewsController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="News Item not found")
+     *		@SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * ).
+     * )
      */
     public function getNewsAction($news_id)
     {
@@ -262,49 +262,49 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news/{news_id}",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Updates News Item by ID",
      * 		notes="Updated a News Item with form data",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="news_id",
      *				description="ID of the news item that needs to be updated",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			SWG\Parameter(
+     *			@SWG\Parameter(
      *				name="title",
      *				description="Updated title of the News Item",
      *				paramType="form",
      *				required=false,
      *				type="string"
      *			),
-     *			SWG\Parameter(
+     *			@SWG\Parameter(
      *				name="status",
      *				description="Updated status of the News Item",
      *				paramType="form",
      *				required=false,
      *				type="string"
      *			),
-     *			SWG\Parameter(
+     *			@SWG\Parameter(
      *				name="date_published",
      *				description="Updated published date of the News Item",
      *				paramType="form",
      *				required=false,
      *				type="string"
      *			),
-     *			SWG\Parameter(
+     *			@SWG\Parameter(
      *				name="content",
      *				description="Updated content of the News Item",
      *				paramType="form",
      *				required=false,
      *				type="string"
      *			),
-     *			SWG\Parameter(
+     *			@SWG\Parameter(
      *				name="category_id",
      *				description="Updated category_id of the News Item",
      *				paramType="form",
@@ -312,9 +312,9 @@ class NewsController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="News Item not found")
+     *		@SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * ).
+     * )
      */
     public function postNewsAction($news_id)
     {
@@ -370,14 +370,14 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news/{news_id}",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="DELETE",
      * 		summary="Delete News by ID",
      * 		notes="Deletes a News Item based on ID",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="news_id",
      *				description="ID of the news item that needs to be deleted",
      *				paramType="path",
@@ -385,9 +385,9 @@ class NewsController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="News Item not found")
+     *		@SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * ).
+     * )
      */
     public function deleteNewsAction($news_id)
     {
@@ -401,14 +401,14 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news/{news_id}/comments",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Find all the comments by News ID",
      * 		notes="Retrieves all news comments based on News ID",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="news_id",
      *				description="ID of the news item that needs to be searched for comments",
      *				paramType="path",
@@ -416,9 +416,9 @@ class NewsController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="News Item not found")
+     *		@SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * ).
+     * )
      */
     public function getNewsCommentsAction($news_id)
     {
@@ -429,14 +429,14 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news/{news_id}/comments",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Adds a new Comment by News ID",
      * 		notes="Creates a news comments based on News ID",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="news_id",
      *				description="ID of the news item that needs to be searched for comments",
      *				paramType="path",
@@ -444,8 +444,8 @@ class NewsController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="content",
      *				description="Comment content",
      *				paramType="query",
@@ -453,8 +453,8 @@ class NewsController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person making the comment",
      *				paramType="query",
@@ -462,8 +462,8 @@ class NewsController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="status",
      *				description="status of the comment",
      *				paramType="query",
@@ -471,9 +471,9 @@ class NewsController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="News Item not found")
+     *		@SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * ).
+     * )
      */
     public function newNewsCommentAction($news_id)
     {
@@ -510,22 +510,22 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news/{news_id}/comments/{comment_id}",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Find one News comment by News ID and Comment ID",
      * 		notes="Retrieves a news comments based on News ID and Comment ID",
      *		type="NewsComment",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="news_id",
      *				description="ID of the news item that needs to be searched for comments",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			SWG\Parameter(
+     *			@SWG\Parameter(
      *				name="comment_id",
      *				description="ID of the comment that needs to be searched for comments",
      *				paramType="path",
@@ -533,9 +533,9 @@ class NewsController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="News Item not found")
+     *		@SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * ).
+     * )
      */
     public function getNewsCommentAction($news_id, $comment_id)
     {
@@ -549,34 +549,34 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news/{news_id}/comments/{comment_id}",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Updates one News comment by News ID and Comment ID",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="news_id",
      *				description="ID of the news item that needs to be searched for comments",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			SWG\Parameter(
+     *			@SWG\Parameter(
      *				name="comment_id",
      *				description="ID of the comment that needs to be searched for comments",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			SWG\Parameter(
+     *			@SWG\Parameter(
      *				name="status",
      *				description="status of the comment",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			SWG\Parameter(
+     *			@SWG\Parameter(
      *				name="content",
      *				description="Comment content",
      *				paramType="query",
@@ -584,9 +584,9 @@ class NewsController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="News Item not found")
+     *		@SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * ).
+     * )
      */
     public function postNewsCommentAction($news_id, $comment_id)
     {
@@ -619,21 +619,21 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news/{news_id}/comments/{comment_id}",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="DELETE",
      * 		summary="Delete one News comment by News ID and Comment ID",
      * 		notes="Deletes a news comments based on News ID and Comment ID",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="news_id",
      *				description="ID of the news item that needs to be searched for comments",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			SWG\Parameter(
+     *			@SWG\Parameter(
      *				name="comment_id",
      *				description="ID of the comment that needs to be searched for comments",
      *				paramType="path",
@@ -641,9 +641,9 @@ class NewsController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="News Item not found")
+     *		@SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * ).
+     * )
      */
     public function deleteNewsCommentAction($news_id, $comment_id)
     {
@@ -662,14 +662,14 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news/{news_id}/labels",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Find all the labels by News ID",
      * 		notes="Retrieves all labels based on News ID",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="news_id",
      *				description="ID of the news item that needs to be searched for labels",
      *				paramType="path",
@@ -677,9 +677,9 @@ class NewsController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="News Item not found")
+     *		@SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * ).
+     * )
      */
     public function getNewsLabelsAction($news_id)
     {
@@ -689,13 +689,13 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news/{news_id}/labels",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Adds a new Label by News ID",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="news_id",
      *				description="ID of the news item that needs to be searched for comments",
      *				paramType="path",
@@ -703,8 +703,8 @@ class NewsController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="label",
      *				description="Label",
      *				paramType="query",
@@ -712,9 +712,9 @@ class NewsController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="News Item not found")
+     *		@SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * ).
+     * )
      */
     public function postNewsLabelsAction($news_id)
     {
@@ -736,22 +736,22 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news/{news_id}/labels/{label}",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Find one Label by News ID and Label",
      * 		notes="Retrieves a label based on News ID and Label",
      *		type="NewsComment",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="news_id",
      *				description="ID of the news item that needs to be searched for comments",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			SWG\Parameter(
+     *			@SWG\Parameter(
      *				name="label",
      *				description="label that needs to be searched",
      *				paramType="path",
@@ -759,9 +759,9 @@ class NewsController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="News Item not found")
+     *		@SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * ).
+     * )
      */
     public function getNewsLabelAction($news_id, $label)
     {
@@ -775,21 +775,21 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news/{news_id}/comments/{label}",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="DELETE",
      * 		summary="Delete one label by News ID and label",
      * 		notes="Deletes a news comments based on News ID and Comment ID",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="news_id",
      *				description="ID of the news item that needs to be searched for comments",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			SWG\Parameter(
+     *			@SWG\Parameter(
      *				name="comment_id",
      *				description="ID of the comment that needs to be searched for comments",
      *				paramType="path",
@@ -797,9 +797,9 @@ class NewsController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="News Item not found")
+     *		@SWG\ResponseMessage(code=404, message="News Item not found")
      * 	)
-     * ).
+     * )
      */
     public function deleteNewsLabelAction($news_id, $label)
     {
@@ -813,13 +813,13 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news/validating-comments",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Gets news comments that are awaiting validation"
      * 	)
-     * ).
+     * )
      */
     public function getValidatingCommentsAction()
     {
@@ -837,14 +837,14 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news/categories",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Gets available news categories",
      * 		notes="Retrieves all available news categories"
      * 	)
-     * ).
+     * )
      */
     public function getCategoriesAction()
     {
@@ -854,13 +854,13 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news/categories",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Creates a new News category"
      * 	)
-     * ).
+     * )
      */
     public function postCategoriesAction()
     {
@@ -924,15 +924,15 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news/categories/{catgory_id}",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Find News Category by ID",
      * 		notes="Returns a News Category based on ID",
      *		type="NewsCategory",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="category_id",
      *				description="ID of the news category that needs to be fetched",
      *				paramType="path",
@@ -940,9 +940,9 @@ class NewsController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="News Category not found")
+     *		@SWG\ResponseMessage(code=404, message="News Category not found")
      * 	)
-     * ).
+     * )
      */
     public function getCategoryAction($category_id)
     {
@@ -952,35 +952,35 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news/categories/{catgory_id}",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Update News Category by ID",
      * 		notes="Updates a News Category based on ID",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="category_id",
      *				description="ID of the news category that needs to be updated",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			SWG\Parameter(
+     *			@SWG\Parameter(
      *				name="title",
      *				description="Updated category title",
      *				paramType="path",
      *				required=false,
      *				type="string"
      *			),
-     *			SWG\Parameter(
+     *			@SWG\Parameter(
      *				name="parent_id",
      *				description="Updated parent ID",
      *				paramType="path",
      *				required=false,
      *				type="integer"
      *			),
-     *			SWG\Parameter(
+     *			@SWG\Parameter(
      *				name="display_order",
      *				description="Updated display order",
      *				paramType="path",
@@ -988,9 +988,9 @@ class NewsController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="News Category not found")
+     *		@SWG\ResponseMessage(code=404, message="News Category not found")
      * 	)
-     * ).
+     * )
      */
     public function postCategoryAction($category_id)
     {
@@ -1029,14 +1029,14 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news/categories/{category_id}",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="DELETE",
      * 		summary="Delete News Category by ID",
      * 		notes="Deletes a News Category based on ID",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="category_id",
      *				description="ID of the news category that needs to be deleted",
      *				paramType="path",
@@ -1044,9 +1044,9 @@ class NewsController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="News Category not found")
+     *		@SWG\ResponseMessage(code=404, message="News Category not found")
      * 	)
-     * ).
+     * )
      */
     public function deleteCategoryAction($category_id)
     {
@@ -1060,13 +1060,13 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news/categories/{catgory_id}",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Gets news within a news category",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="category_id",
      *				description="ID of the news category that needs to be searched",
      *				paramType="path",
@@ -1074,9 +1074,9 @@ class NewsController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="News Category not found")
+     *		@SWG\ResponseMessage(code=404, message="News Category not found")
      * 	)
-     * ).
+     * )
      */
     public function getCategoryNewsAction($category_id)
     {
@@ -1120,13 +1120,13 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news/categories/{category_id}/groups",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Gets groups with access to a news category",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="category_id",
      *				description="ID of the news category that needs to be searched",
      *				paramType="path",
@@ -1134,9 +1134,9 @@ class NewsController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="News Category not found")
+     *		@SWG\ResponseMessage(code=404, message="News Category not found")
      * 	)
-     * ).
+     * )
      */
     public function getCategoryGroupsAction($category_id)
     {
@@ -1146,20 +1146,20 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news/categories/{category_id}/groups",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Adds a group to a news category",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="category_id",
      *				description="ID of the news category where the new group needs to be added",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			SWG\Parameter(
+     *			@SWG\Parameter(
      *				name="id",
      *				description="ID of the group to add access for.",
      *				paramType="path",
@@ -1167,9 +1167,9 @@ class NewsController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="News Category not found")
+     *		@SWG\ResponseMessage(code=404, message="News Category not found")
      * 	)
-     * ).
+     * )
      */
     public function postCategoryGroupsAction($category_id)
     {
@@ -1204,20 +1204,20 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news/categories/{category_id}/groups/{group_id}",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Determines if a group has access to a news category",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="category_id",
      *				description="ID of the news category that needs to be checked",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			SWG\Parameter(
+     *			@SWG\Parameter(
      *				name="group_id",
      *				description="ID of the group that needs to be checked",
      *				paramType="path",
@@ -1225,9 +1225,9 @@ class NewsController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="News Category not found")
+     *		@SWG\ResponseMessage(code=404, message="News Category not found")
      * 	)
-     * ).
+     * )
      */
     public function getCategoryGroupAction($category_id, $group_id)
     {
@@ -1245,20 +1245,20 @@ class NewsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/news/categories/{category_id}/groups/{group_id}",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="DELETE",
      * 		summary="Removes a group's access to a news category",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="category_id",
      *				description="ID of the news category that needs to be checked",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			SWG\Parameter(
+     *			@SWG\Parameter(
      *				name="group_id",
      *				description="ID of the group that needs to be checked",
      *				paramType="path",
@@ -1266,9 +1266,9 @@ class NewsController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="News Category not found")
+     *		@SWG\ResponseMessage(code=404, message="News Category not found")
      * 	)
-     * ).
+     * )
      */
     public function deleteCategoryGroupAction($category_id, $group_id)
     {

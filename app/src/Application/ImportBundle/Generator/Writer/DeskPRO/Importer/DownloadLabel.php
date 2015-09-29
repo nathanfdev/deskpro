@@ -26,30 +26,48 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Generator\Writer\Json\Destination;
+namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
+use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
 
 /**
- * Organization entity destination.
+ * DeskPRO download labels importer.
  *
- * Class Organization
+ * Class DownloadLabel
  */
-final class Organization implements DestinationInterface
+final class DownloadLabel extends AbstractImporter
 {
     /**
      * {@inheritdoc}
      */
     public function getEntityType()
     {
-        return Entity\EntityInterface::TYPE_ORGANIZATION;
+        return Entity\EntityInterface::TYPE_DOWNLOAD;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getEntityOutputPath()
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        return self::ENTITY_ORGANIZATION_PATH;
+        if (!$entity instanceof Entity\Download) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
+
+        $download = $this->getDownloadMapper()->findOneByTitle($entity->getTitle());
+        $download->resetLabels();
+
+        foreach ($entity->getLabels() as $label_name) {
+            $label = new DeskPROEntity\LabelDownload();
+            $label->setLabel($label_name);
+
+            $download->addLabel($label);
+            $this->logDebug(sprintf('Creating a new label `%s` for download with oid `%d`', $label_name, $download->getId()));
+        }
+
+        $this->records->setPrimaryEntity($download);
+
+        return $this->records;
     }
 }

@@ -39,7 +39,6 @@ use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderFactory;
 use Application\ImportBundle\Reader\Json\JsonConfig;
 use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory;
-use Application\ImportBundle\Service\Import as ImportService;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
@@ -136,7 +135,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if ($input->getOption('config-from-db')) {
-            /** @var ImportService $is */
+            /** @var Importer $is */
             $is = $this->getContainer()->get('deskpro.import');
             $input->setArgument('script', $is->getCurrentName());
         }
@@ -387,7 +386,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $readerConfig = null;
 
         if ($input->getOption('config-from-db')) {
-            /** @var ImportService $is */
+            /** @var Importer $is */
             $is         = $this->getContainer()->get('deskpro.import');
             $importer   = $is->getImporter($input->getArgument('script'));
             $configData = $importer->getData('config');
@@ -555,7 +554,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $this->getContainer()->set('deskpro.import.config', $config);
 
         /** @var Generator\Generator $generator */
-        $generator = Generator\GeneratorFactory::createGenerator($this->getContainer());
+        $generator = Generator\GeneratorFactory::createGenerator($this->getContainer(), $config);
         $generator->setLogger($logger);
 
         return $generator;

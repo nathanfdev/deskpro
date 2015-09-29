@@ -26,30 +26,48 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Generator\Writer\Json\Destination;
+namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
+use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
 
 /**
- * Download entity destination.
+ * DeskPRO ticket labels importer.
  *
- * Class Download
+ * Class TicketLabel
  */
-final class Download implements DestinationInterface
+final class TicketLabel extends AbstractImporter
 {
     /**
      * {@inheritdoc}
      */
     public function getEntityType()
     {
-        return Entity\EntityInterface::TYPE_DOWNLOAD;
+        return Entity\EntityInterface::TYPE_TICKET;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getEntityOutputPath()
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        return self::ENTITY_DOWNLOAD_PATH;
+        if (!$entity instanceof Entity\Ticket) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
+
+        $ticket = $this->getTicketMapper()->findOneByRef($entity->getRef());
+        $ticket->resetLabels();
+
+        foreach ($entity->getLabels() as $label_name) {
+            $label = new DeskPROEntity\LabelTicket();
+            $label->setLabel($label_name);
+
+            $ticket->addLabel($label);
+            $this->logInfo(sprintf('Creating a new label `%s` for ticket with oid `%d`', $label_name, $ticket->getId()));
+        }
+
+        $this->records->setPrimaryEntity($ticket);
+
+        return $this->records;
     }
 }

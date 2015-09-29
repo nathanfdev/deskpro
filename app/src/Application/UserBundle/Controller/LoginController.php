@@ -746,7 +746,11 @@ HTML;
                 // We expect a redirect to be rquired
             } elseif ($result->isRedirectRequired()) {
                 if (!$return = $this->request->getReturnParam()) {
-                    if (!$return = $this->request->server->get('HTTP_REFERER')) {
+                    if ($return = $this->request->server->get('HTTP_REFERER')) {
+                        if (false !== stripos($return, '/login')) {
+                            $return = null;
+                        }
+                    } else {
                         $return = null;
                     }
                 }

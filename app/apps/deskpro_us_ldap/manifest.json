@@ -86,8 +86,8 @@
 		{
 			"name": "account_filter",
 			"type": "text",
-			"label": "Filter",
-			"description": "",
+			"label": "Account Filter Format",
+			"description": "You can specify an account filter format here. You can leave this field blank to use the default account filter format, which is: (|(dn=%s)(mail=%s)(uid=%s))",
 			"native_only": true
 		},
 		{

@@ -30,7 +30,6 @@ namespace Application\ImportBundle\Generator\Writer\Json;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
-use Exception;
 
 /**
  * Generator json writer.
@@ -40,16 +39,16 @@ use Exception;
 final class JsonWriter extends AbstractWriter
 {
     /**
-     * @var Destination\Collection
+     * @var DestinationCollection|Destination[]
      */
     private $mapping;
 
     /**
      * Constructor.
      *
-     * @param Destination\Collection $mapping
+     * @param DestinationCollection $mapping
      */
-    public function __construct(Destination\Collection $mapping)
+    public function __construct(DestinationCollection $mapping)
     {
         $this->mapping = $mapping;
     }
@@ -77,7 +76,7 @@ final class JsonWriter extends AbstractWriter
     public function writeData(Entity\EntityInterface $entity)
     {
         if (!$this->config) {
-            throw new Exception('Generator configuration is not set up');
+            throw new \RuntimeException('Generator configuration is not set up');
         }
 
         $data = $entity->toArray();
@@ -91,18 +90,17 @@ final class JsonWriter extends AbstractWriter
      *
      * @param array $entity_types
      *
-     * @throws \Exception
+     * @throws \RuntimeException
      */
     private function createOutputEntityDirsIfNotExist(array $entity_types)
     {
         foreach ($this->mapping as $destination) {
-            /** @var Destination\DestinationInterface $destination */
             if (in_array($destination->getEntityType(), $entity_types, true)) {
                 $path = $this->getDestinationOutputPath($destination);
 
                 if (is_dir($path) === false) {
                     if (mkdir($path, 0777, true) === false) {
-                        throw new Exception(sprintf('Unable to create output dir `%s`', $path));
+                        throw new \RuntimeException(sprintf('Unable to create output dir `%s`', $path));
                     }
                 }
             }
@@ -112,14 +110,14 @@ final class JsonWriter extends AbstractWriter
     /**
      * Returns batch output path.
      *
-     * @throws Exception
+     * @throws \RuntimeException
      *
      * @return string
      */
     private function getBatchOutputPath()
     {
         if (!$this->config) {
-            throw new Exception('Generator configuration is not defined');
+            throw new \RuntimeException('Generator configuration is not defined');
         }
 
         $id = $this->batch_config && $this->batch_config->getId()
@@ -132,13 +130,11 @@ final class JsonWriter extends AbstractWriter
     /**
      * Returns destination path.
      *
-     * @param Destination\DestinationInterface $destination
-     *
-     * @throws Exception
+     * @param Destination $destination
      *
      * @return string
      */
-    private function getDestinationOutputPath(Destination\DestinationInterface $destination)
+    private function getDestinationOutputPath(Destination $destination)
     {
         return $this->getBatchOutputPath().$destination->getEntityOutputPath();
     }

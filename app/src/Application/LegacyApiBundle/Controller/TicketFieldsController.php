@@ -31,16 +31,21 @@
  */
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\Entity\TicketCategory;
+use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Hierarchy\HierarchyStructureProcessor;
+use Application\DeskPRO\TicketLayout\LayoutField;
+use Application\DeskPRO\Tickets\TicketCategories;
 use Application\LegacyApiBundle\Controller\Helper\CustomFieldHelper;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Operations about Ticket fields.
  *
- * SWG\Resource(
+ * @SWG\Resource(
  * 	resourcePath="/ticket_fields",
  * 	description="Operations about Ticket fields",
  * 	basePath="/api"
@@ -67,9 +72,9 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
     /**
      * @return Response;
      *
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/ticket_fields",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Get list of ticket fields, including custom fields",
      * 		notes="",
@@ -106,15 +111,18 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
-     * SWG\Api(
+     * @return Response
+     *
+     *
+     * @SWG\Api(
      * 	path="/ticket_fields/{id}",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Get custom ticket field by Id",
      * 		notes="",
      *		type="array",
-     *      SWG\Parameters (
-     *          SWG\Parameter(
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
      *				name="id",
      *				description="Custom field id",
      *				paramType="path",
@@ -124,8 +132,6 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      *      )
      *  )
      * )
-     *
-     * @return Response
      */
     public function getCustomFieldAction($id)
     {
@@ -152,15 +158,18 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Exception
      *
-     * SWG\Api(
+     * @return Response
+     *
+     *
+     * @SWG\Api(
      * 	path="/ticket_fields/{id}",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Save custom ticket field by ID",
      * 		notes="All you will pass in this query will be saved",
      *		type="array",
-     *      SWG\Parameters (
-     *          SWG\Parameter(
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
      *				name="id",
      *				description="Custom field id",
      *				paramType="path",
@@ -171,17 +180,15 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      *  )
      * )
      
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/ticket_fields",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="PUT",
      * 		summary="Create custom ticket field",
      * 		notes="All you will pass in this query will be saved",
      *		type="array",
      *  )
      * )
-     *
-     * @return Response
      */
     public function saveCustomFieldAction($id)
     {
@@ -223,15 +230,18 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
-     * SWG\Api(
+     * @return Response
+     *
+     *
+     * @SWG\Api(
      * 	path="/ticket_fields/{id}",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="DELETE",
      * 		summary="Delete custom field by ID",
      * 		notes="",
      *		type="array",
-     *      SWG\Parameters (
-     *          SWG\Parameter(
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
      *				name="id",
      *				description="Custom field ID",
      *				paramType="path",
@@ -241,8 +251,6 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      *      )
      *  )
      * )
-     *
-     * @return Response
      */
     public function deleteCustomFieldAction($id)
     {
@@ -267,22 +275,22 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      *
      * @return Response
      *
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/ticket_fields/set-enabled/{field_id}/{is_enabled}",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Set custom field enabled/disabled",
      * 		notes="",
      *		type="array",
-     *      SWG\Parameters (
-     *          SWG\Parameter(
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
      *				name="id",
      *				description="Custom field ID",
      *				paramType="path",
      *				required=true,
      *				type="integer",
      *			),
-     *          SWG\Parameter(
+     *          @SWG\Parameter(
      *				name="is_enabled",
      *				description="Enabled marker",
      *				paramType="path",

@@ -41,6 +41,11 @@ class DeskPROConfig implements ReaderConfigInterface
     protected $host;
 
     /**
+     * @var int
+     */
+    protected $port;
+
+    /**
      * @var string
      */
     protected $database;
@@ -64,14 +69,16 @@ class DeskPROConfig implements ReaderConfigInterface
      * Constructor.
      *
      * @param string $host
+     * @param int    $port
      * @param string $db
      * @param string $user
      * @param string $password
      * @param int    $start_ticket_id
      */
-    public function __construct($host, $db, $user, $password, $start_ticket_id = 0)
+    public function __construct($host, $port, $db, $user, $password, $start_ticket_id = 0)
     {
         $this->host            = $host;
+        $this->port            = $port;
         $this->database        = $db;
         $this->user            = $user;
         $this->password        = $password;
@@ -79,7 +86,7 @@ class DeskPROConfig implements ReaderConfigInterface
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getHost()
     {
@@ -87,7 +94,15 @@ class DeskPROConfig implements ReaderConfigInterface
     }
 
     /**
-     * @return mixed
+     * @return int
+     */
+    public function getPort()
+    {
+        return $this->port;
+    }
+
+    /**
+     * @return string
      */
     public function getDatabase()
     {
@@ -95,7 +110,7 @@ class DeskPROConfig implements ReaderConfigInterface
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getUser()
     {
@@ -103,7 +118,7 @@ class DeskPROConfig implements ReaderConfigInterface
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getPassword()
     {
@@ -125,6 +140,7 @@ class DeskPROConfig implements ReaderConfigInterface
     {
         return new self(
             $data['host'],
+            $data['port'],
             $data['db'],
             $data['user'],
             $data['password'],

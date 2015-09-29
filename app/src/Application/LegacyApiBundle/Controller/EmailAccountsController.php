@@ -286,11 +286,11 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 
         try {
             $sent = $raw_tr->sendRawMessage(
-            $this->in->getString('test_email.from'),
-            array($this->in->getString('test_email.to')),
-            $fp,
-            $failed
-        );
+                $this->in->getString('test_email.from'),
+                array($this->in->getString('test_email.to')),
+                $fp,
+                $failed
+            );
 
             if ($failed) {
                 $logger->notice(sprintf('NOTICE: Failed recipients: %s', implode(', ', $failed)));

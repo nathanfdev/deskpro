@@ -60,7 +60,7 @@ abstract class AbstractParserPeopleStorage implements ParserPeopleStorageInterfa
     /**
      * {@inheritdoc}
      */
-    public function loadBy(array $data)
+    public function loadBy($data)
     {
         $this->loadByIds($this->getPeopleIds($data));
     }
@@ -75,9 +75,9 @@ abstract class AbstractParserPeopleStorage implements ParserPeopleStorageInterfa
     /**
      * Returns all unique people ids.
      *
-     * @param array $data
+     * @param array|\Traversable $data
      *
      * @return array
      */
-    abstract protected function getPeopleIds(array $data);
+    abstract protected function getPeopleIds($data);
 }

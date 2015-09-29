@@ -29,13 +29,13 @@
 /**
  * DeskPRO.
  */
-namespace Application\ApiBundle\Controller;
+namespace Application\LegacyApiBundle\Controller;
 
-use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\People\AgentPermissions\AgentPermissions;
 use Application\DeskPRO\People\AgentPermissions\GroupDbPersister;
 use Application\DeskPRO\People\AgentPermissions\GroupsDbLoader;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 
 class ProblemsController extends AbstractController implements ProtectedControllerInterface
 {

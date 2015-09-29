@@ -44,6 +44,13 @@ interface ZenDeskReaderInterface extends ReaderInterface
     const CODE_NOT_FOUND             = 404;
 
     /**
+     * Returns account settings.
+     *
+     * @return array
+     */
+    public function getSettings();
+
+    /**
      * Returns a batch count of users.
      *
      * @param DateTime $start_time

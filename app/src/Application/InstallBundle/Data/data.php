@@ -142,6 +142,26 @@ if (!$IMPORT_INSTALL) {
     $em->flush();
 }
 
+################################################################################
+# Feedback
+################################################################################
+
+##BEGIN:create_feedback.default##
+$DEFAULT_IDEA_CAT          = new \Application\DeskPRO\Entity\FeedbackCategory();
+$DEFAULT_IDEA_CAT['title'] = $translate->phrase('user.defaults.feedback_type_suggestion');
+$em->persist($DEFAULT_IDEA_CAT);
+$em->flush();
+
+$cat          = new \Application\DeskPRO\Entity\FeedbackCategory();
+$cat['title'] = $translate->phrase('user.defaults.feedback_type_feature-request');
+$em->persist($cat);
+$em->flush();
+
+$cat          = new \Application\DeskPRO\Entity\FeedbackCategory();
+$cat['title'] = $translate->phrase('user.defaults.feedback_type_bug-report');
+$em->persist($cat);
+$em->flush();
+
 // Statuses are done as part of FeedbackCatsStep so we can map id's
 if (!$IMPORT_INSTALL) {
     // ensure gathering-feedback is always first, such that it's ID = 1

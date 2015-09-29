@@ -189,7 +189,7 @@ class JiraController extends AbstractController
      */
     public function linkAction($ticketId, $issueId)
     {
-        /* @var $ticket Ticket */
+        /** @var $ticket Ticket */
         if (!$ticket = $this->em->find('DeskPRO:Ticket', $ticketId)) {
             throw new NotFoundHttpException();
         }

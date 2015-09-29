@@ -50,13 +50,13 @@
                     </div>
                     <div class="form-group" ng-if="'zendesk' === id">
                         <p>
-                            This importer reads data from an existing ZenDesk helpdesk.
+                            This importer reads data from an existing Zendesk helpdesk.
                         </p>
 
                         <p>
                             <a href="https://manuals.deskpro.com/html/admin/importing-data/importing-zendesk.html"
                                target="_blank" class="btn btn-default" style="margin-top: 10px;">Read more about
-                                importing from ZenDesk &rarr;</a>
+                                importing from Zendesk &rarr;</a>
                         </p>
                     </div>
                 </div>
@@ -138,7 +138,7 @@
                                 <div class="col-lg-9">
                                     <input type="text" ng-model="importer.config.subdomain" class="form-control"/>
 
-                                    <p class="help-block">Enter your ZenDesk sub-domain. For example, if your helpdesk is at <em>http://example.zendesk.com/</em> then you should enter <em>example</em> here.</p>
+                                    <p class="help-block">Enter your Zendesk subdomain. For example, if your helpdesk is at <em>http://example.zendesk.com/</em> then you should enter <em>example</em> here.</p>
                                 </div>
                             </div>
 
@@ -150,7 +150,7 @@
                                 <div class="col-lg-9">
                                     <input type="text" ng-model="importer.config.username" class="form-control"/>
 
-                                    <p class="help-block">Enter your ZenDesk admin username.</p>
+                                    <p class="help-block">Enter your Zendesk admin username.</p>
                                 </div>
                             </div>
 
@@ -174,7 +174,7 @@
                                 <div class="col-lg-9">
                                     <input type="text" ng-model="importer.config.token" class="form-control"/>
 
-                                    <p class="help-block">Enter your ZenDesk API token (<a href="https://developer.zendesk.com/rest_api/docs/core/introduction#security-and-authentication">more info</a>).</p>
+                                    <p class="help-block">Enter your Zendesk API token (<a href="https://developer.zendesk.com/rest_api/docs/core/introduction#security-and-authentication" target="_blank">more info</a>).</p>
                                 </div>
                             </div>
 
@@ -205,6 +205,18 @@
                                     <input type="text" class="form-control" ng-model="importer.config.host"/>
 
                                     <p class="help-block">Enter the hostname or IP address of the osTicket database.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-lg-3">
+                                    MySQL Database Port
+                                </label>
+
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" ng-model="importer.config.port"/>
+
+                                    <p class="help-block">Enter the port of the osTicket database.</p>
                                 </div>
                             </div>
 
@@ -250,49 +262,61 @@
                         <div ng-if="'deskpro' === id">
                             <div class="form-group">
                                 <label class="col-lg-3">
-                                    Host
+                                    MySQL Database Host
                                 </label>
 
                                 <div class="col-lg-9">
                                     <input type="text" class="form-control" ng-model="importer.config.host"/>
 
-                                    <p class="help-block">Host</p>
+                                    <p class="help-block">Enter the hostname or IP address of the DeskPRO database.</p>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label class="col-lg-3">
-                                    Database
+                                    MySQL Database Port
+                                </label>
+
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" ng-model="importer.config.port"/>
+
+                                    <p class="help-block">Enter the port of the DeskPRO database.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-lg-3">
+                                    MySQL Database Name
                                 </label>
 
                                 <div class="col-lg-9">
                                     <input type="text" class="form-control" ng-model="importer.config.db"/>
 
-                                    <p class="help-block">Database</p>
+                                    <p class="help-block">Enter the name of the database used for DeskPRO.</p>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label class="col-lg-3">
-                                    Username
+                                    MySQL Username
                                 </label>
 
                                 <div class="col-lg-9">
                                     <input type="text" class="form-control" ng-model="importer.config.user"/>
 
-                                    <p class="help-block">Username</p>
+                                    <p class="help-block">Enter a MySQL user who can use the database.</p>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label class="col-lg-3">
-                                    Password
+                                    MySQL Password
                                 </label>
 
                                 <div class="col-lg-9">
                                     <input type="password" class="form-control" ng-model="importer.config.password"/>
 
-                                    <p class="help-block">Password</p>
+                                    <p class="help-block">Enter the password for the above MySQL user.</p>
                                 </div>
                             </div>
 

@@ -26,35 +26,23 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Generator\Writer\Json\Destination;
+namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI;
+
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
+use Zendesk\API\Client;
 
 /**
- * Entity destination interface.
+ * ZenDesk account settings find request client helper.
  *
- * Interface DestinationInterface
+ * Class SettingsFindAll
  */
-interface DestinationInterface
+final class SettingsFindAll extends AbstractHelper
 {
-    const ENTITY_PERSON_PATH           = 'people/';
-    const ENTITY_TICKET_PATH           = 'tickets/';
-    const ENTITY_ARTICLE_PATH          = 'articles/';
-    const ENTITY_ARTICLE_CATEGORY_PATH = 'article_categories/';
-    const ENTITY_DOWNLOAD_PATH         = 'downloads/';
-    const ENTITY_FEEDBACK_PATH         = 'feedback/';
-    const ENTITY_NEWS_PATH             = 'news/';
-    const ENTITY_ORGANIZATION_PATH     = 'organizations/';
-
     /**
-     * Referred entity type.
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getEntityType();
-
-    /**
-     * Relative entity output path.
-     *
-     * @return string
-     */
-    public function getEntityOutputPath();
+    public function request(Client $client)
+    {
+        return $client->settings()->findAll($this->params);
+    }
 }

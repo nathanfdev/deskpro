@@ -174,6 +174,17 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
+    public function getFormattedForVCard()
+    {
+        $number = (string) $this->getPhoneNumber();
+
+        if ($ext = $this->ext) {
+            $number .= ';ext='.$ext;
+        }
+
+        return $number;
+    }
+
     /**
      * @return string|int|null
      */

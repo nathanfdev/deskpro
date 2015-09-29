@@ -34,6 +34,7 @@ namespace Application\DeskPRO\CustomFields;
 use Application\DeskPRO\App;
 use Application\DeskPRO\CustomFields\Handler\Choice;
 use Application\DeskPRO\CustomFields\Handler\Date;
+use Application\DeskPRO\CustomFields\Handler\DateTime;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 
 class FieldDisplayArray implements \ArrayAccess
@@ -155,7 +156,7 @@ class FieldDisplayArray implements \ArrayAccess
                 break;
 
             case 'formViewCriteria':
-                    $handler = $this->field_def->getHandler();
+                $handler = $this->field_def->getHandler();
 
                 if ($handler instanceof Choice && !$this->field_def->getOption('multiple')) {
                     $handler->enableMultiple();
@@ -184,7 +185,7 @@ class FieldDisplayArray implements \ArrayAccess
                     $this->data['formViewCriteria'] = $formView;
 
                     $handler->disableMultiple();
-                } elseif ($handler instanceof Date) {
+                } elseif ($handler instanceof Date || $handler instanceof DateTime) {
                     $this->data['form']             = $handler->getSearchCriteriaForm($this->data['value']);
                     $this->data['formView']         = $this->data['form']->createView();
                     $this->data['formViewCriteria'] = $this->data['formView'];

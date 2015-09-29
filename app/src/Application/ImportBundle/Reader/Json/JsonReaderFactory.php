@@ -26,19 +26,25 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Generator\Writer;
+namespace Application\ImportBundle\Reader\Json;
+
+use Application\ImportBundle\Reader\ReaderConfigInterface;
+use Application\ImportBundle\Reader\ReaderFactoryInterface;
 
 /**
- * Generator writer factory interface.
- *
- * Interface FactoryInterface
+ * Class JsonReaderFactory.
  */
-interface FactoryInterface
+class JsonReaderFactory implements ReaderFactoryInterface
 {
     /**
-     * Returns a writer.
-     *
-     * @return WriterInterface
+     * {@inheritdoc}
      */
-    public function createWriter();
+    public function createReader(ReaderConfigInterface $config)
+    {
+        if (!$config instanceof JsonConfig) {
+            throw new \RuntimeException('Config expected to be instance of JsonConfig');
+        }
+
+        return new JsonReader($config);
+    }
 }

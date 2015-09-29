@@ -48,9 +48,7 @@ abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Gen
     }
 
     /**
-     * Returns people from reader by ids.
-     *
-     * @param array $ids
+     * {@inheritdoc}
      */
     protected function loadByIds($ids)
     {

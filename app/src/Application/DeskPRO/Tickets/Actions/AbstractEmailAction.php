@@ -107,7 +107,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         $context->getLogger()->debug("[AbstractEmailAction] Using template: $template");
         if (!$this->getContainer()->getTemplating()->exists($template)) {
             $context->getLogger()->warn('[AbstractEmailAction] Template does not exist');
-            throw new \InvalidArgumentException('invalid_templte');
+            throw new \InvalidArgumentException('invalid_template');
         }
 
         return $template;

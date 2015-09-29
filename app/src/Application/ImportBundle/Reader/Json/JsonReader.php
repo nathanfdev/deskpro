@@ -29,7 +29,7 @@
 namespace Application\ImportBundle\Reader\Json;
 
 use Application\ImportBundle\Reader\AbstractReader;
-use Exception;
+use Application\ImportBundle\Reader\NotFoundException;
 use RecursiveIteratorIterator;
 use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 use Symfony\Component\Finder\Iterator\SortableIterator;
@@ -39,6 +39,8 @@ use Symfony\Component\Finder\SplFileInfo;
  * Json data parser.
  *
  * Class JsonReader
+ *
+ * @property JsonConfig $config
  */
 class JsonReader extends AbstractReader implements JsonReaderInterface
 {
@@ -55,10 +57,51 @@ class JsonReader extends AbstractReader implements JsonReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getDirectoryFilesCount(JsonConfig $config)
+    public function checkConfig()
+    {
+        $paths = array(
+            self::ENTITY_ARTICLE_PATH,
+            self::ENTITY_ARTICLE_CATEGORY_PATH,
+            self::ENTITY_DOWNLOAD_PATH,
+            self::ENTITY_FEEDBACK_PATH,
+            self::ENTITY_NEWS_PATH,
+            self::ENTITY_PERSON_PATH,
+            self::ENTITY_TICKET_PATH,
+            self::ENTITY_ORGANIZATION_PATH,
+        );
+
+        if (!is_dir($this->config->getPath())) {
+            throw new \RuntimeException(sprintf('`%s` is not a directory', $this->config->getPath()));
+        }
+
+        foreach ($paths as $path) {
+            try {
+                $this->getIterator($this->getEntityPath($path, 1));
+
+                return true;
+            } catch (NotFoundException $e) {
+                // File not found, continue...
+            }
+        }
+
+        throw new \RuntimeException(sprintf(
+            'No json files found in directory `%s`. Checked in sub directories: %s.',
+            $this->config->getPath(), implode(', ', array_map(
+                function ($path) {
+                    return '`'.$path.'`';
+                },
+                $paths
+            ))
+        ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDirectoryFilesCount($entity_path, $batch_num)
     {
         $count    = 0;
-        $iterator = $this->getIterator($config->getPath());
+        $iterator = $this->getIterator($this->getEntityPath($entity_path, $batch_num));
 
         foreach ($iterator as $file) {
             /* @var SplFileInfo $file */
@@ -74,10 +117,10 @@ class JsonReader extends AbstractReader implements JsonReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getData(JsonConfig $config)
+    public function getData($entity_path, $batch_num)
     {
         $data     = array();
-        $iterator = $this->getIterator($config->getPath());
+        $iterator = $this->getIterator($this->getEntityPath($entity_path, $batch_num));
 
         foreach ($iterator as $file) {
             /* @var SplFileInfo $file */
@@ -91,11 +134,24 @@ class JsonReader extends AbstractReader implements JsonReaderInterface
     }
 
     /**
+     * Returns entity type path.
+     *
+     * @param string $entity_type
+     * @param int    $batch_num
+     *
+     * @return string
+     */
+    private function getEntityPath($entity_type, $batch_num)
+    {
+        return sprintf('%s/%d/%s', $this->config->getPath(), $batch_num, $entity_type);
+    }
+
+    /**
      * Returns directory json files iterator.
      *
      * @param string $path
      *
-     * @throws Exception
+     * @throws NotFoundException
      *
      * @return RecursiveIteratorIterator
      */
@@ -107,13 +163,13 @@ class JsonReader extends AbstractReader implements JsonReaderInterface
 
         return new SortableIterator(
             new RecursiveIteratorIterator(
-            new DirectoryIteratorFilter(
-                new RecursiveDirectoryIterator(
-                    $path,
-                    RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::CURRENT_AS_FILEINFO
+                new DirectoryIteratorFilter(
+                    new RecursiveDirectoryIterator(
+                        $path,
+                        RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::CURRENT_AS_FILEINFO
                     )
-            ),
-            RecursiveIteratorIterator::SELF_FIRST | RecursiveIteratorIterator::LEAVES_ONLY
+                ),
+                RecursiveIteratorIterator::SELF_FIRST | RecursiveIteratorIterator::LEAVES_ONLY
             ),
             SortableIterator::SORT_BY_NAME
         );

@@ -26,30 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Generator\Writer\Json\Destination;
+namespace Application\ImportBundle\Generator\Writer;
 
-use Application\ImportBundle\Entity;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 /**
- * News entity destination.
+ * Base generator writer factory.
  *
- * Class News
+ * Class AbstractWriterFactory
  */
-final class News implements DestinationInterface
+abstract class AbstractWriterFactory implements WriterFactoryInterface
 {
     /**
-     * {@inheritdoc}
+     * @var DeskproContainer
      */
-    public function getEntityType()
-    {
-        return Entity\EntityInterface::TYPE_NEWS;
-    }
+    protected $container;
 
     /**
-     * {@inheritdoc}
+     * Constructor.
+     *
+     * @param DeskproContainer $container
      */
-    public function getEntityOutputPath()
+    public function __construct(DeskproContainer $container)
     {
-        return self::ENTITY_NEWS_PATH;
+        $this->container = $container;
     }
 }

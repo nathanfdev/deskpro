@@ -26,30 +26,48 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Generator\Writer\Json\Destination;
+namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
+use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
 
 /**
- * Ticket entity destination.
+ * DeskPRO person labels importer.
  *
- * Class Ticket
+ * Class PersonLabel
  */
-final class Ticket implements DestinationInterface
+final class PersonLabel extends AbstractImporter
 {
     /**
      * {@inheritdoc}
      */
     public function getEntityType()
     {
-        return Entity\EntityInterface::TYPE_TICKET;
+        return Entity\EntityInterface::TYPE_PERSON;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getEntityOutputPath()
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        return self::ENTITY_TICKET_PATH;
+        if (!$entity instanceof Entity\Person) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
+
+        $person = $this->getPersonMapper()->findOneByEmails($entity->getEmails());
+        $person->resetLabels();
+
+        foreach ($entity->getLabels() as $label_name) {
+            $label = new DeskPROEntity\LabelPerson();
+            $label->setLabel($label_name);
+
+            $person->addLabel($label);
+            $this->logDebug(sprintf('Creating a new label `%s` for person with oid `%d`', $label_name, $person->getId()));
+        }
+
+        $this->records->setPrimaryEntity($person);
+
+        return $this->records;
     }
 }

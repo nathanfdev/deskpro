@@ -28,17 +28,11 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
+use Application\ImportBundle\Reader\ReaderFactoryInterface;
+
 /**
  * Interface ZenDeskReaderFactoryInterface.
  */
-interface ZenDeskReaderFactoryInterface
+interface ZenDeskReaderFactoryInterface extends ReaderFactoryInterface
 {
-    /**
-     * Creates a reader.
-     *
-     * @param ZenDeskConfig $config
-     *
-     * @return ZenDeskReader
-     */
-    public function createReader(ZenDeskConfig $config);
 }

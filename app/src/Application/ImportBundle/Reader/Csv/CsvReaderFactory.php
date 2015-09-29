@@ -26,25 +26,25 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Generator\Exporter;
+namespace Application\ImportBundle\Reader\Csv;
 
 use Application\ImportBundle\Reader\ReaderConfigInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Application\ImportBundle\Reader\ReaderFactoryInterface;
 
 /**
- * Exporter factory interface.
- *
- * Interface FactoryInterface
+ * Class CsvReaderFactory.
  */
-interface FactoryInterface
+class CsvReaderFactory implements ReaderFactoryInterface
 {
     /**
-     * Creates an exporter instance.
-     *
-     * @param ContainerInterface    $container
-     * @param ReaderConfigInterface $config
-     *
-     * @return ExporterInterface
+     * {@inheritdoc}
      */
-    public static function createExporter(ContainerInterface $container, ReaderConfigInterface $config);
+    public function createReader(ReaderConfigInterface $config)
+    {
+        if (!$config instanceof CsvConfig) {
+            throw new \RuntimeException('Config expected to be instance of CsvConfig');
+        }
+
+        return new CsvReader($config);
+    }
 }

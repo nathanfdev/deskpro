@@ -70,9 +70,18 @@ interface OsTicketReaderInterface extends ReaderInterface
      * @param int $limit
      * @param int $min_id
      *
-     * @return mixed
+     * @return array
      */
     public function findStaff($limit, $min_id);
+
+    /**
+     * Returns staff by their ids.
+     *
+     * @param array $ids
+     *
+     * @return array
+     */
+    public function findStaffByIds(array $ids);
 
     /**
      * Returns users.
@@ -80,9 +89,18 @@ interface OsTicketReaderInterface extends ReaderInterface
      * @param int $limit
      * @param int $min_id
      *
-     * @return mixed
+     * @return array
      */
     public function findUsers($limit, $min_id);
+
+    /**
+     * Returns users by their ids.
+     *
+     * @param array $ids
+     *
+     * @return array
+     */
+    public function findUsersByIds(array $ids);
 
     /**
      * Returns tickets.

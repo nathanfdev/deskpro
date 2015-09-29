@@ -26,47 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Generator\Writer\Json\Destination;
+namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\AbstractCollection;
-use Exception;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 /**
- * Collection of the supported json writer entities.
+ * Base generator exporter factory.
  *
- * Class Collection
+ * Class AbstractExporterFactory
  */
-final class Collection extends AbstractCollection
+abstract class AbstractExporterFactory implements ExporterFactoryInterface
 {
     /**
-     * Attach a destination configuration.
-     *
-     * @param DestinationInterface $destination
-     *
-     * @return $this
+     * @var DeskproContainer
      */
-    public function attach(DestinationInterface $destination)
-    {
-        $this->collection[$destination->getEntityType()] = $destination;
-
-        return $this;
-    }
+    protected $container;
 
     /**
-     * Returns a destination by entity type.
+     * Constructor.
      *
-     * @param string $type
-     *
-     * @throws Exception
-     *
-     * @return DestinationInterface
+     * @param DeskproContainer $container
      */
-    public function getByEntityType($type)
+    public function __construct(DeskproContainer $container)
     {
-        if (isset($this->collection[$type])) {
-            return $this->collection[$type];
-        }
-
-        throw new Exception(sprintf('Destination `%s` not found', $type));
+        $this->container = $container;
     }
 }

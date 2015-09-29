@@ -26,11 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Reader\Json;
+namespace Application\ImportBundle\Importer;
+
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 /**
- * Class NotFoundException.
+ * Class ImporterFactory.
  */
-final class NotFoundException extends \Exception
+class ImporterFactory
 {
+    /**
+     * @param DeskproContainer $container
+     *
+     * @return Importer
+     */
+    public static function create(DeskproContainer $container)
+    {
+        $entity_manager = $container->get('doctrine.orm.entity_manager');
+        $blob_storage   = $container->getBlobStorage();
+        $zipper         = $container->getSystemService('zipper');
+
+        return new Importer($entity_manager, $blob_storage, $zipper);
+    }
 }

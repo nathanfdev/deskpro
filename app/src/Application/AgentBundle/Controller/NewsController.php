@@ -382,7 +382,7 @@ class NewsController extends AbstractController
 
     public function newNewsAction()
     {
-        $news_categories = $this->em->getRepository('DeskPRO:NewsCategory')->getFlatHierarchy();
+        $news_categories = $this->em->getRepository('DeskPRO:NewsCategory')->getInHierarchy();
 
         $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newnews', $this->person->id);
 

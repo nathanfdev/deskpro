@@ -28,35 +28,36 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\ImportBundle\Reader\DeskPRO\DeskPROConfig;
-use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderFactory;
-use Application\ImportBundle\Reader\ReaderConfigInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Application\ImportBundle\Reader\DeskPRO\DeskPROReader;
+use Application\ImportBundle\Reader\ReaderInterface;
 
 /**
  * DeskPRO data exporter factory.
  *
  * Class DeskPROFactory
  */
-class DeskPROFactory extends AbstractFactory
+class DeskPROFactory extends AbstractExporterFactory
 {
     /**
      * {@inheritdoc}
      */
-    public static function createExporter(ContainerInterface $container, ReaderConfigInterface $config)
+    public function createExporter(ReaderInterface $reader)
     {
-        if (!$config instanceof DeskPROConfig) {
-            throw new \RuntimeException('Config expected to be instance of DeskPROConfig');
+        if (!$reader instanceof DeskPROReader) {
+            throw new \RuntimeException('Config expected to be instance of DeskPROReader');
         }
 
-        /* @var DeskproContainer $container */
-        $reader = DeskPROReaderFactory::createReader($config, $container);
+        /** @var DeskPROConfig $config */
+        $config = $reader->getConfig();
+
+        $people_storage = new Parser\PeopleStorage();
+        $ticket_people  = new Parser\DeskPRO\TicketPeopleStorage($reader, $people_storage);
 
         $parsers = new Parser\Collection();
         $parsers
-            ->attach(new Parser\DeskPRO\People($reader))
-            ->attach(new Parser\DeskPRO\Tickets($reader, $config->getStartTicketId()))
+            ->attach(new Parser\DeskPRO\People($reader, $people_storage))
+            ->attach(new Parser\DeskPRO\Tickets($reader, $ticket_people, $config->getStartTicketId()))
             ->attach(new Parser\DeskPRO\Articles($reader))
             ->attach(new Parser\DeskPRO\ArticleCategories($reader))
             ->attach(new Parser\DeskPRO\Downloads($reader))

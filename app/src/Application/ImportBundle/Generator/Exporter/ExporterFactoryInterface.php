@@ -26,30 +26,23 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Generator\Writer\Json\Destination;
+namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Entity;
+use Application\ImportBundle\Reader\ReaderInterface;
 
 /**
- * Feedback entity destination.
+ * Exporter factory interface.
  *
- * Class Feedback
+ * Interface ExporterFactoryInterface
  */
-final class Feedback implements DestinationInterface
+interface ExporterFactoryInterface
 {
     /**
-     * {@inheritdoc}
-     */
-    public function getEntityType()
-    {
-        return Entity\EntityInterface::TYPE_FEEDBACK;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getEntityOutputPath()
-    {
-        return self::ENTITY_FEEDBACK_PATH;
-    }
+      * Creates an exporter instance.
+      *
+      * @param ReaderInterface $reader
+      *
+      * @return ExporterInterface
+      */
+     public function createExporter(ReaderInterface $reader);
 }

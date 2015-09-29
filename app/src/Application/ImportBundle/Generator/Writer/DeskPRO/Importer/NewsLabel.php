@@ -26,30 +26,48 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Generator\Writer\Json\Destination;
+namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
+use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
 
 /**
- * Person entity destination.
+ * DeskPRO news labels importer.
  *
- * Class Person
+ * Class NewsLabel
  */
-final class Person implements DestinationInterface
+final class NewsLabel extends AbstractImporter
 {
     /**
      * {@inheritdoc}
      */
     public function getEntityType()
     {
-        return Entity\EntityInterface::TYPE_PERSON;
+        return Entity\EntityInterface::TYPE_NEWS;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getEntityOutputPath()
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        return self::ENTITY_PERSON_PATH;
+        if (!$entity instanceof Entity\News) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
+
+        $news = $this->getNewsMapper()->findOneByTitle($entity->getTitle());
+        $news->resetLabels();
+
+        foreach ($entity->getLabels() as $label_name) {
+            $label = new DeskPROEntity\LabelNews();
+            $label->setLabel($label_name);
+
+            $news->addLabel($label);
+            $this->logDebug(sprintf('Creating a new label `%s` for news with oid `%d`', $label_name, $news->getId()));
+        }
+
+        $this->records->setPrimaryEntity($news);
+
+        return $this->records;
     }
 }

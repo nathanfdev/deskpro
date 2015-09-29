@@ -29,12 +29,12 @@
 /**
  * DeskPRO.
  */
-namespace Application\ApiBundle\Controller;
+namespace Application\LegacyApiBundle\Controller;
 
-use Application\ApiBundle\Controller\Helper\CustomFieldHelper;
-use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\ApiBundle\PermissionStrategy\MultiPermissions;
-use Application\ApiBundle\PermissionStrategy\PassPermission;
+use Application\LegacyApiBundle\Controller\Helper\CustomFieldHelper;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
+use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 
 class BillingFieldsController extends AbstractController implements ProtectedControllerInterface
 {

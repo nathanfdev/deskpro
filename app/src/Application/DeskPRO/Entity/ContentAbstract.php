@@ -197,6 +197,8 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @deprecated use $this->get('object_router')->getPortalUrl($this) instead
+     *
+     * @return $this
      */
     public function getLink()
     {
@@ -620,6 +622,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @return Person
+     * @return $this
      */
     public function getPerson()
     {
@@ -647,6 +650,8 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getDateCreated()
     {
+        $this->setModelField('date_published', $date_published);
+
         return $this->date_created;
     }
 

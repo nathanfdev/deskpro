@@ -26,27 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Generator\Writer;
-
-use Symfony\Component\DependencyInjection\ContainerInterface;
+namespace Application\ImportBundle\Reader;
 
 /**
- * Class AbstractFactory.
+ * Interface ReaderFactoryInterface.
  */
-abstract class AbstractFactory implements FactoryInterface
+interface ReaderFactoryInterface
 {
     /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    /**
-     * Constructor.
+     * Creates a reader.
      *
-     * @param ContainerInterface $container
+     * @param ReaderConfigInterface $config
+     *
+     * @return ReaderInterface
      */
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
+    public function createReader(ReaderConfigInterface $config);
 }

@@ -48,7 +48,7 @@ use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 final class Articles extends AbstractParser
 {
     /**
-     * @var ArticlePeopleStorage
+     * @var ParserPeopleStorageInterface
      */
     private $article_people;
 

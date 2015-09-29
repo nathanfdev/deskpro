@@ -360,7 +360,7 @@ class BanningController extends AbstractController implements ProtectedControlle
      */
     public function importEmailsAction()
     {
-        /* @var $file UploadedFile */
+        /** @var $file UploadedFile */
         if (!($file = $this->request->files->get('file')) instanceof UploadedFile) {
             throw $this->createNotFoundException();
         }
