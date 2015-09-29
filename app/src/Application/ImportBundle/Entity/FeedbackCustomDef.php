@@ -26,7 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI;
 namespace Application\ImportBundle\Entity;
 
 /**
@@ -50,6 +49,8 @@ final class FeedbackCustomDef extends AbstractCustomDef
     }
 
     /**
+     * Returns sys name.
+     *
      * @return string
      */
     public function getSysName()
@@ -58,12 +59,16 @@ final class FeedbackCustomDef extends AbstractCustomDef
     }
 
     /**
+     * Set sys name.
+     *
      * @param string $sys_name
+     *
      * @return $this
      */
     public function setSysName($sys_name)
     {
         $this->sys_name = $sys_name;
+
         return $this;
     }
 

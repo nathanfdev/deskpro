@@ -32,7 +32,6 @@ namespace Application\ImportBundle\Entity;
  * Exporting article custom def entity.
  *
  * Class ArticleCustomDef
- * @package Application\ImportBundle\Entity
  */
 final class ArticleCustomDef extends AbstractCustomDef
 {

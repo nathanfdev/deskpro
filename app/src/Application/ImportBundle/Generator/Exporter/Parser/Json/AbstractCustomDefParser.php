@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
@@ -33,17 +34,17 @@ use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\Transforme
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
- * Abstract custom def json file parser
+ * Abstract custom def json file parser.
  *
  * Class AbstractCustomDefParser
- * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
 abstract class AbstractCustomDefParser extends AbstractParser
 {
     /**
-     * Returns a collection of custom def choices
+     * Returns a collection of custom def choices.
      *
      * @param array $children
+     *
      * @return Entity\Collection
      */
     protected function exportChildren(array $children)
@@ -60,9 +61,10 @@ abstract class AbstractCustomDefParser extends AbstractParser
     }
 
     /**
-     * Returns custom def entity
+     * Returns custom def entity.
      *
      * @param array $data
+     *
      * @return Entity\AbstractCustomDef
      */
     protected function exportCustomDef(array $data)
@@ -72,15 +74,15 @@ abstract class AbstractCustomDefParser extends AbstractParser
             'oid'            => TransformerInterface::TYPE_STRING,
             'import_map_key' => TransformerInterface::TYPE_STRING,
             'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => $entity->getDestinationPrefix(),
-                'ref'    => 'oid',
+                'prefix'     => $entity->getDestinationPrefix(),
+                'ref'        => 'oid',
             )),
-            'title'          => TransformerInterface::TYPE_STRING,
-            'description'    => TransformerInterface::TYPE_STRING,
-            'handler_class'  => TransformerInterface::TYPE_STRING,
-            'is_enabled'     => TransformerInterface::TYPE_BOOLEAN,
-            'options'        => TransformerInterface::TYPE_ARRAY,
-            'children'       => TransformerInterface::TYPE_ARRAY,
+            'title'         => TransformerInterface::TYPE_STRING,
+            'description'   => TransformerInterface::TYPE_STRING,
+            'handler_class' => TransformerInterface::TYPE_STRING,
+            'is_enabled'    => TransformerInterface::TYPE_BOOLEAN,
+            'options'       => TransformerInterface::TYPE_ARRAY,
+            'children'      => TransformerInterface::TYPE_ARRAY,
         ));
 
         $entity
@@ -104,9 +106,9 @@ abstract class AbstractCustomDefParser extends AbstractParser
     }
 
     /**
-     * Returns empty custom def entity
+     * Returns empty custom def entity.
      *
      * @return Entity\AbstractCustomDef
      */
-    protected abstract function getDefaultCustomDefEntity();
+    abstract protected function getDefaultCustomDefEntity();
 }
