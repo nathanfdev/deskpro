@@ -33,6 +33,8 @@ use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\Transforme
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
+ * Abstract custom def json file parser
+ *
  * Class AbstractCustomDefParser
  * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */

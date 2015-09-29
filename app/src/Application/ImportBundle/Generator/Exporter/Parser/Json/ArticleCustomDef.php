@@ -32,6 +32,8 @@ use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 
 /**
+ * Articles custom def json file parser
+ *
  * Class ArticleCustomDef
  * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
