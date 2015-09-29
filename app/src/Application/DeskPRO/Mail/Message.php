@@ -242,7 +242,7 @@ class Message extends \Orb\Mail\Message
                                     return;
                                 }
 
-                                return 'deskpro.com/go/reply';
+                                return 'https://deskpro.com/go/reply';
                             });
                             $plaintext = $h2t->convert($plaintext);
                         } catch (\Exception $e) {
@@ -258,7 +258,7 @@ class Message extends \Orb\Mail\Message
                 } else {
                     $plaintext = str_replace("\n", '', $plaintext);
                     $plaintext = str_replace(array('<br/>', '<br />', '<p>', '</p>', '<div>'), "\n", $plaintext);
-                    $plaintext = preg_replace('#<a[^>]+dp-reply-help-link[^>]+>[^<]+</a>#', 'deskpro.com/go/reply', $plaintext);
+                    $plaintext = preg_replace('#<a[^>]+dp-reply-help-link[^>]+>[^<]+</a>#', 'https://deskpro.com/go/reply', $plaintext);
                     $plaintext = Strings::stripTags($plaintext);
                     if ($plaintext) {
                         $this->addPart($plaintext, 'text/plain');
