@@ -77,14 +77,14 @@ abstract class AbstractCustomDefMapper extends AbstractImportMapMapper
         if (is_string($choice_chain)) {
             $choice_chain = explode('>', $choice_chain);
             $choice_chain = array_map('trim', $choice_chain);
+
+            return $this->findOneBy(array(
+                'title'  => array_pop($choice_chain),
+                'parent' => $parent,
+            ));
         }
 
-        $custom_field_def = $this->findOneBy(array(
-            'title'  => array_shift($choice_chain),
-            'parent' => $parent,
-        ));
-
-        return empty($choice_chain) ? $custom_field_def : $this->findChoiceCustomDef($choice_chain, $custom_field_def);
+        return null;
     }
 
     /**

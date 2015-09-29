@@ -38,14 +38,14 @@ class CustomDefFeedback extends AbstractFixture
      */
     private function addTextField(ObjectManager $manager)
     {
-        $ticket_def = new Entity\CustomDefFeedback();
-        $ticket_def
+        $feedback_def = new Entity\CustomDefFeedback();
+        $feedback_def
             ->setTitle('Text field')
             ->setDescription('Text field description')
             ->setHandlerClass(Entity\CustomDefFeedback::HANDLER_CLASS_TEXT)
         ;
 
-        $manager->persist($ticket_def);
+        $manager->persist($feedback_def);
     }
 
     /**
@@ -54,14 +54,14 @@ class CustomDefFeedback extends AbstractFixture
      */
     private function addTextareaField(ObjectManager $manager)
     {
-        $ticket_def = new Entity\CustomDefFeedback();
-        $ticket_def
+        $feedback_def = new Entity\CustomDefFeedback();
+        $feedback_def
             ->setTitle('Textarea field')
             ->setDescription('Textarea field description')
             ->setHandlerClass(Entity\CustomDefFeedback::HANDLER_CLASS_TEXTAREA)
         ;
 
-        $manager->persist($ticket_def);
+        $manager->persist($feedback_def);
     }
 
     /**
@@ -70,28 +70,28 @@ class CustomDefFeedback extends AbstractFixture
      */
     private function addSelectBoxField(ObjectManager $manager)
     {
-        $ticket_def = new Entity\CustomDefFeedback();
-        $ticket_def
+        $feedback_def = new Entity\CustomDefFeedback();
+        $feedback_def
             ->setTitle('Custom ticket select box field')
             ->setDescription('Select box field description')
             ->setHandlerClass(Entity\CustomDefFeedback::HANDLER_CLASS_CHOICE)
         ;
 
-        $ticket_def_choice1 = new Entity\CustomDefFeedback();
-        $ticket_def_choice1
+        $feedback_def_choice1 = new Entity\CustomDefFeedback();
+        $feedback_def_choice1
             ->setTitle('Choice 1')
-            ->setParent($ticket_def)
+            ->setParent($feedback_def)
         ;
 
-        $ticket_def_choice2 = new Entity\CustomDefFeedback();
-        $ticket_def_choice2
+        $feedback_def_choice2 = new Entity\CustomDefFeedback();
+        $feedback_def_choice2
             ->setTitle('Choice 2')
-            ->setParent($ticket_def)
+            ->setParent($feedback_def)
         ;
 
-        $manager->persist($ticket_def);
-        $manager->persist($ticket_def_choice1);
-        $manager->persist($ticket_def_choice2);
+        $manager->persist($feedback_def);
+        $manager->persist($feedback_def_choice1);
+        $manager->persist($feedback_def_choice2);
     }
 
     /**
@@ -100,56 +100,56 @@ class CustomDefFeedback extends AbstractFixture
      */
     private function addMultipleSelectBoxField(ObjectManager $manager)
     {
-        $ticket_def = new Entity\CustomDefFeedback();
-        $ticket_def
+        $feedback_def = new Entity\CustomDefFeedback();
+        $feedback_def
             ->setTitle('Multiple-select box field')
             ->setDescription('Multiple-select box field description')
             ->setHandlerClass(Entity\CustomDefFeedback::HANDLER_CLASS_CHOICE)
         ;
 
-        $ticket_def_choice1 = new Entity\CustomDefFeedback();
-        $ticket_def_choice1
+        $feedback_def_choice1 = new Entity\CustomDefFeedback();
+        $feedback_def_choice1
             ->setTitle('Choice 1')
-            ->setParent($ticket_def)
+            ->setParent($feedback_def)
         ;
 
-        $ticket_def_choice2 = new Entity\CustomDefFeedback();
-        $ticket_def_choice2
+        $feedback_def_choice2 = new Entity\CustomDefFeedback();
+        $feedback_def_choice2
             ->setTitle('Choice 2')
-            ->setParent($ticket_def_choice1)
+            ->setParent($feedback_def)
         ;
 
-        $ticket_def_choice3 = new Entity\CustomDefFeedback();
-        $ticket_def_choice3
+        $feedback_def_choice3 = new Entity\CustomDefFeedback();
+        $feedback_def_choice3
             ->setTitle('Choice 3')
-            ->setParent($ticket_def_choice1)
+            ->setParent($feedback_def)
         ;
 
-        $ticket_def_choice4 = new Entity\CustomDefFeedback();
-        $ticket_def_choice4
+        $feedback_def_choice4 = new Entity\CustomDefFeedback();
+        $feedback_def_choice4
             ->setTitle('Choice 4')
-            ->setParent($ticket_def)
+            ->setParent($feedback_def)
         ;
 
-        $ticket_def_choice5 = new Entity\CustomDefFeedback();
-        $ticket_def_choice5
+        $feedback_def_choice5 = new Entity\CustomDefFeedback();
+        $feedback_def_choice5
             ->setTitle('Choice 5')
-            ->setParent($ticket_def_choice4)
+            ->setParent($feedback_def)
         ;
 
-        $ticket_def_choice6 = new Entity\CustomDefFeedback();
-        $ticket_def_choice6
+        $feedback_def_choice6 = new Entity\CustomDefFeedback();
+        $feedback_def_choice6
             ->setTitle('Choice 6')
-            ->setParent($ticket_def_choice4)
+            ->setParent($feedback_def)
         ;
 
-        $manager->persist($ticket_def);
-        $manager->persist($ticket_def_choice1);
-        $manager->persist($ticket_def_choice2);
-        $manager->persist($ticket_def_choice3);
-        $manager->persist($ticket_def_choice4);
-        $manager->persist($ticket_def_choice5);
-        $manager->persist($ticket_def_choice6);
+        $manager->persist($feedback_def);
+        $manager->persist($feedback_def_choice1);
+        $manager->persist($feedback_def_choice2);
+        $manager->persist($feedback_def_choice3);
+        $manager->persist($feedback_def_choice4);
+        $manager->persist($feedback_def_choice5);
+        $manager->persist($feedback_def_choice6);
     }
 
     /**
@@ -158,28 +158,28 @@ class CustomDefFeedback extends AbstractFixture
      */
     private function addRadioButtonField(ObjectManager $manager)
     {
-        $ticket_def = new Entity\CustomDefFeedback();
-        $ticket_def
+        $feedback_def = new Entity\CustomDefFeedback();
+        $feedback_def
             ->setTitle('Radio button field')
             ->setDescription('Radio button field description')
             ->setHandlerClass(Entity\CustomDefFeedback::HANDLER_CLASS_CHOICE)
         ;
 
-        $ticket_def_choice1 = new Entity\CustomDefFeedback();
-        $ticket_def_choice1
+        $feedback_def_choice1 = new Entity\CustomDefFeedback();
+        $feedback_def_choice1
             ->setTitle('Choice 1')
-            ->setParent($ticket_def)
+            ->setParent($feedback_def)
         ;
 
-        $ticket_def_choice2 = new Entity\CustomDefFeedback();
-        $ticket_def_choice2
+        $feedback_def_choice2 = new Entity\CustomDefFeedback();
+        $feedback_def_choice2
             ->setTitle('Choice 2')
-            ->setParent($ticket_def)
+            ->setParent($feedback_def)
         ;
 
-        $manager->persist($ticket_def);
-        $manager->persist($ticket_def_choice1);
-        $manager->persist($ticket_def_choice2);
+        $manager->persist($feedback_def);
+        $manager->persist($feedback_def_choice1);
+        $manager->persist($feedback_def_choice2);
     }
 
     /**
@@ -188,28 +188,28 @@ class CustomDefFeedback extends AbstractFixture
      */
     private function addCheckboxField(ObjectManager $manager)
     {
-        $ticket_def = new Entity\CustomDefFeedback();
-        $ticket_def
+        $feedback_def = new Entity\CustomDefFeedback();
+        $feedback_def
             ->setTitle('Checkbox field')
             ->setDescription('Checkbox field description')
             ->setHandlerClass(Entity\CustomDefFeedback::HANDLER_CLASS_CHOICE)
         ;
 
-        $ticket_def_choice1 = new Entity\CustomDefFeedback();
-        $ticket_def_choice1
+        $feedback_def_choice1 = new Entity\CustomDefFeedback();
+        $feedback_def_choice1
             ->setTitle('Choice 1')
-            ->setParent($ticket_def)
+            ->setParent($feedback_def)
         ;
 
-        $ticket_def_choice2 = new Entity\CustomDefFeedback();
-        $ticket_def_choice2
+        $feedback_def_choice2 = new Entity\CustomDefFeedback();
+        $feedback_def_choice2
             ->setTitle('Choice 2')
-            ->setParent($ticket_def)
+            ->setParent($feedback_def)
         ;
 
-        $manager->persist($ticket_def);
-        $manager->persist($ticket_def_choice1);
-        $manager->persist($ticket_def_choice2);
+        $manager->persist($feedback_def);
+        $manager->persist($feedback_def_choice1);
+        $manager->persist($feedback_def_choice2);
     }
 
     /**
@@ -218,14 +218,14 @@ class CustomDefFeedback extends AbstractFixture
      */
     private function addToggleField(ObjectManager $manager)
     {
-        $ticket_def = new Entity\CustomDefFeedback();
-        $ticket_def
+        $feedback_def = new Entity\CustomDefFeedback();
+        $feedback_def
             ->setTitle('Toggle field')
             ->setDescription('Toggle field description')
             ->setHandlerClass(Entity\CustomDefFeedback::HANDLER_CLASS_TOGGLE)
         ;
 
-        $manager->persist($ticket_def);
+        $manager->persist($feedback_def);
     }
 
     /**
@@ -234,14 +234,14 @@ class CustomDefFeedback extends AbstractFixture
      */
     private function addDateField(ObjectManager $manager)
     {
-        $ticket_def = new Entity\CustomDefFeedback();
-        $ticket_def
+        $feedback_def = new Entity\CustomDefFeedback();
+        $feedback_def
             ->setTitle('Date field')
             ->setDescription('Date field description')
             ->setHandlerClass(Entity\CustomDefFeedback::HANDLER_CLASS_DATE)
         ;
 
-        $manager->persist($ticket_def);
+        $manager->persist($feedback_def);
     }
 
     /**
@@ -250,14 +250,14 @@ class CustomDefFeedback extends AbstractFixture
      */
     private function addDatetimeField(ObjectManager $manager)
     {
-        $ticket_def = new Entity\CustomDefFeedback();
-        $ticket_def
+        $feedback_def = new Entity\CustomDefFeedback();
+        $feedback_def
             ->setTitle('Datetime field')
             ->setDescription('Datetime field description')
             ->setHandlerClass(Entity\CustomDefFeedback::HANDLER_CLASS_DATETIME)
         ;
 
-        $manager->persist($ticket_def);
+        $manager->persist($feedback_def);
     }
 
     /**
@@ -266,14 +266,14 @@ class CustomDefFeedback extends AbstractFixture
      */
     private function addDisplayField(ObjectManager $manager)
     {
-        $ticket_def = new Entity\CustomDefFeedback();
-        $ticket_def
+        $feedback_def = new Entity\CustomDefFeedback();
+        $feedback_def
             ->setTitle('Display field')
             ->setDescription('Display field description')
             ->setHandlerClass(Entity\CustomDefFeedback::HANDLER_CLASS_DISPLAY)
         ;
 
-        $manager->persist($ticket_def);
+        $manager->persist($feedback_def);
     }
 
     /**
@@ -282,13 +282,13 @@ class CustomDefFeedback extends AbstractFixture
      */
     private function addHiddenField(ObjectManager $manager)
     {
-        $ticket_def = new Entity\CustomDefFeedback();
-        $ticket_def
+        $feedback_def = new Entity\CustomDefFeedback();
+        $feedback_def
             ->setTitle('Hidden field')
             ->setDescription('Hidden field description')
             ->setHandlerClass(Entity\CustomDefFeedback::HANDLER_CLASS_HIDDEN)
         ;
 
-        $manager->persist($ticket_def);
+        $manager->persist($feedback_def);
     }
 }

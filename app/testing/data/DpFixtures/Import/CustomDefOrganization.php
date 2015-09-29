@@ -116,13 +116,13 @@ class CustomDefOrganization extends AbstractFixture
         $organization_def_choice2 = new Entity\CustomDefOrganization();
         $organization_def_choice2
             ->setTitle('Choice 2')
-            ->setParent($organization_def_choice1)
+            ->setParent($organization_def)
         ;
 
         $organization_def_choice3 = new Entity\CustomDefOrganization();
         $organization_def_choice3
             ->setTitle('Choice 3')
-            ->setParent($organization_def_choice1)
+            ->setParent($organization_def)
         ;
 
         $organization_def_choice4 = new Entity\CustomDefOrganization();
@@ -134,13 +134,13 @@ class CustomDefOrganization extends AbstractFixture
         $organization_def_choice5 = new Entity\CustomDefOrganization();
         $organization_def_choice5
             ->setTitle('Choice 5')
-            ->setParent($organization_def_choice4)
+            ->setParent($organization_def)
         ;
 
         $organization_def_choice6 = new Entity\CustomDefOrganization();
         $organization_def_choice6
             ->setTitle('Choice 6')
-            ->setParent($organization_def_choice4)
+            ->setParent($organization_def)
         ;
 
         $manager->persist($organization_def);
