@@ -35,17 +35,12 @@ use Application\ImportBundle\Entity;
  * Class AbstractCustomDefMapper
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper
  */
-abstract class AbstractCustomDefMapper implements MapperInterface
+abstract class AbstractCustomDefMapper extends AbstractImportMapMapper
 {
     /**
      * @var EntityRepository\CustomDefAbstract
      */
     protected $custom_def_repository;
-
-    /**
-     * @var EntityRepository\ImportMap
-     */
-    protected $import_map_repository;
 
     /**
      * Constructor
@@ -117,44 +112,5 @@ abstract class AbstractCustomDefMapper implements MapperInterface
         }
 
         return $record;
-    }
-
-    /**
-     * Returns new id by import map
-     *
-     * @param array $criteria
-     *
-     * @return null|string
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
-    protected function findImportMapNewId(array $criteria)
-    {
-        if (isset($criteria['entity'])) {
-            $entity = $criteria['entity'];
-            if ( ! $entity instanceof Entity\EntityInterface) {
-                throw new \RuntimeException('Criteria `entity` should be instance of Entity\EntityInterface');
-            }
-
-            if ($entity->getImportMapKey()) {
-                $qb = $this->import_map_repository->createQueryBuilder('i');
-                $qb
-                    ->select('i')
-                    ->andWhere($qb->expr()->eq('i.typename', '?0'))
-                    ->andWhere($qb->expr()->eq('i.old_id', '?1'))
-                    ->setParameters(array(
-                        $entity->getImportMapKey(),
-                        $entity->getOid()
-                    ))
-                ;
-
-                /** @var DeskPROEntity\ImportMap $import_map */
-                $import_map = $qb->getQuery()->getOneOrNullResult();
-                if ($import_map) {
-                    return $import_map->getNewId();
-                }
-            }
-        }
-
-        return null;
     }
 }
