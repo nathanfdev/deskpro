@@ -19,7 +19,7 @@ import { viewDataSelector, peopleSelector, feedbackTypesSelector, feedbackLabels
 export class ListContainer extends React.Component {
   render() {
     const {massAction, feedback, comments, currentContent, currentViewMode, people, feedbackTypes, feedbackLabels } = this.props;
-    console.log('Labels: ', feedbackLabels);
+
     return (
       <List
         massAction={massAction}
