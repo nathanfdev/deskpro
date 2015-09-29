@@ -143,12 +143,12 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     /**
      * Can the field be viewed by the user?
      *
-     * @var string
+     * @var bool
      */
     protected $is_user_enabled = true;
 
     /**
-     * @var string
+     * @var bool
      */
     protected $is_enabled = true;
 
@@ -163,7 +163,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     protected $default_value = null;
 
     /**
-     * @var string
+     * @var bool
      */
     protected $is_agent_field = false;
 
@@ -540,6 +540,14 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->is_enabled;
+    }
+
+    /**
      * Mark as agent field
      *
      * @param bool $is_agent_field
@@ -552,6 +560,14 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * @return bool
+     */
+    public function isAgentField()
+    {
+        return $this->is_agent_field;
+    }
+
+    /**
      * Mark as user enabled
      *
      * @param bool $is_user_enabled
@@ -561,6 +577,14 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     {
         $this->setModelField('is_user_enabled', (bool)$is_user_enabled);
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUserEnabled()
+    {
+        return $this->is_user_enabled;
     }
 
     /**
