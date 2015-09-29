@@ -39,6 +39,12 @@ const AssignHover = React.createClass({
     });
   },
 
+  handleAssignment: function(data) {
+    if (this.props.assignTask) {
+      this.props.assignTask.bind(this, data);
+    }
+  },
+
   quickFilter: function(event) {
     const value = $(event.target).val().toLowerCase();
     let agents = this.props.agents;
@@ -66,6 +72,8 @@ const AssignHover = React.createClass({
   },
 
   render: function() {
+    const taskId = this.props.taskData ? this.props.taskData.id : null;
+
     return (<div style={this.props.position ? {top: this.props.position.y + 10, left: this.props.position.x - 300} : {}} className="sidebar-hover assign-hover">
         <div className="dpmw--popup-main">
           <div className="dpmw--popup-header">
@@ -77,9 +85,9 @@ const AssignHover = React.createClass({
               <div className="dpw--popup-content-left">
                 <div className="dpw-quick-filter">
                   <div className="dpw-quick-filter-container">
-                    <div className="dpw-quick-filter-icon"><i className="fa fa-filter"></i></div>
+                    <div className="dpw-quick-filter-icon"><i className="fa fa-filter" /></div>
                     <input type="text" placeholder="Quick Filter" value={this.state.filterValue} onChange={this.quickFilter} />
-                    <span className="dpw-quick-filter-clear-link" onClick={this.clearFilter}><i className="fa fa-times-circle"></i></span>
+                    <span className="dpw-quick-filter-clear-link" onClick={this.clearFilter}><i className="fa fa-times-circle" /></span>
                   </div>
                 </div>
               </div>
@@ -87,8 +95,8 @@ const AssignHover = React.createClass({
               <div className="dpmw--popup-content-right">
                 <div className="dpw-popup-content-item">
                   <div className="dpw-popup-content-item-unassign-all">
-                    <a href="#" className="checkbox-link" onClick={this.props.assignTask.bind(this, {
-                      id: this.props.taskData.id,
+                    <a href="#" className="checkbox-link" onClick={this.handleAssignment.bind(this, {
+                      id: taskId,
                       value: 'unassigned'
                     })}>
                       <span>Unassign</span>
@@ -101,8 +109,8 @@ const AssignHover = React.createClass({
 
             <div className="dpw--popup-content-line">
               <div className="dpmw--popup-content-of-three">
-                <h1 className="dpw--popup-item-collection-title">Agent <a href="#" onClick={this.props.assignTask.bind(this, {
-                  id: this.props.taskData.id,
+                <h1 className="dpw--popup-item-collection-title">Agent <a href="#" onClick={this.handleAssignment.bind(this, {
+                  id: taskId,
                   value: 'agents-me'
                 })}>Assign to me</a></h1>
                 <div className="dpw--popup-item-collection">
@@ -111,8 +119,8 @@ const AssignHover = React.createClass({
                       const avatarImage = agent.picture_blob ? {backgroundImage: 'url(' + agent.picture_blob.download_url + ')'} : {};
                       const lineClass = this.props.taskData.agents && this.props.taskData.agents[0] === agent.id ? 'dpw--popup-item-person selected' : 'dpw--popup-item-person';
                       return (<li key={agent.id}>
-                                <div className={lineClass} onClick={this.props.assignTask.bind(this, {
-                                  id: this.props.taskData.id,
+                                <div className={lineClass} onClick={this.handleAssignment.bind(this, {
+                                  id: taskId,
                                   value: 'agents-' + agent.id
                                 })}>
                                   <span className="dpw--avatar-face" style={avatarImage}/> <span className="dpw-popup-item-collection-name">{agent.name}</span>
@@ -131,8 +139,8 @@ const AssignHover = React.createClass({
                       const avatarImage = team.picture_blob ? {backgroundImage: 'url(' + team.picture_blob.download_url + ')'} : {};
                       const lineClass = this.props.taskData.teams && this.props.taskData.teams[0] === team.id ? 'dpw--popup-item-person selected' : 'dpw--popup-item-person';
                       return (<li key={team.id}>
-                                <div className={lineClass} onClick={this.props.assignTask.bind(this, {
-                                  id: this.props.taskData.id,
+                                <div className={lineClass} onClick={this.handleAssignment.bind(this, {
+                                  id: taskId,
                                   value: 'teams-' + team.id
                                 })}>
                                   <span className="dpw--avatar-face" style={avatarImage}/> <span className="dpw-popup-item-collection-name">{team.name}</span>
@@ -151,8 +159,8 @@ const AssignHover = React.createClass({
                       const avatarImage = department.picture_blob ? {backgroundImage: 'url(' + department.picture_blob.download_url + ')'} : {};
                       const lineClass = this.props.taskData.departments && this.props.taskData.departments[0] === department.id ? 'dpw--popup-item-person selected' : 'dpw--popup-item-person';
                       return (<li key={department.id}>
-                                <div className={lineClass} onClick={this.props.assignTask.bind(this, {
-                                  id: this.props.taskData.id,
+                                <div className={lineClass} onClick={this.handleAssignment.bind(this, {
+                                  id: taskId,
                                   value: 'departments-' + department.id
                                 })}>
                                   <span className="dpw--avatar-face" style={avatarImage}/> <span className="dpw-popup-item-collection-name">{department.title}</span>

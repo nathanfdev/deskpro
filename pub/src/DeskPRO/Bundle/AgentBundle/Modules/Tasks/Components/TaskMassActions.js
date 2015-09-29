@@ -57,7 +57,23 @@ export default class TaskMassActions extends React.Component {
     }
 
     this.setState({
+      openAssignDialog: false,
       openProjectDialog: !this.state.openProjectDialog,
+      openExtras: false,
+      activeElement: active
+    });
+  }
+
+  toggleAssignDialog() {
+    let active = 'assign';
+
+    if (this.state.openAssignDialog) {
+      active = false;
+    }
+
+    this.setState({
+      openAssignDialog: !this.state.openAssignDialog,
+      openProjectDialog: false,
       openExtras: false,
       activeElement: active
     });
@@ -71,6 +87,7 @@ export default class TaskMassActions extends React.Component {
     }
 
     this.setState({
+      openAssignDialog: false,
       openProjectDialog: false,
       openExtras: !this.state.openExtras,
       activeElement: active
@@ -88,7 +105,7 @@ export default class TaskMassActions extends React.Component {
           <hr />
           <i className="fa fa-caret-down"/>
         </a>
-        <a href="#">
+        <a href="#" onClick={this.toggleAssignDialog.bind(this)} ref="massAssign" className={this.setClass('', (this.state.activeElement === 'assign'))}>
           <span>Assign</span>
           <hr />
           <i className="fa fa-caret-down"/>

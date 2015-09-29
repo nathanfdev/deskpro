@@ -265,10 +265,12 @@ export default class TasksListFrame extends React.Component {
       task[assignmentParts[0]] = [assignmentParts[1]];
     }
 
-    task.taskId = assignee.id;
-    this.closeAssignWindow();
+    if (typeof assignee.id === 'number') {
+      task.taskId = assignee.id;
+      this.closeAssignWindow();
 
-    this.editTask(this.props.taskFrameList.taskFrameSource, task);
+      this.editTask(this.props.taskFrameList.taskFrameSource, task);
+    }
   }
 
   toggleAssignWindow(task = {}) {
