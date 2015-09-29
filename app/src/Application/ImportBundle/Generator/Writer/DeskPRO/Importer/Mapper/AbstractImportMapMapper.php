@@ -32,6 +32,9 @@ use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Entity;
 
 /**
+ * Abstract "import map" mapper
+ * Supports import bundle entity as criteria parameter
+ *
  * Class AbstractImportMapMapper
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper
  */
@@ -41,7 +44,6 @@ abstract class AbstractImportMapMapper implements MapperInterface
      * @var EntityRepository\ImportMap
      */
     protected $import_map_repository;
-
 
     /**
      * Returns new id by import map

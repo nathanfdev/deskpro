@@ -31,6 +31,8 @@ use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\DeskPRO\EntityRepository;
 
 /**
+ * Abstract custom def mapper
+ *
  * Class AbstractCustomDefMapper
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper
  */
