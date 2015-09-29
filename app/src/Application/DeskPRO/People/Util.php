@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\App;
@@ -61,7 +61,7 @@ class Util
         if ($full_name && strpos($full_name, ' ') !== false) {
             list($first_name, $last_name) = explode(' ', $full_name, 2);
         } elseif ($email_address) {
-            list($email_name,) = explode('@', $email_address, 2);
+            list($email_name) = explode('@', $email_address, 2);
             if (strpos($email_name, '.') !== false) {
                 list($first_name, $last_name) = explode('.', $email_name, 2);
                 $first_name                   = ucfirst($first_name);
@@ -74,8 +74,8 @@ class Util
             if ($full_name) {
                 $first_name = $full_name;
             } elseif ($email_address) {
-                list($email_name,)  = explode('@', $email_address, 2);
-                $first_name         = ucfirst($email_name);
+                list($email_name) = explode('@', $email_address, 2);
+                $first_name       = ucfirst($email_name);
             }
         }
 
@@ -185,34 +185,34 @@ class Util
         $db = App::getDb();
         $em = App::getOrm();
 
-        $ug_ids = $db->fetchAllCol("SELECT usergroup_id FROM person2usergroups WHERE person_id = ?", array($agent->id));
+        $ug_ids = $db->fetchAllCol('SELECT usergroup_id FROM person2usergroups WHERE person_id = ?', array($agent->id));
 
         if ($ug_ids) {
             $usergroups   = $em->getRepository('DeskPRO:Usergroup')->getByIds($ug_ids);
-            $all_ug_perms = $db->fetchAllKeyValue("
+            $all_ug_perms = $db->fetchAllKeyValue('
                 SELECT name, value
                 FROM permissions
                 WHERE usergroup_id IN (?)
                 ORDER BY value DESC
-            ", array($ug_ids), array(Connection::PARAM_INT_ARRAY));
+            ', array($ug_ids), array(Connection::PARAM_INT_ARRAY));
 
-            $ug_perms = $db->fetchAllGrouped("
+            $ug_perms = $db->fetchAllGrouped('
                 SELECT usergroup_id, name, value
                 FROM permissions
                 LEFT JOIN usergroups ON (usergroups.id = permissions.id)
                 WHERE usergroup_id IN (?)
-            ", array($ug_ids), 'usergroup_id', 'name', 'value', array(Connection::PARAM_INT_ARRAY));
+            ', array($ug_ids), 'usergroup_id', 'name', 'value', array(Connection::PARAM_INT_ARRAY));
         } else {
             $all_ug_perms = array();
             $usergroups   = array();
             $ug_perms     = array();
         }
 
-        $override_perms = $db->fetchAllKeyValue("
+        $override_perms = $db->fetchAllKeyValue('
             SELECT name, value
             FROM permissions
             WHERE person_id = ?
-        ", array($agent['id']));
+        ', array($agent['id']));
 
         $ug_perm_matrix = array();
 

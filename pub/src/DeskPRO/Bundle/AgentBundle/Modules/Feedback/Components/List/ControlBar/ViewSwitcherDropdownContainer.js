@@ -21,7 +21,7 @@ export class ViewSwitcherDropdownContainer extends Component {
     super(props);
     this.state = {
       optionsIsExpanded: false
-    }
+    };
   }
 
   render() {

@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category EmailGateway
  */
-
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
@@ -180,13 +180,13 @@ abstract class ProcessAbstract
 
             // Max 10 CC's to prevent mass spamming
             if ($count >= 10) {
-                $this->logMessage("CC limit reached, break");
+                $this->logMessage('CC limit reached, break');
                 break;
             }
 
             // Make sure its actually valid
             if (!StringEmail::isValueValid($cc_email)) {
-                $this->logMessage("Invalid email address");
+                $this->logMessage('Invalid email address');
                 continue;
             }
 
@@ -220,7 +220,7 @@ abstract class ProcessAbstract
                 if ($cc_person->is_agent && !$this->person->is_agent) {
                     if (!$this->person || !$this->person->getId() || !$this->person->is_agent) {
                         if (!App::getSetting('core_tickets.add_agent_ccs')) {
-                            $this->logMessage("Skipping agent CC because core_tickets.add_agent_ccs is off");
+                            $this->logMessage('Skipping agent CC because core_tickets.add_agent_ccs is off');
                             continue;
                         }
                     }
@@ -230,7 +230,7 @@ abstract class ProcessAbstract
 
                 if (!$ticket->hasParticipantPerson($cc_person)) {
                     $ticket->addParticipantPerson($cc_person);
-                    $count++;
+                    ++$count;
                 }
             }
         }
@@ -263,7 +263,7 @@ abstract class ProcessAbstract
 
             $error = $r_set->getErrorForProperties($props);
             if ($error) {
-                $this->logMessage(sprintf("[processBlobs] %s rejected: %s %s", $attach->getFileName(), $error['error_code'], $error['error_detail']));
+                $this->logMessage(sprintf('[processBlobs] %s rejected: %s %s', $attach->getFileName(), $error['error_code'], $error['error_detail']));
                 continue;
             }
 
@@ -273,7 +273,7 @@ abstract class ProcessAbstract
                 $attach->getMimeType()
             );
 
-            $this->logMessage(sprintf("Processed blob %s (%d)", $blob->filename, $blob->id));
+            $this->logMessage(sprintf('Processed blob %s (%d)', $blob->filename, $blob->id));
             $this->processed_blobs[$blob->id] = $blob;
 
             if ($attach->getContentId()) {
@@ -302,12 +302,12 @@ abstract class ProcessAbstract
             }
 
             if ($blob_hashes) {
-                $exist_attach = App::getOrm()->createQuery("
+                $exist_attach = App::getOrm()->createQuery('
                     SELECT a, b
                     FROM DeskPRO:TicketAttachment a
                     LEFT JOIN a.blob b
                     WHERE a.ticket = ?0 AND b.blob_hash IN (?1)
-                ")->execute(array($this->ticket, $blob_hashes));
+                ')->execute(array($this->ticket, $blob_hashes));
 
                 foreach ($exist_attach as $a) {
                     $exist_inline_blobs[$a->blob->blob_hash] = $a->blob;
@@ -326,7 +326,7 @@ abstract class ProcessAbstract
             // then mark it as a dupe and rewrite the inline reference
             // to the one we've already saved
             if (isset($exist_inline_blobs[$blob->blob_hash])) {
-                $this->logMessage(sprintf("Duplicate inline blob %s is being discarded, existing blob %s will be used", $blob->getFilenameSafe(), $blob->getId()));
+                $this->logMessage(sprintf('Duplicate inline blob %s is being discarded, existing blob %s will be used', $blob->getFilenameSafe(), $blob->getId()));
                 $this->dupe_inline_blobs[$blob->getId()] = $blob;
                 $blob                                    = $exist_inline_blobs[$blob->blob_hash];
             }

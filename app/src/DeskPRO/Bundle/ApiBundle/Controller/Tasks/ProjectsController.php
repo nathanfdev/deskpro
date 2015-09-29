@@ -1,56 +1,54 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
-use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
-use Doctrine\ORM\QueryBuilder;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
+use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject as Project;
+use Doctrine\ORM\QueryBuilder;
+use FOS\RestBundle\Controller\Annotations\Delete;
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Delete;
 
 class ProjectsController extends BaseController implements ClassResourceInterface
 {
@@ -62,7 +60,9 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *      }
      * )
      * @Get("/projects", name="api_projects")
+     *
      * @param Request $request
+     *
      * @return View
      */
     public function cgetAction(Request $request)
@@ -70,7 +70,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         $query = $request->query->all();
 
         $projectIds = !empty($query['ids']) ? explode(',', $query['ids']) : [];
-        $projects = $this->selectProjects($projectIds);
+        $projects   = $this->selectProjects($projectIds);
 
         $projects = $projects->getResult();
 
@@ -98,7 +98,9 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *      output="DeskPRO\Bundle\AppBundle\Entity\TaskProject"
      * )
      * @Get("/projects/{id}", name="api_projects_get")
+     *
      * @param int $id
+     *
      * @return View
      */
     public function getAction($id)
@@ -126,14 +128,18 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *      output="DeskPRO\Bundle\AppBundle\Entity\TaskProject"
      * )
      * @Post("/projects", name="api_projects_post")
+     *
      * @param Request $request
+     *
      * @throws WrappedApiErrorException
      * @throws InvalidFormException
+     *
      * @return View
      */
     public function postAction(Request $request)
     {
         $project = new Project();
+
         return $this->handleFormSubmission($request, $project);
     }
 
@@ -156,9 +162,12 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *      }
      * )
      * @Put("/projects/{id}", name="api_projects_put")
+     *
      * @param Request $request
      * @param $id
+     *
      * @throws WrappedApiErrorException
+     *
      * @return View
      */
     public function putAction(Request $request, $id)
@@ -185,7 +194,9 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *      }
      * )
      * @Delete("/projects/{id}", name="api_projects_delete")
+     *
      * @param $id
+     *
      * @return View
      */
     public function deleteAction($id)
@@ -237,15 +248,17 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *      }
      * )
      * @Get("/projects/{id}/tasks", name="api_projects_tasks_get")
+     *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
+     *
      * @return View
      */
     public function getTasksAction(Request $request, $id)
     {
-        $id = (int) $id;
+        $id    = (int) $id;
         $tasks = $this->getDoctrine()->getManager()->getRepository('App:Task')->findBy(array('project' => $id));
-        $page = $request->query->get('page', 1);
+        $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
         $pager = new Pagerfanta(new ArrayAdapter($tasks));
@@ -274,7 +287,9 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *      }
      * )
      * @Get("/projects/{id}/departments", name="api_projects_departments_get")
+     *
      * @param int $id
+     *
      * @return View
      */
     public function getDepartmentsAction($id)
@@ -305,7 +320,9 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *      }
      * )
      * @Get("/projects/{id}/teams", name="api_projects_teams_get")
+     *
      * @param int $id
+     *
      * @return View
      */
     public function getTeamsAction($id)
@@ -336,7 +353,9 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *      }
      * )
      * @Get("/projects/{id}/agents", name="api_projects_agents_get")
+     *
      * @param int $id
+     *
      * @return View
      */
     public function getAgentsAction($id)
@@ -362,8 +381,10 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *      output="Application\DeskPRO\Entity\Department"
      * )
      * @Post("/projects/{id}/departments", name="api_projects_departments_post")
+     *
      * @param Request $request
      * @param $id
+     *
      * @return View
      */
     public function postDepartmentAction(Request $request, $id)
@@ -382,8 +403,10 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *      output="Application\DeskPRO\Entity\AgentTeam"
      * )
      * @Post("/projects/{id}/teams", name="api_projects_teams_post")
+     *
      * @param Request $request
      * @param $id
+     *
      * @return View
      */
     public function postTeamAction(Request $request, $id)
@@ -402,8 +425,10 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *      output="Application\DeskPRO\Entity\Person"
      * )
      * @Post("/projects/{id}/agents", name="api_projects_agents_post")
+     *
      * @param Request $request
      * @param $id
+     *
      * @return View
      */
     public function postAgentAction(Request $request, $id)
@@ -434,15 +459,17 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *      }
      * )
      * @Delete("/projects/{projectId}/departments/{deptId}", name="api_projects_department_delete")
+     *
      * @param $projectId
      * @param $deptId
+     *
      * @return View
      */
     public function deleteDepartmentAction($projectId, $deptId)
     {
         $member = $this->getDoctrine()->getManager()->getRepository('App:ProjectMember')->findOneBy([
             'department' => (int) $deptId,
-            'project' => (int) $projectId,
+            'project'    => (int) $projectId,
         ]);
 
         return $this->deleteMember($member);
@@ -471,14 +498,16 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *      }
      * )
      * @Delete("/projects/{projectId}/departments/{teamId}", name="api_projects_team_delete")
+     *
      * @param $projectId
      * @param $teamId
+     *
      * @return View
      */
     public function deleteTeamAction($projectId, $teamId)
     {
         $member = $this->getDoctrine()->getManager()->getRepository('App:ProjectMember')->findOneBy([
-            'team' => (int) $teamId,
+            'team'    => (int) $teamId,
             'project' => (int) $projectId,
         ]);
 
@@ -508,15 +537,17 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *      }
      * )
      * @Delete("/projects/{projectId}/departments/{personId}", name="api_projects_agent_delete")
+     *
      * @param $projectId
      * @param $personId
+     *
      * @return View
      */
     public function deleteAgentAction($projectId, $personId)
     {
         $member = $this->getDoctrine()->getManager()->getRepository('App:ProjectMember')->findOneBy([
             'department' => (int) $personId,
-            'project' => (int) $projectId,
+            'project'    => (int) $projectId,
         ]);
 
         return $this->deleteMember($member);
@@ -538,7 +569,9 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *      }
      * )
      * @Get("/projects/{projectId}/lists", name="api_projects_lists_get")
+     *
      * @param $projectId
+     *
      * @return View
      */
     public function getListsAction($projectId)
@@ -558,18 +591,20 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
     }
 
     /**
-     * Create a new member relationship for a department, team or person
+     * Create a new member relationship for a department, team or person.
+     *
      * @param Request $request
      * @param $projectId
      * @param $type
+     *
      * @return View
      */
     protected function postMember(Request $request, $projectId, $type)
     {
         $memberRepositories = [
             'department' => 'DeskPRO:Department',
-            'team' => 'DeskPRO:AgentTeam',
-            'person' => 'DeskPRO:Person',
+            'team'       => 'DeskPRO:AgentTeam',
+            'person'     => 'DeskPRO:Person',
         ];
 
         if (!in_array($type, array_keys($memberRepositories))) {
@@ -581,7 +616,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         $submitted = $request->request->all();
 
         $objectId = $submitted['id'];
-        $object = $this->getDoctrine()->getManager()->getRepository($memberRepositories[$type])->find($objectId);
+        $object   = $this->getDoctrine()->getManager()->getRepository($memberRepositories[$type])->find($objectId);
 
         if (!$object) {
             throw $this->createNotFoundException();
@@ -589,12 +624,12 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
 
         $member = new ProjectMember();
         $member->setProject($project);
-        $setter = 'set' . ucfirst($type);
+        $setter = 'set'.ucfirst($type);
         $member->$setter($object);
 
         $validate = [
             'project' => $projectId,
-            $type => $objectId,
+            $type     => $objectId,
         ];
 
         /** @var Form $form */
@@ -620,8 +655,10 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
     }
 
     /**
-     * Delete a project member relationship
+     * Delete a project member relationship.
+     *
      * @param $member
+     *
      * @return View
      */
     protected function deleteMember($member)
@@ -640,13 +677,15 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
     }
 
     /**
-     * Retrieve a single project
+     * Retrieve a single project.
+     *
      * @param int $id
+     *
      * @return Project
      */
     protected function getProject($id)
     {
-        $id = (int) $id;
+        $id      = (int) $id;
         $project = $this->getDoctrine()->getManager()->getRepository('App:TaskProject')->find($id);
 
         if (!$project) {
@@ -657,11 +696,14 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
     }
 
     /**
-     * Will be abstracted for use by other controllers
+     * Will be abstracted for use by other controllers.
+     *
      * @param Request $request
      * @param Project $project
-     * @return View
+     *
      * @throws WrappedApiErrorException
+     *
+     * @return View
      */
     protected function handleFormSubmission(Request $request, Project $project)
     {
@@ -698,16 +740,18 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
     }
 
     /**
-     * Get the Doctrine Query for a project member
+     * Get the Doctrine Query for a project member.
+     *
      * @param $projectId
      * @param $object
+     *
      * @return \Doctrine\ORM\Query
      */
     protected function getProjectMemberQuery($projectId, $object)
     {
-        /** @var QueryBuilder $queryBuilder */
+        /* @var QueryBuilder $queryBuilder */
         $entityManager = $this->getDoctrine()->getManager();
-        $queryBuilder = $entityManager->createQueryBuilder()->select('d')->from($object, 'd')
+        $queryBuilder  = $entityManager->createQueryBuilder()->select('d')->from($object, 'd')
             ->leftJoin('d.project_members', 'p')
             ->where('p.project = :project')
             ->setParameter('project', $projectId);
@@ -716,8 +760,10 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
     }
 
     /**
-     * Get a Doctrine Query for getting certain projects
+     * Get a Doctrine Query for getting certain projects.
+     *
      * @param $projectIds
+     *
      * @return \Doctrine\ORM\Query
      */
     protected function selectProjects($projectIds = [])
@@ -725,7 +771,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         $entityManager = $this->getDoctrine()->getManager();
 
         // Clean the IDs
-        $projectIds = array_map(function($value) {
+        $projectIds = array_map(function ($value) {
             return (int) $value;
         }, $projectIds);
 

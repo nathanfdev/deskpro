@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Hierarchy;
 
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
@@ -82,9 +82,9 @@ class HierarchyGenerator
 
     public function __construct(EntityManager $em, DepartmentDataService $department_data_service, FeedbackDataService $feedback_data_service)
     {
-        $this->em = $em;
+        $this->em                      = $em;
         $this->department_data_service = $department_data_service;
-        $this->feedback_data_service = $feedback_data_service;
+        $this->feedback_data_service   = $feedback_data_service;
     }
 
     public function generateForCustomFormField(CustomDefAbstract $field)
@@ -131,7 +131,7 @@ class HierarchyGenerator
             array(
                 'generateForCustomPerFormField',
                 $field,
-                $contextual_choices
+                $contextual_choices,
             ),
             function () use ($field, $contextual_choices) {
                 $root_nodes = array();
@@ -198,6 +198,7 @@ class HierarchyGenerator
      *
      * @param Person $person
      * @param Ticket $ticket
+     *
      * @return mixed|null
      */
     public function generateTicketDepartmentsHierarchy(Person $person, Ticket $ticket = null)
@@ -208,7 +209,7 @@ class HierarchyGenerator
             array(
                 'generateTicketDepartmentsHierarchy',
                 $person,
-                $ticket
+                $ticket,
             ),
             function () use ($department_data_service, $person, $ticket) {
                 $allowed_departments = $department_data_service->getTicketDepartmentsForPerson($person);
@@ -355,7 +356,7 @@ class HierarchyGenerator
     }
 
     /**
-     * @param mixed $params the "ArbitraryHasher" input to create cache key for this callable
+     * @param mixed $params   the "ArbitraryHasher" input to create cache key for this callable
      * @param mixed $callable doesn't need to be a callable, can be any default value, but usually is a callable
      *
      * @return mixed|null
@@ -396,10 +397,11 @@ class HierarchyGenerator
      * higher in the lists. To fix this, we need to invert the values.
      *
      * @param int $display_order
+     *
      * @return int
      */
     public static function reverseDisplayOrder($display_order)
     {
-        return -1 * ((int)$display_order);
+        return -1 * ((int) $display_order);
     }
 }

@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Import\Importer;
 
 use Orb\Log\Logger;
@@ -56,7 +56,7 @@ class ZendDeskApi extends Zendesk
      *
      * @var int
      */
-    public $try_time_error  = 6;
+    public $try_time_error = 6;
 
     /**
      * The number of seconds between try attempts
@@ -64,7 +64,7 @@ class ZendDeskApi extends Zendesk
      *
      * @var int
      */
-    public $try_time_ratelimit  = 15;
+    public $try_time_ratelimit = 15;
 
     /**
      * The number of seconds between try attempts increases
@@ -99,8 +99,8 @@ class ZendDeskApi extends Zendesk
      *
      * @throws \Exception|null|\Orb\Service\Zendesk\ApiException
      * @throws \Orb\Service\Zendesk\ApiException
-     * @return null|\Orb\Service\Zendesk\ApiResponse
      *
+     * @return null|\Orb\Service\Zendesk\ApiResponse
      */
     public function sendRequest($id, $action, array $call_data = null, array $query_data = null, $no_exec = false)
     {
@@ -111,7 +111,7 @@ class ZendDeskApi extends Zendesk
         $try = $this->try_count;
         $x   = 0;
         while ($try-- > 0) {
-            $x++;
+            ++$x;
             $ex  = null;
             $err = null;
             $res = null;
@@ -168,7 +168,7 @@ class ZendDeskApi extends Zendesk
                             }
                             $this->logger->logDebug(sprintf("[ZD API] Call to $id failed due to rate limiting: %s", $body));
                         }
-                        sleep(min(60, $this->try_time_ratelimit + (($x-1) * $this->try_time_inc)));
+                        sleep(min(60, $this->try_time_ratelimit + (($x - 1) * $this->try_time_inc)));
                     } else {
                         if ($this->logger) {
                             $body = '';
@@ -179,7 +179,7 @@ class ZendDeskApi extends Zendesk
                         }
 
                         if ($res) {
-                            throw new ApiException("API call failed with error status", $res->getHttpStatusCode(), $res->getErrorCode(), $res->getRaw());
+                            throw new ApiException('API call failed with error status', $res->getHttpStatusCode(), $res->getErrorCode(), $res->getRaw());
                         } else {
                             throw new ApiException("API call failed: {$ex->getCode()} {$ex->getMessage()}", 0, 0, '', $ex);
                         }
@@ -208,7 +208,7 @@ class ZendDeskApi extends Zendesk
             $try = $this->try_count;
             $x   = 0;
             while ($do_requests && $try-- > 0) {
-                $x++;
+                ++$x;
                 $results     = Arrays::mergeAssoc($results, parent::sendGetMulti($do_requests));
                 $do_requests = array();
 
@@ -229,7 +229,7 @@ class ZendDeskApi extends Zendesk
                     $modifier = 30;
                 }
 
-                sleep(min(60, $this->try_time_ratelimit + (($x-1) * $this->try_time_inc) + $modifier));
+                sleep(min(60, $this->try_time_ratelimit + (($x - 1) * $this->try_time_inc) + $modifier));
             }
         }
 
@@ -351,7 +351,7 @@ class ZendDeskApi extends Zendesk
                     /** @var $r \Orb\Service\Zendesk\ApiResponse */
                     $r = $info['response'];
 
-                    list($ticket_id,) = explode('-', $key);
+                    list($ticket_id) = explode('-', $key);
 
                     $big_audits[$ticket_id] = array_merge($big_audits[$ticket_id], $r->get('audits'));
                 }

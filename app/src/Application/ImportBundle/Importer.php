@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle;
 
@@ -250,7 +251,7 @@ class Importer
 
         $count = 0;
         foreach ($it as $file) {
-            $count++;
+            ++$count;
             /* @var \SplFileInfo $file */
             $json = @file_get_contents($file->getRealPath());
 
@@ -258,14 +259,14 @@ class Importer
                 $this->status_callback->preImportValueRead($this, $value_importer, $file, $count);
             }
             if (!$json) {
-                $this->getLogger()->warning("File is not readable or empty: ".$file->getRealPath());
+                $this->getLogger()->warning('File is not readable or empty: '.$file->getRealPath());
                 continue;
             }
 
             $data = json_decode($json, true);
             unset($json);
             if (!$data) {
-                $this->getLogger()->warning("Invalid JSON data file: ".$file->getRealPath());
+                $this->getLogger()->warning('Invalid JSON data file: '.$file->getRealPath());
                 continue;
             }
 
@@ -310,22 +311,22 @@ class Importer
                 }
             } catch (BadDataException $ex) {
                 $this->getLogger()->warning(sprintf(
-                    "Invalid or missing data in file (@%s) -- %s",
+                    'Invalid or missing data in file (@%s) -- %s',
                     $file->getRealPath(), $ex->getMessage()
                 ));
             } catch (DuplicateValueException $ex) {
                 $this->getLogger()->warning(sprintf(
-                    "Duplicate value detected (@%s) -- %s",
+                    'Duplicate value detected (@%s) -- %s',
                     $file->getRealPath(), $ex->getMessage()
                 ));
             } catch (MissingMappingException $ex) {
                 $this->getLogger()->warning(sprintf(
-                    "Invalid mapping detected (@%s) -- %s",
+                    'Invalid mapping detected (@%s) -- %s',
                     $file->getRealPath(), $ex->getMessage()
                 ));
             } catch (MultipleMappingException $ex) {
                 $this->getLogger()->warning(sprintf(
-                    "Multiple candidate mappings detected (@%s) -- %s",
+                    'Multiple candidate mappings detected (@%s) -- %s',
                     $file->getRealPath(), $ex->getMessage()
                 ));
             } catch (\Exception $ex) {

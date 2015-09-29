@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Portal;
 
 use Application\DeskPRO\People\PersonGuest;
@@ -70,10 +70,10 @@ class SitemapGenerator
 
     public function __construct($base_url, EntityManager $em, Router $router)
     {
-        $this->base_url   = rtrim($base_url, '/');
-        $this->em         = $em;
-        $this->db         = $em->getConnection();
-        $this->router     = $router;
+        $this->base_url = rtrim($base_url, '/');
+        $this->em       = $em;
+        $this->db       = $em->getConnection();
+        $this->router   = $router;
 
         $person          = new PersonGuest();
         $this->structure = new PublishStructure(
@@ -97,7 +97,7 @@ class SitemapGenerator
         $attributes = array('loc', 'changefreq', 'lastmod', 'priority');
 
         foreach ($this->getItems() as $item) {
-            $xml[] = "<url>";
+            $xml[] = '<url>';
             foreach ($attributes as $attr) {
                 if (!empty($item[$attr])) {
                     $val = $item[$attr];
@@ -108,10 +108,10 @@ class SitemapGenerator
                     $xml[] = "\t<$attr>$val</$attr>";
                 }
             }
-            $xml[] = "</url>";
+            $xml[] = '</url>';
         }
 
-        $xml[] = "</urlset>";
+        $xml[] = '</urlset>';
         $xml[] = '';
 
         $xml = implode("\n", $xml);
@@ -191,7 +191,7 @@ class SitemapGenerator
         foreach ($cats as $cat) {
             $items[] = array(
                 'loc'        => $this->router->generate('portal_kb_browse', array('slug' => $cat->getSlug())),
-                'changefreq'                                                          => 'daily',
+                'changefreq' => 'daily',
             );
         }
 
@@ -209,7 +209,7 @@ class SitemapGenerator
         foreach ($articles as $a) {
             $items[] = array(
                 'loc'        => $this->router->generate('portal_kb_view', array('slug' => $a->getSlug())),
-                'changefreq'                                                                  => 'weekly',
+                'changefreq' => 'weekly',
             );
         }
 
@@ -242,7 +242,7 @@ class SitemapGenerator
         foreach ($cats as $cat) {
             $items[] = array(
                 'loc'        => $this->router->generate('portal_news_browse', array('slug' => $cat->getSlug())),
-                'changefreq'                                                      => 'daily',
+                'changefreq' => 'daily',
             );
         }
 
@@ -260,7 +260,7 @@ class SitemapGenerator
             foreach ($news as $n) {
                 $items[] = array(
                     'loc'        => $this->router->generate('portal_news_view', array('slug' => $n->getSlug())),
-                    'changefreq'                                                           => 'weekly',
+                    'changefreq' => 'weekly',
                 );
             }
         }
@@ -294,7 +294,7 @@ class SitemapGenerator
         foreach ($cats as $cat) {
             $items[] = array(
                 'loc'        => $this->router->generate('portal_downloads_browse', array('slug' => $cat->getSlug())),
-                'changefreq'                                                           => 'daily',
+                'changefreq' => 'daily',
             );
         }
 
@@ -311,7 +311,7 @@ class SitemapGenerator
         foreach ($downloads as $d) {
             $items[] = array(
                 'loc'        => $this->router->generate('portal_downloads_view', array('slug' => $d->getSlug())),
-                'changefreq'                                                                => 'weekly',
+                'changefreq' => 'weekly',
             );
         }
 
@@ -352,16 +352,16 @@ class SitemapGenerator
         # Downloads
         #------------------------------
 
-        $feedback = $this->em->createQuery("
+        $feedback = $this->em->createQuery('
             SELECT PARTIAL feedback.{id,slug,title}
             FROM DeskPRO:Feedback feedback
             WHERE feedback.hidden_status IS NULL AND feedback.category IN (?0)
-        ")->execute(array($cat_ids));
+        ')->execute(array($cat_ids));
 
         foreach ($feedback as $f) {
             $items[] = array(
                 'loc'        => $this->router->generate('portal_feedback_view', array('slug' => $f->getSlug())),
-                'changefreq'                                                               => 'weekly',
+                'changefreq' => 'weekly',
             );
         }
 

@@ -1,42 +1,40 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateLastAgentReply;
 
-use DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractPhpTermCompilerTest;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\PhpTicketStatusTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateLastAgentReply\TicketDateLastAgentReplyTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractPhpTermCompilerTest;
 
 class PhpTicketDateLastAgentReplyTermCompilerTest extends AbstractPhpTermCompilerTest
 {
@@ -50,15 +48,14 @@ class PhpTicketDateLastAgentReplyTermCompilerTest extends AbstractPhpTermCompile
         $this->term_compiler = $this->get('term_engine.php_ticket_checker.compiler.ticket_date_last_agent_reply');
     }
 
-
     public function testCompileIs()
     {
-        $date = new \DateTime('now', new \DateTimeZone('Europe/London'));
+        $date  = new \DateTime('now', new \DateTimeZone('Europe/London'));
         $date2 = new \DateTime('+1 day', new \DateTimeZone('Europe/London'));
-        
+
         $term = new TicketDateLastAgentReplyTerm(
             array(
-                'date' => $date
+                'date' => $date,
             )
         );
 
@@ -82,12 +79,12 @@ class PhpTicketDateLastAgentReplyTermCompilerTest extends AbstractPhpTermCompile
 
     public function testCompileIsNot()
     {
-        $date = new \DateTime('now', new \DateTimeZone('Europe/London'));
+        $date  = new \DateTime('now', new \DateTimeZone('Europe/London'));
         $date2 = new \DateTime('+1 day', new \DateTimeZone('Europe/London'));
-        
+
         $term = new TicketDateLastAgentReplyTerm(
             array(
-                'date' => $date
+                'date' => $date,
             ),
             TermInterface::OP_NOT
         );
@@ -109,16 +106,16 @@ class PhpTicketDateLastAgentReplyTermCompilerTest extends AbstractPhpTermCompile
             $ticket
         );
     }
-    
+
     public function testGreaterThan()
     {
         $yesterday = new \DateTime('-1 day', new \DateTimeZone('Europe/London'));
-        $today = new \DateTime('now', new \DateTimeZone('Europe/London'));
-        $tomorrow = new \DateTime('+1 day', new \DateTimeZone('Europe/London'));
-        
+        $today     = new \DateTime('now', new \DateTimeZone('Europe/London'));
+        $tomorrow  = new \DateTime('+1 day', new \DateTimeZone('Europe/London'));
+
         $term = new TicketDateLastAgentReplyTerm(
             array(
-                'date' => $today
+                'date' => $today,
             ),
             TermInterface::OP_GT
         );
@@ -140,16 +137,16 @@ class PhpTicketDateLastAgentReplyTermCompilerTest extends AbstractPhpTermCompile
             $ticket
         );
     }
-    
+
     public function testLesserThan()
     {
         $yesterday = new \DateTime('-1 day', new \DateTimeZone('Europe/London'));
-        $today = new \DateTime('now', new \DateTimeZone('Europe/London'));
-        $tomorrow = new \DateTime('+1 day', new \DateTimeZone('Europe/London'));
-        
+        $today     = new \DateTime('now', new \DateTimeZone('Europe/London'));
+        $tomorrow  = new \DateTime('+1 day', new \DateTimeZone('Europe/London'));
+
         $term = new TicketDateLastAgentReplyTerm(
             array(
-                'date' => $today
+                'date' => $today,
             ),
             TermInterface::OP_LT
         );
@@ -171,18 +168,18 @@ class PhpTicketDateLastAgentReplyTermCompilerTest extends AbstractPhpTermCompile
             $ticket
         );
     }
-    
+
     public function testInRange()
     {
         $two_days_ago = new \DateTime('-2 day', new \DateTimeZone('Europe/London'));
-        $yesterday = new \DateTime('-1 day', new \DateTimeZone('Europe/London'));
-        $today = new \DateTime('now', new \DateTimeZone('Europe/London'));
-        $tomorrow = new \DateTime('+1 day', new \DateTimeZone('Europe/London'));
-        
+        $yesterday    = new \DateTime('-1 day', new \DateTimeZone('Europe/London'));
+        $today        = new \DateTime('now', new \DateTimeZone('Europe/London'));
+        $tomorrow     = new \DateTime('+1 day', new \DateTimeZone('Europe/London'));
+
         $term = new TicketDateLastAgentReplyTerm(
             array(
-                'date' => $yesterday,
-                'date2' => $tomorrow
+                'date'  => $yesterday,
+                'date2' => $tomorrow,
             ),
             TermInterface::OP_RANGE
         );
@@ -204,18 +201,18 @@ class PhpTicketDateLastAgentReplyTermCompilerTest extends AbstractPhpTermCompile
             $ticket
         );
     }
-    
+
     public function testNotInRange()
     {
         $two_days_ago = new \DateTime('-2 day', new \DateTimeZone('Europe/London'));
-        $yesterday = new \DateTime('-1 day', new \DateTimeZone('Europe/London'));
-        $today = new \DateTime('now', new \DateTimeZone('Europe/London'));
-        $tomorrow = new \DateTime('+1 day', new \DateTimeZone('Europe/London'));
-        
+        $yesterday    = new \DateTime('-1 day', new \DateTimeZone('Europe/London'));
+        $today        = new \DateTime('now', new \DateTimeZone('Europe/London'));
+        $tomorrow     = new \DateTime('+1 day', new \DateTimeZone('Europe/London'));
+
         $term = new TicketDateLastAgentReplyTerm(
             array(
-                'date' => $yesterday,
-                'date2' => $tomorrow
+                'date'  => $yesterday,
+                'date2' => $tomorrow,
             ),
             TermInterface::OP_NOT_RANGE
         );

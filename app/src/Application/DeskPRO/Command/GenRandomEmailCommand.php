@@ -1,39 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\App;
 use Orb\Util\Strings;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -44,14 +41,14 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
     protected function configure()
     {
         $this->setName('dp:gen-rand-email');
-        $this->addOption('from', null, InputOption::VALUE_REQUIRED, "An email address to send from. Create a user first if you want to send a name as well.");
-        $this->addOption('to', null, InputOption::VALUE_REQUIRED, "An email address or a ticket account ID. If none supplied, the first ticket account in the DB is chosen. Note: Does not NEED to be a ticket account, but generaly is.");
-        $this->addOption('tpl', null, InputOption::VALUE_REQUIRED, "The template to use: text, html, fwd, fwd_with_reply");
+        $this->addOption('from', null, InputOption::VALUE_REQUIRED, 'An email address to send from. Create a user first if you want to send a name as well.');
+        $this->addOption('to', null, InputOption::VALUE_REQUIRED, 'An email address or a ticket account ID. If none supplied, the first ticket account in the DB is chosen. Note: Does not NEED to be a ticket account, but generaly is.');
+        $this->addOption('tpl', null, InputOption::VALUE_REQUIRED, 'The template to use: text, html, fwd, fwd_with_reply');
         $this->addOption('subject', null, InputOption::VALUE_REQUIRED, "A subject line. Defults to a generated one. Prefix with 'twig:' to pass the subject string throug twig.");
         $this->addOption('message', null, InputOption::VALUE_REQUIRED, "A message. Defaults to a generated one. Prefix with 'twig:' to pass the string through twig.");
-        $this->addOption('ticket-reply', null, InputOption::VALUE_REQUIRED, "Make this a reply to this ticket ID. If the --from is an agent, then it will be as an agent reply.");
-        $this->addOption('vars', null, InputOption::VALUE_REQUIRED, "Extra vars to make available to the templates. Should be a JSON encoded string");
-        $this->addOption('is-bounce', null, InputOption::VALUE_NONE, "Set is_bounce=true in vars");
+        $this->addOption('ticket-reply', null, InputOption::VALUE_REQUIRED, 'Make this a reply to this ticket ID. If the --from is an agent, then it will be as an agent reply.');
+        $this->addOption('vars', null, InputOption::VALUE_REQUIRED, 'Extra vars to make available to the templates. Should be a JSON encoded string');
+        $this->addOption('is-bounce', null, InputOption::VALUE_NONE, 'Set is_bounce=true in vars');
     }
 
     /**
@@ -75,19 +72,20 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
         $from_line  = null;
         if ($from_opt) {
             $from_email = $from_opt;
-            $from_user = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($from_email);
+            $from_user  = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($from_email);
             if ($from_user) {
                 $from_name = $from_user->getDisplayName();
             }
         }
 
         if (!$from_email) {
-            $output->writeln("<error>You must supply --from</error>");
+            $output->writeln('<error>You must supply --from</error>');
+
             return 1;
         }
 
         if ($from_name) {
-            $from_line = $from_name . ' <' . $from_email . '>';
+            $from_line = $from_name.' <'.$from_email.'>';
         } else {
             $from_line = $from_email;
         }
@@ -96,7 +94,7 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
         # To
         #------------------------------
 
-        $to_opt = $input->getOption('to');
+        $to_opt     = $input->getOption('to');
         $to_account = null;
         $to_email   = null;
         if ($to_opt) {
@@ -105,6 +103,7 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
                     $to_acc = $this->getContainer()->getEmailAccountManager()->getAccount($to_opt);
                 } catch (\Exception $e) {
                     $output->writeln("<error>No such ticket account: $to_opt</error>");
+
                     return 1;
                 }
             } else {
@@ -114,7 +113,8 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             try {
                 $to_acc = $this->getContainer()->getEmailAccountManager()->getPrimaryTicketAccount();
             } catch (\Exception $e) {
-                $output->writeln("<error>No --to option supplied and this database has no ticket account to use as a default. Try again with --to.</error>");
+                $output->writeln('<error>No --to option supplied and this database has no ticket account to use as a default. Try again with --to.</error>');
+
                 return 1;
             }
         }
@@ -129,7 +129,7 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
         # As reply
         #------------------------------
 
-        $ticket = null;
+        $ticket      = null;
         $access_code = null;
 
         $reply_opt = $input->getOption('ticket-reply');
@@ -138,6 +138,7 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             $ticket = $this->getContainer()->getEm()->find('DeskPRO:Ticket', $reply_opt);
             if (!$ticket) {
                 $output->writeln("<error>--ticket-reply: No such ticket: $reply_opt</error>");
+
                 return 1;
             }
 
@@ -161,7 +162,7 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
         $subject = $input->getOption('subject');
         if (!$subject) {
             if ($ticket) {
-                $subject = 'RE: ' . $ticket->subject;
+                $subject = 'RE: '.$ticket->subject;
             } else {
                 $subject = sprintf('Test Message #%s -- %s -- %s', date('Hi'), date('Y-m-d'), date('s'));
             }
@@ -173,16 +174,16 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
         # Tpl
         #------------------------------
 
-        $tpl = 'DeskPRO:dev:gen_email/' . ($input->getOption('tpl') ?: 'html') . '.txt.twig';
+        $tpl = 'DeskPRO:dev:gen_email/'.($input->getOption('tpl') ?: 'html').'.txt.twig';
 
         $vars = array(
-            'uid'        => uniqid('dp', true),
-            'ts'         => time(),
-            'rand'       => mt_rand(100000, 999999),
-            'rand_ref'   => Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . Strings::random(4, Strings::CHARS_ALPHA_IU),
-            'rand_str'   => Strings::random(10, Strings::CHARS_ALPHA_IU),
-            'subject'    => $subject,
-            'message'    => $message,
+            'uid'      => uniqid('dp', true),
+            'ts'       => time(),
+            'rand'     => mt_rand(100000, 999999),
+            'rand_ref' => Strings::random(4, Strings::CHARS_ALPHA_IU).'-'.Strings::random(4, Strings::CHARS_ALPHA_IU).'-'.Strings::random(4, Strings::CHARS_ALPHA_IU),
+            'rand_str' => Strings::random(10, Strings::CHARS_ALPHA_IU),
+            'subject'  => $subject,
+            'message'  => $message,
 
             'as_reply'    => $ticket,
             'as_agent'    => $from_user && $from_user->is_agent,
@@ -193,8 +194,8 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             'from_name'  => $from_name,
             'from_line'  => $from_line,
 
-            'to_email'   => $to_email,
-            'to_acc'     => $to_acc,
+            'to_email' => $to_email,
+            'to_acc'   => $to_acc,
         );
 
         $custom_vars = null;
@@ -213,7 +214,7 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             $vars['is_bounce'] = true;
         }
 
-        $proc_keys = array_keys($custom_vars);
+        $proc_keys   = array_keys($custom_vars);
         $proc_keys[] = 'subject';
         $proc_keys[] = 'message';
 

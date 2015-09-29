@@ -1,43 +1,40 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
 
 use Orb\Util\Strings;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
- * This knows how to find the type of an object
+ * This knows how to find the type of an object.
  */
 class DataTypeMap
 {
@@ -59,8 +56,8 @@ class DataTypeMap
                     'classes' => [
                         'DeskPRO\Bundle\AppBundle\Entity\SandboxWidget',
                         '\Proxies\__CG__\DeskPRO\Bundle\AppBundle\Entity\SandboxWidget',
-                    ]
-                ]
+                    ],
+                ],
             ];
         }
     }
@@ -69,6 +66,7 @@ class DataTypeMap
      * Given some $data give me the object "type" or null if it can't be determined.
      *
      * @param $data
+     *
      * @return string|null
      */
     public function findType($data)
@@ -80,13 +78,13 @@ class DataTypeMap
         }
 
         if (is_array($data) || $data instanceof \Traversable) {
-            return null; // it is still an array and we can't determine type now
+            return; // it is still an array and we can't determine type now
         }
 
         $object_class = is_object($data) ? get_class($data) : null;
 
         if (!$object_class) {
-            return null;
+            return;
         } elseif ($type = $this->findTypeForClass($object_class)) {
             return $type;
         } else {
@@ -95,9 +93,10 @@ class DataTypeMap
     }
 
     /**
-     * Given a class name, give me the type
+     * Given a class name, give me the type.
      *
      * @param $object_class
+     *
      * @return null|string
      */
     public function findTypeForClass($object_class)
@@ -121,16 +120,18 @@ class DataTypeMap
         $class_name_parts = explode('\\', $object_class);
         if (count($class_name_parts)) {
             $class_name = end($class_name_parts);
+
             return Strings::camelCaseToUnderscore($class_name);
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Make sure to remove any leading "\" from the FQNS
+     * Make sure to remove any leading "\" from the FQNS.
      *
      * @param $object_class
+     *
      * @return string
      */
     public function normalizeNamespaceString($object_class)

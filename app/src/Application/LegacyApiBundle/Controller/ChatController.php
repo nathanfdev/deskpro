@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -41,7 +41,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  * 	resourcePath="/chats",
  * 	description="Operations about Chats",
  * 	basePath="/api"
- * )
+ * ).
  */
 class ChatController extends AbstractController
 {
@@ -114,7 +114,7 @@ class ChatController extends AbstractController
      *			)
      *		)
      * 	)
-     * )
+     * ).
      */
     public function searchAction()
     {
@@ -203,7 +203,7 @@ class ChatController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
-     * )
+     * ).
      */
     public function getChatAction($chat_id)
     {
@@ -237,7 +237,7 @@ class ChatController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
-     * )
+     * ).
      */
     public function postChatAction($chat_id)
     {
@@ -294,7 +294,7 @@ class ChatController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
-     * )
+     * ).
      */
     public function leaveChatAction($chat_id)
     {
@@ -339,7 +339,7 @@ class ChatController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
-     * )
+     * ).
      */
     public function endChatAction($chat_id)
     {
@@ -368,7 +368,7 @@ class ChatController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
-     * )
+     * ).
      */
     public function getMessagesAction($chat_id)
     {
@@ -401,7 +401,7 @@ class ChatController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
-     * )
+     * ).
      */
     public function newMessageAction($chat_id)
     {
@@ -409,7 +409,7 @@ class ChatController extends AbstractController
 
         $text = $this->in->getString('message');
         if ($text === '') {
-            return $this->createApiErrorResponse('required_field', "message cannot be empty");
+            return $this->createApiErrorResponse('required_field', 'message cannot be empty');
         }
 
         /** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
@@ -439,7 +439,7 @@ class ChatController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
-     * )
+     * ).
      */
     public function getParticipantsAction($chat_id)
     {
@@ -472,7 +472,7 @@ class ChatController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
-     * )
+     * ).
      */
     public function postParticipantsAction($chat_id)
     {
@@ -519,7 +519,7 @@ class ChatController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
-     * )
+     * ).
      */
     public function getParticipantAction($chat_id, $person_id)
     {
@@ -557,7 +557,7 @@ class ChatController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteParticipantAction($chat_id, $person_id)
     {
@@ -592,7 +592,7 @@ class ChatController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
-     * )
+     * ).
      */
     public function getChatLabelsAction($chat_id)
     {
@@ -625,7 +625,7 @@ class ChatController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
-     * )
+     * ).
      */
     public function postChatLabelsAction($chat_id)
     {
@@ -670,7 +670,7 @@ class ChatController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
-     * )
+     * ).
      */
     public function getChatLabelAction($chat_id, $label)
     {
@@ -707,7 +707,7 @@ class ChatController extends AbstractController
      *		),
      *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteChatLabelAction($chat_id, $label)
     {
@@ -721,11 +721,11 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @param integer $id
+     * @param int $id
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @return \Application\DeskPRO\Entity\ChatConversation
      *
+     * @return \Application\DeskPRO\Entity\ChatConversation
      */
     protected function _getChatOr404($id)
     {

@@ -1,42 +1,40 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\AppBundle\ObjectRouter;
 
-use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\AgentLinkRoute;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\AgentLinkCustom;
-use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\AgentLinkRoute;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\Common\Annotations\Reader;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Finder\Finder;
@@ -65,7 +63,7 @@ class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerIn
     public function __construct(Reader $annotation_reader, ConfigCache $config_cache)
     {
         $this->annotation_reader = $annotation_reader;
-        $this->config_cache = $config_cache;
+        $this->config_cache      = $config_cache;
         $this->cached_config_map = null;
     }
 
@@ -145,6 +143,7 @@ class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerIn
      * ]
      *
      * @param $object_or_filename
+     *
      * @return array
      */
     protected function readAnnotationConfig($object_or_filename)
@@ -189,10 +188,9 @@ class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerIn
     }
 
     /**
-     * Return the full $config array (already parsed) from the cache file (done during warmup)
+     * Return the full $config array (already parsed) from the cache file (done during warmup).
      *
      * @param $object_classname_or_filename
-     * @return null
      */
     protected function getAnnotationConfigFromCache($object_classname_or_filename)
     {
@@ -215,13 +213,14 @@ class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerIn
             return $this->cached_config_map[$class];
         }
 
-        return null;
+        return;
     }
 
     /**
      * Will give you the FQCN of an object instance, a class file name, or the FQCN itself.
      *
      * @param $object_classname_or_filename
+     *
      * @return false|string
      */
     protected function parseClassName($object_classname_or_filename)
@@ -247,16 +246,16 @@ class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerIn
     public function warmUp($cacheDir)
     {
         $link_config_dirs = array(
-            DP_ROOT . '/src/DeskPRO/Bundle/AppBundle/Entity',
-            DP_ROOT . '/src/Application/EmailBundle/Entity',
-            DP_ROOT . '/src/Application/DeskPRO/Entity',
+            DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/Entity',
+            DP_ROOT.'/src/Application/EmailBundle/Entity',
+            DP_ROOT.'/src/Application/DeskPRO/Entity',
         );
 
-        if (is_dir($portalbundle = DP_ROOT . '/src/DeskPRO/Bundle/PortalBundle/Entity')) {
+        if (is_dir($portalbundle = DP_ROOT.'/src/DeskPRO/Bundle/PortalBundle/Entity')) {
             $link_config_dirs[] = $portalbundle;
         }
 
-        if (is_dir($apibundle = DP_ROOT . '/src/DeskPRO/Bundle/ApiBundle/Entity')) {
+        if (is_dir($apibundle = DP_ROOT.'/src/DeskPRO/Bundle/ApiBundle/Entity')) {
             $link_config_dirs[] = $apibundle;
         }
 
@@ -271,11 +270,11 @@ class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerIn
             }
         }
 
-        $this->config_cache->write('<?php return ' . var_export($warmup_cache, true) . ';');
+        $this->config_cache->write('<?php return '.var_export($warmup_cache, true).';');
     }
 
     /**
-     * The following is taken from symfony's Symfony\Component\Routing\Loader\AnnotationFileLoader class
+     * The following is taken from symfony's Symfony\Component\Routing\Loader\AnnotationFileLoader class.
      *
      * Returns the full class name for the first class in the file.
      *
@@ -285,9 +284,9 @@ class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerIn
      */
     protected function findClass($file)
     {
-        $class = false;
+        $class     = false;
         $namespace = false;
-        $tokens = token_get_all(file_get_contents($file));
+        $tokens    = token_get_all(file_get_contents($file));
         for ($i = 0, $count = count($tokens); $i < $count; ++$i) {
             $token = $tokens[$i];
 
@@ -296,7 +295,7 @@ class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerIn
             }
 
             if (true === $class && T_STRING === $token[0]) {
-                return $namespace . '\\' . $token[1];
+                return $namespace.'\\'.$token[1];
             }
 
             if (true === $namespace && T_STRING === $token[0]) {

@@ -1,46 +1,43 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\SearchLog;
 use Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet;
-use Application\DeskPRO\NewSearch\SearchEngine\SearchContext;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchContextFactory;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Search\StickyWordSearch;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Numbers;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,25 +53,25 @@ class SearchController extends AbstractController
     {
         $q = $request->get('q');
 
-        $is_search = false;
-        $person = $this->getUser() ?: new PersonGuest();
+        $is_search      = false;
+        $person         = $this->getUser() ?: new PersonGuest();
         $sticky_results = array();
-        $results = array();
-        $total = 0;
-        $cur_page = $request->get('page', 1);
-        $per_page = 5;
+        $results        = array();
+        $total          = 0;
+        $cur_page       = $request->get('page', 1);
+        $per_page       = 5;
 
         if ($q) {
             $is_search = true;
 
-            $se = $this->get('search_engine');
+            $se             = $this->get('search_engine');
             $contextFactory = new SearchContextFactory($this->getContainer());
-            $context = $contextFactory->createUserSearchContext($person);
+            $context        = $contextFactory->createUserSearchContext($person);
 
             /** @var \Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet $result_set */
             $result_set = $se->getUserSearch()->search($context, $q, array('page' => $cur_page, 'per_page' => $per_page));
 
-            $total = $result_set->getTotal();
+            $total   = $result_set->getTotal();
             $results = $result_set->getTypedResults();
 
             $sticky_search = new StickyWordSearch($this->getEm());
@@ -84,19 +81,19 @@ class SearchController extends AbstractController
             if ($sticky_results) {
                 $got_sticky = array();
                 foreach ($sticky_results as $sitem) {
-                    $total++;
-                    $got_sticky[get_class($sitem['object']) . $sitem['object']->getId()] = true;
+                    ++$total;
+                    $got_sticky[get_class($sitem['object']).$sitem['object']->getId()] = true;
                 }
                 $results = array_filter(
                     $results,
                     function ($r) use ($got_sticky) {
-                        return !isset($got_sticky[get_class($r['object']) . $r['object']->getId()]);
+                        return !isset($got_sticky[get_class($r['object']).$r['object']->getId()]);
                     }
                 );
             }
 
-            $searchlog = SearchLog::create($q, count($results) + count($sticky_results));
-            $searchlog->person = $this->getUser();
+            $searchlog             = SearchLog::create($q, count($results) + count($sticky_results));
+            $searchlog->person     = $this->getUser();
             $searchlog->ip_address = $request->getClientIp();
             $this->getEm()->transactional(
                 function (EntityManager $em) use ($searchlog) {
@@ -113,12 +110,12 @@ class SearchController extends AbstractController
         return $this->renderThemeView(
             'Theme:Search:search_results.html.twig',
             array(
-                'is_search' => $is_search,
-                'results' => $results,
+                'is_search'      => $is_search,
+                'results'        => $results,
                 'sticky_results' => $sticky_results,
-                'query' => $q,
-                'pageinfo' => $pageinfo,
-                'num_results' => $total,
+                'query'          => $q,
+                'pageinfo'       => $pageinfo,
+                'num_results'    => $total,
             )
         );
     }
@@ -135,16 +132,16 @@ class SearchController extends AbstractController
             return $this->makeJsonResponse(
                 array(
                     'results' => array(),
-                    'words' => array()
+                    'words'   => array(),
                 )
             );
         }
 
-        $person = $this->getUser() ?: new PersonGuest();
-        $se = $this->get('search_engine');
+        $person         = $this->getUser() ?: new PersonGuest();
+        $se             = $this->get('search_engine');
         $contextFactory = new SearchContextFactory($this->getContainer());
-        $context = $contextFactory->createUserSearchContext($person);
-        $sticky_search = new StickyWordSearch($this->getEm());
+        $context        = $contextFactory->createUserSearchContext($person);
+        $sticky_search  = new StickyWordSearch($this->getEm());
         /** @var ResultSet $results */
         $results = $se->getUserSearch()->similarTo(
             $context,
@@ -152,14 +149,13 @@ class SearchController extends AbstractController
             array('limit_types' => array($content_type))
         );
 
-
         $search_results = $results->getTypedResults();
 
         // filter out the unwanted types from response and get the "words" for allowed objects
         $property_accessor = PropertyAccess::createPropertyAccessor();
-        $typed_results = array();
-        $words = array();
-        $allowed_types = array('article','news','download','feedback');
+        $typed_results     = array();
+        $words             = array();
+        $allowed_types     = array('article','news','download','feedback');
         foreach ($search_results as $result) {
             if (isset($result['type']) && in_array($result['type'], $allowed_types)) {
                 $typed_results[] = $result;
@@ -167,8 +163,8 @@ class SearchController extends AbstractController
                 $object = $result['object'];
                 if (is_object($object)) {
                     $class = get_class($object);
-                    $type = 'DeskPRO:' . substr($class, strrpos($class, '\\') + 1);
-                    $id = $property_accessor->getValue($object, 'id');
+                    $type  = 'DeskPRO:'.substr($class, strrpos($class, '\\') + 1);
+                    $id    = $property_accessor->getValue($object, 'id');
                     foreach ($sticky_search->getStickyWords($type, $id) as $word) {
                         if (count($words) < 100) {
                             $words[] = $word;
@@ -182,7 +178,7 @@ class SearchController extends AbstractController
         return $this->makeJsonResponse(
             array(
                 'results' => $serialized_results,
-                'words' => $words,
+                'words'   => $words,
             )
         );
     }

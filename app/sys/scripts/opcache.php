@@ -93,21 +93,21 @@ $data = array_merge(
     $opcache_status['memory_usage'],
     $opcache_status['opcache_statistics'],
     array(
-        'total_memory_size'       => memsize($opcache_config['directives']['opcache.memory_consumption']),
-        'used_memory_percentage'  => round(100 * (
+        'total_memory_size'      => memsize($opcache_config['directives']['opcache.memory_consumption']),
+        'used_memory_percentage' => round(100 * (
                 ($opcache_status['memory_usage']['used_memory'] + $opcache_status['memory_usage']['wasted_memory'])
                 / $opcache_config['directives']['opcache.memory_consumption'])),
-        'hit_rate_percentage'     => round($opcache_status['opcache_statistics']['opcache_hit_rate']),
-        'wasted_percentage'       => round($opcache_status['memory_usage']['current_wasted_percentage'], 2),
-        'used_memory_size'        => memsize($opcache_status['memory_usage']['used_memory']),
-        'free_memory_size'        => memsize($opcache_status['memory_usage']['free_memory']),
-        'wasted_memory_size'      => memsize($opcache_status['memory_usage']['wasted_memory']),
-        'files_cached'            => number_format($opcache_status['opcache_statistics']['num_cached_scripts']),
-        'hits_size'               => number_format($opcache_status['opcache_statistics']['hits']),
-        'miss_size'               => number_format($opcache_status['opcache_statistics']['misses']),
-        'blacklist_miss_size'     => number_format($opcache_status['opcache_statistics']['blacklist_misses']),
-        'num_cached_keys_size'    => number_format($opcache_status['opcache_statistics']['num_cached_keys']),
-        'max_cached_keys_size'    => number_format($opcache_status['opcache_statistics']['max_cached_keys']),
+        'hit_rate_percentage'  => round($opcache_status['opcache_statistics']['opcache_hit_rate']),
+        'wasted_percentage'    => round($opcache_status['memory_usage']['current_wasted_percentage'], 2),
+        'used_memory_size'     => memsize($opcache_status['memory_usage']['used_memory']),
+        'free_memory_size'     => memsize($opcache_status['memory_usage']['free_memory']),
+        'wasted_memory_size'   => memsize($opcache_status['memory_usage']['wasted_memory']),
+        'files_cached'         => number_format($opcache_status['opcache_statistics']['num_cached_scripts']),
+        'hits_size'            => number_format($opcache_status['opcache_statistics']['hits']),
+        'miss_size'            => number_format($opcache_status['opcache_statistics']['misses']),
+        'blacklist_miss_size'  => number_format($opcache_status['opcache_statistics']['blacklist_misses']),
+        'num_cached_keys_size' => number_format($opcache_status['opcache_statistics']['num_cached_keys']),
+        'max_cached_keys_size' => number_format($opcache_status['opcache_statistics']['max_cached_keys']),
     )
 );
 

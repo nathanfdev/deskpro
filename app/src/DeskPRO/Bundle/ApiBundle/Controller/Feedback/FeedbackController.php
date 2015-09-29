@@ -1,52 +1,50 @@
 <?php
 
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCountCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackSelectCriteria;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
+use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * API access to feedback.
@@ -91,29 +89,32 @@ class FeedbackController extends BaseController
      *      }
      * )
      * @Get("/feedback/", name="api_feedback")
+     *
      * @param Request $request
-     * @return View
+     *
      * @throws \LogicException
+     *
+     * @return View
      */
     public function cgetAction(Request $request)
     {
         $dataService = $this->get('data.feedback');
-        $params = $request->query->all();
+        $params      = $request->query->all();
         try {
             $criteria = FeedbackSelectCriteria::fromParameters($params, new OptionsResolver());
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
-        $page = $request->query->get('page', 1);
+        $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
         $feedback = $dataService->selectFeedback($criteria, $page, $count);
+
         return View::create(
             $this->dataSerialize($feedback),
             Response::HTTP_OK
         );
     }
-
 
     /**
      * @ApiDoc(
@@ -126,19 +127,23 @@ class FeedbackController extends BaseController
      *      output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
      * @Get("/feedback/counts", name="api_feedback_count")
+     *
      * @param Request $request
-     * @return View
+     *
      * @throws \LogicException
      * @throws AccessException
      * @throws UndefinedOptionsException
      * @throws BadRequestHttpException
+     *
+     * @return View
      */
     public function getCountsAction(Request $request)
     {
         $dataService = $this->get('data.feedback');
-        $params = $request->query->all();
+        $params      = $request->query->all();
         if (array_key_exists('group_by', $params) && $params['group_by'] === 'category') {
             $result = $dataService->countsByType();
+
             return View::create(
                 $this->dataSerialize(new PrimitiveArray($result)),
                 Response::HTTP_OK
@@ -176,9 +181,12 @@ class FeedbackController extends BaseController
      *      },
      * )
      * @Get("/feedback/filter", name="api_feedback_filter_values")
+     *
      * @param Request $request
-     * @return View
+     *
      * @throws \LogicException
+     *
+     * @return View
      */
     public function getFilterValues(Request $request)
     {
@@ -211,6 +219,7 @@ class FeedbackController extends BaseController
                     ->from('DeskPRO:FeedbackStatusCategory', 's');
         }
         $result = $qb->getQuery()->getScalarResult();
+
         return View::create(
             $this->createRepresentation($result),
             Response::HTTP_OK

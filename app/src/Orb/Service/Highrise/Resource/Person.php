@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * Orb.
  *
  * @category Highrise
  */
-
 namespace Orb\Service\Highrise\Resource;
 
 /**
@@ -64,7 +64,7 @@ class Person extends AbstractResource
     public function getAllPeople($page = 1)
     {
         $resource = '/people.xml';
-        $offset   = ($page-1) * 500;
+        $offset   = ($page - 1) * 500;
 
         $response = $this->highrise->sendReadRequest($resource, array('n' => $offset));
 
@@ -82,7 +82,7 @@ class Person extends AbstractResource
     public function getPeopleWithTag($tag_id, $page = 1)
     {
         $resource = '/people.xml';
-        $offset   = ($page-1) * 500;
+        $offset   = ($page - 1) * 500;
 
         $response = $this->highrise->sendReadRequest($resource, array('n' => $offset, 'tag_id' => $tag_id));
 
@@ -100,7 +100,7 @@ class Person extends AbstractResource
     public function getPeopleWithTitle($title, $page = 1)
     {
         $resource = '/people.xml';
-        $offset   = ($page-1) * 500;
+        $offset   = ($page - 1) * 500;
 
         $response = $this->highrise->sendReadRequest($resource, array('n' => $offset, 'title' => $title));
 
@@ -118,7 +118,7 @@ class Person extends AbstractResource
     public function getCompanyPeople($company_id, $page = 1)
     {
         $resource = '/companies/'.$company_id.'/people.xml';
-        $offset   = ($page-1) * 500;
+        $offset   = ($page - 1) * 500;
 
         $response = $this->highrise->sendReadRequest($resource, array('n' => $offset));
 
@@ -145,7 +145,7 @@ class Person extends AbstractResource
     public function findPeopleWithCriteria(array $criteria = array(), $page = 1)
     {
         $resource = '/people/search.xml';
-        $offset   = ($page-1) * 25;
+        $offset   = ($page - 1) * 25;
 
         $postfields = array('n' => $offset);
         foreach ($criteria as $k => $v) {
@@ -174,7 +174,7 @@ class Person extends AbstractResource
     public function getPeopleSince($since, $page = 1)
     {
         $resource = '/people.xml';
-        $offset   = ($page-1) * 500;
+        $offset   = ($page - 1) * 500;
 
         // If it doesn't start with 1, then its probably a timestamp
         // so we need to convert it

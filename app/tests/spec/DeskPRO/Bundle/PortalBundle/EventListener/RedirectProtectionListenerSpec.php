@@ -1,11 +1,37 @@
 <?php
 
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 namespace spec\DeskPRO\Bundle\PortalBundle\EventListener;
 
+use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
-use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
@@ -25,8 +51,7 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
         Request $request,
         HeaderBag $response_headers,
         UrlHostChecker $url_host_checker
-    )
-    {
+    ) {
         $brand_stack->getActive()->willReturn($brand_container);
         $event->getResponse()->willReturn($response);
         $event->getRequest()->willReturn($request);
@@ -39,8 +64,7 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
     public function it_does_not_change_response_if_not_redirect(
         Response $response,
         FilterResponseEvent $event
-    )
-    {
+    ) {
         $response->isRedirect()->willReturn(false);
 
         $event->setResponse(Argument::any())->shouldNotBeCalled();
@@ -52,8 +76,7 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
         Response $response,
         HeaderBag $response_headers,
         FilterResponseEvent $event
-    )
-    {
+    ) {
         $response->isRedirect()->willReturn(true);
 
         $response_headers
@@ -75,8 +98,7 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
         HeaderBag $response_headers,
         FilterResponseEvent $event,
         Request $request
-    )
-    {
+    ) {
         $response->isRedirect()->willReturn(true);
 
         $response_headers
@@ -104,8 +126,7 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
         HeaderBag $response_headers,
         FilterResponseEvent $event,
         Request $request
-    )
-    {
+    ) {
         $response->isRedirect()->willReturn(true);
 
         $response_headers
@@ -133,8 +154,7 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
         FilterResponseEvent $event,
         Request $request,
         BrandContainer $brand_container
-    )
-    {
+    ) {
         $response->isRedirect()->willReturn(true);
 
         $response_headers

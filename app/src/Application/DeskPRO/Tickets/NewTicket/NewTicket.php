@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Tickets\NewTicket;
 
 use Application\DeskPRO\App;
@@ -77,8 +77,8 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
     public $language;
 
     public $custom_ticket_fields = array();
-    public $custom_user_fields = array();
-    public $custom_org_fields = array();
+    public $custom_user_fields   = array();
+    public $custom_org_fields    = array();
 
     public $new_message;
 
@@ -262,13 +262,13 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
         if ($this->email_reader) {
             $ticket->email_reader = $this->email_reader;
         }
-        $ticket['creation_system']  = $this->creation_system;
+        $ticket['creation_system'] = $this->creation_system;
 
         if ($this->creation_system_option) {
             $ticket['creation_system_option'] = $this->creation_system_option;
         }
 
-        $ticket['person']  = $person;
+        $ticket['person'] = $person;
         if ($email && $person->primary_email && $person->primary_email->id != $email->id) {
             $ticket->person_email = $email;
         }
@@ -338,8 +338,8 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
             $ticket_message->ip_address = dp_get_user_ip_address();
         }
 
-        $ticket_message['person']  = $person;
-        $ticket_message['ticket']  = $ticket;
+        $ticket_message['person'] = $person;
+        $ticket_message['ticket'] = $ticket;
         if ($this->ticket->message_is_html) {
             $ticket_message->setMessageHtml(Strings::linkifyHtml($this->ticket->message));
         } else {
@@ -422,7 +422,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
         if (!empty($tracker_extra['fwd_cc_unknown'])) {
             $ticket->getTicketLogger()->recordMultiPropertyChanged('log_actions', null, array(
                 'type'    => 'Free',
-                'message' => "Unknown users in CC line: ".$tracker_extra['fwd_cc_unknown'],
+                'message' => 'Unknown users in CC line: '.$tracker_extra['fwd_cc_unknown'],
             ));
             unset($tracker_extra['fwd_cc_unknown']);
         }

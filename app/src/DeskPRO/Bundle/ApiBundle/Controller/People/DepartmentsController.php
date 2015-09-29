@@ -1,58 +1,52 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Department;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
-use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
+use FOS\RestBundle\Controller\Annotations\Delete;
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
-use Pagerfanta\Adapter\ArrayAdapter;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Delete;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class DepartmentsController extends BaseController implements ClassResourceInterface
 {
@@ -80,7 +74,9 @@ class DepartmentsController extends BaseController implements ClassResourceInter
      *      }
      * )
      * @Get("/departments", name="api_departments")
+     *
      * @param Request $request
+     *
      * @return View
      */
     public function cgetAction(Request $request)
@@ -94,7 +90,7 @@ class DepartmentsController extends BaseController implements ClassResourceInter
                 ->select('d')->from('DeskPRO:Department', 'd')->getQuery();
         }
 
-        $page = $request->query->get('page', 1);
+        $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
         $pager = new Pagerfanta(new DoctrineORMAdapter($departments));
@@ -125,7 +121,9 @@ class DepartmentsController extends BaseController implements ClassResourceInter
      *      output="Application\DeskPRO\Entity\Department"
      * )
      * @Get("/departments/{id}", name="api_departments_get")
+     *
      * @param int $id
+     *
      * @return View
      */
     public function getAction($id)
@@ -153,14 +151,18 @@ class DepartmentsController extends BaseController implements ClassResourceInter
      *      output="Application\DeskPRO\Entity\Department"
      * )
      * @Post("/departments", name="api_departments_post")
+     *
      * @param Request $request
+     *
      * @throws WrappedApiErrorException
      * @throws InvalidFormException
+     *
      * @return View
      */
     public function postAction(Request $request)
     {
         $department = new Department($this->getUser());
+
         return $this->handleFormSubmission($request, $department);
     }
 
@@ -183,9 +185,12 @@ class DepartmentsController extends BaseController implements ClassResourceInter
      *      }
      * )
      * @Put("/departments/{id}", name="api_departments_put")
+     *
      * @param Request $request
      * @param $id
+     *
      * @throws WrappedApiErrorException
+     *
      * @return View
      */
     public function putAction(Request $request, $id)
@@ -212,7 +217,9 @@ class DepartmentsController extends BaseController implements ClassResourceInter
      *      }
      * )
      * @Delete("/departments/{id}", name="api_departments_delete")
+     *
      * @param $id
+     *
      * @return View
      */
     public function deleteAction($id)
@@ -229,11 +236,12 @@ class DepartmentsController extends BaseController implements ClassResourceInter
 
     /**
      * @param int $id
+     *
      * @return Department
      */
     protected function getDepartment($id)
     {
-        $id = (int) $id;
+        $id         = (int) $id;
         $department = $this->getDoctrine()->getManager()->getRepository('DeskPRO:Department')->find($id);
 
         if (!$department) {
@@ -244,11 +252,14 @@ class DepartmentsController extends BaseController implements ClassResourceInter
     }
 
     /**
-     * Will be abstracted for use by other controllers
-     * @param Request $request
+     * Will be abstracted for use by other controllers.
+     *
+     * @param Request    $request
      * @param Department $department
-     * @return View
+     *
      * @throws WrappedApiErrorException
+     *
+     * @return View
      */
     protected function handleFormSubmission(Request $request, Department $department)
     {
@@ -280,8 +291,10 @@ class DepartmentsController extends BaseController implements ClassResourceInter
     }
 
     /**
-     * Get specific departments
+     * Get specific departments.
+     *
      * @param $departmentIds
+     *
      * @return mixed
      */
     protected function selectDepartments($departmentIds)
@@ -289,7 +302,7 @@ class DepartmentsController extends BaseController implements ClassResourceInter
         $entityManager = $this->getDoctrine()->getManager();
 
         // Clean the IDs
-        $departmentIds = array_map(function($value) {
+        $departmentIds = array_map(function ($value) {
             return (int) $value;
         }, $departmentIds);
 

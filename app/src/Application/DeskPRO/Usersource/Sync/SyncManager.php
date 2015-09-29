@@ -1,41 +1,37 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Usersource\Sync;
 
-
 use Application\DeskPRO\Entity\Job;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Entity\UsersourceSyncLog;
@@ -44,7 +40,6 @@ use Application\DeskPRO\JobQueue\JobQueue;
 use Application\DeskPRO\JobQueue\Processor\UsersourceSyncProcessor;
 use Application\DeskPRO\Usersource\UsersourceManager;
 use Doctrine\ORM\EntityManager;
-use Orb\Validator\StringEmail;
 
 /**
  * The SyncManager is an aggregate of all of the syncers, but it is itself a "master" syncer.
@@ -78,15 +73,16 @@ class SyncManager implements SyncerInterface
 
     public function __construct(array $syncers, EntityManager $em, JobQueue $queue, UsersourceManager $um)
     {
-        $this->syncers = $syncers;
+        $this->syncers  = $syncers;
         $this->log_repo = $em->getRepository('DeskPRO:UsersourceSyncLog');
-        $this->em = $em;
-        $this->queue = $queue;
-        $this->um = $um;
+        $this->em       = $em;
+        $this->queue    = $queue;
+        $this->um       = $um;
     }
 
     /**
      * @param Usersource $usersource
+     *
      * @return SyncerInterface
      */
     public function getSyncerForUsersource(Usersource $usersource)
@@ -96,6 +92,7 @@ class SyncManager implements SyncerInterface
 
     /**
      * @param string $usersource_adapter_class_name
+     *
      * @return SyncerInterface
      */
     public function getSyncerForAdapterClass($usersource_adapter_class_name)
@@ -124,7 +121,7 @@ class SyncManager implements SyncerInterface
 
         // not supported
         $cursor->markCompleted(); // mark it complete so that clients know to move on and not pause
-        return null;
+        return;
     }
 
     public function supportsUsersourceAdapter($adapter_class)
@@ -155,6 +152,7 @@ class SyncManager implements SyncerInterface
 
     /**
      * @param Usersource $usersource
+     *
      * @return UsersourceSyncLog
      */
     public function getMostRecentLog(Usersource $usersource)
@@ -164,6 +162,7 @@ class SyncManager implements SyncerInterface
 
     /**
      * @param Usersource $usersource
+     *
      * @return UsersourceSyncLog|null
      */
     public function getLogToUseDuringSync(Usersource $usersource, $force_create = false)
@@ -190,7 +189,7 @@ class SyncManager implements SyncerInterface
     }
 
     /**
-     * If this returns true, the running sync job should stop immediately
+     * If this returns true, the running sync job should stop immediately.
      *
      * @return bool
      */
@@ -210,6 +209,7 @@ class SyncManager implements SyncerInterface
 
     /**
      * @param Usersource $usersource
+     *
      * @return bool
      */
     public function isSyncable(Usersource $usersource)
@@ -218,7 +218,7 @@ class SyncManager implements SyncerInterface
     }
 
     /**
-     * This checks to see if there are any usersource sync jobs in a "running" state
+     * This checks to see if there are any usersource sync jobs in a "running" state.
      *
      * @return \DateTime|null
      */
@@ -228,12 +228,13 @@ class SyncManager implements SyncerInterface
             return $waiting->date_next_try;
         }
 
-        return null;
+        return;
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\Job
      * @throws \Doctrine\ORM\NonUniqueResultException
+     *
+     * @return \Application\DeskPRO\Entity\Job
      */
     public function getNextScheduledSyncJob()
     {
@@ -270,7 +271,7 @@ class SyncManager implements SyncerInterface
             ->setParameter('sync', UsersourceSyncProcessor::JOB_TYPE)
             ->setParameter('running', array(
             Job::STATUS_PROCESSING,
-            Job::STATUS_RESERVED
+            Job::STATUS_RESERVED,
         ))->getOneOrNullResult();
 
         if ($running) {
@@ -301,7 +302,7 @@ class SyncManager implements SyncerInterface
             ->setParameter('running', array(
                 Job::STATUS_WAITING,
                 Job::STATUS_PROCESSING,
-                Job::STATUS_RESERVED
+                Job::STATUS_RESERVED,
             ))->getResult();
 
         foreach ($running_or_waiting_jobs as $job_to_abort) {

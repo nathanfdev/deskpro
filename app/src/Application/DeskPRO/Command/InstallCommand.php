@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Commands
  */
-
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
@@ -50,16 +50,16 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     protected function configure()
     {
         $this->setName('dp:install');
-        $this->addOption('insert-initial', null, InputOption::VALUE_NONE, "Unused (exists for legacy)");
-        $this->addOption('admin-email', null, InputOption::VALUE_OPTIONAL, "The initial admin email");
-        $this->addOption('admin-password', null, InputOption::VALUE_OPTIONAL, "The initial admin password");
+        $this->addOption('insert-initial', null, InputOption::VALUE_NONE, 'Unused (exists for legacy)');
+        $this->addOption('admin-email', null, InputOption::VALUE_OPTIONAL, 'The initial admin email');
+        $this->addOption('admin-password', null, InputOption::VALUE_OPTIONAL, 'The initial admin password');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         //TODO remove for prod
         echo "TODO chmod'ing cache dir, remove this in prod\n";
-        passthru("chmod -R 0777 " . escapeshellarg(DP_ROOT.'/sys/cache'));
+        passthru('chmod -R 0777 '.escapeshellarg(DP_ROOT.'/sys/cache'));
 
         if (!$this->ensureNotInstalled()) {
             exit;
@@ -70,7 +70,6 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             $input->setOption('admin-email', 'admin@example.com');
             $input->setOption('admin-password', Strings::random());
             $is_user = false;
-
         } elseif (!$input->getOption('admin-email') || !$input->getOption('admin-password')) {
             echo "Please specify --admin-email and --admin-password\n";
 
@@ -99,7 +98,7 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
                 return;
             }
 
-            $tableinfo = $db->fetchColumn("SHOW CREATE TABLE `install_data`", array(), 1);
+            $tableinfo = $db->fetchColumn('SHOW CREATE TABLE `install_data`', array(), 1);
             if (stripos($tableinfo, 'innodb') === false) {
                 $this->getLogger()->log('install_data is not innodb', 'err');
 
@@ -170,7 +169,7 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         $this->getOrm()->flush();
 
         if (!$is_user) {
-            $label = new Entity\LabelPerson();
+            $label          = new Entity\LabelPerson();
             $label['label'] = 'not_user';
             $agent->addLabel($label);
             $this->getOrm()->persist($label);
@@ -273,7 +272,7 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             'value' => time(),
         ));
         App::getDb()->replace('settings', array(
-            'name' => 'core.install_key',
+            'name'  => 'core.install_key',
             'value' => DpStrings::random(20, Strings::CHARS_KEY),
         ));
         App::getDb()->replace('settings', array(
@@ -312,7 +311,7 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         try {
             $this->getDb()->connect();
 
-            $installed = $this->getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('core.install_timestamp'));
+            $installed = $this->getDb()->fetchColumn('SELECT value FROM settings WHERE name = ?', array('core.install_timestamp'));
             if ($installed) {
                 return false;
             }

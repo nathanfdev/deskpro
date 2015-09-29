@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -42,11 +42,11 @@ class AgentTeam extends AbstractEntityRepository
     public function getTeams()
     {
         if (($teams = $this->getIdentityHelper()->getCollection('all')) === null) {
-            $teams = $this->getEntityManager()->createQuery("
+            $teams = $this->getEntityManager()->createQuery('
                 SELECT t
                 FROM DeskPRO:AgentTeam t
                 ORDER BY t.name ASC
-            ")->execute();
+            ')->execute();
 
             $this->getIdentityHelper()->setCollectionFromResults('all', $teams);
         }
@@ -88,11 +88,11 @@ class AgentTeam extends AbstractEntityRepository
     public function findByName($name)
     {
         try {
-            $team = $this->getEntityManager()->createQuery("
+            $team = $this->getEntityManager()->createQuery('
                 SELECT t
                 FROM DeskPRO:AgentTeam t
                 WHERE t.name LIKE ?1
-            ")->setParameter(1, "%$name%")->getSingleResult();
+            ')->setParameter(1, "%$name%")->getSingleResult();
         } catch (\Exception $e) {
             return;
         }
@@ -129,13 +129,13 @@ class AgentTeam extends AbstractEntityRepository
 
     public function getTeamCounts()
     {
-        $counts = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+        $counts = $this->getEntityManager()->getConnection()->fetchAllKeyValue('
             SELECT team_id, COUNT(*)
             FROM agent_team_members
             LEFT JOIN people ON (people.id = agent_team_members.person_id)
             WHERE people.is_deleted = 0
             GROUP BY team_id
-        ");
+        ');
 
         return $counts;
     }
@@ -147,11 +147,11 @@ class AgentTeam extends AbstractEntityRepository
         }
 
         if (!is_array($team_id)) {
-            $agent_ids = App::getDb()->fetchAllCol("
+            $agent_ids = App::getDb()->fetchAllCol('
                 SELECT person_id
                 FROM agent_team_members
                 WHERE team_id = ?
-            ", array($team_id));
+            ', array($team_id));
         } else {
             $agent_ids = App::getDb()->fetchAllCol('
                 SELECT person_id
@@ -171,10 +171,10 @@ class AgentTeam extends AbstractEntityRepository
      */
     public function getSortedMemberIds()
     {
-        return App::getDb()->fetchAllGrouped("
+        return App::getDb()->fetchAllGrouped('
             SELECT team_id, person_id
             FROM agent_team_members
-        ", array(), 'team_id', null, 'person_id');
+        ', array(), 'team_id', null, 'person_id');
     }
 
     public function getMembers($team)
@@ -264,10 +264,10 @@ class AgentTeam extends AbstractEntityRepository
 
     public function getTeamToAgentsMap()
     {
-        return App::getDb()->fetchAllGrouped("
+        return App::getDb()->fetchAllGrouped('
             SELECT team_id, person_id
             FROM agent_team_members
-        ", array(), 'team_id', null, 'person_id');
+        ', array(), 'team_id', null, 'person_id');
     }
 
     /**

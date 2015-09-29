@@ -6,6 +6,7 @@ import { ViewSwitcherContainer } from './ViewSwitcherContainer';
 import { OrderByDropdownContainer } from './OrderByDropdownContainer';
 import { FilterByDropdownContainer } from './FilterByDropdownContainer';
 import { ViewSwitcherDropdownContainer } from './ViewSwitcherDropdownContainer';
+import { MassActionCheckboxContainer } from './MassActionCheckboxContainer';
 
 export class FeedbackListControlBar extends React.Component {
 
@@ -16,12 +17,13 @@ export class FeedbackListControlBar extends React.Component {
       filterByDropdownIsExpanded: false,
       viewModeDropdownIsExpanded: false,
       dropdownOffset: {left: 0, top: 0}
-    }
+    };
   }
 
   render() {
     return (
       <ControlBar>
+        <MassActionCheckboxContainer/>
         <ControlButtonsRow>
           <OrderByContainer toggleDropdown={this.toggleOrderByDropdown}/>
           <li>

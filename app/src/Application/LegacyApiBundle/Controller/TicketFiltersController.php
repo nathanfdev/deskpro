@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TicketFilter;
@@ -38,19 +38,12 @@ use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 
 /**
  * Operations about ticket filters
- * Class TicketFiltersController
- * @package Application\LegacyApiBundle\Controller
- *
- * SWG\Resource(
- * 	resourcePath="/ticket_filters",
- * 	description="Operations about Ticket urgencies",
- * 	basePath="/api"
- * )
+ * Class TicketFiltersController.
  */
 class TicketFiltersController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
@@ -82,14 +75,14 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
 
         foreach ($filters as $filter) {
             $row = array(
-                'id'                => $filter->id,
-                'title'             => $filter->title,
-                'is_enabled'        => $filter->is_enabled,
-                'sys_name'          => $filter->sys_name,
-                'display_order'     => $filter->display_order,
-                'is_global'         => $filter->is_global,
-                'person'            => $filter->person ? $filter->person->toApiData(true) : null,
-                'agent_team'        => $filter->agent_team ? $filter->agent_team->toApiData(true) : null,
+                'id'            => $filter->id,
+                'title'         => $filter->title,
+                'is_enabled'    => $filter->is_enabled,
+                'sys_name'      => $filter->sys_name,
+                'display_order' => $filter->display_order,
+                'is_global'     => $filter->is_global,
+                'person'        => $filter->person ? $filter->person->toApiData(true) : null,
+                'agent_team'    => $filter->agent_team ? $filter->agent_team->toApiData(true) : null,
             );
 
             $data[] = $row;
@@ -104,8 +97,9 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
     # get
     ####################################################################################################################
 
-	/**
+    /**
      * @param $id
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * SWG\Api(
@@ -152,60 +146,61 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
 
     /**
      * @param $id
+     *
      * @return \Symfony\Component\HttpFoundation\Response
-     * SWG\Api(
-     * 	path="/ticket_filters/{id}",
-     * 	SWG\Operation(
-     * 		method="POST",
-     * 		summary="Save ticket filter details",
-     * 		notes="",
-     *		type="array",
-     *      SWG\Parameters (
-     *          SWG\Parameter(
-     *				name="id",
-     *				description="ticket id",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *          SWG\Parameter(
-     *				name="filter.title",
-     *				description="Title for this filter",
-     *				paramType="query",
-     *				required=false,
-     *				type="string",
-     *			),
-     *          SWG\Parameter(
-     *				name="filter.is_global",
-     *				description="ticket global flag",
-     *				paramType="query",
-     *				required=false,
-     *				type="boolean",
-     *			),
-     *          SWG\Parameter(
-     *				name="filter.person_id",
-     *				description="Added person identificator",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer",
-     *			),
-     *          SWG\Parameter(
-     *				name="filter.agent_team_id",
-     *				description="Agent team identificator",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer",
-     *			),
-     *          SWG\Parameter(
-     *				name="filter.terms",
-     *				description="",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer[]",
-     *			),
-     *      )
-     *  )
-     * )
+     *                                                    SWG\Api(
+     *                                                    path="/ticket_filters/{id}",
+     *                                                    SWG\Operation(
+     *                                                    method="POST",
+     *                                                    summary="Save ticket filter details",
+     *                                                    notes="",
+     *                                                    type="array",
+     *                                                    SWG\Parameters (
+     *                                                    SWG\Parameter(
+     *                                                    name="id",
+     *                                                    description="ticket id",
+     *                                                    paramType="path",
+     *                                                    required=true,
+     *                                                    type="integer",
+     *                                                    ),
+     *                                                    SWG\Parameter(
+     *                                                    name="filter.title",
+     *                                                    description="Title for this filter",
+     *                                                    paramType="query",
+     *                                                    required=false,
+     *                                                    type="string",
+     *                                                    ),
+     *                                                    SWG\Parameter(
+     *                                                    name="filter.is_global",
+     *                                                    description="ticket global flag",
+     *                                                    paramType="query",
+     *                                                    required=false,
+     *                                                    type="boolean",
+     *                                                    ),
+     *                                                    SWG\Parameter(
+     *                                                    name="filter.person_id",
+     *                                                    description="Added person identificator",
+     *                                                    paramType="query",
+     *                                                    required=false,
+     *                                                    type="integer",
+     *                                                    ),
+     *                                                    SWG\Parameter(
+     *                                                    name="filter.agent_team_id",
+     *                                                    description="Agent team identificator",
+     *                                                    paramType="query",
+     *                                                    required=false,
+     *                                                    type="integer",
+     *                                                    ),
+     *                                                    SWG\Parameter(
+     *                                                    name="filter.terms",
+     *                                                    description="",
+     *                                                    paramType="query",
+     *                                                    required=false,
+     *                                                    type="integer[]",
+     *                                                    ),
+     *                                                    )
+     *                                                    )
+     *                                                    )
      */
     public function saveAction($id)
     {
@@ -263,6 +258,7 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
 
     /**
      * @param $id
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * SWG\Api(
@@ -304,9 +300,7 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
     # save-display-order
     ####################################################################################################################
 
-	/**
-     *
-     *
+    /**
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * SWG\Api(

@@ -1,41 +1,41 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
 use Application\ImportBundle\Reader\BaseConfig;
-use Exception;
 use DateTime;
+use Exception;
 
 /**
- * ZenDesk reader config
+ * ZenDesk reader config.
  *
  * Class ZenDeskConfig
- * @package Application\ImportBundle\Reader\ZenDesk
  */
 class ZenDeskConfig extends BaseConfig
 {
@@ -73,7 +73,7 @@ class ZenDeskConfig extends BaseConfig
     private $connection_timeout = 120;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string   $subdomain
      * @param string   $username
@@ -87,7 +87,7 @@ class ZenDeskConfig extends BaseConfig
     }
 
     /**
-     * Returns the subdomain
+     * Returns the subdomain.
      *
      * @return string
      */
@@ -97,7 +97,7 @@ class ZenDeskConfig extends BaseConfig
     }
 
     /**
-     * Returns the username or email
+     * Returns the username or email.
      *
      * @return int
      */
@@ -107,7 +107,7 @@ class ZenDeskConfig extends BaseConfig
     }
 
     /**
-     * Returns initial start time
+     * Returns initial start time.
      *
      * @return DateTime
      */
@@ -117,19 +117,21 @@ class ZenDeskConfig extends BaseConfig
     }
 
     /**
-     * Set the auth api token
+     * Set the auth api token.
      *
      * @param string $api_token
+     *
      * @return $this
      */
     public function setApiToken($api_token)
     {
         $this->api_token = $api_token;
+
         return $this;
     }
 
     /**
-     * Returns the api token if it's defined
+     * Returns the api token if it's defined.
      *
      * @return string
      */
@@ -139,19 +141,21 @@ class ZenDeskConfig extends BaseConfig
     }
 
     /**
-     * Set the auth password
+     * Set the auth password.
      *
      * @param string $password
+     *
      * @return $this
      */
     public function setPassword($password)
     {
         $this->password = $password;
+
         return $this;
     }
 
     /**
-     * Returns the api password if it's defined
+     * Returns the api password if it's defined.
      *
      * @return string
      */
@@ -161,7 +165,7 @@ class ZenDeskConfig extends BaseConfig
     }
 
     /**
-     * Returns connection timeout
+     * Returns connection timeout.
      *
      * @return int
      */
@@ -171,22 +175,25 @@ class ZenDeskConfig extends BaseConfig
     }
 
     /**
-     * Set curl connection timeout
+     * Set curl connection timeout.
      *
      * @param int $connection_timeout
+     *
      * @return $this
      */
     public function setConnectionTimeout($connection_timeout)
     {
-        $this->connection_timeout = (int)$connection_timeout;
+        $this->connection_timeout = (int) $connection_timeout;
+
         return $this;
     }
 
     /**
-     * Returns a text value indicating the type of authorization configured
+     * Returns a text value indicating the type of authorization configured.
+     *
+     * @throws Exception
      *
      * @return string
-     * @throws Exception
      */
     public function getAuthType()
     {
@@ -201,10 +208,11 @@ class ZenDeskConfig extends BaseConfig
     }
 
     /**
-     * Returns auth password or token by auth type
+     * Returns auth password or token by auth type.
+     *
+     * @throws Exception
      *
      * @return string
-     * @throws Exception
      */
     public function getAuthValue()
     {
@@ -220,9 +228,10 @@ class ZenDeskConfig extends BaseConfig
 
     /**
      * @param array $data
+     *
      * @return ZenDeskConfig
      */
-    static public function fromArray(array $data)
+    public static function fromArray(array $data)
     {
         if (!$time = @$data['initial_time']) {
             $time = '-2 years';

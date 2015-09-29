@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Auth;
 
 use Application\DeskPRO\App;
@@ -184,7 +184,7 @@ class LoginProcessor
             if (App::getSetting('core.usersource_always_update_data')) {
                 $this->updatePersonName($mapped_fields);
                 if (!$this->person->picture_blob || strpos($this->person->picture_blob->filename, 'dp-source-picture') !== false) {
-                $this->updatePictureData($mapped_fields, $em);
+                    $this->updatePictureData($mapped_fields, $em);
                 }
                 $this->updatePhone($mapped_fields, $em);
                 $this->updateTwitter($mapped_fields, $em);
@@ -310,7 +310,7 @@ class LoginProcessor
                 $em->flush();
             }
 
-            App::getDb()->executeUpdate("
+            App::getDb()->executeUpdate('
                     INSERT INTO people_twitter_users
                         (person_id, twitter_user_id, screen_name, is_verified, oauth_token, oauth_token_secret)
                     VALUES (?, ?, ?, 1, ?, ?)
@@ -320,7 +320,7 @@ class LoginProcessor
                         is_verified = 1,
                         oauth_token = VALUES(oauth_token),
                         oauth_token_secret = VALUES(oauth_token_secret)
-                ", array($this->person->id, $twitter['user_id'], $twitter['screen_name'], $twitter['oauth_token'], $twitter['oauth_token_secret']));
+                ', array($this->person->id, $twitter['user_id'], $twitter['screen_name'], $twitter['oauth_token'], $twitter['oauth_token_secret']));
 
             $has_account = false;
             foreach ($this->person->getContactData('twitter') as $twitter_details) {
@@ -368,7 +368,7 @@ class LoginProcessor
                 if ($image_info && $image_info[0] && $image_info[1] && isset($mime_map[$image_info[2]])) {
                     $mime = $mime_map[$image_info[2]];
                     $file = new \Symfony\Component\HttpFoundation\File\UploadedFile(
-                        $filename, 'dp-source-picture.' . $mime[0], $mime[1], strlen($mapped_fields->get('picture_data'))
+                        $filename, 'dp-source-picture.'.$mime[0], $mime[1], strlen($mapped_fields->get('picture_data'))
                     );
 
                     $accept = App::getContainer()->getAttachmentAccepter();
@@ -411,7 +411,8 @@ class LoginProcessor
      *       they are now an agent.
      *
      * @param Usersource $usersource
-     * @param Person $person
+     * @param Person     $person
+     *
      * @return bool
      */
     public static function tryAutoAgent(Usersource $usersource, Person $person)
@@ -419,7 +420,7 @@ class LoginProcessor
         if (Usersource::TYPE_AGENT == $usersource->type && $usersource->auto_agent) {
             $agentChecker = App::getSystemService('agent_checker');
             if ($agentChecker->addAgentSeat($person)) {
-                $person['is_agent'] = true;
+                $person['is_agent']  = true;
                 $person['can_agent'] = true;
                 if ($usersource->agent_permission_group) {
                     $person->addUsergroup($usersource->agent_permission_group);

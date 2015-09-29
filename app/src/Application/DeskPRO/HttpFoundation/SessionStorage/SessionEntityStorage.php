@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category HttpFoundation
  */
-
 namespace Application\DeskPRO\HttpFoundation\SessionStorage;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
@@ -121,12 +121,12 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
         }
 
         $this->options = array_merge(array(
-            'name'          => $cookie_name,
-            'lifetime'      => $cookieDefaults['lifetime'],
-            'path'          => $cookieDefaults['path'],
-            'domain'        => $cookieDefaults['domain'],
-            'secure'        => $cookieDefaults['secure'],
-            'httponly'      => isset($cookieDefaults['httponly']) ? $cookieDefaults['httponly'] : false,
+            'name'     => $cookie_name,
+            'lifetime' => $cookieDefaults['lifetime'],
+            'path'     => $cookieDefaults['path'],
+            'domain'   => $cookieDefaults['domain'],
+            'secure'   => $cookieDefaults['secure'],
+            'httponly' => isset($cookieDefaults['httponly']) ? $cookieDefaults['httponly'] : false,
         ), $options);
 
         session_name($this->options['name']);
@@ -222,7 +222,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
      * @param string $path (ignored)
      * @param string $name (ignored)
      *
-     * @return boolean true, if the session was opened, otherwise an exception is thrown
+     * @return bool true, if the session was opened, otherwise an exception is thrown
      */
     public function open($path = null, $name = null)
     {
@@ -232,7 +232,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
     /**
      * Closes a session.
      *
-     * @return boolean true, if the session was closed, otherwise false
+     * @return bool true, if the session was closed, otherwise false
      */
     public function close()
     {
@@ -245,8 +245,8 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
      * @param string $id A session ID
      *
      * @throws \RuntimeException If the session cannot be destroyed
-     * @return bool              true, if the session was destroyed, otherwise an exception is thrown
      *
+     * @return bool true, if the session was destroyed, otherwise an exception is thrown
      */
     public function destroy($id)
     {
@@ -273,8 +273,8 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
      * @param int $lifetime The lifetime of a session in seconds
      *
      * @throws \RuntimeException If any old sessions cannot be cleaned
-     * @return bool              true
      *
+     * @return bool true
      */
     public function gc($lifetime)
     {
@@ -287,8 +287,8 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
      * @param string $id A session ID
      *
      * @throws \RuntimeException If the session cannot be read
-     * @return string            The session data if the session was read or created, otherwise an exception is thrown
      *
+     * @return string The session data if the session was read or created, otherwise an exception is thrown
      */
     public function read($id)
     {
@@ -314,8 +314,8 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
      * @param string $data A serialized chunk of session data
      *
      * @throws \RuntimeException If the session data cannot be written
-     * @return bool              true, if the session was written, otherwise an exception is thrown
      *
+     * @return bool true, if the session was written, otherwise an exception is thrown
      */
     public function write($id, $data)
     {
@@ -435,9 +435,9 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             return $this->session->getId();
         }
 
-        $id                = $this->getId();
-        list($entity_id,)  = explode('-', $id, 2);
-        $entity_id         = Util::baseDecode($entity_id, 'base36');
+        $id              = $this->getId();
+        list($entity_id) = explode('-', $id, 2);
+        $entity_id       = Util::baseDecode($entity_id, 'base36');
 
         return $entity_id;
     }
@@ -468,7 +468,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             return;
         }
 
-        list($session_id,) = explode('-', $sess_code, 2);
+        list($session_id) = explode('-', $sess_code, 2);
 
         $alphabet = str_split('0123456789abcdefghijklmnopqrstuvwxyz');
         $base     = sizeof($alphabet);

@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\People\Agents;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -65,9 +65,9 @@ class AgentDelete
             throw new \InvalidArgumentException();
         }
 
-        $this->agent  = $agent;
-        $this->em     = $em;
-        $this->db     = $em->getConnection();
+        $this->agent = $agent;
+        $this->em    = $em;
+        $this->db    = $em->getConnection();
     }
 
     /**
@@ -92,42 +92,42 @@ class AgentDelete
 
             // Specific department permissions are agent-only feature, remove those
             // Users get them from their usergroups
-            $this->db->executeUpdate("
+            $this->db->executeUpdate('
                 DELETE FROM department_permissions
                 WHERE person_id = ?
-            ", array($this->agent->id));
+            ', array($this->agent->id));
 
             // Agent groups
             $agent_groups = $this->em->getRepository('DeskPRO:Usergroup')->getAgentUsergroups();
             if ($agent_groups) {
                 $agent_group_ids = Arrays::flattenToIndex($agent_groups, 'id');
-                $this->db->executeUpdate("
+                $this->db->executeUpdate('
                     DELETE FROM person2usergroups
                     WHERE person_id = ? AND usergroup_id IN (?)
-                ", array($this->agent->id, $agent_group_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+                ', array($this->agent->id, $agent_group_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
             }
 
             // Assigned tickets
-            $this->db->executeUpdate("
+            $this->db->executeUpdate('
                 UPDATE tickets SET agent_id = NULL
                 WHERE agent_id = ?
-            ", array($this->agent->id));
-            $this->db->executeUpdate("
+            ', array($this->agent->id));
+            $this->db->executeUpdate('
                 UPDATE tickets_search_active SET agent_id = NULL
                 WHERE agent_id = ?
-            ", array($this->agent->id));
+            ', array($this->agent->id));
 
             // Filters
-            $this->db->executeUpdate("
+            $this->db->executeUpdate('
                 DELETE FROM ticket_filters
                 WHERE person_id = ?
-            ", array($this->agent->id));
+            ', array($this->agent->id));
 
             // Subscriptions
-            $this->db->executeUpdate("
+            $this->db->executeUpdate('
                 DELETE FROM ticket_filter_subscriptions
                 WHERE person_id = ?
-            ", array($this->agent->id));
+            ', array($this->agent->id));
 
             // Agent team
             $this->db->delete('agent_team_members', array('person_id' => $this->agent->getId()));

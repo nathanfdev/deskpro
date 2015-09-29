@@ -1,46 +1,46 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator;
 
-use Application\ImportBundle\Entity;
 use Application\ImportBundle\AbstractCollection;
+use Application\ImportBundle\Entity;
 
 /**
  * Collection of entities collections
- * Uses as storage to export and write collections of entities in different orders
+ * Uses as storage to export and write collections of entities in different orders.
  *
  * Class GenerateCollection
- * @package Application\ImportBundle\Generator
  */
 final class GenerateCollection extends AbstractCollection
 {
     /**
-     * Add a entity collection
+     * Add a entity collection.
      *
      * @param string            $type
      * @param Entity\Collection $entities
@@ -61,12 +61,13 @@ final class GenerateCollection extends AbstractCollection
     }
 
     /**
-     * Returns a collection of entities
+     * Returns a collection of entities.
      *
      * @param string $type
      *
-     * @return Entity\Collection
      * @throws \Exception
+     *
+     * @return Entity\Collection
      */
     public function getByEntityType($type)
     {
@@ -78,7 +79,7 @@ final class GenerateCollection extends AbstractCollection
     }
 
     /**
-     * Returns containing entity types
+     * Returns containing entity types.
      *
      * @return string[]
      */
@@ -96,7 +97,7 @@ final class GenerateCollection extends AbstractCollection
     }
 
     /**
-     * Returns if collection has entities
+     * Returns if collection has entities.
      *
      * @return bool
      */
@@ -113,9 +114,10 @@ final class GenerateCollection extends AbstractCollection
     }
 
     /**
-     * Returns if collection has entities of current type
+     * Returns if collection has entities of current type.
      *
      * @param string $type
+     *
      * @return bool
      */
     public function hasEntitiesByType($type)
@@ -137,7 +139,7 @@ final class GenerateCollection extends AbstractCollection
     {
         $count = 0;
         foreach ($this->collection as $type_collection) {
-            /** @var Entity\Collection $type_collection */
+            /* @var Entity\Collection $type_collection */
             $count += $type_collection->getSkippedCount();
         }
 

@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
@@ -132,7 +132,7 @@ class Runner
     }
 
     /**
-     * @param boolean $enabled
+     * @param bool $enabled
      */
     public function setRetryScheduling($enabled = true)
     {
@@ -198,7 +198,7 @@ class Runner
             $time_limit = 9999999999;
         }
 
-        $this->logger->logDebug("Time limit: ".$time_limit);
+        $this->logger->logDebug('Time limit: '.$time_limit);
 
         if ($this->accounts) {
             foreach ($this->accounts as $account) {
@@ -211,10 +211,10 @@ class Runner
                 $this->executeAccount($account, $time_limit);
 
                 $time_so_far = time() - $exec_start;
-                $this->logger->logDebug("Time taken so far: ".$time_so_far);
+                $this->logger->logDebug('Time taken so far: '.$time_so_far);
 
                 if ($time_limit && $time_so_far >= $time_limit) {
-                    $this->logger->logDebug("Breaking, out of time");
+                    $this->logger->logDebug('Breaking, out of time');
                     break;
                 }
             }
@@ -229,10 +229,10 @@ class Runner
      */
     private function verifyCreatedObject(OptionsArray $result, $is_retry = false)
     {
-        $this->logger->logDebug("Verifying created object...");
+        $this->logger->logDebug('Verifying created object...');
 
         if ($is_retry) {
-            $this->logger->logDebug("-> Checking again");
+            $this->logger->logDebug('-> Checking again');
         }
 
         if ($result->created_object_type == 'no_value') {
@@ -243,7 +243,7 @@ class Runner
 
         $id = $result->created_object_id;
         if (!$id) {
-            $this->logger->logWarn("--> No object ID");
+            $this->logger->logWarn('--> No object ID');
 
             return false;
         }
@@ -253,24 +253,24 @@ class Runner
         switch ($result->created_object_type) {
             case 'ticket':
                 $this->logger->logDebug("--> Verifying ticket {$id}");
-                $t = App::$container->getDb()->fetchColumn("SELECT id FROM tickets WHERE id = ?", array($id));
+                $t = App::$container->getDb()->fetchColumn('SELECT id FROM tickets WHERE id = ?', array($id));
                 if ($t) {
-                    $this->logger->logInfo("--> Ticket OKAY");
+                    $this->logger->logInfo('--> Ticket OKAY');
                     $check_result = true;
                 } else {
-                    $this->logger->logWarn("--> Ticket DOES NOT exist");
+                    $this->logger->logWarn('--> Ticket DOES NOT exist');
                     $check_result = false;
                 }
                 break;
 
             case 'ticket_message':
                 $this->logger->logDebug("--> Verifying ticket message {$id}");
-                $t = App::$container->getDb()->fetchColumn("SELECT id FROM tickets_messages WHERE id = ?", array($id));
+                $t = App::$container->getDb()->fetchColumn('SELECT id FROM tickets_messages WHERE id = ?', array($id));
                 if ($t) {
-                    $this->logger->logInfo("--> Ticket message OKAY");
+                    $this->logger->logInfo('--> Ticket message OKAY');
                     $check_result = true;
                 } else {
-                    $this->logger->logWarn("--> Ticket message DOES NOT exist");
+                    $this->logger->logWarn('--> Ticket message DOES NOT exist');
                     $check_result = false;
                 }
                 break;
@@ -382,7 +382,7 @@ class Runner
             }
         }
 
-        $source->exec_count++;
+        ++$source->exec_count;
 
         $this->logger->logDebug('Executing Source '.$source->getId());
         $this->logger->logDebug('Attempt: '.$source->exec_count);
@@ -395,11 +395,11 @@ class Runner
             $min    = max(10485760, $source->blob->filesize * 4);
             $room   = $remain - $min;
 
-            $this->logger->logDebug(sprintf("Memory Used: %d    Memory Max: %d    Est Memory Required: %d    Est Memory After: %d", $mem, $avail, $min, $room));
+            $this->logger->logDebug(sprintf('Memory Used: %d    Memory Max: %d    Est Memory Required: %d    Est Memory After: %d', $mem, $avail, $min, $room));
 
             if ($remain < $min) {
-                $this->logger->log(sprintf("Detected that we are at the memory limit, quitting run"), 'debug');
-                throw new ProcessingException("Detected that we are at the memory limit", ProcessingException::MEMORY_LIMIT);
+                $this->logger->log(sprintf('Detected that we are at the memory limit, quitting run'), 'debug');
+                throw new ProcessingException('Detected that we are at the memory limit', ProcessingException::MEMORY_LIMIT);
             }
         }
 
@@ -410,13 +410,13 @@ class Runner
         App::getOrm()->flush();
 
         $allow_retry = $this->enable_retry_scheduling;
-        $this->logger->logInfo("Retrying is ".($allow_retry ? "on" : "off"));
+        $this->logger->logInfo('Retrying is '.($allow_retry ? 'on' : 'off'));
         if ($allow_retry && $source->exec_count >= $this->max_retry_attempts) {
             $allow_retry = false;
             $this->logger->logInfo("--> Retrying turned off, max count reached: {$source->exec_count} >= {$this->max_retry_attempts}");
         }
 
-        $this->logger->logDebug("Running processors");
+        $this->logger->logDebug('Running processors');
         $runner_exec = new RunnerExecSource(
             $source,
             $reader,
@@ -430,11 +430,11 @@ class Runner
         try {
             $result = $runner_exec->run();
             App::$container->getEm()->flush();
-            $this->logger->logDebug("--> Processors complete");
+            $this->logger->logDebug('--> Processors complete');
 
             if (!$is_in_trans && App::getDb()->isTransactionActive()) {
-                $this->logger->log("WARNING: Unclosed transaction!", 'info');
-                $e = new \RuntimeException("WARNING: Unclosed transaction");
+                $this->logger->log('WARNING: Unclosed transaction!', 'info');
+                $e = new \RuntimeException('WARNING: Unclosed transaction');
                 KernelErrorHandler::logException($e, false, 'unclosed_trans_gateway');
                 while (App::getDb()->isTransactionActive()) {
                     App::getDb()->commit();
@@ -459,7 +459,7 @@ class Runner
                     KernelErrorHandler::logException($e, true);
                 }
             } else {
-                $this->logger->logWarn("Not trying again (allow_retry is false)");
+                $this->logger->logWarn('Not trying again (allow_retry is false)');
                 KernelErrorHandler::logException($e, true);
             }
 
@@ -488,7 +488,7 @@ class Runner
                 if ($allow_retry) {
                     $do_retry = true;
                 } else {
-                    $this->logger->logWarn("Not trying again (allow_retry is false)");
+                    $this->logger->logWarn('Not trying again (allow_retry is false)');
                 }
             }
         }
@@ -535,7 +535,7 @@ class Runner
         }
 
         if ($do_retry) {
-            $this->logger->logInfo("Scheduling a retry -- status set to inserted");
+            $this->logger->logInfo('Scheduling a retry -- status set to inserted');
             $source->status = 'retry';
         }
 
@@ -548,7 +548,7 @@ class Runner
         }
 
         try {
-            $this->logger->logDebug("Saving log blob...");
+            $this->logger->logDebug('Saving log blob...');
             $log_blob_row = App::$container->getBlobStorage()->createBlobRowFromString(
                 $log_messages,
                 'email-process.log',
@@ -575,7 +575,7 @@ class Runner
         }
 
         if (!$saved_log) {
-            $this->logger->logDebug("Couldnt save log blob, saving to source info instead");
+            $this->logger->logDebug('Couldnt save log blob, saving to source info instead');
             $source->source_info = array_merge($source->source_info, array('log' => $log_messages));
             $this->ensureSourceStatus($source);
         }
@@ -590,7 +590,7 @@ class Runner
             $reader = null;
         }
 
-        $this->logger->logDebug("ALL DONE");
+        $this->logger->logDebug('ALL DONE');
 
         $this->log_messages->clear();
 
@@ -623,7 +623,7 @@ class Runner
         $fetcher = $this->createFetcher($account);
         $fetcher->setLogger($this->logger);
 
-        $this->logger->log("Fetcher type: ".Util::getBaseClassname($fetcher), 'info');
+        $this->logger->log('Fetcher type: '.Util::getBaseClassname($fetcher), 'info');
 
         $max_size = App::getSetting('core.gateway_max_email');
         if (!$max_size) {
@@ -643,7 +643,7 @@ class Runner
             ORDER BY id ASC
         ", array($account->getId()));
 
-        $this->logger->logDebug(sprintf("%d inserted messages being processed first", count($inserted_source_ids)));
+        $this->logger->logDebug(sprintf('%d inserted messages being processed first', count($inserted_source_ids)));
 
         $processed_source_ids = array();
 
@@ -656,8 +656,8 @@ class Runner
             // Without it, a mistake somewhere down the line can result in an entire
             // process of emails being rolledback.
             if (App::getDb()->isTransactionActive()) {
-                $this->logger->log("WARNING: Unclosed transaction!", 'info');
-                $e = new \RuntimeException("WARNING: Unclosed transaction. Sources processed: ".implode(', ', $processed_source_ids));
+                $this->logger->log('WARNING: Unclosed transaction!', 'info');
+                $e = new \RuntimeException('WARNING: Unclosed transaction. Sources processed: '.implode(', ', $processed_source_ids));
                 KernelErrorHandler::logException($e);
                 while (App::getDb()->isTransactionActive()) {
                     App::getDb()->commit();
@@ -666,7 +666,7 @@ class Runner
 
             if ($this->message_limit) {
                 if ($this->message_count >= $this->message_limit) {
-                    $this->logger->logWarn(sprintf("Hit message limit, breaking :: Processed %d messages", $this->message_count));
+                    $this->logger->logWarn(sprintf('Hit message limit, breaking :: Processed %d messages', $this->message_count));
                     break;
                 }
             }
@@ -674,18 +674,18 @@ class Runner
             $m = memory_get_usage();
 
             if ($next_inserted_id = array_shift($inserted_source_ids)) {
-                $this->logger->logDebug(sprintf("Processing next inserted message: %d", $next_inserted_id));
+                $this->logger->logDebug(sprintf('Processing next inserted message: %d', $next_inserted_id));
                 $source = App::getOrm()->find('DeskPRO:EmailSource', $next_inserted_id);
             } else {
                 try {
                     $source = $fetcher->readNext();
                     if (!$source) {
-                        $this->logger->logDebug("No more messages in inbox");
+                        $this->logger->logDebug('No more messages in inbox');
 
                         // If this is the first time we've reached the end
                         // save a start date to the account
                         if (!$account->date_read_start) {
-                            $account->date_read_start = new \DateTime("-10 days");
+                            $account->date_read_start = new \DateTime('-10 days');
                             App::getOrm()->persist($account);
                             App::getOrm()->flush($account);
                         }
@@ -693,7 +693,7 @@ class Runner
                         break;
                     }
                 } catch (\Exception $e) {
-                    $this->logger->log(sprintf("readNext exception: %s", $e->getMessage()), 'info');
+                    $this->logger->log(sprintf('readNext exception: %s', $e->getMessage()), 'info');
                     KernelErrorHandler::logException($e, false);
                     break;
                 }
@@ -717,7 +717,7 @@ class Runner
             // Already marked as an error (e.g., message too big) so we dont
             // process it through the account handlers
             if ($source->status == 'error') {
-                $this->logger->log(sprintf("Source marked as error :: %s", $source->error_code), 'debug');
+                $this->logger->log(sprintf('Source marked as error :: %s', $source->error_code), 'debug');
 
                 // Send alert to user
                 if ($source->error_code == EmailSource::ERR_MESSAGE_TOO_BIG) {
@@ -751,34 +751,34 @@ class Runner
                 if ($e->getCode() == ProcessingException::MEMORY_LIMIT) {
                     $is_mem_limit = true;
                 } else {
-                    $this->logger->logError("Exception: ".$e->getMessage());
+                    $this->logger->logError('Exception: '.$e->getMessage());
                 }
             }
 
-            $this->logger->logDebug(sprintf('FINISH: executeSource('.$source->getId().') - %.4fs', microtime(true)-$t));
+            $this->logger->logDebug(sprintf('FINISH: executeSource('.$source->getId().') - %.4fs', microtime(true) - $t));
 
             $m_end  = memory_get_usage();
             $m_diff = $m_end - $m;
 
-            $this->logger->log(sprintf("Memory usage: %.2f MB (total: %.2f MB)", $m_diff / 1024 / 1024, $m_end / 1024 / 1024), 'debug');
+            $this->logger->log(sprintf('Memory usage: %.2f MB (total: %.2f MB)', $m_diff / 1024 / 1024, $m_end / 1024 / 1024), 'debug');
 
             $time_so_far = time() - $exec_start;
             if ($time_limit && $time_so_far >= $time_limit) {
-                $this->logger->logInfo("Hit time limit, breaking");
+                $this->logger->logInfo('Hit time limit, breaking');
                 break;
             }
 
             if ($is_mem_limit) {
-                $this->logger->logInfo("Hit memory limit, breaking");
+                $this->logger->logInfo('Hit memory limit, breaking');
                 break;
             }
 
-            $this->message_count++;
+            ++$this->message_count;
 
             if ($this->soft_time_limit) {
                 $t = microtime(true) - DP_START_TIME;
                 if ($t > $this->soft_time_limit) {
-                    $this->logger->logWarn(sprintf("Hit soft time limit, breaking :: Running for %.3fs", $t));
+                    $this->logger->logWarn(sprintf('Hit soft time limit, breaking :: Running for %.3fs', $t));
                     break;
                 }
             }
@@ -788,7 +788,7 @@ class Runner
 
         $end_time = microtime(true);
         $this->logger->log(sprintf(
-            "Finished processing account. Took %.2f seconds. Peak memory %.2f MB (current %.2f MB).",
+            'Finished processing account. Took %.2f seconds. Peak memory %.2f MB (current %.2f MB).',
             $end_time - $start_time,
             memory_get_peak_usage() / 1024 / 1024,
             memory_get_usage() / 1024 / 1024
@@ -820,13 +820,13 @@ class Runner
      * @param EmailAccount $account
      *
      * @throws \InvalidArgumentException
-     * @return Fetcher\Exchange|Fetcher\Imap|Fetcher\Pop3
      *
+     * @return Fetcher\Exchange|Fetcher\Imap|Fetcher\Pop3
      */
     private function createFetcher(EmailAccount $account)
     {
         if (!$account->incoming_account) {
-            throw new \InvalidArgumentException("No incoming email account");
+            throw new \InvalidArgumentException('No incoming email account');
         }
 
         switch ($account->incoming_account->getType()) {

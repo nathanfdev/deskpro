@@ -1,58 +1,52 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
-use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
+use FOS\RestBundle\Controller\Annotations\Delete;
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
-use Pagerfanta\Adapter\ArrayAdapter;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Delete;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class TaskLabelsController extends BaseController implements ClassResourceInterface
 {
@@ -80,7 +74,9 @@ class TaskLabelsController extends BaseController implements ClassResourceInterf
      *      }
      * )
      * @Get("/task_labels", name="api_task_labels")
+     *
      * @param Request $request
+     *
      * @return View
      */
     public function cgetAction(Request $request)
@@ -88,7 +84,7 @@ class TaskLabelsController extends BaseController implements ClassResourceInterf
         $task_labels = $this->getDoctrine()->getManager()->createQueryBuilder()->select('l')->from('App:LabelTask', 'l')
             ->orderBy('l.label', 'ASC');
 
-        $page = $request->query->get('page', 1);
+        $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
         $group = $request->query->get('group', false);
 
@@ -124,7 +120,9 @@ class TaskLabelsController extends BaseController implements ClassResourceInterf
      *      output="DeskPRO\Bundle\AppBundle\Entity\LabelTask"
      * )
      * @Get("/task_labels/{id}", name="api_task_labels_get")
+     *
      * @param int $id
+     *
      * @return View
      */
     public function getAction($id)
@@ -152,14 +150,18 @@ class TaskLabelsController extends BaseController implements ClassResourceInterf
      *      output="DeskPRO\Bundle\AppBundle\Entity\LabelTask"
      * )
      * @Post("/task_labels", name="api_task_labels_post")
+     *
      * @param Request $request
+     *
      * @throws WrappedApiErrorException
      * @throws InvalidFormException
+     *
      * @return View
      */
     public function postAction(Request $request)
     {
         $label = new LabelTask($this->getUser());
+
         return $this->handleFormSubmission($request, $label);
     }
 
@@ -182,9 +184,12 @@ class TaskLabelsController extends BaseController implements ClassResourceInterf
      *      }
      * )
      * @Put("/task_labels/{id}", name="api_task_labels_put")
+     *
      * @param Request $request
      * @param $id
+     *
      * @throws WrappedApiErrorException
+     *
      * @return View
      */
     public function putAction(Request $request, $id)
@@ -211,7 +216,9 @@ class TaskLabelsController extends BaseController implements ClassResourceInterf
      *      }
      * )
      * @Delete("/task_labels/{id}", name="api_task_labels_delete")
+     *
      * @param $id
+     *
      * @return View
      */
     public function deleteAction($id)
@@ -228,11 +235,12 @@ class TaskLabelsController extends BaseController implements ClassResourceInterf
 
     /**
      * @param int $id
+     *
      * @return LabelTask
      */
     protected function getLabel($id)
     {
-        $id = (int) $id;
+        $id    = (int) $id;
         $label = $this->getDoctrine()->getManager()->getRepository('App:LabelTask')->find($id);
 
         if (!$label) {
@@ -243,11 +251,14 @@ class TaskLabelsController extends BaseController implements ClassResourceInterf
     }
 
     /**
-     * Will be abstracted for use by other controllers
-     * @param Request $request
+     * Will be abstracted for use by other controllers.
+     *
+     * @param Request   $request
      * @param LabelTask $label
-     * @return View
+     *
      * @throws WrappedApiErrorException
+     *
+     * @return View
      */
     protected function handleFormSubmission(Request $request, LabelTask $label)
     {

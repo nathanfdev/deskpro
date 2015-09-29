@@ -1,114 +1,102 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder
  */
 class DbalQueryBuilderSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         DbalQuery $query
-    )
-    {
+    ) {
         $this->beConstructedWith($query);
     }
 
-    function it_is_a_wrapper_around_a_dbal_compiled_query(
+    public function it_is_a_wrapper_around_a_dbal_compiled_query(
         DbalQuery $query
-    )
-    {
+    ) {
         $this->getQuery()->shouldReturn($query);
     }
 
-    function it_writes_where(
+    public function it_writes_where(
         DbalQuery $query
-    )
-    {
+    ) {
         $query->setWherePart('ticket.id = 3')->shouldBeCalled();
 
         $this->setWhereString('ticket.id = 3');
     }
 
-    function it_writes_parameters(
+    public function it_writes_parameters(
         DbalQuery $query
-    )
-    {
+    ) {
         $query->addParameter('name_prefix', 'value')->shouldBeCalled();
 
         $this->addParameter('name_prefix', 'value');
     }
 
-    function it_writes_joins(
+    public function it_writes_joins(
         DbalQuery $query
-    )
-    {
+    ) {
         $query->addJoin('table', 'alias')->shouldBeCalled();
 
         $this->addJoin('table', 'alias');
     }
 
-    function it_writes_unique_joins(
+    public function it_writes_unique_joins(
         DbalQuery $query
-    )
-    {
+    ) {
         $query->addUniqueJoin('table', 'on', 'type')->shouldBeCalled();
 
         $this->addUniqueJoin('table', 'on', 'type');
     }
 
-    function it_lets_you_write_from(
+    public function it_lets_you_write_from(
         DbalQuery $query
-    )
-    {
+    ) {
         $query->setFrom('table', 'alias')->shouldBeCalled();
 
         $this->setFrom('table', 'alias');
     }
 
-    function it_writes_a_dbal_query_part_where_string(
+    public function it_writes_a_dbal_query_part_where_string(
         DbalQuery $query,
         DbalQueryPart $query_part
-    )
-    {
+    ) {
         $query_part->getUniqueJoins()->willReturn(array());
         $query_part->getJoins()->willReturn(array());
         $query_part->getParameters()->willReturn(array());
@@ -119,18 +107,17 @@ class DbalQueryBuilderSpec extends ObjectBehavior
         $this->writeQueryPart($query_part);
     }
 
-    function it_writes_dbal_query_parameters(
+    public function it_writes_dbal_query_parameters(
         DbalQuery $query,
         DbalQueryPart $query_part
-    )
-    {
+    ) {
         $query_part->getJoins()->willReturn(array());
         $query_part->getUniqueJoins()->willReturn(array());
         $query_part->getWhereString()->willReturn(null);
         $query_part->getParameters()->willReturn(
             array(
                 'custom' => 5,
-                'me' => $me = new TermEngineExpression('agent.getId()')
+                'me'     => $me = new TermEngineExpression('agent.getId()'),
             )
         );
 
@@ -143,11 +130,10 @@ class DbalQueryBuilderSpec extends ObjectBehavior
         $this->writeQueryPart($query_part);
     }
 
-    function it_writes_dbal_joins(
+    public function it_writes_dbal_joins(
         DbalQuery $query,
         DbalQueryPart $query_part
-    )
-    {
+    ) {
         $query_part->getUniqueJoins()->willReturn(array());
         $query_part->getWhereString()->willReturn(null);
         $query_part->getParameters()->willReturn(array());
@@ -155,9 +141,9 @@ class DbalQueryBuilderSpec extends ObjectBehavior
             array(
                 'ticket_participants' => array(
                     'table' => 'ticket_participants',
-                    'on' => 'ticket_participants.id = ticket.participant',
-                    'type' => DbalQuery::JOIN_LEFT
-                )
+                    'on'    => 'ticket_participants.id = ticket.participant',
+                    'type'  => DbalQuery::JOIN_LEFT,
+                ),
             )
         );
 
@@ -166,11 +152,10 @@ class DbalQueryBuilderSpec extends ObjectBehavior
         $this->writeQueryPart($query_part);
     }
 
-    function it_writes_dbal_unqiue_joins(
+    public function it_writes_dbal_unqiue_joins(
         DbalQuery $query,
         DbalQueryPart $query_part
-    )
-    {
+    ) {
         $query_part->getJoins()->willReturn(array());
         $query_part->getWhereString()->willReturn(null);
         $query_part->getParameters()->willReturn(array());
@@ -178,9 +163,9 @@ class DbalQueryBuilderSpec extends ObjectBehavior
             array(
                 'participants' => array(
                     'table' => 'ticket_participants',
-                    'on' => '{participants}.id = ticket.participant',
-                    'type' => DbalQuery::JOIN_LEFT
-                )
+                    'on'    => '{participants}.id = ticket.participant',
+                    'type'  => DbalQuery::JOIN_LEFT,
+                ),
             )
         );
 
@@ -195,11 +180,10 @@ class DbalQueryBuilderSpec extends ObjectBehavior
         $this->writeQueryPart($query_part);
     }
 
-    function it_deals_with_multiple_unique_joins_that_reference_each_other(
+    public function it_deals_with_multiple_unique_joins_that_reference_each_other(
         DbalQuery $query,
         DbalQueryPart $query_part
-    )
-    {
+    ) {
         $query_part->getJoins()->willReturn(array());
         $query_part->getWhereString()->willReturn(null);
         $query_part->getParameters()->willReturn(array());
@@ -207,19 +191,19 @@ class DbalQueryBuilderSpec extends ObjectBehavior
             array(
                 'participants' => array(
                     'table' => 'ticket_participants',
-                    'on' => '{participants}.id = ticket.participant',
-                    'type' => DbalQuery::JOIN_LEFT
+                    'on'    => '{participants}.id = ticket.participant',
+                    'type'  => DbalQuery::JOIN_LEFT,
                 ),
                 'custom_data' => array(
                     'table' => 'custom_ticket_data',
-                    'on' => '{participants}.id = {custom_data}.id AND {random}.col = {participants}.something',
-                    'type' => DbalQuery::JOIN_LEFT
+                    'on'    => '{participants}.id = {custom_data}.id AND {random}.col = {participants}.something',
+                    'type'  => DbalQuery::JOIN_LEFT,
                 ),
                 'random' => array(
                     'table' => 'random_table',
-                    'on' => '{random}.id = {participants}.participant',
-                    'type' => DbalQuery::JOIN_LEFT
-                )
+                    'on'    => '{random}.id = {participants}.participant',
+                    'type'  => DbalQuery::JOIN_LEFT,
+                ),
             )
         );
 

@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-1|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\ArticleResults;
@@ -98,19 +98,19 @@ class KbController extends AbstractController
 
         $rated_searches = $this->em->getRepository('DeskPRO:SearchLog')->getRatedSearchesFor('article', $article['id'], 'counted');
 
-        $article_categories  = $this->em->getRepository('DeskPRO:ArticleCategory')->getInHierarchy();
-        $article_products    = $this->em->getRepository('DeskPRO:Product')->getInHierarchy();
+        $article_categories = $this->em->getRepository('DeskPRO:ArticleCategory')->getInHierarchy();
+        $article_products   = $this->em->getRepository('DeskPRO:Product')->getInHierarchy();
 
         $perms = array(
             'can_edit'   => $this->person->PermissionsManager->PublishChecker->canEdit($article),
             'can_delete' => $this->person->PermissionsManager->PublishChecker->canDelete($article),
         );
 
-        $user_view_count = $this->db->fetchColumn("
+        $user_view_count = $this->db->fetchColumn('
             SELECT COUNT(*)
             FROM page_view_log
             WHERE object_type = 1 AND object_id = ? AND view_action = 1 AND person_id IS NOT NULL
-        ", array($article->id));
+        ', array($article->id));
 
         // Existing translations
         $trans_langs   = $this->db->fetchAllCol('SELECT language_id FROM object_lang WHERE ref = ?', array('articles.'.$article['id']));
@@ -137,25 +137,25 @@ class KbController extends AbstractController
         $word_defs      = $glossary->getWordDefs($glossary_words);
 
         $vars = array(
-            'article'              => $article,
-            'trans_langs'          => $trans_langs,
-            'trans_data'           => $trans_data,
-            'custom_fields'        => $custom_fields,
-            'sticky_search_words'  => $sticky_search_words,
-            'rated_searches'       => $rated_searches,
-            'content'              => $content,
-            'article_comments'     => $article_comments,
-            'article_revisions'    => $article_revisions,
-            'related_content'      => $related_content,
-            'state'                => $state,
-            'article_categories'   => $article_categories,
-            'article_products'     => $article_products,
-            'glossary_words'       => $glossary_words,
-            'perms'                => $perms,
-            'user_view_count'      => $user_view_count,
+            'article'             => $article,
+            'trans_langs'         => $trans_langs,
+            'trans_data'          => $trans_data,
+            'custom_fields'       => $custom_fields,
+            'sticky_search_words' => $sticky_search_words,
+            'rated_searches'      => $rated_searches,
+            'content'             => $content,
+            'article_comments'    => $article_comments,
+            'article_revisions'   => $article_revisions,
+            'related_content'     => $related_content,
+            'state'               => $state,
+            'article_categories'  => $article_categories,
+            'article_products'    => $article_products,
+            'glossary_words'      => $glossary_words,
+            'perms'               => $perms,
+            'user_view_count'     => $user_view_count,
 
-            'glossary_words'       => $glossary_words,
-            'word_defs'            => $word_defs,
+            'glossary_words' => $glossary_words,
+            'word_defs'      => $word_defs,
         );
 
         if ($is_pdf) {
@@ -206,8 +206,8 @@ class KbController extends AbstractController
         $article_revisions = $article->getRevisions();
 
         return $this->render('AgentBundle:Kb:view-revisions-tab.html.twig', array(
-            'article'              => $article,
-            'article_revisions'    => $article_revisions,
+            'article'           => $article,
+            'article_revisions' => $article_revisions,
         ));
     }
 
@@ -279,32 +279,32 @@ class KbController extends AbstractController
                 $article = $this->em->find('DeskPRO:Article', $article_id);
 
                 if (!$article) {
-                    $missing++;
+                    ++$missing;
                     continue;
                 }
 
                 switch ($action) {
                     case 'draft':
                         if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
-                            $perm_failures++;
+                            ++$perm_failures;
                             continue;
                         }
 
                         $article->status_code = 'hidden.draft';
-                        $affected++;
+                        ++$affected;
                         break;
                     case 'delete':
                         if (!$this->person->PermissionsManager->PublishChecker->canDelete($article)) {
-                            $perm_failures++;
+                            ++$perm_failures;
                             continue;
                         }
 
                         $article->status_code = 'hidden.deleted';
-                        $affected++;
+                        ++$affected;
                         break;
                     case 'move':
                         if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
-                            $perm_failures++;
+                            ++$perm_failures;
                             continue;
                         }
 
@@ -324,7 +324,7 @@ class KbController extends AbstractController
                             $article->addToCategory($to);
                         }
 
-                        $affected++;
+                        ++$affected;
                         break;
                 }
 
@@ -627,12 +627,12 @@ class KbController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        $comment                  = new ArticleComment();
-        $comment->article         = $article;
-        $comment->person          = $this->person;
-        $comment['content']       = $this->in->getString('content');
-        $comment['status']        = 'visible';
-        $comment['date_created']  = new \DateTime();
+        $comment                 = new ArticleComment();
+        $comment->article        = $article;
+        $comment->person         = $this->person;
+        $comment['content']      = $this->in->getString('content');
+        $comment['status']       = 'visible';
+        $comment['date_created'] = new \DateTime();
 
         if ($this->person->hasPerm('agent_publish.validate')) {
             $comment->is_reviewed = true;
@@ -666,14 +666,14 @@ class KbController extends AbstractController
 
         $first_messages = array();
         if ($ticket_ids) {
-            $first_messages_raw = $this->em->createQuery("
+            $first_messages_raw = $this->em->createQuery('
                 SELECT m
                 FROM DeskPRO:TicketMessage m
                 LEFT JOIN m.ticket t
                 WHERE t.id IN (?0)
                 GROUP BY t
                 ORDER BY m.id ASC
-            ")->setParameters(array($ticket_ids))->execute();
+            ')->setParameters(array($ticket_ids))->execute();
 
             $first_messages = array();
             foreach ($first_messages_raw as $m) {
@@ -872,11 +872,11 @@ class KbController extends AbstractController
         $cat_usergroups     = array();
         $cat_structure_data = array();
         if ($category) {
-            $cat_usergroups = $this->db->fetchAllCol("
+            $cat_usergroups = $this->db->fetchAllCol('
                 SELECT usergroup_id
                 FROM article_category2usergroup
                 WHERE category_id = ?
-            ", array($category->getId()));
+            ', array($category->getId()));
 
             $cat_structure_data = $article_categories;
             $cat_structure_data = Arrays::removeButKey($cat_structure_data, array('id', 'title', 'children'), true, true);
@@ -885,25 +885,25 @@ class KbController extends AbstractController
         }
 
         return $this->render($tpl, array(
-            'results'            => $results,
-            'result_id'          => $result_cache['id'],
-            'display_fields'     => $display_fields,
-            'comment_counts'     => $comment_counts,
+            'results'        => $results,
+            'result_id'      => $result_cache['id'],
+            'display_fields' => $display_fields,
+            'comment_counts' => $comment_counts,
 
-            'is_trans_view'      => $is_trans_view,
-            'trans_lang_id'      => $trans_lang_id,
+            'is_trans_view' => $is_trans_view,
+            'trans_lang_id' => $trans_lang_id,
 
             'total_results' => $total_results,
             'num_pages'     => $num_pages,
             'cur_page'      => $page,
             'showing_to'    => $showing_to,
 
-            'search_form'                         => array('terms' => $result_cache['criteria']['terms']),
-            'cache'                                                => $result_cache,
-            'terms_summary'                                        => $result_cache['extra']['summary'],
-            'category'                                             => $category,
-            'cat_usergroups'                                       => $cat_usergroups,
-            'cat_structure_data'                                   => $cat_structure_data,
+            'search_form'        => array('terms' => $result_cache['criteria']['terms']),
+            'cache'              => $result_cache,
+            'terms_summary'      => $result_cache['extra']['summary'],
+            'category'           => $category,
+            'cat_usergroups'     => $cat_usergroups,
+            'cat_structure_data' => $cat_structure_data,
 
             'article_categories' => $article_categories,
         ));

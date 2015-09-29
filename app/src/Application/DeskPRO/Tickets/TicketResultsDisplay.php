@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -196,13 +196,13 @@ class TicketResultsDisplay implements PersonContextInterface
         if ($this->all_user_field_data !== null) {
             return $this->all_user_field_data;
         }
-        $data = $this->em->createQuery("
+        $data = $this->em->createQuery('
             SELECT d, def, root_def
             FROM DeskPRO:CustomDataPerson AS d
             LEFT JOIN d.field def
             LEFT JOIN d.root_field root_def
             WHERE d.person IN (?0)
-        ")->execute(array(array_values($this->people_ids)));
+        ')->execute(array(array_values($this->people_ids)));
 
         $this->all_user_field_data = array();
         foreach ($data as $d) {
@@ -237,13 +237,13 @@ class TicketResultsDisplay implements PersonContextInterface
         if ($this->all_ticket_field_data !== null) {
             return $this->all_ticket_field_data;
         }
-        $data = $this->em->createQuery("
+        $data = $this->em->createQuery('
             SELECT d, def, root_def
             FROM DeskPRO:CustomDataTicket AS d
             LEFT JOIN d.field def
             LEFT JOIN d.root_field root_def
             WHERE d.ticket IN (?0)
-        ")->execute(array(array_values($this->ticket_ids)));
+        ')->execute(array(array_values($this->ticket_ids)));
 
         $this->all_ticket_field_data = array();
         foreach ($data as $d) {
@@ -440,7 +440,7 @@ class TicketResultsDisplay implements PersonContextInterface
             return $this->all_previews;
         }
 
-        $message_data = $this->db->fetchAllKeyed("
+        $message_data = $this->db->fetchAllKeyed('
             SELECT
                 tickets_messages.id, tickets_messages.ticket_id, tickets_messages.date_created, tickets_messages.message,
                 people.id AS person_id, people.name, people.first_name, people.last_name, people.is_agent,
@@ -449,7 +449,7 @@ class TicketResultsDisplay implements PersonContextInterface
             LEFT JOIN people ON (people.id = tickets_messages.person_id)
             WHERE tickets_messages.ticket_id IN (?)
             ORDER BY tickets_messages.id DESC
-        ", array($this->ticket_ids), 'id', array(Connection::PARAM_INT_ARRAY));
+        ', array($this->ticket_ids), 'id', array(Connection::PARAM_INT_ARRAY));
 
         $extra_people     = array();
         $extra_people_ids = array();
@@ -567,10 +567,10 @@ class TicketResultsDisplay implements PersonContextInterface
         }
 
         if ($this->person_flagged === null) {
-            $this->person_flagged = App::getDb()->fetchAllKeyValue("
+            $this->person_flagged = App::getDb()->fetchAllKeyValue('
                 SELECT ticket_id, color
                 FROM tickets_flagged
-                WHERE person_id = ? AND ticket_id IN (?)", array($this->person_context->getId(), $this->ticket_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+                WHERE person_id = ? AND ticket_id IN (?)', array($this->person_context->getId(), $this->ticket_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
         }
 
         $ticket_id = is_object($ticket) ? $ticket->getId() : $ticket;

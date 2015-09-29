@@ -1,52 +1,50 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
-use Application\DeskPRO\Entity\Ticket;
+use FOS\RestBundle\Controller\Annotations\Delete;
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Delete;
 
 class TicketsController extends BaseController implements ClassResourceInterface
 {
@@ -58,7 +56,9 @@ class TicketsController extends BaseController implements ClassResourceInterface
      *      }
      * )
      * @Get("/tickets", name="api_tickets")
+     *
      * @param Request $request
+     *
      * @return View
      */
     public function cgetAction(Request $request)
@@ -66,7 +66,7 @@ class TicketsController extends BaseController implements ClassResourceInterface
         $query = $request->query->all();
 
         $ticketIds = !empty($query['ids']) ? explode(',', $query['ids']) : [];
-        $tickets = $this->selectTickets($ticketIds);
+        $tickets   = $this->selectTickets($ticketIds);
 
         $tickets = $tickets->getResult();
 
@@ -94,7 +94,9 @@ class TicketsController extends BaseController implements ClassResourceInterface
      *      output="DeskPRO\Bundle\AppBundle\Entity\TaskTicket"
      * )
      * @Get("/tickets/{id}", name="api_tickets_get")
+     *
      * @param int $id
+     *
      * @return View
      */
     public function getAction($id)
@@ -122,14 +124,18 @@ class TicketsController extends BaseController implements ClassResourceInterface
      *      output="DeskPRO\Bundle\AppBundle\Entity\TaskTicket"
      * )
      * @Post("/tickets", name="api_tickets_post")
+     *
      * @param Request $request
+     *
      * @throws WrappedApiErrorException
      * @throws InvalidFormException
+     *
      * @return View
      */
     public function postAction(Request $request)
     {
         $ticket = new Ticket();
+
         return $this->handleFormSubmission($request, $ticket);
     }
 
@@ -152,9 +158,12 @@ class TicketsController extends BaseController implements ClassResourceInterface
      *      }
      * )
      * @Put("/tickets/{id}", name="api_tickets_put")
+     *
      * @param Request $request
      * @param $id
+     *
      * @throws WrappedApiErrorException
+     *
      * @return View
      */
     public function putAction(Request $request, $id)
@@ -181,7 +190,9 @@ class TicketsController extends BaseController implements ClassResourceInterface
      *      }
      * )
      * @Delete("/tickets/{id}", name="api_tickets_delete")
+     *
      * @param $id
+     *
      * @return View
      */
     public function deleteAction($id)
@@ -202,13 +213,15 @@ class TicketsController extends BaseController implements ClassResourceInterface
     }
 
     /**
-     * Retrieve a single ticket
+     * Retrieve a single ticket.
+     *
      * @param int $id
+     *
      * @return Ticket
      */
     protected function getTicket($id)
     {
-        $id = (int) $id;
+        $id     = (int) $id;
         $ticket = $this->getDoctrine()->getManager()->getRepository('DeskPRO:Ticket')->find($id);
 
         if (!$ticket) {
@@ -219,11 +232,14 @@ class TicketsController extends BaseController implements ClassResourceInterface
     }
 
     /**
-     * Will be abstracted for use by other controllers
+     * Will be abstracted for use by other controllers.
+     *
      * @param Request $request
-     * @param Ticket $ticket
-     * @return View
+     * @param Ticket  $ticket
+     *
      * @throws WrappedApiErrorException
+     *
+     * @return View
      */
     protected function handleFormSubmission(Request $request, Ticket $ticket)
     {
@@ -260,8 +276,10 @@ class TicketsController extends BaseController implements ClassResourceInterface
     }
 
     /**
-     * Get a Doctrine Query for getting certain tickets
+     * Get a Doctrine Query for getting certain tickets.
+     *
      * @param $ticketIds
+     *
      * @return \Doctrine\ORM\Query
      */
     protected function selectTickets($ticketIds = [])
@@ -269,7 +287,7 @@ class TicketsController extends BaseController implements ClassResourceInterface
         $entityManager = $this->getDoctrine()->getManager();
 
         // Clean the IDs
-        $ticketIds = array_map(function($value) {
+        $ticketIds = array_map(function ($value) {
             return (int) $value;
         }, $ticketIds);
 

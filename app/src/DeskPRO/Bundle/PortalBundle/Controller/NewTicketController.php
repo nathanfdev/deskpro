@@ -1,47 +1,46 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
-use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Tickets\DuplicateTicketException;
+use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\LoginRequiredException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
-use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 
 class NewTicketController extends AbstractController
 {
@@ -55,7 +54,7 @@ class NewTicketController extends AbstractController
     {
         $person = $this->getUser() ?: new PersonGuest();
 
-        $ticket = $this->getTicketManager()->createTicket();
+        $ticket         = $this->getTicketManager()->createTicket();
         $ticket_message = new TicketMessage();
         $ticket->setPerson($person);
         $ticket_message->setPerson($person);
@@ -64,12 +63,12 @@ class NewTicketController extends AbstractController
         if ('GET' === $request->getMethod()) {
             // do a one through with the GET request to update our model before starting the "real" form
             $form = $this->createForm('ticket', $ticket, array(
-                'person' => $person,
-                'ticket_message' => $ticket_message,
-                'method' => 'GET',
+                'person'            => $person,
+                'ticket_message'    => $ticket_message,
+                'method'            => 'GET',
                 'validation_groups' => false,
-                'settings' => $this->getBrandContainer()->getSettings(),
-                'action' => $this->generateUrl('portal_new_ticket')
+                'settings'          => $this->getBrandContainer()->getSettings(),
+                'action'            => $this->generateUrl('portal_new_ticket'),
             ));
             $form->submit($request->get('ticket', array()), false);
         }
@@ -78,7 +77,7 @@ class NewTicketController extends AbstractController
             'person'         => $person,
             'ticket_message' => $ticket_message,
             'settings'       => $this->getBrandContainer()->getSettings(),
-            'action' => $this->generateUrl('portal_new_ticket')
+            'action'         => $this->generateUrl('portal_new_ticket'),
         ));
         $form->handleRequest($request);
 
@@ -90,7 +89,7 @@ class NewTicketController extends AbstractController
 
         if ($form->isValid()) {
             // dont process if user hit "more attachments"
-            if ($form->getClickedButton()->getConfig()->getName() !== "more_attachments") {
+            if ($form->getClickedButton()->getConfig()->getName() !== 'more_attachments') {
                 // if the form set a hidden field "rerender_form" then we want to skip actual processing for now
                 // keep the $form->has('rerender_form') because it may have changed after $form->isValid
                 if (!$form->has('rerender_form') && !$rerendering_saved) {
@@ -101,6 +100,7 @@ class NewTicketController extends AbstractController
                         } catch (LoginRequiredException $e) {
                             // the email used belongs to a user, and brand settings say they need to log in
                             $person = $e->getPerson();
+
                             return $this->getFormSaver()->saveFormForPerson($person, $form, $request);
                         }
 
@@ -118,6 +118,7 @@ class NewTicketController extends AbstractController
 
                     if (!$person->isUser()) { // not a user, redirect to thank you
                         $this->get('portal_email_sender')->sendNewTicketGuestThankYou($ticket);
+
                         return $this->redirectToRoute('portal_new_ticket_guest_thank_you');
                     }
 
@@ -132,11 +133,11 @@ class NewTicketController extends AbstractController
             'ticket_message' => null,
             'settings'       => $this->getBrandContainer()->getSettings(),
             'full_version'   => true,
-            'action' => $this->generateUrl('portal_new_ticket')
+            'action'         => $this->generateUrl('portal_new_ticket'),
         ));
 
         $layouts           = $this->container->getTicketLayoutManager()->getUserLayouts();
-        $ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = ".$layouts->compileJsObj().";";
+        $ticket_display_js = 'window.DESKPRO_TICKET_DISPLAY = '.$layouts->compileJsObj().';';
 
         //
         // BREADCRUMBS
@@ -150,8 +151,8 @@ class NewTicketController extends AbstractController
                 'ticket_display_js' => $ticket_display_js,
                 'rerendering'       => $rerendering,
                 'rerendering_saved' => $rerendering_saved,
-                'breadcrumbs' => $breadcrumbs,
-                'page_title' => $this->createPageTitle()->newticket()
+                'breadcrumbs'       => $breadcrumbs,
+                'page_title'        => $this->createPageTitle()->newticket(),
             )
         );
     }
@@ -166,7 +167,7 @@ class NewTicketController extends AbstractController
         return $this->renderThemeView(
             'Theme:NewTicket:guest_thank_you.html.twig', array(
                 'breadcrumbs' => $this->getBreadcrumbGenerator()->buildNewTicketGuestThankYou(),
-                'page_title' => $this->createPageTitle()->newticketGuestThankYou()
+                'page_title'  => $this->createPageTitle()->newticketGuestThankYou(),
             )
         );
     }
@@ -189,7 +190,7 @@ class NewTicketController extends AbstractController
             $em->persist($ticket);
 
             $ticket_manager = $this->getTicketManager();
-            $context = $ticket_manager->createUserExecutorContext($person, 'newticket', 'portal');
+            $context        = $ticket_manager->createUserExecutorContext($person, 'newticket', 'portal');
 
             $ticket_manager->saveTicket($ticket, $context);
             $em->flush();

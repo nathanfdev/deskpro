@@ -1,47 +1,46 @@
 <?php
 
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
  * @category Entities
  */
-
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
-use Symfony\Component\Validator\Constraints as Assert;
 use Hateoas\Configuration\Annotation as Hateoas;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TaskRepository")
@@ -55,9 +54,9 @@ use Hateoas\Configuration\Annotation as Hateoas;
 class Task extends NotifyPropertyChangeEntity
 {
     const VISIBILITY_PRIVATE = 'private';
-    
+
     const TYPE_TASK = 'task';
-    
+
     /**
      * @var int
      * @ORM\Id()
@@ -74,7 +73,8 @@ class Task extends NotifyPropertyChangeEntity
     protected $title;
 
     /**
-     * Complete or incomplete
+     * Complete or incomplete.
+     *
      * @var bool
      * @ORM\Column(type="boolean", nullable=true)
      */
@@ -94,7 +94,8 @@ class Task extends NotifyPropertyChangeEntity
     protected $date_created;
 
     /**
-     * Either task or event
+     * Either task or event.
+     *
      * @var string
      * @ORM\Column(type="string")
      */
@@ -128,7 +129,8 @@ class Task extends NotifyPropertyChangeEntity
     protected $creator;
 
     /**
-     * Project, public or private
+     * Project, public or private.
+     *
      * @var string
      * @ORM\Column(type="string")
      */
@@ -149,7 +151,8 @@ class Task extends NotifyPropertyChangeEntity
     protected $list;
 
     /**
-     * Between 1 and 10
+     * Between 1 and 10.
+     *
      * @var int
      * @ORM\Column(type="integer")
      */
@@ -192,7 +195,8 @@ class Task extends NotifyPropertyChangeEntity
     protected $assigned;
 
     /**
-     * The date the task was completed
+     * The date the task was completed.
+     *
      * @var \DateTime
      * @ORM\Column(type="datetime", nullable=true)
      */
@@ -210,7 +214,7 @@ class Task extends NotifyPropertyChangeEntity
     public function __construct(Person $creator)
     {
         $this->subtasks = new ArrayCollection();
-        $this->labels = new ArrayCollection();
+        $this->labels   = new ArrayCollection();
         $this->setCreator($creator);
         $this->setDateCreated(new \DateTime());
     }

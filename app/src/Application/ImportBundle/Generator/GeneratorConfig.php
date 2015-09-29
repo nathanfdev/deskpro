@@ -1,47 +1,47 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator;
 
+use Application\ImportBundle\Generator\Exporter\AbstractFactory as AbstractExporterFactory;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\BatchConfigInterface;
+use Application\ImportBundle\Generator\Writer\AbstractFactory as AbstractWriterFactory;
 use Application\ImportBundle\Generator\Writer\WriterInterface;
 use Application\ImportBundle\Reader\BaseConfig;
-use Application\ImportBundle\Generator\Exporter\AbstractFactory as AbstractExporterFactory;
-use Application\ImportBundle\Generator\Writer\AbstractFactory as AbstractWriterFactory;
-use Exception;
 use DateTime;
+use Exception;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Configuration of generator importer service
+ * Configuration of generator importer service.
  *
  * Class GeneratorConfig
- * @package Application\ImportBundle\Generator
  */
 class GeneratorConfig
 {
@@ -103,7 +103,7 @@ class GeneratorConfig
     protected $reader_config;
 
     /**
-     * Returns an exporter type
+     * Returns an exporter type.
      *
      * @return string
      */
@@ -115,12 +115,13 @@ class GeneratorConfig
     /**
      * Does defined exporter support for batching?
      *
-     * @return bool
      * @throws Exception
+     *
+     * @return bool
      */
     public function isBatchExporter()
     {
-        if ( ! $this->exporter_type) {
+        if (!$this->exporter_type) {
             throw new Exception('Exporter type is not defined');
         }
 
@@ -135,22 +136,25 @@ class GeneratorConfig
 
     /**
      * Set an exporter type
-     * Supported types are csv, json, osticket and zendesk
+     * Supported types are csv, json, osticket and zendesk.
      *
      * @param string $exporter_type
+     *
      * @return $this
      */
     public function setExporterType($exporter_type)
     {
         $this->exporter_type = $exporter_type;
+
         return $this;
     }
 
     /**
      * @param ContainerInterface $container
      *
-     * @return AbstractExporterFactory
      * @throws Exception
+     *
+     * @return AbstractExporterFactory
      */
     public function getExporterFactory(ContainerInterface $container)
     {
@@ -171,8 +175,9 @@ class GeneratorConfig
     /**
      * @param ContainerInterface $container
      *
-     * @return AbstractWriterFactory
      * @throws Exception
+     *
+     * @return AbstractWriterFactory
      */
     public function getWriterFactory(ContainerInterface $container)
     {
@@ -182,7 +187,7 @@ class GeneratorConfig
         );
 
         if (!$this->writer_type) {
-            return null;
+            return;
         }
 
         if (!isset($factories[$this->writer_type])) {
@@ -193,7 +198,7 @@ class GeneratorConfig
     }
 
     /**
-     * Returns exporter batch config
+     * Returns exporter batch config.
      *
      * @return BatchConfigInterface
      */
@@ -203,7 +208,7 @@ class GeneratorConfig
     }
 
     /**
-     * Returns retry after timeout
+     * Returns retry after timeout.
      *
      * @return int
      */
@@ -225,17 +230,18 @@ class GeneratorConfig
     }
 
     /**
-     * Set exporter batch config
+     * Set exporter batch config.
      *
      * @param BatchConfigInterface $config
      *
-     * @return $this
      * @throws Exception
+     *
+     * @return $this
      */
     public function setExporterBatchConfig(BatchConfigInterface $config = null)
     {
         if ($config) {
-            if ( ! $this->exporter_type) {
+            if (!$this->exporter_type) {
                 throw new Exception('Exporter type is not defined');
             }
             if ($this->exporter_type !== $config->getExporterType()) {
@@ -247,11 +253,12 @@ class GeneratorConfig
         }
 
         $this->exporter_batch_config = $config;
+
         return $this;
     }
 
     /**
-     * Returns generation type
+     * Returns generation type.
      *
      * @return string
      */
@@ -265,7 +272,7 @@ class GeneratorConfig
     }
 
     /**
-     * Returns a writer type
+     * Returns a writer type.
      *
      * @return string
      */
@@ -275,7 +282,7 @@ class GeneratorConfig
     }
 
     /**
-     * Returns true if a writer is specified
+     * Returns true if a writer is specified.
      *
      * @return bool
      */
@@ -286,19 +293,21 @@ class GeneratorConfig
 
     /**
      * Set a writer type
-     * Supported types are json, deskpro
+     * Supported types are json, deskpro.
      *
      * @param string $writer_type
+     *
      * @return $this
      */
     public function setWriterType($writer_type)
     {
         $this->writer_type = $writer_type;
+
         return $this;
     }
 
     /**
-     * Returns a collection of entity types to be affected by the importer tool
+     * Returns a collection of entity types to be affected by the importer tool.
      *
      * @return string[]
      */
@@ -308,9 +317,10 @@ class GeneratorConfig
     }
 
     /**
-     * Check if config has an entity type
+     * Check if config has an entity type.
      *
      * @param string $type
+     *
      * @return bool
      */
     public function hasEntityType($type)
@@ -319,19 +329,21 @@ class GeneratorConfig
     }
 
     /**
-     * Add an entity type to be affected
+     * Add an entity type to be affected.
      *
      * @param string $record_type
+     *
      * @return $this
      */
     public function addEntityType($record_type)
     {
         $this->entity_types[] = $record_type;
+
         return $this;
     }
 
     /**
-     * Input path of exporting data
+     * Input path of exporting data.
      *
      * @return string
      */
@@ -342,14 +354,15 @@ class GeneratorConfig
 
     /**
      * Some of the exporters need an input path
-     * Returns true if the input path must be specified
+     * Returns true if the input path must be specified.
+     *
+     * @throws Exception
      *
      * @return bool
-     * @throws Exception
      */
     public function needInputPath()
     {
-        if ( ! $this->exporter_type) {
+        if (!$this->exporter_type) {
             throw new Exception('Exporter type is not defined');
         }
 
@@ -362,20 +375,22 @@ class GeneratorConfig
     }
 
     /**
-     * Set an input path
+     * Set an input path.
      *
      * @param string $input_path
+     *
      * @return $this
      */
     public function setInputPath($input_path)
     {
         $this->input_path = $input_path;
+
         return $this;
     }
 
     /**
      * Returns an output path
-     * Uses to collect generated json files
+     * Uses to collect generated json files.
      *
      * @return string
      */
@@ -385,19 +400,21 @@ class GeneratorConfig
     }
 
     /**
-     * Set an output path
+     * Set an output path.
      *
      * @param string $output_path
+     *
      * @return $this
      */
     public function setOutputPath($output_path)
     {
         $this->output_path = $output_path;
+
         return $this;
     }
 
     /**
-     * Returns batch file dir location
+     * Returns batch file dir location.
      *
      * @return null|string
      */
@@ -411,29 +428,29 @@ class GeneratorConfig
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Returns batch file path location
+     * Returns batch file path location.
      *
      * @return null|string
      */
     public function getBatchFilePath()
     {
         if ($this->output_path) {
-            return $this->output_path . WriterInterface::OUTPUT_BATCH_FILE;
+            return $this->output_path.WriterInterface::OUTPUT_BATCH_FILE;
         } else {
             if ($this->input_path) {
-                return $this->input_path . WriterInterface::INPUT_BATCH_FILE;
+                return $this->input_path.WriterInterface::INPUT_BATCH_FILE;
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Returns a log path
+     * Returns a log path.
      *
      * @return string
      */
@@ -443,21 +460,23 @@ class GeneratorConfig
     }
 
     /**
-     * Set a log path
+     * Set a log path.
      *
      * @param string $log_path
+     *
      * @return $this
      */
     public function setLogPath($log_path)
     {
         $this->log_path = $log_path;
+
         return $this;
     }
 
     /**
-     * Is verbose mode enabled
+     * Is verbose mode enabled.
      *
-     * @return boolean
+     * @return bool
      */
     public function isVerbose()
     {
@@ -466,21 +485,23 @@ class GeneratorConfig
 
     /**
      * Set verbose mode
-     * All output messages are shown in console
+     * All output messages are shown in console.
      *
-     * @param boolean $verbose
+     * @param bool $verbose
+     *
      * @return $this
      */
     public function setVerbose($verbose)
     {
-        $this->verbose = (bool)$verbose;
+        $this->verbose = (bool) $verbose;
+
         return $this;
     }
 
     /**
-     * Returns true if a writer does not flush data
+     * Returns true if a writer does not flush data.
      *
-     * @return boolean
+     * @return bool
      */
     public function isDryRun()
     {
@@ -488,21 +509,23 @@ class GeneratorConfig
     }
 
     /**
-     * Set a writer not to flush data
+     * Set a writer not to flush data.
      *
-     * @param boolean $dry_run
+     * @param bool $dry_run
+     *
      * @return $this
      */
     public function setDryRun($dry_run)
     {
-        $this->dry_run = (bool)$dry_run;
+        $this->dry_run = (bool) $dry_run;
+
         return $this;
     }
 
     /**
-     * Is silent mode
+     * Is silent mode.
      *
-     * @return boolean
+     * @return bool
      */
     public function isSilent()
     {
@@ -511,19 +534,21 @@ class GeneratorConfig
 
     /**
      * Set silent mode
-     * No progressbar or output messages
+     * No progressbar or output messages.
      *
-     * @param boolean $silent
+     * @param bool $silent
+     *
      * @return $this
      */
     public function setSilent($silent)
     {
-        $this->silent = (bool)$silent;
+        $this->silent = (bool) $silent;
+
         return $this;
     }
 
     /**
-     * Shows progressbar
+     * Shows progressbar.
      *
      * @return bool
      */
@@ -533,7 +558,7 @@ class GeneratorConfig
     }
 
     /**
-     * Shows output
+     * Shows output.
      *
      * @return bool
      */
@@ -552,11 +577,13 @@ class GeneratorConfig
 
     /**
      * @param BaseConfig $reader_config
+     *
      * @return $this
      */
     public function setReaderConfig(BaseConfig $reader_config)
     {
         $this->reader_config = $reader_config;
+
         return $this;
     }
 }

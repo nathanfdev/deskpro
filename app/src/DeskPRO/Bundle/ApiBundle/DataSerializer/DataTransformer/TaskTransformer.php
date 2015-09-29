@@ -1,42 +1,38 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\Callback\CallbackDeferredProperty;
-use DeskPRO\Bundle\AppBundle\Entity\Task;
 use Doctrine\DBAL\Connection;
 
 class TaskTransformer extends AbstractDataSerializerTransformer
@@ -63,8 +59,8 @@ class TaskTransformer extends AbstractDataSerializerTransformer
 
     public function __construct(Connection $connection)
     {
-        $this->connection = $connection;
-        $this->count_ids = [];
+        $this->connection    = $connection;
+        $this->count_ids     = [];
         $this->commentCounts = null;
         $this->subtaskCounts = null;
     }
@@ -109,15 +105,15 @@ class TaskTransformer extends AbstractDataSerializerTransformer
 
         $grouped = [
             'departments' => [],
-            'teams' => [],
-            'agents' => [],
+            'teams'       => [],
+            'agents'      => [],
         ];
 
         if (!empty($assignees)) {
             foreach ($assignees as $assigned) {
                 if (!empty($assigned->getDepartment())) {
                     $grouped['departments'][] = $assigned->getDepartment()->getId();
-                } else if (!empty($assigned->getTeam())) {
+                } elseif (!empty($assigned->getTeam())) {
                     $grouped['teams'][] = $assigned->getTeam()->getId();
                 } else {
                     $grouped['agents'][] = $assigned->getPerson()->getId();
@@ -125,14 +121,14 @@ class TaskTransformer extends AbstractDataSerializerTransformer
             }
         }
 
-        $id = $data->getId();
+        $id                = $data->getId();
         $this->count_ids[] = $id;
 
         return [
-            'departments' => $grouped['departments'],
-            'teams' => $grouped['teams'],
-            'agents' => $grouped['agents'],
-            'labels' => $labels,
+            'departments'   => $grouped['departments'],
+            'teams'         => $grouped['teams'],
+            'agents'        => $grouped['agents'],
+            'labels'        => $labels,
             'comment_count' => new CallbackDeferredProperty(
                 [$this, 'getCommentCount'],
                 [$id]
@@ -144,13 +140,15 @@ class TaskTransformer extends AbstractDataSerializerTransformer
             'subtasks_done' => new CallbackDeferredProperty(
                 [$this, 'getSubtasksDone'],
                 [$id]
-            )
+            ),
         ];
     }
 
     /**
-     * Get the count of the number of comments
+     * Get the count of the number of comments.
+     *
      * @param int $taskId
+     *
      * @return int|void
      */
     public function getCommentCount($taskId)
@@ -158,10 +156,10 @@ class TaskTransformer extends AbstractDataSerializerTransformer
         // Make sure we only execute the query once
         if ($this->commentCounts === null) {
             $this->commentCounts = [];
-            $statement = $this->connection->prepare("SELECT task_id, COUNT(*) AS total
+            $statement           = $this->connection->prepare('SELECT task_id, COUNT(*) AS total
                     FROM task_comments_new
                     WHERE task_id IN (:task_ids)
-                    GROUP BY task_id");
+                    GROUP BY task_id');
 
             $taskIds = implode(',', $this->count_ids);
             $statement->bindValue('task_ids', $taskIds);
@@ -182,8 +180,10 @@ class TaskTransformer extends AbstractDataSerializerTransformer
     }
 
     /**
-     * Get the count of subtasks
+     * Get the count of subtasks.
+     *
      * @param $taskId
+     *
      * @return int
      */
     public function getSubtasksCount($taskId)
@@ -194,8 +194,10 @@ class TaskTransformer extends AbstractDataSerializerTransformer
     }
 
     /**
-     * Get the number of subtasks marked as done
+     * Get the number of subtasks marked as done.
+     *
      * @param $taskId
+     *
      * @return int
      */
     public function getSubtasksDone($taskId)
@@ -206,17 +208,18 @@ class TaskTransformer extends AbstractDataSerializerTransformer
     }
 
     /**
-     * Run the query to retrieve subtasks
+     * Run the query to retrieve subtasks.
+     *
      * @throws \Doctrine\DBAL\DBALException
      */
     private function querySubtasks()
     {
         if ($this->subtaskCounts === null) {
             $this->subtaskCounts = [];
-            $statement = $this->connection->prepare("SELECT task_id, count(task_id) AS total, sum(is_done) AS done
+            $statement           = $this->connection->prepare('SELECT task_id, count(task_id) AS total, sum(is_done) AS done
                     FROM task_subtask
                     WHERE task_id IN (:task_ids)
-                    GROUP BY task_id");
+                    GROUP BY task_id');
 
             $taskIds = implode(',', $this->count_ids);
             $statement->bindValue('task_ids', $taskIds);
@@ -227,7 +230,7 @@ class TaskTransformer extends AbstractDataSerializerTransformer
 
             foreach ($result as $row) {
                 $this->subtaskCounts[$row['task_id']] = [
-                    'done' => (int) $row['done'],
+                    'done'  => (int) $row['done'],
                     'total' => (int) $row['total'],
                 ];
             }

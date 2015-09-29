@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TicketLayout;
@@ -40,7 +40,7 @@ use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 
 /**
- * Simple ticket layouts CRUD
+ * Simple ticket layouts CRUD.
  *
  * SWG\Resource(
  * 	resourcePath="/ticket_layout",
@@ -51,7 +51,7 @@ use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 class TicketLayoutsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
@@ -66,8 +66,9 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
     # get
     ####################################################################################################################
 
-	/**
+    /**
      * @param int $dep_id
+     *
      * @return Response
      *
      * SWG\Api(
@@ -131,7 +132,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
         $filter->filterInvalid($ticket_layout->agent_layout);
 
         return $this->createApiResponse(array(
-            'layout'     => array(
+            'layout' => array(
                 'user'  => $ticket_layout->user_layout->exportToArray(),
                 'agent' => $ticket_layout->agent_layout->exportToArray(),
             ),
@@ -143,7 +144,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
     # stats
     ####################################################################################################################
 
-	/**
+    /**
      * @return Response
      *
      * SWG\Api(
@@ -158,11 +159,11 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      */
     public function getLayoutStatsAction()
     {
-        $deps_with_layouts = $this->db->fetchAllCol("
+        $deps_with_layouts = $this->db->fetchAllCol('
             SELECT department_id
             FROM ticket_layouts
             WHERE department_id IS NOT NULL
-        ");
+        ');
         if ($deps_with_layouts) {
             $deps_with_layouts = array_fill_keys($deps_with_layouts, true);
         }
@@ -191,9 +192,9 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
     # save
     ####################################################################################################################
 
-	/**
+    /**
      * @param int $dep_id
-     * @return Response
+     *
      * @throws \Exception
      *
      * SWG\Api(
@@ -228,7 +229,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      *      )
      *  )
      * )
-
+     
      * SWG\Api(
      * 	path="/ticket_layouts/default",
      * 	SWG\Operation(
@@ -261,6 +262,8 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      *      )
      *  )
      * )
+     *
+     * @return Response
      */
     public function saveAction($dep_id = 0)
     {
@@ -319,9 +322,9 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 
         // Sanity check
         if ($layout->department) {
-            $this->db->executeUpdate("DELETE FROM ticket_layouts WHERE department_id = ? AND id != ?", array($layout->department->id, $layout->id));
+            $this->db->executeUpdate('DELETE FROM ticket_layouts WHERE department_id = ? AND id != ?', array($layout->department->id, $layout->id));
         } else {
-            $this->db->executeUpdate("DELETE FROM ticket_layouts WHERE department_id IS NULL AND id != ?", array($layout->id));
+            $this->db->executeUpdate('DELETE FROM ticket_layouts WHERE department_id IS NULL AND id != ?', array($layout->id));
         }
 
         return $this->createSuccessResponse();
@@ -333,7 +336,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 
     /**
      * @param $dep_id
-     * @return Response
+     *
      * @throws \Exception
      *
      * SWG\Api(
@@ -354,6 +357,8 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      *      )
      *  )
      * )
+     *
+     * @return Response
      */
     public function deleteAction($dep_id)
     {
@@ -362,7 +367,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
             throw $this->createNotFoundException();
         }
 
-        $this->db->executeUpdate("DELETE FROM ticket_layouts WHERE department_id = ?", array($dep->id));
+        $this->db->executeUpdate('DELETE FROM ticket_layouts WHERE department_id = ?', array($dep->id));
 
         return $this->createSuccessResponse();
     }
@@ -372,8 +377,10 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
     ####################################################################################################################
 
     /**
-     * Get field use statistic
+     * Get field use statistic.
+     *
      * @param $field_id
+     *
      * @return Response
      *
      * SWG\Api(
@@ -455,8 +462,9 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
     # save-field-status
     ####################################################################################################################
 
-	/**
+    /**
      * @param $field_id
+     *
      * @return Response
      *
      * SWG\Api(

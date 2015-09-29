@@ -1,54 +1,46 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
-
-use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Kernel\KernelErrorHandler;
 use FOS\RestBundle\View\View;
 use Symfony\Component\Debug\Debug;
-use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\FlattenException as HttpFlattenException;
-use Symfony\Component\Debug\Exception\FlattenException as DebugFlattenException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Zend\Server\Reflection\ReflectionClass;
 
 class ExceptionController extends BaseController
 {
@@ -57,7 +49,7 @@ class ExceptionController extends BaseController
         $parameters = array();
         if ($exception instanceof WrappedApiErrorException) {
             $parameters = $exception->getParams();
-            $exception = $exception->getException();
+            $exception  = $exception->getException();
         }
 
         $errors_array = array();
@@ -73,14 +65,14 @@ class ExceptionController extends BaseController
 
         // in dev environment, display a stack trace, dont show if we have a test.client
         if ($this->container->getParameter('kernel.debug') && !$this->container->has('test.client') && !$request->headers->has('x-agent-request')) {
-            $error = new Response((string)$exception, 500);
+            $error = new Response((string) $exception, 500);
             $error->headers->set('content-type', 'text/html');
 
             return $error;
         }
 
-        $status = $exception instanceof HttpException ? $exception->getStatusCode() : 500;
-        $code = $this->getErrorCodeFactory()->getErrorCodeForException($exception);
+        $status  = $exception instanceof HttpException ? $exception->getStatusCode() : 500;
+        $code    = $this->getErrorCodeFactory()->getErrorCodeForException($exception);
         $message = $this->getErrorMessageFactory()->createMessage($code, $parameters);
 
         // $exception has "getHeaders()" that we are interested in using
@@ -104,9 +96,9 @@ class ExceptionController extends BaseController
     {
         $errors = $list = array();
         foreach ($form->getErrors() as $error) {
-            $code = $this->getFormErrorCode($error);
+            $code   = $this->getFormErrorCode($error);
             $list[] = array(
-                'code' => $code,
+                'code'    => $code,
                 'message' => $this->getErrorMessageFactory()->createFormErrorMessage($code, $error),
             );
         }
@@ -129,10 +121,10 @@ class ExceptionController extends BaseController
             !empty($children) // not empty
             && $this->needsPrefix($children)
         ) {
-            $prefix = !is_numeric($form->getName()) ? $form->getName() . '_' : 'field_';
+            $prefix       = !is_numeric($form->getName()) ? $form->getName().'_' : 'field_';
             $new_children = array();
             foreach ($children as $index => $value) {
-                $new_children[$prefix . $index] = $value;
+                $new_children[$prefix.$index] = $value;
             }
             $children = $new_children;
         }

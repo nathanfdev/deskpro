@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker;
 
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
@@ -78,21 +76,21 @@ class PhpTicketCheckerEngine extends PhpEngine
         EventDispatcherInterface $event_dispatcher,
         TermCompilerHelperPool $helper_pool,
         LoggerInterface $logger
-    )
-    {
-        $this->compiler = $compiler;
+    ) {
+        $this->compiler            = $compiler;
         $this->expression_language = $expression_language;
-        $this->event_dispatcher = $event_dispatcher;
-        $this->helper_pool = $helper_pool;
-        $this->logger = $logger;
+        $this->event_dispatcher    = $event_dispatcher;
+        $this->helper_pool         = $helper_pool;
+        $this->logger              = $logger;
     }
 
     /**
      * Takes a filter and the context and returns to you an instance of
      * PhpTicketCheckerInterface that satisfies the filters terms.
      *
-     * @param TicketFilter $filter
+     * @param TicketFilter      $filter
      * @param TermEngineContext $context
+     *
      * @return PhpTicketCheckerInterface
      */
     public function evaluate(TicketFilter $filter, TermEngineContext $context)
@@ -102,13 +100,13 @@ class PhpTicketCheckerEngine extends PhpEngine
         $this->logger->info(
             'START EVALUATE FILTER',
             array(
-                'filter_id' => $filter->getId(),
-                'filter_title' => $filter->getTitle()
+                'filter_id'    => $filter->getId(),
+                'filter_title' => $filter->getTitle(),
             )
         );
         $this->logger->info('dispatching PRE_COMPILE event');
         $pre_compile_timer = new SimpleTimer();
-        $event = new PhpEnginePreCompileEvent($context, $filter);
+        $event             = new PhpEnginePreCompileEvent($context, $filter);
         $this->event_dispatcher->dispatch(PhpEngineEvents::PRE_COMPILE, $event);
         $this->logger->info(
             'finished PRE_COMPILE event',
@@ -119,7 +117,7 @@ class PhpTicketCheckerEngine extends PhpEngine
 
         $this->logger->info('dispatching POST_COMPILE event');
         $post_compile_timer = new SimpleTimer();
-        $event = new PhpEnginePostCompileEvent($context, $filter, $php_check);
+        $event              = new PhpEnginePostCompileEvent($context, $filter, $php_check);
         $this->event_dispatcher->dispatch(PhpEngineEvents::POST_COMPILE, $event);
         $this->logger->info(
             'finished POST_COMPILE event',
@@ -129,9 +127,9 @@ class PhpTicketCheckerEngine extends PhpEngine
         $this->logger->info(
             'END EVALUATE FILTER',
             array(
-                'filter_id' => $filter->getId(),
+                'filter_id'    => $filter->getId(),
                 'filter_title' => $filter->getTitle(),
-                'time' => $timer->getElapsedTime()
+                'time'         => $timer->getElapsedTime(),
             )
         );
 

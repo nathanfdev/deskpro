@@ -9,11 +9,11 @@ export class FeedbackCard extends Component {
   };
 
   render() {
-    const {feedback, author, type} = this.props;
+    const {feedback, author, type,  massAction} = this.props;
     return (
       <Card type="feedback">
 
-        <CardCheckbox/>
+        <CardCheckbox massAction={massAction}/>
 
         <CardLine>
           <CardLineLeft>

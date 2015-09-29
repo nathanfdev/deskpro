@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Kernel;
 
 require_once DP_ROOT.'/sys/DpShutdown.php';
@@ -74,9 +74,9 @@ class KernelBooter
             || (isset($GLOBALS['DP_enable_display_errors']) && $GLOBALS['DP_enable_display_errors'])
             || (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev'])
         ) {
-            @ini_set('display_errors', "1");
+            @ini_set('display_errors', '1');
         } else {
-            @ini_set('display_errors', "0");
+            @ini_set('display_errors', '0');
         }
 
         if (isset($DP_CONFIG['debug']['enable_debug_trace']) && $DP_CONFIG['debug']['enable_debug_trace']) {
@@ -216,50 +216,48 @@ class KernelBooter
         $kernel = false;
 
         if (preg_match('#^/dp\-ping(/|\?|$)#', $path)) {
-            header("Content-type: application/json");
+            header('Content-type: application/json');
             echo '{"deskpro": true, "interface": "user"}';
             exit;
         } elseif (preg_match('#^/(agent|admin|api|reports|billing)/dp-ping(/|\?|$)#', $path, $m)) {
-            header("Content-type: application/json");
+            header('Content-type: application/json');
             echo '{"deskpro": true, "interface": "'.$m[1].'"}';
             exit;
         }
 
-		$kernel_class = 'DeskPRO\\Kernel\\DpKernel';
-		if (preg_match('#^/agent(/|\?|$)#', $path)) {
-			define('DP_INTERFACE', 'agent');
-		} elseif (preg_match('#^/adm(in)?(/|\?|$)#', $path)) {
-			define('DP_INTERFACE', 'admin');
-		} elseif (preg_match('#^/logout/.+#', $path)) {
-			define('DP_INTERFACE', 'agent');
-		} elseif (preg_match('#^/billing(/|\?|$)#', $path)) {
-			define('DP_INTERFACE', 'billing');
-		} elseif (preg_match('#^/reports(/|\?|$)#', $path)) {
-			define('DP_INTERFACE', 'reports');
-		} elseif (preg_match('#^/api/v2(/|\?|$)#', $path)) {
+        $kernel_class = 'DeskPRO\\Kernel\\DpKernel';
+        if (preg_match('#^/agent(/|\?|$)#', $path)) {
+            define('DP_INTERFACE', 'agent');
+        } elseif (preg_match('#^/adm(in)?(/|\?|$)#', $path)) {
+            define('DP_INTERFACE', 'admin');
+        } elseif (preg_match('#^/logout/.+#', $path)) {
+            define('DP_INTERFACE', 'agent');
+        } elseif (preg_match('#^/billing(/|\?|$)#', $path)) {
+            define('DP_INTERFACE', 'billing');
+        } elseif (preg_match('#^/reports(/|\?|$)#', $path)) {
+            define('DP_INTERFACE', 'reports');
+        } elseif (preg_match('#^/api/v2(/|\?|$)#', $path)) {
             define('DP_INTERFACE', 'apiv2');
 
             self::bootstrapLib($debug);
             self::bootstrapEnv();
-            require_once DP_ROOT . "/sys/Kernel/ApiKernel.php";
+            require_once DP_ROOT.'/sys/Kernel/ApiKernel.php';
             $kernel = new ApiKernel($env, $debug);
 
             if ('dev' === $env) {
                 Debug::enable();
             }
 
-            $request = Request::createFromGlobals();
+            $request  = Request::createFromGlobals();
             $response = $kernel->handle($request);
             $response->send();
             $kernel->terminate($request, $response);
             exit;
-
         } elseif (preg_match('#^/api(/|\?|$)#', $path)) {
-			define('DP_INTERFACE', 'api');
-		} elseif (preg_match('#^/install(/|\?|$)#', $path)) {
-
+            define('DP_INTERFACE', 'api');
+        } elseif (preg_match('#^/install(/|\?|$)#', $path)) {
             if (dp_get_config('is_installed_flag')) {
-                echo deskpro_install_basic_error("The database details in <var>config.php</var> are invalid or the database is not a valid DeskPRO database.<br/><br/>If this is a mistake and you intend to create a new installation into a new database, you must first delete the file <var>data/is_installed.dat</var> to make the installer function again.", 'Error');
+                echo deskpro_install_basic_error('The database details in <var>config.php</var> are invalid or the database is not a valid DeskPRO database.<br/><br/>If this is a mistake and you intend to create a new installation into a new database, you must first delete the file <var>data/is_installed.dat</var> to make the installer function again.', 'Error');
                 exit;
             }
 
@@ -286,20 +284,20 @@ class KernelBooter
 
             // exit early on asset 404s
             if (preg_match('#^/web/#', $path)) {
-                header("HTTP/1.0 404 Not Found");
-                echo "File not found. (no asset)";
+                header('HTTP/1.0 404 Not Found');
+                echo 'File not found. (no asset)';
                 exit;
             }
 
             try {
                 self::bootstrapLib($debug);
                 self::bootstrapEnv();
-                require_once DP_ROOT."/sys/Kernel/PortalKernel.php";
+                require_once DP_ROOT.'/sys/Kernel/PortalKernel.php';
                 $kernel = new PortalKernel($env, $debug);
 
                 // add our reverse proxy
                 if (!isset($GLOBALS['DP_DISABLE_CACHE']) || !$GLOBALS['DP_DISABLE_CACHE']) {
-                    require_once DP_ROOT . "/src/DeskPRO/Bundle/PortalBundle/HttpCache/PortalHttpCache.php";
+                    require_once DP_ROOT.'/src/DeskPRO/Bundle/PortalBundle/HttpCache/PortalHttpCache.php';
                     $kernel = new PortalHttpCache($kernel);
                 }
 
@@ -496,10 +494,10 @@ class KernelBooter
                     $kernel = $get_kernel();
                     $kernel->boot();
                     $default   = App::getSetting('core.default_language_id');
-                    $languages = App::getDb()->fetchAllKeyed("
+                    $languages = App::getDb()->fetchAllKeyed('
                         SELECT *
                         FROM languages
-                    ", array(), 'id');
+                    ', array(), 'id');
                     if (isset($languages[$default])) {
                         $lang = $languages[$default];
                         unset($languages[$default]);
@@ -642,10 +640,10 @@ class KernelBooter
                 if ($slam_fp && @flock($slam_fp, \LOCK_EX)) {
                     // don't take any of the cookies - they'll be things like sessions etc
                     $store = array(
-                        'app_secret'   => App::$container ? App::$container->getSetting('core.app_secret') : null,
-                        'headers'      => $response->headers->all(),
-                        'content'      => $response->getContent(),
-                        'compressed'   => false,
+                        'app_secret' => App::$container ? App::$container->getSetting('core.app_secret') : null,
+                        'headers'    => $response->headers->all(),
+                        'content'    => $response->getContent(),
+                        'compressed' => false,
                     );
                     if (function_exists('gzcompress')) {
                         $store['content']    = gzcompress($store['content']);
@@ -669,7 +667,7 @@ class KernelBooter
             $message = 'Our helpdesk is temporarily offline for maintenance.';
         }
 
-        $content = str_replace('<!--DP_OFFLINE_CACHE_PAGE_NOTE-->', "<div id=\"dp-offline-cache-note\">".($message ? "$message<br /><br />" : '')."This is a cached page. Live pages will automatically return when the helpdesk comes back online.</div>", $content);
+        $content = str_replace('<!--DP_OFFLINE_CACHE_PAGE_NOTE-->', '<div id="dp-offline-cache-note">'.($message ? "$message<br /><br />" : '').'This is a cached page. Live pages will automatically return when the helpdesk comes back online.</div>', $content);
         $content = preg_replace(
             '/<!--DP_OFFLINE_CACHE_REMOVE_START-->.*<!--DP_OFFLINE_CACHE_REMOVE_END-->/siU',
             '',
@@ -735,7 +733,7 @@ class KernelBooter
                     self::bootstrapConfig();
 
                     if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
-                        $env = 'dev';
+                        $env   = 'dev';
                         $debug = true;
                     }
 
@@ -743,12 +741,12 @@ class KernelBooter
                     self::bootstrapEnv();
 
                     $input = new ArgvInput();
-                    $env = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'dev');
+                    $env   = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'dev');
                     $debug = getenv('SYMFONY_DEBUG') !== '0' && !$input->hasParameterOption(
                             array('--no-debug', '')
                         ) && $env !== 'prod';
 
-                    require_once DP_ROOT . '/sys/Kernel/PortalKernel.php';
+                    require_once DP_ROOT.'/sys/Kernel/PortalKernel.php';
                     $kernel = new PortalKernel($env, $debug);
 
                     $app = new Application($kernel);
@@ -762,7 +760,7 @@ class KernelBooter
                     self::bootstrapConfig();
 
                     if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
-                        $env = 'dev';
+                        $env   = 'dev';
                         $debug = true;
                     }
 
@@ -770,12 +768,12 @@ class KernelBooter
                     self::bootstrapEnv();
 
                     $input = new ArgvInput();
-                    $env = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'dev');
+                    $env   = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'dev');
                     $debug = getenv('SYMFONY_DEBUG') !== '0' && !$input->hasParameterOption(
                             array('--no-debug', '')
                         ) && $env !== 'prod';
 
-                    require_once DP_ROOT . '/sys/Kernel/ApiKernel.php';
+                    require_once DP_ROOT.'/sys/Kernel/ApiKernel.php';
                     $kernel = new ApiKernel($env, $debug);
 
                     $app = new Application($kernel);
@@ -820,7 +818,7 @@ class KernelBooter
                 $skip_lock_err = false;
                 if (file_exists($lock_file)) {
                     $t = (int) file_get_contents($lock_file);
-                    if ($t < time()-900) {
+                    if ($t < time() - 900) {
                         $skip_lock_err = true;
                         @unlink($lock_file);
                     }
@@ -888,7 +886,7 @@ class KernelBooter
         if ($check_twitter && !defined('DPC_IS_CLOUD') && \Application\DeskPRO\App::getConfig('enable_twitter')) {
             $twitter_ping = \Application\DeskPRO\App::getSetting('core.twitter_ping');
             if (!$twitter_ping || $twitter_ping < time() - 60) {
-                if (\Application\DeskPRO\App::getDb()->fetchColumn("SELECT COUNT(*) FROM twitter_accounts")) {
+                if (\Application\DeskPRO\App::getDb()->fetchColumn('SELECT COUNT(*) FROM twitter_accounts')) {
                     if (file_exists(dp_get_data_dir().'/twitter.pid')) {
                         $twitter_pid = intval(file_get_contents(dp_get_data_dir().'/twitter.pid'));
                     } else {
@@ -907,10 +905,10 @@ class KernelBooter
                             $file     = str_replace('/', '\\', $file);
 
                             if (class_exists('\COM', false)) {
-                                $shell = new \COM("WScript.Shell");
+                                $shell = new \COM('WScript.Shell');
                                 $shell->Run("$php_path $file", 0, false);
                             } else {
-                                pclose(popen("start \"dptwitter\" /MIN $php_path $file", "r"));
+                                pclose(popen("start \"dptwitter\" /MIN $php_path $file", 'r'));
                             }
                         } else {
                             exec("nohup $php_path $file > /dev/null 2> /dev/null &");
@@ -926,7 +924,7 @@ class KernelBooter
             if ($index_reset) {
                 try {
                     $id = mt_rand(10000, 99999);
-                    \Application\DeskPRO\App::getDb()->insertIgnore('settings', array('name'  => 'elastica.requires_reset_started', 'value' => $id));
+                    \Application\DeskPRO\App::getDb()->insertIgnore('settings', array('name' => 'elastica.requires_reset_started', 'value' => $id));
 
                     $file     = escapeshellarg(realpath(DP_ROOT.'/../cmd.php'));
                     $args     = 'dp:elastica:populate --auto-reset '.$id;
@@ -938,10 +936,10 @@ class KernelBooter
                         $file     = str_replace('/', '\\', $file);
 
                         if (class_exists('\COM', false)) {
-                            $shell = new \COM("WScript.Shell");
+                            $shell = new \COM('WScript.Shell');
                             $shell->Run("$php_path $file", 0, false);
                         } else {
-                            pclose(popen("start \"dpindexer\" /MIN $php_path $file $args", "r"));
+                            pclose(popen("start \"dpindexer\" /MIN $php_path $file $args", 'r'));
                         }
                     } else {
                         exec("nohup $php_path $file $args > /dev/null 2> /dev/null &");
@@ -974,9 +972,9 @@ class KernelBooter
     {
         define('DP_INTERFACE', 'cli');
         $GLOBALS['DP_IS_IN_CLI'] = true;
-        KernelBooter::bootstrapConfig();
-        KernelBooter::bootstrapLib(true);
-        KernelBooter::bootstrapEnv();
+        self::bootstrapConfig();
+        self::bootstrapLib(true);
+        self::bootstrapEnv();
     }
 
     /**
@@ -989,10 +987,10 @@ class KernelBooter
     {
         static::ensureCli();
 
-        echo "The version of DeskPRO you have downloaded does not handle importing.";
+        echo 'The version of DeskPRO you have downloaded does not handle importing.';
 
         echo "\n\nRefer to the DeskPRO knowledgebase for a link to the correct version:\n";
-        echo "http://support.deskpro.com/kb/articles/116-upgrading-to-deskpro-v4";
+        echo 'http://support.deskpro.com/kb/articles/116-upgrading-to-deskpro-v4';
 
         echo "\n\nYou should download the DeskPRO version mentioned in the above article\n";
         echo "and then try running this command again.\n";
@@ -1586,7 +1584,7 @@ HTML;
                         $lang = $codes[1];
                     }
                 } else {
-                    for ($i = 0, $max = count($codes); $i < $max; $i++) {
+                    for ($i = 0, $max = count($codes); $i < $max; ++$i) {
                         if ($i == 0) {
                             $lang = strtolower($codes[0]);
                         } else {
@@ -1669,9 +1667,9 @@ HTML;
             'response_code' => dp_pagelog_get('response_code') ?: '',
             'response_size' => dp_pagelog_get('response_size') ?: '',
             'query_count'   => dp_pagelog_get('query_count') ?: '',
-            'time_php'      => sprintf("%.4f", dp_pagelog_get('time_php') ?: 0.00),
-            'time_db'       => sprintf("%.4f", dp_pagelog_get('time_db') ?: 0.00),
-            'time_end'      => sprintf("%.4f", dp_pagelog_get('time_end') ?: 0.00),
+            'time_php'      => sprintf('%.4f', dp_pagelog_get('time_php') ?: 0.00),
+            'time_db'       => sprintf('%.4f', dp_pagelog_get('time_db') ?: 0.00),
+            'time_end'      => sprintf('%.4f', dp_pagelog_get('time_end') ?: 0.00),
         );
         $db->insert('log_request_stats', $row);
     }
@@ -1690,13 +1688,13 @@ HTML;
 
         $date_str = "{$m[1]}-{$m[2]}-{$m[3]} {$m[4]}";
 
-        $set_time = sprintf("%.4f", floatval($set_time));
+        $set_time = sprintf('%.4f', floatval($set_time));
 
-        App::getDb()->executeUpdate("
+        App::getDb()->executeUpdate('
             UPDATE log_request_stats
             SET time_userend = ?
             WHERE date_created BETWEEN ? AND ? AND request_id = ?
-        ", array(
+        ', array(
             $set_time,
             "$date_str:00:00",
             "$date_str:59:59",
@@ -1839,9 +1837,9 @@ HTML;
             }
 
             if (is_file(dp_get_data_dir().'/helpdesk-offline.trigger')) {
-                $content = KernelBooter::prepareCachedOutputForOffline($res['content']);
+                $content = self::prepareCachedOutputForOffline($res['content']);
             } else {
-                $content = KernelBooter::prepareCachedOutput($res);
+                $content = self::prepareCachedOutput($res);
             }
             echo $content;
 
@@ -1859,7 +1857,7 @@ HTML;
                     ).'://'.self::getHttpHost());
 
                 $time = sprintf('%.4f', microtime(true) - DP_START_TIME);
-                fwrite($fp, "[".gmdate('Y-m-d H:i:s')."] $scheme_host$request_uri (time: $time)\n");
+                fwrite($fp, '['.gmdate('Y-m-d H:i:s')."] $scheme_host$request_uri (time: $time)\n");
                 fclose($fp);
             }
 
@@ -1870,4 +1868,3 @@ HTML;
     }
     /**#@-*/
 }
-

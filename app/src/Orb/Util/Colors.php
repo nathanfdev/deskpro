@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Orb\Util;
 
 class Colors
@@ -51,7 +51,7 @@ class Colors
 
         $segs = array();
         $tmp  = 0;
-        for ($x = 0; $x < $count; $x++) {
+        for ($x = 0; $x < $count; ++$x) {
             $tmp += $step;
             $rgb    = \Orb\Util\Colors::getColorFromValue($tmp);
             $segs[] = \Orb\Util\Colors::rgbToHexcode($rgb);
@@ -86,13 +86,13 @@ class Colors
         $light = 100 * $value;
 
         if ($value <= 0.25) {
-            $i = array($light, $sat, round($sat*($value)/$a));
+            $i = array($light, $sat, round($sat * ($value) / $a));
         } elseif ($value <= 0.5) {
-            $i = array(round($sat-$sat*($value-0.25)/$a), $light, $sat);
+            $i = array(round($sat - $sat * ($value - 0.25) / $a), $light, $sat);
         } elseif ($value <= 0.75) {
-            $i = array($sat, round($sat*($value-0.5)/$a), $light);
+            $i = array($sat, round($sat * ($value - 0.5) / $a), $light);
         } else {
-            $i = array($sat, round($sat-$sat*($value-0.75)/$a), $light);
+            $i = array($sat, round($sat - $sat * ($value - 0.75) / $a), $light);
         }
 
         $rgb = array(
@@ -121,7 +121,7 @@ class Colors
         $g = dechex($g < 0 ? 0 : ($g > 255 ? 255 : $g));
         $b = dechex($b < 0 ? 0 : ($b > 255 ? 255 : $b));
 
-        $color  = (strlen($r) < 2 ? '0' : '').$r;
+        $color = (strlen($r) < 2 ? '0' : '').$r;
         $color .= (strlen($g) < 2 ? '0' : '').$g;
         $color .= (strlen($b) < 2 ? '0' : '').$b;
 
@@ -137,7 +137,7 @@ class Colors
      */
     public static function hex2rgb($hex)
     {
-        $hex = preg_replace("/[^0-9A-Fa-f]/", '', $hex);
+        $hex = preg_replace('/[^0-9A-Fa-f]/', '', $hex);
         $rgb = array();
         if (strlen($hex) == 6) {
             $color_val    = hexdec($hex);

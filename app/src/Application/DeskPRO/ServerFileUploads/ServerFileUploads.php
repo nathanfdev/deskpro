@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\ServerFileUploads;
 
 use Application\DeskPRO\App;
@@ -129,12 +129,12 @@ class ServerFileUploads
                 $count_done = 0;
             } else {
                 $count_done = App::getDb()->fetchColumn(
-                    "SELECT COUNT(*) FROM blobs WHERE id < ?",
+                    'SELECT COUNT(*) FROM blobs WHERE id < ?',
                     array($moving_id)
                 );
             }
 
-            $count_todo = App::getDb()->fetchColumn("SELECT COUNT(*) FROM blobs", array($moving_id));
+            $count_todo = App::getDb()->fetchColumn('SELECT COUNT(*) FROM blobs', array($moving_id));
 
             if (!$count_todo) {
                 $count_todo = 1;
@@ -144,10 +144,10 @@ class ServerFileUploads
             $count_percentage = floor(($count_done / $count_todo) * 100);
         } else {
             $count_done = $count_todo = $count_left = $count_percentage = 0;
-            $count_todo = App::getDb()->fetchColumn("SELECT COUNT(*) FROM blobs");
+            $count_todo = App::getDb()->fetchColumn('SELECT COUNT(*) FROM blobs');
         }
 
-        $total_size          = App::getDb()->fetchColumn("SELECT SUM(filesize) FROM blobs");
+        $total_size          = App::getDb()->fetchColumn('SELECT SUM(filesize) FROM blobs');
         $total_size_readable = Numbers::filesizeDisplay($total_size);
 
         return array(
@@ -276,7 +276,7 @@ class ServerFileUploads
         $to_method = App::$container->getSettingsHandler()->get('core.filestorage_method');
 
         if (!empty($transfer['id'])) {
-            $status  = 'progress';
+            $status = 'progress';
 
             switch ($to_method) {
                 case 'db': $message = 'Currently transferring files to the database'; break;

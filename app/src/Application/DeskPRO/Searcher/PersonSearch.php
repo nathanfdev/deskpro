@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
@@ -138,7 +138,7 @@ class PersonSearch extends SearcherAbstract
      */
     public function getSql()
     {
-        $sql = "SELECT people.id FROM people ";
+        $sql = 'SELECT people.id FROM people ';
 
         $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
@@ -149,7 +149,7 @@ class PersonSearch extends SearcherAbstract
 
         foreach ($parts['joins'] as $j) {
             if (is_array($j)) {
-                $sql .= $j[1]." ";
+                $sql .= $j[1].' ';
             } else {
                 $sql .= "LEFT JOIN $j ON $j.person_id = people.id ";
             }
@@ -165,15 +165,15 @@ class PersonSearch extends SearcherAbstract
         #------------------------------
 
         if ($parts['wheres']) {
-            $sql .= "WHERE ";
-            $sql .= implode(" AND ", $parts['wheres']);
+            $sql .= 'WHERE ';
+            $sql .= implode(' AND ', $parts['wheres']);
         }
 
-        $sql .= " GROUP BY people.id ";
+        $sql .= ' GROUP BY people.id ';
         if ($order_by) {
             $sql .= " ORDER BY $order_by ";
         }
-        $sql .= " LIMIT 10000";
+        $sql .= ' LIMIT 10000';
 
         return $sql;
     }
@@ -218,21 +218,21 @@ class PersonSearch extends SearcherAbstract
 
             case 'people.email':
                 $order_by = array(
-                    "LEFT JOIN people_emails AS sort_table ON (sort_table.id = people.primary_email_id)",
+                    'LEFT JOIN people_emails AS sort_table ON (sort_table.id = people.primary_email_id)',
                     "sort_table.email $dir",
                 );
                 break;
 
             case 'people.organization':
                 $order_by = array(
-                    "LEFT JOIN organizations AS sort_table ON (sort_table.id = people.organization_id)",
+                    'LEFT JOIN organizations AS sort_table ON (sort_table.id = people.organization_id)',
                     "sort_table.name $dir",
                 );
                 break;
 
             case 'people.num_tickets':
                 $order_by = array(
-                    "LEFT JOIN tickets AS sort_table ON (sort_table.person_id = people.id)",
+                    'LEFT JOIN tickets AS sort_table ON (sort_table.person_id = people.id)',
                     "COUNT(sort_table.id) $dir, people.id DESC",
                 );
                 break;
@@ -339,9 +339,9 @@ class PersonSearch extends SearcherAbstract
                                 }
 
                                 if ($op == self::OP_NOT) {
-                                    $wheres[] = "$people_table.id NOT IN (".implode(',', $ids).")";
+                                    $wheres[] = "$people_table.id NOT IN (".implode(',', $ids).')';
                                 } else {
-                                    $wheres[] = "$people_table.id IN (".implode(',', $ids).")";
+                                    $wheres[] = "$people_table.id IN (".implode(',', $ids).')';
                                 }
                         }
                     } else {
@@ -369,20 +369,20 @@ class PersonSearch extends SearcherAbstract
                     if (!$choice) {
                         $choice = array(0);
                     }
-                    $person_ids = App::getDbRead('search.filter.people')->fetchAllCol("
+                    $person_ids = App::getDbRead('search.filter.people')->fetchAllCol('
                         SELECT person_id
                         FROM person2usergroups
                         WHERE usergroup_id IN (?)
                         LIMIT 1001
-                    ", array($choice), array(Connection::PARAM_INT_ARRAY));
+                    ', array($choice), array(Connection::PARAM_INT_ARRAY));
                     if (!$person_ids) {
                         $person_ids = array(0);
                     }
-                    $org_ids = App::getDbRead('search.filter.people')->fetchAllCol("
+                    $org_ids = App::getDbRead('search.filter.people')->fetchAllCol('
                         SELECT organization_id
                         FROM organization2usergroups
                         WHERE usergroup_id IN (?)
-                    ", array($choice), array(Connection::PARAM_INT_ARRAY));
+                    ', array($choice), array(Connection::PARAM_INT_ARRAY));
                     if (count($person_ids) == 1001) {
                         // too many, need to do the join method
                         $joins[] = array(
@@ -390,15 +390,15 @@ class PersonSearch extends SearcherAbstract
                             "LEFT JOIN person2usergroups AS $join_name ON ($join_name.person_id = $people_table.id)",
                         );
                         if ($org_ids) {
-                            $wheres[] = '('.$this->_choiceMatch("$join_name.usergroup_id", $op, $choice)." OR $people_table.organization_id IN (".implode(',', $org_ids)."))";
+                            $wheres[] = '('.$this->_choiceMatch("$join_name.usergroup_id", $op, $choice)." OR $people_table.organization_id IN (".implode(',', $org_ids).'))';
                         } else {
                             $wheres[] = $this->_choiceMatch("$join_name.usergroup_id", $op, $choice);
                         }
                     } else {
                         if ($org_ids) {
-                            $wheres[] = "($people_table.id IN (".implode(',', $person_ids).") OR $people_table.organization_id IN (".implode(',', $org_ids)."))";
+                            $wheres[] = "($people_table.id IN (".implode(',', $person_ids).") OR $people_table.organization_id IN (".implode(',', $org_ids).'))';
                         } else {
-                            $wheres[] = "$people_table.id IN (".implode(',', $person_ids).")";
+                            $wheres[] = "$people_table.id IN (".implode(',', $person_ids).')';
                         }
                     }
 
@@ -457,11 +457,11 @@ class PersonSearch extends SearcherAbstract
 
                 case self::TERM_NAME:
                     $w = '(';
-                    $w .= $this->_stringMatch("people.name", $op, $choice);
-                    $w .= " OR ";
-                    $w .= $this->_stringMatch("people.first_name", $op, $choice);
-                    $w .= " OR ";
-                    $w .= $this->_stringMatch("people.last_name", $op, $choice);
+                    $w .= $this->_stringMatch('people.name', $op, $choice);
+                    $w .= ' OR ';
+                    $w .= $this->_stringMatch('people.first_name', $op, $choice);
+                    $w .= ' OR ';
+                    $w .= $this->_stringMatch('people.last_name', $op, $choice);
                     $w .= ')';
 
                     $wheres[] = $w;
@@ -484,7 +484,7 @@ class PersonSearch extends SearcherAbstract
 
                 case self::TERM_ALPHA:
 
-                    $wheres[] = $this->_stringMatch("people.last_name", $op, $choice, true, true);
+                    $wheres[] = $this->_stringMatch('people.last_name', $op, $choice, true, true);
 
                     break;
 
@@ -571,7 +571,7 @@ class PersonSearch extends SearcherAbstract
                         case self::OP_NOT:
                             $joins[] = array(
                                 'labels_people',
-                                "LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id AND $join_name.label = ".$db->quote($choice).")",
+                                "LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id AND $join_name.label = ".$db->quote($choice).')',
                             );
                             $wheres[] = "$join_name.person_id IS NULL";
                             break;
@@ -662,7 +662,7 @@ class PersonSearch extends SearcherAbstract
                                 case self::OP_NOT:
                                     $w = "$field != ".$db->quote($choice);
 
-                                    if ($choice != "") {
+                                    if ($choice != '') {
                                         $w = "($w OR $field IS NULL)";
                                     }
 
@@ -799,9 +799,9 @@ class PersonSearch extends SearcherAbstract
 
         if ($this->mode != self::MODE_ANY) {
             if ($this->mode == self::MODE_AGENT) {
-                $wheres[] = "people.is_agent = 1";
+                $wheres[] = 'people.is_agent = 1';
             } else {
-                $wheres[] = "people.is_agent = 0";
+                $wheres[] = 'people.is_agent = 0';
             }
         }
 

@@ -1,0 +1,41 @@
+#!/usr/bin/env node
+var fs = require("fs");
+var path = require("path");
+
+console.info("Setting up git hooks...");
+
+var source_script = path.resolve(__dirname, 'pre-commit');
+var dest_script = path.resolve(__dirname, '../../../.git/hooks/pre-commit');
+
+copyFile(source_script, dest_script, function(err) {
+  if (err) console.error(err);
+});
+
+fs.chmodSync(dest_script, 0755);
+
+console.info("Done");
+
+
+function copyFile(source, target, cb) {
+  var cbCalled = false;
+
+  var rd = fs.createReadStream(source);
+  rd.on("error", function (err) {
+    done(err);
+  });
+  var wr = fs.createWriteStream(target);
+  wr.on("error", function (err) {
+    done(err);
+  });
+  wr.on("close", function (ex) {
+    done();
+  });
+  rd.pipe(wr);
+
+  function done(err) {
+    if (!cbCalled) {
+      cb(err);
+      cbCalled = true;
+    }
+  }
+}

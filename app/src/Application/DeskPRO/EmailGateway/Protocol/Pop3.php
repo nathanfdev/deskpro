@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\EmailGateway\Protocol;
 
 use Orb\Log\Loggable;
@@ -74,8 +74,8 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
      * @param bool   $ssl
      *
      * @throws \Zend\Mail\Protocol\Exception\RuntimeException
-     * @return string
      *
+     * @return string
      */
     public function connect($host, $port = null, $ssl = false)
     {
@@ -89,7 +89,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
             $port = $ssl == 'SSL' ? 995 : 110;
         }
 
-        $errno        =  0;
+        $errno        = 0;
         $errstr       = '';
         $this->socket = @fsockopen($host, $port, $errno, $errstr, $this->connect_timeout);
         if (!$this->socket) {
@@ -172,9 +172,9 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
     {
         if ($this->logger) {
             if (strpos($request, 'PASS ') === 0) {
-                $this->logger->logDebug("==> PASS xxxxxx");
+                $this->logger->logDebug('==> PASS xxxxxx');
             } else {
-                $this->logger->logDebug("==> ".$request);
+                $this->logger->logDebug('==> '.$request);
             }
         }
 
@@ -185,15 +185,15 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
      * @param bool $multiline
      *
      * @throws \Zend\Mail\Protocol\Exception\RuntimeException
-     * @return string
      *
+     * @return string
      */
     public function readResponse($multiline = false)
     {
         $result = @fgets($this->socket);
         if (!is_string($result)) {
             if ($this->logger) {
-                $this->logger->logDebug("<== read failed - connection closed?");
+                $this->logger->logDebug('<== read failed - connection closed?');
             }
             throw new Exception\RuntimeException('read failed - connection closed?');
         }
@@ -241,22 +241,22 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
      * @param $stream
      *
      * @throws \Zend\Mail\Protocol\Exception\RuntimeException
-     * @return int
      *
+     * @return int
      */
     public function readResponseToStream($stream)
     {
         $result = @fgets($this->socket);
         if (!is_string($result)) {
             if ($this->logger) {
-                $this->logger->logDebug("<== read failed - connection closed?");
+                $this->logger->logDebug('<== read failed - connection closed?');
             }
             throw new Exception\RuntimeException('read failed - connection closed?');
         }
 
         $result = trim($result);
         if (strpos($result, ' ')) {
-            list($status,) = explode(' ', $result, 2);
+            list($status) = explode(' ', $result, 2);
         } else {
             $status = $result;
         }

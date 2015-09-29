@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\Entity\TicketTrigger;
@@ -70,17 +70,17 @@ class Build1400056733 extends AbstractBuild
 
         $did_do = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1411577850 AND name = 'did_pre_alter'");
         if (!$did_do) {
-            $this->out("Adding avatar feilds to temas and departments");
-            $this->execMutateSql("ALTER TABLE agent_teams ADD avatar_blob_id INT DEFAULT NULL");
-            $this->execMutateSql("ALTER TABLE agent_teams ADD CONSTRAINT FK_AF6C0A203B50817B FOREIGN KEY (avatar_blob_id) REFERENCES blobs (id) ON DELETE CASCADE");
-            $this->execMutateSql("CREATE INDEX IDX_AF6C0A203B50817B ON agent_teams (avatar_blob_id)");
-            $this->execMutateSql("ALTER TABLE departments ADD avatar_blob_id INT DEFAULT NULL");
-            $this->execMutateSql("ALTER TABLE departments ADD CONSTRAINT FK_16AEB8D43B50817B FOREIGN KEY (avatar_blob_id) REFERENCES blobs (id) ON DELETE CASCADE");
-            $this->execMutateSql("CREATE INDEX IDX_16AEB8D43B50817B ON departments (avatar_blob_id)");
+            $this->out('Adding avatar feilds to temas and departments');
+            $this->execMutateSql('ALTER TABLE agent_teams ADD avatar_blob_id INT DEFAULT NULL');
+            $this->execMutateSql('ALTER TABLE agent_teams ADD CONSTRAINT FK_AF6C0A203B50817B FOREIGN KEY (avatar_blob_id) REFERENCES blobs (id) ON DELETE CASCADE');
+            $this->execMutateSql('CREATE INDEX IDX_AF6C0A203B50817B ON agent_teams (avatar_blob_id)');
+            $this->execMutateSql('ALTER TABLE departments ADD avatar_blob_id INT DEFAULT NULL');
+            $this->execMutateSql('ALTER TABLE departments ADD CONSTRAINT FK_16AEB8D43B50817B FOREIGN KEY (avatar_blob_id) REFERENCES blobs (id) ON DELETE CASCADE');
+            $this->execMutateSql('CREATE INDEX IDX_16AEB8D43B50817B ON departments (avatar_blob_id)');
             $this->container->getDb()->insertIgnore('install_data', array('build' => '1411577850', 'name' => 'did_pre_alter', 'data' => '1'));
         }
 
-        $this->out("Upgrading triggers");
+        $this->out('Upgrading triggers');
 
         $em = $this->container->getEm();
         $db = $this->container->getDb();
@@ -90,7 +90,7 @@ class Build1400056733 extends AbstractBuild
         # Install new default triggers
         #------------------------------
 
-        $this->out("Installing default triggers");
+        $this->out('Installing default triggers');
         $trigger_data = new TriggerData($this->container, new NullLogger());
         $trigger_data->runInstall();
 
@@ -103,7 +103,7 @@ class Build1400056733 extends AbstractBuild
             )
         ");
 
-        $this->out("Processing old triggers ...");
+        $this->out('Processing old triggers ...');
 
         #------------------------------
         # Install default triggers for deps
@@ -233,9 +233,9 @@ class Build1400056733 extends AbstractBuild
             if ($new_trigger) {
                 $this->container->getEm()->persist($new_trigger);
                 $this->container->getEm()->flush();
-                $this->out("-- Saved");
+                $this->out('-- Saved');
             } else {
-                $this->out("-- Skipped");
+                $this->out('-- Skipped');
             }
         }
     }
@@ -435,7 +435,7 @@ class Build1400056733 extends AbstractBuild
         }
 
         if (!count($actions_set)) {
-            $this->out("-- Skipping no-action trigger");
+            $this->out('-- Skipping no-action trigger');
 
             return;
         }
@@ -444,7 +444,7 @@ class Build1400056733 extends AbstractBuild
         # Create trigger object
         #------------------------------
 
-        $trigger->title      = $old_trigger['title'] ?: 'Trigger '.$old_trigger['id'];
+        $trigger->title = $old_trigger['title'] ?: 'Trigger '.$old_trigger['id'];
         if ($is_incomplete) {
             $trigger->title .= ' (REQUIRES REVIEW)';
         }

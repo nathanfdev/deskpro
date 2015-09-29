@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Exception\ValidationException;
@@ -42,7 +42,7 @@ use Orb\Util\Arrays;
 class FeedbackTypesController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
@@ -148,8 +148,8 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
         /*
          * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes
          */
-        $feedback_types  = $this->container->getSystemService('feedback_types');
-        $feedback_type   = $feedback_types->getById($id);
+        $feedback_types = $this->container->getSystemService('feedback_types');
+        $feedback_type  = $feedback_types->getById($id);
 
         if (!$feedback_type) {
             throw $this->createNotFoundException();
@@ -160,15 +160,15 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
 
         if (!$move_to_feedback_type) {
             throw ValidationException::create(
-                "feedback_type.remove.move_feedback_types",
-                "You must select a feedback type to move existing feedback into"
+                'feedback_type.remove.move_feedback_types',
+                'You must select a feedback type to move existing feedback into'
             );
         }
 
         if ($move_to_feedback_type->getId() == $feedback_type->getId()) {
             throw ValidationException::create(
-                "feedback_type.remove.move_feedback_types",
-                "You must choose a different feedback type"
+                'feedback_type.remove.move_feedback_types',
+                'You must choose a different feedback type'
             );
         }
 
@@ -178,7 +178,7 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
 
         try {
             $this->db->executeUpdate(
-                "UPDATE feedback SET category_id = ? WHERE category_id = ?",
+                'UPDATE feedback SET category_id = ? WHERE category_id = ?',
                 array($move_to, $old_id)
             );
 

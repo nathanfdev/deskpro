@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * Orb.
  */
-
 namespace Orb\Doctrine\Common\Cache;
 
 use Doctrine\DBAL\Connection;
@@ -98,7 +98,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
      */
     public function initTable()
     {
-        $this->db->exec("
+        $this->db->exec('
             CREATE TABLE `cache` (
               `id` varbinary(255) NOT NULL,
               `data` longblob NOT NULL,
@@ -106,7 +106,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
               INDEX date_expire_idx (date_expire),
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-        ");
+        ');
     }
 
     /**
@@ -212,11 +212,11 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 
         $date = date('Y-m-d H:i:s');
         try {
-            $records = $this->db->fetchAll("
+            $records = $this->db->fetchAll('
                 SELECT id, data
                 FROM cache
                 WHERE id LIKE ? AND (date_expire IS NULL OR date_expire > ?)
-            ", array($prefix_like, $date));
+            ', array($prefix_like, $date));
         } catch (\Exception $e) {
             $records = array();
             if (!$this->silence_exceptions) {
@@ -240,10 +240,10 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         $prefix_like = "$prefix%";
 
         try {
-            $this->db->fetchAll("
+            $this->db->fetchAll('
                 DELETE FROM cache
                 WHERE id LIKE ?
-            ", array($prefix_like));
+            ', array($prefix_like));
         } catch (\Exception $e) {
             if (!$this->silence_exceptions) {
                 throw $e;
@@ -291,11 +291,11 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
             $date = date('Y-m-d H:i:s');
 
             try {
-                $record = $this->db->fetchAssoc("
+                $record = $this->db->fetchAssoc('
                     SELECT data
                     FROM cache
                     WHERE id = ? AND (date_expire IS NULL OR date_expire > ?)
-                ", array($prefix_id, $date));
+                ', array($prefix_id, $date));
             } catch (\Exception $e) {
                 $record = null;
                 if (!$this->silence_exceptions) {
@@ -325,7 +325,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
      *
      * @param string $id cache id The cache id of the entry to check for.
      *
-     * @return boolean TRUE if a cache entry exists for the given cache id, FALSE otherwise.
+     * @return bool TRUE if a cache entry exists for the given cache id, FALSE otherwise.
      */
     public function contains($id)
     {
@@ -359,7 +359,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
      * @param string $data     The cache entry/data.
      * @param int    $lifeTime The lifetime. If != 0, sets a specific lifetime for this cache entry (0 => infinite lifeTime).
      *
-     * @return boolean TRUE if the entry was successfully stored in the cache, FALSE otherwise.
+     * @return bool TRUE if the entry was successfully stored in the cache, FALSE otherwise.
      */
     public function save($id, $data, $lifeTime = 0)
     {
@@ -367,7 +367,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 
         $date = null;
         if ($lifeTime) {
-            $date = date('Y-m-d H:i:s', time()+$lifeTime);
+            $date = date('Y-m-d H:i:s', time() + $lifeTime);
         }
 
         if (!is_scalar($data)) {
@@ -375,9 +375,9 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         }
 
         try {
-            $this->db->executeUpdate("
+            $this->db->executeUpdate('
                 REPLACE INTO cache SET id = ?, data = ?, date_expire = ?
-            ", array($prefix_id, $data, $date));
+            ', array($prefix_id, $data, $date));
         } catch (\Exception $e) {
             if (!$this->silence_exceptions) {
                 throw $e;
@@ -394,17 +394,17 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
      *
      * @param string $id cache id
      *
-     * @return boolean TRUE if the cache entry was successfully deleted, FALSE otherwise.
+     * @return bool TRUE if the cache entry was successfully deleted, FALSE otherwise.
      */
     public function delete($id)
     {
         $prefix_id = $this->id_prefix.$id;
 
         try {
-            $this->db->executeUpdate("
+            $this->db->executeUpdate('
                 DELETE FROM cache
                 WHERE id = ?
-            ", array($prefix_id));
+            ', array($prefix_id));
         } catch (\Exception $e) {
             if (!$this->silence_exceptions) {
                 throw $e;
@@ -424,10 +424,10 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         $prefix_like = $this->id_prefix.'%';
 
         try {
-            $this->db->executeUpdate("
+            $this->db->executeUpdate('
                 DELETE FROM cache
                 WHERE id LIKE ?
-            ", array($prefix_like));
+            ', array($prefix_like));
         } catch (\Exception $e) {
             if (!$this->silence_exceptions) {
                 throw $e;

@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TicketTrigger;
@@ -40,7 +40,7 @@ use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Operations about Ticket triggers
+ * Operations about Ticket triggers.
  *
  * SWG\Resource(
  * 	resourcePath="/ticket_triggers",
@@ -51,7 +51,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class TicketTriggersController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
@@ -64,6 +64,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 
     /**
      * @param string|null $type
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      *
      *
@@ -86,7 +87,6 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
      *      )
      *  )
      * )
-     *
      */
     public function listAction($type = null)
     {
@@ -101,7 +101,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
         $res['triggers'] = $data;
 
         if ($type == 'all' || $type == 'newticket' || $type == 'update') {
-            $res['department_triggers_enabled'] = false;
+            $res['department_triggers_enabled']   = false;
             $res['emailaccount_triggers_enabled'] = false;
             foreach ($triggers as $t) {
                 if ($t->department && $t->is_enabled) {
@@ -121,7 +121,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
     ####################################################################################################################
 
     /**
-     * @param int $id
+     * @param int         $id
      * @param string|null $special_type
      *
      * @return \Symfony\Component\HttpFoundation\Response
@@ -154,7 +154,6 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
      *      )
      *  )
      * )
-     *
      */
     public function getAction($id, $special_type = null)
     {
@@ -204,15 +203,15 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
                 );
 
                 if (!isset($satisfactions[$id])) {
-                    throw new NotFoundHttpException;
+                    throw new NotFoundHttpException();
                 }
 
-                $name = SpecialTriggerEdit::TYPE_SATISFACTION . '_' . $satisfactions[$id];
+                $name    = SpecialTriggerEdit::TYPE_SATISFACTION.'_'.$satisfactions[$id];
                 $trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(array('sys_name' => $name));
                 if (!$trigger) {
-                    $trigger = new TicketTrigger();
+                    $trigger             = new TicketTrigger();
                     $trigger->is_enabled = false;
-                    $edit = SpecialTriggerEdit::createWithSatisfaction($satisfactions[$id]);
+                    $edit                = SpecialTriggerEdit::createWithSatisfaction($satisfactions[$id]);
                     $edit->applyToTrigger($trigger);
                     $this->em->persist($trigger);
                     $this->em->flush($trigger);
@@ -238,8 +237,8 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
     # save
     ####################################################################################################################
 
-	/**
-     * @param int $id
+    /**
+     * @param int         $id
      * @param string|null $special_type
      *
      * @return \Symfony\Component\HttpFoundation\Response
@@ -374,7 +373,6 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
      *      )
      *  )
      * )
-     *
      */
     public function saveAction($id, $special_type = null)
     {
@@ -409,15 +407,15 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
                     );
 
                     if (!isset($satisfactions[$id])) {
-                        throw new NotFoundHttpException;
+                        throw new NotFoundHttpException();
                     }
 
-                    $name = SpecialTriggerEdit::TYPE_SATISFACTION . '_' . $satisfactions[$id];
+                    $name    = SpecialTriggerEdit::TYPE_SATISFACTION.'_'.$satisfactions[$id];
                     $trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(array('sys_name' => $name));
                     if (!$trigger) {
-                        $trigger = new TicketTrigger();
+                        $trigger             = new TicketTrigger();
                         $trigger->is_enabled = false;
-                        $edit = SpecialTriggerEdit::createWithSatisfaction($satisfactions[$id]);
+                        $edit                = SpecialTriggerEdit::createWithSatisfaction($satisfactions[$id]);
                         $edit->applyToTrigger($trigger);
                         $this->em->persist($trigger);
                         $this->em->flush($trigger);
@@ -559,22 +557,22 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
         if ($is_new) {
             $ro = 0;
             if ($trigger->department) {
-                $ro = $this->db->fetchColumn("SELECT run_order FROM ticket_triggers WHERE department_id IS NOT NULL LIMIT 1");
+                $ro = $this->db->fetchColumn('SELECT run_order FROM ticket_triggers WHERE department_id IS NOT NULL LIMIT 1');
             } elseif ($trigger->email_account) {
-                $ro = $this->db->fetchColumn("SELECT run_order FROM ticket_triggers WHERE email_account_id IS NOT NULL LIMIT 1");
+                $ro = $this->db->fetchColumn('SELECT run_order FROM ticket_triggers WHERE email_account_id IS NOT NULL LIMIT 1');
             }
 
             if (!$ro) {
-                $ro = $this->db->fetchColumn("SELECT run_order FROM ticket_triggers ORDER BY run_order DESC");
+                $ro = $this->db->fetchColumn('SELECT run_order FROM ticket_triggers ORDER BY run_order DESC');
             }
 
             $trigger->run_order = $ro + 10;
         }
 
         if ($trigger->department) {
-            $trigger->is_enabled = (bool) $this->db->fetchColumn("SELECT id FROM ticket_triggers WHERE department_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?", array($trigger->event_trigger));
+            $trigger->is_enabled = (bool) $this->db->fetchColumn('SELECT id FROM ticket_triggers WHERE department_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?', array($trigger->event_trigger));
         } elseif ($trigger->email_account) {
-            $trigger->is_enabled = (bool) $this->db->fetchColumn("SELECT id FROM ticket_triggers WHERE email_account_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?", array($trigger->event_trigger));
+            $trigger->is_enabled = (bool) $this->db->fetchColumn('SELECT id FROM ticket_triggers WHERE email_account_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?', array($trigger->event_trigger));
         }
 
         $this->em->persist($trigger);
@@ -582,17 +580,17 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 
         // Sanity check
         if ($trigger->department) {
-            $this->db->executeUpdate("
+            $this->db->executeUpdate('
                 DELETE FROM ticket_triggers
                 WHERE department_id = ? AND event_trigger = ? AND id != ?
-            ", array($trigger->department->id, $trigger->event_trigger, $trigger->id));
+            ', array($trigger->department->id, $trigger->event_trigger, $trigger->id));
         }
         if ($trigger->email_account) {
-            $this->db->executeUpdate("
+            $this->db->executeUpdate('
                 DELETE FROM ticket_triggers
                 WHERE email_account_id = ?
                 AND id != ?
-            ", array($trigger->email_account->id, $trigger->id));
+            ', array($trigger->email_account->id, $trigger->id));
         }
 
         $ret['trigger_id'] = $trigger->id;
@@ -604,9 +602,9 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
     # delete
     ####################################################################################################################
 
-	/**
+    /**
      * @param $id
-     * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
@@ -629,6 +627,8 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
      *      )
      *  )
      * )
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function deleteAction($id)
     {
@@ -649,13 +649,16 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
     # toggle-trigger
     ####################################################################################################################
 
-	/**
+    /**
      * @param $id
      * @param $is_enabled
-     * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
      *
      *
      * SWG\Api(
@@ -695,7 +698,6 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
      *      )
      *  )
      * )
-     *
      */
     public function toggleTriggerAction($id, $is_enabled)
     {
@@ -715,11 +717,14 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
     # toggle-trigger-group
     ####################################################################################################################
 
-	/**
+    /**
      * @param $special_type
      * @param $is_enabled - defined by route
-     * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @throws \Exception
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
      *
      *
      * SWG\Api(
@@ -799,9 +804,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
     # save-run-order
     ####################################################################################################################
 
-	/**
-     *
-     *
+    /**
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * SWG\Api(
@@ -835,7 +838,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
     # get-custom-actions
     ####################################################################################################################
 
-	/**
+    /**
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * SWG\Api(

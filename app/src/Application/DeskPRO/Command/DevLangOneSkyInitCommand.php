@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Commands
  */
-
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\Languages\LangPackInfo;
@@ -70,7 +70,7 @@ class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
         #------------------------------
 
         if (!$input->getOption('skip-base-lang')) {
-            $output->writeln("<info>Uploading base English</info>");
+            $output->writeln('<info>Uploading base English</info>');
 
             foreach ($lang_packs->getDefaultCategories('user') as $file) {
                 $file .= '.php';
@@ -102,7 +102,7 @@ class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
         #------------------------------
 
         if (!$input->getOption('skip-other-langs')) {
-            $output->writeln("<info>Uploading other languages</info>");
+            $output->writeln('<info>Uploading other languages</info>');
 
             foreach ($lang_packs->getLangIds() as $lid) {
                 if ($lid == 'default') {
@@ -141,7 +141,7 @@ class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
                         echo " Done\n";
 
                         if (count($requests) == 100) {
-                            echo "Sending ...";
+                            echo 'Sending ...';
                             $this->_getHttpClient()->send($requests);
                             $requests = array();
                             echo "Done\n";
@@ -149,7 +149,7 @@ class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
                     }
 
                     if (count($requests)) {
-                        echo "Sending ...";
+                        echo 'Sending ...';
                         $this->_getHttpClient()->send($requests);
                         echo "Done\n";
                     }
@@ -164,8 +164,8 @@ class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
      * @param string $path
      *
      * @throws \RuntimeException
-     * @return array
      *
+     * @return array
      */
     private function _restGet($path, array $vars = array())
     {
@@ -188,8 +188,8 @@ class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
      * @param string $path
      *
      * @throws \RuntimeException
-     * @return array
      *
+     * @return array
      */
     private function _restPost($path, array $post_vars = array(), $return = false)
     {

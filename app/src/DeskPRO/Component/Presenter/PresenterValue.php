@@ -1,5 +1,31 @@
 <?php
 
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 namespace DeskPRO\Component\Presenter;
 
 use Orb\Util\Strings;
@@ -8,28 +34,30 @@ abstract class PresenterValue implements \ArrayAccess
 {
     private $value = array();
 
-    private $id_normal_cache          = array();
-    private $id_getter_cache          = array();
-    private $id_target_getter_cache   = array();
-    private $cache_field_names        = array();
-    private $cache_field_values       = array();
+    private $id_normal_cache        = array();
+    private $id_getter_cache        = array();
+    private $id_target_getter_cache = array();
+    private $cache_field_names      = array();
+    private $cache_field_values     = array();
 
-    private $passthrough_whitelist    = array();
-    private $passthrough_blacklist    = array();
+    private $passthrough_whitelist = array();
+    private $passthrough_blacklist = array();
 
-    private $getter_passthrough       = null;
-    private $call_passthrough         = null;
-    private $array_passthrough        = null;
+    private $getter_passthrough = null;
+    private $call_passthrough   = null;
+    private $array_passthrough  = null;
 
     /**
      * Sets the value this presenter wraps.
      *
      * @param mixed $value
+     *
      * @return $this
      */
     protected function setPresenterValue($value)
     {
         $this->value = $value;
+
         return $this;
     }
 
@@ -37,6 +65,7 @@ abstract class PresenterValue implements \ArrayAccess
      * Sets which fields from getters that should be cached instead of being re-called.
      *
      * @param $fields...
+     *
      * @return $this
      */
     protected function cacheFields($fields)
@@ -58,6 +87,7 @@ abstract class PresenterValue implements \ArrayAccess
      * Sets fields that should be passed-through to the back-end value if no local getter is set.
      *
      * @param $fields...
+     *
      * @return $this
      */
     protected function passthroughFields($fields)
@@ -73,16 +103,16 @@ abstract class PresenterValue implements \ArrayAccess
                     if ($id == '*') {
                         $this->passthrough_blacklist['*'] = true;
                     } else {
-                        $id2 = $this->normalizeId($id);
-                        $this->passthrough_blacklist[$id] = true;
+                        $id2                               = $this->normalizeId($id);
+                        $this->passthrough_blacklist[$id]  = true;
                         $this->passthrough_blacklist[$id2] = true;
                     }
                 } else {
                     if ($id == '*') {
                         $this->passthrough_whitelist['*'] = true;
                     } else {
-                        $id2 = $this->normalizeId($id);
-                        $this->passthrough_whitelist[$id] = true;
+                        $id2                               = $this->normalizeId($id);
+                        $this->passthrough_whitelist[$id]  = true;
                         $this->passthrough_whitelist[$id2] = true;
                     }
                 }
@@ -98,6 +128,7 @@ abstract class PresenterValue implements \ArrayAccess
     protected function enableGetterPassthrough()
     {
         $this->getter_passthrough = true;
+
         return $this;
     }
 
@@ -109,6 +140,7 @@ abstract class PresenterValue implements \ArrayAccess
     protected function enableCallPassthrough()
     {
         $this->call_passthrough = true;
+
         return $this;
     }
 
@@ -120,6 +152,7 @@ abstract class PresenterValue implements \ArrayAccess
     protected function enableArrayPassthrough()
     {
         $this->array_passthrough = true;
+
         return $this;
     }
 
@@ -128,19 +161,22 @@ abstract class PresenterValue implements \ArrayAccess
         $id = $this->normalizeId($id);
         if (isset($this->id_getter_cache[$id])) {
             if ($this->id_getter_cache[$id] === false) {
-                return null;
+                return;
             }
+
             return $this->id_getter_cache[$id];
         }
 
-        $name = 'present' . ucfirst(Strings::underscoreToCamelCase($id));
+        $name = 'present'.ucfirst(Strings::underscoreToCamelCase($id));
         if (method_exists($this, $name)) {
             $this->id_getter_cache[$id] = $name;
+
             return $name;
         }
 
         $this->id_getter_cache[$id] = false;
-        return null;
+
+        return;
     }
 
     private function getTargetGetter($id)
@@ -148,24 +184,27 @@ abstract class PresenterValue implements \ArrayAccess
         $id = $this->normalizeId($id);
         if (isset($this->id_target_getter_cache[$id])) {
             if ($this->id_target_getter_cache[$id] === false) {
-                return null;
+                return;
             }
+
             return $this->id_target_getter_cache[$id];
         }
 
         if (substr($id, 0, 2) !== 'is') {
-            $name = 'get' . ucfirst(Strings::underscoreToCamelCase($id));
+            $name = 'get'.ucfirst(Strings::underscoreToCamelCase($id));
         } else {
             $name = Strings::underscoreToCamelCase($id);
         }
 
         if (method_exists($this->value, $name)) {
             $this->id_target_getter_cache[$id] = $name;
+
             return $name;
         }
 
         $this->id_target_getter_cache[$id] = false;
-        return null;
+
+        return;
     }
 
     public function __call($name, array $args)
@@ -231,7 +270,7 @@ abstract class PresenterValue implements \ArrayAccess
             return $this->cache_field_values[$id];
         }
 
-        $ret = $this->doGetId($id, $offset);
+        $ret                           = $this->doGetId($id, $offset);
         $this->cache_field_values[$id] = $ret;
 
         return $ret;
@@ -261,7 +300,7 @@ abstract class PresenterValue implements \ArrayAccess
             return $this->value->$m();
         }
 
-        return null;
+        return;
     }
 
     public function offsetSet($offset, $value)
@@ -280,6 +319,7 @@ abstract class PresenterValue implements \ArrayAccess
             return $this->id_normal_cache[$id];
         }
         $this->id_normal_cache[$id] = Strings::camelCaseToUnderscore($id);
+
         return $this->id_normal_cache[$id];
     }
 }

@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -46,8 +45,6 @@ use Orb\Util\Strings;
  * This is a log of exactly 1 email message sent to exactly 1 person.
  * For example, if one email was sent to 1 person and 3 CC'd people, then there
  * would be 4 SendmailLog's.
- *
- * @package Application\DeskPRO\Entity
  */
 class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -124,7 +121,7 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
     protected $date_click;
 
     /**
-     * A plaintext log with multiple lines: [date] URL
+     * A plaintext log with multiple lines: [date] URL.
      *
      * @var string
      */
@@ -187,11 +184,10 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $date_spam;
 
-
     public function __construct()
     {
         $this->date_created = new \DateTime();
-        $this->code = self::genCode();
+        $this->code         = self::genCode();
     }
 
     /**
@@ -201,15 +197,15 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
     {
         $time = \Orb\Util\Util::baseEncode(time(), 'letters');
 
-        return $time . \Orb\Util\DpStrings::random(30 - strlen($time), Strings::CHARS_ALPHANUM_IU);
+        return $time.\Orb\Util\DpStrings::random(30 - strlen($time), Strings::CHARS_ALPHANUM_IU);
     }
 
-
     /**
-     * @param  Ticket $ticket
-     * @param  array  $to_addresses
+     * @param Ticket $ticket
+     * @param array  $to_addresses
      * @param $subject
      * @param $from_address
+     *
      * @return string
      */
     public static function insertTicketLog(Ticket $ticket, array $to_addresses, $subject, $from_address)
@@ -222,10 +218,10 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
         $to_addresses = array_unique($to_addresses);
 
         if (!$to_addresses) {
-            return null;
+            return;
         }
 
-        $now = date('Y-m-d H:i:s');
+        $now   = date('Y-m-d H:i:s');
         $batch = array();
 
         $people_ids = App::getDb()->fetchAllKeyValue('
@@ -236,13 +232,13 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
 
         foreach ($to_addresses as $to) {
             $batch[] = array(
-                'code'              => $code,
-                'to_address'        => $to,
-                'person_id'         => isset($people_ids[$to]) ? $people_ids[$to] : null,
-                'from_address'      => $from_address,
-                'subject'           => $subject,
-                'date_created'      => $now,
-                'ticket_id'         => $ticket->getId(),
+                'code'         => $code,
+                'to_address'   => $to,
+                'person_id'    => isset($people_ids[$to]) ? $people_ids[$to] : null,
+                'from_address' => $from_address,
+                'subject'      => $subject,
+                'date_created' => $now,
+                'ticket_id'    => $ticket->getId(),
             );
         }
 
@@ -251,12 +247,12 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
         return $code;
     }
 
-
     /**
-     * @param  TicketMessage $ticket_message
-     * @param  array         $to_addresses
+     * @param TicketMessage $ticket_message
+     * @param array         $to_addresses
      * @param $subject
      * @param $from_address
+     *
      * @return string
      */
     public static function insertTicketMessageLog(TicketMessage $ticket_message, array $to_addresses, $subject, $from_address)
@@ -269,10 +265,10 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
         $to_addresses = array_unique($to_addresses);
 
         if (!$to_addresses) {
-            return null;
+            return;
         }
 
-        $now = date('Y-m-d H:i:s');
+        $now   = date('Y-m-d H:i:s');
         $batch = array();
 
         $people_ids = App::getDb()->fetchAllKeyValue('
@@ -290,7 +286,7 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
                 'subject'           => $subject,
                 'date_created'      => $now,
                 'ticket_id'         => $ticket_message->ticket->getId(),
-                'ticket_message_id' => $ticket_message->getId()
+                'ticket_message_id' => $ticket_message->getId(),
             );
         }
 
@@ -299,11 +295,11 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
         return $code;
     }
 
-
     /**
-     * @param  array  $to_addresses
+     * @param array $to_addresses
      * @param $subject
      * @param $from_address
+     *
      * @return string
      */
     public static function insertLog(array $to_addresses, $subject, $from_address)
@@ -316,10 +312,10 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
         $to_addresses = array_unique($to_addresses);
 
         if (!$to_addresses) {
-            return null;
+            return;
         }
 
-        $now = date('Y-m-d H:i:s');
+        $now   = date('Y-m-d H:i:s');
         $batch = array();
 
         $people_ids = App::getDb()->fetchAllKeyValue('
@@ -335,7 +331,7 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
                 'person_id'    => isset($people_ids[$to]) ? $people_ids[$to] : null,
                 'from_address' => $from_address,
                 'subject'      => $subject,
-                'date_created' => $now
+                'date_created' => $now,
             );
         }
 
@@ -343,7 +339,6 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
 
         return $code;
     }
-
 
     ############################################################################
     # Doctrine Metadata
@@ -353,39 +348,39 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setPrimaryTable(array(
-            'name' => 'sendmail_logs',
+            'name'              => 'sendmail_logs',
             'uniqueConstraints' => array(
-                'code' => array('columns' => array('code', 'to_address'))
-            )
+                'code' => array('columns' => array('code', 'to_address')),
+            ),
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_AUTO);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'code', 'type' => 'string', 'length' => 30, 'nullable' => false, 'columnName' => 'code', ));
-        $metadata->mapField(array( 'fieldName' => 'to_address', 'type' => 'string', 'length' => 255,  'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'to_address', 'uid' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'subject', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'subject', ));
-        $metadata->mapField(array( 'fieldName' => 'from_address', 'type' => 'string', 'length' => 255, 'scale' => 0, 'nullable' => false, 'columnName' => 'from_address', ));
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-        $metadata->mapField(array( 'fieldName' => 'date_process', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_process', ));
-        $metadata->mapField(array( 'fieldName' => 'date_deliver', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_deliver', ));
-        $metadata->mapField(array( 'fieldName' => 'reason_deliver', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'reason_deliver', ));
-        $metadata->mapField(array( 'fieldName' => 'date_open', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_open', ));
-        $metadata->mapField(array( 'fieldName' => 'date_click', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_click', ));
-        $metadata->mapField(array( 'fieldName' => 'clicked_urls', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'clicked_urls', ));
-        $metadata->mapField(array( 'fieldName' => 'count_open', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'count_open', ));
-        $metadata->mapField(array( 'fieldName' => 'count_click', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'count_click', ));
-        $metadata->mapField(array( 'fieldName' => 'date_defer', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_defer', ));
-        $metadata->mapField(array( 'fieldName' => 'reason_defer', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'reason_defer', ));
-        $metadata->mapField(array( 'fieldName' => 'date_bounce', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_bounce', ));
-        $metadata->mapField(array( 'fieldName' => 'bounce_code', 'type' => 'string', 'length' => 10, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'bounce_code', ));
-        $metadata->mapField(array( 'fieldName' => 'bounce_type', 'type' => 'string', 'length' => 10, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'bounce_type', ));
-        $metadata->mapField(array( 'fieldName' => 'reason_bounce', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'reason_bounce', ));
-        $metadata->mapField(array( 'fieldName' => 'date_drop', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_drop', ));
-        $metadata->mapField(array( 'fieldName' => 'reason_drop', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'reason_drop', ));
-        $metadata->mapField(array( 'fieldName' => 'date_spam', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_spam', ));
+        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array('fieldName' => 'code', 'type' => 'string', 'length' => 30, 'nullable' => false, 'columnName' => 'code'));
+        $metadata->mapField(array('fieldName' => 'to_address', 'type' => 'string', 'length' => 255,  'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'to_address', 'uid' => true));
+        $metadata->mapField(array('fieldName' => 'subject', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'subject'));
+        $metadata->mapField(array('fieldName' => 'from_address', 'type' => 'string', 'length' => 255, 'scale' => 0, 'nullable' => false, 'columnName' => 'from_address'));
+        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
+        $metadata->mapField(array('fieldName' => 'date_process', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_process'));
+        $metadata->mapField(array('fieldName' => 'date_deliver', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_deliver'));
+        $metadata->mapField(array('fieldName' => 'reason_deliver', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'reason_deliver'));
+        $metadata->mapField(array('fieldName' => 'date_open', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_open'));
+        $metadata->mapField(array('fieldName' => 'date_click', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_click'));
+        $metadata->mapField(array('fieldName' => 'clicked_urls', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'clicked_urls'));
+        $metadata->mapField(array('fieldName' => 'count_open', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'count_open'));
+        $metadata->mapField(array('fieldName' => 'count_click', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'count_click'));
+        $metadata->mapField(array('fieldName' => 'date_defer', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_defer'));
+        $metadata->mapField(array('fieldName' => 'reason_defer', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'reason_defer'));
+        $metadata->mapField(array('fieldName' => 'date_bounce', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_bounce'));
+        $metadata->mapField(array('fieldName' => 'bounce_code', 'type' => 'string', 'length' => 10, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'bounce_code'));
+        $metadata->mapField(array('fieldName' => 'bounce_type', 'type' => 'string', 'length' => 10, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'bounce_type'));
+        $metadata->mapField(array('fieldName' => 'reason_bounce', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'reason_bounce'));
+        $metadata->mapField(array('fieldName' => 'date_drop', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_drop'));
+        $metadata->mapField(array('fieldName' => 'reason_drop', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'reason_drop'));
+        $metadata->mapField(array('fieldName' => 'date_spam', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_spam'));
 
-        $metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'ticket_message', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_message_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array('fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array('fieldName' => 'ticket_message', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'ticket_message_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
     }
 }

@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\OrganizationResults;
@@ -83,8 +83,8 @@ class OrganizationSearchController extends AbstractController
 
         if ($is_partial) {
             return $this->createJsonResponse(array(
-                'html'              => $html,
-                'page'              => $page,
+                'html' => $html,
+                'page' => $page,
             ));
         } else {
             return $this->createResponse($html);
@@ -125,10 +125,10 @@ class OrganizationSearchController extends AbstractController
         $result_display = new \Application\DeskPRO\Organizations\OrgResultsDisplay($organizations);
 
         return $this->render("AgentBundle:OrganizationSearch:$tpl", array(
-            'organizations'    => $organizations,
-            'display_fields'   => $pref_display_fields,
-            'org_field_defs'   => $org_field_defs,
-            'result_display'   => $result_display,
+            'organizations'  => $organizations,
+            'display_fields' => $pref_display_fields,
+            'org_field_defs' => $org_field_defs,
+            'result_display' => $result_display,
         ));
     }
 
@@ -157,10 +157,10 @@ class OrganizationSearchController extends AbstractController
             $terms      = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw', 'discard'));
 
             $set_terms_map = array(
-                'org_name'              => array('op' => 'contains', 'options' => array()),
-                'org_label'             => array('op' => 'contains', 'options' => array()),
-                'org_email_domain'      => array('op' => 'contains', 'options' => array()),
-                'org_contact_phone'     => array('op' => 'contains', 'options' => array()),
+                'org_name'          => array('op' => 'contains', 'options' => array()),
+                'org_label'         => array('op' => 'contains', 'options' => array()),
+                'org_email_domain'  => array('op' => 'contains', 'options' => array()),
+                'org_contact_phone' => array('op' => 'contains', 'options' => array()),
             );
             foreach ($set_terms_map as $name => $info) {
                 $in_val = $this->container->getIn()->getCleanValue('set_term.'.$name, 'raw');
@@ -282,25 +282,25 @@ class OrganizationSearchController extends AbstractController
         $ids = $this->in->getCleanValueArray('ids', 'uint');
 
         if ($ids) {
-            $orgs_list = $this->em->createQuery("
+            $orgs_list = $this->em->createQuery('
                 SELECT o
                 FROM DeskPRO:Organization o
                 WHERE o.id IN (?0)
                 ORDER BY o.name ASC
-            ")->execute(array($ids));
+            ')->execute(array($ids));
         } elseif ($q) {
-            $orgs_list = $this->em->createQuery("
+            $orgs_list = $this->em->createQuery('
                 SELECT o
                 FROM DeskPRO:Organization o
                 WHERE o.name LIKE ?1
                 ORDER BY o.name ASC
-            ")->setParameter(1, "%$q%")->setMaxResults($limit)->getResult();
+            ')->setParameter(1, "%$q%")->setMaxResults($limit)->getResult();
         } else {
-            $orgs_list = $this->em->createQuery("
+            $orgs_list = $this->em->createQuery('
                 SELECT o
                 FROM DeskPRO:Organization o
                 ORDER BY o.name ASC
-            ")->setMaxResults($limit)->getResult();
+            ')->setMaxResults($limit)->getResult();
         }
 
         $json = array('results' => array(), 'exact' => false);
@@ -314,11 +314,11 @@ class OrganizationSearchController extends AbstractController
             );
         }
 
-        $org = $this->em->createQuery("
+        $org = $this->em->createQuery('
             SELECT o
             FROM DeskPRO:Organization o
             WHERE o.name = ?1
-        ")->setParameter(1, $this->in->getString('term'))
+        ')->setParameter(1, $this->in->getString('term'))
           ->setMaxResults(1)
           ->getOneOrNullResult();
 
@@ -335,11 +335,11 @@ class OrganizationSearchController extends AbstractController
 
     public function checkNameAction()
     {
-        $org = $this->em->createQuery("
+        $org = $this->em->createQuery('
             SELECT o
             FROM DeskPRO:Organization o
             WHERE o.name = ?1
-        ")->setParameter(1, $this->in->getString('name'))
+        ')->setParameter(1, $this->in->getString('name'))
           ->setMaxResults(1)
           ->getOneOrNullResult();
 

@@ -1,42 +1,42 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Entity;
 
-use Symfony\Component\Validator\Constraints;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
 use DateTime;
 use DateTimeZone;
+use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
- * Exporting person entity
+ * Exporting person entity.
  *
  * Class Person
- * @package Application\ImportBundle\Entity
  */
 final class Person extends AbstractEntity implements LabelAwareInterface, LanguageAwareInterface
 {
@@ -138,7 +138,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     private $custom_fields;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -156,7 +156,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     /**
      * Is agent?
      *
-     * @return boolean
+     * @return bool
      */
     public function isAgent()
     {
@@ -164,21 +164,23 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
-     * Set person as agent
+     * Set person as agent.
      *
-     * @param boolean $is_agent
+     * @param bool $is_agent
+     *
      * @return $this
      */
     public function setAsAgent($is_agent)
     {
-        $this->is_agent = (bool)$is_agent;
+        $this->is_agent = (bool) $is_agent;
+
         return $this;
     }
 
     /**
      * Does person has login credentials?
      *
-     * @return boolean
+     * @return bool
      */
     public function isUser()
     {
@@ -187,21 +189,23 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
 
     /**
      * Set person as user
-     * If password is empty then initial password will be set up
+     * If password is empty then initial password will be set up.
      *
-     * @param boolean $is_user
+     * @param bool $is_user
+     *
      * @return $this
      */
     public function setAsUser($is_user)
     {
-        $this->is_user = (bool)$is_user;
+        $this->is_user = (bool) $is_user;
+
         return $this;
     }
 
     /**
      * Is admin?
      *
-     * @return boolean
+     * @return bool
      */
     public function isAdmin()
     {
@@ -209,20 +213,22 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
-     * Set person as admin
+     * Set person as admin.
      *
-     * @param boolean $is_admin
+     * @param bool $is_admin
+     *
      * @return $this
      */
     public function setAsAdmin($is_admin)
     {
-        $this->is_admin = (bool)$is_admin;
+        $this->is_admin = (bool) $is_admin;
+
         return $this;
     }
 
     /**
      * Returns person first name
-     * If property "first_name" is empty tries to parse person name
+     * If property "first_name" is empty tries to parse person name.
      *
      * @return string
      */
@@ -239,24 +245,26 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Set person first name
+     * Set person first name.
      *
      * @param string $first_name
+     *
      * @return $this
      */
     public function setFirstName($first_name)
     {
         $this->first_name = $first_name;
+
         return $this;
     }
 
     /**
      * Returns person last name
-     * If property "last_name" is empty tries to parse person name
+     * If property "last_name" is empty tries to parse person name.
      *
      * @return string
      */
@@ -273,24 +281,26 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Set person last name
+     * Set person last name.
      *
      * @param string $last_name
+     *
      * @return $this
      */
     public function setLastName($last_name)
     {
         $this->last_name = $last_name;
+
         return $this;
     }
 
     /**
      * Returns person name
-     * If property "name" is empty tries to get from the first email
+     * If property "name" is empty tries to get from the first email.
      *
      * @return string
      */
@@ -306,23 +316,25 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Set person name
+     * Set person name.
      *
      * @param string $name
+     *
      * @return $this
      */
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
     /**
-     * Returns custom display name
+     * Returns custom display name.
      *
      * @return string
      */
@@ -332,19 +344,21 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
-     * Set custom display dame
+     * Set custom display dame.
      *
      * @param string $override_display_name
+     *
      * @return $this
      */
     public function setOverrideDisplayName($override_display_name)
     {
         $this->override_display_name = $override_display_name;
+
         return $this;
     }
 
     /**
-     * Returns password
+     * Returns password.
      *
      * @return string
      */
@@ -354,20 +368,22 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
-     * Set password
+     * Set password.
      *
      * @param string $password
+     *
      * @return $this
      */
     public function setPassword($password)
     {
         $this->password = $password;
+
         return $this;
     }
 
     /**
      * Returns password scheme
-     * Bcrypt by default
+     * Bcrypt by default.
      *
      * @return string
      */
@@ -377,7 +393,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
-     * Returns true if the person password scheme is plain
+     * Returns true if the person password scheme is plain.
      *
      * @return bool
      */
@@ -387,19 +403,21 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
-     * Set specific password scheme
+     * Set specific password scheme.
      *
      * @param string $password_scheme
+     *
      * @return $this
      */
     public function setPasswordScheme($password_scheme)
     {
         $this->password_scheme = $password_scheme;
+
         return $this;
     }
 
     /**
-     * Returns time zone
+     * Returns time zone.
      *
      * @return string
      */
@@ -409,19 +427,21 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
-     * Set time zone
+     * Set time zone.
      *
      * @param DateTimeZone $timezone
+     *
      * @return $this
      */
     public function setTimezone(DateTimeZone $timezone)
     {
         $this->timezone = $timezone;
+
         return $this;
     }
 
     /**
-     * Returns date created
+     * Returns date created.
      *
      * @return DateTime
      */
@@ -431,14 +451,16 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
-     * Set date created
+     * Set date created.
      *
      * @param DateTime $date_created
+     *
      * @return $this
      */
     public function setDateCreated(DateTime $date_created)
     {
         $this->date_created = $date_created;
+
         return $this;
     }
 
@@ -456,11 +478,12 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     public function setLanguage($language)
     {
         $this->language = $language;
+
         return $this;
     }
 
     /**
-     * Returns a person organization
+     * Returns a person organization.
      *
      * @return string
      */
@@ -470,19 +493,21 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
-     * Set an organization
+     * Set an organization.
      *
      * @param string $organization
+     *
      * @return $this
      */
     public function setOrganization($organization)
     {
         $this->organization = $organization;
+
         return $this;
     }
 
     /**
-     * Returns an organization position
+     * Returns an organization position.
      *
      * @return string
      */
@@ -492,19 +517,21 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
-     * Set an organization position
+     * Set an organization position.
      *
      * @param string $organization_position
+     *
      * @return $this
      */
     public function setOrganizationPosition($organization_position)
     {
         $this->organization_position = $organization_position;
+
         return $this;
     }
 
     /**
-     * Returns person emails
+     * Returns person emails.
      *
      * @return array
      */
@@ -514,7 +541,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
-     * Returns the first person email
+     * Returns the first person email.
      *
      * @return string|null
      */
@@ -524,14 +551,16 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
-     * Add an email
+     * Add an email.
      *
      * @param string $email
+     *
      * @return $this
      */
     public function addEmail($email)
     {
         $this->emails[] = $email;
+
         return $this;
     }
 
@@ -549,11 +578,12 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     public function addLabel($label)
     {
         $this->labels[] = $label;
+
         return $this;
     }
 
     /**
-     * Returns a collection of person user groups
+     * Returns a collection of person user groups.
      *
      * @return array
      */
@@ -563,19 +593,21 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
-     * Add an user group
+     * Add an user group.
      *
      * @param string $user_group
+     *
      * @return $this
      */
     public function addUserGroup($user_group)
     {
         $this->user_groups[] = $user_group;
+
         return $this;
     }
 
     /**
-     * Returns a collection of person custom fields
+     * Returns a collection of person custom fields.
      *
      * @return Collection
      */
@@ -585,14 +617,16 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     }
 
     /**
-     * Add a custom field
+     * Add a custom field.
      *
      * @param CustomField $custom_field
+     *
      * @return $this
      */
     public function addCustomField(CustomField $custom_field)
     {
         $this->custom_fields->attach($custom_field);
+
         return $this;
     }
 
@@ -601,13 +635,13 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
      */
     public function toArray()
     {
-        if ( ! $this->date_created) {
+        if (!$this->date_created) {
             throw new \Exception('Date created is not set up');
         }
 
         $custom_fields = array();
         foreach ($this->custom_fields as $custom_field) {
-            /** @var CustomField $custom_field */
+            /* @var CustomField $custom_field */
             $custom_fields[] = $custom_field->toArray();
         }
 

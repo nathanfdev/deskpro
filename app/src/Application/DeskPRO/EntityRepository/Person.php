@@ -1,46 +1,46 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\BigMode;
 use Application\DeskPRO\DBAL\Connection;
-use Application\DeskPRO\EntityRepository\Helper\IdentityHelper;
 use Application\DeskPRO\Entity\DepartmentPermission;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Usergroup as UsergroupEntity;
+use Application\DeskPRO\EntityRepository\Helper\IdentityHelper;
 use Doctrine\DBAL\LockMode;
 
 class Person extends AbstractEntityRepository
@@ -57,11 +57,11 @@ class Person extends AbstractEntityRepository
         }
 
         $query = $this->getEntityManager()->createQuery(
-        "
+        '
             SELECT p
             FROM DeskPRO:Person p
             WHERE :found_phone_number MEMBER OF p.phone_numbers
-        "
+        '
         );
 
         $query->setMaxResults(1)->setParameter('found_phone_number', $phone_number);
@@ -84,12 +84,12 @@ class Person extends AbstractEntityRepository
     public function getAgents()
     {
         if (($agents = $this->getIdentityHelper()->getCollection('agents')) === null) {
-            $agents = $this->getEntityManager()->createQuery("
+            $agents = $this->getEntityManager()->createQuery('
                 SELECT p
                 FROM DeskPRO:Person p INDEX BY p.id
                 WHERE p.is_agent = true AND p.is_deleted = false
                 ORDER BY p.first_name ASC, p.last_name ASC
-            ")->execute();
+            ')->execute();
 
             $this->getIdentityHelper()->setCollectionFromResults('agents', $agents);
         }
@@ -106,12 +106,12 @@ class Person extends AbstractEntityRepository
 
     public function getDeletedAgents()
     {
-        $deleted_agents = $this->getEntityManager()->createQuery("
+        $deleted_agents = $this->getEntityManager()->createQuery('
             SELECT p
             FROM DeskPRO:Person p INDEX BY p.id
             WHERE p.is_agent = true AND p.is_deleted = true
             ORDER BY p.first_name ASC, p.last_name ASC
-        ")->execute();
+        ')->execute();
 
         return $deleted_agents;
     }
@@ -123,11 +123,11 @@ class Person extends AbstractEntityRepository
      */
     public function getActiveAgentsCount()
     {
-        return $this->_em->getConnection()->fetchColumn("
+        return $this->_em->getConnection()->fetchColumn('
             SELECT COUNT(*)
             FROM people
             WHERE is_agent = 1 AND is_deleted = 0
-        ");
+        ');
     }
 
     /**
@@ -142,7 +142,7 @@ class Person extends AbstractEntityRepository
      */
     public function getAgentsInDepartment($department)
     {
-        return $this->getEntityManager()->createQuery("
+        return $this->getEntityManager()->createQuery('
             SELECT p
             FROM DeskPRO:Person p
             JOIN p.department_permissions dep_per
@@ -152,7 +152,7 @@ class Person extends AbstractEntityRepository
             AND dep_per.app = :app
             AND dep_per.value = 1
             ORDER BY p.last_name ASC, p.first_name ASC
-        ")
+        ')
             ->setParameter('department', $department)
             ->setParameter('permission', DepartmentPermission::FULL)
             ->setParameter('app', DepartmentPermission::APP_TICKETS)
@@ -243,7 +243,7 @@ class Person extends AbstractEntityRepository
 
         $or_id = '';
         if (App::getCurrentPerson() && App::getCurrentPerson()->is_agent) {
-            $or_id = "OR s.person = :person";
+            $or_id = 'OR s.person = :person';
         }
 
         $sessions_q = App::getOrm()->createQuery("
@@ -308,21 +308,21 @@ class Person extends AbstractEntityRepository
             $email = strtolower($email);
         }
         if (App::getDb()->isTransactionActive() && $for_write) {
-            $person = $this->getEntityManager()->createQuery("
+            $person = $this->getEntityManager()->createQuery('
                 SELECT p
                 FROM DeskPRO:Person p
                 JOIN p.emails e
                 WHERE e.email = ?1
                 ORDER BY p.id ASC
-            ")->setLockMode(LockMode::PESSIMISTIC_WRITE)->setParameter(1, $email)->setMaxResults(1)->getOneOrNullResult();
+            ')->setLockMode(LockMode::PESSIMISTIC_WRITE)->setParameter(1, $email)->setMaxResults(1)->getOneOrNullResult();
         } else {
-            $person = $this->getEntityManager()->createQuery("
+            $person = $this->getEntityManager()->createQuery('
                 SELECT p
                 FROM DeskPRO:Person p
                 JOIN p.emails e
                 WHERE e.email = ?1
                 ORDER BY p.id ASC
-            ")->setParameter(1, $email)->setMaxResults(1)->getOneOrNullResult();
+            ')->setParameter(1, $email)->setMaxResults(1)->getOneOrNullResult();
         }
 
         return $person;
@@ -344,26 +344,26 @@ class Person extends AbstractEntityRepository
     {
         $email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email).'%';
 
-        return $this->getEntityManager()->createQuery("
+        return $this->getEntityManager()->createQuery('
             SELECT p
             FROM DeskPRO:Person p
             LEFT JOIN p.emails e
             WHERE e.email LIKE ?1
             ORDER BY p.id ASC
-        ")->setParameter(1, $email)->setMaxResults($limit)->execute();
+        ')->setParameter(1, $email)->setMaxResults($limit)->execute();
     }
 
     public function searchByEmail($email, $limit = null)
     {
         $email = '%'.str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email).'%';
 
-        return $this->getEntityManager()->createQuery("
+        return $this->getEntityManager()->createQuery('
             SELECT p
             FROM DeskPRO:Person p
             LEFT JOIN p.emails e
             WHERE e.email LIKE ?1
             ORDER BY p.id ASC
-        ")->setParameter(1, $email)->setMaxResults($limit)->execute();
+        ')->setParameter(1, $email)->setMaxResults($limit)->execute();
     }
 
     public function getPeopleFromIds(array $ids)
@@ -372,12 +372,12 @@ class Person extends AbstractEntityRepository
             return array();
         }
 
-        $people = $this->getEntityManager()->createQuery("
+        $people = $this->getEntityManager()->createQuery('
             SELECT p
             FROM DeskPRO:Person p INDEX BY p.id
             WHERE p.id IN(?0)
             ORDER BY p.id ASC
-        ")->execute(array(array_values($ids)));
+        ')->execute(array(array_values($ids)));
 
         return $people;
     }
@@ -388,12 +388,12 @@ class Person extends AbstractEntityRepository
             return array();
         }
 
-        $people = $this->getEntityManager()->createQuery("
+        $people = $this->getEntityManager()->createQuery('
             SELECT p
             FROM DeskPRO:Person p INDEX BY p.id
             WHERE p.id IN(?0)
             ORDER BY p.id ASC
-        ")->execute(array($ids));
+        ')->execute(array($ids));
 
         return $people;
     }
@@ -403,7 +403,7 @@ class Person extends AbstractEntityRepository
         $q = '%'.str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q).'%';
 
         if (App::getSystemService('usersource_manager')->getUsersources()) {
-            return $this->getEntityManager()->createQuery("
+            return $this->getEntityManager()->createQuery('
                 SELECT p
                 FROM DeskPRO:Person p
                 LEFT JOIN p.emails e
@@ -415,15 +415,15 @@ class Person extends AbstractEntityRepository
                     OR (e.email LIKE ?4)
                     OR (a.identity_friendly LIKE ?5)
                 ORDER BY p.date_last_login DESC, p.id DESC
-            ")->setParameters(array(1 => $q, 2 => $q, 3 => $q, 4 => $q, 5 => $q))->setMaxResults($limit)->execute();
+            ')->setParameters(array(1 => $q, 2 => $q, 3 => $q, 4 => $q, 5 => $q))->setMaxResults($limit)->execute();
         } else {
-            return $this->getEntityManager()->createQuery("
+            return $this->getEntityManager()->createQuery('
                 SELECT p
                 FROM DeskPRO:Person p
                 LEFT JOIN p.emails e
                 WHERE (p.name LIKE ?1) OR (p.first_name LIKE ?2) OR (p.last_name LIKE ?3) OR (e.email LIKE ?4)
                 ORDER BY p.date_last_login DESC, p.id DESC
-            ")->setParameters(array(1 => $q, 2 => $q, 3 => $q, 4 => $q))->setMaxResults($limit)->execute();
+            ')->setParameters(array(1 => $q, 2 => $q, 3 => $q, 4 => $q))->setMaxResults($limit)->execute();
         }
     }
 
@@ -431,22 +431,22 @@ class Person extends AbstractEntityRepository
     {
         $page = max(1, $page);
 
-        return $this->getEntityManager()->createQuery("
+        return $this->getEntityManager()->createQuery('
             SELECT p
             FROM DeskPRO:Person p INDEX BY p.id
             WHERE p.organization = ?1 AND p.is_deleted = false
             ORDER BY p.organization_manager DESC, p.last_name ASC, p.first_name ASC
-        ")->setFirstResult(($page - 1)*$limit)->setMaxResults($limit)->execute(array(1 => $org));
+        ')->setFirstResult(($page - 1) * $limit)->setMaxResults($limit)->execute(array(1 => $org));
     }
 
     public function getOrganizationMemberIds(OrganizationEntity $org)
     {
         $ids     = array();
-        $results = $this->getEntityManager()->createQuery("
+        $results = $this->getEntityManager()->createQuery('
             SELECT p.id
             FROM DeskPRO:Person p
             WHERE p.organization = ?1
-        ")->execute(array(1 => $org));
+        ')->execute(array(1 => $org));
         foreach ($results as $result) {
             $ids[] = $result['id'];
         }
@@ -456,22 +456,22 @@ class Person extends AbstractEntityRepository
 
     public function getUsergroupMembers(UsergroupEntity $ug)
     {
-        return $this->getEntityManager()->createQuery("
+        return $this->getEntityManager()->createQuery('
             SELECT p
             FROM DeskPRO:Person p INDEX BY p.id
             LEFT JOIN p.usergroups ug
             WHERE ug.id = ?1
             ORDER BY p.last_name ASC, p.first_name ASC
-        ")->setParameter(1, $ug)->execute();
+        ')->setParameter(1, $ug)->execute();
     }
 
     public function getUsergroupMemberIds(UsergroupEntity $ug)
     {
-        return $this->getEntityManager()->getConnection()->fetchAllCol("
+        return $this->getEntityManager()->getConnection()->fetchAllCol('
             SELECT person_id
             FROM person2usergroups
             WHERE usergroup_id = ?
-        ", array($ug->id));
+        ', array($ug->id));
     }
 
     /**
@@ -481,13 +481,13 @@ class Person extends AbstractEntityRepository
         $active_agents_ids = App::getEntityRepository('DeskPRO:Session')->getAvailableAgentIds();
 
         // Count chats for each
-        $chat_counts = App::getDb()->fetchAllKeyValue("
+        $chat_counts = App::getDb()->fetchAllKeyValue('
             SELECT agent_id, COUNT(*) as cnt
             FROM chat_conversations
             WHERE agent_id IS NOT NULL AND status = ?
             GROUP BY agent_id
             ORDER BY cnt DESC
-        ", array('open'));
+        ', array('open'));
 
         foreach ($active_agents_ids as $id) {
             if (!isset($chat_counts[$id])) {
@@ -526,17 +526,17 @@ class Person extends AbstractEntityRepository
     /**
      * Get a count of how many people there are.
      *
-     * @param boolean $only_users
+     * @param bool $only_users
      *
      * @return int
      */
     public function getCount($only_users = false)
     {
-        $rows = App::getDb()->fetchColumn("
+        $rows = App::getDb()->fetchColumn('
             SELECT COUNT(*)
             FROM people
             WHERE people.is_deleted = 0
-        ");
+        ');
 
         if ($only_users) {
             return $rows - count($this->getAgents());
@@ -552,11 +552,11 @@ class Person extends AbstractEntityRepository
      */
     public function getAgentValidatingCount()
     {
-        return App::getDb()->fetchColumn("
+        return App::getDb()->fetchColumn('
             SELECT COUNT(*)
             FROM people
             WHERE is_agent_confirmed = 0
-        ");
+        ');
     }
 
     /**
@@ -566,11 +566,11 @@ class Person extends AbstractEntityRepository
      */
     public function getValidatingCount()
     {
-        return App::getDb()->fetchColumn("
+        return App::getDb()->fetchColumn('
             SELECT COUNT(*)
             FROM people
             WHERE is_confirmed = 0
-        ");
+        ');
     }
 
     /**
@@ -585,8 +585,8 @@ class Person extends AbstractEntityRepository
         $pid = $person->getId();
 
         $counts = array(
-            'chats'    => $this->_em->getConnection()->fetchColumn("SELECT COUNT(*) FROM chat_conversations WHERE person_id = ?", array($pid)),
-            'tickets'  => $this->_em->getConnection()->fetchColumn("SELECT COUNT(*) FROM tickets WHERE person_id = ?", array($pid)),
+            'chats'   => $this->_em->getConnection()->fetchColumn('SELECT COUNT(*) FROM chat_conversations WHERE person_id = ?', array($pid)),
+            'tickets' => $this->_em->getConnection()->fetchColumn('SELECT COUNT(*) FROM tickets WHERE person_id = ?', array($pid)),
         );
 
         return $counts;

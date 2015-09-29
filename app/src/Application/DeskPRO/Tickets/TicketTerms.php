@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -56,20 +56,20 @@ class TicketTerms
     const OP_IS_REGEX    = 'is_regex';
     const OP_NOT_REGEX   = 'not_regex';
 
-    const OP_CHANGED            = 'changed';
-    const OP_CHANGED_TO         = 'changed_to';
-    const OP_CHANGED_FROM       = 'changed_from';
-    const OP_NOT_CHANGED_TO     = 'not_changed_to';
-    const OP_NOT_CHANGED_FROM   = 'not_changed_from';
+    const OP_CHANGED          = 'changed';
+    const OP_CHANGED_TO       = 'changed_to';
+    const OP_CHANGED_FROM     = 'changed_from';
+    const OP_NOT_CHANGED_TO   = 'not_changed_to';
+    const OP_NOT_CHANGED_FROM = 'not_changed_from';
 
-    const OP_CHANGED_TO_GTE         = 'changed_to_gte';
-    const OP_CHANGED_TO_LTE         = 'changed_to_lte';
-    const OP_CHANGED_FROM_GTE       = 'changed_from_gte';
-    const OP_CHANGED_FROM_LTE       = 'changed_from_lte';
-    const OP_NOT_CHANGED_TO_GTE     = 'not_changed_to_gte';
-    const OP_NOT_CHANGED_TO_LTE     = 'not_changed_to_let';
-    const OP_NOT_CHANGED_FROM_GTE   = 'not_changed_from_gte';
-    const OP_NOT_CHANGED_FROM_LTE   = 'not_changed_from_lte';
+    const OP_CHANGED_TO_GTE       = 'changed_to_gte';
+    const OP_CHANGED_TO_LTE       = 'changed_to_lte';
+    const OP_CHANGED_FROM_GTE     = 'changed_from_gte';
+    const OP_CHANGED_FROM_LTE     = 'changed_from_lte';
+    const OP_NOT_CHANGED_TO_GTE   = 'not_changed_to_gte';
+    const OP_NOT_CHANGED_TO_LTE   = 'not_changed_to_let';
+    const OP_NOT_CHANGED_FROM_GTE = 'not_changed_from_gte';
+    const OP_NOT_CHANGED_FROM_LTE = 'not_changed_from_lte';
 
     /**
      * @var array
@@ -1225,14 +1225,14 @@ class TicketTerms
                 break;
 
             case 'gateway_account':
-                $e = new \RuntimeException("not supported");
+                $e = new \RuntimeException('not supported');
                 KernelErrorHandler::logException($e, true, 'TicketTerms::gateway_account');
 
                 return false;
                 break;
 
             case 'gateway_address':
-                $e = new \RuntimeException("not supported");
+                $e = new \RuntimeException('not supported');
                 KernelErrorHandler::logException($e, true, 'TicketTerms::gateway_address');
 
                 return false;
@@ -1408,7 +1408,7 @@ class TicketTerms
                 break;
 
             default:
-                $e = new \InvalidArgumentException("(Non-critical notice) Unknown trigger criteria: ".$term);
+                $e = new \InvalidArgumentException('(Non-critical notice) Unknown trigger criteria: '.$term);
                 \DeskPRO\Kernel\KernelErrorHandler::logException($e, true, 'failed_term_'.$term);
 
                 return false;
@@ -1772,7 +1772,7 @@ class TicketTerms
                         $ids = $ids[0];
                     }
 
-                    $js[] = $this->_compileJsChoiceTermCondition("ticket.getDepartmentId()", $op, $ids)." { $test_pass } else { $test_fail } ";
+                    $js[] = $this->_compileJsChoiceTermCondition('ticket.getDepartmentId()', $op, $ids)." { $test_pass } else { $test_fail } ";
                     break;
                 case TicketSearch::TERM_CATEGORY:
                     $ids = array();
@@ -1784,22 +1784,22 @@ class TicketTerms
                         $ids = $ids[0];
                     }
 
-                    $js[] = $this->_compileJsChoiceTermCondition("ticket.getCategoryId()", $op, $ids)." { $test_pass } else { $test_fail } ";
+                    $js[] = $this->_compileJsChoiceTermCondition('ticket.getCategoryId()', $op, $ids)." { $test_pass } else { $test_fail } ";
                     break;
                 case TicketSearch::TERM_PRODUCT:
-                    $js[] = $this->_compileJsChoiceTermCondition("ticket.getProductId()", $op, $choice)." { $test_pass } else { $test_fail } ";
+                    $js[] = $this->_compileJsChoiceTermCondition('ticket.getProductId()', $op, $choice)." { $test_pass } else { $test_fail } ";
                     break;
                 case TicketSearch::TERM_PRIORITY:
-                    $js[] = $this->_compileJsChoiceTermCondition("ticket.getPriorityVal()", $op, $choice)." { $test_pass } else { $test_fail } ";
+                    $js[] = $this->_compileJsChoiceTermCondition('ticket.getPriorityVal()', $op, $choice)." { $test_pass } else { $test_fail } ";
                     break;
                 case TicketSearch::TERM_ORGANIZATION:
-                    $js[] = $this->_compileJsChoiceTermCondition("ticket.getOrganizationId()", $op, $choice)." { $test_pass } else { $test_fail } ";
+                    $js[] = $this->_compileJsChoiceTermCondition('ticket.getOrganizationId()', $op, $choice)." { $test_pass } else { $test_fail } ";
                     break;
                 case TicketSearch::TERM_LANGUAGE:
-                    $js[] = $this->_compileJsChoiceTermCondition("ticket.getLanguageId()", $op, $choice)." { $test_pass } else { $test_fail } ";
+                    $js[] = $this->_compileJsChoiceTermCondition('ticket.getLanguageId()', $op, $choice)." { $test_pass } else { $test_fail } ";
                     break;
                 case TicketSearch::TERM_AGENT:
-                    $js[] = $this->_compileJsChoiceTermCondition("ticket.getAgentId()", $op, $choice)." { $test_pass } else { $test_fail } ";
+                    $js[] = $this->_compileJsChoiceTermCondition('ticket.getAgentId()', $op, $choice)." { $test_pass } else { $test_fail } ";
                     break;
             }
         }
@@ -1835,7 +1835,7 @@ class TicketTerms
             } elseif ($op == self::OP_NOT) {
                 return "if ($choice.indexOf($value) === -1) ";
             } else {
-                return "if (0 /*invalid*/) ";
+                return 'if (0 /*invalid*/) ';
             }
         } else {
             if (Numbers::isInteger($choice)) {

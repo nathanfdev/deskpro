@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
@@ -37,20 +37,20 @@ use Orb\Util\Util;
 
 class ArticleSearch extends SearcherAbstract
 {
-    const TERM_ID                  = 'id';
-    const TERM_STATUS              = 'status';
-    const TERM_HIDDEN_STATUS       = 'hidden_status';
-    const TERM_DELETED             = 'deleted';
-    const TERM_CATEGORY            = 'category';
-    const TERM_CATEGORY_SPECIFIC   = 'category_specific';
-    const TERM_DATE_CREATED        = 'date_created';
-    const TERM_VIEW_COUNT          = 'view_count';
-    const TERM_POPULAR             = 'popular';
-    const TERM_NEW                 = 'new';
-    const TERM_LABEL               = 'label';
-    const TERM_AGENT_LIST          = 'agent_list';
-    const TERM_PENDING_TRANSLATE   = 'pending_translate';
-    const TERM_QUERY               = 'query';
+    const TERM_ID                = 'id';
+    const TERM_STATUS            = 'status';
+    const TERM_HIDDEN_STATUS     = 'hidden_status';
+    const TERM_DELETED           = 'deleted';
+    const TERM_CATEGORY          = 'category';
+    const TERM_CATEGORY_SPECIFIC = 'category_specific';
+    const TERM_DATE_CREATED      = 'date_created';
+    const TERM_VIEW_COUNT        = 'view_count';
+    const TERM_POPULAR           = 'popular';
+    const TERM_NEW               = 'new';
+    const TERM_LABEL             = 'label';
+    const TERM_AGENT_LIST        = 'agent_list';
+    const TERM_PENDING_TRANSLATE = 'pending_translate';
+    const TERM_QUERY             = 'query';
 
     const ORDER_ID    = 'id';
     const ORDER_DATE  = 'id';
@@ -136,7 +136,7 @@ class ArticleSearch extends SearcherAbstract
      */
     public function getCount()
     {
-        $sql      = "SELECT COUNT(DISTINCT id) FROM articles ";
+        $sql      = 'SELECT COUNT(DISTINCT id) FROM articles ';
         $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
@@ -146,7 +146,7 @@ class ArticleSearch extends SearcherAbstract
 
         foreach ($parts['joins'] as $j) {
             if (is_array($j)) {
-                $sql .= $j[1]." ";
+                $sql .= $j[1].' ';
             } else {
                 $sql .= "LEFT JOIN $j ON $j.article_id = articles.id ";
             }
@@ -162,7 +162,7 @@ class ArticleSearch extends SearcherAbstract
         # Add wheres
         #------------------------------
 
-        $sql .= "WHERE ";
+        $sql .= 'WHERE ';
         if (!$this->findTerm(self::TERM_AGENT_LIST)) {
             $where_perm = $this->getPermWhere();
             if ($where_perm) {
@@ -170,7 +170,7 @@ class ArticleSearch extends SearcherAbstract
             }
         }
         if ($parts['wheres']) {
-            $sql .= '('.implode(") AND (", $parts['wheres']).')';
+            $sql .= '('.implode(') AND (', $parts['wheres']).')';
         } else {
             $sql .= '1';
         }
@@ -201,7 +201,7 @@ class ArticleSearch extends SearcherAbstract
      */
     public function getSql(array $limit = null)
     {
-        $sql = "SELECT articles.id FROM articles ";
+        $sql = 'SELECT articles.id FROM articles ';
 
         $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
@@ -212,7 +212,7 @@ class ArticleSearch extends SearcherAbstract
 
         foreach ($parts['joins'] as $j) {
             if (is_array($j)) {
-                $sql .= $j[1]." ";
+                $sql .= $j[1].' ';
             } else {
                 $sql .= "LEFT JOIN $j ON $j.article_id = articles.id ";
             }
@@ -228,7 +228,7 @@ class ArticleSearch extends SearcherAbstract
         # Add wheres
         #------------------------------
 
-        $sql .= "WHERE ";
+        $sql .= 'WHERE ';
 
         if (!$this->findTerm(self::TERM_AGENT_LIST)) {
             $where_perm = $this->getPermWhere();
@@ -238,18 +238,18 @@ class ArticleSearch extends SearcherAbstract
         }
 
         if ($parts['wheres']) {
-            $sql .= '('.implode(") AND (", $parts['wheres']).')';
+            $sql .= '('.implode(') AND (', $parts['wheres']).')';
         } else {
             $sql .= '1';
         }
 
-        $sql .= " GROUP BY articles.id ";
+        $sql .= ' GROUP BY articles.id ';
         $sql .= $order_by;
 
         if ($limit) {
             $sql .= " LIMIT {$limit['offset']},{$limit['max']}";
         } else {
-            $sql .= " LIMIT 1000";
+            $sql .= ' LIMIT 1000';
         }
 
         return $sql;
@@ -306,7 +306,7 @@ class ArticleSearch extends SearcherAbstract
 
         $wheres = array();
         $joins  = array(
-            array('article_to_categories_perm', "LEFT JOIN article_to_categories AS catperm ON (catperm.article_id = articles.id)"),
+            array('article_to_categories_perm', 'LEFT JOIN article_to_categories AS catperm ON (catperm.article_id = articles.id)'),
         );
 
         foreach ($this->terms as $info) {
@@ -327,7 +327,7 @@ class ArticleSearch extends SearcherAbstract
                         }
                         $wheres[] = $this->_choiceMatch('articles.id', 'is', $choice);
                     } else {
-                        $wheres[] = $this->_rangeMatch("articles.id", $op, $choice, true);
+                        $wheres[] = $this->_rangeMatch('articles.id', $op, $choice, true);
                     }
                     $this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
                     break;
@@ -398,8 +398,8 @@ class ArticleSearch extends SearcherAbstract
                     }
 
                     $w   = array();
-                    $w[] = '('.$this->_stringSearch("articles.title", $op, $string, $type).')';
-                    $w[] = '('.$this->_stringSearch("articles.content", $op, $string, $type).')';
+                    $w[] = '('.$this->_stringSearch('articles.title', $op, $string, $type).')';
+                    $w[] = '('.$this->_stringSearch('articles.content', $op, $string, $type).')';
                     $w[] = '('.$this->_stringSearch("$j1.value", $op, $string, $type).')';
                     $w[] = '('.$this->_stringSearch("$j2.value", $op, $string, $type).')';
 

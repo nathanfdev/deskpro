@@ -15,38 +15,25 @@ export class List extends Component {
     currentViewMode: PropTypes.object.isRequired,
   };
 
-
-  render() {
-    return (
-      <ListFrame>
-        <FeedbackListControlBar />
-        {this.contentChoice()}
-      </ListFrame>
-    );
-  }
-
   contentChoice() {
     const {currentContent} = this.props;
     if (currentContent === 'comments') {
       return this.renderComments();
-    } else {
-      return this.renderFeedback();
     }
+    return this.renderFeedback();
   }
 
   renderFeedback() {
-    const {currentViewMode, feedback, people, feedbackTypes} = this.props;
+    const {currentViewMode, feedback, people, feedbackTypes, massAction} = this.props;
     var viewMode = currentViewMode.field;
     if (viewMode === constants.VIEW_MODE_LIST) {
       return (
-        <FeedbackList elements={feedback} people={people} feedbackTypes={feedbackTypes}/>
+        <FeedbackList elements={feedback} people={people} feedbackTypes={feedbackTypes} massAction={massAction}/>
       );
     }
-    else {
-      return (
-        <FeedbackTable elements={feedback} people={people}/>
-      );
-    }
+    return (
+      <FeedbackTable elements={feedback} people={people}/>
+    );
   }
 
   renderComments() {
@@ -57,10 +44,18 @@ export class List extends Component {
         <FeedbackCommentList elements={comments}/>
       );
     }
-    else {
-      return (
-        <FeedbackCommentTable elements={comments}/>
-      );
-    }
+    return (
+      <FeedbackCommentTable elements={comments}/>
+    );
   }
+
+  render() {
+    return (
+      <ListFrame>
+        <FeedbackListControlBar count={this.props.feedback.length}/>
+        {this.contentChoice()}
+      </ListFrame>
+    );
+  }
+
 }

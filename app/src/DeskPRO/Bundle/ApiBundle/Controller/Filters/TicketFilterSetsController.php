@@ -1,61 +1,49 @@
 <?php
 
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
-
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Filters;
 
-use Aws\CloudWatch\Exception\InvalidFormatException;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
-use FOS\RestBundle\View\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Swagger\Annotations\AbstractAnnotation;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
+use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
-
-use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
-use FOS\RestBundle\Controller\Annotations\Delete;
-
-use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
-use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
+use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * API access to TicketFilterSet entities.
@@ -207,14 +195,15 @@ class TicketFilterSetsController extends BaseController
      *
      * @param TicketFilterSet $set
      * @param $groupby
+     *
      * @return array
      */
     protected function getFilterSetTicketsCount(TicketFilterSet $set, $groupby)
     {
-        $total = 0;
+        $total  = 0;
         $counts = [];
 
-        foreach($set->getFilters() as $filter) {
+        foreach ($set->getFilters() as $filter) {
             $engine = $this->get('term_engine.dbal_ticket_filters.engine');
 
             $context = new TermEngineContext($this->getUser());
@@ -229,15 +218,15 @@ class TicketFilterSetsController extends BaseController
 
             $counts[] = [
                 'filter' => $filter->getId(),
-                'count' => (int)$filter_counts[0]['count'],
+                'count'  => (int) $filter_counts[0]['count'],
             ];
-            $total+= $filter_counts[0]['count'];
+            $total += $filter_counts[0]['count'];
         }
 
         return [
             'filter_set' => $set->getId(),
-            'count' => $total,
-            'filters' => $counts,
+            'count'      => $total,
+            'filters'    => $counts,
         ];
     }
 
@@ -275,7 +264,7 @@ class TicketFilterSetsController extends BaseController
             throw $this->createNotFoundException();
         }
 
-        $groupby = $request->query->get('group_by');
+        $groupby          = $request->query->get('group_by');
         $filter_set_count = $this->getFilterSetTicketsCount($set, $groupby);
 
         return View::create(
@@ -347,10 +336,10 @@ class TicketFilterSetsController extends BaseController
     public function getAllTicketsCountsAction(Request $request)
     {
         $groupby = $request->query->get('group_by');
-        $sets = $this->getEm()->getRepository('App:TicketFilterSet')->findAll();
+        $sets    = $this->getEm()->getRepository('App:TicketFilterSet')->findAll();
 
         $filter_set_counts = [];
-        foreach($sets as $set) {
+        foreach ($sets as $set) {
             $filter_set_counts[] = $this->getFilterSetTicketsCount($set, $groupby);
         }
 
@@ -370,7 +359,7 @@ class TicketFilterSetsController extends BaseController
 
         $submitted = $request->request->all();
 
-        if(array_key_exists('is_default', $submitted)) {
+        if (array_key_exists('is_default', $submitted)) {
             $submitted['is_default'] = $submitted['is_default'] == true;
         }
 
@@ -384,12 +373,12 @@ class TicketFilterSetsController extends BaseController
                 $this->DataSerialize($set),
                 $status,
                 array(
-                    'Location' => $this->generateUrl('api_ticket_filter_sets_get', array('id' => $set->getId()))
+                    'Location' => $this->generateUrl('api_ticket_filter_sets_get', array('id' => $set->getId())),
                 )
             );
         } else {
-            foreach($form->getErrors() as $error) {
-                echo $error->getMessage() . "\n";
+            foreach ($form->getErrors() as $error) {
+                echo $error->getMessage()."\n";
             }
             throw new InvalidFormException($form); // let our listeners generate the form error response
         }

@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\AppPackage;
@@ -42,8 +42,6 @@ use Orb\Auth\Adapter\CallbackInterface;
 use Orb\Auth\Adapter\ExtraDetailsInterface;
 use Orb\Auth\Adapter\IframeSsoInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
-use Application\DeskPRO\Entity\PersonUsersourceAssoc;
-use Orb\Validator\StringEmail;
 
 class UsersourcesController extends AbstractController
 {
@@ -52,7 +50,7 @@ class UsersourcesController extends AbstractController
         // find Usersource
         $sources = $this->getUsersourceManager()->getAll()->mustBeEnabled()->mustHaveId($usersource_id);
         if (!$source = $sources->getFirstOrNull()) {
-            throw $this->createNotFoundException('usersource id=' . $usersource_id . ' not found or not enabled');
+            throw $this->createNotFoundException('usersource id='.$usersource_id.' not found or not enabled');
         }
 
         /** @var \Application\DeskPRO\Usersource\Sync\SyncManager $sync_manager */
@@ -194,10 +192,11 @@ class UsersourcesController extends AbstractController
     public function syncStatusAction()
     {
         $next = $this->getSyncManager()->getNextScheduledSyncDate();
+
         return $this->createApiResponse(
             array(
                 'running_now' => $this->getSyncManager()->isSyncRunning(),
-                'next_sync' => $next ? $next->format('Y-m-d H:i:s') : null
+                'next_sync'   => $next ? $next->format('Y-m-d H:i:s') : null,
             )
         );
     }
@@ -207,7 +206,7 @@ class UsersourcesController extends AbstractController
         $source = $this->getUsersourceManager()->getAll()->withAppId($app_id)->getFirstOrNull();
 
         if (!$source) {
-            throw $this->createNotFoundException('usersource app id=' . $app_id);
+            throw $this->createNotFoundException('usersource app id='.$app_id);
         }
 
         $sync_log = null;
@@ -228,7 +227,7 @@ class UsersourcesController extends AbstractController
             $sync_log['phase_2_running'] = false;
             if (null === $most_recent_log->getDateEnd()) {
                 $sync_log['phase_2_running'] = true;
-                $sync_log['phase_2_show'] = false;
+                $sync_log['phase_2_show']    = false;
             } elseif ($time_two > 2) { // don't show phase 2 unless it took at least a few seconds
                 $sync_log['phase_2_show'] = true;
             } else {
@@ -238,7 +237,7 @@ class UsersourcesController extends AbstractController
 
         return $this->createApiResponse(
             array(
-                'sync_log' => $sync_log
+                'sync_log' => $sync_log,
             )
         );
     }
@@ -264,7 +263,7 @@ class UsersourcesController extends AbstractController
         $source = $sources->withAppId($app_id)->getFirstOrNull();
 
         if (!$source) {
-            throw $this->createNotFoundException('usersource app id=' . $app_id . ' not found for interface='.$type);
+            throw $this->createNotFoundException('usersource app id='.$app_id.' not found for interface='.$type);
         }
 
         $adapter = $this->container->getSystemService('usersource_auth_adapter_factory')->getAuthAdapter($source, null, $type);
@@ -408,6 +407,7 @@ class UsersourcesController extends AbstractController
 
     /**
      * @param $email
+     *
      * @return Person
      */
     protected function createPerson($email)

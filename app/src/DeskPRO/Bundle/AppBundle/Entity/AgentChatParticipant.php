@@ -1,46 +1,48 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
-/**
- * DeskPRO
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
+ *
  * @category Entities
  */
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
-use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
-use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class AgentChatParticipant
+ * Class AgentChatParticipant.
+ *
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatParticipant")
  * @ORM\Table(name="agent_chat_participant")
  * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
@@ -49,7 +51,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class AgentChatParticipant extends DomainObject
 {
     /**
-     * @var integer
+     * @var int
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="IDENTITY")
@@ -131,6 +133,7 @@ class AgentChatParticipant extends DomainObject
     public function setChat(AgentChat $chat)
     {
         $this->chat = $chat;
+
         return $this;
     }
     /**
@@ -145,14 +148,14 @@ class AgentChatParticipant extends DomainObject
      */
     public function getPersonList()
     {
-        if($this->person) {
+        if ($this->person) {
             return array($this->getPerson());
-        } elseif($this->team) {
+        } elseif ($this->team) {
             return $this->team->getPersonList();
-        } elseif($this->department) {
+        } elseif ($this->department) {
             return $this->department->getPersonList();
         } else {
-            return null;
+            return;
         }
     }
     /**
@@ -162,9 +165,10 @@ class AgentChatParticipant extends DomainObject
      */
     public function setPerson(Person $person)
     {
-        $this->person = $person;
+        $this->person     = $person;
         $this->department = null;
-        $this->team = null;
+        $this->team       = null;
+
         return $this;
     }
     /**
@@ -181,9 +185,10 @@ class AgentChatParticipant extends DomainObject
      */
     public function setTeam(AgentTeam $team)
     {
-        $this->team = $team;
+        $this->team       = $team;
         $this->department = null;
-        $this->person = null;
+        $this->person     = null;
+
         return $this;
     }
     /**
@@ -201,8 +206,9 @@ class AgentChatParticipant extends DomainObject
     public function setDepartment(Department $department)
     {
         $this->department = $department;
-        $this->person = null;
-        $this->team = null;
+        $this->person     = null;
+        $this->team       = null;
+
         return $this;
     }
     /**
@@ -210,8 +216,10 @@ class AgentChatParticipant extends DomainObject
      *
      * @return $this
      */
-    public function setAdmin($is_admin = false) {
+    public function setAdmin($is_admin = false)
+    {
         $this->is_admin = $is_admin;
+
         return $this;
     }
 

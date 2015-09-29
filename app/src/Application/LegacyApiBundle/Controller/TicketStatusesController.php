@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Tickets\TicketPurger;
@@ -47,7 +47,7 @@ use Orb\Util\Arrays;
 class TicketStatusesController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
@@ -65,7 +65,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      * 		method="GET",
      * 		summary="Overall ticket statistic",
      * 		notes="Tickets grouped by their status and counted",
-     *		type="array",
+     *		type="array",.
      *
      *  )
      * )
@@ -74,11 +74,11 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      */
     public function getStatsAction()
     {
-        $stats = $this->db->fetchAllKeyValue("
+        $stats = $this->db->fetchAllKeyValue('
             SELECT status, COUNT(*)
             FROM tickets
             GROUP BY status
-        ");
+        ');
 
         $h_stats = $this->db->fetchAllKeyValue("
             SELECT hidden_status, COUNT(*)
@@ -99,7 +99,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     # get-archived-info
     ####################################################################################################################
 
-	/**
+    /**
      * SWG\Api(
      * 	path="/ticket_statuses/archived",
      * 	SWG\Operation(
@@ -107,10 +107,9 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      * 		summary="Return archivation settings",
      * 		notes="",
      *  )
-     * )
+     * ).
      *
      * @return Response
-     *
      */
     public function getArchivedInfoAction()
     {
@@ -128,7 +127,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     # save-archived-settings
     ####################################################################################################################
 
-	/**
+    /**
      * @return Response
      *
      * SWG\Api(
@@ -173,10 +172,9 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      * 		summary="Clean search status",
      * 		notes="",
      *  )
-     * )
+     * ).
      *
      * @return Response
-     *
      */
     public function resetSearchTablesAction()
     {
@@ -197,10 +195,9 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      * 		summary="Return deleted tickets autopurge settings",
      * 		notes="",
      *  )
-     * )
+     * ).
      *
      * @return Response
-     *
      */
     public function getDeletedInfoAction()
     {
@@ -213,8 +210,9 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
         ));
     }
 
-	/**
-     * Purge deleted tickets manually
+    /**
+     * Purge deleted tickets manually.
+     *
      * @return Response
      *
      * SWG\Api(
@@ -280,9 +278,9 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      * 		summary="Return spam autodelete settings",
      * 		notes="",
      *  )
-     * )
-     * @return Response
+     * ).
      *
+     * @return Response
      */
     public function getSpamInfoAction()
     {
@@ -295,8 +293,9 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
         ));
     }
 
-	/**
-     * Purge spam tickets manually
+    /**
+     * Purge spam tickets manually.
+     *
      * @return Response
      *
      * SWG\Api(
@@ -322,7 +321,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     # save-spam-settings
     ####################################################################################################################
 
-	/**
+    /**
      * @return Response
      *
      * SWG\Api(

@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
@@ -32,10 +33,9 @@ use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use DateTime;
 
 /**
- * Feedback csv file parser
+ * Feedback csv file parser.
  *
  * Class Feedback
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
 final class Feedback extends AbstractParser
 {
@@ -74,7 +74,7 @@ final class Feedback extends AbstractParser
                 if ($entity) {
                     foreach ($attachments as $attachment) {
                         /** @var Entity\Attachment $attachment */
-                        if ($attachment->getDestination() === self::FEEDBACK_PREFIX . $entity->getOid()) {
+                        if ($attachment->getDestination() === self::FEEDBACK_PREFIX.$entity->getOid()) {
                             $entity->addAttachment($attachment);
                         }
                     }
@@ -84,7 +84,6 @@ final class Feedback extends AbstractParser
                 } else {
                     $this->logWarning(sprintf('Invalid feedback record `%d` found (Skipping)', $num));
                 }
-
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid feedback record `%d` found (Skipping): %s',
@@ -97,9 +96,10 @@ final class Feedback extends AbstractParser
     }
 
     /**
-     * Returns a feedback entity
+     * Returns a feedback entity.
      *
      * @param array $feedback
+     *
      * @return Entity\Feedback|null
      */
     private function exportFeedback(array $feedback)
@@ -107,7 +107,7 @@ final class Feedback extends AbstractParser
         if ($this->isFeedbackValid($feedback)) {
             $entity = new Entity\Feedback();
             $entity
-                ->setDestination('feedback_' . $feedback['id'])
+                ->setDestination('feedback_'.$feedback['id'])
                 ->setOid($feedback['id'])
                 ->setPersonEmail($feedback['person'])
                 ->setLanguage($feedback['language'])
@@ -129,11 +129,11 @@ final class Feedback extends AbstractParser
             return $entity;
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Returns a collection of ticket attachments
+     * Returns a collection of ticket attachments.
      *
      * @return Entity\Collection
      */
@@ -143,9 +143,10 @@ final class Feedback extends AbstractParser
     }
 
     /**
-     * Check if feedback has all required columns
+     * Check if feedback has all required columns.
      *
      * @param array $feedback
+     *
      * @return bool
      */
     private function isFeedbackValid(array $feedback)
@@ -169,7 +170,7 @@ final class Feedback extends AbstractParser
     }
 
     /**
-     * Returns record type reader config
+     * Returns record type reader config.
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
@@ -179,7 +180,7 @@ final class Feedback extends AbstractParser
     }
 
     /**
-     * Returns reader config of feedback attachment records
+     * Returns reader config of feedback attachment records.
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */

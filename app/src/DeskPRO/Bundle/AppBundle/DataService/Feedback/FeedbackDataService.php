@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
@@ -39,9 +39,9 @@ use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
+use Doctrine\ORM\Query\QueryException;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Doctrine\ORM\Query\QueryException;
 
 class FeedbackDataService extends AbstractDataService
 {
@@ -55,7 +55,7 @@ class FeedbackDataService extends AbstractDataService
         return $this->generateAndCache(
             array('hasAny'),
             function () use ($em) {
-                return $em->getConnection()->fetchColumn("SELECT COUNT(*) FROM feedback LIMIT 1") ? true : false;
+                return $em->getConnection()->fetchColumn('SELECT COUNT(*) FROM feedback LIMIT 1') ? true : false;
             }
         );
     }
@@ -248,19 +248,16 @@ class FeedbackDataService extends AbstractDataService
     }
 
     /**
-     *
-     *
-     * NEW CODE (Aug.2015)
-     *
+     * NEW CODE (Aug.2015).
      */
 
-
     /**
-     * Select filtered list of feedback
+     * Select filtered list of feedback.
      *
      * @param Criteria $criteria
-     * @param int $page
-     * @param int $count
+     * @param int      $page
+     * @param int      $count
+     *
      * @return array
      */
     public function selectFeedback(Criteria $criteria, $page, $count)
@@ -287,8 +284,10 @@ class FeedbackDataService extends AbstractDataService
 
     /**
      * @param FeedbackCountCriteria $criteria
-     * @return Count
+     *
      * @throws \LogicException
+     *
+     * @return Count
      */
     public function countFeedback(FeedbackCountCriteria $criteria)
     {
@@ -297,6 +296,7 @@ class FeedbackDataService extends AbstractDataService
 
     /**
      * @param FeedbackCountCriteria $criteria
+     *
      * @return Count
      */
     private function countFlat(FeedbackCountCriteria $criteria)
@@ -316,8 +316,10 @@ class FeedbackDataService extends AbstractDataService
 
     /**
      * @param FeedbackCountCriteria $criteria
-     * @return Count
+     *
      * @throws \LogicException
+     *
+     * @return Count
      */
     private function countGrouped(FeedbackCountCriteria $criteria)
     {
@@ -327,7 +329,7 @@ class FeedbackDataService extends AbstractDataService
         $criteria->applyFilters($qb);
         $criteria->applyGroupBy($qb);
         $result = $qb->getQuery()->getArrayResult();
-        $count = Count::fromGroupedBy($criteria->getGroupBy());
+        $count  = Count::fromGroupedBy($criteria->getGroupBy());
         foreach ($result as $group) {
             $count->add($group['value']);
             $count->addNested($group['value'], $group['group_name']);
@@ -336,10 +338,9 @@ class FeedbackDataService extends AbstractDataService
         return $count;
     }
 
-
     public function countsByType()
     {
-        /** @ToDo move to FeedbackRepository after removing old code */
+        /* @ToDo move to FeedbackRepository after removing old code */
         $qb = $this->em->createQueryBuilder();
         $qb->select('category.title as title', 'category.id as id', 'count(f) as value')
             ->from('DeskPRO:Feedback', 'f')

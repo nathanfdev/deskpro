@@ -1,62 +1,58 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpMethod;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpMethod
  */
 class PhpMethodSpec extends ObjectBehavior
 {
-    function it_has_a_mutable_name()
+    public function it_has_a_mutable_name()
     {
         $this->getName()->shouldBe(null);
         $this->setName('name');
         $this->getName()->shouldBe('name');
     }
 
-    function it_has_a_mutable_method_body()
+    public function it_has_a_mutable_method_body()
     {
         $this->getCode()->shouldBe(null);
         $this->setCode('<?php echo "hi";');
         $this->getCode()->shouldBe('<?php echo "hi";');
     }
 
-    function it_has_a_collection_or_arguemnts()
+    public function it_has_a_collection_or_arguemnts()
     {
         $this->getArguments()->shouldBe(array());
 
@@ -67,19 +63,19 @@ class PhpMethodSpec extends ObjectBehavior
         $this->getArguments()->shouldBe(
             array(
                 'ticket' => array(
-                    'name' => 'ticket',
-                    'type' => 'Application\DeskPRO\Entity\Ticket',
-                    'default' => null
+                    'name'    => 'ticket',
+                    'type'    => 'Application\DeskPRO\Entity\Ticket',
+                    'default' => null,
                 ),
                 'string' => array(
-                    'name' => 'string',
-                    'type' => null,
-                    'default' => 'def'
+                    'name'    => 'string',
+                    'type'    => null,
+                    'default' => 'def',
                 ),
                 'array' => array(
-                    'name' => 'array',
-                    'type' => 'array',
-                    'default' => 'array()'
+                    'name'    => 'array',
+                    'type'    => 'array',
+                    'default' => 'array()',
                 ),
             )
         );
@@ -90,15 +86,15 @@ class PhpMethodSpec extends ObjectBehavior
         $this->getArguments()->shouldBe(
             array(
                 'array' => array(
-                    'name' => 'array',
-                    'type' => 'array',
-                    'default' => 'array()'
+                    'name'    => 'array',
+                    'type'    => 'array',
+                    'default' => 'array()',
                 ),
             )
         );
     }
 
-    function it_has_a_visibility()
+    public function it_has_a_visibility()
     {
         $this->getVisibility()->shouldBe('public');
 
@@ -107,7 +103,7 @@ class PhpMethodSpec extends ObjectBehavior
         $this->getVisibility()->shouldBe('private');
     }
 
-    function it_can_convert_itself_into_a_string()
+    public function it_can_convert_itself_into_a_string()
     {
         $this->addArgument('ticket', '\Application\DeskPRO\Entity\Ticket');
         $this->addArgument('string', null, 'def');

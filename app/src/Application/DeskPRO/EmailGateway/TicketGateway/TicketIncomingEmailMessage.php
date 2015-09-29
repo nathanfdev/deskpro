@@ -1,41 +1,41 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category EmailGateway
  */
-
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\EmailGateway\InlineImageTokens;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
+use Application\DeskPRO\EmailGateway\InlineImageTokens;
 use Application\DeskPRO\Entity\Ticket;
 use Orb\Input\Cleaner\Cleaner;
 use Orb\Log\Logger;
@@ -286,13 +286,13 @@ class TicketIncomingEmailMessage
                 $cut         = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
                 $generic_cut = $cut->cutQuoteBlock($this->body, false);
                 if ($this->body != $generic_cut) {
-                    $this->logMessage("Generic cutter matched");
+                    $this->logMessage('Generic cutter matched');
                     $this->body             = $generic_cut;
                     $this->generic_cut      = $generic_cut;
                     $this->found_top_marker = true;
                     $has_cut                = true;
                 } else {
-                    $this->logMessage("Generic cutter did not match");
+                    $this->logMessage('Generic cutter did not match');
                     $this->found_top_marker = false;
                 }
 
@@ -301,26 +301,26 @@ class TicketIncomingEmailMessage
                     $pattern_config = new \Application\DeskPRO\Config\UserFileConfig('text-cut-patterns');
                     $cutter->addPatterns($pattern_config->all());
                     $cutter->setRequireFrom($cutters_require_from);
-                    $this->logMessage("Text cutter set require from: ".implode(', ', $cutters_require_from));
+                    $this->logMessage('Text cutter set require from: '.implode(', ', $cutters_require_from));
 
                     $this->body = $cutter->cutQuoteBlock($this->body, false);
 
                     if ($cutter->getMatchedPatterns()) {
                         $has_text_cut = true;
                         foreach ($cutter->getMatchedPatterns() as $p) {
-                            $this->logMessage("Text cutter matched pattern: ".$p->getPattern());
+                            $this->logMessage('Text cutter matched pattern: '.$p->getPattern());
                         }
                     } else {
-                        $this->logMessage("Text cutter did not match any pattern");
+                        $this->logMessage('Text cutter did not match any pattern');
                     }
 
                     // Run generic cutter as well, in case it matches higher
                     $parts = $cut->splitFromFirstHeaderText($this->body);
                     if ($parts && count($parts) == 2) {
-                        $this->logMessage("Split header cutter matched, cut from standard quote headers");
+                        $this->logMessage('Split header cutter matched, cut from standard quote headers');
                         $this->body = trim($parts[0]);
                     } else {
-                        $this->logMessage("Split header cutter did not match");
+                        $this->logMessage('Split header cutter did not match');
                     }
                 }
             }
@@ -329,9 +329,9 @@ class TicketIncomingEmailMessage
             $this->body_full   = Strings::utf8_bad_strip($this->body_full);
             $this->generic_cut = Strings::utf8_bad_strip($this->generic_cut);
 
-            $this->body = Strings::text2html($this->body, 'plaintext-email');
-            $this->body_full = Strings::text2html($this->body_full, 'plaintext-email');
-            $this->generic_cut = Strings::text2html($this->generic_cut, 'plaintext-email');
+            $this->body         = Strings::text2html($this->body, 'plaintext-email');
+            $this->body_full    = Strings::text2html($this->body_full, 'plaintext-email');
+            $this->generic_cut  = Strings::text2html($this->generic_cut, 'plaintext-email');
             $this->body_is_html = false;
         }
 
@@ -374,12 +374,12 @@ class TicketIncomingEmailMessage
                     if ($this->found_top_marker) {
                         $cutter->setLimit(1);
                         $cutter->setMaxLinesFromEnd(18);
-                        $this->logMessage("HTML cutter set limit =1 , max lines = 18");
+                        $this->logMessage('HTML cutter set limit =1 , max lines = 18');
 
                     // We didnt cut, so the cutline is missing so we need to guess based on our email address
                     } else {
                         $cutter->setRequireFrom($cutters_require_from);
-                        $this->logMessage("HTML cutter set require from: ".implode(', ', $cutters_require_from));
+                        $this->logMessage('HTML cutter set require from: '.implode(', ', $cutters_require_from));
                     }
 
                     $this->body = $cutter->cutQuoteBlock($this->body, true);
@@ -387,10 +387,10 @@ class TicketIncomingEmailMessage
                     if ($cutter->getMatchedPatterns()) {
                         $has_cut = true;
                         foreach ($cutter->getMatchedPatterns() as $p) {
-                            $this->logMessage("Cutter matched pattern: ".$p->getPattern());
+                            $this->logMessage('Cutter matched pattern: '.$p->getPattern());
                         }
                     } else {
-                        $this->logMessage("Cutter did not match any pattern");
+                        $this->logMessage('Cutter did not match any pattern');
                     }
                 }
 
@@ -417,7 +417,7 @@ class TicketIncomingEmailMessage
 
             $this->body_full .= "\n\n";
             if ($this->body_is_html) {
-                $this->body_full .= "<br /><br />";
+                $this->body_full .= '<br /><br />';
             }
 
             $this->body_full .= App::getTranslator()->phrase('user.emails.message-clipped');

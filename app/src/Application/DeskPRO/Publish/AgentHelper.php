@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Publish;
 
 use Application\DeskPRO\App;
@@ -166,7 +166,7 @@ class AgentHelper implements PersonContextInterface
             ) AS $alias";
         }
 
-        $sql     =  "SELECT ".implode(', ', $sql_parts);
+        $sql     = 'SELECT '.implode(', ', $sql_parts);
         $results = $db->fetchAssoc($sql);
 
         return array_sum($results);
@@ -196,10 +196,10 @@ class AgentHelper implements PersonContextInterface
         }
 
         $types = array(
-            'articles'       => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
-            'downloads'                              => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
-            'news'                                                           => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
-            'feedback'                                                                               => array('content_type' => 'feedback',     'entity' => 'DeskPRO:Feedback',     'id_field' => 'feedback_id',     'rev_table' => 'feedback_revisions'),
+            'articles'  => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
+            'downloads' => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
+            'news'      => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
+            'feedback'  => array('content_type' => 'feedback',     'entity' => 'DeskPRO:Feedback',     'id_field' => 'feedback_id',     'rev_table' => 'feedback_revisions'),
         );
 
         #------------------------------
@@ -329,7 +329,7 @@ class AgentHelper implements PersonContextInterface
             ) AS $alias";
         }
 
-        $sql     =  "SELECT ".implode(', ', $sql_parts);
+        $sql     = 'SELECT '.implode(', ', $sql_parts);
         $results = $db->fetchAssoc($sql);
 
         return array_sum($results);
@@ -434,7 +434,7 @@ class AgentHelper implements PersonContextInterface
             ) AS $alias";
         }
 
-        $sql     =  "SELECT ".implode(', ', $sql_parts);
+        $sql     = 'SELECT '.implode(', ', $sql_parts);
         $results = $db->fetchAssoc($sql);
 
         $count_all = array_sum($results);
@@ -448,10 +448,10 @@ class AgentHelper implements PersonContextInterface
     public function getCommentTypeInfo($for_type = null, $prop = null)
     {
         static $types = array(
-            'articles'     => array('content_type' => 'articles',     'table' => 'article_comments',        'entity' => 'DeskPRO:ArticleComment',       'id_field' => 'article_id'),
-            'downloads'                            => array('content_type' => 'downloads',    'table' => 'download_comments',       'entity' => 'DeskPRO:DownloadComment',      'id_field' => 'download_id'),
-            'news'                                                         => array('content_type' => 'news',         'table' => 'news_comments',           'entity' => 'DeskPRO:NewsComment',          'id_field' => 'news_id'),
-            'feedback'                                                                             => array('content_type' => 'feedback',     'table' => 'feedback_comments',       'entity' => 'DeskPRO:FeedbackComment',      'id_field' => 'feedback_id'),
+            'articles'  => array('content_type' => 'articles',     'table' => 'article_comments',        'entity' => 'DeskPRO:ArticleComment',       'id_field' => 'article_id'),
+            'downloads' => array('content_type' => 'downloads',    'table' => 'download_comments',       'entity' => 'DeskPRO:DownloadComment',      'id_field' => 'download_id'),
+            'news'      => array('content_type' => 'news',         'table' => 'news_comments',           'entity' => 'DeskPRO:NewsComment',          'id_field' => 'news_id'),
+            'feedback'  => array('content_type' => 'feedback',     'table' => 'feedback_comments',       'entity' => 'DeskPRO:FeedbackComment',      'id_field' => 'feedback_id'),
         );
 
         if ($for_type !== null) {
@@ -505,10 +505,10 @@ class AgentHelper implements PersonContextInterface
         }
 
         $types = array(
-            'articles'       => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
-            'downloads'                              => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
-            'news'                                                           => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
-            'feedback'                                                                               => array('content_type' => 'feedback',     'entity' => 'DeskPRO:Feedback',     'id_field' => 'feedback_id',     'rev_table' => 'feedback_revisions'),
+            'articles'  => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
+            'downloads' => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
+            'news'      => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
+            'feedback'  => array('content_type' => 'feedback',     'entity' => 'DeskPRO:Feedback',     'id_field' => 'feedback_id',     'rev_table' => 'feedback_revisions'),
         );
 
         #------------------------------
@@ -554,10 +554,10 @@ class AgentHelper implements PersonContextInterface
     public function getDraftsCount($mine = true)
     {
         $types = array(
-            'articles'       => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
-            'downloads'                              => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
-            'news'                                                           => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
-            'feedback'                                                                               => array('content_type' => 'feedback',     'entity' => 'DeskPRO:Feedback',     'id_field' => 'feedback_id',     'rev_table' => 'feedback_revisions'),
+            'articles'  => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
+            'downloads' => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
+            'news'      => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
+            'feedback'  => array('content_type' => 'feedback',     'entity' => 'DeskPRO:Feedback',     'id_field' => 'feedback_id',     'rev_table' => 'feedback_revisions'),
         );
 
         $db        = App::getDb();
@@ -580,7 +580,7 @@ class AgentHelper implements PersonContextInterface
             ) AS $alias";
         }
 
-        $sql =  "SELECT ".implode(', ', $sql_parts);
+        $sql = 'SELECT '.implode(', ', $sql_parts);
 
         $results = $db->fetchAssoc($sql);
 
@@ -597,10 +597,10 @@ class AgentHelper implements PersonContextInterface
     public function getContentFromInfo($results)
     {
         $types = array(
-            'articles'       => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
-            'downloads'                              => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
-            'news'                                                           => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
-            'feedback'                                                                               => array('content_type' => 'feedback',     'entity' => 'DeskPRO:Feedback',     'id_field' => 'feedback_id',     'rev_table' => 'feedback_revisions'),
+            'articles'  => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
+            'downloads' => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
+            'news'      => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
+            'feedback'  => array('content_type' => 'feedback',     'entity' => 'DeskPRO:Feedback',     'id_field' => 'feedback_id',     'rev_table' => 'feedback_revisions'),
         );
 
         #------------------------------
@@ -648,6 +648,7 @@ class AgentHelper implements PersonContextInterface
      *
      *
      * @param $type
+     *
      * @throws \InvalidArgumentException
      *
      * @return string
@@ -677,6 +678,7 @@ class AgentHelper implements PersonContextInterface
      *
      *
      * @param $type
+     *
      * @throws \InvalidArgumentException
      *
      * @return string

@@ -1,44 +1,44 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Twig\TokenParser;
 
-use Twig_Token;
 use DeskPRO\Bundle\PortalBundle\Twig\Node\ShowNode;
+use Twig_Token;
 
 /**
  * Show a tag using context of current page: {% show some_tag %}
  * Show a tag without using context:         {% show section some_tag %}
  * Show a tag with context and with vars:    {% show some_tag with {vars} %}
- * Show a tag without context and with vars: {% show section some_tag with {vars} %}
+ * Show a tag without context and with vars: {% show section some_tag with {vars} %}.
  */
 class ShowParser extends \Twig_TokenParser
 {
@@ -50,7 +50,7 @@ class ShowParser extends \Twig_TokenParser
     /**
      * @param \Twig_Extension $ext
      */
-    function __construct(\Twig_Extension $ext)
+    public function __construct(\Twig_Extension $ext)
     {
         $this->ext = $ext;
     }
@@ -79,7 +79,7 @@ class ShowParser extends \Twig_TokenParser
             array(
                 'tag_name'    => $name,
                 'is_page_tag' => $this_page,
-                'ext_name'    => $this->ext->getName()
+                'ext_name'    => $this->ext->getName(),
             ),
             $token->getLine(),
             $this->getTag()

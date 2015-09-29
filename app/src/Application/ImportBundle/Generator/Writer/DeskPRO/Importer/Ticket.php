@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
@@ -33,10 +34,9 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro ticket importer
+ * DeskPro ticket importer.
  *
  * Class Ticket
- * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
  */
 final class Ticket extends AbstractImporter
 {
@@ -51,7 +51,7 @@ final class Ticket extends AbstractImporter
     private $blob_adapter;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Mapper\Collection    $mappers
      * @param TicketManager        $manager
@@ -76,7 +76,7 @@ final class Ticket extends AbstractImporter
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Ticket $entity
+     * @var Entity\Ticket
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
@@ -115,17 +115,19 @@ final class Ticket extends AbstractImporter
         }
 
         $this->records->add($ticket);
+
         return $this->records;
     }
 
     /**
      * Returns a ticket entity
-     * Creates a new ticket if not found
+     * Creates a new ticket if not found.
      *
      * @param Entity\Ticket $entity
      *
-     * @return DeskPROEntity\Ticket
      * @throws \Exception
+     *
+     * @return DeskPROEntity\Ticket
      */
     private function findOrCreateTicket(Entity\Ticket $entity)
     {
@@ -146,7 +148,7 @@ final class Ticket extends AbstractImporter
                 ->setTicket($ticket)
                 ->setActionType('free')
                 ->setDetails(array(
-                    'message' => $entity->getLogMessage() ? : sprintf('Imported (old ticket ID #%s)', $entity->getOid()),
+                    'message' => $entity->getLogMessage() ?: sprintf('Imported (old ticket ID #%s)', $entity->getOid()),
                 ))
             ;
 
@@ -158,7 +160,7 @@ final class Ticket extends AbstractImporter
 
     /**
      * Returns the importing DeskPRO doctrine ticket message entity
-     * We should pass ticket entity due to set attachment ticket_id field
+     * We should pass ticket entity due to set attachment ticket_id field.
      *
      * @param Entity\TicketMessage $entity
      * @param DeskPROEntity\Ticket $ticket
@@ -186,11 +188,12 @@ final class Ticket extends AbstractImporter
         }
 
         $this->records->add($message);
+
         return $message;
     }
 
     /**
-     * Returns the importing DeskPRO doctrine ticket message attachment entity
+     * Returns the importing DeskPRO doctrine ticket message attachment entity.
      *
      * @param Entity\Attachment $entity
      * @param string            $person_email
@@ -199,7 +202,7 @@ final class Ticket extends AbstractImporter
      */
     private function createAttachment(Entity\Attachment $entity, $person_email)
     {
-        $email = $entity->getPersonEmail() ? : $person_email;
+        $email      = $entity->getPersonEmail() ?: $person_email;
         $attachment = new DeskPROEntity\TicketAttachment();
         $attachment
             ->setPerson($this->getPersonMapper()->findOneByEmail($email))
@@ -210,12 +213,13 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns the importing DeskPRO doctrine ticket participant entity
+     * Returns the importing DeskPRO doctrine ticket participant entity.
      *
      * @param string $email
      *
-     * @return DeskPROEntity\TicketParticipant
      * @throws Mapper\MapperException
+     *
+     * @return DeskPROEntity\TicketParticipant
      */
     private function createParticipant($email)
     {
@@ -223,17 +227,19 @@ final class Ticket extends AbstractImporter
         $participant->setPerson($this->getPersonMapper()->findOneByEmail($email));
 
         $this->records->add($participant);
+
         return $participant;
     }
 
     /**
      * Returns a department by title
-     * Creates a new department if not found
+     * Creates a new department if not found.
      *
      * @param string $title
      *
-     * @return DeskPROEntity\Department|null
      * @throws \Exception
+     *
+     * @return DeskPROEntity\Department|null
      */
     private function findOrCreateTicketDepartment($title)
     {
@@ -259,12 +265,13 @@ final class Ticket extends AbstractImporter
 
     /**
      * Returns a ticket priority by title
-     * Creates a new ticket priority if not found
+     * Creates a new ticket priority if not found.
      *
      * @param Entity\TicketPriority $entity
      *
-     * @return DeskPROEntity\TicketPriority|null
      * @throws \Exception
+     *
+     * @return DeskPROEntity\TicketPriority|null
      */
     private function findOrCreateTicketPriority(Entity\TicketPriority $entity = null)
     {
@@ -289,12 +296,13 @@ final class Ticket extends AbstractImporter
 
     /**
      * Returns a ticket category by title
-     * Creates a new ticket category if not found
+     * Creates a new ticket category if not found.
      *
      * @param string $title
      *
-     * @return DeskPROEntity\TicketCategory|null
      * @throws \Exception
+     *
+     * @return DeskPROEntity\TicketCategory|null
      */
     private function findOrCreateTicketCategory($title)
     {
@@ -316,12 +324,13 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns custom def person entity
+     * Returns custom def person entity.
      *
      * @param Entity\CustomField $entity
      *
-     * @return DeskPROEntity\CustomDataTicket
      * @throws ImporterException
+     *
+     * @return DeskPROEntity\CustomDataTicket
      */
     private function createCustomData(Entity\CustomField $entity)
     {
@@ -368,14 +377,16 @@ final class Ticket extends AbstractImporter
         }
 
         $this->records->add($custom_field);
+
         return $custom_field;
     }
 
     /**
-     * Returns the ticket department mapper
+     * Returns the ticket department mapper.
+     *
+     * @throws \Exception
      *
      * @return Mapper\TicketDepartment
-     * @throws \Exception
      */
     private function getTicketDepartmentMapper()
     {
@@ -383,10 +394,11 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns the ticket priority mapper
+     * Returns the ticket priority mapper.
+     *
+     * @throws \Exception
      *
      * @return Mapper\TicketPriority
-     * @throws \Exception
      */
     private function getTicketPriorityMapper()
     {
@@ -394,10 +406,11 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns the ticket category mapper
+     * Returns the ticket category mapper.
+     *
+     * @throws \Exception
      *
      * @return Mapper\TicketCategory
-     * @throws \Exception
      */
     private function getTicketCategoryMapper()
     {
@@ -405,10 +418,11 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns the custom def person mapper
+     * Returns the custom def person mapper.
+     *
+     * @throws \Exception
      *
      * @return Mapper\CustomDefTicket
-     * @throws \Exception
      */
     private function getCustomDefTicketMapper()
     {

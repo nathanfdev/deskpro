@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\BlobStorage;
 
 use Doctrine\ORM\EntityManager;
@@ -173,7 +173,7 @@ class MoveBlobsUtil implements Loggable
 
             $this->logger->logDebug("{$x}. Processing blob #{$blob['id']}");
             if ($blob->storage_loc == $blob->storage_loc_pref) {
-                $this->logger->logInfo("Already using preferred storage");
+                $this->logger->logInfo('Already using preferred storage');
                 $blob->storage_loc_pref = null;
                 $this->em->persist($blob);
                 $this->em->flush();
@@ -185,7 +185,7 @@ class MoveBlobsUtil implements Loggable
             try {
                 $this->bs->moveBlobRecordToAdapter($blob, $blob->storage_loc_pref);
             } catch (\Exception $e) {
-                $this->logger->logError("Error: ".$e->getMessage());
+                $this->logger->logError('Error: '.$e->getMessage());
                 if (!$this->ignore_error) {
                     $this->logger->logDebug('Aborting');
                     break;
@@ -196,9 +196,9 @@ class MoveBlobsUtil implements Loggable
             $this->em->persist($blob);
             $this->em->flush();
 
-            $this->logger->logDebug(sprintf("Done in %.3fs", microtime(true) - $t));
+            $this->logger->logDebug(sprintf('Done in %.3fs', microtime(true) - $t));
 
-            $x++;
+            ++$x;
             if ($this->limit) {
                 if ($x >= $this->limit) {
                     $this->logger->logInfo('Limit reached, breaking');
@@ -215,7 +215,7 @@ class MoveBlobsUtil implements Loggable
             }
         }
 
-        $this->logger->logInfo(sprintf("<info>Moved %d blobs in %.3fs</info>", $x, microtime(true) - $start_t));
+        $this->logger->logInfo(sprintf('<info>Moved %d blobs in %.3fs</info>', $x, microtime(true) - $start_t));
 
         return $x;
     }

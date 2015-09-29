@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -60,7 +60,7 @@ class Build1400056735 extends AbstractBuild
         require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/TriggerActionConverter.php';
         require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/TriggerTermConverter.php';
 
-        $this->out("Upgrading SLAs");
+        $this->out('Upgrading SLAs');
 
         #------------------------------
         # Init helpers
@@ -103,11 +103,11 @@ class Build1400056735 extends AbstractBuild
         }
 
         foreach ($slas as $sla) {
-            $sla['@people']          = isset($sla_people[$sla['id']]) ? $sla_people[$sla['id']] : array();
-            $sla['@orgs']            = isset($sla_orgs[$sla['id']]) ? $sla_orgs[$sla['id']] : array();
-            $sla['@apply_trigger']   = $sla['apply_trigger_id'] && isset($old_triggers[$sla['apply_trigger_id']]) ? $old_triggers[$sla['apply_trigger_id']] : null;
-            $sla['@warn_trigger']    = $sla['warning_trigger_id'] && isset($old_triggers[$sla['warning_trigger_id']]) ? $old_triggers[$sla['warning_trigger_id']] : null;
-            $sla['@fail_trigger']    = $sla['fail_trigger_id'] && isset($old_triggers[$sla['fail_trigger_id']]) ? $old_triggers[$sla['fail_trigger_id']] : null;
+            $sla['@people']        = isset($sla_people[$sla['id']]) ? $sla_people[$sla['id']] : array();
+            $sla['@orgs']          = isset($sla_orgs[$sla['id']]) ? $sla_orgs[$sla['id']] : array();
+            $sla['@apply_trigger'] = $sla['apply_trigger_id'] && isset($old_triggers[$sla['apply_trigger_id']]) ? $old_triggers[$sla['apply_trigger_id']] : null;
+            $sla['@warn_trigger']  = $sla['warning_trigger_id'] && isset($old_triggers[$sla['warning_trigger_id']]) ? $old_triggers[$sla['warning_trigger_id']] : null;
+            $sla['@fail_trigger']  = $sla['fail_trigger_id'] && isset($old_triggers[$sla['fail_trigger_id']]) ? $old_triggers[$sla['fail_trigger_id']] : null;
 
             if ($sla['@apply_trigger']) {
                 $sla['@apply_trigger']['terms']     = @unserialize($sla['@apply_trigger']['terms']);
@@ -125,11 +125,11 @@ class Build1400056735 extends AbstractBuild
 
             $new_sla = $this->processSla($sla);
             if ($new_sla) {
-                $this->out("-- Saved");
+                $this->out('-- Saved');
                 $this->container->getEm()->persist($new_sla);
                 $this->container->getEm()->flush();
             } else {
-                $this->out("-- Skipped");
+                $this->out('-- Skipped');
                 $this->container->getDb()->delete('slas', array('id' => $sla['id']));
             }
         }
@@ -172,12 +172,12 @@ class Build1400056735 extends AbstractBuild
 
                 if ($old_sla['@people']) {
                     $ids             = Arrays::castToType($old_sla['@people'], 'int');
-                    $email_addresses = $this->container->getDb()->fetchAllCol("
+                    $email_addresses = $this->container->getDb()->fetchAllCol('
                         SELECT email
                         FROM people_emails
                         WHERE person_id IN (?)
                         GROUP BY person_id
-                    ", array($ids), array(Connection::PARAM_INT_ARRAY));
+                    ', array($ids), array(Connection::PARAM_INT_ARRAY));
                     if ($email_addresses) {
                         $set = new TriggerTermComposite();
                         $set->add(new CheckUserEmail('is', array('email' => $email_addresses)));
@@ -185,11 +185,11 @@ class Build1400056735 extends AbstractBuild
                     }
                 } elseif ($old_sla['@orgs']) {
                     $ids   = Arrays::castToType($old_sla['@orgs'], 'int');
-                    $names = $this->container->getDb()->fetchAllCol("
+                    $names = $this->container->getDb()->fetchAllCol('
                         SELECT name
                         FROM organizations
                         WHERE id IN (?)
-                    ", array($ids), array(Connection::PARAM_INT_ARRAY));
+                    ', array($ids), array(Connection::PARAM_INT_ARRAY));
                     if ($names) {
                         $set = new TriggerTermComposite();
                         $set->add(new CheckOrgName('is', array('name' => $names)));
@@ -330,7 +330,7 @@ class Build1400056735 extends AbstractBuild
         }
 
         if (!count($actions_set)) {
-            $this->out("-- empty action set");
+            $this->out('-- empty action set');
 
             return;
         }

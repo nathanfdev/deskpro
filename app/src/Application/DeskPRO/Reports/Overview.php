@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\Entity\Person;
@@ -37,8 +37,8 @@ use Application\DeskPRO\Reports\Overview\ChatGroupingField;
 use Application\DeskPRO\Reports\Overview\ChatsCreated;
 use Application\DeskPRO\Reports\Overview\GroupingField;
 use Application\DeskPRO\Reports\Overview\KbViewsHour;
-use Application\DeskPRO\Reports\Overview\TicketSlaStatus;
 use Application\DeskPRO\Reports\Overview\TicketsAwaitingAgent;
+use Application\DeskPRO\Reports\Overview\TicketSlaStatus;
 use Application\DeskPRO\Reports\Overview\TicketsOpenedHour;
 use Application\DeskPRO\Reports\Overview\TicketsResolved;
 use Application\DeskPRO\Reports\Overview\TicketsResponseTime;
@@ -105,8 +105,8 @@ class Overview
      * @param array  $options
      *
      * @throws NotFoundHttpException
-     * @return array
      *
+     * @return array
      */
     public function getStats($type, $grouping_field = null, $options = array())
     {
@@ -252,8 +252,8 @@ class Overview
      * @param array $options
      *
      * @throws \InvalidArgumentException
-     * @return array
      *
+     * @return array
      */
     protected function getValues($type, array $options = array())
     {
@@ -535,7 +535,7 @@ class Overview
                     $sla_id = null;
                 }
 
-                $has_slas = $this->em->getConnection()->fetchColumn("SELECT COUNT(*) FROM slas LIMIT 1");
+                $has_slas = $this->em->getConnection()->fetchColumn('SELECT COUNT(*) FROM slas LIMIT 1');
 
                 $stat = new TicketSlaStatus($sla_id, $date, $date2);
                 $stat->setLogger($this->logger);

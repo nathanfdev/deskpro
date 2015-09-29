@@ -1,38 +1,37 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\InstallBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use Doctrine\DBAL\DBALException;
@@ -96,7 +95,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
                 return true;
             }
 
-            $installed = $this->getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('core.install_build'));
+            $installed = $this->getDb()->fetchColumn('SELECT value FROM settings WHERE name = ?', array('core.install_build'));
             if ($installed) {
                 return false;
             }
@@ -193,7 +192,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
                 if (!$server_check->hasDbErrors()) {
                     try {
-                        $installed = $this->getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('core.install_timestamp'));
+                        $installed = $this->getDb()->fetchColumn('SELECT value FROM settings WHERE name = ?', array('core.install_timestamp'));
                     } catch (\Exception $e) {
                         $installed = false;
                     }
@@ -230,7 +229,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
                 foreach ($errors as $k => $er) {
                     $msg[] = "$k: {$er['message']}";
                 }
-                $msg = implode(", ", $msg);
+                $msg = implode(', ', $msg);
                 $e   = new \Application\InstallBundle\Install\ServerCheckException("Server requirements failed: $msg");
                 $this->sendInstallReport($e);
             }
@@ -271,20 +270,20 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
         }
 
         return $this->render('InstallBundle:Install:index.html.php', array(
-            'can_write_config'    => $can_write_config,
-            'errors'              => $server_check->getErrors(),
-            'has_config'          => $has_config,
-            'is_fatal'            => $is_fatal,
-            'has_db_checks'       => $has_db_checks,
-            'db_config'           => App::getConfig('db'),
-            'data_dir'            => $data_dir,
-            'ini_path'            => $ini_path,
-            'did_create_db'       => $did_create_db,
-            'new_download'        => $new_download,
-            'this_build'          => $this_build,
-            'new_build'           => $new_build,
-            'do_data_dir_check'   => $do_data_dir_check,
-            'is_win'              => $this->container->getSystemService('instance_ability')->isWindows(),
+            'can_write_config'  => $can_write_config,
+            'errors'            => $server_check->getErrors(),
+            'has_config'        => $has_config,
+            'is_fatal'          => $is_fatal,
+            'has_db_checks'     => $has_db_checks,
+            'db_config'         => App::getConfig('db'),
+            'data_dir'          => $data_dir,
+            'ini_path'          => $ini_path,
+            'did_create_db'     => $did_create_db,
+            'new_download'      => $new_download,
+            'this_build'        => $this_build,
+            'new_build'         => $new_build,
+            'do_data_dir_check' => $do_data_dir_check,
+            'is_win'            => $this->container->getSystemService('instance_ability')->isWindows(),
         ));
     }
 
@@ -342,8 +341,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
         }
 
         return $this->render('InstallBundle:Install:config-editor.html.php', array(
-            'exist'    => $exist,
-            'is_win'   => $this->container->getSystemService('instance_ability')->isWindows(),
+            'exist'  => $exist,
+            'is_win' => $this->container->getSystemService('instance_ability')->isWindows(),
         ));
     }
 
@@ -408,17 +407,17 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
         if (!empty($results['changed'])) {
             foreach ($results['changed'] as $f) {
-                $this->getLogger()->log("[VerifyChecksums] Changed: ".$f, 'err');
+                $this->getLogger()->log('[VerifyChecksums] Changed: '.$f, 'err');
             }
         }
         if (!empty($results['added'])) {
             foreach ($results['added'] as $f) {
-                $this->getLogger()->log("[VerifyChecksums] Added: ".$f, 'err');
+                $this->getLogger()->log('[VerifyChecksums] Added: '.$f, 'err');
             }
         }
         if (!empty($results['removed'])) {
             foreach ($results['removed'] as $f) {
-                $this->getLogger()->log("[VerifyChecksums] Removed: ".$f, 'err');
+                $this->getLogger()->log('[VerifyChecksums] Removed: '.$f, 'err');
             }
         }
 
@@ -482,7 +481,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
                 return $res;
             }
 
-            $tableinfo = $db->fetchColumn("SHOW CREATE TABLE `install_data`", array(), 1);
+            $tableinfo = $db->fetchColumn('SHOW CREATE TABLE `install_data`', array(), 1);
             if (stripos($tableinfo, 'innodb') === false) {
                 $this->getLogger()->log('install_data is not innodb', 'err');
 
@@ -636,7 +635,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
             $is_fatal = $server_check->hasFatalErrors();
 
             if ($is_fatal) {
-                $e = new \Application\InstallBundle\Install\ServerCheckException("Server requirements failed (post command-install): ".implode(', ', array_keys($server_check->getFatalErrors())));
+                $e = new \Application\InstallBundle\Install\ServerCheckException('Server requirements failed (post command-install): '.implode(', ', array_keys($server_check->getFatalErrors())));
                 $this->sendInstallReport($e);
 
                 $data_dir = dp_get_data_dir();
@@ -849,7 +848,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
                 'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
             ));
             $db->replace('settings', array(
-                'name' => 'core.install_key',
+                'name'  => 'core.install_key',
                 'value' => DpStrings::random(20, Strings::CHARS_KEY),
             ));
             $db->replace('settings', array(
@@ -883,7 +882,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
             }
 
             if (!dp_get_config('debug.no_install_dat_file')) {
-                @file_put_contents(dp_get_data_dir().'/is_installed.dat', "Do not remove this file. It tells DeskPRO that the software has been installed and turns off access to /install/.");
+                @file_put_contents(dp_get_data_dir().'/is_installed.dat', 'Do not remove this file. It tells DeskPRO that the software has been installed and turns off access to /install/.');
             }
 
             $this->getOrm()->getConnection()->commit();
@@ -957,14 +956,14 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
         }
 
         $data = array(
-            'source_type'     => 'install.web',
-            'log'             => @file_get_contents($this->container->getLogDir().'/install.log'),
-            'errinfo'         => $errinfo,
-            'install_token'   => isset($GLOBALS['dp_install_token']) ? $GLOBALS['dp_install_token'] : '',
-            'nostats'         => isset($_COOKIE['stats_opt_out']) && $_COOKIE['stats_opt_out'] ? 1 : 0,
-            'total_time'      => $install_time,
-            'build'           => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
-            'build_num'       => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0,
+            'source_type'   => 'install.web',
+            'log'           => @file_get_contents($this->container->getLogDir().'/install.log'),
+            'errinfo'       => $errinfo,
+            'install_token' => isset($GLOBALS['dp_install_token']) ? $GLOBALS['dp_install_token'] : '',
+            'nostats'       => isset($_COOKIE['stats_opt_out']) && $_COOKIE['stats_opt_out'] ? 1 : 0,
+            'total_time'    => $install_time,
+            'build'         => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
+            'build_num'     => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0,
         );
 
         if (!isset($_COOKIE['stats_opt_out']) || !$_COOKIE['stats_opt_out']) {

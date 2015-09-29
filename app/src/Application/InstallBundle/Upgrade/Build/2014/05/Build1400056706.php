@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\Entity\Sla;
@@ -40,41 +40,41 @@ class Build1400056706 extends AbstractBuild
     {
         $db = $this->container->getDb();
 
-        $this->out("Alters to SLAs");
-        $db->exec("DROP TABLE IF EXISTS sla_people");
-        $db->exec("DROP TABLE IF EXISTS sla_organizations");
+        $this->out('Alters to SLAs');
+        $db->exec('DROP TABLE IF EXISTS sla_people');
+        $db->exec('DROP TABLE IF EXISTS sla_organizations');
 
         // These are wrapped because some old installs may be missing a FK
         try {
-            $db->exec("ALTER TABLE slas DROP FOREIGN KEY FK_ACE9984A13CC0145");
+            $db->exec('ALTER TABLE slas DROP FOREIGN KEY FK_ACE9984A13CC0145');
         } catch (\Exception $e) {
         }
         try {
-            $db->exec("ALTER TABLE slas DROP FOREIGN KEY FK_ACE9984A55EA90D4");
+            $db->exec('ALTER TABLE slas DROP FOREIGN KEY FK_ACE9984A55EA90D4');
         } catch (\Exception $e) {
         }
         try {
-            $db->exec("ALTER TABLE slas DROP FOREIGN KEY FK_ACE9984A91D0B882");
+            $db->exec('ALTER TABLE slas DROP FOREIGN KEY FK_ACE9984A91D0B882');
         } catch (\Exception $e) {
         }
         try {
-            $db->exec("ALTER TABLE slas DROP FOREIGN KEY FK_ACE9984AED1A7B28");
+            $db->exec('ALTER TABLE slas DROP FOREIGN KEY FK_ACE9984AED1A7B28');
         } catch (\Exception $e) {
         }
         try {
-            $db->exec("DROP INDEX IDX_ACE9984A91D0B882 ON slas");
+            $db->exec('DROP INDEX IDX_ACE9984A91D0B882 ON slas');
         } catch (\Exception $e) {
         }
         try {
-            $db->exec("DROP INDEX IDX_ACE9984A55EA90D4 ON slas");
+            $db->exec('DROP INDEX IDX_ACE9984A55EA90D4 ON slas');
         } catch (\Exception $e) {
         }
         try {
-            $db->exec("DROP INDEX IDX_ACE9984A13CC0145 ON slas");
+            $db->exec('DROP INDEX IDX_ACE9984A13CC0145 ON slas');
         } catch (\Exception $e) {
         }
         try {
-            $db->exec("DROP INDEX IDX_ACE9984AED1A7B28 ON slas");
+            $db->exec('DROP INDEX IDX_ACE9984AED1A7B28 ON slas');
         } catch (\Exception $e) {
         }
 
@@ -82,7 +82,7 @@ class Build1400056706 extends AbstractBuild
 
         // Apply default datat to new fields
         $sla = new Sla();
-        $db->executeUpdate("UPDATE slas SET apply_terms = ?, warn_actions = ?, fail_actions = ?", array(
+        $db->executeUpdate('UPDATE slas SET apply_terms = ?, warn_actions = ?, fail_actions = ?', array(
             JsonObjectSerializer::serialize($sla->apply_terms),
             JsonObjectSerializer::serialize($sla->warn_actions),
             JsonObjectSerializer::serialize($sla->fail_actions),

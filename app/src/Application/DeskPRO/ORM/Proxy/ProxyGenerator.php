@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\ORM\Proxy;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
@@ -129,16 +129,16 @@ class <proxyShortClassName> extends \<className> implements \<baseProxyInterface
      */
     public function __construct($proxyDirectory, $proxyNamespace)
     {
-        if (! $proxyDirectory) {
+        if (!$proxyDirectory) {
             throw InvalidArgumentException::proxyDirectoryRequired();
         }
 
-        if (! $proxyNamespace) {
+        if (!$proxyNamespace) {
             throw InvalidArgumentException::proxyNamespaceRequired();
         }
 
-        $this->proxyDirectory        = $proxyDirectory;
-        $this->proxyNamespace        = $proxyNamespace;
+        $this->proxyDirectory = $proxyDirectory;
+        $this->proxyNamespace = $proxyNamespace;
     }
 
     /**
@@ -151,7 +151,7 @@ class <proxyShortClassName> extends \<className> implements \<baseProxyInterface
      */
     public function setPlaceholder($name, $placeholder)
     {
-        if (! is_string($placeholder) && ! is_callable($placeholder)) {
+        if (!is_string($placeholder) && !is_callable($placeholder)) {
             throw InvalidArgumentException::invalidPlaceholder($name);
         }
 
@@ -189,7 +189,7 @@ class <proxyShortClassName> extends \<className> implements \<baseProxyInterface
                 : array($this, 'generate'.$name);
         }
 
-        foreach ($placeholders as & $placeholder) {
+        foreach ($placeholders as &$placeholder) {
             if (is_callable($placeholder)) {
                 $placeholder = call_user_func($placeholder, $class);
             }
@@ -197,10 +197,10 @@ class <proxyShortClassName> extends \<className> implements \<baseProxyInterface
 
         $proxyCode = strtr($this->proxyClassTemplate, $placeholders);
 
-        if (! $fileName) {
+        if (!$fileName) {
             $proxyClassName = $this->generateNamespace($class).'\\'.$this->generateProxyShortClassName($class);
 
-            if (! class_exists($proxyClassName)) {
+            if (!class_exists($proxyClassName)) {
                 eval(substr($proxyCode, 5));
             }
 
@@ -209,11 +209,11 @@ class <proxyShortClassName> extends \<className> implements \<baseProxyInterface
 
         $parentDirectory = dirname($fileName);
 
-        if (! is_dir($parentDirectory) && (false === @mkdir($parentDirectory, 0775, true))) {
+        if (!is_dir($parentDirectory) && (false === @mkdir($parentDirectory, 0775, true))) {
             throw UnexpectedValueException::proxyDirectoryNotWritable();
         }
 
-        if (! is_writable($parentDirectory)) {
+        if (!is_writable($parentDirectory)) {
             throw UnexpectedValueException::proxyDirectoryNotWritable();
         }
 
@@ -337,7 +337,7 @@ EOT;
             }
         }
 
-        if (empty($lazyPublicProperties) && ! $hasParentGet) {
+        if (empty($lazyPublicProperties) && !$hasParentGet) {
             return '';
         }
 
@@ -347,7 +347,7 @@ EOT;
 
 EOT;
 
-        if (! empty($lazyPublicProperties)) {
+        if (!empty($lazyPublicProperties)) {
             $magicGet .= <<<'EOT'
         if (array_key_exists($name, $this->__getLazyProperties())) {
             $this->__initializer__ && $this->__initializer__->__invoke($this, '__get', array($name));
@@ -373,7 +373,7 @@ EOT;
 EOT;
         }
 
-        $magicGet .= "    }";
+        $magicGet .= '    }';
 
         return $magicGet;
     }
@@ -390,17 +390,17 @@ EOT;
         $lazyPublicProperties = $this->getLazyLoadedPublicProperties($class);
         $hasParentSet         = $class->getReflectionClass()->hasMethod('__set');
 
-        if (empty($lazyPublicProperties) && ! $hasParentSet) {
+        if (empty($lazyPublicProperties) && !$hasParentSet) {
             return '';
         }
 
-        $magicSet   = <<<EOT
+        $magicSet = <<<EOT
     public function __set(\$name, \$value)
     {
 
 EOT;
 
-        if (! empty($lazyPublicProperties)) {
+        if (!empty($lazyPublicProperties)) {
             $magicSet .= <<<'EOT'
         if (array_key_exists($name, $this->__getLazyProperties())) {
             $this->__initializer__ && $this->__initializer__->__invoke($this, '__set', array($name, $value));
@@ -421,7 +421,7 @@ EOT;
         return parent::__set($name, $value);
 EOT;
         } else {
-            $magicSet .= "        \$this->\$name = \$value;";
+            $magicSet .= '        $this->$name = $value;';
         }
 
         $magicSet .= "\n    }";
@@ -441,7 +441,7 @@ EOT;
         $lazyPublicProperties = array_keys($this->getLazyLoadedPublicProperties($class));
         $hasParentIsset       = $class->getReflectionClass()->hasMethod('__isset');
 
-        if (empty($lazyPublicProperties) && ! $hasParentIsset) {
+        if (empty($lazyPublicProperties) && !$hasParentIsset) {
             return '';
         }
 
@@ -451,7 +451,7 @@ EOT;
 
 EOT;
 
-        if (! empty($lazyPublicProperties)) {
+        if (!empty($lazyPublicProperties)) {
             $magicIsset .= <<<'EOT'
         if (array_key_exists($name, $this->__getLazyProperties())) {
             $this->__initializer__ && $this->__initializer__->__invoke($this, '__isset', array($name));
@@ -471,7 +471,7 @@ EOT;
 
 EOT;
         } else {
-            $magicIsset .= "        return false;";
+            $magicIsset .= '        return false;';
         }
 
         return $magicIsset."\n    }";
@@ -575,8 +575,8 @@ EOT;
 
 EOT;
 
-        if (! empty($unsetPublicProperties)) {
-            $wakeupImpl .= "\n            unset(".implode(', ', $unsetPublicProperties).");";
+        if (!empty($unsetPublicProperties)) {
+            $wakeupImpl .= "\n            unset(".implode(', ', $unsetPublicProperties).');';
         }
 
         $wakeupImpl .= "\n        }";
@@ -624,12 +624,12 @@ EOT;
         $methodNames       = array();
         $reflectionMethods = $class->getReflectionClass()->getMethods(\ReflectionMethod::IS_PUBLIC);
         $skippedMethods    = array(
-            '__sleep'   => true,
-            '__clone'   => true,
-            '__wakeup'  => true,
-            '__get'     => true,
-            '__set'     => true,
-            '__isset'   => true,
+            '__sleep'  => true,
+            '__clone'  => true,
+            '__wakeup' => true,
+            '__get'    => true,
+            '__set'    => true,
+            '__isset'  => true,
 
             '__getpropvalue__'                     => true,
             '__setpropvalue__'                     => true,
@@ -650,13 +650,13 @@ EOT;
                 isset($methodNames[$name]) ||
                 $method->isFinal() ||
                 $method->isStatic() ||
-                (! $method->isPublic())
+                (!$method->isPublic())
             ) {
                 continue;
             }
 
             $methodNames[$name] = true;
-            $methods .= ""
+            $methods .= ''
                 .'    public function ';
 
             if ($method->returnsReference()) {
@@ -725,8 +725,8 @@ EOT;
             }
 
             $methods .= "\n        \$this->__initializer__ "
-                ."&& \$this->__initializer__->__invoke(\$this, ".var_export($name, true)
-                .", array(".implode(', ', $parameters)."));"
+                .'&& $this->__initializer__->__invoke($this, '.var_export($name, true)
+                .', array('.implode(', ', $parameters).'));'
                 ."\n\n        return parent::".$name.'('.$argumentString.');'
                 ."\n".'    }'."\n";
         }
@@ -764,7 +764,7 @@ EOT;
      * @param \ReflectionMethod                                  $method
      * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $class
      *
-     * @return boolean
+     * @return bool
      */
     private function isShortIdentifierGetter($method, ClassMetadata $class)
     {
@@ -808,7 +808,7 @@ EOT;
         foreach ($class->getReflectionClass()->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
             $name = $property->getName();
 
-            if (($class->hasField($name) || $class->hasAssociation($name)) && ! $class->isIdentifier($name)) {
+            if (($class->hasField($name) || $class->hasAssociation($name)) && !$class->isIdentifier($name)) {
                 $properties[$name] = $defaultProperties[$name];
             }
         }

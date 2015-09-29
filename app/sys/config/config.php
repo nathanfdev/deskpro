@@ -1,12 +1,39 @@
-<?php if (!defined('DP_ROOT')) {
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+if (!defined('DP_ROOT')) {
     exit('No access');
 }
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\ExpressionLanguage\Expression;
 
-/** @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
-$loader->import(__DIR__."/config.shared.php");
+/* @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
+$loader->import(__DIR__.'/config.shared.php');
 
 ############################################################################
 # Parameters
@@ -90,7 +117,7 @@ $container->setDefinition('default_result_cache', $definition);
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\ORM\\ContainerAwareEntityListenerResolver');
 $definition->setArguments(array(
-    new Reference('service_container')
+    new Reference('service_container'),
 ));
 $container->setDefinition('dp.doctrine.entity_listener_resolver', $definition);
 
@@ -109,7 +136,6 @@ $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Settings\\ServiceUrls');
 $definition->addMethodCall('loadPack', array('%kernel.root_dir%/config/service-urls.php'));
 $container->setDefinition('deskpro.service_urls', $definition);
-
 
 ############################################################################
 # Validators and Constraints
@@ -143,18 +169,18 @@ foreach (array(
 ############################################################################
 
 $container->loadFromExtension('framework', array(
-    'secret'     => "irrelevant - compiler pass will override this",
+    'secret'     => 'irrelevant - compiler pass will override this',
     'templating' => array(
         'engines'          => array('twig', 'php'/*, 'jsonphp'*/),
-        'assets_base_urls' => "SET_IN_ASSET_PACKAGE_PASS",
-        'packages' => array(
-            'app_assets' => array('base_url' => "SET_IN_ASSET_PACKAGE_PASS")
-        )
+        'assets_base_urls' => 'SET_IN_ASSET_PACKAGE_PASS',
+        'packages'         => array(
+            'app_assets' => array('base_url' => 'SET_IN_ASSET_PACKAGE_PASS'),
+        ),
     ),
     'validation' => array('enabled' => true, 'static_method' => array('loadValidatorMetadata'), 'api' => '2.4'),
-    'session'                                                                                         => array(),
+    'session'    => array(),
     'form'       => array('enabled' => true),
-    'router'                        => array(
+    'router'     => array(
         'resource' => DP_ROOT.'/sys/config/routing.php',
     ),
 ));
@@ -188,8 +214,6 @@ $container->loadFromExtension('twig', array(
         'experimental_admin_features' => false,
     ),
 ));
-
-
 
 ############################################################################
 # DeskPRO Configuration

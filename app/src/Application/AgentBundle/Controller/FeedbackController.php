@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\FeedbackResults;
@@ -150,7 +150,7 @@ class FeedbackController extends AbstractController
             'category'      => $category,
             'category_path' => $category_path,
 
-            'custom_fields'  => $custom_fields,
+            'custom_fields' => $custom_fields,
 
             'my_vote' => $my_vote,
 
@@ -158,10 +158,10 @@ class FeedbackController extends AbstractController
             'related_content'     => $related_content,
             'sticky_search_words' => $sticky_search_words,
 
-            'feedback_categories'  => $feedback_categories,
-            'active_status_cats'   => $active_status_cats,
-            'closed_status_cats'   => $closed_status_cats,
-            'perms'                => $perms,
+            'feedback_categories' => $feedback_categories,
+            'active_status_cats'  => $active_status_cats,
+            'closed_status_cats'  => $closed_status_cats,
+            'perms'               => $perms,
         ));
     }
 
@@ -219,7 +219,7 @@ class FeedbackController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        $cat  = $this->em->find('DeskPRO:FeedbackCategory', $category_id);
+        $cat = $this->em->find('DeskPRO:FeedbackCategory', $category_id);
 
         $feedback->category = $cat;
 
@@ -500,8 +500,8 @@ class FeedbackController extends AbstractController
         }
 
         return $this->render('AgentBundle:Feedback:merge-overlay.html.twig', array(
-            'feedback'          => $feedback,
-            'other_feedback'    => $other_feedback,
+            'feedback'       => $feedback,
+            'other_feedback' => $other_feedback,
         ));
     }
 
@@ -575,16 +575,16 @@ class FeedbackController extends AbstractController
     {
         $top_result_helper = FeedbackResults::newFromRequest($this, array(
             'specific_terms' => array(
-                'category'                 => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
-                'status'                                   => array('type' => 'status', 'op' => 'not', 'status' => 'hidden'),
+                'category' => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
+                'status'   => array('type' => 'status', 'op' => 'not', 'status' => 'hidden'),
             ),
         ));
 
         if ($this->in->getString('subgroup')) {
             $result_helper = FeedbackResults::newFromRequest($this, array(
                 'specific_terms' => array(
-                    'category'                 => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
-                    'status'                                   => array('type' => 'status', 'op' => 'is', 'status' => $this->in->getString('subgroup')),
+                    'category' => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
+                    'status'   => array('type' => 'status', 'op' => 'is', 'status' => $this->in->getString('subgroup')),
                 ),
             ));
         } else {
@@ -681,15 +681,15 @@ class FeedbackController extends AbstractController
             list($status, $v_status) = explode('.', $status);
             $top_result_helper       = FeedbackResults::newFromRequest($this, array(
                 'specific_terms' => array(
-                    'status'                 => array('type' => 'status', 'op' => 'is', 'status' => $status),
-                    'v_status'                               => array('type' => 'hidden_status', 'op' => 'is', 'hidden_status' => $v_status),
+                    'status'   => array('type' => 'status', 'op' => 'is', 'status' => $status),
+                    'v_status' => array('type' => 'hidden_status', 'op' => 'is', 'hidden_status' => $v_status),
                 ),
             ));
         } else {
             $top_result_helper = FeedbackResults::newFromRequest($this, array(
                 'specific_terms' => array(
-                    'status'                 => array('type' => 'status', 'op' => 'is', 'status' => $status),
-                    'v_status'                               => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating'),
+                    'status'   => array('type' => 'status', 'op' => 'is', 'status' => $status),
+                    'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating'),
                 ),
             ));
         }
@@ -697,9 +697,9 @@ class FeedbackController extends AbstractController
         if ($this->in->getString('subgroup')) {
             $result_helper = FeedbackResults::newFromRequest($this, array(
                 'specific_terms' => array(
-                    'status'                                 => array('type' => 'status', 'op' => 'is', 'status' => $status),
-                    'category'                                               => array('type' => 'category', 'op' => 'is', 'category' => $this->in->getString('subgroup')),
-                    'v_status'                                                               => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating'),
+                    'status'   => array('type' => 'status', 'op' => 'is', 'status' => $status),
+                    'category' => array('type' => 'category', 'op' => 'is', 'category' => $this->in->getString('subgroup')),
+                    'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating'),
                 ),
             ));
         } else {
@@ -755,9 +755,9 @@ class FeedbackController extends AbstractController
         }
 
         // Options for the filter form
-        $feedback_cats          = $this->em->getRepository('DeskPRO:FeedbackCategory')->getFlatHierarchy();
-        $active_status_cats     = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
-        $closed_status_cats     = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
+        $feedback_cats      = $this->em->getRepository('DeskPRO:FeedbackCategory')->getFlatHierarchy();
+        $active_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
+        $closed_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
         $display_fields = $this->person->getPref('agent.ui.feedback-filter-display-fields.0');
         if (!$display_fields) {
@@ -778,20 +778,20 @@ class FeedbackController extends AbstractController
         $display = $feedback_collection->getDisplayArray();
 
         return $this->render($template, array_merge(array(
-            'display'         => $display,
-            'cache'           => $result_cache,
-            'cache_id'        => $result_cache['id'],
-            'result_ids'      => $result_cache['results'],
-            'feedback'        => $feedback,
-            'num_results'     => $result_cache['num_results'],
-            'per_page'        => 50,
-            'criteria'        => $result_cache['criteria'],
-            'user_cat_field'  => $user_cat_field,
-            'cur_page'        => $page,
+            'display'        => $display,
+            'cache'          => $result_cache,
+            'cache_id'       => $result_cache['id'],
+            'result_ids'     => $result_cache['results'],
+            'feedback'       => $feedback,
+            'num_results'    => $result_cache['num_results'],
+            'per_page'       => 50,
+            'criteria'       => $result_cache['criteria'],
+            'user_cat_field' => $user_cat_field,
+            'cur_page'       => $page,
 
-            'feedback_cats'          => $feedback_cats,
-            'active_status_cats'     => $active_status_cats,
-            'closed_status_cats'     => $closed_status_cats,
+            'feedback_cats'      => $feedback_cats,
+            'active_status_cats' => $active_status_cats,
+            'closed_status_cats' => $closed_status_cats,
 
             'display_fields' => $display_fields,
         ), $template_vars));
@@ -846,17 +846,17 @@ class FeedbackController extends AbstractController
 
     public function newFeedbackAction()
     {
-        $feedback_categories    = $this->em->getRepository('DeskPRO:FeedbackCategory')->getFlatHierarchy();
-        $active_status_cats     = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
-        $closed_status_cats     = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
+        $feedback_categories = $this->em->getRepository('DeskPRO:FeedbackCategory')->getFlatHierarchy();
+        $active_status_cats  = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
+        $closed_status_cats  = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
         $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newfeedback', $this->person->id);
 
         return $this->render('AgentBundle:Feedback:newfeedback.html.twig', array(
-            'feedback_categories'    => $feedback_categories,
-            'active_status_cats'     => $active_status_cats,
-            'closed_status_cats'     => $closed_status_cats,
-            'state'                  => $state,
+            'feedback_categories' => $feedback_categories,
+            'active_status_cats'  => $active_status_cats,
+            'closed_status_cats'  => $closed_status_cats,
+            'state'               => $state,
         ));
     }
 

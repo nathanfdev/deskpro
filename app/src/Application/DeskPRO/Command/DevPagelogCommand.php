@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Command;
 
 use Symfony\Component\Console\Input\InputArgument;
@@ -61,7 +61,7 @@ class DevPagelogCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
                 return 0;
 
             case 'count':
-                $count = $this->getSqliteConnection()->fetchColumn("SELECT COUNT(*) FROM pagelog");
+                $count = $this->getSqliteConnection()->fetchColumn('SELECT COUNT(*) FROM pagelog');
                 echo "There are $count loaded page logs\n";
 
                 return 0;
@@ -73,7 +73,7 @@ class DevPagelogCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
                 return $this->loadAction($input, $output);
 
             default:
-                echo "Unknown action";
+                echo 'Unknown action';
 
                 return 1;
         }
@@ -89,8 +89,8 @@ class DevPagelogCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         if (!$conn) {
             /** @var $conn \Application\DeskPRO\DBAL\Connection */
             $conn = \Doctrine\DBAL\DriverManager::getConnection(array(
-                'driver'       => 'pdo_sqlite',
-                'path'         => dp_get_data_dir().'/log-analytics.sqlite',
+                'driver' => 'pdo_sqlite',
+                'path'   => dp_get_data_dir().'/log-analytics.sqlite',
             ));
 
             if (!$conn->getSchemaManager()->tablesExist('pagelog')) {
@@ -128,7 +128,7 @@ class DevPagelogCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
             case 'noaccount': $url_field          = 'url_noaccount'; break;
             case 'noaccount_noparams': $url_field = 'url_noaccount_noparams'; break;
             default:
-                echo "Invalid type";
+                echo 'Invalid type';
 
                 return 1;
         }
@@ -145,7 +145,7 @@ class DevPagelogCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
             case 'queries': $group_field  = 'query_count'; break;
             case 'memory': $group_field   = 'peak_memory'; break;
             case 'count': $group_field    = 'COUNT(*)'; break;
-            default: echo "Invalid var.";
+            default: echo 'Invalid var.';
 
 return 1;
         }
@@ -175,7 +175,7 @@ return 1;
 
         $count = 0;
         while (!feof($fh)) {
-            $count++;
+            ++$count;
             $line = fgets($fh);
             $m    = null;
 
@@ -221,7 +221,7 @@ return 1;
             ));
 
             if ($count % 1000 == 0) {
-                echo ".";
+                echo '.';
             }
         }
 

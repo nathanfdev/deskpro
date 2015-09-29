@@ -1,9 +1,35 @@
 <?php
 
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 namespace DpBehat\Api;
 
-use Behat\Gherkin\Node\TableNode;
 use Behat\Gherkin\Node\PyStringNode;
+use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ExpectationException;
 use Sanpi\Behatch\Context\BaseContext;
 
@@ -12,7 +38,7 @@ class RestContext extends BaseContext
     protected $server_params = array();
 
     /**
-     * Add an header element in a request
+     * Add an header element in a request.
      *
      * @Then I add :name header equal to :value
      */
@@ -20,13 +46,13 @@ class RestContext extends BaseContext
     {
         // we need to pass them as $_SERVER...
         $name = str_replace('-', '_', strtoupper(trim($name)));
-        $name = 'HTTP_' . $name;
+        $name = 'HTTP_'.$name;
 
         $this->server_params[$name] = trim($value);
     }
 
     /**
-     * Add a cookie
+     * Add a cookie.
      *
      * @Then I add cookie named :name equal to :value
      */
@@ -36,7 +62,7 @@ class RestContext extends BaseContext
     }
 
     /**
-     * Sends a HTTP request
+     * Sends a HTTP request.
      *
      * @Given I send a :method request to :url
      */
@@ -53,7 +79,7 @@ class RestContext extends BaseContext
     }
 
     /**
-     * Sends a HTTP request with a some parameters
+     * Sends a HTTP request with a some parameters.
      *
      * @Given I send a :method request to :url with parameters:
      */
@@ -71,7 +97,7 @@ class RestContext extends BaseContext
             }
 
             if (is_string($row['value']) && substr($row['value'], 0, 1) == '@') {
-                $row['value'] = '@'.rtrim($this->getMinkParameter('files_path'), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.substr($row['value'],1);
+                $row['value'] = '@'.rtrim($this->getMinkParameter('files_path'), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.substr($row['value'], 1);
             }
 
             $parameters[] = sprintf('%s=%s', $row['key'], $row['value']);
@@ -86,7 +112,7 @@ class RestContext extends BaseContext
     }
 
     /**
-     * Sends a HTTP request with a body
+     * Sends a HTTP request with a body.
      *
      * @Given I send a :method request to :url with body:
      */
@@ -105,7 +131,7 @@ class RestContext extends BaseContext
     }
 
     /**
-     * Checks, whether the response content is equal to given text
+     * Checks, whether the response content is equal to given text.
      *
      * @Then the response should be equal to
      */
@@ -113,24 +139,24 @@ class RestContext extends BaseContext
     {
         $expected = str_replace('\\"', '"', $expected);
         $actual   = $this->getSession()->getPage()->getContent();
-        $message = sprintf('The string "%s" is not equal to the response of the current page', $expected);
+        $message  = sprintf('The string "%s" is not equal to the response of the current page', $expected);
         $this->assertEquals($expected, $actual, $message);
     }
 
     /**
-     * Checks, whether the response content is null or empty string
+     * Checks, whether the response content is null or empty string.
      *
      * @Then the response should be empty
      */
     public function theResponseShouldBeEmpty()
     {
-        $actual = $this->getSession()->getPage()->getContent();
+        $actual  = $this->getSession()->getPage()->getContent();
         $message = 'The response of the current page is not empty';
-        $this->assertTrue(null === $actual || "" === $actual, $message);
+        $this->assertTrue(null === $actual || '' === $actual, $message);
     }
 
     /**
-     * Checks, whether the header name is equal to given text
+     * Checks, whether the header name is equal to given text.
      *
      * @Then the header :name should be equal to :value
      */
@@ -143,19 +169,19 @@ class RestContext extends BaseContext
     }
 
     /**
-     * Checks, whether the header matches a regular expression
+     * Checks, whether the header matches a regular expression.
      *
      * @Then the header :name should match :regex
      */
     public function theHeaderShouldMatch($name, $regex)
     {
-        $actual = $this->getHttpHeader($name);
+        $actual  = $this->getHttpHeader($name);
         $message = sprintf('Header "%s" value "%s" does not match the regex "%s".', $name, $actual, $regex);
         $this->assertTrue((bool) preg_match($regex, $actual), $message);
     }
 
     /**
-     * Checks, whether the header name contains the given text
+     * Checks, whether the header name contains the given text.
      *
      * @Then the header :name should contain :value
      */
@@ -167,7 +193,7 @@ class RestContext extends BaseContext
     }
 
     /**
-     * Checks, whether the header name doesn't contain the given text
+     * Checks, whether the header name doesn't contain the given text.
      *
      * @Then the header :name should not contain :value
      */
@@ -179,7 +205,7 @@ class RestContext extends BaseContext
     }
 
     /**
-     * Checks, whether the header not exist
+     * Checks, whether the header not exist.
      *
      * @Then the header :name should not exist
      */
@@ -189,19 +215,18 @@ class RestContext extends BaseContext
             $this->getHttpHeader($name);
             $message = sprintf('The header "%s" exist', $name);
             throw new ExpectationException($message, $this->getSession());
-        }
-        catch (\OutOfBoundsException $e) {
+        } catch (\OutOfBoundsException $e) {
         }
     }
 
-   /**
-     * Checks, that the response header expire is in the future
+    /**
+     * Checks, that the response header expire is in the future.
      *
      * @Then the response should expire in the future
      */
     public function theResponseShouldExpireInTheFuture()
     {
-        $date = new \DateTime($this->getHttpHeader('Date'));
+        $date    = new \DateTime($this->getHttpHeader('Date'));
         $expires = new \DateTime($this->getHttpHeader('Expires'));
 
         $this->assertSame(1, $expires->diff($date)->invert,
@@ -227,15 +252,14 @@ class RestContext extends BaseContext
      */
     public function printLastResponseHeaders()
     {
-        $text = '';
+        $text    = '';
         $headers = $this->getHttpHeaders();
 
         foreach ($headers as $name => $value) {
-            $text .= $name . ': '. $this->getHttpHeader($name) . "\n";
+            $text .= $name.': '.$this->getHttpHeader($name)."\n";
         }
         echo $text;
     }
-
 
     /**
      * @Then print the corresponding curl command
@@ -245,7 +269,7 @@ class RestContext extends BaseContext
         $request = $this->getSession()->getDriver()->getClient()->getRequest();
 
         $method = $request->getMethod();
-        $url = $request->getUri();
+        $url    = $request->getUri();
 
         $headers = '';
         foreach ($request->getServer() as $name => $value) {
@@ -254,11 +278,11 @@ class RestContext extends BaseContext
             }
         }
 
-        $data = '';
+        $data   = '';
         $params = $request->getParameters();
         if (!empty($params)) {
             $query = http_build_query($params);
-            $data = " --data '$query'" ;
+            $data  = " --data '$query'";
         }
 
         echo "curl -X $method$data$headers '$url'";
@@ -266,22 +290,21 @@ class RestContext extends BaseContext
 
     private function getHttpHeader($name)
     {
-        $name = strtolower($name);
+        $name   = strtolower($name);
         $header = $this->getHttpHeaders();
 
         if (isset($header[$name])) {
             if (is_array($header[$name])) {
                 $value = implode(', ', $header[$name]);
-            }
-            else {
+            } else {
                 $value = $header[$name];
             }
-        }
-        else {
+        } else {
             throw new \OutOfBoundsException(
                 sprintf('The header "%s" doesn\'t exist', $name)
             );
         }
+
         return $value;
     }
 

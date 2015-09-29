@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Publish;
 
 use Application\DeskPRO\App;
@@ -52,6 +52,7 @@ class CategoryEdit
      *
      * @param $type
      * @param $title
+     *
      * @throws \InvalidArgumentException
      *
      * @return \Application\DeskPRO\Entity\ArticleCategory|\Application\DeskPRO\Entity\DownloadCategory|\Application\DeskPRO\Entity\NewsCategory|array
@@ -113,8 +114,8 @@ class CategoryEdit
         $cats = App::getOrm()->createQuery("
             SELECT c
             FROM $entity c INDEX BY c.id
-            WHERE c.id IN (".implode(',', $ids).")
-        ")->execute();
+            WHERE c.id IN (".implode(',', $ids).')
+        ')->execute();
 
         App::getOrm()->beginTransaction();
 
@@ -170,7 +171,7 @@ class CategoryEdit
             App::getOrm()->commit();
 
             App::getContainer()->getSystemService('publish_structure_cache')->flush();
-            App::getDb()->query("DELETE FROM permissions_cache");
+            App::getDb()->query('DELETE FROM permissions_cache');
         } catch (\Exception $e) {
             App::getOrm()->rollback();
             throw $e;
@@ -198,8 +199,8 @@ class CategoryEdit
         $cats = App::getOrm()->createQuery("
             SELECT c
             FROM $entity c INDEX BY c.id
-            WHERE c.id IN (".implode(',', $ids).")
-        ")->execute();
+            WHERE c.id IN (".implode(',', $ids).')
+        ')->execute();
 
         App::getDb()->beginTransaction();
 
@@ -209,7 +210,7 @@ class CategoryEdit
                     continue;
                 }
 
-                $cats[$id]['display_order'] = ($order+1) * 10; // 10,20,30, etc
+                $cats[$id]['display_order'] = ($order + 1) * 10; // 10,20,30, etc
                 App::getOrm()->persist($cats[$id]);
             }
 
@@ -248,7 +249,7 @@ class CategoryEdit
         if ($check_map) {
             $conn         = App::getDb();
             $table        = App::getOrm()->getRepository($entity)->getTableName();
-            $current_tree = $conn->fetchAllKeyValue("SELECT id, parent_id FROM ".$conn->quoteIdentifier($table));
+            $current_tree = $conn->fetchAllKeyValue('SELECT id, parent_id FROM '.$conn->quoteIdentifier($table));
 
             $accurate = true;
             foreach ($check_map as $id => $parent_id) {
@@ -266,7 +267,7 @@ class CategoryEdit
             }
 
             if (!$accurate) {
-                throw new \OutOfBoundsException("Structure check failed");
+                throw new \OutOfBoundsException('Structure check failed');
             }
         }
 
@@ -305,6 +306,7 @@ class CategoryEdit
      *
      * @param $type
      * @param $category_id
+     *
      * @throws \InvalidArgumentException
      */
     public static function deleteCategory($type, $category_id)
@@ -356,7 +358,7 @@ class CategoryEdit
         }
 
         if (count($cat->children) || $counts) {
-            throw new \OutOfBoundsException("Category is not empty");
+            throw new \OutOfBoundsException('Category is not empty');
         }
 
         App::getOrm()->beginTransaction();
@@ -387,8 +389,8 @@ class CategoryEdit
      *
      * @static
      *
-     *
      * @param $type
+     *
      * @throws \InvalidArgumentException
      *
      * @return string

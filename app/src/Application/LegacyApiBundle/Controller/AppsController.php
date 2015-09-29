@@ -1,33 +1,33 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\DeskPRO\App\AppManager;
 use Application\DeskPRO\App\AppManipulatorContext;
 use Application\DeskPRO\App\Native\NativeAppsSync;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
@@ -94,12 +94,12 @@ class AppsController extends AbstractController
         }
 
         // Attach usersources to apps if they own them
-        $usersources = $this->em->createQuery("
+        $usersources = $this->em->createQuery('
             SELECT u, a
             FROM DeskPRO:Usersource u
             LEFT JOIN u.app a
             WHERE u.app IS NOT NULL
-        ")->execute();
+        ')->execute();
         if ($usersources) {
             $usersources = Arrays::rekey($usersources, function ($u) { return $u->app->getId(); });
             $apps = array_map(function ($a) use ($usersources) {
@@ -404,9 +404,9 @@ class AppsController extends AbstractController
 
     public function createCustomAppAction()
     {
-        $package = new AppPackage();
-        $package->name         = "com.deskpro.custom." . DpStrings::random(15, Strings::CHARS_ALPHA_I);
-        $package->title        = $this->in->getString('options.title') ?: "Untitled";
+        $package               = new AppPackage();
+        $package->name         = 'com.deskpro.custom.'.DpStrings::random(15, Strings::CHARS_ALPHA_I);
+        $package->title        = $this->in->getString('options.title') ?: 'Untitled';
         $package->description  = $package->title;
         $package->tags         = array('custom');
         $package->author_name  = $this->person->getDisplayName();
@@ -414,7 +414,7 @@ class AppsController extends AbstractController
         $package->author_link  = $this->container->getSetting('core.deskpro_url');
         $package->api_version  = 1;
         $package->version      = 1;
-        $package->version_name = "1.0.0";
+        $package->version_name = '1.0.0';
         $package->is_custom    = true;
         $package->is_single    = true;
         $package->scopes       = array(AppPackage::SCOPE_AGENT);
@@ -450,7 +450,7 @@ class AppsController extends AbstractController
                     $js_files[]      = array('type' => $type, 'file' => "$type_name/".$js_name.'Controller');
                     $html_files[]    = "$type_name/".$js_name;
                     $require_files[] = $package->name."/js/$type_name/{$js_name}Controller";
-                    $require_names[] = str_replace(" ", "_", $type_name.'_'.$js_name.'Controller');
+                    $require_names[] = str_replace(' ', '_', $type_name.'_'.$js_name.'Controller');
                 }
             }
         }
@@ -488,7 +488,7 @@ class AppsController extends AbstractController
             );
 
             $asset      = $package->addAssetFromBlob($blob, $file.'.js');
-            $asset->tag = "js";
+            $asset->tag = 'js';
             $asset->setMetadata(array('group_name' => preg_replace('#Controller$#', '', str_replace('/', '_', $file))));
             $this->em->persist($asset);
         }
@@ -498,7 +498,7 @@ class AppsController extends AbstractController
         #------------------------------
 
         foreach ($html_files as $file) {
-            $html = "Your HTML goes here";
+            $html = 'Your HTML goes here';
 
             $blob = $blob_storage->createBlobRecordFromString(
                 $html,
@@ -507,7 +507,7 @@ class AppsController extends AbstractController
             );
 
             $asset      = $package->addAssetFromBlob($blob, $file.'.html');
-            $asset->tag = "html";
+            $asset->tag = 'html';
             $asset->setMetadata(array('group_name' => str_replace('/', '_', $file)));
             $this->em->persist($asset);
         }
@@ -598,12 +598,12 @@ class AppsController extends AbstractController
 
         $blob = $blob_storage->createBlobRecordFromString(
             $app_js,
-            "app.js",
+            'app.js',
             'text/javascript'
         );
 
         $asset      = $package->addAssetFromBlob($blob);
-        $asset->tag = "app_js";
+        $asset->tag = 'app_js';
         $this->em->persist($asset);
 
         $this->em->flush();

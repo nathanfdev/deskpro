@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Translate
  */
-
 namespace Application\DeskPRO\Translate;
 
 use Application\DeskPRO\App;
@@ -55,20 +55,20 @@ class TermSummary
     const OP_IS_REGEX    = 'is_regex';
     const OP_NOT_REGEX   = 'not_regex';
 
-    const OP_CHANGED            = 'changed';
-    const OP_CHANGED_TO         = 'changed_to';
-    const OP_CHANGED_FROM       = 'changed_from';
-    const OP_NOT_CHANGED_TO     = 'not_changed_to';
-    const OP_NOT_CHANGED_FROM   = 'not_changed_from';
+    const OP_CHANGED          = 'changed';
+    const OP_CHANGED_TO       = 'changed_to';
+    const OP_CHANGED_FROM     = 'changed_from';
+    const OP_NOT_CHANGED_TO   = 'not_changed_to';
+    const OP_NOT_CHANGED_FROM = 'not_changed_from';
 
-    const OP_CHANGED_TO_GTE         = 'changed_to_gte';
-    const OP_CHANGED_TO_LTE         = 'changed_to_lte';
-    const OP_CHANGED_FROM_GTE       = 'changed_from_gte';
-    const OP_CHANGED_FROM_LTE       = 'changed_from_lte';
-    const OP_NOT_CHANGED_TO_GTE     = 'not_changed_to_gte';
-    const OP_NOT_CHANGED_TO_LTE     = 'not_changed_to_let';
-    const OP_NOT_CHANGED_FROM_GTE   = 'not_changed_from_gte';
-    const OP_NOT_CHANGED_FROM_LTE   = 'not_changed_from_lte';
+    const OP_CHANGED_TO_GTE       = 'changed_to_gte';
+    const OP_CHANGED_TO_LTE       = 'changed_to_lte';
+    const OP_CHANGED_FROM_GTE     = 'changed_from_gte';
+    const OP_CHANGED_FROM_LTE     = 'changed_from_lte';
+    const OP_NOT_CHANGED_TO_GTE   = 'not_changed_to_gte';
+    const OP_NOT_CHANGED_TO_LTE   = 'not_changed_to_let';
+    const OP_NOT_CHANGED_FROM_GTE = 'not_changed_from_gte';
+    const OP_NOT_CHANGED_FROM_LTE = 'not_changed_from_lte';
 
     public function getSummary($term, $op, $choice)
     {
@@ -96,7 +96,7 @@ class TermSummary
                 break;
 
             case 'agent_performer':
-                $summary = $this->_choiceSummary("Agent performer", $op, $choice['agent_ids'], function ($choice) {
+                $summary = $this->_choiceSummary('Agent performer', $op, $choice['agent_ids'], function ($choice) {
                     $titles = App::getDataService('Agent')->getNames((array) $choice);
 
                     return $titles;
@@ -116,7 +116,7 @@ class TermSummary
                 break;
 
             case 'user_performer_email':
-                $summary = $this->_stringMatchSummary("User performer email address", $op, $choice['user_email']);
+                $summary = $this->_stringMatchSummary('User performer email address', $op, $choice['user_email']);
                 break;
 
             case 'department':
@@ -321,10 +321,10 @@ class TermSummary
             case 'sla_status':
                 // todo: phrase the status
                 if (empty($choice['sla_id'])) {
-                    $summary = $this->_choiceSummary($tr->phrase('agent.general.sla_status'), $op, $choice['sla_status']." for any SLA");
+                    $summary = $this->_choiceSummary($tr->phrase('agent.general.sla_status'), $op, $choice['sla_status'].' for any SLA');
                 } else {
                     $sla     = App::getEntityRepository('DeskPRO:Sla')->find($choice['sla_id']);
-                    $summary = $this->_choiceSummary($tr->phrase('agent.general.sla_status'), $op, $choice['sla_status']." for SLA ".($sla ? $sla->title : '[unknown]'));
+                    $summary = $this->_choiceSummary($tr->phrase('agent.general.sla_status'), $op, $choice['sla_status'].' for SLA '.($sla ? $sla->title : '[unknown]'));
                 }
                 break;
 
@@ -333,7 +333,7 @@ class TermSummary
                 break;
 
             case 'organization':
-                $summary = $this->_choiceSummary("Organization", $op, $choice, function ($choice) {
+                $summary = $this->_choiceSummary('Organization', $op, $choice, function ($choice) {
                     $titles = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames((array) $choice);
 
                     return $titles;
@@ -341,7 +341,7 @@ class TermSummary
                 break;
 
             case 'usergroup':
-                $summary = $this->_choiceSummary("Usergroup", $op, $choice, function ($choice) {
+                $summary = $this->_choiceSummary('Usergroup', $op, $choice, function ($choice) {
                     $titles = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames((array) $choice);
 
                     return $titles;
@@ -560,7 +560,7 @@ class TermSummary
                 $summary = $tr->phrase('agent.general.time_created_summary', array('op' => $op, 'hour' => $choice['hour1'], 'minute' => $choice['minute1']));
 
                 if (!empty($choice['timezone'])) {
-                    $summary .= " (".\Orb\Util\Dates::getTimezoneOffsetString($choice['timezone']).")";
+                    $summary .= ' ('.\Orb\Util\Dates::getTimezoneOffsetString($choice['timezone']).')';
                 }
 
                 break;
@@ -569,7 +569,7 @@ class TermSummary
                 $summary = "Time $op {$choice['hour1']}:{$choice['minute1']}";
 
                 if (!empty($choice['timezone'])) {
-                    $summary .= " (".\Orb\Util\Dates::getTimezoneOffsetString($choice['timezone']).")";
+                    $summary .= ' ('.\Orb\Util\Dates::getTimezoneOffsetString($choice['timezone']).')';
                 }
 
                 break;
@@ -625,67 +625,67 @@ class TermSummary
                 break;
 
             case 'creation_system_option':
-                $summary = $this->_stringMatchSummary("Submission URL", $op, $choice);
+                $summary = $this->_stringMatchSummary('Submission URL', $op, $choice);
                 break;
 
             case 'email_from_email':
-                $summary = $this->_stringMatchSummary("From email address", $op, $choice);
+                $summary = $this->_stringMatchSummary('From email address', $op, $choice);
                 break;
 
             case 'to_address':
             case 'email_to_email':
-                $summary = $this->_stringMatchSummary("To email address", $op, $choice);
+                $summary = $this->_stringMatchSummary('To email address', $op, $choice);
                 break;
 
             case 'email_to_name':
-                $summary = $this->_stringMatchSummary("To name", $op, $choice);
+                $summary = $this->_stringMatchSummary('To name', $op, $choice);
                 break;
 
             case 'email_from_name':
-                $summary = $this->_stringMatchSummary("From name", $op, $choice);
+                $summary = $this->_stringMatchSummary('From name', $op, $choice);
                 break;
 
             case 'cc_address':
             case 'email_cc_email':
-                $summary = $this->_stringMatchSummary("CC email address", $op, $choice);
+                $summary = $this->_stringMatchSummary('CC email address', $op, $choice);
                 break;
 
             case 'email_cc_name':
-                $summary = $this->_stringMatchSummary("CC name", $op, $choice);
+                $summary = $this->_stringMatchSummary('CC name', $op, $choice);
                 break;
 
             case 'email_subject':
-                $summary = $this->_stringMatchSummary("Email subject", $op, $choice);
+                $summary = $this->_stringMatchSummary('Email subject', $op, $choice);
                 break;
 
             case 'email_body':
-                $summary = $this->_stringMatchSummary("Email body", $op, $choice);
+                $summary = $this->_stringMatchSummary('Email body', $op, $choice);
                 break;
 
             case 'email_header':
                 $c = $choice;
                 unset($c['header_name']);
-                $summary = $this->_stringMatchSummary("Email header ".$choice['header_name'], $op, $c);
+                $summary = $this->_stringMatchSummary('Email header '.$choice['header_name'], $op, $c);
                 break;
 
             case 'message':
-                $summary = $this->_stringMatchSummary("Message", $op, $choice);
+                $summary = $this->_stringMatchSummary('Message', $op, $choice);
                 break;
 
             case 'new_reply_agent':
-                $summary = $this->_stringMatchSummary("Is a new agent reply", $op, $choice);
+                $summary = $this->_stringMatchSummary('Is a new agent reply', $op, $choice);
                 break;
 
             case 'new_reply_user':
-                $summary = $this->_stringMatchSummary("Is a new user reply", $op, $choice);
+                $summary = $this->_stringMatchSummary('Is a new user reply', $op, $choice);
                 break;
 
             case 'new_reply_note':
-                $summary = $this->_stringMatchSummary("Is a new agent note", $op, $choice);
+                $summary = $this->_stringMatchSummary('Is a new agent note', $op, $choice);
                 break;
 
             case 'email_has_attach':
-                $summary = "Email has an attachment";
+                $summary = 'Email has an attachment';
                 break;
 
             case 'email_account_bcc':
@@ -707,7 +707,7 @@ class TermSummary
                     }
                 }
 
-                $summary = "Day created is ".implode(', ', $days);
+                $summary = 'Day created is '.implode(', ', $days);
 
                 break;
 

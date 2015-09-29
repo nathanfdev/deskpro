@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -55,7 +55,7 @@ class TicketSla extends AbstractEntityRepository
         $where_perm = array();
 
         if ($person_context->getDisallowedDepartments()) {
-            $where_perm[] = "tickets.department_id NOT IN (".implode(',', $person_context->getDisallowedDepartments()).")";
+            $where_perm[] = 'tickets.department_id NOT IN ('.implode(',', $person_context->getDisallowedDepartments()).')';
         }
 
         if (!$person_context->hasPerm('agent_tickets.view_unassigned')) {
@@ -66,7 +66,7 @@ class TicketSla extends AbstractEntityRepository
             $part   = array();
             $part[] = "tickets.agent_id = {$person_context['id']}";
             if ($person_context->getAgentTeamIds()) {
-                $part[] = "tickets.agent_team_id IN (".implode(',', $person_context->getAgentTeamIds()).")";
+                $part[] = 'tickets.agent_team_id IN ('.implode(',', $person_context->getAgentTeamIds()).')';
             }
 
             $where_perm[] = '('.implode(' OR ', $part).')';
@@ -80,10 +80,10 @@ class TicketSla extends AbstractEntityRepository
 
         $where .= "tickets.agent_id = {$person_context['id']} OR ";
         if ($person_context->getAgentTeamIds()) {
-            $where .= "tickets.agent_team_id IN (".implode(',', $person_context->getAgentTeamIds()).") OR ";
+            $where .= 'tickets.agent_team_id IN ('.implode(',', $person_context->getAgentTeamIds()).') OR ';
         }
 
-        $where .= "tickets_participants_perm.person_id IS NOT NULL))";
+        $where .= 'tickets_participants_perm.person_id IS NOT NULL))';
 
         switch ($filter) {
             case 'agent':
@@ -92,14 +92,14 @@ class TicketSla extends AbstractEntityRepository
 
             case 'team':
                 if ($person_context->getAgentTeamIds()) {
-                    $where .= " AND tickets.agent_team_id IN (".implode(',', $person_context->getAgentTeamIds()).")";
+                    $where .= ' AND tickets.agent_team_id IN ('.implode(',', $person_context->getAgentTeamIds()).')';
                 } else {
-                    $where .= " AND 0";
+                    $where .= ' AND 0';
                 }
                 break;
         }
 
-        $where .= " AND ticket_slas.is_completed = 0";
+        $where .= ' AND ticket_slas.is_completed = 0';
         $where .= " AND ((slas.sla_type = 'waiting_time' AND tickets.status = 'awaiting_agent') OR (slas.sla_type = 'first_response' AND tickets.status = 'awaiting_agent') OR (slas.sla_type = 'resolution' AND tickets.status IN ('awaiting_agent', 'awaiting_user')))";
 
         $ids = array();
@@ -107,7 +107,7 @@ class TicketSla extends AbstractEntityRepository
             $ids[] = $sla->id;
         }
 
-        $where .= " AND ticket_slas.sla_id IN (".implode(',', $ids).')';
+        $where .= ' AND ticket_slas.sla_id IN ('.implode(',', $ids).')';
 
         $results = $this->getEntityManager()->getConnection()->fetchAll("
             SELECT ticket_slas.sla_id, ticket_slas.sla_status, COUNT(*) AS count
@@ -193,8 +193,8 @@ class TicketSla extends AbstractEntityRepository
             if ($data) {
                 $output[$title] = array(
                     'ok'      => array('title' => 'OK', 'count' => 0, 'id' => 'ok', 'color' => '#abf3ae'),
-                    'warning'                  => array('title' => 'Warning', 'count' => 0, 'id' => 'warning', 'color' => '#F7BC1F'),
-                    'fail'                                      => array('title' => 'Failed', 'count' => 0, 'id' => 'count', 'color' => '#de5949'),
+                    'warning' => array('title' => 'Warning', 'count' => 0, 'id' => 'warning', 'color' => '#F7BC1F'),
+                    'fail'    => array('title' => 'Failed', 'count' => 0, 'id' => 'count', 'color' => '#de5949'),
                 );
                 foreach ($data as $status => $count) {
                     $output[$title][$status]['count'] = $count;
@@ -213,12 +213,12 @@ class TicketSla extends AbstractEntityRepository
             $end = time();
         }
 
-        return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+        return $this->getEntityManager()->getConnection()->fetchAllKeyValue('
             SELECT ticket_slas.sla_status, COUNT(*)
             FROM ticket_slas
             INNER JOIN tickets ON (ticket_slas.ticket_id = tickets.id)
             WHERE tickets.date_created >= ? AND tickets.date_created <= ?
             GROUP BY ticket_slas.sla_status
-        ", array(gmdate('Y-m-d H:i:s', $start), gmdate('Y-m-d H:i:s', $end)));
+        ', array(gmdate('Y-m-d H:i:s', $start), gmdate('Y-m-d H:i:s', $end)));
     }
 }

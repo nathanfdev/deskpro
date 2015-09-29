@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\DBAL\SchemaHelper;
@@ -195,8 +195,8 @@ abstract class AbstractBuild
         try {
             $this->container->getDb()->exec($sql);
         } catch (\Exception $e) {
-            $this->logger->info("SQL: ".$sql);
-            $this->logger->info("Ignored: ".$e->getMessage());
+            $this->logger->info('SQL: '.$sql);
+            $this->logger->info('Ignored: '.$e->getMessage());
             if (!$ignore_err) {
                 throw $e;
             }
@@ -234,14 +234,14 @@ abstract class AbstractBuild
     {
         if (dp_get_config('online_schema_upgrade')) {
             $logger = $this->logger;
-            $logger->info("Using online_schema_update");
+            $logger->info('Using online_schema_update');
 
             if (dp_get_config('online_schema_upgrade') === true) {
                 $tool = 'pt-online-schema-change';
             } elseif (is_string(dp_get_config('online_schema_upgrade')) && is_executable(dp_get_config('online_schema_upgrade'))) {
                 $tool = dp_get_config('online_schema_upgrade');
             } else {
-                throw new \RuntimeException("Unknown path to pt-online-schema-change");
+                throw new \RuntimeException('Unknown path to pt-online-schema-change');
             }
 
             $logger->info("Tool path: $tool");
@@ -275,18 +275,18 @@ abstract class AbstractBuild
 
             $cmd_exec = str_replace(array_keys($params_exec), array_values($params_exec), $cmd_base);
 
-            $logger->info("BEGIN: LIVE");
+            $logger->info('BEGIN: LIVE');
             $proc = new Process($cmd_exec, DP_ROOT);
             $proc->setTimeout(600);
             $proc->run(function ($type, $data) use ($logger) {
                 $logger->info(sprintf("\t%s\n", str_replace("\n", "\n\t", trim($data))));
             });
-            $logger->info("DONE: LIVE");
-            $logger->info("Exit status: ".$proc->getExitCode());
+            $logger->info('DONE: LIVE');
+            $logger->info('Exit status: '.$proc->getExitCode());
 
             if (!$proc->isSuccessful()) {
-                $logger->critical("!!!!!!!!!!!!!!!");
-                throw new \RuntimeException("LIVE run failed with status: ".$proc->getExitCode());
+                $logger->critical('!!!!!!!!!!!!!!!');
+                throw new \RuntimeException('LIVE run failed with status: '.$proc->getExitCode());
             }
         } else {
             $sql = "ALTER TABLE `$table` $alter";
@@ -316,11 +316,11 @@ abstract class AbstractBuild
      */
     public function getStatus($key, $default = null)
     {
-        $val = $this->container->getDb()->fetchArray("
+        $val = $this->container->getDb()->fetchArray('
             SELECT data
             FROM import_datastore
             WHERE typename = ?
-        ", array('up.'.$this->getBuildId().'.'.$key));
+        ', array('up.'.$this->getBuildId().'.'.$key));
 
         if (!$val) {
             return $default;
@@ -331,10 +331,10 @@ abstract class AbstractBuild
 
     public function recompileCustomTemplates()
     {
-        $templates = $this->container->getDb()->fetchAll("
+        $templates = $this->container->getDb()->fetchAll('
             SELECT id, name, template_code
             FROM templates
-        ");
+        ');
 
         $twig = $this->container->get('twig');
 

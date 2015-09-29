@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Translate;
 
 use Application\DeskPRO\App;
@@ -209,11 +209,11 @@ class ObjectLangRepository
             $lang_id = is_object($lang) ? $lang->getId() : $lang;
             $obj_ref = is_object($object) ? $object->getObjectRef() : $object;
 
-            $rec = $this->em->createQuery("
+            $rec = $this->em->createQuery('
                 SELECT o
                 FROM DeskPRO:ObjectLang o
                 WHERE o.ref = ?0 AND o.prop_name = ?1 AND o.language = ?2
-            ")->setParameters(array($obj_ref, $prop_name, $lang_id))->getOneOrNullResult();
+            ')->setParameters(array($obj_ref, $prop_name, $lang_id))->getOneOrNullResult();
         }
 
         if (!$rec) {
@@ -355,11 +355,11 @@ class ObjectLangRepository
         // Possible we over-fetch some info by getting
         // langs we didnt specify if we are pre-loading two sets at a time
         // but better to over-fetch than under-fetch and do another query
-        $recs = $this->em->createQuery("
+        $recs = $this->em->createQuery('
             SELECT o
             FROM DeskPRO:ObjectLang o
             WHERE o.ref IN (?0) AND o.language IN (?1)
-        ")->setParameters(array($run_refs, $run_langs))->execute();
+        ')->setParameters(array($run_refs, $run_langs))->execute();
 
         // Mark the refs themselves as "laoded" so we dont attempt to
         // prelaod empty collections

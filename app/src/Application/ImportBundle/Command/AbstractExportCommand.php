@@ -1,37 +1,38 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Command;
 
 use Application\DeskPRO\App;
-use Application\ImportBundle\Generator\GeneratorConfig;
-use Application\ImportBundle\Generator\Exporter\ExporterInterface;
-use Application\ImportBundle\Generator;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator;
+use Application\ImportBundle\Generator\Exporter\ExporterInterface;
+use Application\ImportBundle\Generator\GeneratorConfig;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\Json\JsonConfig;
 use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
@@ -43,6 +44,8 @@ use Monolog\Logger;
 use Monolog\Processor\MemoryUsageProcessor;
 use Orb\Util\Env;
 use Orb\Util\OptionsArray;
+use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Symfony\Bridge\Monolog\Formatter\ConsoleFormatter;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -54,14 +57,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Process\Process;
-use Psr\Log\LoggerInterface;
-use RuntimeException;
 
 /**
- * Base export command
+ * Base export command.
  *
  * Class AbstractExportCommand
- * @package Application\ImportBundle\Command
  */
 abstract class AbstractExportCommand extends ContainerAwareCommand
 {
@@ -122,12 +122,12 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $GLOBALS['DP_IS_IMPORTING'] = true;
-        $GLOBALS['DP_NOSQL_LOG'] = true;
+        $GLOBALS['DP_NOSQL_LOG']    = true;
 
         @ini_set('memory_limit', -1);
         @set_time_limit(0);
@@ -166,13 +166,13 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
 
         $out = $this->checkRequirements();
         if ($out !== true) {
-            $output->write('<error>PHP sub-command binary fails server checks: ' . $out . '</error>');
+            $output->write('<error>PHP sub-command binary fails server checks: '.$out.'</error>');
             $output->write('<error>Check your config.php file to make sure $DP_CONFIG[\'php_path\'] is set to the correct PHP path.</error>');
 
             return 1;
         }
 
-        $arguments   = array_map(function($argument) { return escapeshellarg($argument); }, $_SERVER['argv']);
+        $arguments = array_map(function ($argument) { return escapeshellarg($argument); }, $_SERVER['argv']);
         $arguments[] = '-b';
 
         // todo always verbose mode by now
@@ -184,17 +184,18 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         do {
             $process = new Process($cmd, realpath(DP_ROOT.'/../'));
             $process->setTimeout(18000);
-            $process->run(function($type, $data) use ($output) {
+            $process->run(function ($type, $data) use ($output) {
                 $output->write($data);
             });
 
-            if ( ! $process->isSuccessful()) {
-                $output->writeln("<error>Detected error, halting process</error>");
+            if (!$process->isSuccessful()) {
+                $output->writeln('<error>Detected error, halting process</error>');
+
                 return 1;
             }
 
-            $output->writeln("<info>Done batch</info>");
-            $output->writeln("<info>Updating search tables.</info>");
+            $output->writeln('<info>Done batch</info>');
+            $output->writeln('<info>Updating search tables.</info>');
 
             $this->getContainer()->getEm()->getRepository('DeskPRO:Ticket')->fillSearchTable();
 
@@ -204,16 +205,15 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             if ($exporter_config instanceof Generator\Exporter\Parser\BatchConfigInterface) {
                 $rerun = $exporter_config->getHasRemaining();
                 if ($rerun) {
-                    $output->writeln("<info>Running next batch</info>");
+                    $output->writeln('<info>Running next batch</info>');
                 }
-
             } else {
                 $rerun = false;
             }
-
         } while ($rerun);
 
-        $output->writeln("<info>Done all.</info>");
+        $output->writeln('<info>Done all.</info>');
+
         return 0;
     }
 
@@ -241,13 +241,12 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             }
 
             return 0;
-
         } catch (Generator\GeneratorException $e) {
             if (isset($logger)) {
                 foreach ($e->getExceptions() as $exception) {
-                    /** @var Generator\Validator\ValidatorConstraintException $exception */
+                    /* @var Generator\Validator\ValidatorConstraintException $exception */
                     $logger->alert(sprintf(
-                        "Validator failure for %s on record #%s: %s",
+                        'Validator failure for %s on record #%s: %s',
 
                         get_class($exception->getEntity()),
                         $exception->getEntity()->getOid(),
@@ -267,7 +266,6 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
 
             // Mark batch as successful even an error has occurred
             return 0;
-
         } catch (\Exception $e) {
             KernelErrorHandler::logException($e, true);
             $output->writeln($e->getMessage());
@@ -290,34 +288,34 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     }
 
     /**
-     * Checks generator configuration
+     * Checks generator configuration.
      *
      * @param GeneratorConfig $config
+     *
      * @throws RuntimeException
      */
-    protected abstract function checkConfiguration(GeneratorConfig $config);
+    abstract protected function checkConfiguration(GeneratorConfig $config);
 
     /**
-     * Executes command
+     * Executes command.
      *
      * @param GeneratorConfig $config
      * @param LoggerInterface $logger
      * @param InputInterface  $input
      * @param OutputInterface $output
-     *
-     * @return void
      */
-    protected abstract function doExecute(GeneratorConfig $config, LoggerInterface $logger, InputInterface $input, OutputInterface $output);
+    abstract protected function doExecute(GeneratorConfig $config, LoggerInterface $logger, InputInterface $input, OutputInterface $output);
 
     /**
      * Creates a new generator config instance
-     * The export is executing in the order of the entity type collection
+     * The export is executing in the order of the entity type collection.
      *
      * @param InputInterface $input
      * @param array          $supported_types
      *
-     * @return GeneratorConfig
      * @throws RuntimeException
+     *
+     * @return GeneratorConfig
      */
     protected function createGeneratorConfig(InputInterface $input, array $supported_types)
     {
@@ -337,7 +335,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     }
 
     /**
-     * Returns a list of supported entity types
+     * Returns a list of supported entity types.
      *
      * @return string[]
      */
@@ -354,7 +352,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     }
 
     /**
-     * Use project config to set up generator config params
+     * Use project config to set up generator config params.
      *
      * @param GeneratorConfig $config
      */
@@ -363,11 +361,11 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $import_config = new OptionsArray(dp_get_config('import', array()));
         $config
             ->setOutputPath($import_config->get('output_path'))
-            ->setLogPath($import_config->get('log_path', dp_get_log_dir() . '/export.log'));
+            ->setLogPath($import_config->get('log_path', dp_get_log_dir().'/export.log'));
     }
 
     /**
-     * Use cli to set generator config params up
+     * Use cli to set generator config params up.
      *
      * @param GeneratorConfig $config
      * @param InputInterface  $input
@@ -383,12 +381,12 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         }
 
         if ($input->hasOption('output-path') && $input->getOption('output-path')) {
-            $config->setOutputPath(rtrim($input->getOption('output-path'), "\\/") . "/");
+            $config->setOutputPath(rtrim($input->getOption('output-path'), '\\/').'/');
         }
 
         $input_path = '';
         if ($input->hasOption('input-path') && $input->getOption('input-path')) {
-            $input_path = rtrim($input->getOption('input-path'), "\\/") . "/";
+            $input_path = rtrim($input->getOption('input-path'), '\\/').'/';
         }
 
         switch ($config->getExporterType()) {
@@ -437,7 +435,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     }
 
     /**
-     * Use cli to set batch config up
+     * Use cli to set batch config up.
      *
      * @param GeneratorConfig $config
      * @param InputInterface  $input
@@ -482,7 +480,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     }
 
     /**
-     * Create a logger
+     * Create a logger.
      *
      * @param GeneratorConfig $config
      * @param InputInterface  $input
@@ -522,7 +520,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     }
 
     /**
-     * Create a generator
+     * Create a generator.
      *
      * @param GeneratorConfig $config
      * @param LoggerInterface $logger
@@ -531,7 +529,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      */
     protected function createGenerator(GeneratorConfig $config, LoggerInterface $logger)
     {
-        /** @var Generator\Generator $generator */
+        /* @var Generator\Generator $generator */
         $this->getContainer()->set('deskpro.import.config', $config);
 
         /** @var Generator\Generator $generator */
@@ -542,7 +540,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     }
 
     /**
-     * Create a progress bar if verbose mode is disabled
+     * Create a progress bar if verbose mode is disabled.
      *
      * @param Generator\Generator $generator
      * @param OutputInterface     $output
@@ -559,14 +557,15 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             $progress_bar->start();
 
             $generator->setProgressBarHelper($progress_bar);
+
             return $progress_bar;
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Override container to set correct type hinting
+     * Override container to set correct type hinting.
      *
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
      */
@@ -576,14 +575,14 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     }
 
     /**
-     * Check PHP info
+     * Check PHP info.
      *
      * @return bool
      */
     protected function checkPhpInfo()
     {
         if (dp_is_php_path_guessed()) {
-            $cmd = sprintf("%s %s", dp_get_php_path(), escapeshellarg('bin/phpinfo.php'));
+            $cmd = sprintf('%s %s', dp_get_php_path(), escapeshellarg('bin/phpinfo.php'));
 
             $process = new Process($cmd, realpath(DP_ROOT));
             $process->run();
@@ -595,19 +594,19 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     }
 
     /**
-     * Make sure PHP we have passes requirements
+     * Make sure PHP we have passes requirements.
      *
      * @return bool|string
      */
     protected function checkRequirements()
     {
-        $cmd = sprintf("%s %s", dp_get_php_path(), escapeshellarg('bin/check-req.php'));
+        $cmd = sprintf('%s %s', dp_get_php_path(), escapeshellarg('bin/check-req.php'));
 
         $process = new Process($cmd, realpath(DP_ROOT));
         $process->run();
 
         $output = $process->getOutput();
-        if ( ! $process->isSuccessful() || strpos($output, 'OKAY') === false) {
+        if (!$process->isSuccessful() || strpos($output, 'OKAY') === false) {
             return $output;
         }
 

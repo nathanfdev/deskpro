@@ -1,50 +1,46 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart
  */
 class DbalQueryPartSpec extends ObjectBehavior
 {
-    function it_initizlizes_empty()
+    public function it_initizlizes_empty()
     {
         $this->getParameters()->shouldReturn(array());
         $this->getJoins()->shouldReturn(array());
@@ -52,7 +48,7 @@ class DbalQueryPartSpec extends ObjectBehavior
         $this->getWhereString()->shouldReturn(null);
     }
 
-    function it_is_capable_of_holding_parameters()
+    public function it_is_capable_of_holding_parameters()
     {
         $this->setParameter('ids', array(1, 2, 3));
         $this->setParameter('agent', new TermEngineExpression('agent.getId()'));
@@ -60,14 +56,14 @@ class DbalQueryPartSpec extends ObjectBehavior
 
         $this->getParameters()->shouldBeLike(
             array(
-                'ids' => array(1, 2, 3),
-                'agent' => new TermEngineExpression('agent.getId()'),
-                'scalar' => 'hello'
+                'ids'    => array(1, 2, 3),
+                'agent'  => new TermEngineExpression('agent.getId()'),
+                'scalar' => 'hello',
             )
         );
     }
 
-    function it_allows_adding_simple_joins()
+    public function it_allows_adding_simple_joins()
     {
         $this->addJoin('table', 'on condition');
         $this->addJoin('other_table', 'foo = baz', DbalQuery::JOIN_INNER);
@@ -76,19 +72,19 @@ class DbalQueryPartSpec extends ObjectBehavior
             array(
                 'table' => array(
                     'table' => 'table',
-                    'on' => 'on condition',
-                    'type' => DbalQuery::JOIN_LEFT
+                    'on'    => 'on condition',
+                    'type'  => DbalQuery::JOIN_LEFT,
                 ),
                 'other_table' => array(
                     'table' => 'other_table',
-                    'on' => 'foo = baz',
-                    'type' => DbalQuery::JOIN_INNER
+                    'on'    => 'foo = baz',
+                    'type'  => DbalQuery::JOIN_INNER,
                 ),
             )
         );
     }
 
-    function it_allows_adding_unique_joins()
+    public function it_allows_adding_unique_joins()
     {
         $this->addUniqueJoin('alias_1', 'table', '{alias_1}.id = ticket.something', DbalQuery::JOIN_RIGHT);
 
@@ -98,19 +94,19 @@ class DbalQueryPartSpec extends ObjectBehavior
             array(
                 'alias_1' => array(
                     'table' => 'table',
-                    'on' => '{alias_1}.id = ticket.something',
-                    'type' => DbalQuery::JOIN_RIGHT
+                    'on'    => '{alias_1}.id = ticket.something',
+                    'type'  => DbalQuery::JOIN_RIGHT,
                 ),
                 'alias_2' => array(
                     'table' => 'table',
-                    'on' => '{alias_2}.id = ticket.something_else',
-                    'type' => DbalQuery::JOIN_LEFT
-                )
+                    'on'    => '{alias_2}.id = ticket.something_else',
+                    'type'  => DbalQuery::JOIN_LEFT,
+                ),
             )
         );
     }
 
-    function it_does_not_allow_alias_to_be_the_alias()
+    public function it_does_not_allow_alias_to_be_the_alias()
     {
         // {alias} is a reserved alias, and you CAN NOT set it as the alias of a unique join
         $this->shouldThrow('\InvalidArgumentException')->during(
@@ -119,14 +115,14 @@ class DbalQueryPartSpec extends ObjectBehavior
         );
     }
 
-    function it_allows_setting_the_where_condition()
+    public function it_allows_setting_the_where_condition()
     {
         $this->setWhereString('{alias_2}.agent = :agent');
 
         $this->getWhereString()->shouldBe('{alias_2}.agent = :agent');
     }
 
-    function it_can_rename_a_parameter_and_it_affects_all_parts()
+    public function it_can_rename_a_parameter_and_it_affects_all_parts()
     {
         $this->setParameter('param_name', 5);
         $this->setParameter('unchanged_param', 15);
@@ -140,8 +136,8 @@ class DbalQueryPartSpec extends ObjectBehavior
 
         $this->getParameters()->shouldBeLike(
             array(
-                'xyz_2' => 5,
-                'unchanged_param' => 15
+                'xyz_2'           => 5,
+                'unchanged_param' => 15,
             )
         );
 
@@ -153,9 +149,9 @@ class DbalQueryPartSpec extends ObjectBehavior
             array(
                 'departments' => array(
                     'table' => 'departments',
-                    'on' => ':unchanged_param > 4 OR table.something = :xyz_2',
-                    'type' => DbalQuery::JOIN_LEFT
-                )
+                    'on'    => ':unchanged_param > 4 OR table.something = :xyz_2',
+                    'type'  => DbalQuery::JOIN_LEFT,
+                ),
             )
         );
 
@@ -163,14 +159,14 @@ class DbalQueryPartSpec extends ObjectBehavior
             array(
                 'alias_2' => array(
                     'table' => 'people',
-                    'on' => '{alias_2}.id = :xyz_2 AND :unchanged_param > 8',
-                    'type' => DbalQuery::JOIN_LEFT
-                )
+                    'on'    => '{alias_2}.id = :xyz_2 AND :unchanged_param > 8',
+                    'type'  => DbalQuery::JOIN_LEFT,
+                ),
             )
         );
     }
 
-    function it_can_rename_unique_join_aliases()
+    public function it_can_rename_unique_join_aliases()
     {
         $this->setParameter('param_name', 5);
         $this->setParameter('unchanged_param', 15);
@@ -189,9 +185,9 @@ class DbalQueryPartSpec extends ObjectBehavior
             array(
                 'departments' => array(
                     'table' => 'departments',
-                    'on' => ':unchanged_param > 4 OR table.something = {xyz_123}.name',
-                    'type' => DbalQuery::JOIN_LEFT
-                )
+                    'on'    => ':unchanged_param > 4 OR table.something = {xyz_123}.name',
+                    'type'  => DbalQuery::JOIN_LEFT,
+                ),
             )
         );
 
@@ -199,9 +195,9 @@ class DbalQueryPartSpec extends ObjectBehavior
             array(
                 'xyz_123' => array(
                     'table' => 'people',
-                    'on' => '{xyz_123}.id = :param_name AND :unchanged_param > 8',
-                    'type' => DbalQuery::JOIN_LEFT
-                )
+                    'on'    => '{xyz_123}.id = :param_name AND :unchanged_param > 8',
+                    'type'  => DbalQuery::JOIN_LEFT,
+                ),
             )
         );
     }

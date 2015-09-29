@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
 class DbalQueryPart
@@ -49,10 +47,10 @@ class DbalQueryPart
 
     public function __construct()
     {
-        $this->parameters = array();
-        $this->joins = array();
+        $this->parameters   = array();
+        $this->joins        = array();
         $this->unique_joins = array();
-        $this->where = null;
+        $this->where        = null;
     }
 
     /**
@@ -64,19 +62,19 @@ class DbalQueryPart
     public function renameParam($old_name, $new_name)
     {
         // rename param
-        $val = $this->parameters[$old_name];
+        $val                         = $this->parameters[$old_name];
         $this->parameters[$new_name] = $val;
         unset($this->parameters[$old_name]);
 
         // update where string
-        $this->where = str_replace(':' . $old_name, ':' . $new_name, $this->where);
+        $this->where = str_replace(':'.$old_name, ':'.$new_name, $this->where);
 
         // update join conditions
         foreach ($this->joins as $alias => $join_info) {
             $this->joins[$alias] = array(
                 'table' => $join_info['table'],
-                'on' => str_replace(':' . $old_name, ':' . $new_name, $join_info['on']),
-                'type' => $join_info['type']
+                'on'    => str_replace(':'.$old_name, ':'.$new_name, $join_info['on']),
+                'type'  => $join_info['type'],
             );
         }
 
@@ -84,8 +82,8 @@ class DbalQueryPart
         foreach ($this->unique_joins as $alias => $join_info) {
             $this->unique_joins[$alias] = array(
                 'table' => $join_info['table'],
-                'on' => str_replace(':' . $old_name, ':' . $new_name, $join_info['on']),
-                'type' => $join_info['type']
+                'on'    => str_replace(':'.$old_name, ':'.$new_name, $join_info['on']),
+                'type'  => $join_info['type'],
             );
         }
     }
@@ -102,8 +100,8 @@ class DbalQueryPart
         foreach ($this->joins as $alias => $join_info) {
             $this->joins[$alias] = array(
                 'table' => $join_info['table'],
-                'on' => str_replace('{' . $old_alias . '}', '{' . $new_alias . '}', $join_info['on']),
-                'type' => $join_info['type']
+                'on'    => str_replace('{'.$old_alias.'}', '{'.$new_alias.'}', $join_info['on']),
+                'type'  => $join_info['type'],
             );
         }
 
@@ -111,8 +109,8 @@ class DbalQueryPart
         foreach ($this->unique_joins as $alias => $join_info) {
             $this->unique_joins[$alias] = array(
                 'table' => $join_info['table'],
-                'on' => str_replace('{' . $old_alias . '}', '{' . $new_alias . '}', $join_info['on']),
-                'type' => $join_info['type']
+                'on'    => str_replace('{'.$old_alias.'}', '{'.$new_alias.'}', $join_info['on']),
+                'type'  => $join_info['type'],
             );
 
             if ($alias == $old_alias) {
@@ -121,7 +119,7 @@ class DbalQueryPart
             }
         }
 
-        $this->where = str_replace('{' . $old_alias . '}', '{' . $new_alias . '}', $this->where);
+        $this->where = str_replace('{'.$old_alias.'}', '{'.$new_alias.'}', $this->where);
     }
 
     /**
@@ -134,7 +132,7 @@ class DbalQueryPart
     {
         $this->parameters[$name] = $value;
     }
-    
+
     /**
      * Establish all the query parameters to use in a WHERE/JOIN string at once.
      *
@@ -157,8 +155,8 @@ class DbalQueryPart
     {
         $this->joins[$table] = array(
             'table' => $table,
-            'on' => $on_condition,
-            'type' => $type
+            'on'    => $on_condition,
+            'type'  => $type,
         );
     }
 
@@ -182,8 +180,8 @@ class DbalQueryPart
 
         $this->unique_joins[$alias] = array(
             'table' => $table,
-            'on' => $on_condition,
-            'type' => $type
+            'on'    => $on_condition,
+            'type'  => $type,
         );
     }
 
@@ -196,7 +194,7 @@ class DbalQueryPart
      */
     public function setWhereString($where)
     {
-        $this->where = (string)$where;
+        $this->where = (string) $where;
     }
 
     /**

@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Command;
 
 namespace Application\DeskPRO\Command;
@@ -52,7 +52,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
              ->addOption('setbuild', null, InputOption::VALUE_NONE, 'Sets the build number to now')
              ->addOption('reset', null, InputOption::VALUE_NONE, 'Removes status files that tells the system an upgrade is running. Use this if the systme is "stuck" in upgrade mode.')
              ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Does not halt the upgrade loop when an error happens')
-             ->setHelp("This command executes the upgrader to bring your database to the same version the filesystem is");
+             ->setHelp('This command executes the upgrader to bring your database to the same version the filesystem is');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -72,13 +72,13 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_db', null);
             $this->getContainer()->getSettingsHandler()->setSetting('core.last_auto_upgrade_time', null);
 
-            $output->writeln("Reset done.");
+            $output->writeln('Reset done.');
 
             return 0;
         }
 
         // Clear caches, including doctrine query caches
-        App::getDb()->exec("TRUNCATE TABLE cache");
+        App::getDb()->exec('TRUNCATE TABLE cache');
         @unlink(dp_get_tmp_dir().DIRECTORY_SEPARATOR.'dql.cache');
 
         $output->setVerbosity(4);
@@ -91,10 +91,10 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         $logger->pushHandler($stream_handler);
 
         try {
-            $this->getContainer()->getDb()->exec("SET SESSION wait_timeout = 86400");
-            $logger->debug("Set wait_timeout to 86400");
+            $this->getContainer()->getDb()->exec('SET SESSION wait_timeout = 86400');
+            $logger->debug('Set wait_timeout to 86400');
         } catch (\Exception $e) {
-            $logger->warn("Failed to set wait_timeout: ".$e->getMessage());
+            $logger->warn('Failed to set wait_timeout: '.$e->getMessage());
         }
 
         $manager = new \Application\InstallBundle\Upgrade\Manager(
@@ -120,9 +120,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             echo "\n";
 
             if (!$next_id) {
-                $output->writeln("You are all up to date!");
+                $output->writeln('You are all up to date!');
             } else {
-                $output->writeln("Builds that need to be executed:");
+                $output->writeln('Builds that need to be executed:');
                 foreach ($manager->getWaitingBuildIds() as $build_id) {
                     $output->writeln(sprintf("\t%d (%s)", $build_id, $manager->formatBuildId($build_id)));
                 }
@@ -137,9 +137,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
         if ($input->getOption('setbuild')) {
             $num = time();
-            $logger->info("Setting deskpro_build = ".$num);
+            $logger->info('Setting deskpro_build = '.$num);
             App::getDb()->replace('settings', array('value' => $num, 'name' => 'core.deskpro_build'));
-            $output->writeln("<info>Done</info>");
+            $output->writeln('<info>Done</info>');
 
             return 0;
         }
@@ -149,9 +149,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         #------------------------------
 
         if ($input->getOption('runsync')) {
-            $output->writeln("<info>Running post scripts</info>");
+            $output->writeln('<info>Running post scripts</info>');
             $manager->postUpgrade();
-            $output->writeln("<info>Done All</info>");
+            $output->writeln('<info>Done All</info>');
 
             return 0;
         }
@@ -161,7 +161,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         #------------------------------
 
         if (!$manager->getNextBuildId()) {
-            $logger->info("All up to date");
+            $logger->info('All up to date');
         }
 
         if ($input->getOption('dobuildrun')) {
@@ -201,11 +201,11 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         # Post Run
         #------------------------------
 
-        $logger->info("Running post scripts");
+        $logger->info('Running post scripts');
         $manager->postUpgrade();
 
         if (defined('DP_BUILD_TIME')) {
-            $logger->info("Setting deskpro_build = ".DP_BUILD_TIME);
+            $logger->info('Setting deskpro_build = '.DP_BUILD_TIME);
             $current = App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
             if ($current < DP_BUILD_TIME) {
                 App::getDb()->replace('settings', array('value' => DP_BUILD_TIME, 'name' => 'core.deskpro_build'));
@@ -213,7 +213,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             }
         }
 
-        $logger->info("Upgrade complete");
+        $logger->info('Upgrade complete');
 
         return 0;
     }

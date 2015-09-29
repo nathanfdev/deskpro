@@ -150,11 +150,14 @@ export const storeDisplayFieldsToPersonSetting = createAction(
   });
 
 export const getDisplayFieldsFromPersonSetting = createAction(
-  "FEEDBACK_GET_DISPLAY_FIELD_FROM_PERSON_SETTING",
+  'FEEDBACK_GET_DISPLAY_FIELD_FROM_PERSON_SETTING',
   () => {
     Feedback.getDisplayFieldsFromPersonSetting('feedback_display_fields').then(value => value.getData())
   });
 
+export const toggleMassAction = createAction(
+  'FEEDBACK_TOGGLE_MASS_ACTION'
+);
 
 /** @ToDo migrate to Ampliflux v2 after FilterBy block design */
 export const setFilterValue = createAction(
@@ -171,7 +174,7 @@ export const changeDisplayFieldsStatus = createAction(
   });
 
 export const resetFilters = createAction(
-  "FEEDBACK_RESET_FILTERS",
+  'FEEDBACK_RESET_FILTERS',
   (trigger, filterAlias, filterName) => {
     trigger({alias: filterAlias, name: filterName, value: ''});
   });

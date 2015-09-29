@@ -1,44 +1,43 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category ORM
  */
-
 namespace Application\DeskPRO\Labels;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
-use Application\DeskPRO\EntityRepository\LabelDef;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\ORM\EntityManager;
+use Application\DeskPRO\EntityRepository\LabelDef;
 
 class LabelManager
 {
@@ -117,10 +116,10 @@ class LabelManager
         $label = self::normalizeLabel($label);
 
         if (!$skip_corrections) {
-            $rep     = $this->em->getRepository('DeskPRO:LabelDef');
-            $type    = $rep->getTypeByEntityName($this->label_entity_name);
-            $labels  = $rep->correctLabels($type, array($label), true);
-            $label   = array_pop($labels);
+            $rep    = $this->em->getRepository('DeskPRO:LabelDef');
+            $type   = $rep->getTypeByEntityName($this->label_entity_name);
+            $labels = $rep->correctLabels($type, array($label), true);
+            $label  = array_pop($labels);
         }
 
         foreach ($this->entity[$this->labels_property] as $labelobj) {
@@ -177,9 +176,9 @@ class LabelManager
 
     public function addLabels(array $labels)
     {
-        $rep     = $this->em->getRepository('DeskPRO:LabelDef');
-        $type    = $rep->getTypeByEntityName($this->label_entity_name);
-        $labels  = $rep->correctLabels($type, $labels, true);
+        $rep    = $this->em->getRepository('DeskPRO:LabelDef');
+        $type   = $rep->getTypeByEntityName($this->label_entity_name);
+        $labels = $rep->correctLabels($type, $labels, true);
 
         foreach ($labels as $label) {
             $this->addLabel($label, true);
@@ -236,20 +235,20 @@ class LabelManager
         $removed         = array_diff($existing_labels, $labels);
 
         /** @var LabelDef $rep */
-        $rep     = $this->em->getRepository('DeskPRO:LabelDef');
-        $type    = $rep->getTypeByEntityName($this->label_entity_name);
+        $rep  = $this->em->getRepository('DeskPRO:LabelDef');
+        $type = $rep->getTypeByEntityName($this->label_entity_name);
 
         if (App::getCurrentPerson() && !App::getCurrentPerson()->isGuest() && App::getCurrentPerson()->is_agent) {
             $person = App::getCurrentPerson();
             switch ($this->label_entity_name) {
-                case 'DeskPRO:LabelTicket':           $perm = $person->hasPerm("agent_tickets.create_labels"); break;
-                case 'DeskPRO:LabelPerson':           $perm = $person->hasPerm("agent_people.create_labels"); break;
-                case 'DeskPRO:LabelOrganization':     $perm = $person->hasPerm("agent_org.create_labels"); break;
-                case 'DeskPRO:LabelChatConversation': $perm = $person->hasPerm("agent_chat.create_labels"); break;
-                case 'DeskPRO:LabelArticle':          $perm = $person->hasPerm("agent_publish.articles_create_labels"); break;
-                case 'DeskPRO:LabelNews':             $perm = $person->hasPerm("agent_publish.news_create_labels"); break;
-                case 'DeskPRO:LabelDownload':         $perm = $person->hasPerm("agent_publish.downloads_create_labels"); break;
-                case 'DeskPRO:LabelFeedback':         $perm = $person->hasPerm("agent_publish.feedback_create_labels"); break;
+                case 'DeskPRO:LabelTicket':           $perm = $person->hasPerm('agent_tickets.create_labels'); break;
+                case 'DeskPRO:LabelPerson':           $perm = $person->hasPerm('agent_people.create_labels'); break;
+                case 'DeskPRO:LabelOrganization':     $perm = $person->hasPerm('agent_org.create_labels'); break;
+                case 'DeskPRO:LabelChatConversation': $perm = $person->hasPerm('agent_chat.create_labels'); break;
+                case 'DeskPRO:LabelArticle':          $perm = $person->hasPerm('agent_publish.articles_create_labels'); break;
+                case 'DeskPRO:LabelNews':             $perm = $person->hasPerm('agent_publish.news_create_labels'); break;
+                case 'DeskPRO:LabelDownload':         $perm = $person->hasPerm('agent_publish.downloads_create_labels'); break;
+                case 'DeskPRO:LabelFeedback':         $perm = $person->hasPerm('agent_publish.feedback_create_labels'); break;
                 default: $perm                              = false;
             }
         } else {

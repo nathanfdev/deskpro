@@ -1,33 +1,33 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
-/**
- * DeskPRO
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
 
@@ -36,7 +36,6 @@ use DeskPRO\Bundle\AppBundle\AgentChat\History;
 use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,8 +48,10 @@ class MessagesController extends AbstractController
     /**
      * @param $id
      * @param Request $request
+     *
      * @throws NotFoundHttpException
      * @throws AccessDeniedHttpException
+     *
      * @return View
      * @Annotations\Get("/agent_chats/{id}/messages", name="agent_chats_get_messages")
      */
@@ -58,22 +59,23 @@ class MessagesController extends AbstractController
     {
         /** @var Messenger $messenger */
         $messenger = $this->get('deskpro.agentchat.messenger');
-        $user = $this->getUser();
-        $chat = $this->getChat($id);
+        $user      = $this->getUser();
+        $chat      = $this->getChat($id);
 
-        if(!$user || !$messenger->isPersonInvolvedInChat($user, $chat)) {
+        if (!$user || !$messenger->isPersonInvolvedInChat($user, $chat)) {
             throw new AccessDeniedHttpException();
         }
 
         $searchString = $request->query->getAlnum('search', '');
-        $orderBy = $request->query->get('order', 'date_created');
-        $page = $request->query->getInt('page', 1);
+        $orderBy      = $request->query->get('order', 'date_created');
+        $page         = $request->query->getInt('page', 1);
         /** @var History $searchService */
         $searchService = $this->get('deskpro.agentchat.history');
-        $messages = $searchService->searchInChat($chat, $searchString, $orderBy);
+        $messages      = $searchService->searchInChat($chat, $searchString, $orderBy);
 
         $pager = new Pagerfanta(new ArrayAdapter($messages));
         $pager->setCurrentPage($page);
+
         return View::create(
             $this->dataSerialize($pager),
             Response::HTTP_OK
@@ -83,9 +85,11 @@ class MessagesController extends AbstractController
     /**
      * @param $id
      * @param Request $request
+     *
      * @throws NotFoundHttpException
      * @throws AccessDeniedHttpException
      * @throws InvalidFormException
+     *
      * @return View
      * @Annotations\Post("/agent_chats/{id}/messages", name="agent_chats_add_chat_message")
      */
@@ -100,15 +104,16 @@ class MessagesController extends AbstractController
         }
         /** @var Messenger $messenger */
         $messenger = $this->get('deskpro.agentchat.messenger');
-        $user = $this->getUser();
-        $chat = $this->getChat($id);
+        $user      = $this->getUser();
+        $chat      = $this->getChat($id);
 
-        if(!$user || !$messenger->isPersonInvolvedInChat($user, $chat)) {
+        if (!$user || !$messenger->isPersonInvolvedInChat($user, $chat)) {
             throw new AccessDeniedHttpException();
         }
 
-        $data = $form->getData();
+        $data    = $form->getData();
         $message = $messenger->addMessage($chat, $user, $data['message']);
+
         return View::create(
             $this->dataSerialize($message),
             Response::HTTP_CREATED

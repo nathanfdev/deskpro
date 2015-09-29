@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\DBAL\Logging;
 
 use Orb\Util\Arrays;
@@ -146,7 +146,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
             $any = false;
             foreach ($patterns as $pattern) {
-                $url = defined('DP_REQUEST_URL') ? DP_REQUEST_URL : @$_SERVER["REQUEST_URI"];
+                $url = defined('DP_REQUEST_URL') ? DP_REQUEST_URL : @$_SERVER['REQUEST_URI'];
                 if ($url && preg_match($pattern, $url)) {
                     $any = true;
                     break;
@@ -171,10 +171,10 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
             $sql_string = preg_replace('# {2,}#', ' ', $sql_string);
             $sql_string = substr($sql_string, 0, 5000);
             echo "\n";
-            echo "Query:  ".$sql_string;
+            echo 'Query:  '.$sql_string;
             if ($params) {
                 echo "\n";
-                echo "Params: ".\DeskPRO\Kernel\KernelErrorHandler::varToString($params);
+                echo 'Params: '.\DeskPRO\Kernel\KernelErrorHandler::varToString($params);
             }
             echo "\n";
         }
@@ -182,14 +182,14 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
         if (!isset($GLOBALS['DP_QUERY_COUNT'])) {
             $GLOBALS['DP_QUERY_COUNT'] = 0;
         }
-        $GLOBALS['DP_QUERY_COUNT']++;
-        $this->_query_count++;
+        ++$GLOBALS['DP_QUERY_COUNT'];
+        ++$this->_query_count;
 
         $id = md5($sql);
 
         $is_tracking = ($this->_track_ids !== null && isset($this->_track_ids[$id])) || ($this->_track_regex !== null && $this->_isSqlTracking($sql));
         if ($is_tracking) {
-            $this->_count_tracked++;
+            ++$this->_count_tracked;
         }
 
         $trace = null;
@@ -199,15 +199,15 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
         }
 
         $this->_last_query = array(
-            'sql'            => $sql,
-            'params'         => $params,
-            'time_start'     => microtime(true),
-            'time_end'       => 0,
-            'time_taken'     => 0,
-            'trans_level'    => 0,
-            'trace'          => $trace,
-            'id'             => $id,
-            'is_tracking'    => $is_tracking,
+            'sql'         => $sql,
+            'params'      => $params,
+            'time_start'  => microtime(true),
+            'time_end'    => 0,
+            'time_taken'  => 0,
+            'trans_level' => 0,
+            'trace'       => $trace,
+            'id'          => $id,
+            'is_tracking' => $is_tracking,
         );
     }
 
@@ -233,8 +233,8 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
             return;
         }
 
-        $queryinfo['time_end']       = microtime(true);
-        $queryinfo['time_taken']     = $queryinfo['time_end'] - $queryinfo['time_start'];
+        $queryinfo['time_end']   = microtime(true);
+        $queryinfo['time_taken'] = $queryinfo['time_end'] - $queryinfo['time_start'];
 
         $this->_db_time += $queryinfo['time_taken'];
         $this->_last_query = null;
@@ -249,9 +249,9 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
             return;
         }
 
-        $queryinfo['params_string']  = \DeskPRO\Kernel\KernelErrorHandler::varToString($queryinfo['params']);
-        $queryinfo['sql']            = trim($queryinfo['sql']);
-        $this->_queries[]            = $queryinfo;
+        $queryinfo['params_string'] = \DeskPRO\Kernel\KernelErrorHandler::varToString($queryinfo['params']);
+        $queryinfo['sql']           = trim($queryinfo['sql']);
+        $this->_queries[]           = $queryinfo;
     }
 
     public function writeLog()
@@ -318,7 +318,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
                     'id'         => $queryinfo['id'],
                 );
             } else {
-                $repeated_queries[$query_name]['count']++;
+                ++$repeated_queries[$query_name]['count'];
                 $repeated_queries[$query_name]['total_time'] += $queryinfo['time_taken'];
 
                 if ($queryinfo['time_taken'] < $repeated_queries[$query_name]['min_time']) {
@@ -342,16 +342,16 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
         $repeated_queries = Arrays::removeFalsey($repeated_queries);
 
         $page_header   = array();
-        $page_header[] = "--- Page Log Begin ---";
+        $page_header[] = '--- Page Log Begin ---';
         if (defined('DP_REQUEST_URL')) {
-            $page_header[] = "=> URL: ".DP_REQUEST_URL;
+            $page_header[] = '=> URL: '.DP_REQUEST_URL;
         } elseif (php_sapi_name() == 'cli' && !empty($_SERVER['argv'])) {
-            $page_header[] = "=> URL: (Command) ".implode(' ', $_SERVER['argv']);
-        } elseif (!empty($_SERVER["REQUEST_URI"])) {
-            $page_header[] = "=> URL: ".$_SERVER["REQUEST_URI"];
+            $page_header[] = '=> URL: (Command) '.implode(' ', $_SERVER['argv']);
+        } elseif (!empty($_SERVER['REQUEST_URI'])) {
+            $page_header[] = '=> URL: '.$_SERVER['REQUEST_URI'];
         }
 
-        $page_header[] = sprintf("=> Time: %.4f    PHP_Time: %.4f    DB_Time: %.4f    Query_Count: %d    Peak_Memory: %d", $total_time, $php_time, $db_time, $this->_query_count, memory_get_peak_usage());
+        $page_header[] = sprintf('=> Time: %.4f    PHP_Time: %.4f    DB_Time: %.4f    Query_Count: %d    Peak_Memory: %d', $total_time, $php_time, $db_time, $this->_query_count, memory_get_peak_usage());
 
         #------------------------------
         # Slow Query Log
@@ -496,7 +496,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
             $queryinfo['query_id']       = $query_id;
 
             if (!isset($this->_query_id_count[$query_id])) {
-                $this->_query_id_names[$query_id] = sprintf("#%04d", $k);
+                $this->_query_id_names[$query_id] = sprintf('#%04d', $k);
                 $this->_query_id_count[$query_id] = 1;
 
                 $queryinfo['query_name']  = $this->_query_id_names[$query_id];
@@ -505,7 +505,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
                 $queryinfo['count_of_id'] = $this->_query_id_count[$query_id];
                 $queryinfo['query_name']  = $this->_query_id_names[$query_id];
 
-                $this->_query_id_count[$query_id]++;
+                ++$this->_query_id_count[$query_id];
             }
         }
     }
@@ -520,9 +520,9 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
         // [2.3s] <Q123.2:tablename> query     <Params>
 
         $row = sprintf(
-            "[%.4fs] <%s:%s> %s    <PARAMS> %s",
+            '[%.4fs] <%s:%s> %s    <PARAMS> %s',
             $queryinfo['time_taken'],
-            $queryinfo['query_name'].($queryinfo['count_of_id'] ? sprintf(".%03d", $queryinfo['count_of_id']) : ''),
+            $queryinfo['query_name'].($queryinfo['count_of_id'] ? sprintf('.%03d', $queryinfo['count_of_id']) : ''),
             $queryinfo['query_table'],
             $queryinfo['sql_string'],
             $queryinfo['params_string']
@@ -564,7 +564,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
         }
 
         $write   = array();
-        $write[] = "Repeated Queries:";
+        $write[] = 'Repeated Queries:';
 
         foreach ($repeated_queries as $name => $info) {
             $write[] = sprintf(

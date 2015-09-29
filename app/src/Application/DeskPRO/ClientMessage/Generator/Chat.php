@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category ClientMessage
  */
-
 namespace Application\DeskPRO\ClientMessage\Generator;
 
 use Application\DeskPRO\Entity\ChatConversation;
@@ -51,12 +51,12 @@ class Chat
         $new_chat_cm->fromArray(array(
             'channel' => $channel,
             'data'    => array(
-                'conversation_id'   => $conversation['id'],
-                'message_id'        => $chat_message['id'],
-                'author_id'         => $chat_message['author_id'],
-                'author_name'       => $chat_message['author_name'],
-                'message'           => $chat_message['content'],
-                'date_created'      => $chat_message['date_created']->getTimestamp(),
+                'conversation_id' => $conversation['id'],
+                'message_id'      => $chat_message['id'],
+                'author_id'       => $chat_message['author_id'],
+                'author_name'     => $chat_message['author_name'],
+                'message'         => $chat_message['content'],
+                'date_created'    => $chat_message['date_created']->getTimestamp(),
             ),
             'created_by_client' => $by_client_id,
         ));
@@ -74,12 +74,12 @@ class Chat
         $new_chat_cm->fromArray(array(
             'channel' => $channel,
             'data'    => array(
-                'conversation_id'   => $conversation['id'],
-                'message_id'        => $chat_message['id'],
-                'author_id'         => $chat_message['author_id'],
-                'author_name'       => $chat_message['author_name'],
-                'message'           => $chat_message['content'],
-                'date_created'      => $chat_message['date_created']->getTimestamp(),
+                'conversation_id' => $conversation['id'],
+                'message_id'      => $chat_message['id'],
+                'author_id'       => $chat_message['author_id'],
+                'author_name'     => $chat_message['author_name'],
+                'message'         => $chat_message['content'],
+                'date_created'    => $chat_message['date_created']->getTimestamp(),
             ),
             'created_by_client' => $by_client_id,
             'for_person'        => $agent,
@@ -96,8 +96,8 @@ class Chat
         $chat_cm->fromArray(array(
             'channel' => $channel,
             'data'    => array(
-                'conversation_id'   => $conversation['id'],
-                'date_created'      => time(),
+                'conversation_id' => $conversation['id'],
+                'date_created'    => time(),
             ),
             'created_by_client' => $by_client_id,
         ));
@@ -118,12 +118,12 @@ class Chat
             $chat_cm->fromArray(array(
                 'channel' => 'chat.new-chat-assigned',
                 'data'    => array(
-                    'conversation_id'   => $conversation['id'],
-                    'message_id'        => $chat_message['id'],
-                    'author_id'         => $chat_message['author_id'],
-                    'author_name'       => $chat_message['author_name'],
-                    'message'           => $chat_message['content'],
-                    'date_created'      => $chat_message['date_created']->getTimestamp(),
+                    'conversation_id' => $conversation['id'],
+                    'message_id'      => $chat_message['id'],
+                    'author_id'       => $chat_message['author_id'],
+                    'author_name'     => $chat_message['author_name'],
+                    'message'         => $chat_message['content'],
+                    'date_created'    => $chat_message['date_created']->getTimestamp(),
                 ),
                 'created_by_client' => $by_client_id,
                 'for_person'        => $conversation['agent'],
@@ -135,12 +135,12 @@ class Chat
             $chat_cm->fromArray(array(
                 'channel' => 'chat.new-chat',
                 'data'    => array(
-                    'conversation_id'   => $conversation['id'],
-                    'message_id'        => $chat_message['id'],
-                    'author_id'         => $chat_message['author_id'],
-                    'author_name'       => $chat_message['author_name'],
-                    'message'           => $chat_message['content'],
-                    'date_created'      => $chat_message['date_created']->getTimestamp(),
+                    'conversation_id' => $conversation['id'],
+                    'message_id'      => $chat_message['id'],
+                    'author_id'       => $chat_message['author_id'],
+                    'author_name'     => $chat_message['author_name'],
+                    'message'         => $chat_message['content'],
+                    'date_created'    => $chat_message['date_created']->getTimestamp(),
                 ),
                 'created_by_client' => $by_client_id,
             ));
@@ -154,8 +154,8 @@ class Chat
         $chat_cm->fromArray(array(
             'channel' => 'chat_user_agent.chat-assigned',
             'data'    => array(
-                'conversation_id'   => $conversation['id'],
-                'agent_id'          => $conversation['agent'] ? $conversation['agent']['id'] : 0,
+                'conversation_id' => $conversation['id'],
+                'agent_id'        => $conversation['agent'] ? $conversation['agent']['id'] : 0,
             ),
             'created_by_client' => $by_client_id,
         ));
@@ -168,8 +168,8 @@ class Chat
             $chat_cm_user->fromArray(array(
                 'channel' => 'chat_user.chat-assigned',
                 'data'    => array(
-                    'conversation_id'   => $conversation['id'],
-                    'agent_id'          => $conversation['agent'] ? $conversation['agent']['id'] : 0,
+                    'conversation_id' => $conversation['id'],
+                    'agent_id'        => $conversation['agent'] ? $conversation['agent']['id'] : 0,
                 ),
                 'created_by_client' => $by_client_id,
                 'for_client'        => $conversation->session['id'],
@@ -232,12 +232,12 @@ class Chat
         $new_chat_cm->fromArray(array(
             'channel' => 'chat.new-chat-assigned',
             'data'    => array(
-                'conversation_id'   => $conversation['id'],
-                'message_id'        => $chat_message['id'],
-                'author_id'         => $chat_message['author_id'],
-                'author_name'       => $chat_message['author_name'],
-                'message'           => $chat_message['content'],
-                'date_created'      => $chat_message['date_created']->getTimestamp(),
+                'conversation_id' => $conversation['id'],
+                'message_id'      => $chat_message['id'],
+                'author_id'       => $chat_message['author_id'],
+                'author_name'     => $chat_message['author_name'],
+                'message'         => $chat_message['content'],
+                'date_created'    => $chat_message['date_created']->getTimestamp(),
             ),
             'created_by_client' => $by_client_id,
             'for_person'        => $conversation['agent'],
@@ -264,13 +264,13 @@ class Chat
         }
 
         $cm_data = array(
-            'conversation_id'   => $conversation['id'],
-            'message_id'        => $chat_message['id'],
-            'author_id'         => $chat_message['author_id'],
-            'author_name'       => $chat_message['author_name'],
-            'author_type'       => $author_type,
-            'message'           => $chat_message['content'],
-            'date_created'      => $chat_message['date_created']->getTimestamp(),
+            'conversation_id' => $conversation['id'],
+            'message_id'      => $chat_message['id'],
+            'author_id'       => $chat_message['author_id'],
+            'author_name'     => $chat_message['author_name'],
+            'author_type'     => $author_type,
+            'message'         => $chat_message['content'],
+            'date_created'    => $chat_message['date_created']->getTimestamp(),
         );
         if ($chat_message['is_html']) {
             $cm_data['message_html'] = $chat_message['content'];
@@ -326,8 +326,8 @@ class Chat
     public static function createUserTypingMessages($by_client_id, ChatConversation $conversation, $partial_message)
     {
         $cm_data = array(
-            'conversation_id'   => $conversation['id'],
-            'partial_message'   => $partial_message,
+            'conversation_id' => $conversation['id'],
+            'partial_message' => $partial_message,
         );
 
         $channel = 'chat.user-typing';

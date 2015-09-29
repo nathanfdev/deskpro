@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
@@ -32,10 +33,9 @@ use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use DateTimeZone;
 
 /**
- * OsTicket people parser
+ * OsTicket people parser.
  *
  * Class People
- * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
  */
 final class People extends AbstractParser
 {
@@ -58,23 +58,23 @@ final class People extends AbstractParser
     }
 
     /**
-     * Returns current staff offset
+     * Returns current staff offset.
      *
      * @return int
      */
     public function getCurrentStaffMinId()
     {
-        return $this->staff_min_id ? : $this->getBatchConfig()->getStaffMinId();
+        return $this->staff_min_id ?: $this->getBatchConfig()->getStaffMinId();
     }
 
     /**
-     * Returns current users offset
+     * Returns current users offset.
      *
      * @return int
      */
     public function getCurrentUsersMinId()
     {
-        return $this->users_min_id ? : $this->getBatchConfig()->getUsersMinId();
+        return $this->users_min_id ?: $this->getBatchConfig()->getUsersMinId();
     }
 
     /**
@@ -102,7 +102,7 @@ final class People extends AbstractParser
     }
 
     /**
-     * Return a collection of staff
+     * Return a collection of staff.
      *
      * @return Entity\Collection
      */
@@ -123,7 +123,6 @@ final class People extends AbstractParser
                     } else {
                         $this->logWarning(sprintf('Invalid staff record found (Skipping): %d', $offsetNum));
                     }
-
                 } catch (NoColumnException $e) {
                     $this->logWarning(sprintf(
                         'Invalid staff record `%d` found (Skipping): %s',
@@ -143,9 +142,10 @@ final class People extends AbstractParser
     }
 
     /**
-     * Returns a staff person entity
+     * Returns a staff person entity.
      *
      * @param array $person
+     *
      * @return Entity\Person|null
      */
     private function exportStaff(array $person)
@@ -153,10 +153,10 @@ final class People extends AbstractParser
         if ($this->isStaffValid($person)) {
             $entity = new Entity\Person();
             $entity
-                ->setDestination('staff_' . $person['staff_id'])
+                ->setDestination('staff_'.$person['staff_id'])
                 ->setOid($person['staff_id'])
                 ->setAsAgent(true)
-                ->setName($person['firstname'] . $person['lastname'])
+                ->setName($person['firstname'].$person['lastname'])
                 ->setFirstName($person['firstname'])
                 ->setLastName($person['lastname'])
                 ->setTimezone(new DateTimeZone($this->reader->findTimezoneById($person['timezone_id'])))
@@ -168,11 +168,11 @@ final class People extends AbstractParser
             return $entity;
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Return a collection of users
+     * Return a collection of users.
      *
      * @return Entity\Collection
      */
@@ -193,7 +193,6 @@ final class People extends AbstractParser
                     } else {
                         $this->logWarning(sprintf('Invalid user record found (Skipping): %d', $offsetNum));
                     }
-
                 } catch (NoColumnException $e) {
                     $this->logWarning(sprintf(
                         'Invalid user record `%d` found (Skipping): %s',
@@ -213,9 +212,10 @@ final class People extends AbstractParser
     }
 
     /**
-     * Returns an user person entity
+     * Returns an user person entity.
      *
      * @param array $person
+     *
      * @return Entity\Person|null
      */
     private function exportUser(array $person)
@@ -223,7 +223,7 @@ final class People extends AbstractParser
         if ($this->isUserValid($person)) {
             $entity = new Entity\Person();
             $entity
-                ->setDestination('user_' . $person['user_id'])
+                ->setDestination('user_'.$person['user_id'])
                 ->setOid($person['user_id'])
                 ->setAsUser(true)
                 ->setName($person['name'])
@@ -234,13 +234,14 @@ final class People extends AbstractParser
             return $entity;
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Check if staff person has all required columns
+     * Check if staff person has all required columns.
      *
      * @param array $person
+     *
      * @return bool
      */
     private function isStaffValid(array $person)
@@ -260,9 +261,10 @@ final class People extends AbstractParser
     }
 
     /**
-     * Check if user has all required columns
+     * Check if user has all required columns.
      *
      * @param array $person
+     *
      * @return bool
      */
     private function isUserValid(array $person)

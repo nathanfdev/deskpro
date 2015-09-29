@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -199,7 +199,7 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
     protected $chat_invite = null;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $hint_hidden = false;
 
@@ -333,7 +333,7 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
             return;
         }
 
-        list($vis_id,) = explode('-', $vis_code, 2);
+        list($vis_id) = explode('-', $vis_code, 2);
 
         return $vis_id;
     }
@@ -437,33 +437,33 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
                 ),
             ),
         ));
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'string', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth'));
-        $metadata->mapField(array( 'fieldName' => 'user_token', 'type' => 'string', 'length' => 8, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'user_token'));
-        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name'));
-        $metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email'));
-        $metadata->mapField(array( 'fieldName' => 'page_title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'page_title'));
-        $metadata->mapField(array( 'fieldName' => 'page_url', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'page_url'));
-        $metadata->mapField(array( 'fieldName' => 'ref_page_url', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'ref_page_url'));
-        $metadata->mapField(array( 'fieldName' => 'user_agent', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'user_agent'));
-        $metadata->mapField(array( 'fieldName' => 'user_browser', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'user_browser'));
-        $metadata->mapField(array( 'fieldName' => 'user_os', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'user_os'));
-        $metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ip_address'));
-        $metadata->mapField(array( 'fieldName' => 'geo_continent', 'type' => 'string', 'length' => 2, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_continent'));
-        $metadata->mapField(array( 'fieldName' => 'geo_country', 'type' => 'string', 'length' => 2, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_country'));
-        $metadata->mapField(array( 'fieldName' => 'geo_region', 'type' => 'string', 'length' => 2, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_region'));
-        $metadata->mapField(array( 'fieldName' => 'geo_city', 'type' => 'string', 'length' => 2, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_city'));
-        $metadata->mapField(array( 'fieldName' => 'geo_long', 'type' => 'decimal', 'precision' => 16, 'scale' => 8, 'nullable' => true, 'columnName' => 'geo_long'));
-        $metadata->mapField(array( 'fieldName' => 'geo_lat', 'type' => 'decimal', 'precision' => 16, 'scale' => 8, 'nullable' => true, 'columnName' => 'geo_lat'));
-        $metadata->mapField(array( 'fieldName' => 'hint_hidden', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'hint_hidden'));
-        $metadata->mapField(array( 'fieldName' => 'chat_invite', 'type' => 'array', 'nullable' => true, 'columnName' => 'chat_invite'));
-        $metadata->mapField(array( 'fieldName' => 'page_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'page_count'));
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
-        $metadata->mapField(array( 'fieldName' => 'date_last', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_last'));
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
-        $metadata->mapManyToOne(array( 'fieldName' => 'initial_track', 'targetEntity' => 'Application\\DeskPRO\\Entity\\VisitorTrack', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'initial_track_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
-        $metadata->mapManyToOne(array( 'fieldName' => 'visit_track', 'targetEntity' => 'Application\\DeskPRO\\Entity\\VisitorTrack', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'visit_track_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
-        $metadata->mapManyToOne(array( 'fieldName' => 'last_track', 'targetEntity' => 'Application\\DeskPRO\\Entity\\VisitorTrack', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'last_track_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
-        $metadata->mapManyToOne(array( 'fieldName' => 'last_track_soft', 'targetEntity' => 'Application\\DeskPRO\\Entity\\VisitorTrack', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'last_track_id_soft', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
+        $metadata->mapField(array('fieldName' => 'id', 'type' => 'string', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array('fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth'));
+        $metadata->mapField(array('fieldName' => 'user_token', 'type' => 'string', 'length' => 8, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'user_token'));
+        $metadata->mapField(array('fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name'));
+        $metadata->mapField(array('fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email'));
+        $metadata->mapField(array('fieldName' => 'page_title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'page_title'));
+        $metadata->mapField(array('fieldName' => 'page_url', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'page_url'));
+        $metadata->mapField(array('fieldName' => 'ref_page_url', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'ref_page_url'));
+        $metadata->mapField(array('fieldName' => 'user_agent', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'user_agent'));
+        $metadata->mapField(array('fieldName' => 'user_browser', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'user_browser'));
+        $metadata->mapField(array('fieldName' => 'user_os', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'user_os'));
+        $metadata->mapField(array('fieldName' => 'ip_address', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ip_address'));
+        $metadata->mapField(array('fieldName' => 'geo_continent', 'type' => 'string', 'length' => 2, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_continent'));
+        $metadata->mapField(array('fieldName' => 'geo_country', 'type' => 'string', 'length' => 2, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_country'));
+        $metadata->mapField(array('fieldName' => 'geo_region', 'type' => 'string', 'length' => 2, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_region'));
+        $metadata->mapField(array('fieldName' => 'geo_city', 'type' => 'string', 'length' => 2, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_city'));
+        $metadata->mapField(array('fieldName' => 'geo_long', 'type' => 'decimal', 'precision' => 16, 'scale' => 8, 'nullable' => true, 'columnName' => 'geo_long'));
+        $metadata->mapField(array('fieldName' => 'geo_lat', 'type' => 'decimal', 'precision' => 16, 'scale' => 8, 'nullable' => true, 'columnName' => 'geo_lat'));
+        $metadata->mapField(array('fieldName' => 'hint_hidden', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'hint_hidden'));
+        $metadata->mapField(array('fieldName' => 'chat_invite', 'type' => 'array', 'nullable' => true, 'columnName' => 'chat_invite'));
+        $metadata->mapField(array('fieldName' => 'page_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'page_count'));
+        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
+        $metadata->mapField(array('fieldName' => 'date_last', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_last'));
+        $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array('fieldName' => 'initial_track', 'targetEntity' => 'Application\\DeskPRO\\Entity\\VisitorTrack', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'initial_track_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array('fieldName' => 'visit_track', 'targetEntity' => 'Application\\DeskPRO\\Entity\\VisitorTrack', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'visit_track_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array('fieldName' => 'last_track', 'targetEntity' => 'Application\\DeskPRO\\Entity\\VisitorTrack', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'last_track_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array('fieldName' => 'last_track_soft', 'targetEntity' => 'Application\\DeskPRO\\Entity\\VisitorTrack', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'last_track_id_soft', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
     }
 }

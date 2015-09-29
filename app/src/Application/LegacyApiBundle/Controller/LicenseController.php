@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TmpData;
@@ -41,7 +41,7 @@ use Orb\Validator\StringEmail;
 class LicenseController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
@@ -79,11 +79,11 @@ class LicenseController extends AbstractController implements ProtectedControlle
             'licenseCode' => $lic->getLicenseCode(),
         );
 
-        $active_agents = $this->container->getDb()->fetchColumn("
+        $active_agents = $this->container->getDb()->fetchColumn('
             SELECT COUNT(*)
             FROM people
             WHERE is_agent = 1 AND is_deleted = 0
-        ");
+        ');
         $limits = array(
             'max_agents'    => $lic->getMaxAgents() ?: -1,
             'count_agents'  => $active_agents,
@@ -98,7 +98,7 @@ class LicenseController extends AbstractController implements ProtectedControlle
         $this->em->persist($ma_token);
         $this->em->flush($ma_token);
 
-        $ma_login_url = License::getSecureLicServer() . '/login_check_license';
+        $ma_login_url = License::getSecureLicServer().'/login_check_license';
         if (strpos($ma_login_url, 'www.deskpro.com') && strpos($ma_login_url, 'https://') === 0) {
             $ma_login_url = str_replace('http://', 'https://', $ma_login_url);
         }
@@ -106,7 +106,7 @@ class LicenseController extends AbstractController implements ProtectedControlle
         return $this->createApiResponse(array(
             'license'          => $lic_info,
             'limits'           => $limits,
-            'lic_set_callback' => License::getSecureLicServer() . '/api/license/set-license.json',
+            'lic_set_callback' => License::getSecureLicServer().'/api/license/set-license.json',
             'ma_token'         => $ma_token->toApiData(),
             'ma_login_url'     => $ma_login_url,
         ));

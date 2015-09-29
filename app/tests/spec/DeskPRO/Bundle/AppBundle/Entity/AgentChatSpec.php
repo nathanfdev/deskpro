@@ -1,33 +1,33 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
-/**
- * DeskPRO
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
  */
 namespace spec\DeskPRO\Bundle\AppBundle\Entity;
 
@@ -39,7 +39,6 @@ use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 /**
  * @mixin AgentChat
@@ -53,8 +52,7 @@ class AgentChatSpec extends ObjectBehavior
         Person $Wolverine,
         Person $Phoenix,
         Person $Cyclops
-    )
-    {
+    ) {
         $AngelinaJolie->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_PERSON);
         $BradPitt->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_PERSON);
         $XMenTeam->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_TEAM);
@@ -64,7 +62,7 @@ class AgentChatSpec extends ObjectBehavior
         $this->addParticipant($AngelinaJolie, $BradPitt, $XMenTeam);
         $this->getPersonList()->shouldBeArray();
         $personList = $this->getPersonList();
-        foreach($personList as $person) {
+        foreach ($personList as $person) {
             $person->shouldHaveType('Application\DeskPRO\Entity\Person');
         }
     }
@@ -73,8 +71,7 @@ class AgentChatSpec extends ObjectBehavior
         Person $VladDracula,
         AgentTeam $HelsingTeam,
         Department $DemonHunters
-    )
-    {
+    ) {
         $VanHelsing->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_PERSON);
         $HelsingTeam->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_TEAM);
         $DemonHunters->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_DEPARTMENT);
@@ -83,12 +80,11 @@ class AgentChatSpec extends ObjectBehavior
     }
     public function it_can_add_message_to_itself_and_return_it(
         AgentChatMessage $message
-    )
-    {
+    ) {
         $this->addMessage($message);
         $this->getMessages()->shouldHaveType('IteratorAggregate');
         $messages = $this->getMessages();
-        foreach($messages as $message){
+        foreach ($messages as $message) {
             $message->shouldHaveType('DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage');
         }
     }

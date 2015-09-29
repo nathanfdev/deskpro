@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -40,23 +40,23 @@ class TicketFilter extends AbstractEntityRepository
 {
     public function getFilters()
     {
-        $filters = $this->_em->createQuery("
+        $filters = $this->_em->createQuery('
             SELECT q
             FROM DeskPRO:TicketFilter q
             ORDER BY q.display_order
-        ")->execute();
+        ')->execute();
 
         return $filters;
     }
 
     public function getDefinedFilters()
     {
-        $filters = $this->_em->createQuery("
+        $filters = $this->_em->createQuery('
             SELECT q
             FROM DeskPRO:TicketFilter q
             WHERE q.sys_name IS NULL
             ORDER BY q.display_order
-        ")->execute();
+        ')->execute();
 
         return $filters;
     }
@@ -71,11 +71,11 @@ class TicketFilter extends AbstractEntityRepository
         $x = 0;
         foreach ($filter_ids as $fid) {
             $x += 10;
-            $this->_em->getConnection()->executeUpdate("
+            $this->_em->getConnection()->executeUpdate('
                 UPDATE ticket_filters
                 SET display_order = ?
                 WHERE id = ?
-            ", array($x, $fid));
+            ', array($x, $fid));
         }
     }
 
@@ -91,23 +91,23 @@ class TicketFilter extends AbstractEntityRepository
 
     public function getAllRecords()
     {
-        $filters = $this->getEntityManager()->createQuery("
+        $filters = $this->getEntityManager()->createQuery('
             SELECT q
             FROM DeskPRO:TicketFilter q INDEX BY q.id
-        ")->execute();
+        ')->execute();
 
         return $filters;
     }
 
     public function getAll()
     {
-        $filters = $this->getEntityManager()->createQuery("
+        $filters = $this->getEntityManager()->createQuery('
             SELECT q
             FROM DeskPRO:TicketFilter q INDEX BY q.id
             LEFT JOIN q.person p
             WHERE p IS NULL OR (p.is_agent = true AND p.is_deleted = 0)
             ORDER BY q.id ASC
-        ")->execute();
+        ')->execute();
 
         return $filters;
     }
@@ -149,12 +149,12 @@ class TicketFilter extends AbstractEntityRepository
 
     public function getPersonalFilters($agent)
     {
-        $filters = $this->getEntityManager()->createQuery("
+        $filters = $this->getEntityManager()->createQuery('
             SELECT q
             FROM DeskPRO:TicketFilter q INDEX BY q.id
             WHERE q.person = ?0
             ORDER BY q.title ASC
-        ")->execute(array($agent));
+        ')->execute(array($agent));
 
         return $filters;
     }
@@ -169,19 +169,19 @@ class TicketFilter extends AbstractEntityRepository
 
         if ($teams) {
             $teams   = array_values($teams);
-            $filters = $this->getEntityManager()->createQuery("
+            $filters = $this->getEntityManager()->createQuery('
                 SELECT q
                 FROM DeskPRO:TicketFilter q INDEX BY q.id
                 WHERE (q.person IS NULL OR q.person != ?0) AND (q.is_global = true OR q.agent_team IN (?1)) AND q.sys_name IS NULL
                 ORDER BY q.title ASC
-            ")->execute(array($agent, $teams));
+            ')->execute(array($agent, $teams));
         } else {
-            $filters = $this->getEntityManager()->createQuery("
+            $filters = $this->getEntityManager()->createQuery('
                 SELECT q
                 FROM DeskPRO:TicketFilter q INDEX BY q.id
                 WHERE (q.person IS NULL OR q.person != ?0) AND q.is_global = true AND q.sys_name IS NULL
                 ORDER BY q.title ASC
-            ")->execute(array($agent));
+            ')->execute(array($agent));
         }
 
         return $filters;
@@ -196,12 +196,12 @@ class TicketFilter extends AbstractEntityRepository
      */
     public function getAllGlobalFilters()
     {
-        $filters = $this->getEntityManager()->createQuery("
+        $filters = $this->getEntityManager()->createQuery('
             SELECT q
             FROM DeskPRO:TicketFilter q INDEX BY q.id
             WHERE q.is_global = true AND q.sys_name IS NULL
             ORDER BY q.title ASC
-        ")->execute();
+        ')->execute();
 
         return $filters;
     }
@@ -215,13 +215,13 @@ class TicketFilter extends AbstractEntityRepository
      */
     public function getAllTeamFilters()
     {
-        $filters = $this->getEntityManager()->createQuery("
+        $filters = $this->getEntityManager()->createQuery('
             SELECT q
             FROM DeskPRO:TicketFilter q INDEX BY q.id
             LEFT JOIN q.agent_team at
             WHERE q.agent_team IS NOT NULL
             ORDER BY at.name ASC, q.title ASC
-        ")->execute();
+        ')->execute();
 
         $grouped_filters = array();
 
@@ -247,13 +247,13 @@ class TicketFilter extends AbstractEntityRepository
      */
     public function getAllAgentFilters()
     {
-        $filters = $this->getEntityManager()->createQuery("
+        $filters = $this->getEntityManager()->createQuery('
             SELECT q
             FROM DeskPRO:TicketFilter q INDEX BY q.id
             LEFT JOIN q.person p
             WHERE q.agent_team IS NULL AND q.is_global = false
             ORDER BY p.name ASC, q.title ASC
-        ")->execute();
+        ')->execute();
 
         $grouped_filters = array();
 
@@ -277,21 +277,21 @@ class TicketFilter extends AbstractEntityRepository
     {
         switch ($type) {
             case 'global':
-                $filters = $this->getEntityManager()->createQuery("
+                $filters = $this->getEntityManager()->createQuery('
                     SELECT q
                     FROM DeskPRO:TicketFilter q INDEX BY q.id
                     WHERE q.is_global = true
                     ORDER BY q.title ASC
-                ")->execute();
+                ')->execute();
                 break;
 
             case 'team':
-                $filters = $this->getEntityManager()->createQuery("
+                $filters = $this->getEntityManager()->createQuery('
                     SELECT q
                     FROM DeskPRO:TicketFilter q INDEX BY q.id
                     WHERE q.is_global = true
                     ORDER BY q.title ASC
-                ")->execute();
+                ')->execute();
                 break;
         }
 
@@ -300,12 +300,12 @@ class TicketFilter extends AbstractEntityRepository
 
     public function getSystemFilters($person_id)
     {
-        $filters = $this->getEntityManager()->createQuery("
+        $filters = $this->getEntityManager()->createQuery('
             SELECT q
             FROM DeskPRO:TicketFilter q INDEX BY q.id
             WHERE q.sys_name IS NOT NULL AND (q.person = ?1 OR q.is_global = true)
             ORDER BY q.title ASC
-        ")->setParameter(1, $person_id)->execute();
+        ')->setParameter(1, $person_id)->execute();
 
         return $filters;
     }
@@ -334,19 +334,19 @@ class TicketFilter extends AbstractEntityRepository
         }
 
         if ($team_ids) {
-            $filters = $this->getEntityManager()->createQuery("
+            $filters = $this->getEntityManager()->createQuery('
                 SELECT q
                 FROM DeskPRO:TicketFilter q INDEX BY q.id
                 WHERE q.person = ?1 OR q.is_global = true OR q.agent_team IN (?2)
                 ORDER BY q.title ASC
-            ")->setParameter(1, $person_id)->setParameter(2, $team_ids)->execute();
+            ')->setParameter(1, $person_id)->setParameter(2, $team_ids)->execute();
         } else {
-            $filters = $this->getEntityManager()->createQuery("
+            $filters = $this->getEntityManager()->createQuery('
                 SELECT q
                 FROM DeskPRO:TicketFilter q INDEX BY q.id
                 WHERE q.person = ?1 OR q.is_global = true
                 ORDER BY q.title ASC
-            ")->setParameter(1, $person_id)->execute();
+            ')->setParameter(1, $person_id)->execute();
         }
 
         return $filters;
@@ -359,12 +359,12 @@ class TicketFilter extends AbstractEntityRepository
      */
     public function getCustomFiltersForPerson($person_id)
     {
-        $filters = $this->getEntityManager()->createQuery("
+        $filters = $this->getEntityManager()->createQuery('
             SELECT q
             FROM DeskPRO:TicketFilter q INDEX BY q.id
             WHERE q.sys_name IS NULL AND (q.person = ?1 OR q.is_global = true)
             ORDER BY q.title ASC
-        ")->setParameter(1, $person_id)->execute();
+        ')->setParameter(1, $person_id)->execute();
 
         return $filters;
     }

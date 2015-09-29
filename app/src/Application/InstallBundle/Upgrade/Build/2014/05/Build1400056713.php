@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount;
@@ -45,14 +45,14 @@ class Build1400056713 extends AbstractBuild
         $em = $this->container->getEm();
 
         // Reset table
-        $db->exec("DELETE FROM email_accounts");
-        $db->exec("ALTER TABLE email_accounts AUTO_INCREMENT = 1");
+        $db->exec('DELETE FROM email_accounts');
+        $db->exec('ALTER TABLE email_accounts AUTO_INCREMENT = 1');
 
-        $this->out("Upgrading email accounts...");
+        $this->out('Upgrading email accounts...');
 
-        $gateways      = $db->fetchAllKeyed("SELECT * FROM email_gateways");
-        $gateway_addrs = $db->fetchAllGrouped("SELECT * FROM email_gateway_addresses ORDER BY run_order ASC, id ASC", array(), 'email_gateway_id');
-        $transports    = $db->fetchAllKeyed("SELECT * FROM email_transports");
+        $gateways      = $db->fetchAllKeyed('SELECT * FROM email_gateways');
+        $gateway_addrs = $db->fetchAllGrouped('SELECT * FROM email_gateway_addresses ORDER BY run_order ASC, id ASC', array(), 'email_gateway_id');
+        $transports    = $db->fetchAllKeyed('SELECT * FROM email_transports');
 
         // Save gateway address mapping needed when importing triggers
         $map = array();
@@ -128,18 +128,18 @@ class Build1400056713 extends AbstractBuild
             // Update to a high ID that wont collide when we update again below
             $db->executeUpdate('UPDATE email_accounts SET id = ? WHERE id = ?', array($tmp_id, $account->id));
             $id_map[$tmp_id] = $want_id;
-            $tmp_id++;
+            ++$tmp_id;
         }
 
         foreach ($id_map as $tmp_id => $want_id) {
             $db->executeUpdate('UPDATE email_accounts SET id = ? WHERE id = ?', array($want_id, $tmp_id));
         }
 
-        $max_id = $db->fetchColumn("SELECT id FROM email_accounts ORDER BY id DESC LIMIT 1");
+        $max_id = $db->fetchColumn('SELECT id FROM email_accounts ORDER BY id DESC LIMIT 1');
         if (!$max_id) {
             $max_id = 0;
         }
-        $max_id++;
+        ++$max_id;
         $db->exec("ALTER TABLE email_accounts AUTO_INCREMENT = $max_id");
 
         // Then insert default account with whatever autoinc id is next,
@@ -240,8 +240,8 @@ class Build1400056713 extends AbstractBuild
      * @param array $tr
      *
      * @throws \InvalidArgumentException
-     * @return OutgoingAccount\GmailConfig|OutgoingAccount\PhpMailConfig|OutgoingAccount\SmtpConfig
      *
+     * @return OutgoingAccount\GmailConfig|OutgoingAccount\PhpMailConfig|OutgoingAccount\SmtpConfig
      */
     private function _getTransportConfig(array $tr = null)
     {

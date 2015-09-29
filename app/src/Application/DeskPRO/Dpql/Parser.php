@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-        \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Dpql;
 
 /* Driver template for the PHP_ParserGenerator parser generator. (PHP port of LEMON)
@@ -49,12 +49,12 @@ class ParseyyToken implements \ArrayAccess
 
     public function __construct($s, $m = array())
     {
-        if ($s instanceof ParseyyToken) {
+        if ($s instanceof self) {
             $this->string   = $s->string;
             $this->metadata = $s->metadata;
         } else {
             $this->string = (string) $s;
-            if ($m instanceof ParseyyToken) {
+            if ($m instanceof self) {
                 $this->metadata = $m->metadata;
             } elseif (is_array($m)) {
                 $this->metadata = $m;
@@ -81,7 +81,7 @@ class ParseyyToken implements \ArrayAccess
     {
         if ($offset === null) {
             if (isset($value[0])) {
-                $x = ($value instanceof ParseyyToken) ?
+                $x = ($value instanceof self) ?
                     $value->metadata : $value;
                 $this->metadata = array_merge($this->metadata, $x);
 
@@ -92,7 +92,7 @@ class ParseyyToken implements \ArrayAccess
         if ($value === null) {
             return;
         }
-        if ($value instanceof ParseyyToken) {
+        if ($value instanceof self) {
             if ($value->metadata) {
                 $this->metadata[$offset] = $value->metadata;
             }
@@ -141,7 +141,7 @@ class Parser#line 102 "Parser.php"
     /**
      * Line number currently being parsed. This comes from the lexer.
      *
-     * @var integer
+     * @var int
      */
     public $line = 1;
 
@@ -191,7 +191,7 @@ class Parser#line 102 "Parser.php"
 
             // strip out the back slash and step 1 forward to skip the character after (what it escaped)
             $string = substr($string, 0, $searchPos).substr($string, $searchPos + 1);
-            $searchPos++;
+            ++$searchPos;
         } while (true);
 
         return $string;
@@ -207,58 +207,58 @@ class Parser#line 102 "Parser.php"
 **
 ** Each symbol here is a terminal symbol in the grammar.
 */
-    const T_OP_OR                          =  1;
-    const T_OP_AND                         =  2;
-    const T_OP_NOT                         =  3;
-    const T_OP_EQ                          =  4;
-    const T_OP_NE                          =  5;
-    const T_OP_GT                          =  6;
-    const T_OP_GTEQ                        =  7;
-    const T_OP_LT                          =  8;
-    const T_OP_LTEQ                        =  9;
-    const T_OP_IN                          = 10;
-    const T_OP_LIKE                        = 11;
-    const T_OP_REGEXP                      = 12;
-    const T_OP_MINUS                       = 13;
-    const T_OP_PLUS                        = 14;
-    const T_OP_MULTIPLY                    = 15;
-    const T_OP_DIVIDE                      = 16;
-    const T_OP_U_MINUS                     = 17;
-    const T_OP_BANG                        = 18;
-    const T_SEMICOLON                      = 19;
-    const T_DISPLAY                        = 20;
-    const T_TABLE                          = 21;
-    const T_BAR                            = 22;
-    const T_LINE                           = 23;
-    const T_PIE                            = 24;
-    const T_AREA                           = 25;
-    const T_COMMA                          = 26;
-    const T_SELECT                         = 27;
-    const T_COLUMN_STAR                    = 28;
-    const T_AS                             = 29;
-    const T_LITERAL                        = 30;
-    const T_QUOTED                         = 31;
-    const T_FROM                           = 32;
-    const T_WHERE                          = 33;
-    const T_SPLIT                          = 34;
-    const T_BY                             = 35;
-    const T_GROUP                          = 36;
-    const T_ORDER                          = 37;
-    const T_ASC                            = 38;
-    const T_DESC                           = 39;
-    const T_LIMIT                          = 40;
-    const T_NUMBER                         = 41;
-    const T_OFFSET                         = 42;
-    const T_INTERVAL                       = 43;
-    const T_LEFT_PAREN                     = 44;
-    const T_RIGHT_PAREN                    = 45;
-    const T_COLUMN                         = 46;
-    const T_PLACEHOLDER                    = 47;
-    const T_AT                             = 48;
-    const T_NULL                           = 49;
-    const YY_NO_ACTION                     = 196;
-    const YY_ACCEPT_ACTION                 = 195;
-    const YY_ERROR_ACTION                  = 194;
+    const T_OP_OR          = 1;
+    const T_OP_AND         = 2;
+    const T_OP_NOT         = 3;
+    const T_OP_EQ          = 4;
+    const T_OP_NE          = 5;
+    const T_OP_GT          = 6;
+    const T_OP_GTEQ        = 7;
+    const T_OP_LT          = 8;
+    const T_OP_LTEQ        = 9;
+    const T_OP_IN          = 10;
+    const T_OP_LIKE        = 11;
+    const T_OP_REGEXP      = 12;
+    const T_OP_MINUS       = 13;
+    const T_OP_PLUS        = 14;
+    const T_OP_MULTIPLY    = 15;
+    const T_OP_DIVIDE      = 16;
+    const T_OP_U_MINUS     = 17;
+    const T_OP_BANG        = 18;
+    const T_SEMICOLON      = 19;
+    const T_DISPLAY        = 20;
+    const T_TABLE          = 21;
+    const T_BAR            = 22;
+    const T_LINE           = 23;
+    const T_PIE            = 24;
+    const T_AREA           = 25;
+    const T_COMMA          = 26;
+    const T_SELECT         = 27;
+    const T_COLUMN_STAR    = 28;
+    const T_AS             = 29;
+    const T_LITERAL        = 30;
+    const T_QUOTED         = 31;
+    const T_FROM           = 32;
+    const T_WHERE          = 33;
+    const T_SPLIT          = 34;
+    const T_BY             = 35;
+    const T_GROUP          = 36;
+    const T_ORDER          = 37;
+    const T_ASC            = 38;
+    const T_DESC           = 39;
+    const T_LIMIT          = 40;
+    const T_NUMBER         = 41;
+    const T_OFFSET         = 42;
+    const T_INTERVAL       = 43;
+    const T_LEFT_PAREN     = 44;
+    const T_RIGHT_PAREN    = 45;
+    const T_COLUMN         = 46;
+    const T_PLACEHOLDER    = 47;
+    const T_AT             = 48;
+    const T_NULL           = 49;
+    const YY_NO_ACTION     = 196;
+    const YY_ACCEPT_ACTION = 195;
+    const YY_ERROR_ACTION  = 194;
 
 /* Next are that tables used to determine what action to take based on the
 ** current state and lookahead token.  These tables are used to implement
@@ -311,7 +311,7 @@ class Parser#line 102 "Parser.php"
 **  self::$yy_default       Default action for each state.
 */
     const YY_SZ_ACTTAB       = 239;
-    static public $yy_action = array(
+    public static $yy_action = array(
  /*     0 */    29,   29,   58,   30,   30,   30,   30,   30,   30,   68,
  /*    10 */    20,   21,    3,    3,   19,   19,   29,   29,   58,   30,
  /*    20 */    30,   30,   30,   30,   30,   68,   20,   21,    3,    3,
@@ -654,79 +654,79 @@ class Parser#line 102 "Parser.php"
      * @var array
      */
     public static $yyRuleName = array(
- /*   0 */ "start ::= display_query trailing_semicolon",
- /*   1 */ "trailing_semicolon ::= SEMICOLON",
- /*   2 */ "trailing_semicolon ::=",
- /*   3 */ "display_query ::= display_clause select_clause from_clause where_clause split_clause group_clause order_clause limit_clause",
- /*   4 */ "display_clause ::= DISPLAY display_type display_type_option",
- /*   5 */ "display_type ::= TABLE",
- /*   6 */ "display_type ::= BAR",
- /*   7 */ "display_type ::= LINE",
- /*   8 */ "display_type ::= PIE",
- /*   9 */ "display_type ::= AREA",
- /*  10 */ "display_type_option ::= COMMA display_type",
- /*  11 */ "display_type_option ::=",
- /*  12 */ "select_clause ::= SELECT select_field select_fields_extra",
- /*  13 */ "select_fields_extra ::= select_fields_extra COMMA select_field",
- /*  14 */ "select_fields_extra ::=",
- /*  15 */ "select_field ::= expression alias_optional",
- /*  16 */ "select_field ::= COLUMN_STAR",
- /*  17 */ "alias_optional ::= AS LITERAL",
- /*  18 */ "alias_optional ::= AS QUOTED",
- /*  19 */ "alias_optional ::=",
- /*  20 */ "from_clause ::= FROM LITERAL",
- /*  21 */ "where_clause ::= WHERE expression",
- /*  22 */ "where_clause ::=",
- /*  23 */ "split_clause ::= SPLIT BY split_expression split_expressions_extra",
- /*  24 */ "split_clause ::=",
- /*  25 */ "split_expressions_extra ::= split_expressions_extra COMMA split_expression",
- /*  26 */ "split_expressions_extra ::=",
- /*  27 */ "split_expression ::= expression",
- /*  28 */ "group_clause ::= GROUP BY group_expression group_expressions_extra",
- /*  29 */ "group_clause ::=",
- /*  30 */ "group_expressions_extra ::= group_expressions_extra COMMA group_expression",
- /*  31 */ "group_expressions_extra ::=",
- /*  32 */ "group_expression ::= expression alias_optional",
- /*  33 */ "order_clause ::= ORDER BY order_expression comma_order_expression_opt",
- /*  34 */ "order_clause ::=",
- /*  35 */ "order_expression ::= expression direction_opt",
- /*  36 */ "direction_opt ::= ASC",
- /*  37 */ "direction_opt ::= DESC",
- /*  38 */ "direction_opt ::=",
- /*  39 */ "comma_order_expression_opt ::= comma_order_expression_opt COMMA order_expression",
- /*  40 */ "comma_order_expression_opt ::=",
- /*  41 */ "limit_clause ::= LIMIT NUMBER limit_offset_opt",
- /*  42 */ "limit_clause ::=",
- /*  43 */ "limit_offset_opt ::= OFFSET NUMBER",
- /*  44 */ "limit_offset_opt ::=",
- /*  45 */ "expression ::= expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression",
- /*  46 */ "expression ::= expression OP_OR|OP_AND expression",
- /*  47 */ "expression ::= expression OP_MINUS|OP_PLUS interval_expression",
- /*  48 */ "interval_expression ::= INTERVAL NUMBER LITERAL",
- /*  49 */ "interval_expression ::= expression",
- /*  50 */ "expression ::= expression OP_MULTIPLY|OP_DIVIDE expression",
- /*  51 */ "expression ::= expression OP_LIKE expression",
- /*  52 */ "expression ::= expression OP_NOT OP_LIKE expression",
- /*  53 */ "expression ::= expression OP_REGEXP expression",
- /*  54 */ "expression ::= expression OP_NOT OP_REGEXP expression",
- /*  55 */ "expression ::= expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN",
- /*  56 */ "expression ::= expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN",
- /*  57 */ "expression ::= OP_MINUS expression",
- /*  58 */ "expression ::= OP_BANG|OP_NOT expression",
- /*  59 */ "expression ::= LEFT_PAREN expression RIGHT_PAREN",
- /*  60 */ "expression ::= LITERAL LEFT_PAREN func_args RIGHT_PAREN",
- /*  61 */ "expression ::= COLUMN",
- /*  62 */ "expression ::= LITERAL",
- /*  63 */ "expression ::= QUOTED",
- /*  64 */ "expression ::= PLACEHOLDER",
- /*  65 */ "expression ::= AT LITERAL",
- /*  66 */ "expression ::= AT QUOTED",
- /*  67 */ "expression ::= NUMBER",
- /*  68 */ "expression ::= NULL",
- /*  69 */ "func_args ::= expression comma_expressions_opt",
- /*  70 */ "func_args ::=",
- /*  71 */ "comma_expressions_opt ::= comma_expressions_opt COMMA expression",
- /*  72 */ "comma_expressions_opt ::=",
+ /*   0 */ 'start ::= display_query trailing_semicolon',
+ /*   1 */ 'trailing_semicolon ::= SEMICOLON',
+ /*   2 */ 'trailing_semicolon ::=',
+ /*   3 */ 'display_query ::= display_clause select_clause from_clause where_clause split_clause group_clause order_clause limit_clause',
+ /*   4 */ 'display_clause ::= DISPLAY display_type display_type_option',
+ /*   5 */ 'display_type ::= TABLE',
+ /*   6 */ 'display_type ::= BAR',
+ /*   7 */ 'display_type ::= LINE',
+ /*   8 */ 'display_type ::= PIE',
+ /*   9 */ 'display_type ::= AREA',
+ /*  10 */ 'display_type_option ::= COMMA display_type',
+ /*  11 */ 'display_type_option ::=',
+ /*  12 */ 'select_clause ::= SELECT select_field select_fields_extra',
+ /*  13 */ 'select_fields_extra ::= select_fields_extra COMMA select_field',
+ /*  14 */ 'select_fields_extra ::=',
+ /*  15 */ 'select_field ::= expression alias_optional',
+ /*  16 */ 'select_field ::= COLUMN_STAR',
+ /*  17 */ 'alias_optional ::= AS LITERAL',
+ /*  18 */ 'alias_optional ::= AS QUOTED',
+ /*  19 */ 'alias_optional ::=',
+ /*  20 */ 'from_clause ::= FROM LITERAL',
+ /*  21 */ 'where_clause ::= WHERE expression',
+ /*  22 */ 'where_clause ::=',
+ /*  23 */ 'split_clause ::= SPLIT BY split_expression split_expressions_extra',
+ /*  24 */ 'split_clause ::=',
+ /*  25 */ 'split_expressions_extra ::= split_expressions_extra COMMA split_expression',
+ /*  26 */ 'split_expressions_extra ::=',
+ /*  27 */ 'split_expression ::= expression',
+ /*  28 */ 'group_clause ::= GROUP BY group_expression group_expressions_extra',
+ /*  29 */ 'group_clause ::=',
+ /*  30 */ 'group_expressions_extra ::= group_expressions_extra COMMA group_expression',
+ /*  31 */ 'group_expressions_extra ::=',
+ /*  32 */ 'group_expression ::= expression alias_optional',
+ /*  33 */ 'order_clause ::= ORDER BY order_expression comma_order_expression_opt',
+ /*  34 */ 'order_clause ::=',
+ /*  35 */ 'order_expression ::= expression direction_opt',
+ /*  36 */ 'direction_opt ::= ASC',
+ /*  37 */ 'direction_opt ::= DESC',
+ /*  38 */ 'direction_opt ::=',
+ /*  39 */ 'comma_order_expression_opt ::= comma_order_expression_opt COMMA order_expression',
+ /*  40 */ 'comma_order_expression_opt ::=',
+ /*  41 */ 'limit_clause ::= LIMIT NUMBER limit_offset_opt',
+ /*  42 */ 'limit_clause ::=',
+ /*  43 */ 'limit_offset_opt ::= OFFSET NUMBER',
+ /*  44 */ 'limit_offset_opt ::=',
+ /*  45 */ 'expression ::= expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression',
+ /*  46 */ 'expression ::= expression OP_OR|OP_AND expression',
+ /*  47 */ 'expression ::= expression OP_MINUS|OP_PLUS interval_expression',
+ /*  48 */ 'interval_expression ::= INTERVAL NUMBER LITERAL',
+ /*  49 */ 'interval_expression ::= expression',
+ /*  50 */ 'expression ::= expression OP_MULTIPLY|OP_DIVIDE expression',
+ /*  51 */ 'expression ::= expression OP_LIKE expression',
+ /*  52 */ 'expression ::= expression OP_NOT OP_LIKE expression',
+ /*  53 */ 'expression ::= expression OP_REGEXP expression',
+ /*  54 */ 'expression ::= expression OP_NOT OP_REGEXP expression',
+ /*  55 */ 'expression ::= expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN',
+ /*  56 */ 'expression ::= expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN',
+ /*  57 */ 'expression ::= OP_MINUS expression',
+ /*  58 */ 'expression ::= OP_BANG|OP_NOT expression',
+ /*  59 */ 'expression ::= LEFT_PAREN expression RIGHT_PAREN',
+ /*  60 */ 'expression ::= LITERAL LEFT_PAREN func_args RIGHT_PAREN',
+ /*  61 */ 'expression ::= COLUMN',
+ /*  62 */ 'expression ::= LITERAL',
+ /*  63 */ 'expression ::= QUOTED',
+ /*  64 */ 'expression ::= PLACEHOLDER',
+ /*  65 */ 'expression ::= AT LITERAL',
+ /*  66 */ 'expression ::= AT QUOTED',
+ /*  67 */ 'expression ::= NUMBER',
+ /*  68 */ 'expression ::= NULL',
+ /*  69 */ 'func_args ::= expression comma_expressions_opt',
+ /*  70 */ 'func_args ::=',
+ /*  71 */ 'comma_expressions_opt ::= comma_expressions_opt COMMA expression',
+ /*  72 */ 'comma_expressions_opt ::=',
     );
 
     /**
@@ -745,7 +745,7 @@ class Parser#line 102 "Parser.php"
         if ($tokenType > 0 && $tokenType < count(self::$yyTokenName)) {
             return self::$yyTokenName[$tokenType];
         } else {
-            return "Unknown";
+            return 'Unknown';
         }
     }
 
@@ -798,7 +798,7 @@ class Parser#line 102 "Parser.php"
         }
         $yymajor = $yytos->major;
         self::yy_destructor($yymajor, $yytos->minor);
-        $this->yyidx--;
+        --$this->yyidx;
 
         return $yymajor;
     }
@@ -864,7 +864,7 @@ class Parser#line 102 "Parser.php"
                     }
                     if ($nextstate < self::YYNSTATE) {
                         // we need to shift a non-terminal
-                        $this->yyidx++;
+                        ++$this->yyidx;
                         $x                           = new ParseyyStackEntry();
                         $x->stateno                  = $nextstate;
                         $x->major                    = self::$yyRuleInfo[$yyruleno]['lhs'];
@@ -942,7 +942,7 @@ class Parser#line 102 "Parser.php"
                     }
                     if ($nextstate < self::YYNSTATE) {
                         // we need to shift a non-terminal
-                        $this->yyidx++;
+                        ++$this->yyidx;
                         $x                           = new ParseyyStackEntry();
                         $x->stateno                  = $nextstate;
                         $x->major                    = self::$yyRuleInfo[$yyruleno]['lhs'];
@@ -1009,8 +1009,8 @@ class Parser#line 102 "Parser.php"
             if (count(self::$yyFallback) && $iLookAhead < count(self::$yyFallback)
                    && ($iFallback = self::$yyFallback[$iLookAhead]) != 0) {
                 if (self::$yyTraceFILE) {
-                    fwrite(self::$yyTraceFILE, self::$yyTracePrompt."FALLBACK ".
-                        self::$yyTokenName[$iLookAhead]." => ".
+                    fwrite(self::$yyTraceFILE, self::$yyTracePrompt.'FALLBACK '.
+                        self::$yyTokenName[$iLookAhead].' => '.
                         self::$yyTokenName[$iFallback]."\n");
                 }
 
@@ -1066,9 +1066,9 @@ class Parser#line 102 "Parser.php"
      */
     public function yy_shift($yyNewState, $yyMajor, $yypMinor)
     {
-        $this->yyidx++;
+        ++$this->yyidx;
         if ($this->yyidx >= self::YYSTACKDEPTH) {
-            $this->yyidx--;
+            --$this->yyidx;
             if (self::$yyTraceFILE) {
                 fprintf(self::$yyTraceFILE, "%sStack Overflow!\n", self::$yyTracePrompt);
             }
@@ -1088,9 +1088,9 @@ class Parser#line 102 "Parser.php"
         if (self::$yyTraceFILE && $this->yyidx > 0) {
             fprintf(self::$yyTraceFILE, "%sShift %d\n", self::$yyTracePrompt,
                 $yyNewState);
-            fprintf(self::$yyTraceFILE, "%sStack:", self::$yyTracePrompt);
-            for ($i = 1; $i <= $this->yyidx; $i++) {
-                fprintf(self::$yyTraceFILE, " %s",
+            fprintf(self::$yyTraceFILE, '%sStack:', self::$yyTracePrompt);
+            for ($i = 1; $i <= $this->yyidx; ++$i) {
+                fprintf(self::$yyTraceFILE, ' %s',
                     self::$yyTokenName[$this->yystack[$i]->major]);
             }
             fwrite(self::$yyTraceFILE, "\n");
@@ -1111,79 +1111,79 @@ class Parser#line 102 "Parser.php"
      * </pre>
      */
     public static $yyRuleInfo = array(
-  array( 'lhs' => 51, 'rhs' => 2 ),
-  array( 'lhs' => 53, 'rhs' => 1 ),
-  array( 'lhs' => 53, 'rhs' => 0 ),
-  array( 'lhs' => 52, 'rhs' => 8 ),
-  array( 'lhs' => 54, 'rhs' => 3 ),
-  array( 'lhs' => 62, 'rhs' => 1 ),
-  array( 'lhs' => 62, 'rhs' => 1 ),
-  array( 'lhs' => 62, 'rhs' => 1 ),
-  array( 'lhs' => 62, 'rhs' => 1 ),
-  array( 'lhs' => 62, 'rhs' => 1 ),
-  array( 'lhs' => 63, 'rhs' => 2 ),
-  array( 'lhs' => 63, 'rhs' => 0 ),
-  array( 'lhs' => 55, 'rhs' => 3 ),
-  array( 'lhs' => 65, 'rhs' => 3 ),
-  array( 'lhs' => 65, 'rhs' => 0 ),
-  array( 'lhs' => 64, 'rhs' => 2 ),
-  array( 'lhs' => 64, 'rhs' => 1 ),
-  array( 'lhs' => 67, 'rhs' => 2 ),
-  array( 'lhs' => 67, 'rhs' => 2 ),
-  array( 'lhs' => 67, 'rhs' => 0 ),
-  array( 'lhs' => 56, 'rhs' => 2 ),
-  array( 'lhs' => 57, 'rhs' => 2 ),
-  array( 'lhs' => 57, 'rhs' => 0 ),
-  array( 'lhs' => 58, 'rhs' => 4 ),
-  array( 'lhs' => 58, 'rhs' => 0 ),
-  array( 'lhs' => 69, 'rhs' => 3 ),
-  array( 'lhs' => 69, 'rhs' => 0 ),
-  array( 'lhs' => 68, 'rhs' => 1 ),
-  array( 'lhs' => 59, 'rhs' => 4 ),
-  array( 'lhs' => 59, 'rhs' => 0 ),
-  array( 'lhs' => 71, 'rhs' => 3 ),
-  array( 'lhs' => 71, 'rhs' => 0 ),
-  array( 'lhs' => 70, 'rhs' => 2 ),
-  array( 'lhs' => 60, 'rhs' => 4 ),
-  array( 'lhs' => 60, 'rhs' => 0 ),
-  array( 'lhs' => 72, 'rhs' => 2 ),
-  array( 'lhs' => 74, 'rhs' => 1 ),
-  array( 'lhs' => 74, 'rhs' => 1 ),
-  array( 'lhs' => 74, 'rhs' => 0 ),
-  array( 'lhs' => 73, 'rhs' => 3 ),
-  array( 'lhs' => 73, 'rhs' => 0 ),
-  array( 'lhs' => 61, 'rhs' => 3 ),
-  array( 'lhs' => 61, 'rhs' => 0 ),
-  array( 'lhs' => 75, 'rhs' => 2 ),
-  array( 'lhs' => 75, 'rhs' => 0 ),
-  array( 'lhs' => 66, 'rhs' => 3 ),
-  array( 'lhs' => 66, 'rhs' => 3 ),
-  array( 'lhs' => 66, 'rhs' => 3 ),
-  array( 'lhs' => 76, 'rhs' => 3 ),
-  array( 'lhs' => 76, 'rhs' => 1 ),
-  array( 'lhs' => 66, 'rhs' => 3 ),
-  array( 'lhs' => 66, 'rhs' => 3 ),
-  array( 'lhs' => 66, 'rhs' => 4 ),
-  array( 'lhs' => 66, 'rhs' => 3 ),
-  array( 'lhs' => 66, 'rhs' => 4 ),
-  array( 'lhs' => 66, 'rhs' => 6 ),
-  array( 'lhs' => 66, 'rhs' => 7 ),
-  array( 'lhs' => 66, 'rhs' => 2 ),
-  array( 'lhs' => 66, 'rhs' => 2 ),
-  array( 'lhs' => 66, 'rhs' => 3 ),
-  array( 'lhs' => 66, 'rhs' => 4 ),
-  array( 'lhs' => 66, 'rhs' => 1 ),
-  array( 'lhs' => 66, 'rhs' => 1 ),
-  array( 'lhs' => 66, 'rhs' => 1 ),
-  array( 'lhs' => 66, 'rhs' => 1 ),
-  array( 'lhs' => 66, 'rhs' => 2 ),
-  array( 'lhs' => 66, 'rhs' => 2 ),
-  array( 'lhs' => 66, 'rhs' => 1 ),
-  array( 'lhs' => 66, 'rhs' => 1 ),
-  array( 'lhs' => 78, 'rhs' => 2 ),
-  array( 'lhs' => 78, 'rhs' => 0 ),
-  array( 'lhs' => 77, 'rhs' => 3 ),
-  array( 'lhs' => 77, 'rhs' => 0 ),
+  array('lhs' => 51, 'rhs' => 2),
+  array('lhs' => 53, 'rhs' => 1),
+  array('lhs' => 53, 'rhs' => 0),
+  array('lhs' => 52, 'rhs' => 8),
+  array('lhs' => 54, 'rhs' => 3),
+  array('lhs' => 62, 'rhs' => 1),
+  array('lhs' => 62, 'rhs' => 1),
+  array('lhs' => 62, 'rhs' => 1),
+  array('lhs' => 62, 'rhs' => 1),
+  array('lhs' => 62, 'rhs' => 1),
+  array('lhs' => 63, 'rhs' => 2),
+  array('lhs' => 63, 'rhs' => 0),
+  array('lhs' => 55, 'rhs' => 3),
+  array('lhs' => 65, 'rhs' => 3),
+  array('lhs' => 65, 'rhs' => 0),
+  array('lhs' => 64, 'rhs' => 2),
+  array('lhs' => 64, 'rhs' => 1),
+  array('lhs' => 67, 'rhs' => 2),
+  array('lhs' => 67, 'rhs' => 2),
+  array('lhs' => 67, 'rhs' => 0),
+  array('lhs' => 56, 'rhs' => 2),
+  array('lhs' => 57, 'rhs' => 2),
+  array('lhs' => 57, 'rhs' => 0),
+  array('lhs' => 58, 'rhs' => 4),
+  array('lhs' => 58, 'rhs' => 0),
+  array('lhs' => 69, 'rhs' => 3),
+  array('lhs' => 69, 'rhs' => 0),
+  array('lhs' => 68, 'rhs' => 1),
+  array('lhs' => 59, 'rhs' => 4),
+  array('lhs' => 59, 'rhs' => 0),
+  array('lhs' => 71, 'rhs' => 3),
+  array('lhs' => 71, 'rhs' => 0),
+  array('lhs' => 70, 'rhs' => 2),
+  array('lhs' => 60, 'rhs' => 4),
+  array('lhs' => 60, 'rhs' => 0),
+  array('lhs' => 72, 'rhs' => 2),
+  array('lhs' => 74, 'rhs' => 1),
+  array('lhs' => 74, 'rhs' => 1),
+  array('lhs' => 74, 'rhs' => 0),
+  array('lhs' => 73, 'rhs' => 3),
+  array('lhs' => 73, 'rhs' => 0),
+  array('lhs' => 61, 'rhs' => 3),
+  array('lhs' => 61, 'rhs' => 0),
+  array('lhs' => 75, 'rhs' => 2),
+  array('lhs' => 75, 'rhs' => 0),
+  array('lhs' => 66, 'rhs' => 3),
+  array('lhs' => 66, 'rhs' => 3),
+  array('lhs' => 66, 'rhs' => 3),
+  array('lhs' => 76, 'rhs' => 3),
+  array('lhs' => 76, 'rhs' => 1),
+  array('lhs' => 66, 'rhs' => 3),
+  array('lhs' => 66, 'rhs' => 3),
+  array('lhs' => 66, 'rhs' => 4),
+  array('lhs' => 66, 'rhs' => 3),
+  array('lhs' => 66, 'rhs' => 4),
+  array('lhs' => 66, 'rhs' => 6),
+  array('lhs' => 66, 'rhs' => 7),
+  array('lhs' => 66, 'rhs' => 2),
+  array('lhs' => 66, 'rhs' => 2),
+  array('lhs' => 66, 'rhs' => 3),
+  array('lhs' => 66, 'rhs' => 4),
+  array('lhs' => 66, 'rhs' => 1),
+  array('lhs' => 66, 'rhs' => 1),
+  array('lhs' => 66, 'rhs' => 1),
+  array('lhs' => 66, 'rhs' => 1),
+  array('lhs' => 66, 'rhs' => 2),
+  array('lhs' => 66, 'rhs' => 2),
+  array('lhs' => 66, 'rhs' => 1),
+  array('lhs' => 66, 'rhs' => 1),
+  array('lhs' => 78, 'rhs' => 2),
+  array('lhs' => 78, 'rhs' => 0),
+  array('lhs' => 77, 'rhs' => 3),
+  array('lhs' => 77, 'rhs' => 0),
     );
 
     /**
@@ -1612,7 +1612,7 @@ class Parser#line 102 "Parser.php"
 #line 513 "Parser.y"
     public function yy_r67()
     {
-        $this->_retvalue =  new Statement\Part\Number($this->yystack[$this->yyidx + 0]->minor + 0);
+        $this->_retvalue = new Statement\Part\Number($this->yystack[$this->yyidx + 0]->minor + 0);
     }
 #line 1519 "Parser.php"
 #line 518 "Parser.y"
@@ -1681,7 +1681,7 @@ class Parser#line 102 "Parser.php"
         $yygoto = self::$yyRuleInfo[$yyruleno]['lhs'];
         $yysize = self::$yyRuleInfo[$yyruleno]['rhs'];
         $this->yyidx -= $yysize;
-        for ($i = $yysize; $i; $i--) {
+        for ($i = $yysize; $i; --$i) {
             // pop all of the right-hand side parameters
             array_pop($this->yystack);
         }
@@ -1692,7 +1692,7 @@ class Parser#line 102 "Parser.php"
             ** onto the stack here, and skip the stack overflow test in yy_shift().
             ** That gives a significant speed improvement. */
             if (!self::$yyTraceFILE && $yysize) {
-                $this->yyidx++;
+                ++$this->yyidx;
                 $x                           = new ParseyyStackEntry();
                 $x->stateno                  = $yyact;
                 $x->major                    = $yygoto;
@@ -1804,7 +1804,7 @@ class Parser#line 102 "Parser.php"
             }
             if ($yyact < self::YYNSTATE) {
                 $this->yy_shift($yyact, $yymajor, $yytokenvalue);
-                $this->yyerrcnt--;
+                --$this->yyerrcnt;
                 if ($yyendofinput && $this->yyidx >= 0) {
                     $yymajor = 0;
                 } else {

@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\DeferredPropertyInterface;
@@ -73,11 +71,11 @@ class DataSideloads
 
     public function __construct(DataTypeIdFinder $id_finder)
     {
-        $this->deferred_properties = [];
-        $this->sideload_collections = [];
-        $this->sideload_data = [];
-        $this->ignore_data = [];
-        $this->id_finder = $id_finder;
+        $this->deferred_properties                      = [];
+        $this->sideload_collections                     = [];
+        $this->sideload_data                            = [];
+        $this->ignore_data                              = [];
+        $this->id_finder                                = $id_finder;
         $this->needs_processing_since_last_sideload_get = false;
     }
 
@@ -91,14 +89,14 @@ class DataSideloads
         if (is_array($data) || $data instanceof \Traversable) {
             foreach ($data as $the_data) {
                 if (!$id = $this->id_finder->findDataId($the_data)) {
-                    throw new \InvalidArgumentException('could not find ID for given data of type: ' . $type);
+                    throw new \InvalidArgumentException('could not find ID for given data of type: '.$type);
                 }
 
                 $this->addIgnoredTypeId($type, $id);
             }
         } else {
             if (!$id = $this->id_finder->findDataId($data)) {
-                throw new \InvalidArgumentException('could not find ID for given data of type: ' . $type);
+                throw new \InvalidArgumentException('could not find ID for given data of type: '.$type);
             }
 
             $this->addIgnoredTypeId($type, $id);
@@ -108,7 +106,7 @@ class DataSideloads
     public function addIgnoredTypeId($type, $id)
     {
         if (null === $id) {
-            throw new \InvalidArgumentException('you cannot ignore "null" id for type: ' . $type);
+            throw new \InvalidArgumentException('you cannot ignore "null" id for type: '.$type);
         }
 
         if (!array_key_exists($type, $this->ignore_data)) {
@@ -132,7 +130,7 @@ class DataSideloads
         }
 
         if (null === $id) {
-            throw new \InvalidArgumentException('you cannot add "null" id for data type: ' . $type);
+            throw new \InvalidArgumentException('you cannot add "null" id for data type: '.$type);
         }
 
         if (!array_key_exists($type, $this->sideload_data)) {
@@ -170,7 +168,7 @@ class DataSideloads
 
     public function getAndClearDeferred()
     {
-        $temp = $this->deferred_properties;
+        $temp                      = $this->deferred_properties;
         $this->deferred_properties = [];
 
         return $temp;
@@ -207,6 +205,7 @@ class DataSideloads
     public function getSideloadData()
     {
         $this->needs_processing_since_last_sideload_get = false;
+
         return $this->sideload_data;
     }
 }

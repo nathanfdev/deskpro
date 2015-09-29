@@ -1,4 +1,31 @@
 <?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 /**
  * This file is a set of asset bundles. The files and bundles
  * listed here declare how the 'assetic' build works.
@@ -22,11 +49,11 @@
 $CONFIG = array();
 
 $CONFIG['OPTIONS'] = array(
-    'java_path'       => defined('DP_JAVA_PATH') ? DP_JAVA_PATH : '/usr/bin/java',
-    'yui_compressor'  => defined('DP_YUI_COMPRESSOR_PATH') ? DP_YUI_COMPRESSOR_PATH : '/usr/local/bin/yuicompressor.jar',
-    'nodejs'          => defined('DP_NODEJS_PATH') ? DP_NODEJS_PATH : '/usr/bin/nodejs',
-    'less'            => defined('DP_LESSC_PATH') ? DP_LESSC_PATH : '/usr/local/bin/lessc',
-    'smartsprites'    => defined('DP_SMARTSPRITES_PATH') ? DP_SMARTSPRITES_PATH : '/opt/smartsprites-0.2.8/smartsprites.sh',
+    'java_path'      => defined('DP_JAVA_PATH') ? DP_JAVA_PATH : '/usr/bin/java',
+    'yui_compressor' => defined('DP_YUI_COMPRESSOR_PATH') ? DP_YUI_COMPRESSOR_PATH : '/usr/local/bin/yuicompressor.jar',
+    'nodejs'         => defined('DP_NODEJS_PATH') ? DP_NODEJS_PATH : '/usr/bin/nodejs',
+    'less'           => defined('DP_LESSC_PATH') ? DP_LESSC_PATH : '/usr/local/bin/lessc',
+    'smartsprites'   => defined('DP_SMARTSPRITES_PATH') ? DP_SMARTSPRITES_PATH : '/opt/smartsprites-0.2.8/smartsprites.sh',
 );
 
 if (isset($GLOBALS['DP_CONFIG']['assetic_config'])) {
@@ -63,7 +90,7 @@ $CONFIG['agent_vendors'] = array(
         'vendor/JSON-js/json2.js',
 
         'vendor/jquery/jquery.min.js',
-	    'vendor/jquery.patch.js',
+        'vendor/jquery.patch.js',
         'vendor/jquery/jquery.resize.min.js',
         'vendor/jquery/jquery-ui/jquery-ui.min.js',
         'vendor/jquery/jquery-tmpl/jquery.tmpl.min.js',
@@ -110,7 +137,7 @@ $CONFIG['agent_vendors'] = array(
         'bower_components/intl-tel-input/build/js/intlTelInput.min.js',
 
         'vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
-    )
+    ),
 );
 
 $CONFIG['agent_settingswin'] = array(
@@ -285,11 +312,11 @@ $CONFIG['agent_agent_ui'] = array(
         'javascripts/DeskPRO/Agent/WindowElement/TabBarOverflow.js',
         'javascripts/DeskPRO/Agent/TextSnippetClientDbDriver.js',
         'javascripts/DeskPRO/Agent/TextSnippetAjaxDriver.js',
-    )
+    ),
 );
 
 $CONFIG['agent_deskpro_ui'] = array(
-    'out' => 'js/agent-deskpro-ui.js',
+    'out'   => 'js/agent-deskpro-ui.js',
     'files' => array(
         'javascripts/DeskPRO/UI/LabelsInput.js',
         'javascripts/DeskPRO/UI/Overlay.js',
@@ -305,11 +332,11 @@ $CONFIG['agent_deskpro_ui'] = array(
         'javascripts/DeskPRO/UI/Select/Menu.js',
         'javascripts/DeskPRO/UI/Select/WidgetSimple.js',
         'javascripts/DeskPRO/UI/Select/MenuHtml.js',
-    )
+    ),
 );
 
 $CONFIG['agent_misc'] = array(
-    'out' => 'js/agent-misc.js',
+    'out'   => 'js/agent-misc.js',
     'files' => array(
         'javascripts/DeskPRO/Form/InlineEdit.js',
         'javascripts/DeskPRO/Form/RuleBuilder.js',
@@ -339,7 +366,7 @@ $CONFIG['agent_misc'] = array(
         'javascripts/DeskPRO/Agent/Ticket/Property/Hold.js',
 
         'javascripts/DeskPRO/UI/MultiLevelSelect.js',
-    )
+    ),
 );
 
 $CONFIG['user_helpdeskwin'] = array(
@@ -428,7 +455,7 @@ $CONFIG['user_vendors'] = array(
         'javascripts/Orb/modernizr-ext.js',
 
         'vendor/jquery/jquery.min.js',
-	    'vendor/jquery.patch.js',
+        'vendor/jquery.patch.js',
         'vendor/jquery/jquery-ui/jquery-ui.min.js',
         'vendor/jquery/jquery.cookie.js',
         'vendor/jquery/jquery.history.js',
@@ -446,9 +473,9 @@ $CONFIG['user_vendors'] = array(
         'vendor/PIE/PIE.js',
         'vendor/bootstrap/bootstrap-custom.js',
 
-	    'bower_components/moment/min/moment-with-locales.min.js',
-	    'vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
-    )
+        'bower_components/moment/min/moment-with-locales.min.js',
+        'vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
+    ),
 );
 
 ###############################################################################
@@ -529,6 +556,6 @@ $CONFIG['agent_vendors_css'] = array(
         'vendor/bootstrap/css/table.css',
 
         'vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
-        'vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-patch.css'
-    )
+        'vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-patch.css',
+    ),
 );

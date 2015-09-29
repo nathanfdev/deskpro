@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
@@ -53,8 +53,8 @@ abstract class SearcherAbstract implements PersonContextInterface
     const OP_NOTCONTAINS = 'notcontains';
     const OP_NOOP        = null;
 
-    const ORDER_ASC      = 'ASC';
-    const ORDER_DESC     = 'DESC';
+    const ORDER_ASC  = 'ASC';
+    const ORDER_DESC = 'DESC';
 
     /**
      * The person context.
@@ -137,6 +137,7 @@ abstract class SearcherAbstract implements PersonContextInterface
     public function needsPersonContext()
     {
         $this->getSqlParts();
+
         return $this->used_person_context > 0;
     }
 
@@ -343,18 +344,18 @@ abstract class SearcherAbstract implements PersonContextInterface
     public function addTerm($term, $op, $data)
     {
         $term_type = '';
-        $term_id = '';
-        $mode = 0;
+        $term_id   = '';
+        $mode      = 0;
 
         // mini-parser to turn "term[123]" into "term" and "123"
         // its here to avoid a preg_match call which can add a few ms
         // when this is called thousands of times.
         // a micro-opt as part of FilterChangeDetector
-        for ($i = 0, $len = strlen($term); $i < $len; $i++) {
+        for ($i = 0, $len = strlen($term); $i < $len; ++$i) {
             if ($term[$i] === '[') {
                 $mode = 1;
-            } else if ($term[$i] === ']') {
-            } else if ($mode === 0) {
+            } elseif ($term[$i] === ']') {
+            } elseif ($mode === 0) {
                 $term_type .= $term[$i];
             } else {
                 $term_id .= $term[$i];
@@ -374,14 +375,14 @@ abstract class SearcherAbstract implements PersonContextInterface
     public function addAnyTerm($term, $op, $data)
     {
         $term_type = '';
-        $term_id = '';
-        $mode = 0;
+        $term_id   = '';
+        $mode      = 0;
 
-        for ($i = 0, $len = strlen($term); $i < $len; $i++) {
+        for ($i = 0, $len = strlen($term); $i < $len; ++$i) {
             if ($term[$i] === '[') {
                 $mode = 1;
-            } else if ($term[$i] === ']') {
-            } else if ($mode === 0) {
+            } elseif ($term[$i] === ']') {
+            } elseif ($mode === 0) {
                 $term_type .= $term[$i];
             } else {
                 $term_id .= $term[$i];
@@ -428,7 +429,7 @@ abstract class SearcherAbstract implements PersonContextInterface
         if (!empty($choice['date1'])) {
             $date1 = $choice['date1'];
         } elseif (!empty($choice['date1_relative']) and !empty($choice['date1_relative_type'])) {
-            $date1 = date_create("-".(int) $choice['date1_relative']." {$choice['date1_relative_type']}", $timezone_context);
+            $date1 = date_create('-'.(int) $choice['date1_relative']." {$choice['date1_relative_type']}", $timezone_context);
         } elseif (!empty($choice[0])) {
             $date1 = $choice[0];
         }
@@ -437,7 +438,7 @@ abstract class SearcherAbstract implements PersonContextInterface
         if (!empty($choice['date2'])) {
             $date2 = $choice['date2'];
         } elseif (!empty($choice['date2_relative']) and !empty($choice['date2_relative_type'])) {
-            $date2 = date_create("-".(int) $choice['date2_relative']." {$choice['date2_relative_type']}", $timezone_context);
+            $date2 = date_create('-'.(int) $choice['date2_relative']." {$choice['date2_relative_type']}", $timezone_context);
         } elseif (!empty($choice[1])) {
             $date2 = $choice[1];
         }
@@ -522,7 +523,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 
         $has_empty = false;
         foreach ($choice as $c) {
-            if (trim($c) === "") {
+            if (trim($c) === '') {
                 $has_empty = true;
                 break;
             }
@@ -545,7 +546,7 @@ abstract class SearcherAbstract implements PersonContextInterface
                 $v = $self->quoteDbValue($v);
             });
 
-            $choices_in = "(".implode(',', $choices_in).")";
+            $choices_in = '('.implode(',', $choices_in).')';
 
             if ($op == self::OP_IS) {
                 if ($has_empty) {
@@ -574,11 +575,11 @@ abstract class SearcherAbstract implements PersonContextInterface
                 if ($has_empty) {
                     $where = "(($field LIKE ".implode(" OR $field LIKE ", $choices_in).") OR $field IS NULL)";
                 } else {
-                    $where = "($field LIKE ".implode(" OR $field LIKE ", $choices_in).")";
+                    $where = "($field LIKE ".implode(" OR $field LIKE ", $choices_in).')';
                 }
             } else {
                 if ($has_empty) {
-                    $where = "($field NOT LIKE ".implode(" AND $field NOT LIKE ", $choices_in).")";
+                    $where = "($field NOT LIKE ".implode(" AND $field NOT LIKE ", $choices_in).')';
                 } else {
                     $where = "(($field NOT LIKE ".implode(" AND $field NOT LIKE ", $choices_in).") OR $field IS NULL)";
                 }
@@ -618,7 +619,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 
             $where = array();
             foreach ($words as $w) {
-                $where[] = "($field $op_like ".$this->quoteDbValue('%'.str_replace(array('%', '_'), array('\\%', '\\_'), $w).'%').")";
+                $where[] = "($field $op_like ".$this->quoteDbValue('%'.str_replace(array('%', '_'), array('\\%', '\\_'), $w).'%').')';
             }
 
             if ($type == 'or') {
@@ -633,7 +634,7 @@ abstract class SearcherAbstract implements PersonContextInterface
                 return '1';
             }
 
-            return "($field $op_like ".$this->quoteDbValue('%'.str_replace(array('%', '_'), array('%%', '__'), $string).'%').")";
+            return "($field $op_like ".$this->quoteDbValue('%'.str_replace(array('%', '_'), array('%%', '__'), $string).'%').')';
         }
     }
 
@@ -753,10 +754,10 @@ abstract class SearcherAbstract implements PersonContextInterface
         }
 
         if (!($date1 instanceof \DateTime)) {
-            $date1 = new \DateTime("@".intval($date1));
+            $date1 = new \DateTime('@'.intval($date1));
         }
         if (!($date2 instanceof \DateTime)) {
-            $date2 = new \DateTime("@".intval($date2));
+            $date2 = new \DateTime('@'.intval($date2));
         }
 
         // There should always be at least one date
@@ -943,7 +944,7 @@ abstract class SearcherAbstract implements PersonContextInterface
                 $choices_in = array(0);
             }
 
-            $choices_in = "(".implode(',', $choices_in).")";
+            $choices_in = '('.implode(',', $choices_in).')';
 
             if ($op == self::OP_CONTAINS) {
                 $where = "$field IN $choices_in";
@@ -953,10 +954,10 @@ abstract class SearcherAbstract implements PersonContextInterface
         } else {
             if ($is_id and ($choice === 0 or $choice === '0')) {
                 $choice = 'NULL';
-                $op     = ($op == self::OP_IS) ? "IS" : "IS NOT";
+                $op     = ($op == self::OP_IS) ? 'IS' : 'IS NOT';
             } else {
                 $choice = $this->quoteDbValue($choice);
-                $op     = ($op == self::OP_IS) ? "=" : "!=";
+                $op     = ($op == self::OP_IS) ? '=' : '!=';
             }
 
             if ($op == '!=') {
@@ -1115,14 +1116,14 @@ abstract class SearcherAbstract implements PersonContextInterface
             if ($c === 0) {
                 $unassigned = true;
             } elseif ($c == -1) {
-                $this->used_person_context++;
+                ++$this->used_person_context;
                 if ($this->getPersonContext()) {
                     $agent_ids[] = $this->getPersonContext()->getId();
                 } else {
                     $agent_ids[] = -1;
                 }
             } elseif ($c == -2) {
-                $this->used_person_context++;
+                ++$this->used_person_context;
                 if ($this->getPersonContext()) {
                     $not_id = $this->getPersonContext()->getId();
                 } else {
@@ -1160,13 +1161,13 @@ abstract class SearcherAbstract implements PersonContextInterface
             if ($c === 0) {
                 $no_team = true;
             } elseif ($c == -1) {
-                $this->used_person_context++;
+                ++$this->used_person_context;
                 if ($agent) {
                     $team_ids = array_merge($team_ids, Arrays::removeFalsey($agent->getAgentTeamIds()));
                 }
                 $team_ids[] = -1;
             } elseif ($c == -2) {
-                $this->used_person_context++;
+                ++$this->used_person_context;
                 if ($agent) {
                     $not_ids = array_merge($team_ids, Arrays::removeFalsey($agent->getAgentTeamIds()));
                 }

@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\People\Helpers;
 
 use Application\DeskPRO\App;
@@ -76,10 +76,10 @@ class AgentPrefs implements \Orb\Helper\ShortCallableInterface
         }
 
         $params = array('p' => $this->person);
-        $sql    = "SELECT pref FROM DeskPRO:PersonPref pref INDEX BY pref.name WHERE pref.person = :p AND (";
+        $sql    = 'SELECT pref FROM DeskPRO:PersonPref pref INDEX BY pref.name WHERE pref.person = :p AND (';
 
         if ($this->preload_ids) {
-            $sql .= "pref.name IN (:ids)";
+            $sql .= 'pref.name IN (:ids)';
             $params['ids'] = $this->preload_ids;
             foreach ($this->preload_ids as $id) {
                 $this->loaded_prefs[] = $id;
@@ -129,7 +129,7 @@ class AgentPrefs implements \Orb\Helper\ShortCallableInterface
     {
         $this->preload();
         if (!isset($this->prefs[$name]) && !$this->isPrefLoaded($name)) {
-            $sql                       = "SELECT pref FROM DeskPRO:PersonPref pref WHERE pref.person = ?0 AND pref.name = ?1";
+            $sql                       = 'SELECT pref FROM DeskPRO:PersonPref pref WHERE pref.person = ?0 AND pref.name = ?1';
             $this->prefs[$name]        = App::getOrm()->createQuery($sql)->execute(array($this->person, $name));
             $this->loaded_prefs[$name] = true;
         }
@@ -162,7 +162,7 @@ class AgentPrefs implements \Orb\Helper\ShortCallableInterface
         }
 
         if ($not_found) {
-            $sql         = "SELECT pref FROM DeskPRO:PersonPref pref WHERE pref.person = ?0 AND pref.name IN (?2)";
+            $sql         = 'SELECT pref FROM DeskPRO:PersonPref pref WHERE pref.person = ?0 AND pref.name IN (?2)';
             $results     = App::getOrm()->createQuery($sql)->execute(array($this->person, $not_found));
             $this->prefs = array_merge($this->prefs, $results);
         }

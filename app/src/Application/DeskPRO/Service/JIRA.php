@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\DeskPRO\Service;
 
@@ -41,13 +42,13 @@ class JIRA
 {
     const NAME = 'dp.jira';
 
-    const PARAM_COMMENTS    = 'comments';
-    const PARAM_META        = 'meta';
-    const PARAM_URL         = 'url';
-    const PARAM_CONSUMER    = 'consumer_key';
-    const PARAM_TOKENS      = 'oauth_tokens';
-    const PARAM_KEY         = 'private_key';
-	const SSL_AUTHORITY     = 'ssl_authority';
+    const PARAM_COMMENTS = 'comments';
+    const PARAM_META     = 'meta';
+    const PARAM_URL      = 'url';
+    const PARAM_CONSUMER = 'consumer_key';
+    const PARAM_TOKENS   = 'oauth_tokens';
+    const PARAM_KEY      = 'private_key';
+    const SSL_AUTHORITY  = 'ssl_authority';
 
     protected $allowed = array(
         'project',
@@ -133,13 +134,14 @@ class JIRA
         return $app->getSetting(self::PARAM_URL);
     }
 
-	public function getSSLAuthority()
-	{
-		if (!$app = $this->getApp()) {
-			return null;
-		}
-		return $app->getSetting(self::SSL_AUTHORITY);
-	}
+    public function getSSLAuthority()
+    {
+        if (!$app = $this->getApp()) {
+            return;
+        }
+
+        return $app->getSetting(self::SSL_AUTHORITY);
+    }
 
     /**
      * @return string|null
@@ -211,8 +213,8 @@ class JIRA
      * @param array $properties
      *
      * @throws \Exception
-     * @return Meta
      *
+     * @return Meta
      */
     public function updateMeta(array $properties = array())
     {
@@ -294,8 +296,8 @@ class JIRA
      * @param $jql
      *
      * @throws \Exception
-     * @return array
      *
+     * @return array
      */
     public function searchIssues($q)
     {
@@ -411,8 +413,8 @@ class JIRA
      *
      * @throws \Exception
      * @throws \Exceptions
-     * @return array|null
      *
+     * @return array|null
      */
     public function link(Ticket $ticket, $issueId, Person $byPerson)
     {
@@ -463,8 +465,8 @@ class JIRA
      *
      * @throws \Exception
      * @throws \Exceptions
-     * @return bool|null
      *
+     * @return bool|null
      */
     public function unlink(Ticket $ticket, $issueId)
     {
@@ -539,8 +541,8 @@ class JIRA
      *
      * @throws \Exception
      * @throws \Exceptions
-     * @return array|void
      *
+     * @return array|void
      */
     public function addComment($message, $ticketId, Person $performer, $issueId = null)
     {

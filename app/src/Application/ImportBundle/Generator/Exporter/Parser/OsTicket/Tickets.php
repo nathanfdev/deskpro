@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
@@ -53,13 +54,13 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns current tickets offset
+     * Returns current tickets offset.
      *
      * @return int
      */
     public function getCurrentTicketsMinId()
     {
-        return $this->tickets_min_id ? : $this->getBatchConfig()->getTicketsMinId();
+        return $this->tickets_min_id ?: $this->getBatchConfig()->getTicketsMinId();
     }
 
     /**
@@ -76,7 +77,7 @@ final class Tickets extends AbstractParser
     public function export()
     {
         $this->entities_loaded = 0;
-        $collection = new Entity\Collection();
+        $collection            = new Entity\Collection();
 
         while ($batch = $this->reader->findTickets($this->getReaderBatchSize(), $this->getCurrentTicketsMinId())) {
             foreach ($batch as $num => $ticket) {
@@ -88,10 +89,9 @@ final class Tickets extends AbstractParser
                     if ($entity) {
                         $collection->attach($entity);
                         $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
+                    } else {
                         $this->logWarning(sprintf('Invalid ticket record found (Skipping): %d', $offsetNum));
                     }
-
                 } catch (NoColumnException $e) {
                     $this->logWarning(sprintf(
                         'Invalid ticket record `%d` found (Skipping): %s',
@@ -111,17 +111,18 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns a ticket entity
+     * Returns a ticket entity.
      *
      * @param array $ticket
+     *
      * @return Entity\Ticket|null
      */
     private function exportTicket(array $ticket)
     {
         if ($this->isTicketValid($ticket)) {
-                    $entity = new Entity\Ticket();
-                    $entity
-                ->setDestination('ticket_' . $ticket['ticket_id'])
+            $entity = new Entity\Ticket();
+            $entity
+                ->setDestination('ticket_'.$ticket['ticket_id'])
                 ->setOid($ticket['ticket_id'])
                 ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
                         ->setDepartment($this->reader->findDepartmentById($ticket['dept_id']))
@@ -133,22 +134,23 @@ final class Tickets extends AbstractParser
                         ->setSubject($ticket['subject'])
                 ->setPriority($this->exportPriority($ticket['priority_id']));
 
-                    $messages = $this->exportMessages($ticket['ticket_id']);
-                    foreach ($messages as $message) {
-                        /* @var Entity\TicketMessage $message */
+            $messages = $this->exportMessages($ticket['ticket_id']);
+            foreach ($messages as $message) {
+                /* @var Entity\TicketMessage $message */
                         $entity->addMessage($message);
-                    }
-
-            return $entity;
-                }
-
-        return null;
             }
 
+            return $entity;
+        }
+
+        return;
+    }
+
     /**
-     * Returns a ticket priority entity
+     * Returns a ticket priority entity.
      *
      * @param int $id
+     *
      * @return Entity\TicketPriority|null
      */
     private function exportPriority($id)
@@ -165,7 +167,7 @@ final class Tickets extends AbstractParser
             return $entity;
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -186,10 +188,9 @@ final class Tickets extends AbstractParser
                 if ($entity) {
                     $collection->attach($entity);
                     $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-            } else {
+                } else {
                     $this->logWarning(sprintf('Invalid ticket message record found (Skipping): %d', $num));
                 }
-
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid ticket message record `%d` found (Skipping): %s',
@@ -202,7 +203,7 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns a ticket message entity
+     * Returns a ticket message entity.
      *
      * @param int   $num
      * @param array $message
@@ -212,24 +213,24 @@ final class Tickets extends AbstractParser
     private function exportMessage($num, array $message)
     {
         if ($this->isMessageValid($message)) {
-                $entity = new Entity\TicketMessage();
-                $entity
-                ->setDestination('message_' . $num)
+            $entity = new Entity\TicketMessage();
+            $entity
+                ->setDestination('message_'.$num)
                 ->setOid($num)
                     ->setPersonEmail($this->getMessagePersonEmail($message))
                 ->setDateCreated($this->getFromStringOrCurrentDateTime($message['created']))
                 ->setMessageHtml($message['body']);
 
-                $attachments = $this->exportAttachments($message['id']);
-                foreach ($attachments as $attachment) {
-                    /* @var Entity\Attachment $attachment */
+            $attachments = $this->exportAttachments($message['id']);
+            foreach ($attachments as $attachment) {
+                /* @var Entity\Attachment $attachment */
                     $entity->addAttachment($attachment);
-                }
+            }
 
             return $entity;
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -250,10 +251,9 @@ final class Tickets extends AbstractParser
                 if ($entity) {
                     $collection->attach($entity);
                     $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-            } else {
+                } else {
                     $this->logWarning(sprintf('Invalid ticket message attachment record found (Skipping): %d', $num));
                 }
-
             } catch (NoColumnException $e) {
                 $this->logError(sprintf(
                     'Invalid ticket message attachment record `%d` found (Skipping): %s',
@@ -266,7 +266,7 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns an attachment entity
+     * Returns an attachment entity.
      *
      * @param int   $num
      * @param array $attachment
@@ -276,9 +276,9 @@ final class Tickets extends AbstractParser
     private function exportAttachment($num, array $attachment)
     {
         if ($this->isAttachmentValid($attachment)) {
-                $entity = new Entity\Attachment();
-                $entity
-                ->setDestination('attachment_' . $num)
+            $entity = new Entity\Attachment();
+            $entity
+                ->setDestination('attachment_'.$num)
                     ->setOid($num)
                     ->setBlobData(base64_encode($this->reader->findAttachmentData($attachment['file_id'])))
                     ->setFileName($attachment['name'])
@@ -287,7 +287,7 @@ final class Tickets extends AbstractParser
             return $entity;
         }
 
-        return null;
+        return;
     }
 
     /**

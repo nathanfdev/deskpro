@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\NewsResults;
@@ -75,14 +75,14 @@ class NewsController extends AbstractController
         );
 
         return $this->render('AgentBundle:News:view.html.twig', array(
-            'news'                 => $news,
-            'news_comments'        => $news_comments,
-            'news_categories'      => $news_categories,
-            'related_content'      => $related_content,
-            'state'                => $state,
-            'sticky_search_words'  => $sticky_search_words,
-            'rated_searches'       => $rated_searches,
-            'perms'                => $perms,
+            'news'                => $news,
+            'news_comments'       => $news_comments,
+            'news_categories'     => $news_categories,
+            'related_content'     => $related_content,
+            'state'               => $state,
+            'sticky_search_words' => $sticky_search_words,
+            'rated_searches'      => $rated_searches,
+            'perms'               => $perms,
         ));
     }
 
@@ -124,12 +124,12 @@ class NewsController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $comment                  = new NewsComment();
-        $comment->news            = $news;
-        $comment->person          = $this->person;
-        $comment['content']       = $this->in->getString('content');
-        $comment['status']        = 'visible';
-        $comment['date_created']  = new \DateTime();
+        $comment                 = new NewsComment();
+        $comment->news           = $news;
+        $comment->person         = $this->person;
+        $comment['content']      = $this->in->getString('content');
+        $comment['status']       = 'visible';
+        $comment['date_created'] = new \DateTime();
 
         if ($this->person->hasPerm('agent_publish.validate')) {
             $comment->is_reviewed = true;
@@ -349,11 +349,11 @@ class NewsController extends AbstractController
         $cat_usergroups     = array();
         $cat_structure_data = array();
         if ($category) {
-            $cat_usergroups = $this->db->fetchAllCol("
+            $cat_usergroups = $this->db->fetchAllCol('
                 SELECT usergroup_id
                 FROM news_category2usergroup
                 WHERE category_id = ?
-            ", array($category->getId()));
+            ', array($category->getId()));
 
             $cat_structure_data = $this->em->getRepository('DeskPRO:NewsCategory')->getInHierarchy();
             $cat_structure_data = Arrays::removeButKey($cat_structure_data, array('id', 'title', 'children'), true, true);

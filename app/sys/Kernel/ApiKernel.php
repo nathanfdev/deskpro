@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Kernel;
 
 use Application\DeskPRO\App;
@@ -53,6 +51,7 @@ class ApiKernel extends BaseKernel
      * Returns an array of bundles to register.
      *
      * @return BundleInterface[] An array of bundle instances.
+     *
      * @api
      */
     public function registerBundles()
@@ -76,11 +75,11 @@ class ApiKernel extends BaseKernel
             new \DeskPRO\Bundle\ApiBundle\ApiBundle(),
             new \DeskPRO\Bundle\AppBundle\AppBundle(),
             new \Nelmio\ApiDocBundle\NelmioApiDocBundle(),
-            new \Bazinga\Bundle\HateoasBundle\BazingaHateoasBundle()
+            new \Bazinga\Bundle\HateoasBundle\BazingaHateoasBundle(),
         );
 
         if ('dev' === $this->getEnvironment()
-            OR
+            or
             'test' === $this->getEnvironment()) {
             $bundles[] = new \Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle();
             $bundles[] = new \Symfony\Bundle\DebugBundle\DebugBundle();
@@ -107,7 +106,7 @@ class ApiKernel extends BaseKernel
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function getContainerBaseClass()
     {
@@ -118,22 +117,21 @@ class ApiKernel extends BaseKernel
      * Loads the container configuration.
      *
      * @param LoaderInterface $loader A LoaderInterface instance
+     *
      * @api
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(DP_ROOT . '/sys/config/api/api_config_' . $this->getEnvironment() . '.yml');
+        $loader->load(DP_ROOT.'/sys/config/api/api_config_'.$this->getEnvironment().'.yml');
     }
-
 
     /**
      * @return string
      */
     public function getRootDir()
     {
-        return DP_ROOT . '/sys';
+        return DP_ROOT.'/sys';
     }
-
 
     /**
      * @return string
@@ -144,18 +142,17 @@ class ApiKernel extends BaseKernel
 
         if ($cache_dir === null) {
             if (defined('DPC_IS_CLOUD')) {
-                $cache_dir = dp_get_cache_dir() . '/api/' . $this->environment . '-cloud';
+                $cache_dir = dp_get_cache_dir().'/api/'.$this->environment.'-cloud';
             } else {
-                $cache_dir = dp_get_cache_dir() . '/api/' . $this->environment . '';
+                $cache_dir = dp_get_cache_dir().'/api/'.$this->environment.'';
             }
         }
 
         return $cache_dir;
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function initializeContainer()
     {
@@ -166,16 +163,16 @@ class ApiKernel extends BaseKernel
         //    }
         //}
 
-		//if ($this->environment == 'prod' && !defined('DP_BUILDING') && !defined('DPC_IS_CLOUD')) {
-		//	// If the container doesnt exist and we're in prod, then means we're installing an update.
-		//	// Halt now. This prevents the system from trying to generate the cache itself,
-		//	// even though the new files will be installed in a second.
-		//	$cache_file = $this->getCacheDir() . '/' . $this->getContainerClass() . '.php';
-		//	if (!is_file($cache_file)) {
-		//		echo HelpdeskOfflineMessage::getOfflinePage('Currently installing updates' . $cache_file);
-		//		exit;
-		//	}
-		//}
+        //if ($this->environment == 'prod' && !defined('DP_BUILDING') && !defined('DPC_IS_CLOUD')) {
+        //	// If the container doesnt exist and we're in prod, then means we're installing an update.
+        //	// Halt now. This prevents the system from trying to generate the cache itself,
+        //	// even though the new files will be installed in a second.
+        //	$cache_file = $this->getCacheDir() . '/' . $this->getContainerClass() . '.php';
+        //	if (!is_file($cache_file)) {
+        //		echo HelpdeskOfflineMessage::getOfflinePage('Currently installing updates' . $cache_file);
+        //		exit;
+        //	}
+        //}
 
         // entity loader required to construct symfony container
         // so enable it temporarily while the container builds
@@ -191,29 +188,29 @@ class ApiKernel extends BaseKernel
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container, $class, $baseClass)
     {
         // Make sure the cache dirs exist
-        $env_dir = realpath($this->getCacheDir() . '/../..');
+        $env_dir = realpath($this->getCacheDir().'/../..');
 
         if (!is_dir($this->getCacheDir())) {
             mkdir($this->getCacheDir(), 0777, true);
         }
-        if (!file_exists($env_dir . '/doctrine-proxies')) {
-            mkdir($env_dir . '/doctrine-proxies', 0777, true);
+        if (!file_exists($env_dir.'/doctrine-proxies')) {
+            mkdir($env_dir.'/doctrine-proxies', 0777, true);
         }
-        if (!file_exists($env_dir . '/twig-compiled')) {
-            @mkdir($env_dir . '/twig-compiled', 0777, true);
+        if (!file_exists($env_dir.'/twig-compiled')) {
+            @mkdir($env_dir.'/twig-compiled', 0777, true);
         }
 
         @chmod($this->getCacheDir(), 0777);
-        @chmod($env_dir . '/doctrine-proxies', 0777);
-        @chmod($env_dir . '/twig-compiled', 0777);
+        @chmod($env_dir.'/doctrine-proxies', 0777);
+        @chmod($env_dir.'/twig-compiled', 0777);
 
         // Clear the dql cache when the container is regenerated as well
-        $dql_cache = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'dql.cache';
+        $dql_cache = dp_get_tmp_dir().DIRECTORY_SEPARATOR.'dql.cache';
         if (file_exists($dql_cache)) {
             @unlink($dql_cache);
         }
@@ -226,7 +223,7 @@ class ApiKernel extends BaseKernel
         }
 
         // Re-write absolute paths to use DP_ROOT instead
-        $content = str_replace("'" . DP_ROOT, 'DP_ROOT.\'', $content);
+        $content = str_replace("'".DP_ROOT, 'DP_ROOT.\'', $content);
         // Correct double slash paths
         $content = str_replace('prod//', 'prod/', $content);
         // Empty logs dir that isn't used (we get it from conf)
@@ -237,12 +234,13 @@ class ApiKernel extends BaseKernel
 
     /**
      * @deprecated Use dp_get_log_dir()
+     *
      * @return string
      */
     public function getLogDir()
     {
         if (!function_exists('dp_get_log_dir')) {
-            require_once DP_ROOT . '/sys/load_config.php';
+            require_once DP_ROOT.'/sys/load_config.php';
         }
 
         return dp_get_log_dir();

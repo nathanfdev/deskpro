@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Labels
  */
-
 namespace Application\DeskPRO\Labels;
 
 use Doctrine\ORM\EntityManager;
@@ -104,13 +104,13 @@ class LabelSearch
         );
 
         if (in_array('ticket', $this->search_types)) {
-            $ids = $this->db->fetchAllCol("
+            $ids = $this->db->fetchAllCol('
                 SELECT ticket_id
                 FROM labels_tickets
                 WHERE label = ?
                 ORDER BY ticket_id DESC
                 LIMIT ?
-            ", array($label, $this->limit), array(\PDO::PARAM_STR, \PDO::PARAM_INT));
+            ', array($label, $this->limit), array(\PDO::PARAM_STR, \PDO::PARAM_INT));
 
             if ($ids) {
                 /** @var \Application\DeskPRO\EntityRepository\Ticket $rep */
@@ -123,13 +123,13 @@ class LabelSearch
         }
 
         if (in_array('person', $this->search_types)) {
-            $ids = $this->db->fetchAllCol("
+            $ids = $this->db->fetchAllCol('
                 SELECT person_id
                 FROM labels_people
                 WHERE label = ?
                 ORDER BY person_id DESC
                 LIMIT ?
-            ", array($label, $this->limit), array(\PDO::PARAM_STR, \PDO::PARAM_INT));
+            ', array($label, $this->limit), array(\PDO::PARAM_STR, \PDO::PARAM_INT));
 
             if ($ids) {
                 /** @var \Application\DeskPRO\EntityRepository\Person $rep */
@@ -142,13 +142,13 @@ class LabelSearch
         }
 
         if (in_array('organization', $this->search_types)) {
-            $ids = $this->db->fetchAllCol("
+            $ids = $this->db->fetchAllCol('
                 SELECT organization_id
                 FROM labels_organizations
                 WHERE label = ?
                 ORDER BY organization_id DESC
                 LIMIT ?
-            ", array($label, $this->limit), array(\PDO::PARAM_STR, \PDO::PARAM_INT));
+            ', array($label, $this->limit), array(\PDO::PARAM_STR, \PDO::PARAM_INT));
 
             if ($ids) {
                 /** @var \Application\DeskPRO\EntityRepository\Organization $rep */

@@ -1,4 +1,32 @@
-<?php if (!defined('DP_ROOT')) {
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+if (!defined('DP_ROOT')) {
     exit('No access');
 }
 /**************************************************************************\
@@ -69,16 +97,16 @@ function dp_load_config()
                 $DP_CONFIG['db'] = array();
             }
             if (!isset($DP_CONFIG['db']['host'])) {
-                $DP_CONFIG['db']['host']      = defined('DP_DATABASE_HOST')     ? DP_DATABASE_HOST     : 'localhost';
+                $DP_CONFIG['db']['host'] = defined('DP_DATABASE_HOST')     ? DP_DATABASE_HOST     : 'localhost';
             }
             if (!isset($DP_CONFIG['db']['user'])) {
-                $DP_CONFIG['db']['user']      = defined('DP_DATABASE_USER')     ? DP_DATABASE_USER     : 'YOUR_DATABASE_USER';
+                $DP_CONFIG['db']['user'] = defined('DP_DATABASE_USER')     ? DP_DATABASE_USER     : 'YOUR_DATABASE_USER';
             }
             if (!isset($DP_CONFIG['db']['password'])) {
-                $DP_CONFIG['db']['password']  = defined('DP_DATABASE_PASSWORD') ? DP_DATABASE_PASSWORD : 'YOUR_DATABASE_PASS';
+                $DP_CONFIG['db']['password'] = defined('DP_DATABASE_PASSWORD') ? DP_DATABASE_PASSWORD : 'YOUR_DATABASE_PASS';
             }
             if (!isset($DP_CONFIG['db']['dbname'])) {
-                $DP_CONFIG['db']['dbname']    = defined('DP_DATABASE_NAME')     ? DP_DATABASE_NAME     : 'YOUR_DATABASE_NAME';
+                $DP_CONFIG['db']['dbname'] = defined('DP_DATABASE_NAME')     ? DP_DATABASE_NAME     : 'YOUR_DATABASE_NAME';
             }
             if (!isset($DP_CONFIG['technical_email'])) {
                 $DP_CONFIG['technical_email'] = defined('DP_TECHNICAL_EMAIL')   ? DP_TECHNICAL_EMAIL   : '';
@@ -156,7 +184,7 @@ function dp_pagelog_get($name)
  * Get a value from config using dot notation.
  *
  * @param string $key
- * @param null $default
+ * @param null   $default
  *
  * @return mixed
  */
@@ -195,7 +223,7 @@ function dp_get_config($path, $default = null)
         }
 
         $array = $array[$key];
-        $depth++;
+        ++$depth;
     }
 
     return $array;
@@ -339,7 +367,7 @@ function dp_get_cache_dir()
  * marker.
  *
  * @param string $id
- * @param int $min_time
+ * @param int    $min_time
  *
  * @return bool
  */
@@ -353,7 +381,7 @@ function dp_should_throttle_action($id, $min_time)
     }
 
     $last = (int) file_get_contents($file);
-    if ($last > time()-$min_time) {
+    if ($last > time() - $min_time) {
         return true;
     }
 
@@ -444,7 +472,7 @@ function dp_get_php_path($test = false)
         $ret = null;
 
         // php -v: PHP 5.3.10 (cli) (built: May 18 2012 10:07:25) etc
-        exec($path." -v 2>&1", $out, $ret);
+        exec($path.' -v 2>&1', $out, $ret);
 
         $out = is_array($out) ? implode("\n", $out) : (string) $out;
         if (!$ret || stripos($out, 'the php group') !== false) {
@@ -519,7 +547,7 @@ function dp_get_mysqldump_path($test = false)
         $ret = null;
 
         // mysqldump (no args): Usage: mysqldump [OPTIONS] database [tables]  etc
-        exec($path." 2>&1", $out, $ret);
+        exec($path.' 2>&1', $out, $ret);
 
         $out = is_array($out) ? implode("\n", $out) : (string) $out;
         if (!$ret || stripos($out, 'usage:') !== false) {
@@ -563,7 +591,7 @@ function dp_get_mysql_path($test = false)
         $ret = null;
 
         // mysql --help: Lots of stuff but we can find mysql
-        exec($path." --help 2>&1", $out, $ret);
+        exec($path.' --help 2>&1', $out, $ret);
 
         $out = is_array($out) ? implode("\n", $out) : (string) $out;
         if (!$ret || stripos($out, 'usage:') !== false) {

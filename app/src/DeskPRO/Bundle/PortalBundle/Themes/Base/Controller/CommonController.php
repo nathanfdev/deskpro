@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
@@ -58,7 +58,8 @@ class CommonController extends AbstractController
     }
 
     /**
-     * DO NOT use always_guest_inline=true on this or we risk cache alert messages to guests
+     * DO NOT use always_guest_inline=true on this or we risk cache alert messages to guests.
+     *
      * @Tag(name="alerts", esi=true)
      */
     public function alertsAction(TagRequest $tag_request)
@@ -71,22 +72,22 @@ class CommonController extends AbstractController
         //
         // ACCOUNT VALIDATION
         //
-        $person_validator = $this->get('person.portal_validator');
+        $person_validator  = $this->get('person.portal_validator');
         $validation_alerts = array();
         if ($user && !$user->isUserValid()) {
             $primary_email = $user->getPrimaryEmail();
             if (!$user->isEmailValidated()) {
                 $validation_alerts[] = array(
-                    'type' => PersonValidator::TYPE_EMAIL_PRIMARY,
+                    'type'    => PersonValidator::TYPE_EMAIL_PRIMARY,
                     'message' => $this->phrase('portal.account.validation_alert',
                         array('email' => $user->getPrimaryEmail()->getEmail())),
-                    'resend_url' => $person_validator->getResendLink(PersonValidator::TYPE_EMAIL_PRIMARY, $primary_email)
+                    'resend_url' => $person_validator->getResendLink(PersonValidator::TYPE_EMAIL_PRIMARY, $primary_email),
                 );
             } elseif (!$user->isAgentValidated()) {
                 $validation_alerts[] = array(
-                    'type' => null,
-                    'message' => $this->phrase('portal.account.validation_agent_alert'),
-                    'resend_url' => null
+                    'type'       => null,
+                    'message'    => $this->phrase('portal.account.validation_agent_alert'),
+                    'resend_url' => null,
                 );
             }
         }
@@ -97,15 +98,15 @@ class CommonController extends AbstractController
         if ($user && $validating_emails = $this->getEmailDataService()->getValidatingEmails($user)) {
             foreach ($validating_emails as $validating_email) {
                 $validation_alerts[] = array(
-                    'type'       => PersonValidator::TYPE_EMAIL,
-                    'message'    => $this->phrase('portal.account.validation_alert_extra_email',
+                    'type'    => PersonValidator::TYPE_EMAIL,
+                    'message' => $this->phrase('portal.account.validation_alert_extra_email',
                         array('email' => $validating_email->getEmail())),
                     'resend_url' => $person_validator->getResendLink(
                         PersonValidator::TYPE_EMAIL,
                         $validating_email,
                         null,
                         true
-                    )
+                    ),
                 );
             }
         }
@@ -126,22 +127,23 @@ class CommonController extends AbstractController
             foreach ($all_saved as $saved) {
                 $saved_forms[] = array(
                     'message' => $this->getFormSaver()->getMessage($saved),
-                    'link' => $this->generateUrl('saved_form_auto_submit', array('auth_code' => $saved->getExternalCode()))
+                    'link'    => $this->generateUrl('saved_form_auto_submit', array('auth_code' => $saved->getExternalCode())),
                 );
             }
         }
 
         return $this->renderThemeView('Theme:Common:alerts.html.twig', array(
-            'impersonator' => $agent,
-            'user'         => $user,
-            'saved_forms'  => $saved_forms,
+            'impersonator'      => $agent,
+            'user'              => $user,
+            'saved_forms'       => $saved_forms,
             'validation_alerts' => $validation_alerts,
-            'display_alerts' => count($saved_forms) || $agent || count($validation_alerts),
+            'display_alerts'    => count($saved_forms) || $agent || count($validation_alerts),
         ));
     }
 
     /**
-     * DO NOT use always_guest_inline=true on this or we risk cache alert messages to guests
+     * DO NOT use always_guest_inline=true on this or we risk cache alert messages to guests.
+     *
      * @Tag(name="flashes", esi=true)
      */
     public function flashesAction(TagRequest $tag_request)

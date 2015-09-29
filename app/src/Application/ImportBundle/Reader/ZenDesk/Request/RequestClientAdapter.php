@@ -1,44 +1,44 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Reader\ZenDesk\Request;
 
 use Application\ImportBundle\Reader\ZenDesk\RetryAfterException;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
-use Psr\Log\LoggerInterface;
-use Zendesk\API;
-use RuntimeException;
 use Exception;
+use Psr\Log\LoggerInterface;
+use RuntimeException;
+use Zendesk\API;
 
 /**
- * ZenDesk API request adapter via ZenDesk client vendor
+ * ZenDesk API request adapter via ZenDesk client vendor.
  *
  * Class RequestClientAdapter
- * @package Application\ImportBundle\Reader\ZenDesk\Request
  */
 final class RequestClientAdapter implements RequestAdapterInterface
 {
@@ -63,7 +63,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
     private $was_request = false;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param API\Client      $client
      * @param array           $options
@@ -117,26 +117,25 @@ final class RequestClientAdapter implements RequestAdapterInterface
     }
 
     /**
-     * Do API request
+     * Do API request.
      *
      * @param ClientHelper\ClientHelperInterface $request
      * @param int                                $retry_attempt
      *
-     * @return \stdClass
-     *
      * @throws RetryAfterException
      * @throws API\ResponseException
+     *
+     * @return \stdClass
      */
     private function doRequest(ClientHelper\ClientHelperInterface $request, $retry_attempt = 0)
     {
         try {
             API\Http::$curl = new CurlRequest(null, $this->options);
 
-            $response = $request->request($this->client);
+            $response          = $request->request($this->client);
             $this->was_request = true;
 
             return $response;
-
         } catch (API\ResponseException $e) {
             if ($this->client->getDebug()) {
                 $debug = $this->client->getDebug();
@@ -172,38 +171,37 @@ final class RequestClientAdapter implements RequestAdapterInterface
 
                     default:
                         if ($this->logger) {
-                            $this->logger->error("Unknown API ResponseException. Will retry.");
+                            $this->logger->error('Unknown API ResponseException. Will retry.');
                             $this->logger->error($e);
                         }
 
                         return $this->retry($request, $retry_attempt, $e);
                 }
             }
-
         } catch (Exception $e) {
             if ($this->logger) {
-                $this->logger->error("Unknown API request error. Will retry.");
+                $this->logger->error('Unknown API request error. Will retry.');
                 $this->logger->error($e);
             }
 
             return $this->retry($request, $retry_attempt, $e);
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Retry api request on error response
+     * Retry api request on error response.
      *
      * @param ClientHelper\ClientHelperInterface $request
      * @param int                                $retry_attempt
      * @param Exception                          $exception
      * @param int                                $timeout
      *
-     * @return \stdClass
-     *
      * @throws Exception
      * @throws RetryAfterException
+     *
+     * @return \stdClass
      */
     private function retry(ClientHelper\ClientHelperInterface $request, $retry_attempt, Exception $exception, $timeout = 0)
     {
@@ -216,7 +214,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
             }
             if ($this->logger) {
                 $this->logger->error(sprintf(
-                    "Retry api request, attempt = %d, timeout = %d.",
+                    'Retry api request, attempt = %d, timeout = %d.',
                     $retry_attempt, $timeout
                 ));
             }

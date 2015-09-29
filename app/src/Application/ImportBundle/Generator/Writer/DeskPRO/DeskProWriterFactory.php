@@ -1,45 +1,45 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
-use Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\Search\EntityWatcher\EntityWatcher;
 use Application\ImportBundle\Generator\Writer\AbstractFactory;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\BlobAdapter;
 use Exception;
 
 /**
- * Generator deskpro writer factory
+ * Generator deskpro writer factory.
  *
  * Class DeskProWriterFactory
- * @package Application\ImportBundle\Generator\Writer\DeskPRO
  */
 class DeskProWriterFactory extends AbstractFactory
 {
@@ -147,7 +147,7 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\Mapper\BlobData())
             ->attach(new Importer\Mapper\EmailAccount($email_account_manager));
 
-        /** @var DeskproBlobStorage $blob_storage */
+        /* @var DeskproBlobStorage $blob_storage */
         if ($this->container instanceof DeskproContainer) {
             $blob_storage = $this->container->getBlobStorage();
             $blob_adapter = new BlobAdapter($blob_storage, new Importer\Mapper\BlobData());

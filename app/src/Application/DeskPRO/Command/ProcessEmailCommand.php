@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
@@ -86,7 +86,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
             $source = $this->getContainer()->getEm()->find('DeskPRO:EmailSource', $input->getOption('source'));
 
             if (!$source) {
-                $output->writeln("<error>Could not find source</error>");
+                $output->writeln('<error>Could not find source</error>');
 
                 return 1;
             }
@@ -103,7 +103,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
                 if (file_exists($input->getOption('file'))) {
                     $raw_source = file_get_contents($input->getOption('file'));
                 } else {
-                    $output->writeln("<error>File path does not exist: ".$input->getOption('file')."</error>");
+                    $output->writeln('<error>File path does not exist: '.$input->getOption('file').'</error>');
 
                     return 1;
                 }
@@ -116,7 +116,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
 
             $raw_source = trim($raw_source);
             if (!$raw_source) {
-                $output->writeln("<error>No email source file provided</error>");
+                $output->writeln('<error>No email source file provided</error>');
 
                 return 1;
             }
@@ -151,7 +151,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
             $source->object_type    = 'ticket';
 
             $t = microtime(true);
-            $output->writeln("<info>Saving blob...</info>");
+            $output->writeln('<info>Saving blob...</info>');
 
             $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
                 $raw_source,
@@ -168,7 +168,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
             App::getOrm()->persist($source);
             App::getOrm()->flush();
 
-            $output->writeln(sprintf("<info>Saved email source #".$source->getId()." (took %.5s)</info>", microtime(true) - $t));
+            $output->writeln(sprintf('<info>Saved email source #'.$source->getId().' (took %.5s)</info>', microtime(true) - $t));
         }
 
         #----------------------------------------
@@ -178,7 +178,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
         $account_id = $input->getOption('account');
 
         if (!$source->email_account && !$account_id) {
-            $output->writeln("<error>Could not find account for email. Specify an account using --account</error>");
+            $output->writeln('<error>Could not find account for email. Specify an account using --account</error>');
 
             $source->status     = 'error';
             $source->error_code = 'invalid_address';

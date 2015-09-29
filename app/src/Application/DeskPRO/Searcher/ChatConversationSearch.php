@@ -1,38 +1,37 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 
 class ChatConversationSearch extends SearcherAbstract
 {
@@ -138,11 +137,11 @@ class ChatConversationSearch extends SearcherAbstract
             $parts['where'][] = 'agent_id = '.$this->person['id'];
         }
 
-        $sql .= "WHERE chat_conversations.is_agent = 0 ";
+        $sql .= 'WHERE chat_conversations.is_agent = 0 ';
 
         if ($parts['wheres']) {
-            $sql .= " AND ";
-            $sql .= implode(" AND ", $parts['wheres']);
+            $sql .= ' AND ';
+            $sql .= implode(' AND ', $parts['wheres']);
         }
 
         if ($this->groupBy) {
@@ -229,17 +228,17 @@ class ChatConversationSearch extends SearcherAbstract
 
                     if ($unassigned) {
                         if ($op == self::OP_IS) {
-                            $wheres[] = "chat_conversations.agent_id IS NULL";
+                            $wheres[] = 'chat_conversations.agent_id IS NULL';
                         } else {
-                            $wheres[] = "chat_conversations.agent_id IS NOT NULL";
+                            $wheres[] = 'chat_conversations.agent_id IS NOT NULL';
                         }
                     } else {
                         if ($agent_ids) {
-                            $wheres[] = $this->_choiceMatch("chat_conversations.agent_id", $op, $agent_ids, true);
+                            $wheres[] = $this->_choiceMatch('chat_conversations.agent_id', $op, $agent_ids, true);
                         }
 
                         if ($not_id) {
-                            $wheres[] = "chat_conversations.agent_id != ".$not_id;
+                            $wheres[] = 'chat_conversations.agent_id != '.$not_id;
                         }
                     }
                     break;
@@ -308,7 +307,7 @@ class ChatConversationSearch extends SearcherAbstract
                     if (!$k) {
                         $choice = array(0, 300);
                     } else {
-                        $choice = array($times[$k-1] + 1, $choice);
+                        $choice = array($times[$k - 1] + 1, $choice);
                     }
 
                     $wheres[] = $this->_rangeMatch('chat_conversations.total_to_ended', self::OP_BETWEEN, $choice);

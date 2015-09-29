@@ -1,43 +1,40 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateLastAgentReply;
 
-use DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractDbalTicketFilterTermCompilerTest;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalTicketDateLastAgentReplyTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateLastAgentReply\TicketDateLastAgentReplyTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSubject\TicketSubjectTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractDbalTicketFilterTermCompilerTest;
 
 class DbalTicketDateLastAgentReplyTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 {
@@ -51,9 +48,9 @@ class DbalTicketDateLastAgentReplyTermCompilerTest extends AbstractDbalTicketFil
         $this->term_compiler = $this->get('term_engine.dbal_ticket_filters.compiler.ticket_date_last_agent_reply');
     }
 
-    function testSimpleCases()
+    public function testSimpleCases()
     {
-        $date = new \DateTime('now', new \DateTimeZone('Europe/London'));
+        $date  = new \DateTime('now', new \DateTimeZone('Europe/London'));
         $date2 = new \DateTime('+1 day', new \DateTimeZone('Europe/London'));
 
         $check1 = clone $date;
@@ -64,23 +61,23 @@ class DbalTicketDateLastAgentReplyTermCompilerTest extends AbstractDbalTicketFil
         $check2 = $check2->format('Y-m-d H:i:s');
 
         $ops = array(
-            TermInterface::OP_IS => 'ticket.date_last_agent_reply = :date',
-            TermInterface::OP_NOT => 'ticket.date_last_agent_reply != :date',
-            TermInterface::OP_GT => 'ticket.date_last_agent_reply > :date',
-            TermInterface::OP_LT => 'ticket.date_last_agent_reply < :date',
-            TermInterface::OP_GTE => 'ticket.date_last_agent_reply >= :date',
-            TermInterface::OP_LTE => 'ticket.date_last_agent_reply <= :date',
-            TermInterface::OP_RANGE => 'ticket.date_last_agent_reply BETWEEN :date AND :date2',
+            TermInterface::OP_IS        => 'ticket.date_last_agent_reply = :date',
+            TermInterface::OP_NOT       => 'ticket.date_last_agent_reply != :date',
+            TermInterface::OP_GT        => 'ticket.date_last_agent_reply > :date',
+            TermInterface::OP_LT        => 'ticket.date_last_agent_reply < :date',
+            TermInterface::OP_GTE       => 'ticket.date_last_agent_reply >= :date',
+            TermInterface::OP_LTE       => 'ticket.date_last_agent_reply <= :date',
+            TermInterface::OP_RANGE     => 'ticket.date_last_agent_reply BETWEEN :date AND :date2',
             TermInterface::OP_NOT_RANGE => 'ticket.date_last_agent_reply NOT BETWEEN :date AND :date2',
         );
 
         foreach ($ops as $op => $where) {
             if (TermInterface::OP_RANGE === $op || TermInterface::OP_NOT_RANGE === $op) {
-                $term = new TicketDateLastAgentReplyTerm(array('date' => $date, 'date2' => $date2), $op);
+                $term       = new TicketDateLastAgentReplyTerm(array('date' => $date, 'date2' => $date2), $op);
                 $query_part = $this->term_compiler->compile($term);
                 $this->assertParameters($query_part, array('date' => $check1, 'date2' => $check2));
             } else {
-                $term = new TicketDateLastAgentReplyTerm(array('date' => $date), $op);
+                $term       = new TicketDateLastAgentReplyTerm(array('date' => $date), $op);
                 $query_part = $this->term_compiler->compile($term);
                 $this->assertParameters($query_part, array('date' => $check1));
             }
@@ -90,7 +87,7 @@ class DbalTicketDateLastAgentReplyTermCompilerTest extends AbstractDbalTicketFil
         }
     }
 
-    function testSingleDateIntoRange()
+    public function testSingleDateIntoRange()
     {
         $date = new \DateTime('now', new \DateTimeZone('Europe/London'));
 
@@ -102,19 +99,18 @@ class DbalTicketDateLastAgentReplyTermCompilerTest extends AbstractDbalTicketFil
         $check2 = $check2->format('Y-m-d H:i:s');
 
         $ops = array(
-            TermInterface::OP_IS => 'ticket.date_last_agent_reply BETWEEN :date AND :date2',
-            TermInterface::OP_NOT => 'ticket.date_last_agent_reply NOT BETWEEN :date AND :date2',
-            TermInterface::OP_GT => 'ticket.date_last_agent_reply > :date',
-            TermInterface::OP_LT => 'ticket.date_last_agent_reply < :date',
-            TermInterface::OP_GTE => 'ticket.date_last_agent_reply >= :date',
-            TermInterface::OP_LTE => 'ticket.date_last_agent_reply <= :date',
-            TermInterface::OP_RANGE => 'ticket.date_last_agent_reply BETWEEN :date AND :date2',
+            TermInterface::OP_IS        => 'ticket.date_last_agent_reply BETWEEN :date AND :date2',
+            TermInterface::OP_NOT       => 'ticket.date_last_agent_reply NOT BETWEEN :date AND :date2',
+            TermInterface::OP_GT        => 'ticket.date_last_agent_reply > :date',
+            TermInterface::OP_LT        => 'ticket.date_last_agent_reply < :date',
+            TermInterface::OP_GTE       => 'ticket.date_last_agent_reply >= :date',
+            TermInterface::OP_LTE       => 'ticket.date_last_agent_reply <= :date',
+            TermInterface::OP_RANGE     => 'ticket.date_last_agent_reply BETWEEN :date AND :date2',
             TermInterface::OP_NOT_RANGE => 'ticket.date_last_agent_reply NOT BETWEEN :date AND :date2',
         );
 
         foreach ($ops as $op => $where) {
-
-            $term = new TicketDateLastAgentReplyTerm(array('date' => $date, 'ignore_time' => true), $op);
+            $term       = new TicketDateLastAgentReplyTerm(array('date' => $date, 'ignore_time' => true), $op);
             $query_part = $this->term_compiler->compile($term);
 
             if (in_array($op, array(TermInterface::OP_RANGE, TermInterface::OP_NOT_RANGE, TermInterface::OP_IS, TermInterface::OP_NOT))) {

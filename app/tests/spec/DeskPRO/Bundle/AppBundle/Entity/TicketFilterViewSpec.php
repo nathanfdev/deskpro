@@ -1,60 +1,57 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace spec\DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterView;
+use PhpSpec\ObjectBehavior;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\Entity\TicketFilterView
  */
 class TicketFilterViewSpec extends ObjectBehavior
 {
-    function it_starts_with_a_null_id()
+    public function it_starts_with_a_null_id()
     {
         $this->getId()->shouldBe(null);
     }
 
-    function it_defaults_to_list_type_so_it_always_has_a_type()
+    public function it_defaults_to_list_type_so_it_always_has_a_type()
     {
         $this->getType()->shouldBe(TicketFilterView::TYPE_LIST);
     }
 
-    function it_allows_change_type_to_valid_type()
+    public function it_allows_change_type_to_valid_type()
     {
         $this->setType(TicketFilterView::TYPE_TABLE);
 
@@ -63,7 +60,7 @@ class TicketFilterViewSpec extends ObjectBehavior
         $this->shouldThrow('\InvalidArgumentException')->during('setType', array('invalid'));
     }
 
-    function it_is_associated_with_a_filter(TicketFilter $filter)
+    public function it_is_associated_with_a_filter(TicketFilter $filter)
     {
         $this->getFilter()->shouldBe(null);
 
@@ -74,20 +71,20 @@ class TicketFilterViewSpec extends ObjectBehavior
         $filter->addFilterView($this)->shouldHaveBeenCalled();
     }
 
-    function it_is_shared_by_default()
+    public function it_is_shared_by_default()
     {
         $this->getAgent()->shouldBe(null);
         $this->isPrivate()->shouldBe(false);
     }
 
-    function it_can_be_private_to_an_agent_simply_by_setting_one(Person $person)
+    public function it_can_be_private_to_an_agent_simply_by_setting_one(Person $person)
     {
         $this->setAgent($person);
         $this->getAgent()->shouldBe($person);
         $this->isPrivate()->shouldBe(true);
     }
 
-    function it_has_fields()
+    public function it_has_fields()
     {
         $this->getFields()->shouldBe(array());
         $this->addField('id');
@@ -105,7 +102,7 @@ class TicketFilterViewSpec extends ObjectBehavior
         $this->getFields()->shouldBe(array('foo', 'bar'));
     }
 
-    function it_has_icon_fields()
+    public function it_has_icon_fields()
     {
         $this->getIconFields()->shouldBe(array());
         $this->addIconField('id');
@@ -123,7 +120,7 @@ class TicketFilterViewSpec extends ObjectBehavior
         $this->getIconFields()->shouldBe(array('foo', 'bar'));
     }
 
-    function it_has_options()
+    public function it_has_options()
     {
         $this->getOptions()->shouldBeLike(array());
 

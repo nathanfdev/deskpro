@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -44,7 +44,7 @@ class TicketMessage extends AbstractEntityRepository
             $ticket = App::getEntityRepository('DeskPRO:Ticket')->find($ticket);
         }
 
-        return $this->getEntityManager()->createQuery("
+        return $this->getEntityManager()->createQuery('
             SELECT m
             FROM DeskPRO:TicketMessage m
             LEFT JOIN m.person p
@@ -53,7 +53,7 @@ class TicketMessage extends AbstractEntityRepository
                 AND p.is_agent = 1
                 AND m.is_agent_note = 0
             ORDER BY m.id DESC
-        ")->setMaxResults(1)->setParameters(array(1 => $ticket))->getOneOrNullResult();
+        ')->setMaxResults(1)->setParameters(array(1 => $ticket))->getOneOrNullResult();
     }
 
     /**
@@ -69,7 +69,7 @@ class TicketMessage extends AbstractEntityRepository
             $ticket = App::getEntityRepository('DeskPRO:Ticket')->find($ticket);
         }
 
-        return $this->getEntityManager()->createQuery("
+        return $this->getEntityManager()->createQuery('
             SELECT m
             FROM DeskPRO:TicketMessage m
             LEFT JOIN m.person p
@@ -77,16 +77,17 @@ class TicketMessage extends AbstractEntityRepository
                 m.ticket = ?1
                 AND m.is_agent_note = 0
             ORDER BY m.id DESC
-        ")->setMaxResults(1)->setParameters(array(1 => $ticket))->getOneOrNullResult();
+        ')->setMaxResults(1)->setParameters(array(1 => $ticket))->getOneOrNullResult();
     }
 
     /**
      * Fetch the first message of a ticket.
      *
      *
-     * @param  int|Ticket        $ticket A ticket ID or the ID of a ticket
+     * @param int|Ticket $ticket A ticket ID or the ID of a ticket
+     *
      * @throws NoResultException If there is no message. This shouldn't happen
-     *                                  because a ticket should always have a message. So it's quite exceptional indeed!
+     *                           because a ticket should always have a message. So it's quite exceptional indeed!
      *
      * @return TicketMessage
      */
@@ -97,12 +98,12 @@ class TicketMessage extends AbstractEntityRepository
         }
 
         try {
-            $message = $this->getEntityManager()->createQuery("
+            $message = $this->getEntityManager()->createQuery('
                 SELECT m
                 FROM DeskPRO:TicketMessage m
                 WHERE m.ticket = ?1
                 ORDER BY m.id ASC
-            ")->setParameter(1, $ticket)->setMaxResults(1)->getSingleResult();
+            ')->setParameter(1, $ticket)->setMaxResults(1)->getSingleResult();
 
             return $message;
         } catch (\Doctrine\ORM\NoResultException $e) {
@@ -193,7 +194,7 @@ class TicketMessage extends AbstractEntityRepository
     {
         if (App::getConfig('debug.disable_dupe_check')) {
             if ($logger) {
-                $logger->logDebug("debug.disable_dupe_check is enabled");
+                $logger->logDebug('debug.disable_dupe_check is enabled');
             }
 
             return false;
@@ -201,7 +202,7 @@ class TicketMessage extends AbstractEntityRepository
 
         if (!App::getSetting('core_tickets.enable_dupe_checking')) {
             if ($logger) {
-                $logger->logDebug("core_tickets.enable_dupe_checking is disabled");
+                $logger->logDebug('core_tickets.enable_dupe_checking is disabled');
             }
 
             return false;
@@ -213,22 +214,22 @@ class TicketMessage extends AbstractEntityRepository
             if ($logger) {
                 $logger->logDebug("[EntityRepository:TicketMessage] Checking {$message['id']} for dupe in ticket {$ticket['id']} (-$secs_ago s) as person ".($message->person ? $message->person->id : 'none'));
             }
-            $check_matches = $this->_em->createQuery("
+            $check_matches = $this->_em->createQuery('
                 SELECT m
                 FROM DeskPRO:TicketMessage m
                 LEFT JOIN m.ticket t
                 WHERE m.message_hash = ?0 AND m.date_created > ?1 AND m.ticket = ?2
-            ")->setParameters(array($message['message_hash'], $timesnip, $ticket))->getResult();
+            ')->setParameters(array($message['message_hash'], $timesnip, $ticket))->getResult();
         } else {
             if ($logger) {
                 $logger->logDebug("[EntityRepository:TicketMessage] Checking {$message['id']} for dupes in any previous ticket (-$secs_ago s)");
             }
-            $check_matches = $this->_em->createQuery("
+            $check_matches = $this->_em->createQuery('
                 SELECT m
                 FROM DeskPRO:TicketMessage m
                 LEFT JOIN m.ticket AS t
                 WHERE m.message_hash = ?0 AND m.date_created > ?1 AND t.subject = ?2
-            ")->setParameters(array($message['message_hash'], $timesnip, $message->withNewSubject))->getResult();
+            ')->setParameters(array($message['message_hash'], $timesnip, $message->withNewSubject))->getResult();
         }
 
         $ids = array();
@@ -238,7 +239,7 @@ class TicketMessage extends AbstractEntityRepository
         $ids = implode(', ', $ids);
 
         if ($logger) {
-            $logger->logDebug("[EntityRepository:TicketMessage] Found ".count($check_matches)." possibles: $ids");
+            $logger->logDebug('[EntityRepository:TicketMessage] Found '.count($check_matches)." possibles: $ids");
         }
 
         if (!$check_matches || !count($check_matches)) {
@@ -246,16 +247,16 @@ class TicketMessage extends AbstractEntityRepository
         }
 
         foreach ($check_matches as $check) {
-            $prev_message = $this->_em->createQuery("
+            $prev_message = $this->_em->createQuery('
                 SELECT m
                 FROM DeskPRO:TicketMessage m
                 LEFT JOIN m.person p
                 WHERE m.ticket = ?0 AND m.id < ?1
                 ORDER BY m.id DESC
-            ")->setMaxResults(1)->setParameters(array($check->ticket->getId(), $check->getId()))->getOneOrNullResult();
+            ')->setMaxResults(1)->setParameters(array($check->ticket->getId(), $check->getId()))->getOneOrNullResult();
 
             if ($logger) {
-                $logger->logDebug("[EntityRepository:TicketMessage] Prev message is: ".($prev_message ? $prev_message->id : "none"));
+                $logger->logDebug('[EntityRepository:TicketMessage] Prev message is: '.($prev_message ? $prev_message->id : 'none'));
             }
 
             // There is no previous message, so it is a dupe
@@ -268,7 +269,7 @@ class TicketMessage extends AbstractEntityRepository
             }
 
             if ($logger) {
-                $logger->logDebug("[EntityRepository:TicketMessage] Prev message person is: ".($prev_message->person ? $prev_message->person->id : "none"));
+                $logger->logDebug('[EntityRepository:TicketMessage] Prev message person is: '.($prev_message->person ? $prev_message->person->id : 'none'));
             }
 
             // The previous message is also by us, so it is a dupe

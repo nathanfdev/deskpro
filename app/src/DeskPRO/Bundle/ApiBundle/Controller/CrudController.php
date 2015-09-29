@@ -1,52 +1,50 @@
 <?php
-/**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
- * | a British company located in London, England.                            |
- * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
- * |                                                                          |
- * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
- * |                                                                          |
- * | By using this software, you acknowledge having read the license          |
- * | and agree to be bound thereby.                                           |
- * |                                                                          |
- * | Please note that DeskPRO is not free software. We release the full       |
- * | source code for our software because we trust our users to pay us for    |
- * | the huge investment in time and energy that has gone into both creating  |
- * | this software and supporting our customers. By providing the source code |
- * | we preserve our customers' ability to modify, audit and learn from our   |
- * | work. We have been developing DeskPRO since 2001, please help us make it |
- * | another decade.                                                          |
- * |                                                                          |
- * | Like the work you see? Think you could make it better? We are always     |
- * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
- * |                                                                          |
- * | ~ Thanks, Everyone at Team DeskPRO                                       |
- * \**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
+use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
-use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Pagerfanta\Pagerfanta;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
-use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
+use Pagerfanta\Pagerfanta;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class CrudController
+ * Class CrudController.
  *
  * Base REST CRUD controller
  *
@@ -58,10 +56,10 @@ use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
  */
 class CrudController extends BaseController
 {
-    static $entity;
-    static $type;
-    static $listSort = 'id';
-    static $listOrder = 'desc';
+    public static $entity;
+    public static $type;
+    public static $listSort  = 'id';
+    public static $listOrder = 'desc';
 
     /**
      * @ApiDoc(
@@ -102,9 +100,9 @@ class CrudController extends BaseController
         $qb
             ->select('e')
             ->from(static::$entity, 'e')
-            ->orderBy('e.' . static::$listSort, static::$listOrder);
+            ->orderBy('e.'.static::$listSort, static::$listOrder);
 
-        $page = $request->query->get('page', 1);
+        $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
         $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
@@ -122,7 +120,7 @@ class CrudController extends BaseController
      */
     public function postAction(Request $request)
     {
-        return $this->handleForm(new static::$entity, $request);
+        return $this->handleForm(new static::$entity(), $request);
     }
 
     /**
@@ -148,9 +146,11 @@ class CrudController extends BaseController
     }
 
     /**
-     * @throws InvalidFormException
-     * @param object $model
+     * @param object  $model
      * @param Request $request
+     *
+     * @throws InvalidFormException
+     *
      * @return View
      */
     private function handleForm($model, Request $request)
@@ -158,7 +158,7 @@ class CrudController extends BaseController
         $status = $model->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
         /** @var \Symfony\Component\Form\Form $form */
-        $form = $this->createForm(new static::$type, $model);
+        $form = $this->createForm(new static::$type(), $model);
 
         $decoded = json_decode(
             $request->getContent(),

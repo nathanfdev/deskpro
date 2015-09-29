@@ -1,47 +1,44 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\Doctrine;
 
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTypeMap;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\DeferredPropertyInterface;
-use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
-use DeskPRO\Component\DoctrineAssociation\Deferred\DeferredIdentity;
-use Doctrine\Common\Collections\Collection;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\PropertyTransformationContext;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\PropertyTransformerInterface;
+use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use DeskPRO\Component\DoctrineAssociation\DoctrineAssociationManager;
+use Doctrine\Common\Collections\Collection;
 
 class DoctrinePropertyTransformer implements PropertyTransformerInterface
 {
@@ -58,21 +55,21 @@ class DoctrinePropertyTransformer implements PropertyTransformerInterface
     public function __construct(DoctrineAssociationManager $assoc_manager, DataTypeMap $type_map)
     {
         $this->assoc_manager = $assoc_manager;
-        $this->type_map = $type_map;
+        $this->type_map      = $type_map;
     }
 
     public function transform(PropertyTransformationContext $property_context)
     {
-        $val = $property_context->getValue();
-        $data = $property_context->getData();
-        $property_name = $property_context->getPropertyName();
+        $val                = $property_context->getValue();
+        $data               = $property_context->getData();
+        $property_name      = $property_context->getPropertyName();
         $serializer_context = $property_context->getSerializerContext();
 
         $new_val = null;
         if ($val instanceof DomainObject || $val instanceof NotifyPropertyChangeEntity) {
-            $type = $this->getType($data, $property_name);
+            $type              = $this->getType($data, $property_name);
             $doctrine_deferred = $this->assoc_manager->deferAssociationIds($data, $property_name);
-            $new_val = new DoctrineDeferredProperty($doctrine_deferred, $type);
+            $new_val           = new DoctrineDeferredProperty($doctrine_deferred, $type);
             if ($serializer_context->isTypeIncluded($type)) {
                 $serializer_context->getSideloads()->addDeferred(
                     $type,
@@ -82,9 +79,9 @@ class DoctrinePropertyTransformer implements PropertyTransformerInterface
         } elseif ($val === null || $val instanceof Collection || is_array($val) || $val instanceof \Traversable) {
             if ($this->assoc_manager->isAssociation($data, $property_name)) {
                 // this is an association, we don't want to worry about getting these IDs yet
-                $type = $this->getType($data, $property_name);
+                $type              = $this->getType($data, $property_name);
                 $doctrine_deferred = $this->assoc_manager->deferAssociationIds($data, $property_name);
-                $new_val = new DoctrineDeferredProperty($doctrine_deferred, $type);
+                $new_val           = new DoctrineDeferredProperty($doctrine_deferred, $type);
                 if ($serializer_context->isTypeIncluded($type)) {
                     $serializer_context->getSideloads()->addDeferred(
                         $type,
@@ -112,6 +109,7 @@ class DoctrinePropertyTransformer implements PropertyTransformerInterface
 
     /**
      * @param DeferredPropertyInterface $deferred_property
+     *
      * @return bool true if supports this deferred property, false otherwise
      */
     public function supportsDeferredProperty(DeferredPropertyInterface $deferred_property)
@@ -122,6 +120,7 @@ class DoctrinePropertyTransformer implements PropertyTransformerInterface
 
     /**
      * @param DeferredPropertyInterface $deferred_property
+     *
      * @return mixed
      */
     public function resolveDeferredProperty(DeferredPropertyInterface $deferred_property)
@@ -129,7 +128,7 @@ class DoctrinePropertyTransformer implements PropertyTransformerInterface
         if ($deferred_property instanceof DoctrineDeferredProperty) {
             return $deferred_property->resolveProperty();
         }
-        /** @var DoctrineDeferredInclude $deferred_property */
+        /* @var DoctrineDeferredInclude $deferred_property */
         return $deferred_property->resolveInclude();
     }
 }

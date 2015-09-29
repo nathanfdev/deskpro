@@ -1,36 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  *
  * @category TaskQueueJob
  */
-
 namespace Application\DeskPRO\TaskQueueJob;
 
 use Application\DeskPRO\App;
@@ -67,9 +67,9 @@ class CsvExport extends AbstractJob
         $em = App::getOrm();
         $em->getConnection()->getConfiguration()->setSQLLogger(null);
         $start_time = microtime(true);
-        $file = $this->_data['file'];
-        $delimeter = ',';
-        $enclosure = '"';
+        $file       = $this->_data['file'];
+        $delimeter  = ',';
+        $enclosure  = '"';
 
         if (!$file) {
             if (!is_dir(dp_get_tmp_dir().'/export')) {
@@ -139,13 +139,13 @@ class CsvExport extends AbstractJob
 
                 foreach ($row as &$col) {
                     if ('' === $col || null === $col) {
-                        $col = " ";
+                        $col = ' ';
                     }
                 }
 
                 fputcsv($fp, $row, $delimeter, $enclosure);
 
-                $this->_data['offset']++;
+                ++$this->_data['offset'];
                 $em->detach($person);
                 $person->clear();
                 unset($person);
@@ -164,11 +164,9 @@ class CsvExport extends AbstractJob
         $task['task_data']  = array_merge($task['task_data'], $this->_data);
 
         if (!$batch) {
-
             $this->getLogger()->logDebug(sprintf('File: %s', $file));
 
             if (defined('DPC_IS_CLOUD')) {
-
                 $fname = basename($file);
 
                 $this->getLogger()->logDebug("Zipping: zip -j $fname.zip $fname");
@@ -178,9 +176,9 @@ class CsvExport extends AbstractJob
                 $proc->run();
 
                 if ($proc->isSuccessful()) {
-                    $this->getLogger()->logDebug("Zip success");
+                    $this->getLogger()->logDebug('Zip success');
                     $blob = App::$container->getBlobStorage()->createBlobRecordFromFile(
-                        $file . '.zip',
+                        $file.'.zip',
                         'export.csv.zip',
                         'text/csv'
                     );
@@ -190,10 +188,10 @@ class CsvExport extends AbstractJob
                         '+28 hours'
                     );
                 } else {
-                    $out = $proc->getOutput() . "\n\n" . $proc->getErrorOutput();
-                    $this->getLogger()->logDebug("Zip failed: " . $out);
+                    $out = $proc->getOutput()."\n\n".$proc->getErrorOutput();
+                    $this->getLogger()->logDebug('Zip failed: '.$out);
                     $blob = App::$container->getBlobStorage()->createBlobRecordFromString(
-                        "There was a problem generating the export. Output:\n\n" . $out,
+                        "There was a problem generating the export. Output:\n\n".$out,
                         'error.txt',
                         'text/plain'
                     );
@@ -204,7 +202,7 @@ class CsvExport extends AbstractJob
                     );
                 }
             } else {
-            $data = TmpData::create(
+                $data = TmpData::create(
                 'csv_export.file',
                 array('file' => $file, 'count' => $this->_data['offset']),
                     '+28 hours'
@@ -222,8 +220,8 @@ class CsvExport extends AbstractJob
 
     /**
      * @throws \Doctrine\DBAL\DBALException
-     * @return mixed
      *
+     * @return mixed
      */
     protected function getContactDataHeaders()
     {
@@ -242,7 +240,7 @@ class CsvExport extends AbstractJob
                 continue;
             }
 
-            for ($i = 1; $i <= (int) $res; $i++) {
+            for ($i = 1; $i <= (int) $res; ++$i) {
                 $this->_data['contact_headers'][] = $type;
             }
         }

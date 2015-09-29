@@ -1,61 +1,59 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DpTest\Bundle\AppBundle\DataService\Content\ContentCount;
 
-use Prophecy\Argument;
-use DpTest\DeskProTestCase;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ContentCountCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ContentSelectCriteria;
+use DpTest\DeskProTestCase;
+use Prophecy\Argument;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class ContentCountCriteriaTest
+ * Class ContentCountCriteriaTest.
  */
 class ContentCountCriteriaTest extends DeskProTestCase
 {
-    static $dummyProperParams = [
+    public static $dummyProperParams = [
         'status'         => 'published',
         'author'         => 1,
         'category'       => 1,
         'period_created' => 'this_month',
-        'group_by'       => 'period_updated'
+        'group_by'       => 'period_updated',
     ];
 
     /**
      * @test
      */
-    function it_should_be_constructable_with_empty_params()
+    public function it_should_be_constructable_with_empty_params()
     {
         $this->assertInstanceOf(ContentCountCriteria::class, $this->instance([]));
     }
@@ -63,7 +61,7 @@ class ContentCountCriteriaTest extends DeskProTestCase
     /**
      * @test
      */
-    function it_should_be_constructable_with_only_group_by()
+    public function it_should_be_constructable_with_only_group_by()
     {
         $this->assertInstanceOf(ContentCountCriteria::class, $this->instance(['group_by' => 'author']));
     }
@@ -71,7 +69,7 @@ class ContentCountCriteriaTest extends DeskProTestCase
     /**
      * @test
      */
-    function it_should_be_constructable_with_proper_parameters()
+    public function it_should_be_constructable_with_proper_parameters()
     {
         $this->assertInstanceOf(ContentCountCriteria::class, $this->instance(self::$dummyProperParams));
     }
@@ -79,7 +77,7 @@ class ContentCountCriteriaTest extends DeskProTestCase
     /**
      * @test
      */
-    function it_should_extend_ContentSelectCriteria()
+    public function it_should_extend_ContentSelectCriteria()
     {
         $this->assertInstanceOf(ContentSelectCriteria::class, $this->instance([]));
     }
@@ -87,12 +85,12 @@ class ContentCountCriteriaTest extends DeskProTestCase
     /**
      * @test
      */
-    function it_should_inherit_all_OptionsResolver_configurations_from_ContentCountCriteria_except_group_by_option()
+    public function it_should_inherit_all_OptionsResolver_configurations_from_ContentCountCriteria_except_group_by_option()
     {
         $data = [new \Application\DeskPRO\Entity\Person()];
         ContentCountCriteria::fromParameters([], $countOptionsResolver = new OptionsResolver(), $data);
         ContentSelectCriteria::fromParameters([], $selectOptionsResolver = new OptionsResolver(), $data);
-        $countOptions = $countOptionsResolver->getDefinedOptions();
+        $countOptions  = $countOptionsResolver->getDefinedOptions();
         $selectOptions = $selectOptionsResolver->getDefinedOptions();
 
         $this->assertEquals(
@@ -104,7 +102,7 @@ class ContentCountCriteriaTest extends DeskProTestCase
     /**
      * @test
      */
-    function it_should_apply_given_group_by_to_the_passed_QueryBuilder()
+    public function it_should_apply_given_group_by_to_the_passed_QueryBuilder()
     {
         $qb = $this->mockQueryBuilder();
         $qb->groupBy(Argument::any())->shouldBeCalled();
@@ -114,7 +112,7 @@ class ContentCountCriteriaTest extends DeskProTestCase
     /**
      * @test
      */
-    function it_should_apply_given_parameters_to_the_passed_QueryBuilder()
+    public function it_should_apply_given_parameters_to_the_passed_QueryBuilder()
     {
         $qb = $this->mockQueryBuilder();
 
@@ -131,6 +129,7 @@ class ContentCountCriteriaTest extends DeskProTestCase
 
     /**
      * @param array $parameters
+     *
      * @return ContentCountCriteria
      */
     private function instance(array $parameters)

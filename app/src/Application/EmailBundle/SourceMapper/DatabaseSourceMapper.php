@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\EmailBundle\SourceMapper;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
@@ -83,7 +83,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
      */
     public function getSource($source_id)
     {
-        return $this->db->fetchAssoc("SELECT * FROM sendmail_sources WHERE id = ?", array($source_id));
+        return $this->db->fetchAssoc('SELECT * FROM sendmail_sources WHERE id = ?', array($source_id));
     }
 
     /**
@@ -100,14 +100,14 @@ class DatabaseSourceMapper implements SourceMapperInterface
     /**
      * @param \Swift_Mime_Message $message
      * @param $status
-     * @param \DateTime           $queue_date
+     * @param \DateTime $queue_date
      *
      * @return array
      */
     public function createSourceForMessage(\Swift_Mime_Message $message, $status, \DateTime $queue_date = null)
     {
-        $header_to_raw  = $message->getTo();
-        $header_to      = array();
+        $header_to_raw = $message->getTo();
+        $header_to     = array();
 
         $header_cc_raw  = $message->getCc();
         $header_bcc_raw = $message->getBcc();
@@ -239,8 +239,8 @@ class DatabaseSourceMapper implements SourceMapperInterface
             'date_status'      => $date,
             'date_created'     => $date,
             'exec_count'       => $exec_count,
-	        'num_targets'       => count($tos) + count($ccs) + count($bccs),
-	        'num_pending'      => count($tos) + count($ccs) + count($bccs),
+            'num_targets'      => count($tos) + count($ccs) + count($bccs),
+            'num_pending'      => count($tos) + count($ccs) + count($bccs),
         );
 
         if ($message instanceof MessageOptionsInterface && ($opts = $message->getMessageOptions()->all())) {
@@ -426,11 +426,11 @@ class DatabaseSourceMapper implements SourceMapperInterface
             return false;
         }
 
-        $exist_log    = "";
+        $exist_log    = '';
         $old_log_blob = null;
         if (isset($source['log_blob_id'])) {
             try {
-                $old_log_blob = $this->db->fetchAssoc("SELECT * FROM blobs WHERE id = ?", array($source['log_blob_id']));
+                $old_log_blob = $this->db->fetchAssoc('SELECT * FROM blobs WHERE id = ?', array($source['log_blob_id']));
                 $exist_log    = $this->bs->copyBlobRowToString($old_log_blob);
             } catch (\Exception $e) {
             }
@@ -486,13 +486,13 @@ class DatabaseSourceMapper implements SourceMapperInterface
             'date_status'       => true,
             'date_sent'         => true,
             'date_next_attempt' => true,
-            'error_code' => true,
-            'date_created' => true,
-            'exec_count' => true,
-	        'num_targets' => true,
-	        'num_pending' => true,
-	        'num_error' => true,
-	        'num_complete' => true,
+            'error_code'        => true,
+            'date_created'      => true,
+            'exec_count'        => true,
+            'num_targets'       => true,
+            'num_pending'       => true,
+            'num_error'         => true,
+            'num_complete'      => true,
         );
 
         static $always_save = array(

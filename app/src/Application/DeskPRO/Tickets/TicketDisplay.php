@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -172,26 +172,30 @@ class TicketDisplay implements PersonContextInterface
 
     public function getMessageCount()
     {
-        if ($this->message_count !== null) return $this->message_count;
+        if ($this->message_count !== null) {
+            return $this->message_count;
+        }
 
-        $this->message_count = (int)App::getDb()->fetchColumn("SELECT COUNT(*) FROM tickets_messages WHERE ticket_id = ?", array($this->ticket->id));
+        $this->message_count = (int) App::getDb()->fetchColumn('SELECT COUNT(*) FROM tickets_messages WHERE ticket_id = ?', array($this->ticket->id));
 
         return $this->message_count;
     }
 
     public function getFirstMessage()
     {
-        if ($this->first_message !== null) return $this->first_message ?: null;
+        if ($this->first_message !== null) {
+            return $this->first_message ?: null;
+        }
 
         if ($this->messages && count($this->messages) == $this->message_count) {
             $this->first_message = Arrays::getLastItem($this->messages);
         } else {
-            $this->first_message = App::getOrm()->createQuery("
+            $this->first_message = App::getOrm()->createQuery('
                 SELECT m
                 FROM TicketMessage m
                 WHERE m.ticket = ?0
                 ORDER BY m.id DESC
-            ")->setMaxResults(1)->setParameters(array($this->ticket))->getOneOrNullResult();
+            ')->setMaxResults(1)->setParameters(array($this->ticket))->getOneOrNullResult();
         }
 
         if (!$this->first_message) {
@@ -263,11 +267,11 @@ class TicketDisplay implements PersonContextInterface
             return $this->user_ratings;
         }
 
-        $this->user_ratings = App::getDb()->fetchAllKeyValue("
+        $this->user_ratings = App::getDb()->fetchAllKeyValue('
             SELECT message_id, rating
             FROM ticket_feedback
             WHERE ticket_id = ? AND person_id = ?
-        ", array($this->ticket->getId(), $this->person_context->getId()));
+        ', array($this->ticket->getId(), $this->person_context->getId()));
 
         return $this->user_ratings;
     }
