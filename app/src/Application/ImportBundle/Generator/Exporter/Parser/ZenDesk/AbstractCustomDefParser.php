@@ -107,11 +107,18 @@ abstract class AbstractCustomDefParser extends AbstractParser
     {
         switch ($formatted['type']) {
             case ZenDeskReaderInterface::FIELD_TYPE_REGEXP:
+                $regex = $formatted['regexp_for_validation'];
+
+                // No delims
+                if ($regex && $regex[0] != substr($regex, -1, 1)) {
+                    $regex = '/' . $regex . '/';
+                }
+
                 $options = array_merge($options, array(
                     'validation_type'       => 'regex',
-                    'regex'                 => $formatted['regexp_for_validation'],
+                    'regex'                 => $regex,
                     'agent_validation_type' => 'regex',
-                    'agent_regex'           => $formatted['regexp_for_validation'],
+                    'agent_regex'           => $regex,
                 ));
 
                 break;
