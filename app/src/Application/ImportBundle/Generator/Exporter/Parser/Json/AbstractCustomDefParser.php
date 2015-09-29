@@ -28,53 +28,81 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
-use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 
 /**
- * Class ArticleCustomDef
+ * Class AbstractCustomDefParser
  * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
-final class ArticleCustomDef extends AbstractCustomDefParser
+abstract class AbstractCustomDefParser extends AbstractParser
 {
     /**
-     * {@inheritdoc}
+     * Returns a collection of custom def choices
+     *
+     * @param array $children
+     * @return Entity\Collection
      */
-    public function getEntityType()
-    {
-        return Entity\EntityInterface::TYPE_ARTICLE_CUSTOM_DEF;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCount()
-    {
-        return $this->reader->getDirectoryFilesCount(JsonReaderInterface::ENTITY_ARTICLE_CUSTOM_DEF_PATH, $this->getBatchNum());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function export()
+    protected function exportChildren(array $children)
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->reader->getData(JsonReaderInterface::ENTITY_ARTICLE_CUSTOM_DEF_PATH, $this->getBatchNum()))
-            ->setPrefix('JSONArticleCustomDef')
+            ->setData($children)
+            ->setPrefix('JSONCustomDef')
             ->setRefColumn('oid')
             ->setMethod('exportCustomDef')
-            ->setAdvanceProgressbar(true)
         ;
 
         return $this->exportCollection($config);
     }
 
     /**
-     * {@inheritdoc}
+     * Returns custom def entity
+     *
+     * @param array $data
+     * @return Entity\AbstractCustomDef
      */
-    protected function getDefaultCustomDefEntity()
+    protected function exportCustomDef(array $data)
     {
-        return new Entity\ArticleCustomDef();
+        $entity    = new Entity\ArticleCustomDef();
+        $formatted = $this->formatter->format($data, array(
+            'oid'           => TransformerInterface::TYPE_STRING,
+            'destination'   => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => $entity->getDestinationPrefix(),
+                'ref'    => 'oid',
+            )),
+            'title'         => TransformerInterface::TYPE_STRING,
+            'description'   => TransformerInterface::TYPE_STRING,
+            'handler_class' => TransformerInterface::TYPE_STRING,
+            'is_enabled'    => TransformerInterface::TYPE_BOOLEAN,
+            'options'       => TransformerInterface::TYPE_ARRAY,
+            'children'      => TransformerInterface::TYPE_ARRAY,
+        ));
+
+        $entity
+            ->setRawData($data)
+            ->setOid($formatted['oid'])
+            ->setDestination($formatted['destination'])
+            ->setTitle($formatted['title'])
+            ->setDescription($formatted['description'])
+            ->setHandlerClass($formatted['handler_class'])
+            ->setAsEnabled($formatted['is_enabled'])
+            ->setOptions($formatted['options'])
+        ;
+
+        $children = $this->exportChildren($formatted['children']);
+        foreach ($children as $child) {
+            $entity->addCustomDef($child);
+        }
+
+        return $entity;
     }
+
+    /**
+     * Returns empty custom def entity
+     *
+     * @return Entity\AbstractCustomDef
+     */
+    protected abstract function getDefaultCustomDefEntity();
 }

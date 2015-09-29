@@ -28,8 +28,6 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 
@@ -39,7 +37,7 @@ use Application\ImportBundle\Reader\Json\JsonReaderInterface;
  * Class TicketCustomDef
  * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
-final class TicketCustomDef extends AbstractParser
+final class TicketCustomDef extends AbstractCustomDefParser
 {
     /**
      * {@inheritdoc}
@@ -75,37 +73,10 @@ final class TicketCustomDef extends AbstractParser
     }
 
     /**
-     * @param array $data
-     * @return Entity\TicketCustomDef
+     * {@inheritdoc}
      */
-    protected function exportCustomDef(array $data)
+    protected function getDefaultCustomDefEntity()
     {
-        $formatted = $this->formatter->format($data, array(
-            'oid'           => TransformerInterface::TYPE_STRING,
-            'destination'   => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'ticket_custom_def_',
-                'ref'    => 'oid',
-            )),
-            'parent_id'     => TransformerInterface::TYPE_STRING,
-            'title'         => TransformerInterface::TYPE_STRING,
-            'description'   => TransformerInterface::TYPE_STRING,
-            'handler_class' => TransformerInterface::TYPE_STRING,
-            'is_enabled'    => TransformerInterface::TYPE_BOOLEAN,
-            'options'       => TransformerInterface::TYPE_ARRAY,
-        ));
-
-        $entity = new Entity\TicketCustomDef();
-        $entity
-            ->setRawData($data)
-            ->setOid($formatted['oid'])
-            ->setDestination($formatted['destination'])
-            ->setTitle($formatted['title'])
-            ->setDescription($formatted['description'])
-            ->setHandlerClass($formatted['handler_class'])
-            ->setAsEnabled($formatted['is_enabled'])
-            ->setOptions($formatted['options'])
-        ;
-
-        return $entity;
+        return new Entity\TicketCustomDef();
     }
 }

@@ -28,7 +28,6 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
 use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Reader\Json\JsonReaderInterface;
@@ -37,7 +36,7 @@ use Application\ImportBundle\Reader\Json\JsonReaderInterface;
  * Class FeedbackCustomDef
  * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
-final class FeedbackCustomDef extends AbstractParser
+final class FeedbackCustomDef extends AbstractCustomDefParser
 {
     /**
      * {@inheritdoc}
@@ -73,39 +72,25 @@ final class FeedbackCustomDef extends AbstractParser
     }
 
     /**
-     * @param array $data
-     * @return Entity\TicketCustomDef
+     * {@inheritdoc}
      */
     protected function exportCustomDef(array $data)
     {
+        /** @var Entity\FeedbackCustomDef $entity */
+        $entity    = parent::exportCustomDef($data);
         $formatted = $this->formatter->format($data, array(
-            'oid'           => TransformerInterface::TYPE_STRING,
-            'destination'   => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => 'feedback_custom_def_',
-                'ref'    => 'oid',
-            )),
-            'sys_name'      => TransformerInterface::TYPE_STRING,
-            'parent_id'     => TransformerInterface::TYPE_STRING,
-            'title'         => TransformerInterface::TYPE_STRING,
-            'description'   => TransformerInterface::TYPE_STRING,
-            'handler_class' => TransformerInterface::TYPE_STRING,
-            'is_enabled'    => TransformerInterface::TYPE_BOOLEAN,
-            'options'       => TransformerInterface::TYPE_ARRAY,
+            'sys_name' => TransformerInterface::TYPE_STRING,
         ));
 
-        $entity = new Entity\FeedbackCustomDef();
-        $entity
-            ->setRawData($data)
-            ->setOid($formatted['oid'])
-            ->setDestination($formatted['destination'])
-            ->setSysName($formatted['sys_name'])
-            ->setTitle($formatted['title'])
-            ->setDescription($formatted['description'])
-            ->setHandlerClass($formatted['handler_class'])
-            ->setAsEnabled($formatted['is_enabled'])
-            ->setOptions($formatted['options'])
-        ;
-
+        $entity->setSysName($formatted['sys_name']);
         return $entity;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultCustomDefEntity()
+    {
+        return new Entity\FeedbackCustomDef();
     }
 }
