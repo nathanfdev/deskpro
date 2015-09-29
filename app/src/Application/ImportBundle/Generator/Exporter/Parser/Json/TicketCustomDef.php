@@ -100,7 +100,7 @@ final class TicketCustomDef extends AbstractParser
             ->setOid($formatted['oid'])
             ->setDestination($formatted['destination'])
             ->setTitle($formatted['title'])
-            ->setDestination($formatted['description'])
+            ->setDescription($formatted['description'])
             ->setHandlerClass($formatted['handler_class'])
             ->setAsEnabled($formatted['is_enabled'])
             ->setOptions($formatted['options'])

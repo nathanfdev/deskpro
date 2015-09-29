@@ -100,7 +100,7 @@ final class FeedbackCustomDef extends AbstractParser
             ->setDestination($formatted['destination'])
             ->setSysName($formatted['sys_name'])
             ->setTitle($formatted['title'])
-            ->setDestination($formatted['description'])
+            ->setDescription($formatted['description'])
             ->setHandlerClass($formatted['handler_class'])
             ->setAsEnabled($formatted['is_enabled'])
             ->setOptions($formatted['options'])
