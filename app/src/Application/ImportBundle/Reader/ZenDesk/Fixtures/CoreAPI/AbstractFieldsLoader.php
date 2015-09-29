@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI;
 
@@ -31,8 +32,7 @@ use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixtureLoader;
 use DateTime;
 
 /**
- * Class AbstractFieldsLoader
- * @package Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI
+ * Class AbstractFieldsLoader.
  */
 abstract class AbstractFieldsLoader extends AbstractFixtureLoader
 {
@@ -49,14 +49,14 @@ abstract class AbstractFieldsLoader extends AbstractFixtureLoader
         if (null === $this->fields) {
             $this->load();
         }
-        if (empty($this->fields))  {
+        if (empty($this->fields)) {
             throw new \RuntimeException('No fields');
         }
 
         $fields = $this->fields;
         $random = array();
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 5; ++$i) {
             if (empty($fields)) {
                 break;
             }
@@ -68,9 +68,10 @@ abstract class AbstractFieldsLoader extends AbstractFixtureLoader
     }
 
     /**
-     * Returns random value by field type
+     * Returns random value by field type.
      *
      * @param array $field
+     *
      * @return mixed
      */
     protected function getRandomFieldValue(array $field)
@@ -87,7 +88,7 @@ abstract class AbstractFieldsLoader extends AbstractFixtureLoader
 
             case 'dropdown':
                 $options = $field['custom_field_options'];
-                if ( ! empty($options)) {
+                if (!empty($options)) {
                     return $options[rand(0, count($options) - 1)]['value'];
                 }
 
@@ -106,6 +107,6 @@ abstract class AbstractFieldsLoader extends AbstractFixtureLoader
                 return 'some text';
         }
 
-        return null;
+        return;
     }
 }
