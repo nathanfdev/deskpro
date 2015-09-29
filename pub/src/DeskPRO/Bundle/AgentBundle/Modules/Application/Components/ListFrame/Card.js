@@ -68,7 +68,7 @@ export class CardLineItem extends Component {
   render() {
 
     const {icon} = this.props;
-    if(icon){
+    if (icon) {
       var classes = classNames('fa', icon);
     }
     return (
@@ -82,9 +82,12 @@ export class CardLineItem extends Component {
 export class CardCheckbox extends Component {
 
   render() {
+    const { massAction } = this.props;
+    var classes = classNames('fa', {'fa-check': massAction});
+
     return (
       <div className="dpm--card-checkbox">
-        {/** @ToDo toggle func <i className="fa fa-check"></i> */}
+        <i className={classes}></i>
       </div>
     );
   }
@@ -124,8 +127,8 @@ export class CardDate extends Component {
 
   render() {
     const {label, date} = this.props;
-    let dateObj = new Date(date);
-    let options = {
+    let dateObj       = new Date(date);
+    let options       = {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -137,7 +140,7 @@ export class CardDate extends Component {
     let formattedDate = dateObj.toLocaleString("en-US", options);
     return (
       <span>
-        {label ? label+': ' : ''} {formattedDate}
+        {label ? label + ': ' : ''} {formattedDate}
       </span>
     );
   }

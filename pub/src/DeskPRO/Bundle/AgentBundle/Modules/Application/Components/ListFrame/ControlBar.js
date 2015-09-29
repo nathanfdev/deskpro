@@ -8,7 +8,6 @@ export class ControlBar extends Component {
       <div className="control-bar">
         <div className="ticket-controls-bulk-editing">
           <div className="dpwd-navigation-dropdown-top-row">
-            <MassActionCheckbox count={this.props.count}/>
             {this.props.children}
           </div>
         </div>
@@ -64,32 +63,20 @@ export class ControlButton extends Component {
 
 export class MassActionCheckbox extends Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      isChecked: false
-    };
-  }
-
-  handleClick = (e) => {
-    e.preventDefault();
-    this.setState({
-      isChecked: !this.state.isChecked
-    });
-  };
-
   render() {
-    var divClasses      = classNames('dpwd-navigation-top-row-mass-action-checkbox', {'active': this.state.isChecked === true});
-    var checkboxClasses = classNames('fa', {'fa-check': this.state.isChecked === true});
+    const {count, massAction, onClick} = this.props;
+
+    var divClasses      = classNames('dpwd-navigation-top-row-mass-action-checkbox', {'active': massAction === true});
+    var checkboxClasses = classNames('fa', {'fa-check': massAction === true});
 
     return (
       <div className="dpwd-navigation-top-row-mass-action-checkbox-container">
-        <div className={divClasses} onClick={this.handleClick}>
+        <div className={divClasses} onClick={onClick}>
           <i className={checkboxClasses}></i>
         </div>
 
         <div className="dpwd-navigation-top-row-mass-action-checkbox-count">
-          <span>{this.props.count}</span>
+          <span>{count}</span>
         </div>
       </div>
     );
