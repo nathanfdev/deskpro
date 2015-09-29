@@ -1124,6 +1124,8 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->assertEquals(Entity\CustomDefAbstract::HANDLER_CLASS_TEXT, $custom_def->getHandlerClass());
         $this->assertEquals('regex', $custom_def->getOption('validation_type'));
         $this->assertEquals('regex', $custom_def->getOption('agent_validation_type'));
+        $this->assertEquals('/^[-+]?\d+$/', $custom_def->getOption('regex'));
+        $this->assertEquals('/^[-+]?\d+$/', $custom_def->getOption('agent_regex'));
 
         $custom_def = $this->custom_def_person_repository->find(8);
         $this->assertEquals('Decimal field', $custom_def->getTitle());
@@ -1131,6 +1133,8 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->assertEquals(Entity\CustomDefAbstract::HANDLER_CLASS_TEXT, $custom_def->getHandlerClass());
         $this->assertEquals('regex', $custom_def->getOption('validation_type'));
         $this->assertEquals('regex', $custom_def->getOption('agent_validation_type'));
+        $this->assertEquals('/^[-+]?[0-9]*[.,]?[0-9]+$/', $custom_def->getOption('regex'));
+        $this->assertEquals('/^[-+]?[0-9]*[.,]?[0-9]+$/', $custom_def->getOption('agent_regex'));
 
         $custom_def = $this->custom_def_person_repository->find(9);
         $this->assertEquals('Date field', $custom_def->getTitle());
