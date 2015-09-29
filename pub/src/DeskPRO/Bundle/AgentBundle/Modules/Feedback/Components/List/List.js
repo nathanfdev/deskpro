@@ -24,11 +24,11 @@ export class List extends Component {
   }
 
   renderFeedback() {
-    const {currentViewMode, feedback, people, feedbackTypes} = this.props;
+    const {currentViewMode, feedback, people, feedbackTypes, massAction} = this.props;
     var viewMode = currentViewMode.field;
     if (viewMode === constants.VIEW_MODE_LIST) {
       return (
-        <FeedbackList elements={feedback} people={people} feedbackTypes={feedbackTypes}/>
+        <FeedbackList elements={feedback} people={people} feedbackTypes={feedbackTypes} massAction={massAction}/>
       );
     }
     return (
@@ -52,7 +52,7 @@ export class List extends Component {
   render() {
     return (
       <ListFrame>
-        <FeedbackListControlBar count={this.props.feedback.length} />
+        <FeedbackListControlBar count={this.props.feedback.length}/>
         {this.contentChoice()}
       </ListFrame>
     );

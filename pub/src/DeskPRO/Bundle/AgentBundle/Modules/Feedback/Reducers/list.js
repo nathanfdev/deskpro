@@ -5,6 +5,7 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 
 const initialState = {
   currentContent: 'feedback',
+  massAction: false,
   feedback: [],
   comments: [],
   viewModeOptions: [
@@ -72,14 +73,17 @@ export default createReducer(initialState, {
     success: (state, payload) => {
       let values = [];
       payload.data.map(item => values.push(item['title']));
-      return state.setIn(['filterValues'], values)
+      return state.setIn(['filterValues'], values);
     }
   }),
   [actions.loadFeedbackList]: async({
     success: (state, payload) => {
-      return state.set('feedback', payload.data)
+      return state.set('feedback', payload.data);
     }
   }),
+  [actions.toggleMassAction]: (state) => {
+    return state.set('massAction', !state.get('massAction'));
+  },
   [actions.toggleViewMode]: (state, payload) => {
     let viewModeOptions = [];
     state.get('viewModeOptions').toJS().forEach(obj=> {
@@ -87,7 +91,7 @@ export default createReducer(initialState, {
       nextObj.current = obj.field === payload;
       viewModeOptions.push(nextObj);
     });
-    return state.set('viewModeOptions', Immutable.fromJS(viewModeOptions))
+    return state.set('viewModeOptions', Immutable.fromJS(viewModeOptions));
   },
   [actions.toggleSort]: (state, payload) => {
     let sortOptions = [];
@@ -96,7 +100,7 @@ export default createReducer(initialState, {
       nextObj.current = obj.field === payload;
       sortOptions.push(nextObj);
     });
-    return state.set('sortOptions', Immutable.fromJS(sortOptions))
+    return state.set('sortOptions', Immutable.fromJS(sortOptions));
   },
   [actions.setTableSort]: (state, payload) => {
     let tableViewFields = [];

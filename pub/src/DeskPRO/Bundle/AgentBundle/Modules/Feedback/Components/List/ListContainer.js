@@ -5,6 +5,7 @@ import { viewDataSelector, peopleSelector, feedbackTypesSelector } from '../../S
 
 @connect(state => {
   return ({
+    massAction: state.Feedback.list.get('massAction'),
     feedback: state.Feedback.list.get('feedback'),
     comments: state.Feedback.list.get('comments'),
     currentContent: state.Feedback.list.get('currentContent'),
@@ -16,9 +17,10 @@ import { viewDataSelector, peopleSelector, feedbackTypesSelector } from '../../S
 
 export class ListContainer extends React.Component {
   render() {
-    const {feedback, comments, currentContent, currentViewMode, people, feedbackTypes} = this.props;
+    const {massAction, feedback, comments, currentContent, currentViewMode, people, feedbackTypes} = this.props;
     return (
       <List
+        massAction={massAction}
         feedback={feedback}
         comments={comments}
         currentContent={currentContent}
