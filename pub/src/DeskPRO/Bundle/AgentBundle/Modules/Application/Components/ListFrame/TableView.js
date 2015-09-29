@@ -1,6 +1,7 @@
 import React from 'react';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 import classNames from 'classnames';
+import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 
 export class TableView extends React.Component {
 
@@ -108,7 +109,12 @@ export class Row extends React.Component {
   }
 }
 
+@injectIntl
 export class Td extends React.Component {
+
+  static propTypes = {
+    intl: intlShape.isRequired,
+  };
 
   render() {
     const { element,field } = this.props;
@@ -143,9 +149,16 @@ export class Td extends React.Component {
       return (
         element.content.substr(0, 100)
       )
+    } else if (field.name === 'date_created') {
+      return (
+        <FormattedRelative value={element.date_created} />
+      );
+    } else if (field.name === 'date_published') {
+      return (
+        <FormattedRelative value={element.date_published} />
+      );
     }
 
     return (element[field.name]);
   }
-
 }

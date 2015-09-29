@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import classNames from 'classnames';
+import { injectIntl, intlShape, FormattedRelative } from 'react-intl';
 
 export class Card extends Component {
 
@@ -118,29 +119,20 @@ export class CardTitle extends Component {
   }
 }
 
+@injectIntl
 export class CardDate extends Component {
 
   static propTypes = {
+    intl: intlShape.isRequired,
     date: PropTypes.string.isRequired,
     label: PropTypes.string
   };
 
   render() {
     const {label, date} = this.props;
-    let dateObj       = new Date(date);
-    let options       = {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      weekday: 'short',
-      timezone: 'UTC',
-      hour: 'numeric',
-      minute: 'numeric'
-    };
-    let formattedDate = dateObj.toLocaleString("en-US", options);
     return (
       <span>
-        {label ? label + ': ' : ''} {formattedDate}
+        {label ? `${label}: ` : ''} <FormattedRelative value={date} />
       </span>
     );
   }
@@ -149,7 +141,7 @@ export class CardDate extends Component {
 export class CardUser extends Component {
 
   render() {
-    const {user} = this.props;
+    const user = this.props || {};
     return (
       <div className="dpwd--card-assigned">
               <span className="dpw--avatar-face"

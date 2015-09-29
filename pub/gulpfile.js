@@ -139,7 +139,8 @@ function getWebpackConfig(mode, isDevServer, isProd) {
         {
           test: /\.js$/,
           include: [
-            path.resolve(__dirname, "src/DeskPRO")
+            path.resolve(__dirname, "src/DeskPRO"),
+            path.resolve(__dirname, "node_modules/formsy-react")
           ],
           loader: "babel-loader?stage=0"
         },

@@ -2,9 +2,9 @@
 
 jest.dontMock('~List/ListContainer');
 
-describe('ListContainer', () => {
+import React from 'react';
 
-  const React         = require('react/addons');
+describe('ListContainer', () => {
   const ListContainer = require('~List/ListContainer').ListContainer;
   const List          = require('~List/List').List;
 
@@ -35,5 +35,4 @@ describe('ListContainer', () => {
     renderInRedux(React, {FeedbackList: () => ({})});
     expect(List.prototype.render).toHaveBeenCalled();
   });
-
 });

@@ -5,10 +5,10 @@ jest.dontMock('~ListFrame/ControlBar');
 jest.dontMock('~ListFrame/index');
 jest.dontMock('~ControlBar/ChatsListControlBar');
 
-describe('ChatsListControlBar', () => {
+import React from 'react';
+import TestUtils from 'react-addons-test-utils';
 
-  const React = require('react/addons');
-  const TestUtils = React.addons.TestUtils;
+describe('ChatsListControlBar', () => {
   const ChatsListControlBar = require('~ControlBar/ChatsListControlBar').ChatsListControlBar;
   const OrderByContainer = require('~ControlBar/OrderByContainer').OrderByContainer;
   const ViewSwitcherContainer = require('~ControlBar/ViewSwitcherContainer').ViewSwitcherContainer;
@@ -24,5 +24,4 @@ describe('ChatsListControlBar', () => {
     TestUtils.renderIntoDocument(<ChatsListControlBar />);
     expect(ViewSwitcherContainer.prototype.render).toHaveBeenCalled();
   });
-
 });

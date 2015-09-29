@@ -7,12 +7,12 @@ jest.dontMock('~List/List');
 jest.dontMock('~List/View/List/FeedbackList');
 jest.dontMock('~List/ControlBar/FeedbackListControlBar');
 
-describe('List', () => {
+import React from 'react';
+import TestUtils from 'react-addons-test-utils';
 
-  const React               = require('react/addons');
-  const TestUtils           = React.addons.TestUtils;
-  const ListFrame           = require('~ListFrame/frame').ListFrame;
-  const List                = require('~List/List').List;
+describe('List', () => {
+  const ListFrame              = require('~ListFrame/frame').ListFrame;
+  const List                   = require('~List/List').List;
   const FeedbackListControlBar = require('~List/ControlBar/FeedbackListControlBar').FeedbackListControlBar;
   const FeedbackList           = require('~List/View/List/FeedbackList').FeedbackList;
   const FeedbackTable          = require('~List/View/Table/FeedbackTable').FeedbackTable;
