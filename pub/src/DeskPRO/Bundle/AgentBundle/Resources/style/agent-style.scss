@@ -1,6 +1,7 @@
 @import "normalize.css";
 @import "raw/styles";
-@import "global-widgets/table-view", "global-widgets/id-container", "global-widgets/pagination", "global-widgets/navigation-dropdowns", "global-widgets/navigation-dropdown-secondary", "global-widgets/control-bar", "global-widgets/radio", "global-widgets/navigation-dropdowns-top-row-buttons", "global-widgets/cards";
+@import "global-widgets/table-view", "global-widgets/id-container", "global-widgets/pagination", "global-widgets/control-bar", "global-widgets/radio", "global-widgets/cards";
+@import "global-widgets/navigation-dropdown/navigation-dropdowns";
 
 html, body {
   margin: 0;
