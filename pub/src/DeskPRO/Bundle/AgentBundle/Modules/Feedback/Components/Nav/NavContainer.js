@@ -5,6 +5,7 @@ import { Nav } from './Nav';
 import { filterDataSelector } from '../../Selectors/list';
 import { groupDataSelector } from '../../Selectors/nav';
 import { loadFeedbackTypes } from '../../RecordStores/Actions/feedbackTypesActions';
+import { loadFeedbackLabels } from '../../RecordStores/Actions/feedbackLabelsActions';
 
 @connect(state => {
   return ({
@@ -39,6 +40,7 @@ export class NavContainer extends Component {
     const { dispatch, currentFilterMode } = this.props;
 
     dispatch(loadFeedbackTypes());
+    dispatch(loadFeedbackLabels());
     dispatch(actions.feedbackToValidate());
     dispatch(actions.commentsToReview());
     dispatch(actions.feedbackLabels());
