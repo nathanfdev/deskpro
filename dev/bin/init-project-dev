@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../"
+DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
 
 echo ">> Cleaning"
 rm -rf $DIR_ROOT/app/vendor
