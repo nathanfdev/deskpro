@@ -3324,6 +3324,7 @@ class TicketController extends AbstractController
             return $this->createJsonResponse(array(
                 'error'      => true,
                 'error_code' => $code,
+                'message'    => $e->getMessage(),
             ));
         } catch (\Exception $e) {
             $this->em->rollback();
