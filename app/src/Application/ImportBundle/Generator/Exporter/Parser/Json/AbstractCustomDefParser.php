@@ -65,7 +65,7 @@ abstract class AbstractCustomDefParser extends AbstractParser
      */
     protected function exportCustomDef(array $data)
     {
-        $entity    = new Entity\ArticleCustomDef();
+        $entity    = $this->getDefaultCustomDefEntity();
         $formatted = $this->formatter->format($data, array(
             'oid'            => TransformerInterface::TYPE_STRING,
             'import_map_key' => TransformerInterface::TYPE_STRING,
