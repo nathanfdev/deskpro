@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Entity;
 
 /**
+ * Exporting person custom def entity
+ *
  * Class PersonCustomDef
  * @package Application\ImportBundle\Entity
  */

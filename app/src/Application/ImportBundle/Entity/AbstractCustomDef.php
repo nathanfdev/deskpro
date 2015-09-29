@@ -32,6 +32,8 @@ use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
+ * Abstract exporting custom def entity
+ *
  * Class CustomDef
  * @package Application\ImportBundle\Entity
  */

@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Entity;
 
 /**
+ * Exporting ticket custom def entity
+ *
  * Class TicketCustomDef
  * @package Application\ImportBundle\Entity
  */
