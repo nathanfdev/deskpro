@@ -42,7 +42,7 @@ if (!defined('DP_ROOT')) {
 
 require_once DP_ROOT.'/sys/serve_abstract.php';
 
-class get_messages extends LoaderAbstract
+class get_messages extends serve_abstract
 {
     protected $_person_id;
     protected $_session_id;
@@ -849,5 +849,5 @@ class get_messages extends LoaderAbstract
     }
 }
 
-$file_loader = new AgentMessagesLoader();
+$file_loader = new get_messages();
 $file_loader->run();

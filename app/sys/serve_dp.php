@@ -45,7 +45,7 @@ require_once DP_ROOT.'/sys/serve_abstract.php';
 /**
  * A light-weight loader for website widgetss.
  */
-class serve_dp extends LoaderAbstract
+class serve_dp extends serve_abstract
 {
     public function runAction()
     {
@@ -1185,5 +1185,5 @@ class serve_dp extends LoaderAbstract
     }
 }
 
-$dp_loader = new DpLoader();
+$dp_loader = new serve_dp();
 $dp_loader->run();
