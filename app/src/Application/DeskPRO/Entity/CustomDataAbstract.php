@@ -38,6 +38,9 @@ namespace Application\DeskPRO\Entity;
  *
  * @method $this setField(CustomDefAbstract $field)
  * @method $this setRootField(CustomDefAbstract $root_field)
+ *
+ * @property CustomDefAbstract $field
+ * @property CustomDefAbstract $root_field
  */
 abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -47,29 +50,6 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
      * @var int
      */
     protected $id = null;
-
-    /**
-     * IMPLEMENT IN CHILD CLASS
-     * The form field this is attached to.
-     *
-     * @var \Application\DeskPRO\Entity\CustomDefXXX
-     */
-    //protected $field = null;
-
-    /**
-     * IMPLEMENT IN CHILD CLASS
-     * The root custom field this is attached to.
-     *
-     * @var \Application\DeskPRO\Entity\CustomDefXXX
-     */
-    //protected $root_field = null;
-
-    /**
-     * IMPLEMENT IN CHILD CLASS.
-     *
-     * @var \Application\DeskPRO\Entity\Xxx
-     */
-    //protected $xxx;
 
     /**
      * User numeric data.
