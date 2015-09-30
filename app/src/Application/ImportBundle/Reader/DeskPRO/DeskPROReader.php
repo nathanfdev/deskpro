@@ -142,7 +142,7 @@ class DeskPROReader extends AbstractReader implements DeskPROReaderInterface
      */
     public function findCustomDefTickets()
     {
-        return $this->em->getRepository('DeskPRO:CustomDefTicket')->findAll();
+        return $this->em->getRepository('DeskPRO:CustomDefTicket')->findBy(array('parent' => null));
     }
 
     /**
@@ -150,7 +150,7 @@ class DeskPROReader extends AbstractReader implements DeskPROReaderInterface
      */
     public function findCustomDefPeople()
     {
-        return $this->em->getRepository('DeskPRO:CustomDefPerson')->findAll();
+        return $this->em->getRepository('DeskPRO:CustomDefPerson')->findBy(array('parent' => null));
     }
 
     /**
@@ -158,7 +158,7 @@ class DeskPROReader extends AbstractReader implements DeskPROReaderInterface
      */
     public function findCustomDefOrganizations()
     {
-        return $this->em->getRepository('DeskPRO:CustomDefOrganization')->findAll();
+        return $this->em->getRepository('DeskPRO:CustomDefOrganization')->findBy(array('parent' => null));
     }
 
     /**
@@ -166,7 +166,7 @@ class DeskPROReader extends AbstractReader implements DeskPROReaderInterface
      */
     public function findCustomDefArticles()
     {
-        return $this->em->getRepository('DeskPRO:CustomDefArticle')->findAll();
+        return $this->em->getRepository('DeskPRO:CustomDefArticle')->findBy(array('parent' => null));
     }
 
     /**
@@ -174,7 +174,7 @@ class DeskPROReader extends AbstractReader implements DeskPROReaderInterface
      */
     public function findCustomDefFeedback()
     {
-        return $this->em->getRepository('DeskPRO:CustomDefFeedback')->findAll();
+        return $this->em->getRepository('DeskPRO:CustomDefFeedback')->findBy(array('parent' => null));
     }
 
     /**
