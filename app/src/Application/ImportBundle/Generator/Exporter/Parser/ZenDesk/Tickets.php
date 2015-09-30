@@ -380,6 +380,8 @@ final class Tickets extends AbstractParser
     }
 
     /**
+     * Returns ticket custom def by key.
+     *
      * @param int $id
      *
      * @return array

@@ -124,10 +124,10 @@ final class People extends AbstractParser
     {
         $entity    = new Entity\Person();
         $formatted = $this->formatter->format($data, array(
-            'id'              => TransformerInterface::TYPE_STRING,
-            'destination'     => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => $entity->getDestinationPrefix(),
-                'ref'    => 'id',
+            'id'          => TransformerInterface::TYPE_STRING,
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix'  => $entity->getDestinationPrefix(),
+                'ref'     => 'id',
             )),
             'name'            => TransformerInterface::TYPE_STRING,
             'email'           => TransformerInterface::TYPE_STRING,
@@ -186,8 +186,97 @@ final class People extends AbstractParser
         foreach ($formatted['tags'] as $tag) {
             $entity->addLabel($tag);
         }
+        foreach ($this->exportCustomFields($formatted) as $custom_field) {
+            $entity->addCustomField($custom_field);
+        }
 
         return $entity;
+    }
+
+    /**
+     * Returns a person custom field entity collection.
+     *
+     * @param array $person
+     *
+     * @return Entity\Collection|Entity\CustomField[]
+     */
+    protected function exportCustomFields(array $person)
+    {
+        $user_fields = array();
+        foreach ($person['user_fields'] as $key => $value) {
+            $user_fields[] = array(
+                'id'    => $key,
+                'value' => $value,
+            );
+        }
+
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($user_fields)
+            ->setPrefix('ZDPersonCustomField')
+            ->setRefColumn('id')
+            ->setMethod('exportCustomField')
+        ;
+
+        return $this->exportCollection($config);
+    }
+
+    /**
+     * Returns a person custom field entity.
+     *
+     * @param array $data
+     *
+     * @return Entity\CustomField
+     */
+    protected function exportCustomField($data)
+    {
+        $entity    = new Entity\CustomField();
+        $formatted = $this->formatter->format($data, array(
+            'id'          => TransformerInterface::TYPE_STRING,
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix'  => $entity->getDestinationPrefix(),
+                'ref'     => 'id',
+            )),
+            'value' => TransformerInterface::TYPE_STRING,
+        ));
+
+        $custom_def = $this->getCustomDefById($formatted['id']);
+        if (!empty($custom_def['custom_field_options'])) {
+            foreach ($custom_def['custom_field_options'] as $option) {
+                if ($option['value'] == $formatted['value']) {
+                    $formatted['value'] = $option['name'];
+                }
+            }
+        }
+
+        $entity
+            ->setRawData($data)
+            ->setOid($formatted['id'])
+            ->setDestination($formatted['destination'])
+            ->setKey($custom_def['title'])
+            ->setValue($formatted['value'] ?: '')
+        ;
+
+        return $entity;
+    }
+
+    /**
+     * Returns person custom def by key.
+     *
+     * @param int $key
+     *
+     * @return array
+     */
+    protected function getCustomDefById($key)
+    {
+        $custom_defs = $this->reader->getPeopleFields();
+        foreach ($custom_defs as $custom_def) {
+            if ($custom_def['key'] == $key) {
+                return $custom_def;
+            }
+        }
+
+        throw new SkippingException(sprintf('No custom def found with id=%s', $key), $custom_defs);
     }
 
     /**
