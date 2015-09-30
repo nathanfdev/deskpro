@@ -132,7 +132,7 @@ export class CardDate extends Component {
     const {label, date} = this.props;
     return (
       <span>
-        {label ? `${label}: ` : ''} <FormattedRelative value={date} />
+        {label ? `${label}: ` : ''} <FormattedRelative value={date}/>
       </span>
     );
   }
@@ -141,7 +141,7 @@ export class CardDate extends Component {
 export class CardUser extends Component {
 
   render() {
-    const user = this.props || {};
+    const {user} = this.props || {};
     return (
       <div className="dpwd--card-assigned">
               <span className="dpw--avatar-face"

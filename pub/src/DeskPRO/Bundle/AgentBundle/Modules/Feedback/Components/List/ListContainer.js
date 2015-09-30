@@ -1,7 +1,7 @@
 import React from 'react';
 import { List } from './List';
 import { connect } from 'react-redux';
-import { viewDataSelector, peopleSelector, feedbackTypesSelector, feedbackLabelsSelector } from '../../Selectors/list';
+import { viewDataSelector, peopleSelector, feedbackTypesSelector, feedbackLabelsSelector, feedbackCommentsSelector } from '../../Selectors/list';
 
 @connect(state => {
   return ({
@@ -12,13 +12,14 @@ import { viewDataSelector, peopleSelector, feedbackTypesSelector, feedbackLabels
     currentViewMode: viewDataSelector(state),
     people: peopleSelector(state),
     feedbackTypes: feedbackTypesSelector(state),
-    feedbackLabels: feedbackLabelsSelector(state)
+    feedbackLabels: feedbackLabelsSelector(state),
+    feedbackComments: feedbackCommentsSelector(state)
   });
 })
 
 export class ListContainer extends React.Component {
   render() {
-    const {massAction, feedback, comments, currentContent, currentViewMode, people, feedbackTypes, feedbackLabels } = this.props;
+    const {massAction, feedback, comments, currentContent, currentViewMode, people, feedbackTypes, feedbackLabels, feedbackComments } = this.props;
 
     return (
       <List
@@ -30,6 +31,7 @@ export class ListContainer extends React.Component {
         people={people}
         feedbackTypes={feedbackTypes}
         feedbackLabels={feedbackLabels}
+        feedbackComments={feedbackComments}
         />
     );
   }

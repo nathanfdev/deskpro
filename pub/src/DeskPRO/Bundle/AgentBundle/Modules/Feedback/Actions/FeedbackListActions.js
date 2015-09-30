@@ -1,6 +1,7 @@
-import { createAction } from "Ampliflux";
-import * as Feedback from "DeskPRO/Bundle/AgentBundle/Services/Api/Feedback";
-import { loadPeople } from "DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions";
+import { createAction } from 'Ampliflux';
+import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
+import { loadPeople } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
+import { loadFeedbackComments } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCommentsActions';
 import { sortingDataSelector, filterDataSelector } from '../Selectors/list';
 import { groupDataSelector } from '../Selectors/nav';
 
@@ -21,7 +22,18 @@ export const getAuthors = createAction(
       }
       unique[feedback.data[i].person_id] = 0;
     }
-    return dispatch(loadPeople(recordStoresId, ids));
+      return dispatch(loadPeople(recordStoresId, ids));
+  }
+);
+
+export const getComments = createAction(
+  'FEEDBACK_GET_COMMENTS',
+    feedback => dispatch => {
+    let ids = [];
+    for (var i in feedback.data) {
+      ids.push(feedback.data[i].id);
+    }
+    return dispatch(loadFeedbackComments(recordStoresId, ids));
   }
 );
 
@@ -40,66 +52,51 @@ export const loadFeedbackList = createAction(
     return dispatch =>Feedback.getList(params).then(promise => {
       const feedback = promise.getData();
       dispatch(getAuthors(feedback));
+      dispatch(getComments(feedback));
       return feedback;
     });
   }
 );
 
-
-export const getFeedbackTypes = createAction(
-  "FEEDBACK_GET_AUTHORS",
-    feedback => dispatch => {
-    let ids    = [],
-        unique = {};
-    for (var i in feedback.data) {
-      if (typeof(unique[feedback.data[i].person_id]) == "undefined") {
-        ids.push(feedback.data[i].person_id);
-      }
-      unique[feedback.data[i].person_id] = 0;
-    }
-    return dispatch(loadPeople(recordStoresId, ids));
-  }
-);
-
 export const feedbackToValidate = createAction(
-  "FEEDBACK_TO_VALIDATE",
+  'FEEDBACK_TO_VALIDATE',
   () => dispatch => Feedback.toValidate().then(promise => promise.getData()));
 
 export const commentsToReview = createAction(
-  "FEEDBACK_COMMENTS_TO_REVIEW",
+  'FEEDBACK_COMMENTS_TO_REVIEW',
   () => dispatch => Feedback.commentsToReview().then(promise => promise.getData()));
 
 export const feedbackLabels = createAction(
-  "FEEDBACK_LABELS",
+  'FEEDBACK_LABELS',
   () => dispatch => Feedback.getLabels().then(promise => promise.getData()));
 
 export const feedbackTypes = createAction(
-  "FEEDBACK_TYPES",
+  'FEEDBACK_TYPES',
   () => dispatch => Feedback.getTypes().then(promise => promise.getData()));
 
 export const feedbackCustomCategories = createAction(
-  "FEEDBACK_CUSTOM_CATEGORIES",
+  'FEEDBACK_CUSTOM_CATEGORIES',
   () => dispatch => Feedback.getCustomCategories().then(promise => promise.getData()));
 
 export const feedbackNew = createAction(
-  "FEEDBACK_NEW_STATUS",
+  'FEEDBACK_NEW_STATUS',
   () => dispatch => Feedback.getNew().then(promise => promise.getData()));
 
 
 export const feedbackActiveStatus = createAction(
-  "FEEDBACK_ACTIVE_STATUS",
+  'FEEDBACK_ACTIVE_STATUS',
   () => dispatch => Feedback.getActive().then(promise => promise.getData()));
 
 export const feedbackClosedStatus = createAction(
-  "FEEDBACK_CLOSED_STATUS",
+  'FEEDBACK_CLOSED_STATUS',
   () => dispatch => Feedback.getClosed().then(promise => promise.getData()));
 
 export const feedbackHiddenStatus = createAction(
-  "FEEDBACK_HIDDEN_STATUS",
+  'FEEDBACK_HIDDEN_STATUS',
   () => dispatch => Feedback.getHidden().then(promise => promise.getData()));
 
 export const changeGroupState = createAction(
-  "FEEDBACK_CHANGE_GROUP",
+  'FEEDBACK_CHANGE_GROUP',
     group =>   dispatch => {
     dispatch(loadFeedbackList({group: group}));
     return group;
@@ -107,28 +104,28 @@ export const changeGroupState = createAction(
 );
 
 export const getFilterValues = createAction(
-  "FEEDBACK_SELECT_FILTER",
+  'FEEDBACK_SELECT_FILTER',
   (filterName) => dispatch => Feedback.getFilterValues(filterName).then(promise => promise.getData())
 );
 
 export const resetFilterValue = createAction(
-  "FEEDBACK_RESET_FILTER_VALUE"
+  'FEEDBACK_RESET_FILTER_VALUE'
 );
 
 export const setTableSort = createAction(
-  "FEEDBACK_SET_TABLE_SORT",
+  'FEEDBACK_SET_TABLE_SORT',
   (sort, order) => dispatch => {
     dispatch(loadFeedbackList({sort: sort, order: order}));
-    return {sort, order}
+    return {sort, order};
   });
 
 export const toggleViewMode = createAction(
-  "FEEDBACK_TOGGLE_VIEW_MODE",
+  'FEEDBACK_TOGGLE_VIEW_MODE',
     viewMode => viewMode
 );
 
 export const toggleOrder = createAction(
-  "FEEDBACK_TOGGLE_ORDER",
+  'FEEDBACK_TOGGLE_ORDER',
     order => dispatch => {
     dispatch(loadFeedbackList({order: order}));
     return order;
@@ -136,7 +133,7 @@ export const toggleOrder = createAction(
 );
 
 export const toggleSort = createAction(
-  "FEEDBACK_TOGGLE_SORT",
+  'FEEDBACK_TOGGLE_SORT',
     sort =>  dispatch => {
     dispatch(loadFeedbackList({sort: sort}));
     return sort;
@@ -144,7 +141,7 @@ export const toggleSort = createAction(
 );
 
 export const storeDisplayFieldsToPersonSetting = createAction(
-  "FEEDBACK_STORE_DISPLAY_FIELD_TO_PERSON_SETTING",
+  'FEEDBACK_STORE_DISPLAY_FIELD_TO_PERSON_SETTING',
   (displayFields) => {
     Feedback.postDisplayFieldsToPersonSetting('feedback_display_fields', displayFields).then(value => value.getData())
   });
