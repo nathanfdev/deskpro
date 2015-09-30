@@ -29,6 +29,7 @@
 namespace Application\ImportBundle\Generator;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\ImportBundle\Entity\EntityInterface;
 use Application\ImportBundle\Generator\Exporter\ExporterFactoryInterface;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator\Writer\WriterFactoryInterface;
@@ -59,14 +60,17 @@ class GeneratorFactory
         $symfony_validator = $container->get('validator');
         $validators        = new Validator\Collection();
         $validators
-            ->attach(new Validator\Download($symfony_validator))
-            ->attach(new Validator\Feedback($symfony_validator))
-            ->attach(new Validator\Article($symfony_validator))
-            ->attach(new Validator\ArticleCategory($symfony_validator))
-            ->attach(new Validator\News($symfony_validator))
-            ->attach(new Validator\Person($symfony_validator))
-            ->attach(new Validator\Ticket($symfony_validator))
-            ->attach(new Validator\Organization($symfony_validator))
+            ->attach(new Validator\ConstraintValidator($symfony_validator, EntityInterface::TYPE_DOWNLOAD))
+            ->attach(new Validator\ConstraintValidator($symfony_validator, EntityInterface::TYPE_FEEDBACK))
+            ->attach(new Validator\ConstraintValidator($symfony_validator, EntityInterface::TYPE_ARTICLE))
+            ->attach(new Validator\ConstraintValidator($symfony_validator, EntityInterface::TYPE_ARTICLE_CATEGORY))
+            ->attach(new Validator\ConstraintValidator($symfony_validator, EntityInterface::TYPE_NEWS))
+            ->attach(new Validator\ConstraintValidator($symfony_validator, EntityInterface::TYPE_PERSON))
+            ->attach(new Validator\ConstraintValidator($symfony_validator, EntityInterface::TYPE_PERSON_CUSTOM_DEF))
+            ->attach(new Validator\ConstraintValidator($symfony_validator, EntityInterface::TYPE_TICKET))
+            ->attach(new Validator\ConstraintValidator($symfony_validator, EntityInterface::TYPE_TICKET_CUSTOM_DEF))
+            ->attach(new Validator\ConstraintValidator($symfony_validator, EntityInterface::TYPE_ORGANIZATION))
+            ->attach(new Validator\ConstraintValidator($symfony_validator, EntityInterface::TYPE_ORGANIZATION_CUSTOM_DEF))
         ;
 
         /** @var \Application\ImportBundle\Importer\Importer $import_service */

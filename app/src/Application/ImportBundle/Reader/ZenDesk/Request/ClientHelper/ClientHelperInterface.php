@@ -40,16 +40,7 @@ interface ClientHelperInterface
     /**
      * Constructor.
      *
-     * @param array $params
-     */
-    public function __construct(array $params = array());
-
-    /**
-     * Do request via ZenDesk client.
-     *
      * @param Client $client
-     *
-     * @return \stdClass
      */
-    public function request(Client $client);
+    public function __construct(Client $client);
 }

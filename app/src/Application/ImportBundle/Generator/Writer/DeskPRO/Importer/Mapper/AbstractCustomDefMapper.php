@@ -28,13 +28,33 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
 
-use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\DeskPRO\EntityRepository;
 
 /**
- * Class AbstractCustomDefMapper.
+ * Abstract custom def mapper.
+ *
+ * Class AbstractCustomDefMapper
  */
-abstract class AbstractCustomDefMapper implements MapperInterface
+abstract class AbstractCustomDefMapper extends AbstractImportMapMapper
 {
+    /**
+     * @var EntityRepository\CustomDefAbstract
+     */
+    protected $custom_def_repository;
+
+    /**
+     * Constructor.
+     *
+     * @param EntityRepository\CustomDefAbstract $custom_def_repository
+     * @param EntityRepository\ImportMap         $import_map_repository
+     */
+    public function __construct(EntityRepository\CustomDefAbstract $custom_def_repository, EntityRepository\ImportMap $import_map_repository)
+    {
+        $this->custom_def_repository = $custom_def_repository;
+        $this->import_map_repository = $import_map_repository;
+    }
+
     /**
      * Find a choice custom def entity
      * We store value for choice custom fields like "A > A1".
@@ -47,23 +67,51 @@ abstract class AbstractCustomDefMapper implements MapperInterface
      *     |- Option B1
      *     |- Option B2
      *
-     * @param array|string      $choice_chain
-     * @param CustomDefAbstract $parent
+     * @param array|string                    $choice_chain
+     * @param DeskPROEntity\CustomDefAbstract $parent
      *
-     * @return CustomDefAbstract
+     * @return DeskPROEntity\CustomDefAbstract
      */
-    public function findChoiceCustomDef($choice_chain, CustomDefAbstract $parent)
+    public function findChoiceCustomDef($choice_chain, DeskPROEntity\CustomDefAbstract $parent)
     {
         if (is_string($choice_chain)) {
             $choice_chain = explode('>', $choice_chain);
             $choice_chain = array_map('trim', $choice_chain);
+
+            return $this->findOneBy(array(
+                'title'  => array_pop($choice_chain),
+                'parent' => $parent,
+            ));
         }
 
-        $custom_field_def = $this->findOneBy(array(
-            'title'  => array_shift($choice_chain),
-            'parent' => $parent,
-        ));
+        return;
+    }
 
-        return empty($choice_chain) ? $custom_field_def : $this->findChoiceCustomDef($choice_chain, $custom_field_def);
+    /**
+     * {@inheritdoc}
+     */
+    public function findOneBy(array $criteria, $throw_exception = true)
+    {
+        $record = null;
+        $id     = $this->findImportMapNewId($criteria);
+
+        if ($id) {
+            $record = $this->custom_def_repository->find($id);
+        } else {
+            if (isset($criteria['entity'])) {
+                unset($criteria['entity']);
+            }
+
+            if (!empty($criteria)) {
+                $record = $this->custom_def_repository->findOneBy($criteria);
+            }
+        }
+
+        /** @var DeskPROEntity\CustomDefAbstract $record */
+        if (!$record && $throw_exception) {
+            throw new MapperException(sprintf('Custom def `%s` not found', $this->getType()), $criteria);
+        }
+
+        return $record;
     }
 }

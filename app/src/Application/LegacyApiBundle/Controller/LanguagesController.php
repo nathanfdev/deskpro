@@ -256,6 +256,18 @@ class LanguagesController extends AbstractController implements ProtectedControl
             $this->em->persist($lang);
             $this->em->flush();
             $this->db->commit();
+
+            foreach ($this->em->getRepository('DeskPRO:Language')->findAll() as $_lang) {
+                $this->em->getConnection()->executeQuery(sprintf('
+                insert ignore into object_lang (language_id, ref, ref_type, ref_id, prop_name, value)
+                (
+                    select %d, concat("text_snippet_categories.", ref_id), "text_snippet_categories", ref_id, "title", value
+                    from object_lang
+                    where ref_type = "text_snippet_categories"
+                    group by ref_id
+                )
+            ', $_lang->getId()));
+            }
         } catch (\Exception $e) {
             $this->db->rollback();
         }

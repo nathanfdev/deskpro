@@ -28,9 +28,6 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
 
-use Application\DeskPRO\Entity;
-use Application\DeskPRO\EntityRepository;
-
 /**
  * Custom def ticket record mapper.
  *
@@ -39,39 +36,10 @@ use Application\DeskPRO\EntityRepository;
 final class CustomDefFeedback extends AbstractCustomDefMapper
 {
     /**
-     * @var EntityRepository\CustomDefFeedback
-     */
-    private $repository;
-
-    /**
-     * Constructor.
-     *
-     * @param EntityRepository\CustomDefFeedback $repository
-     */
-    public function __construct(EntityRepository\CustomDefFeedback $repository)
-    {
-        $this->repository = $repository;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getType()
     {
         return self::TYPE_CUSTOM_DEF_FEEDBACK;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findOneBy(array $criteria, $throw_exception = true)
-    {
-        /** @var Entity\CustomDefFeedback $record */
-        $record = $this->repository->findOneBy($criteria);
-        if (!$record && $throw_exception) {
-            throw new MapperException('Custom def feedback not found', $criteria);
-        }
-
-        return $record;
     }
 }

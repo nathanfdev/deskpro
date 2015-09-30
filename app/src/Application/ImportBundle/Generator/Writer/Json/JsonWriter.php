@@ -82,7 +82,11 @@ final class JsonWriter extends AbstractWriter
         $data = $entity->toArray();
         $path = $this->getEntityPath($entity);
 
-        return $this->writeJsonFile($data, $path);
+        if (!$this->writeJsonFile($data, $path)) {
+            throw new \RuntimeException(sprintf('Unable to write JSON file %s', $path));
+        }
+
+        return true;
     }
 
     /**

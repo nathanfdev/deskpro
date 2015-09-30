@@ -31,3 +31,4 @@ services:
     class: Application\ImportBundle\Generator\Exporter\Batch
     factory_class: Application\ImportBundle\Generator\Exporter\BatchFactory
     factory_method: createExporter
+    arguments: [@deskpro.import.formatter]

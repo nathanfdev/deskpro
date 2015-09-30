@@ -194,7 +194,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					self.updateUi();
 				} else {
 					driver.loadSnippets({
-						filterString: filterString || null
+						filterString: filterString || null,
+						languageId: languageId || null
 					}, function(snippets) {
 						if (!snippets.length) {
 							return;

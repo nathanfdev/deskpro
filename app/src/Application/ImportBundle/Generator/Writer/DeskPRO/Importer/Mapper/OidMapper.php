@@ -63,7 +63,7 @@ class OidMapper
     }
 
     /**
-     * Find a ZenDesk entity mapping.
+     * Find an entity mapping.
      *
      * @param string $type
      * @param int    $id
@@ -82,7 +82,7 @@ class OidMapper
     }
 
     /**
-     * Saves a ZenDesk entity mapping.
+     * Saves an entity mapping.
      *
      * @param string $type
      * @param int    $old_id

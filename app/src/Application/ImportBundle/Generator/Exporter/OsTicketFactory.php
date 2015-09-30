@@ -50,18 +50,23 @@ class OsTicketFactory extends AbstractExporterFactory
         $formatter = $this->container->get('deskpro.import.formatter');
 
         $people_storage = new Parser\PeopleStorage();
-        $ticket_people  = new Parser\OsTicket\TicketPeopleStorage($reader, $people_storage);
+        $ticket_people  = new Parser\OsTicket\Storage\TicketPeopleStorage($reader, $people_storage);
 
         $parsers = new Parser\Collection();
         $parsers
             ->attach(new Parser\OsTicket\Downloads($reader, $formatter))
             ->attach(new Parser\OsTicket\Feedback($reader, $formatter))
+            ->attach(new Parser\OsTicket\FeedbackCustomDef($reader, $formatter))
             ->attach(new Parser\OsTicket\Articles($reader, $formatter))
             ->attach(new Parser\OsTicket\ArticleCategories($reader, $formatter))
+            ->attach(new Parser\OsTicket\ArticleCustomDef($reader, $formatter))
             ->attach(new Parser\OsTicket\News($reader, $formatter))
             ->attach(new Parser\OsTicket\People($reader, $formatter, $people_storage))
+            ->attach(new Parser\OsTicket\PeopleCustomDef($reader, $formatter))
             ->attach(new Parser\OsTicket\Tickets($reader, $formatter, $ticket_people))
+            ->attach(new Parser\OsTicket\TicketCustomDef($reader, $formatter))
             ->attach(new Parser\OsTicket\Organizations($reader, $formatter))
+            ->attach(new Parser\OsTicket\OrganizationCustomDef($reader, $formatter))
         ;
 
         return new OsTicket($parsers, $reader);

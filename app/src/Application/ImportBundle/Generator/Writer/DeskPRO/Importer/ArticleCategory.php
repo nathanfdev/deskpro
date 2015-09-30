@@ -33,7 +33,9 @@ use Application\ImportBundle\Entity;
 use Doctrine\ORM\EntityManager;
 
 /**
- * Class ArticleCategory.
+ * Article category importer.
+ * 
+ * Class ArticleCategory
  */
 final class ArticleCategory extends AbstractImporter
 {
@@ -65,7 +67,7 @@ final class ArticleCategory extends AbstractImporter
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
+    public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
         if (!$entity instanceof Entity\ArticleCategory) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
@@ -77,8 +79,6 @@ final class ArticleCategory extends AbstractImporter
         $this->createOrUpdateDeepCategories($category, $entity);
 
         $this->records->setPrimaryEntity($category);
-
-        return $this->records;
     }
 
     /**
@@ -156,7 +156,7 @@ final class ArticleCategory extends AbstractImporter
     }
 
     /**
-     * Returns an article category by oid
+     * Returns an article category by oid.
      * Creates a new article if not found.
      *
      * @param int $entity_id

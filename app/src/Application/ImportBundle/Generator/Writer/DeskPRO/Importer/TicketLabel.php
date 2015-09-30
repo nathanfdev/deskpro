@@ -49,7 +49,7 @@ final class TicketLabel extends AbstractImporter
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
+    public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
         if (!$entity instanceof Entity\Ticket) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
@@ -67,7 +67,5 @@ final class TicketLabel extends AbstractImporter
         }
 
         $this->records->setPrimaryEntity($ticket);
-
-        return $this->records;
     }
 }

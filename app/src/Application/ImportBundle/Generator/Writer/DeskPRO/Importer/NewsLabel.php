@@ -49,7 +49,7 @@ final class NewsLabel extends AbstractImporter
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
+    public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
         if (!$entity instanceof Entity\News) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
@@ -67,7 +67,5 @@ final class NewsLabel extends AbstractImporter
         }
 
         $this->records->setPrimaryEntity($news);
-
-        return $this->records;
     }
 }

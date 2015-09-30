@@ -72,6 +72,14 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getDoctrineEntities()
+    {
+        return $this->records;
+    }
+
+    /**
      * Returns a language id by title.
      *
      * @param string $title
@@ -186,7 +194,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
      *
      * @throws ImporterException
      *
-     * @return DeskPROEntity\CustomDataTicket
+     * @return DeskPROEntity\CustomDataTicket|null
      */
     protected function createCustomData(AbstractCustomDefMapper $mapper, Entity\CustomField $entity, DeskPROEntity\CustomDataAbstract $custom_field)
     {
@@ -198,6 +206,10 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
         switch ($custom_field_def->getTypeName()) {
             case Entity\CustomField::FIELD_TYPE_TEXT:
             case Entity\CustomField::FIELD_TYPE_TEXTAREA:
+                if (!$entity->getValue()) {
+                    return;
+                }
+
                 $custom_field
                     ->setField($custom_field_def)
                     ->setRootField($custom_field_def)
@@ -216,15 +228,23 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
 
             case Entity\CustomField::FIELD_TYPE_DATE:
             case Entity\CustomField::FIELD_TYPE_DATETIME:
+                if (!$entity->getValue()) {
+                    return;
+                }
+
                 $custom_field
                     ->setField($custom_field_def)
                     ->setRootField($custom_field_def)
-                    ->setValue($entity->getValue() ? strtotime($entity->getValue()) : 0)
+                    ->setValue(strtotime($entity->getValue()))
                 ;
 
                 break;
 
             case Entity\CustomField::FIELD_TYPE_CHOICE:
+                if (!$entity->getValue()) {
+                    return;
+                }
+
                 $choice = $mapper->findChoiceCustomDef($entity->getValue(), $custom_field_def);
                 $custom_field
                     ->setField($choice)
@@ -264,8 +284,6 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     /**
      * Returns the person mapper.
      *
-     * @throws \Exception
-     *
      * @return Mapper\Person
      */
     protected function getPersonMapper()
@@ -274,9 +292,17 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the language mapper.
+     * Returns the person custom def mapper.
      *
-     * @throws \Exception
+     * @return Mapper\CustomDefPerson
+     */
+    protected function getPersonCustomDefMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_PERSON);
+    }
+
+    /**
+     * Returns the language mapper.
      *
      * @return Mapper\Language
      */
@@ -288,8 +314,6 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     /**
      * Returns the article mapper.
      *
-     * @throws \Exception
-     *
      * @return Mapper\Article
      */
     protected function getArticleMapper()
@@ -298,9 +322,27 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the download mapper.
+     * Returns the article category mapper.
      *
-     * @throws \Exception
+     * @return Mapper\ArticleCategory
+     */
+    protected function getArticleCategoryMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ARTICLE_CATEGORY);
+    }
+
+    /**
+     * Returns the article custom def mapper.
+     *
+     * @return Mapper\CustomDefArticle
+     */
+    protected function getArticleCustomDefMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_ARTICLE);
+    }
+
+    /**
+     * Returns the download mapper.
      *
      * @return Mapper\Download
      */
@@ -312,8 +354,6 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     /**
      * Returns the news mapper.
      *
-     * @throws \Exception
-     *
      * @return Mapper\News
      */
     protected function getNewsMapper()
@@ -324,8 +364,6 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     /**
      * Returns the feedback mapper.
      *
-     * @throws \Exception
-     *
      * @return Mapper\Feedback
      */
     protected function getFeedbackMapper()
@@ -334,9 +372,27 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the ticket mapper.
+     * Returns the feedback custom def mapper.
      *
-     * @throws \Exception
+     * @return Mapper\CustomDefFeedback
+     */
+    protected function getFeedbackCustomDefMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_FEEDBACK);
+    }
+
+    /**
+     * Returns the feedback category mapper.
+     *
+     * @return Mapper\FeedbackCategory
+     */
+    protected function getFeedbackCategoryMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_FEEDBACK_CATEGORY);
+    }
+
+    /**
+     * Returns the ticket mapper.
      *
      * @return Mapper\Ticket
      */
@@ -346,9 +402,17 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the organization mapper.
+     * Returns the ticket custom def mapper.
      *
-     * @throws \Exception
+     * @return Mapper\CustomDefTicket
+     */
+    protected function getTicketCustomDefMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_TICKET);
+    }
+
+    /**
+     * Returns the organization mapper.
      *
      * @return Mapper\Organization
      */
@@ -358,9 +422,17 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the object lang mapper.
+     * Returns the organization custom def mapper.
      *
-     * @throws \Exception
+     * @return Mapper\CustomDefOrganization
+     */
+    protected function getOrganizationCustomDefMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_ORGANIZATION);
+    }
+
+    /**
+     * Returns the object lang mapper.
      *
      * @return Mapper\ObjectLang
      */
@@ -370,14 +442,12 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the article category mapper.
+     * Returns the import map mapper.
      *
-     * @throws \Exception
-     *
-     * @return Mapper\ArticleCategory
+     * @return Mapper\ImportMap
      */
-    protected function getArticleCategoryMapper()
+    protected function getImportMapMapper()
     {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ARTICLE_CATEGORY);
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_IMPORT_MAP);
     }
 }

@@ -80,38 +80,38 @@ final class RequestClientAdapter implements RequestAdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function doRequest($helper_class, array $params = array())
+    public function doRequest(Request $request)
     {
-        $helper_class = 'Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\\'.$helper_class;
-        if (!class_exists($helper_class)) {
-            throw new \RuntimeException(sprintf('ZenDesk reader helper class `%s` not found', $helper_class));
-        }
-
-        $helper = new $helper_class($params);
-        if (!$helper instanceof ClientHelperInterface) {
-            throw new \RuntimeException('Helper is not instance of ClientHelperInterface');
-        }
-
-        return $this->doApiRequest($helper);
+        return $this->doApiRequest($request);
     }
 
     /**
      * Do API request.
      *
-     * @param ClientHelper\ClientHelperInterface $request
-     * @param int                                $retry_attempt
+     * @param Request $request
+     * @param int     $retry_attempt
      *
      * @throws RetryAfterException
      * @throws API\ResponseException
      *
      * @return \stdClass
      */
-    private function doApiRequest(ClientHelper\ClientHelperInterface $request, $retry_attempt = 0)
+    private function doApiRequest(Request $request, $retry_attempt = 0)
     {
         try {
             API\Http::$curl = new CurlRequest(null, $this->options);
 
-            $response          = $request->request($this->client);
+            $helper = 'Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\\'.$request->concatClass();
+            if (!class_exists($helper)) {
+                trigger_error(sprintf('ZenDesk reader helper class `%s` not found', $helper), E_ERROR);
+            }
+
+            $helper = new $helper($this->client);
+            if (!$helper instanceof ClientHelperInterface) {
+                trigger_error('Helper is not instance of ClientHelperInterface', E_ERROR);
+            }
+
+            $response          = $helper->{$request->getMethod()}($request->getParams());
             $this->was_request = true;
 
             return $response;
@@ -175,17 +175,17 @@ final class RequestClientAdapter implements RequestAdapterInterface
     /**
      * Retry api request on error response.
      *
-     * @param ClientHelper\ClientHelperInterface $request
-     * @param int                                $retry_attempt
-     * @param Exception                          $exception
-     * @param int                                $timeout
+     * @param Request   $request
+     * @param int       $retry_attempt
+     * @param Exception $exception
+     * @param int       $timeout
      *
      * @throws Exception
      * @throws RetryAfterException
      *
      * @return \stdClass
      */
-    private function retry(ClientHelper\ClientHelperInterface $request, $retry_attempt, Exception $exception, $timeout = 0)
+    private function retry(Request $request, $retry_attempt, Exception $exception, $timeout = 0)
     {
         // Retry attempt timeouts (in seconds)
         $retry_timeouts = array(2, 5, 10, 30);

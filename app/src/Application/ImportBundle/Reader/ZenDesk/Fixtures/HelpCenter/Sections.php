@@ -29,7 +29,7 @@
 namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter;
 
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\SectionCreate;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\Section;
 use DateTime;
 use Zendesk\API\Client;
 
@@ -69,14 +69,14 @@ final class Sections extends AbstractFixture
     protected function createItem($num, DateTime $initial_time, DateTime $end_time)
     {
         $category = $this->category_loader->getRandomCategory();
-        $helper   = new SectionCreate(array(
+
+        $helper   = new Section($this->client);
+        $response = $helper->create(array(
             'id'      => $category['id'],
             'section' => array(
                 'name' => $category['name'].': Section'.$num,
             ),
         ));
-
-        $response = $helper->request($this->client);
 
         $this->logger->info('Section created successfully');
         $this->logger->debug(json_encode($response->section));

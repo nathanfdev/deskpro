@@ -30,11 +30,14 @@ EOF;
 Symfony\CS\Fixer\Contrib\HeaderCommentFixer::setHeader($header);
 
 $finder = Symfony\CS\Finder\DefaultFinder::create()
-    ->exclude(PHP_CS_SRC_DIR.'/docs')
-    ->exclude(PHP_CS_SRC_DIR.'/sys/cache')
-    ->exclude(PHP_CS_SRC_DIR.'/vendor')
-    ->exclude(PHP_CS_SRC_DIR.'/vendor-src')
+    ->exclude('docs')
+    ->exclude('sys/cache')
+    ->exclude('vendor')
+    ->exclude('vendor-src')
     ->notName('StaticReflectionProperty_Real.php')
+    ->notName('UnprivateProxyFactory.php')
+    ->notName('UnprivateEntityManager.php')
+    ->notName('UnprivateUnitOfWork.php')
     ->in(PHP_CS_SRC_DIR)
 ;
 

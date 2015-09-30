@@ -70,7 +70,7 @@ final class Article extends AbstractImporter
      * $record['total_rating'] = $kbval->total_rating;
      * $record['num_ratings']  = $kbval->num_ratings;
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
+    public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
         if (!$entity instanceof Entity\Article) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
@@ -117,8 +117,6 @@ final class Article extends AbstractImporter
         }
 
         $this->records->setPrimaryEntity($article);
-
-        return $this->records;
     }
 
     /**
@@ -225,10 +223,7 @@ final class Article extends AbstractImporter
      */
     private function createArticleCustomData(Entity\CustomField $entity)
     {
-        /** @var Mapper\CustomDefArticle $mapper */
-        $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_ARTICLE);
-
-        return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataArticle());
+        return $this->createCustomData($this->getArticleCustomDefMapper(), $entity, new DeskPROEntity\CustomDataArticle());
     }
 
     /**

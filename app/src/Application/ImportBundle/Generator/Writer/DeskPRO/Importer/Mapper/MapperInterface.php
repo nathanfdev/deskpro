@@ -42,6 +42,7 @@ interface MapperInterface
     const TYPE_TICKET                  = 'ticket';
     const TYPE_TICKET_CATEGORY         = 'ticket_category';
     const TYPE_TICKET_LABEL            = 'ticket_label';
+    const TYPE_TICKET_LAYOUT           = 'ticket_layout';
     const TYPE_TICKET_MESSAGE          = 'ticket_message';
     const TYPE_TICKET_WORKFLOW         = 'ticket_workflow';
     const TYPE_TICKET_PRIORITY         = 'ticket_priority';
@@ -72,6 +73,7 @@ interface MapperInterface
     const TYPE_BLOB_DATA               = 'blob_data';
     const TYPE_EMAIL_ACCOUNT           = 'email_account';
     const TYPE_OBJECT_LANG             = 'object_lang';
+    const TYPE_IMPORT_MAP              = 'import_map';
 
     /**
      * Returns DeskPRO record type.

@@ -76,7 +76,7 @@ final class Ticket extends AbstractImporter
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
+    public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
         if (!$entity instanceof Entity\Ticket) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
@@ -124,7 +124,7 @@ final class Ticket extends AbstractImporter
             }
         } else {
             foreach ($entity->getMessages() as $message) {
-                $exist_message = $this->getTicketMessageMapper()->findOneBy(array('message' => $message), false);
+                $exist_message = $this->getTicketMessageMapper()->findOneBy(array('entity' => $message), false);
                 if ($exist_message) {
                     $this->logDebug(sprintf('Found existing ticket message by oid=`%d`', $message->getOid()));
                     $this->updateTicketMessage($message, $exist_message);
@@ -146,12 +146,10 @@ final class Ticket extends AbstractImporter
         }
 
         $this->records->setPrimaryEntity($ticket);
-
-        return $this->records;
     }
 
     /**
-     * Returns a ticket entity
+     * Returns a ticket entity.
      * Creates a new ticket if not found.
      *
      * @param Entity\Ticket $entity
@@ -209,8 +207,10 @@ final class Ticket extends AbstractImporter
      */
     private function createTicketMessage(Entity\TicketMessage $entity, DeskPROEntity\Ticket $ticket)
     {
-        $message = $this->updateTicketMessage($entity, new DeskPROEntity\TicketMessage());
+        $message = new DeskPROEntity\TicketMessage();
         $message->setTicket($ticket);
+
+        $this->updateTicketMessage($entity, $message);
 
         if ($entity->getImportMapKey()) {
             $this->records->addImportMapEntity(new OidEntityMap($entity, $message));
@@ -384,10 +384,7 @@ final class Ticket extends AbstractImporter
      */
     private function createTicketCustomData(Entity\CustomField $entity)
     {
-        /** @var Mapper\CustomDefTicket $mapper */
-        $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_TICKET);
-
-        return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataTicket());
+        return $this->createCustomData($this->getTicketCustomDefMapper(), $entity, new DeskPROEntity\CustomDataTicket());
     }
 
     /**

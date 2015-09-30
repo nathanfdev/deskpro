@@ -31,6 +31,7 @@ namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
 use DateTime;
+use Zendesk\API\Client;
 
 /**
  * ZenDesk people fixtures.
@@ -39,6 +40,23 @@ use DateTime;
  */
 final class People extends AbstractFixture
 {
+    /**
+     * @var PeopleFieldsLoader
+     */
+    private $people_fields_loader;
+
+    /**
+     * Constructor.
+     *
+     * @param Client             $client
+     * @param PeopleFieldsLoader $people_fields_loader
+     */
+    public function __construct(Client $client, PeopleFieldsLoader $people_fields_loader)
+    {
+        parent::__construct($client);
+        $this->people_fields_loader = $people_fields_loader;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -53,12 +71,14 @@ final class People extends AbstractFixture
     protected function createItem($num, DateTime $initial_time, DateTime $end_time)
     {
         $params = array(
-            'name'     => 'Fake name '.$num,
-            'email'    => 'fake_email_'.$num.'@domain.com',
-            'role'     => 'end-user',
-            'verified' => true,
+            'name'        => 'Fake name '.$num,
+            'email'       => 'fake_email_'.$num.'@domain.com',
+            'role'        => 'end-user',
+            'verified'    => true,
+            'user_fields' => $this->people_fields_loader->getRandomFieldsValues(),
         );
 
-        $this->client->users()->create($params);
+        $response = $this->client->users()->create($params);
+        $this->logger->debug(json_encode($response));
     }
 }

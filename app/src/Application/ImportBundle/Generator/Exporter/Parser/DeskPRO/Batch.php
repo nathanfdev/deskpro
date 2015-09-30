@@ -29,6 +29,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractBatchSizeParser;
 
 /**
@@ -55,26 +56,18 @@ final class Batch extends AbstractBatchSizeParser
     /**
      * {@inheritdoc}
      */
-    public function validate(array $config)
+    public function parse(array $data)
     {
-        $columns = array(
-            'users_min_id',
-            'tickets_min_id',
-        );
+        $formatted = $this->formatter->format($data, array(
+            'users_min_id'   => TransformerInterface::TYPE_INT,
+            'tickets_min_id' => TransformerInterface::TYPE_INT,
+        ));
 
-        return parent::validate($config) && $this->hasRequiredColumns($config, $columns);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function parse(array $config)
-    {
         /** @var BatchConfig $batch_config */
-        $batch_config = parent::parse($config);
+        $batch_config = parent::parse($data);
         $batch_config
-            ->setUsersMinId($config['users_min_id'])
-            ->setTicketsMinId($config['tickets_min_id'])
+            ->setUsersMinId($formatted['users_min_id'])
+            ->setTicketsMinId($formatted['tickets_min_id'])
         ;
 
         return $batch_config;

@@ -28,6 +28,7 @@
 
 namespace Application\ImportBundle\Entity;
 
+use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
@@ -137,6 +138,17 @@ abstract class AbstractEntity implements EntityInterface
         $this->destination = $destination;
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDestinationPrefix()
+    {
+        $class = new \ReflectionClass($this);
+        $name  = $class->getShortName();
+
+        return Strings::camelCaseToUnderscore($name);
     }
 
     /**

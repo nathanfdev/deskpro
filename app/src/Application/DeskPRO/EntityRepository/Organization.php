@@ -42,6 +42,8 @@ class Organization extends AbstractEntityRepository
 {
     /** @var array|null */
     protected $_organization_names = null;
+    protected $_has_any            = null;
+    protected $_org_count          = null;
 
     /**
      * @param string $name
@@ -67,11 +69,36 @@ class Organization extends AbstractEntityRepository
         return;
     }
 
+    public function hasOrganizations()
+    {
+        if ($this->_has_any !== null) {
+            return $this->_has_any;
+        }
+        if ($this->_org_count !== null) {
+            $this->_has_any = $this->_org_count > 0;
+        }
+
+        if ($this->_has_any === null) {
+            $this->_has_any = ($this->_em->getConnection()->fetchColumn('
+                SELECT COUNT(*)
+                FROM organizations
+                LIMIT 1
+            ') > 0);
+        }
+
+        return $this->_has_any;
+    }
+
     /**
      * @return array
      */
     public function getOrganizationNames($for_ids = null)
     {
+        if (!$for_ids) {
+            // Calling without for_ids is depreciated because there might be hundreds of thousands
+            return array();
+        }
+
         if ($this->_organization_names == null) {
             $db                        = $this->getEntityManager()->getConnection();
             $this->_organization_names = $db->fetchAllKeyValue('
@@ -129,10 +156,16 @@ class Organization extends AbstractEntityRepository
      */
     public function getCount()
     {
-        return App::getDb()->fetchColumn('
+        if ($this->_org_count !== null) {
+            return $this->_org_count;
+        }
+
+        $this->_org_count = App::getDb()->fetchColumn('
             SELECT COUNT(*)
             FROM organizations
         ');
+
+        return $this->_org_count;
     }
 
     /**

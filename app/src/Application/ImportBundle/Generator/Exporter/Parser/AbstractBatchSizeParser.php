@@ -28,6 +28,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser;
 
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Exception;
 
 /**
@@ -40,34 +41,22 @@ abstract class AbstractBatchSizeParser extends AbstractBatchParser
     /**
      * {@inheritdoc}
      */
-    public function validate(array $config)
+    public function parse(array $data)
     {
-        $columns = array(
-            'batch_size',
-        );
+        $config = parent::parse($data);
+        if ($config instanceof BatchSizeConfigInterface) {
+            $formatted = $this->formatter->format($data, array(
+                'batch_size' => TransformerInterface::TYPE_INT,
+            ));
 
-        return parent::validate($config) && $this->hasRequiredColumns($config, $columns);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function parse(array $config)
-    {
-        $batch_config = parent::parse($config);
-        if ($batch_config instanceof BatchSizeConfigInterface) {
-            $batch_config->setBatchSize($config['batch_size']);
+            $config->setBatchSize($formatted['batch_size']);
         } else {
             throw new Exception(sprintf(
                 'Batch config `%s` should be instance of BatchSizeConfigInterface',
-                $batch_config->getExporterType()
+                $config->getExporterType()
             ));
         }
 
-        if (isset($config['has_remaining'])) {
-            $batch_config->setHasRemaining($config['has_remaining']);
-        }
-
-        return $batch_config;
+        return $config;
     }
 }

@@ -434,7 +434,7 @@ class TicketChecker extends AbstractChecker
      */
     public function canAssociateProblem(Ticket $ticket)
     {
-        return $this->doCheck($ticket, 'associate_problem');
+        return $this->canModify($ticket, 'associate_problem') ?: $this->doCheck($ticket, 'associate_problem');
     }
 
     /**
@@ -444,7 +444,7 @@ class TicketChecker extends AbstractChecker
      */
     public function canDisassociateProblem(Ticket $ticket)
     {
-        return $this->doCheck($ticket, 'disassociate_problem');
+        return $this->canModify($ticket, 'disassociate_problem') ?: $this->doCheck($ticket, 'disassociate_problem');
     }
 
     /**
