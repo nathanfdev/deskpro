@@ -118,7 +118,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         if ($custom_data->root_field) {
             $key_chain[] = $custom_data->root_field->getRealTitle();
         }
-        if ($custom_data->field) {
+        if ($custom_data->root_field != $custom_data->field) {
             $key_chain[] = $custom_data->field->getRealTitle();
         }
 
