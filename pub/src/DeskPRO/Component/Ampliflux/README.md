@@ -387,7 +387,7 @@ const makeStore = compose(
 )(createStore);
 const store = makeStore(reducer);
 
-React.render(
+ReactDOM.render(
   <Provider store={store}>
     {() => <MyContainer />}
   </Provider>,

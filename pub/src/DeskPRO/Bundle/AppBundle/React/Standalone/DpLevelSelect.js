@@ -2,6 +2,7 @@ import _ from "lodash";
 import $ from "jquery";
 import FormActionStore from "DeskPRO/Component/React/Standalone/FormActionStore";
 import React from "react";
+import ReactDOM from 'react-dom';
 
 //######################################################################################################################
 //# Action Store
@@ -182,7 +183,7 @@ export function createComponent(select, renderTo, actionStore = null) {
     actionStore = new LevelSelectActionStore(select);
   }
 
-  React.render(React.createElement(LevelSelect, {actionStore: actionStore}), $(renderTo).get(0));
+  ReactDOM.render(React.createElement(LevelSelect, {actionStore: actionStore}), $(renderTo).get(0));
 
   return actionStore;
 }

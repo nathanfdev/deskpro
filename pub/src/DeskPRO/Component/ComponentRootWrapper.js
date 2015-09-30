@@ -29,7 +29,7 @@ export default class ComponentRootWrapper extends React.Component {
     props = props || this.props;
 
     // Render the component with react
-    React.render(props.children, this.node);
+    ReactDOM.render(props.children, this.node);
 
     // Can show and hide a node depending on the open property
     if (props.open) {
