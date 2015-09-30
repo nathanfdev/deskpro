@@ -52,7 +52,7 @@ export class List extends Component {
   render() {
     return (
       <ListFrame>
-        <FeedbackListControlBar count={this.props.feedback.length}/>
+        <FeedbackListControlBar count={this.props.feedback.size}/>
         {this.contentChoice()}
       </ListFrame>
     );
