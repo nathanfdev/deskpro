@@ -24,7 +24,10 @@ $exclude_dirs = array(
 );
 
 $exclude_file_names = array(
-    'StaticReflectionProperty_Real.php'
+    'StaticReflectionProperty_Real.php',
+    'UnprivateProxyFactory.php',
+    'UnprivateEntityManager.php',
+    'UnprivateUnitOfWork.php',
 );
 
 $changed_files = array_map(function($filename) {
@@ -42,7 +45,7 @@ $changed_files = array_filter($outputs, function($filename) use ($filename_patte
         }
     }
     foreach ($exclude_file_names as $test) {
-        if ($filename === $test) {
+        if (basename($filename) === $test) {
             return false;
         }
     }
@@ -57,6 +60,5 @@ $changed_files = array_filter($outputs, function($filename) use ($filename_patte
 $changed_files = array_map(function($filename) {
     return new \SplFileInfo($filename);
 }, $changed_files);
-
 $config->finder(new ArrayObject($changed_files));
 return $config;
