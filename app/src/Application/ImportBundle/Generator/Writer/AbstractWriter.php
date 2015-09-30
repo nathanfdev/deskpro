@@ -88,7 +88,11 @@ abstract class AbstractWriter extends AbstractGenerator implements WriterInterfa
         $this->createDirIfNotExist($this->config->getBatchFileDir());
         $this->logInfo('');
 
-        return $this->writeJsonFile($this->batch_config->toArray(), $this->config->getBatchFilePath());
+        if (!$this->writeJsonFile($this->batch_config->toArray(), $this->config->getBatchFilePath())) {
+            throw new RuntimeException('Unable to create batch config file');
+        }
+
+        return true;
     }
 
     /**
@@ -147,6 +151,8 @@ abstract class AbstractWriter extends AbstractGenerator implements WriterInterfa
             }
             if (@file_put_contents($path, $data) === false) {
                 $this->logError(sprintf('Unable to write file `%s`', $path));
+
+                return false;
             }
         }
 
