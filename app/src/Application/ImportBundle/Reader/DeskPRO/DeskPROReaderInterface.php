@@ -111,4 +111,18 @@ interface DeskPROReaderInterface
      * @return ArrayCollection|Entity\CustomDefOrganization[]
      */
     public function findCustomDefOrganization();
+
+    /**
+     * Returns a collection of article custom field def.
+     *
+     * @return ArrayCollection|Entity\CustomDefArticle[]
+     */
+    public function findCustomDefArticle();
+
+    /**
+     * Returns a collection of feedback custom field def.
+     *
+     * @return ArrayCollection|Entity\CustomDefFeedback[]
+     */
+    public function findCustomDefFeedback();
 }
