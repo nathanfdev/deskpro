@@ -28,6 +28,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
+use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\ImportBundle\Entity;
 use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderInterface;
 
 /**
@@ -101,5 +103,26 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         }
 
         throw new \RuntimeException('Batch config is not defined');
+    }
+
+    /**
+     * Returns custom field entity.
+     *
+     * @param DeskPROEntity\CustomDataAbstract $custom_data
+     *
+     * @return Entity\CustomField
+     */
+    protected function exportCustomData(DeskPROEntity\CustomDataAbstract $custom_data)
+    {
+        $entity = new Entity\CustomField();
+        $entity
+            ->setRawData($custom_data->toArray($custom_data::TOARRAY_DEEP))
+            ->setOid($custom_data->getId())
+            ->setDestination($entity->getDestinationPrefix().$custom_data->getId())
+            ->setKey('')
+            ->setValue($custom_data->getData())
+        ;
+
+        return $entity;
     }
 }

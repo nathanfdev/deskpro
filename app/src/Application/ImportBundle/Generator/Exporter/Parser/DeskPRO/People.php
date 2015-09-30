@@ -173,16 +173,15 @@ final class People extends AbstractParser
         foreach ($person->emails as $email) {
             $entity->addEmail($email['email']);
         }
-
         foreach ($person->usergroups as $usergroup) {
             $entity->addUserGroup($usergroup['title']);
         }
-
         foreach ($person->labels as $label) {
             $entity->addLabel($label['label']);
         }
-
-        // todo custom fields
+        foreach ($person->custom_data as $custom_field_data) {
+            $entity->addCustomField($this->exportCustomData($custom_field_data));
+        }
 
         return $entity;
     }

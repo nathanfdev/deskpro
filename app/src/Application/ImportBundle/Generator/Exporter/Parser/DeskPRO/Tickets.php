@@ -166,9 +166,9 @@ final class Tickets extends AbstractParser
             /* @var $participant DeskPROEntity\Person */
             $entity->addParticipant($participant->getPrimaryEmail()->email);
         }
-
-        // todo custom fields
-
+        foreach ($ticket->custom_data as $custom_field_data) {
+            $entity->addCustomField($this->exportCustomData($custom_field_data));
+        }
 
         return $entity;
     }
