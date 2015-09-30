@@ -247,7 +247,7 @@
 	{# Organization #}
 	{##################################################################################################################}
 
-	{% if app.getDataService('Organization').getOrganizationNames()|length %}
+	{% if app.getDataService('Organization').hasOrganizations() %}
 		{% set elid = el_uid() %}
 		<div class="input-row">
 			<div class="input-row-title">

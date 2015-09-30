@@ -303,7 +303,7 @@
 	</div>
 	{% endif %}
 
-	{% if 'organization' not in no_show_fields and app.getDataService('Organization').getOrganizationNames() %}
+	{% if 'organization' not in no_show_fields and app.getDataService('Organization').hasOrganizations() %}
 	<div class="builder-type" title="{{ phrase('agent.general.organization') }}" data-term-type="GenericMenuTerm" data-term-triggers="org,organization,company" data-rule-type="organization">
 		<div class="builder-op">
 			<select name="op">
