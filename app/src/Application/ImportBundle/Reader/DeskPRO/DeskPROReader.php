@@ -140,6 +140,30 @@ class DeskPROReader extends AbstractReader implements DeskPROReaderInterface
     /**
      * {@inheritdoc}
      */
+    public function findCustomDefTicket()
+    {
+        return $this->em->getRepository('DeskPRO:CustomDefTicket')->findAll();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findCustomPersonDef()
+    {
+        return $this->em->getRepository('DeskPRO:CustomDefPerson')->findAll();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findCustomOrganizationDef()
+    {
+        return $this->em->getRepository('DeskPRO:CustomDefOrganization')->findAll();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getBlobData(Entity\Blob $blob)
     {
         return $this->blob_storage->copyBlobRecordToString($blob);

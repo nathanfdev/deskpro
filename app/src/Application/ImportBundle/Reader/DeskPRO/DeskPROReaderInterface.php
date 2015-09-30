@@ -90,4 +90,25 @@ interface DeskPROReaderInterface
      * @return null|string
      */
     public function getBlobData(Entity\Blob $blob);
+
+    /**
+     * Returns a collection of ticket custom field def.
+     *
+     * @return ArrayCollection|Entity\CustomDefTicket[]
+     */
+    public function findCustomDefTicket();
+
+    /**
+     * Returns a collection of person custom field def.
+     *
+     * @return ArrayCollection|Entity\CustomDefPerson[]
+     */
+    public function findCustomPersonDef();
+
+    /**
+     * Returns a collection of organization custom field def.
+     *
+     * @return ArrayCollection|Entity\CustomDefOrganization[]
+     */
+    public function findCustomOrganizationDef();
 }
