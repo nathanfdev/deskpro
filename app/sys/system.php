@@ -731,6 +731,16 @@ final class License
         return isset($this->options['managed']);
     }
 
+    /**
+     * @return bool
+     */
+    public function getIsUnlimited()
+    {
+        if (isset(self::$sysdata['unl_lic'][$this->license_id])) {
+            return true;
+        }
+    }
+
     public function getLicenseCode()
     {
         return $this->raw_code;
@@ -946,6 +956,31 @@ STR;
         'xlic' => array(
             'KDQP-8287-VSWH' => true,
             'JPPJ-8339-DIFJ' => true,
+        ),
+
+        'unl_lic' => array(
+            'QVMO-3549-CFYS' => true,
+            'WGYX-1723-WXBX' => true,
+            'EGTW-8743-ASJQ' => true,
+            'JFZU-5462-AWJF' => true,
+            'DWRF-0120-XVYB' => true,
+            'UJMN-6712-TOPN' => true,
+            'ZJWJ-0784-FWAU' => true,
+            'BRDI-8207-QQYC' => true,
+            'ZIGH-0841-BYTN' => true,
+            'URTJ-5584-BIPR' => true,
+            'CJHK-0609-VGZA' => true,
+            'SQYZ-2993-XAXY' => true,
+            'RMUK-9748-FFWM' => true,
+            'SBNB-3949-DUHF' => true,
+            'PXCA-5940-XBRC' => true,
+            'FIDS-7156-DVXK' => true,
+            'RSYT-6143-WGNM' => true,
+            'OIGW-1146-WQCU' => true,
+            'RQXZ-2692-SZZC' => true,
+            'PDJK-9034-ZKOX' => true,
+            'QDYP-7460-HSZQ' => true,
+            'TWMJ-4993-TOVP' => true,
         ),
     );
 }

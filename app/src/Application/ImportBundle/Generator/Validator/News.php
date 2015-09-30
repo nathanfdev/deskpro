@@ -40,17 +40,8 @@ final class News extends AbstractConstraintValidator
     /**
      * {@inheritdoc}
      */
-    public function getRecordType()
+    public function getEntityType()
     {
         return Entity\EntityInterface::TYPE_NEWS;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @var Entity\News
-     */
-    public function validate(Entity\EntityInterface $entity)
-    {
     }
 }

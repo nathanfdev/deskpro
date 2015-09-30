@@ -42,14 +42,17 @@ interface MapperInterface
     const TYPE_TICKET            = 'ticket';
     const TYPE_TICKET_CATEGORY   = 'ticket_category';
     const TYPE_TICKET_LABEL      = 'ticket_label';
+    const TYPE_TICKET_MESSAGE          = 'ticket_message';
     const TYPE_TICKET_WORKFLOW   = 'ticket_workflow';
     const TYPE_TICKET_PRIORITY   = 'ticket_priority';
     const TYPE_DEPARTMENT        = 'department';
     const TYPE_PRODUCT           = 'product';
     const TYPE_USER_GROUP        = 'usergroup';
     const TYPE_ORGANIZATION      = 'organization';
+    const TYPE_ORGANIZATION_LABEL      = 'organization_label';
     const TYPE_LANGUAGE          = 'language';
     const TYPE_ARTICLE_CATEGORY  = 'article_category';
+    const TYPE_ARTICLE_COMMENT         = 'article_comment';
     const TYPE_ARTICLE_LABEL     = 'article_label';
     const TYPE_ARTICLE           = 'article';
     const TYPE_NEWS_CATEGORY     = 'news_category';
@@ -63,18 +66,22 @@ interface MapperInterface
     const TYPE_DOWNLOAD          = 'download';
     const TYPE_CUSTOM_DEF_TICKET = 'custom_def_ticket';
     const TYPE_CUSTOM_DEF_PERSON = 'custom_def_people';
+    const TYPE_CUSTOM_DEF_FEEDBACK     = 'custom_def_feedback';
+    const TYPE_CUSTOM_DEF_ORGANIZATION = 'custom_def_organization';
+    const TYPE_CUSTOM_DEF_ARTICLE      = 'custom_def_article';
     const TYPE_BLOB_DATA         = 'blob_data';
     const TYPE_EMAIL_ACCOUNT     = 'email_account';
+    const TYPE_OBJECT_LANG             = 'object_lang';
 
     /**
-     * Returns DeskPro record type.
+     * Returns DeskPRO record type.
      *
      * @return string
      */
     public function getType();
 
     /**
-     * Returns the DeskPro record by criteria.
+     * Returns the DeskPRO record by criteria.
      *
      * @param array $criteria
      * @param bool  $throw_exception

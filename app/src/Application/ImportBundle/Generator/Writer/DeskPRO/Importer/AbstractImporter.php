@@ -30,11 +30,11 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Generator\AbstractGenerator;
-use Doctrine\Common\Collections\ArrayCollection;
+use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper\AbstractCustomDefMapper;
 
 /**
- * Abstract DeskPro importer
- * Finds or creates DeskPro entities.
+ * Abstract DeskPRO importer
+ * Finds or creates DeskPRO entities.
  *
  * Class AbstractImporter
  */
@@ -46,7 +46,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     protected $mappers;
 
     /**
-     * @var ArrayCollection
+     * @var DoctrineEntities
      */
     protected $records;
 
@@ -58,6 +58,16 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     public function __construct(Mapper\Collection $mappers)
     {
         $this->mappers = $mappers;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function reset()
+    {
+        $this->records = new DoctrineEntities();
+
+        return $this;
     }
 
     /**
@@ -128,12 +138,126 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
                 $organization = new DeskPROEntity\Organization();
                 $organization->setName($title);
 
-                $this->records->add($organization);
+                $this->records->addRelatedEntity($organization);
                 $this->logInfo(sprintf('Creating new organization `%s`', $organization->getName()));
             }
         }
 
         return $organization;
+    }
+
+    /**
+     * Returns an user group by sys name.
+     *
+     * @param string $sys_name
+     *
+     * @throws \Exception
+     *
+     * @return DeskPROEntity\UserGroup|null
+     */
+    protected function findUserGroup($sys_name)
+    {
+        /** @var Mapper\UserGroup $mapper */
+        $mapper     = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_USER_GROUP);
+        $user_group = null;
+
+        if ($sys_name) {
+            $user_group = $mapper->findOneBySysName($sys_name, false);
+            if ($user_group) {
+                $this->logDebug(sprintf(
+                    'Found existing user group `%d` with title `%s`',
+                    $user_group->getId(), $user_group->getTitle()
+                ));
+            } else {
+                $this->logWarning(sprintf('No user group `%s`', $sys_name));
+            }
+        }
+
+        return $user_group;
+    }
+
+    /**
+     * Returns custom def person entity.
+     *
+     * @param AbstractCustomDefMapper          $mapper
+     * @param Entity\CustomField               $entity
+     * @param DeskPROEntity\CustomDataAbstract $custom_field
+     *
+     * @throws ImporterException
+     *
+     * @return DeskPROEntity\CustomDataTicket
+     */
+    protected function createCustomData(AbstractCustomDefMapper $mapper, Entity\CustomField $entity, DeskPROEntity\CustomDataAbstract $custom_field)
+    {
+        $custom_field_def = $mapper->findOneBy(array(
+            'title'  => $entity->getKey(),
+            'parent' => null,
+        ));
+
+        switch ($custom_field_def->getTypeName()) {
+            case Entity\CustomField::FIELD_TYPE_TEXT:
+            case Entity\CustomField::FIELD_TYPE_TEXTAREA:
+                $custom_field
+                    ->setField($custom_field_def)
+                    ->setRootField($custom_field_def)
+                    ->setInput($entity->getValue())
+                ;
+
+                break;
+
+            case Entity\CustomField::FIELD_TYPE_TOGGLE:
+                $custom_field
+                    ->setField($custom_field_def)
+                    ->setRootField($custom_field_def)
+                    ->setValue($entity->getValue() ? 1 : 0);
+
+                break;
+
+            case Entity\CustomField::FIELD_TYPE_DATE:
+            case Entity\CustomField::FIELD_TYPE_DATETIME:
+                $custom_field
+                    ->setField($custom_field_def)
+                    ->setRootField($custom_field_def)
+                    ->setValue($entity->getValue() ? strtotime($entity->getValue()) : 0)
+                ;
+
+                break;
+
+            case Entity\CustomField::FIELD_TYPE_CHOICE:
+                $choice = $mapper->findChoiceCustomDef($entity->getValue(), $custom_field_def);
+                $custom_field
+                    ->setField($choice)
+                    ->setRootField($custom_field_def)
+                    ->setValue(1)
+                ;
+
+                break;
+
+            case Entity\CustomField::FIELD_TYPE_DISPLAY:
+            case Entity\CustomField::FIELD_TYPE_HIDDEN:
+                return;
+
+            default:
+                throw new ImporterException('Unknown custom field type `%s`', $custom_field_def->getTypeName());
+        }
+
+        return $custom_field;
+    }
+
+    /**
+     * Creates object lang.
+     *
+     * @param Entity\ObjectLang $translation
+     * @param mixed             $record
+     *
+     * @throws Mapper\MapperException
+     */
+    protected function addObjectLang(Entity\ObjectLang $translation, $record)
+    {
+        $language    = $this->getLanguageMapper()->findOneByTitle($translation->getLanguage());
+        $object_lang = DeskPROEntity\ObjectLang::createObjectLang($language, $record, $translation->getProperty(), $translation->getValue());
+
+        $this->records->addRelatedEntity($object_lang);
     }
 
     /**
@@ -218,5 +342,41 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     protected function getTicketMapper()
     {
         return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_TICKET);
+    }
+
+    /**
+     * Returns the organization mapper.
+     *
+     * @throws \Exception
+     *
+     * @return Mapper\Organization
+     */
+    protected function getOrganizationMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ORGANIZATION);
+    }
+
+    /**
+     * Returns the object lang mapper.
+     *
+     * @throws \Exception
+     *
+     * @return Mapper\ObjectLang
+     */
+    protected function getObjectLangMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_OBJECT_LANG);
+    }
+
+    /**
+     * Returns the article category mapper.
+     *
+     * @throws \Exception
+     *
+     * @return Mapper\ArticleCategory
+     */
+    protected function getArticleCategoryMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ARTICLE_CATEGORY);
     }
 }

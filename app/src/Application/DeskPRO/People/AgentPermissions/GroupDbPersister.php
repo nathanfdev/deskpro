@@ -71,7 +71,7 @@ class GroupDbPersister
         $current_perms = $this->db->fetchAllCol('SELECT name FROM permissions WHERE usergroup_id = ?', array($group->id));
 
         $set_perms = array();
-        foreach (GroupsDbLoader::$prefix_map as $real_name => $coll_name) {
+        foreach (AgentPermissions::$prefix_map as $real_name => $coll_name) {
             $obj = $perms->$coll_name;
             foreach ($obj->getNames() as $prop) {
                 if ($obj->$prop) {
@@ -144,7 +144,7 @@ class GroupDbPersister
         }
 
         $set_perms = array();
-        foreach (GroupsDbLoader::$prefix_map as $real_name => $coll_name) {
+        foreach (AgentPermissions::$prefix_map as $real_name => $coll_name) {
             $obj = $perms->$coll_name;
             foreach ($obj->getNames() as $prop) {
                 if ($obj->$prop) {

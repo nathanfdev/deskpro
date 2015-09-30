@@ -31,7 +31,6 @@
  */
 namespace Application\DeskPRO\EmailGateway\Cutter\Def;
 
-use Application\DeskPRO\App;
 use Orb\Util\Strings;
 
 class Generic implements ForwardDef, QuoteDef
@@ -247,7 +246,7 @@ class Generic implements ForwardDef, QuoteDef
 
         if (preg_match('#mailto:(.*?)@([a-zA-Z0-9\.\-_]+)#', $from_str.' ', $m)) {
             $forward_data['fwd_from_email'] = $m[1].'@'.$m[2];
-        } elseif (preg_match('#(<|\[|\()(.*?)@([a-zA-Z0-9\.\-_]+)(>|\]|\))#i', $from_str, $m)) {
+        } elseif (preg_match('#(<|\[|\()(\S*)@([a-zA-Z0-9\.\-_]+)(>|\]|\))#i', $from_str, $m)) {
             $forward_data['fwd_from_email'] = $m[2].'@'.$m[3];
         } elseif (preg_match('#[\w]+:\s*?(.*?)@([a-zA-Z0-9\.\-_]+)#i', $from_str, $m)) {
             $forward_data['fwd_from_email'] = $m[1].'@'.$m[2];
@@ -302,26 +301,24 @@ class Generic implements ForwardDef, QuoteDef
      */
     public function cutQuoteBlock($body, $is_html = false)
     {
+        // Remove DP_PREVIEW_TEXT stuff which looks like:
+        // <div id="DP_PREVIEW_TEXT_MARK" class="DP_PREVIEW_TEXT_MARK" ...>text</div>
+        $body = preg_replace('#\s*<div[^>]*DP_PREVIEW_TEXT_MARK[^>]*>(.*?)</div>\s*#is', '', $body);
+
         // Have cuts in the form of <div class="DP_TOP_MARK"> or <!--DP_TOP_MARK-->
         $pos = strpos($body, 'DP_TOP_MARK');
         if ($pos === false) {
             $pos = strpos($body, 'DP_TOP_MARK_USER');
             if ($pos === false) {
                 // Try to detect '=== REPLY ABOVE THIS LINE ===' bits
-                $langs = App::getDataService('Language')->getAll();
-                foreach ($langs as $l) {
-                    $re      = preg_quote(App::getTranslator()->getPhraseText('agent.emails.reply_above_line', $l), '#');
-                    $matches = null;
-                    if (preg_match('#===(\s|&nbsp;)*'.$re.'(\s|&nbsp;)*===#', $body, $matches, \PREG_OFFSET_CAPTURE)) {
+                $matches = array();
+                if (preg_match(
+                        '#(?:=(?:3D)?){3}(?:\s|&nbsp;)*.+(?: \[.+\])?(?:\s|&nbsp;)*(?:=(?:3D)?){3}#',
+                        $body,
+                        $matches,
+                        \PREG_OFFSET_CAPTURE
+                )) {
                         $pos = $matches[0][1];
-                        break;
-                    }
-
-                    // Detect encoded ='s if text was mangled
-                    if (preg_match('#=3D=3D=3D(\s|&nbsp;)*'.$re.'(\s|&nbsp;)*=3D=3D=3D#', $body, $matches, \PREG_OFFSET_CAPTURE)) {
-                        $pos = $matches[0][1];
-                        break;
-                    }
                 }
 
                 if ($pos === false) {

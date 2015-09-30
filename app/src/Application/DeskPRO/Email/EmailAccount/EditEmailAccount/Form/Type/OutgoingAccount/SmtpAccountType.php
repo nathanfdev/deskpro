@@ -40,7 +40,7 @@ class SmtpAccountType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('user',        'text',     array('required' => false));
-        $builder->add('password',    'password', array('required' => false));
+        $builder->add('password',    'dp_enc_password', array('required' => false));
         $builder->add('host',        'text',    array('required' => true));
         $builder->add('port',        'text',    array('required' => true));
         $builder->add('secure_mode', 'choice',  array(

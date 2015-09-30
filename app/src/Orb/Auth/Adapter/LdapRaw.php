@@ -36,12 +36,11 @@ namespace Orb\Auth\Adapter;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
-use Orb\Log\Loggable;
 use Orb\Log\Logger;
 use Orb\Util\Arrays;
 use Zend\Ldap\Ldap;
 
-class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface, Loggable
+class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
 {
     const OPT_HOST            = 'host';
     const OPT_PORT            = 'port';
@@ -141,7 +140,7 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface, Lo
      *
      * @return
      */
-    public function authenticate()
+    public function doAuthenticate()
     {
         if (!$this->set_username) {
             return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_username', 'error_message' => 'No username provided'));
@@ -471,7 +470,7 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface, Lo
     /**
      * @param \Orb\Log\Logger $logger
      */
-    public function setLogger(\Orb\Log\Logger $logger)
+    public function setLogger(Logger $logger)
     {
         $this->logger = $logger;
     }

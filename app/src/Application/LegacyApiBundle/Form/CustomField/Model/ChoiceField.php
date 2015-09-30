@@ -264,12 +264,16 @@ class ChoiceField extends CustomFieldAbstract
 
         $this->_em->flush();
 
-        if ($this->default_value != $this->_field->default_value) {
+        if ($this->default_value != $this->_field->default_value || false !== strpos($this->default_value, 'cb_')) {
             $this->_field->default_value = null;
 
-            if (isset($choices[$this->default_value])) {
-                $this->_field->default_value = $choices[$this->default_value]->id;
+            $defaults = array();
+            foreach (explode(',', $this->default_value) as $dval) {
+                if (isset($choices[$dval])) {
+                    $defaults[] = $choices[$dval]->id;
             }
+            }
+            $this->_field->default_value = implode(',', $defaults);
 
             $this->_em->persist($this->_field);
             $this->_em->flush();

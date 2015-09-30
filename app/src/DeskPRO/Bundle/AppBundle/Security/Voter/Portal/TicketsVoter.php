@@ -76,8 +76,11 @@ class TicketsVoter extends AbstractVoter
                 break;
 
             case static::TICKET_EDIT:
-                $decision = $ticket->isInvolved($user)
-                    && ($ticket->isOwner($user) || $ticket->isOrganizationManager($user));
+                $decision =
+                    $ticket->isInvolved($user)
+                    && $ticket->isOwner($user)
+                    && $ticket->hasVisibleStatus()
+                ;
                 break;
         }
 

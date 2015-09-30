@@ -28,31 +28,48 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Reader\BaseConfig;
-use Application\ImportBundle\Reader\Json\JsonReader;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
+use Application\ImportBundle\Reader\Json\JsonReaderInterface;
+use Application\ImportBundle\Reader\ReaderInterface;
 
 /**
  * Json data exporter factory.
  *
  * Class JsonFactory
  */
-class JsonFactory extends AbstractFactory
+class JsonFactory extends AbstractExporterFactory
 {
     /**
      * {@inheritdoc}
      */
-    public static function createExporter(ContainerInterface $container, BaseConfig $config)
+    public function createExporter(ReaderInterface $reader)
     {
-        $reader  = new JsonReader($config);
+        if (!$reader instanceof JsonReaderInterface) {
+            throw new \RuntimeException('Config expected to be instance of JsonReaderInterface');
+        }
+
+        $formatter = $this->container->get('deskpro.import.formatter');
+
+        $helpers = new ParserHelperSet();
+        $helpers
+            ->attach(new Parser\Json\Helper\Attachment($formatter))
+            ->attach(new Parser\Json\Helper\Blob($formatter))
+            ->attach(new Parser\Json\Helper\ContactData($formatter))
+            ->attach(new Parser\Json\Helper\CustomFields($formatter))
+            ->attach(new Parser\Json\Helper\Translations($formatter))
+        ;
+
         $parsers = new Parser\Collection();
         $parsers
-            ->attach(new Parser\Json\Downloads($reader))
-            ->attach(new Parser\Json\Feedback($reader))
-            ->attach(new Parser\Json\Articles($reader))
-            ->attach(new Parser\Json\News($reader))
-            ->attach(new Parser\Json\People($reader))
-            ->attach(new Parser\Json\Tickets($reader));
+            ->attach(new Parser\Json\Downloads($reader, $formatter, $helpers))
+            ->attach(new Parser\Json\Feedback($reader, $formatter, $helpers))
+            ->attach(new Parser\Json\Articles($reader, $formatter, $helpers))
+            ->attach(new Parser\Json\ArticleCategories($reader, $formatter, $helpers))
+            ->attach(new Parser\Json\News($reader, $formatter, $helpers))
+            ->attach(new Parser\Json\People($reader, $formatter, $helpers))
+            ->attach(new Parser\Json\Tickets($reader, $formatter, $helpers))
+            ->attach(new Parser\Json\Organizations($reader, $formatter, $helpers))
+        ;
 
         return new Json($parsers, $reader);
     }

@@ -20,6 +20,7 @@ services:
     factory_service: default_brand_finder
     factory_method: getDefaultBrand
 
+
   person_factory:
     class: DeskPRO\Bundle\PortalBundle\Person\PersonFactory
-    arguments: [@doctrine.orm.default_entity_manager, @event_dispatcher, @brand_stack]
+    arguments: [@doctrine.orm.default_entity_manager, @event_dispatcher, @brand_stack, @language_stack]

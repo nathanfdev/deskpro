@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Entity;
 
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -63,6 +64,29 @@ class NewsCategory extends CategoryAbstract
      *                                                   SWG\Property(name="tags",type="array",SWG\Items("Usergroup"))
      */
     protected $usergroups;
+
+    public function __construct()
+    {
+        $this->usergroups = new ArrayCollection();
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getUserGroups()
+    {
+        return $this->usergroups;
+    }
+
+    /**
+     * @param \Application\DeskPRO\Entity\Usergroup $usergroup
+     */
+    public function addUsergroup(Usergroup $usergroup)
+    {
+        if (!$this->usergroups->contains($usergroup)) {
+            $this->usergroups->add($usergroup);
+        }
+    }
 
     ############################################################################
     # Doctrine Metadata

@@ -68,8 +68,12 @@ final class TicketDepartment implements MapperInterface, MapperByTitleInterface
     {
         /** @var Entity\Department $record */
         $record = $this->repository->findOneBy($criteria);
-        if (!$record && $throw_exception) {
+        if (!$record) {
+            if ($throw_exception) {
             throw new MapperException('Ticket department not found', $criteria);
+        }
+
+            return;
         }
         if (!$record->isType('tickets')) {
             throw new MapperException('Department is not suite for tickets', $criteria);

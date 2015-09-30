@@ -49,12 +49,12 @@ define(['cutstring'], function (cutstring) {
             if (val instanceof Array) {
               var ret = [];
               val.each(function (item) {
-                var sub = types[schema.items] ? types[schema.items](item) : item;
+                var sub = types[schema.items] ? types[schema.items](item) : types.string(item);
                 ret.push(sub);
               });
               return ret.join(', ');
             } else {
-              return types[schema.items] ? types[schema.items](val) : val;
+              return types[schema.items] ? types[schema.items](val) : types.string(item);
             }
           },
           datetime: function (val) {

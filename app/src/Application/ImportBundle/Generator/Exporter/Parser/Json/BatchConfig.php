@@ -45,17 +45,4 @@ final class BatchConfig extends AbstractBatchConfig
     {
         return ExporterInterface::TYPE_JSON;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function toArray()
-    {
-        return array(
-            'id'            => $this->id,
-            'type'          => $this->getExporterType(),
-            'date_created'  => $this->date_created ? $this->date_created->format('Y-m-d H:i:s') : null,
-            'date_modified' => $this->date_modified ? $this->date_modified->format('Y-m-d H:i:s') : null,
-        );
-    }
 }

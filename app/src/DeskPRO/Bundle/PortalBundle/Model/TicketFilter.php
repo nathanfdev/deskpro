@@ -43,6 +43,7 @@ class TicketFilter
     const SORT_CREATED    = 'created';
     const SORT_ACTIVITY   = 'activity';
     const SORT_DEPARTMENT = 'department';
+    const SORT_SUBJECT    = 'subject';
 
     const SORT_DIRECTION_DESC = 'desc';
     const SORT_DIRECTION_ASC  = 'asc';
@@ -128,7 +129,7 @@ class TicketFilter
      */
     public function setSort($sort)
     {
-        if (!in_array($sort, array(self::SORT_ACTIVITY, self::SORT_CREATED))) {
+        if (!in_array($sort, array(self::SORT_ACTIVITY, self::SORT_CREATED, self::SORT_DEPARTMENT, self::SORT_SUBJECT))) {
             $sort = self::SORT_ACTIVITY;
         }
 

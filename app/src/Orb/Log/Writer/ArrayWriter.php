@@ -69,13 +69,13 @@ class ArrayWriter extends AbstractWriter
     {
         $msg = trim($log_item[LogItem::MESSAGE_LINE]);
 
-        if (strlen($msg) > $this->max_line_length) {
+        if (isset($msg[$this->max_line_length + 1])) {
             $msg = substr($msg, 0, $this->max_line_length);
         }
 
         $this->messages[] = $msg;
 
-        while (count($this->messages) > $this->max_size) {
+        while (isset($this->messages[$this->max_size + 1])) {
             array_shift($this->messages);
         }
     }

@@ -29,16 +29,24 @@
 namespace Application\ImportBundle\Generator;
 
 use Application\DeskPRO\Entity\DataStore;
-use Application\DeskPRO\ORM\EntityManager;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\NullOutput;
 
+/**
+ * Class ImporterProgressBar.
+ */
 class ImporterProgressBar extends ProgressBar
 {
     protected $em;
     protected $importer;
     protected $total_count;
 
+    /**
+     * @param DataStore     $importer
+     * @param EntityManager $em
+     * @param int           $total_count
+     */
     public function __construct(DataStore $importer, EntityManager $em, $total_count)
     {
         $this->em       = $em;

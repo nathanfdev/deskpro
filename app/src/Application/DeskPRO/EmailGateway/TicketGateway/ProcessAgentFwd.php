@@ -224,8 +224,27 @@ class ProcessAgentFwd extends ProcessAbstract
             $agent_ticket_message->person = $this->person;
             $agent_ticket_message->setMessageHtml($agent_reply);
             $agent_ticket_message->creation_system = 'gateway.agent';
+
+            if (isset($this->ticket_email->reply_actions['is_reply'])) {
+                $this->logMessage('is_reply flag is set');
+                $agent_ticket_message->is_agent_note = false;
+            } elseif (isset($this->ticket_email->reply_actions['is_note'])) {
+                $this->logMessage('is_note flag is set');
+                $agent_ticket_message->is_agent_note = true;
+            } elseif (App::getSetting('core_tickets.email_fwd_reply_as_note')) {
+                $this->logMessage('email_fwd_reply_as_note is enabled');
+                $agent_ticket_message->is_agent_note = true;
+            } else {
+                $this->logMessage('email_fwd_reply_as_note is NOT enabled');
+                $agent_ticket_message->is_agent_note = false;
+            }
+
             $ticket->addMessage($agent_ticket_message);
+            if ($agent_ticket_message->is_agent_note) {
+                $ticket->setStatus('awaiting_agent');
+            } else {
             $ticket->setStatus('awaiting_user');
+        }
         }
 
         foreach ($this->processBlobs() as $blob) {
@@ -517,8 +536,27 @@ class ProcessAgentFwd extends ProcessAbstract
             $agent_ticket_message->person = $this->person;
             $agent_ticket_message->setMessageHtml($agent_reply);
             $agent_ticket_message->creation_system = 'gateway.agent';
+
+            if (isset($this->ticket_email->reply_actions['is_reply'])) {
+                $this->logMessage('is_reply flag is set');
+                $agent_ticket_message->is_agent_note = false;
+            } elseif (isset($this->ticket_email->reply_actions['is_note'])) {
+                $this->logMessage('is_note flag is set');
+                $agent_ticket_message->is_agent_note = true;
+            } elseif (App::getSetting('core_tickets.email_fwd_reply_as_note')) {
+                $this->logMessage('email_fwd_reply_as_note is enabled');
+                $agent_ticket_message->is_agent_note = true;
+            } else {
+                $this->logMessage('email_fwd_reply_as_note is NOT enabled');
+                $agent_ticket_message->is_agent_note = false;
+            }
+
             $ticket->addMessage($agent_ticket_message);
+            if ($agent_ticket_message->is_agent_note) {
+                $ticket->setStatus('awaiting_agent');
+            } else {
             $ticket->setStatus('awaiting_user');
+        }
         }
 
         $processed_blobs     = array();

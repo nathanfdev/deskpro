@@ -16,30 +16,69 @@
             </a>
         {% endif %}
 
-        {% macro tickets_table(tickets_pager, title, pg_param) %}
+        {% macro sort_link(label, sort_value, sort, sort_param, sort_dir, sort_dir_param) %}
+            {% set queryParams = app.request.query.all|merge({(sort_param):sort_value}) %}
+            {% set isActive = sort_value == sort %}
+            {% if isActive %}
+                {% set linkDir = sort_dir == 'desc' ? 'asc' : 'desc' %}
+            {% else %}
+                {% set linkDir = 'desc' %}
+            {% endif %}
+            {% set queryParams = app.request.query.all|merge({(sort_param):sort_value, (sort_dir_param):linkDir}) %}
+            {% set url = path(app.request.attributes.get('_route'), queryParams) %}
+            {% set sort_icon = sort_dir == 'desc' ? '&darr;' : '&uarr;' %}
+            <a href="{{ url }}">{{ label }}{% if isActive %}{{ sort_icon|raw }}{% endif %}</a>
+        {% endmacro %}
+
+        {% macro tickets_table(tickets_pager, title, pg_param, sort_param, sort, sort_dir_param, sort_dir) %}
         <div class="column-full">
          <div><!-- Table Header -->
              <header class="titled-header">
                  <h1>{{ title }}</h1>
              </header>
 
-             <!-- Table Controls -->
-             <div class="table-meta">
-                 <div class="table-controls">
-                     <a href="#" class="column-control"></a>
-                     <a href="#" class="expand-control"><i class="fa fa-caret-right"></i></a>
-                 </div>
-             </div>
-
              <!-- Table -->
              <table class="user-ticket-list">
                  <thead>
                  <tr>
                      <td class="table-header">
-                         <a href="#">{{ phrase('portal.tickets.list_department') }}</a> / <a href="#">{{ phrase('portal.tickets.list_subject') }}</a>
+                         {{ _self.sort_link(
+                             phrase('portal.tickets.list_department'),
+                             'department',
+                             sort,
+                             sort_param,
+                             sort_dir,
+                             sort_dir_param
+                         ) }}
+                         /
+                         {{ _self.sort_link(
+                         phrase('portal.tickets.list_subject'),
+                             'subject',
+                              sort,
+                              sort_param,
+                              sort_dir,
+                              sort_dir_param
+                         ) }}
+                     </td>
+                     <td class="table-header">
+                         {{ _self.sort_link(
+                             phrase('portal.tickets.list_date_created'),
+                             'created',
+                             sort,
+                             sort_param,
+                             sort_dir,
+                             sort_dir_param
+                         ) }}
                      </td>
                      <td class="table-header right">
-                         <a href="#">{{ phrase('portal.tickets.list_last_action') }}</a>
+                         {{ _self.sort_link(
+                             phrase('portal.tickets.list_last_action'),
+                             'activity',
+                             sort,
+                             sort_param,
+                             sort_dir,
+                             sort_dir_param
+                         ) }}
                      </td>
                  </tr>
                  </thead>
@@ -53,7 +92,11 @@
                                  {{ ticket.subject }}
                              </a>
                          </td>
-
+                         <td>
+                             <a href="{{ portal_path(ticket) }}">
+                                 <span class="date">{{ ticket.date_created|date }}</span>
+                             </a>
+                         </td>
                          <td class="info-block">
                              {% set last_message = ticket.messages|last %}
                              <a href="{{ portal_path(ticket) }}">
@@ -74,7 +117,9 @@
         </div>
         {% endmacro %}
 
-        {{ _self.tickets_table(awaiting_user_tickets, phrase('portal.tickets.list_status_user'), awaiting_user_tickets_pg_param) }}
-        {{ _self.tickets_table(awaiting_agent_tickets, phrase('portal.tickets.list_status_agent'), awaiting_agent_tickets_pg_param) }}
-        {{ _self.tickets_table(resolved_tickets, phrase('portal.tickets.list_status_resolved'), resolved_tickets_pg_param) }}
+        {{ _self.tickets_table(awaiting_user_tickets,phrase('portal.tickets.list_status_user'),awaiting_user_tickets_pg_param,awaiting_user_sort_param,awaiting_user_sort,awaiting_user_sort_dir_param,awaiting_user_sort_dir) }}
+
+        {{ _self.tickets_table(awaiting_agent_tickets,phrase('portal.tickets.list_status_agent'),awaiting_agent_tickets_pg_param,awaiting_agent_sort_param,awaiting_agent_sort,awaiting_agent_sort_dir_param,awaiting_agent_sort_dir) }}
+
+        {{ _self.tickets_table(resolved_tickets,phrase('portal.tickets.list_status_resolved'),resolved_tickets_pg_param,resolved_sort_param,resolved_sort,resolved_sort_dir_param,resolved_sort_dir) }}
 {% endblock inner_content %}

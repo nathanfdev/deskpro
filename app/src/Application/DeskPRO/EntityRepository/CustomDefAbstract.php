@@ -137,7 +137,8 @@ class CustomDefAbstract extends AbstractEntityRepository
      */
     public function hasData(array $ids)
     {
-        $table = str_replace('_def_', '_data_', $this->getTableName());
+        $entity = str_replace('\\CustomDef', '\\CustomData', $this->getEntityName());
+        $table  = $this->_em->getRepository($entity)->getTableName();
         $con   = $this->_em->getConnection();
         $q     = sprintf('select count(*) from %s where field_id in (:ids)', $table);
         $res   = $con->executeQuery($q, array('ids' => $ids), array('ids' => Connection::PARAM_INT_ARRAY))->fetchColumn();

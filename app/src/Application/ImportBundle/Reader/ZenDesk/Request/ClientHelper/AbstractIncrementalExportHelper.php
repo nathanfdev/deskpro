@@ -50,28 +50,22 @@ abstract class AbstractIncrementalExportHelper extends AbstractHelper
      * @param Client $client
      * @param string $type
      * @param array  $params
+     * @param string $api_group
      *
      * @throws MissingParametersException
      * @throws ResponseException
      *
      * @return \stdClass
      */
-    protected function incrementalExport(Client $client, $type, array $params)
+    protected function incrementalExport(Client $client, $type, array $params, $api_group = '')
     {
         if (!$params['start_time']) {
             throw new MissingParametersException(__METHOD__, array('start_time'));
         }
 
-        $request_url = sprintf('incremental/%s.json?start_time=%s', $type, $params['start_time']);
+        $request_url = rtrim($api_group, '/').'/'.sprintf('incremental/%s.json?start_time=%s', $type, $params['start_time']);
         $end_point   = Http::prepare($request_url);
-        $response    = Http::send($client, $end_point);
 
-        if ((!is_object($response)) || ($client->getDebug()->lastResponseCode != 200)) {
-            throw new ResponseException(__METHOD__);
-        }
-
-        $client->setSideload(null);
-
-        return $response;
+        return $this->doGetRequest($client, $end_point);
     }
 }

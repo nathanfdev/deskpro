@@ -83,6 +83,7 @@ class CsvExport extends AbstractJob
         $fp = fopen($file, 'a');
 
         if (!$this->_data['file']) {
+
             //select max(cnt) from (select count(person_id) as cnt from people_contact_data group by person_id) as counts
             /*
              *  ID
@@ -124,7 +125,7 @@ class CsvExport extends AbstractJob
                     implode(',', array($person['name'], $person['first_name'], $person['last_name'])),
                     $person['title_prefix'],
                     $person->getPrimaryEmailAddress(),
-                    implode(',', $person->getEmailAddresses()),
+                    implode(',', $person->getEmailAddresses(true)),
                     $person->organization ? $person->organization['name'] : '',
                     $person['organization_position'],
                     $person['date_created'] ? $person['date_created']->format('Y-m-d H:i:s') : '',
@@ -277,7 +278,7 @@ class CsvExport extends AbstractJob
             /* @var $cd PersonContactData */
             $data = ('phone' === $cd['contact_type'] || 'mobile' === $cd['contact_type'])
                 ? $cd['field_1'].$cd['field_2']
-                : $cd->getSearchString();
+                : $cd->getSearchString(true);
 
             $types[$cd['contact_type']][] = $data;
         }

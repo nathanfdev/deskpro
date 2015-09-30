@@ -39,7 +39,7 @@ use Application\DeskPRO\DBAL\Connection;
 /**
  * DEPRECEATED way of getting settings.
  *
- * This class fethces settings
+ * This class fethces settings.
  *
  * @deprecated get the "settings_resolver" system service and fetch the SettingsBag you want from it instead.
  *             this exists only for BC.
@@ -52,12 +52,15 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
     private $settings;
 
     /**
+     * Plain database connection for raw queries.
+     *
      * @var \Application\DeskPRO\NewSettings\SettingsBag
      */
     private $default_settings;
 
     /**
      * @var \Application\DeskPRO\NewSettings\SettingsResolver
+     * @var array
      */
     private $new_settings_resolver;
 
@@ -103,6 +106,10 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     public function get($name, $default = null)
     {
+        if (!$name) {
+            return $default;
+        }
+
         return $this->settings->get($name, $default);
     }
 

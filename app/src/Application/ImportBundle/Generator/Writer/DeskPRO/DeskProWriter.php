@@ -35,6 +35,7 @@ use Application\ImportBundle\Generator\LoggerAwareInterface;
 use Application\ImportBundle\Generator\ProgressBarAwareInterface;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\ImporterInterface;
+use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper\OidMapper;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\SkipDuplicateInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Orb\Util\Util;
@@ -58,6 +59,11 @@ final class DeskProWriter extends AbstractWriter
     private $entity_manager;
 
     /**
+     * @var OidMapper
+     */
+    private $oid_mapper;
+
+    /**
      * @var EntityWatcher
      */
     private $entity_watcher;
@@ -67,12 +73,18 @@ final class DeskProWriter extends AbstractWriter
      *
      * @param Importer\Collection $importers
      * @param ObjectManager       $entity_manager
+     * @param OidMapper           $oid_mapper
      * @param EntityWatcher       $entity_watcher
      */
-    public function __construct(Importer\Collection $importers, ObjectManager $entity_manager, EntityWatcher $entity_watcher)
-    {
+    public function __construct(
+        Importer\Collection $importers,
+        ObjectManager       $entity_manager,
+        OidMapper           $oid_mapper,
+        EntityWatcher       $entity_watcher
+    ) {
         $this->importers      = $importers;
         $this->entity_manager = $entity_manager;
+        $this->oid_mapper     = $oid_mapper;
         $this->entity_watcher = $entity_watcher;
     }
 
@@ -102,25 +114,72 @@ final class DeskProWriter extends AbstractWriter
         $importers = $this->getImporters($entity);
         foreach ($importers as $importer) {
             try {
+                $entity_id = null;
+                if ($entity->getImportMapKey()) {
+                    $entity_id = $this->oid_mapper->findRefByOldId($entity->getImportMapKey(), $entity->getOid());
+
+                    if ($entity_id) {
+                        $this->logDebug(sprintf(
+                            'Found existing mapping for `%s`, oid = %s, id = %d',
+                            $entity->getImportMapKey(), $entity->getOid(), $entity_id
+                        ));
+                    }
+                }
+
                 if ($importer instanceof SkipDuplicateInterface) {
                     $importer->checkAlreadyExists($entity);
                 }
 
                 /* @var ImporterInterface $importer */
-                $records = $importer->getDoctrineEntities($entity);
-                foreach ($records as $record) {
+                $records = $importer->reset()->getDoctrineEntities($entity, $entity_id);
+                foreach ($records->getPersistEntities() as $record) {
                     if ($this->config->isDryRun() === false) {
                         $this->entity_manager->persist($record);
                     }
                 }
 
                 $this->entity_manager->flush();
+
+                foreach ($records->getPersistEntities() as $record) {
+                    $this->logDebug(sprintf(
+                        'Persisted %s #%s',
+
+                        Util::getBaseClassname($record),
+                        method_exists($record, 'getId') ? $record->getId() : '_'
+                    ));
+                }
+
+                // Save primary entity oid mapping
+                if ($entity->getImportMapKey()) {
+                    $primary_record = $records->getPrimaryEntity();
+                    if ($primary_record && method_exists($primary_record, 'getId') && null === $entity_id) {
+                        $this->oid_mapper->saveMapping($entity->getImportMapKey(), $entity->getOid(), $primary_record->getId());
+                    }
+                }
+
+                // Save related entity mapping
+                foreach ($records->getImportMapEntities() as $oid_map) {
+                    $map_entity = $oid_map->getEntity();
+
+                    if (!$this->oid_mapper->findRefByOldId($map_entity->getImportMapKey(), $map_entity->getOid())) {
+                        $import_map = $oid_map->createDoctrineImportMapEntity();
+
+                        $this->entity_manager->persist($import_map);
+                        $this->logInfo(sprintf(
+                            'Persisted a new import map %s, oid=%s, id=%s',
+                            $import_map->getTypename(), $import_map->getOldId(), $import_map->getNewId()
+                        ));
+                    } else {
+                        $this->logWarning(sprintf(
+                            'Unable to add a new import map %s, oid=%s, already exists',
+                            $map_entity->getImportMapKey(), $map_entity->getOid()
+                        ));
+                    }
+                }
+
+                $this->entity_manager->flush();
                 $this->entity_manager->clear();
                 $this->entity_watcher->flushUpdatesQuiet();
-
-                foreach ($records as $r) {
-                    $this->logDebug(sprintf('Persisted %s #%s', Util::getBaseClassname($r), method_exists($r, 'getId') ? $r->getId() : '_'));
-                }
             } catch (Importer\Mapper\MapperException $e) {
                 $this->logWarning(sprintf(
                     'Unable to create `%s` with oid `%s`. Reason %s',
@@ -142,8 +201,6 @@ final class DeskProWriter extends AbstractWriter
      *
      * @param EntityInterface $entity
      *
-     * @throws \Exception
-     *
      * @return Importer\Collection
      */
     private function getImporters(EntityInterface $entity)
@@ -151,15 +208,12 @@ final class DeskProWriter extends AbstractWriter
         $importers = $this->importers->getByEntityType($entity->getType());
         foreach ($importers as $importer) {
             if ($this->config && $importer instanceof GeneratorConfigAwareInterface) {
-                /* @var GeneratorConfigAwareInterface $importer */
                 $importer->setConfig($this->config);
             }
             if ($this->logger && $importer instanceof LoggerAwareInterface) {
-                /* @var LoggerAwareInterface $importer */
                 $importer->setLogger($this->logger);
             }
             if ($this->progress_bar && $importer instanceof ProgressBarAwareInterface) {
-                /* @var ProgressBarAwareInterface $importer */
                 $importer->setProgressBarHelper($this->progress_bar);
             }
         }

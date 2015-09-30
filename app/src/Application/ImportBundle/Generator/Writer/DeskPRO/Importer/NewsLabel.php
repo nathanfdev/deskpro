@@ -30,10 +30,9 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro news labels importer.
+ * DeskPRO news labels importer.
  *
  * Class NewsLabel
  */
@@ -49,81 +48,26 @@ final class NewsLabel extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\News
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        $this->records = new ArrayCollection();
-
-        $news   = $this->getNewsMapper()->findOneByTitle($entity->getTitle());
-        $labels = $this->getExistingLabelsNames($news->getId());
-
-        foreach ($entity->getLabels() as $label) {
-            if (in_array($label, $labels, true)) {
-                $this->logDebug(sprintf(
-                    'Found an existing label `%s` for news with oid `%d` (Skipping)',
-                    $label, $news->getId()
-                ));
-            } else {
-                $news->addLabel($this->createNewsLabel($label));
-                $this->logDebug(sprintf(
-                    'Creating a new label `%s` for news with oid `%d`',
-                    $label, $news->getId()
-                ));
-            }
+        if (!$entity instanceof Entity\News) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
+
+        $news = $this->getNewsMapper()->findOneByTitle($entity->getTitle());
+        $news->resetLabels();
+
+        foreach ($entity->getLabels() as $label_name) {
+            $label = new DeskPROEntity\LabelNews();
+            $label->setLabel($label_name);
+
+            $news->addLabel($label);
+            $this->logDebug(sprintf('Creating a new label `%s` for news with oid `%d`', $label_name, $news->getId()));
+        }
+
+        $this->records->setPrimaryEntity($news);
 
         return $this->records;
-    }
-
-    /**
-     * Returns a new news label entity.
-     *
-     * @param string $label
-     *
-     * @return DeskPROEntity\LabelNews
-     */
-    private function createNewsLabel($label)
-    {
-        $entity = new DeskPROEntity\LabelNews();
-        $entity->setLabel($label);
-
-        $this->records->add($entity);
-
-        return $entity;
-    }
-
-    /**
-     * Returns a collection of existing news label names.
-     *
-     * @param int $id
-     *
-     * @throws Mapper\MapperException
-     *
-     * @return array
-     */
-    private function getExistingLabelsNames($id)
-    {
-        $labels = $this->getNewsLabelMapper()->findByNewsId($id, false);
-        $names  = array();
-
-        foreach ($labels as $label) {
-            $names[] = $label->getLabel();
-        }
-
-        return $names;
-    }
-
-    /**
-     * Returns the news label mapper.
-     *
-     * @throws \Exception
-     *
-     * @return Mapper\NewsLabel
-     */
-    private function getNewsLabelMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_NEWS_LABEL);
     }
 }

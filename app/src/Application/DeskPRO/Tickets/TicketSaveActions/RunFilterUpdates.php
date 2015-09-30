@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Filters\FilterChangeDetector;
@@ -41,23 +42,17 @@ use Application\DeskPRO\Tickets\Filters\FilterChangeDetector;
 class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterface
 {
     /**
-     * @var FilterChangeDetector
+     * @var DeskproContainer
      */
-    private $filter_change_detector;
-
-    /**
-     * @var Connection
-     */
-    private $db;
+    protected $container;
 
     /**
      * @param Connection           $db
      * @param FilterChangeDetector $filter_change_detector
      */
-    public function __construct(Connection $db, FilterChangeDetector $filter_change_detector)
+    public function __construct(DeskproContainer $container)
     {
-        $this->db                     = $db;
-        $this->filter_change_detector = $filter_change_detector;
+        $this->container = $container;
     }
 
     /**
@@ -72,7 +67,8 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
             return;
         }
 
-        $change_set      = $this->filter_change_detector->getFilterChangeSet($ticket, $context);
+        $detector        = $this->container->getTicketFilterChangeDetector();
+        $change_set      = $detector->getFilterChangeSet($ticket, $context);
         $client_messages = $change_set->getListUpdateClientMessages();
 
         $rows     = array();
@@ -94,8 +90,10 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
         }
 
         if ($rows) {
+            $ts = microtime(true);
             $context->getLogger()->info(sprintf('[RunFilterUpdates] Inserting %d client_messages for %d agents in channels: %s', count($client_messages), count($agents), implode(', ', array_keys($channels))));
-            $this->db->batchInsert('client_messages', $rows);
+            $this->container->getDb()->batchInsert('client_messages', $rows);
+            $context->getLogger()->info(sprintf('[RunFilterUpdates] Done inserts in %.3fs', microtime(true) - $ts));
         } else {
             $context->getLogger()->info('[RunFilterUpdates] None (empty)');
         }

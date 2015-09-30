@@ -35,6 +35,7 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Theme\TagRequestFactory
     arguments:
       - @request_stack
+      - @language_manager
 
 
   theme_view_factory:

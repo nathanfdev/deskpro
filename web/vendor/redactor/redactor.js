@@ -3426,7 +3426,7 @@ var RLANG = {
 
 				$('.redactor_link_text').val(text);
 
-				var thref = self.location.href.replace(/\/$/i, '');
+				var thref = window.location.href.replace(/\/$/i, '');
 				var turl = url.replace(thref, '');
 
 				if (url.search('mailto:') === 0)

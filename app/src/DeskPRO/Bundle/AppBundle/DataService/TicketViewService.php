@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
+use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Translate\Translate;
@@ -158,8 +159,14 @@ class TicketViewService extends AbstractDataService
 
                         /* @var \Application\DeskPRO\Entity\CustomFieldData $data */
                         if ($data = $this->custom_per_field_manager->getCustomPerFieldData($field_def, $context)) {
-                            if ($selected_def = $this->findSelectedCustomPerFieldChoice($field_def, $context, $data)) {
-                                $value                                        = $selected_def->getTitle();
+                            if ($selected = $this->findSelectedCustomPerFieldChoice($field_def, $context, $data)) {
+                                if (is_array($selected)) {
+                                    $value = implode(', ', array_map(function ($choice_def) {
+                                        return $choice_def->getTitle();
+                                    }, $selected));
+                                } else {
+                                    $value = $selected->getTitle();
+                                }
                                 $view->attribute_list[$field_def->getTitle()] = $value;
                             }
                         }
@@ -216,8 +223,9 @@ class TicketViewService extends AbstractDataService
                 }
                 $selected = array();
                 foreach ($ids as $id) {
-                    $selected_field = $field_def->getChildById($id);
+                    if ($selected_field = $field_def->getChildById($id)) {
                     $selected[]     = $selected_field->title;
+                }
                 }
                 $value = implode(', ', $selected);
                 break;
@@ -238,14 +246,23 @@ class TicketViewService extends AbstractDataService
      *
      * @return \Application\DeskPRO\Entity\CustomFieldDefinition|null
      */
-    public function findSelectedCustomPerFieldChoice($field_def, $context, $data)
+    public function findSelectedCustomPerFieldChoice(CustomFieldDefinition $field_def, $context, $data)
     {
         $choices = $this->custom_per_field_manager->getCustomPerFieldChoices($field_def, $context);
-        /** @var \Application\DeskPRO\Entity\CustomFieldDefinition $choice_def */
+
+        if ($field_def->getOption('multiple', false)) {
+            $values = explode(',', $data->input);
+
+            return array_filter($choices, function ($choice_def) use ($values) {
+                return in_array($choice_def->id, $values);
+            });
+        } else {
+            $value = $data->value;
         foreach ($choices as $choice_def) {
-            if ($choice_def->id == $data->value) {
+                if ($choice_def->id == $value) {
                 return $choice_def;
             }
         }
     }
+}
 }

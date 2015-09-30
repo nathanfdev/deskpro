@@ -60,19 +60,6 @@ class PersonDbLoader
     private $perms;
 
     /**
-     * @var array
-     */
-    private static $prefix_map = array(
-        'agent_tickets' => 'ticket',
-        'agent_people'  => 'people',
-        'agent_org'     => 'org',
-        'agent_chat'    => 'chat',
-        'agent_publish' => 'publish',
-        'agent_general' => 'general',
-        'agent_tasks'   => 'tasks',
-    );
-
-    /**
      * @param Person        $person
      * @param EntityManager $em
      */
@@ -214,11 +201,11 @@ class PersonDbLoader
             } // invalid
 
             list($type, $name) = explode('.', $k, 2);
-            if (!isset(self::$prefix_map[$type])) {
+            if (!isset(AgentPermissions::$prefix_map[$type])) {
                 continue;
             } // unknown type
 
-            $obj_name = self::$prefix_map[$type];
+            $obj_name = AgentPermissions::$prefix_map[$type];
             $obj      = $agent_perms->$obj_name;
             if (!isset($obj->$name)) {
                 continue;

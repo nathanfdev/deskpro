@@ -45,7 +45,7 @@ class PersonContactDataChangeLogListener extends EntityChangeLogListener
     public function __construct(DeskproContainer $container)
     {
         parent::__construct($container);
-        $this->person_log_listener = $container->get('dp.entity_lister.person_changelog');
+        $this->person_log_listener = $container->get('dp.entity_listener.person_changelog');
     }
 
     /**

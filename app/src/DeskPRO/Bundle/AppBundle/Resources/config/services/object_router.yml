@@ -9,6 +9,7 @@ services:
         - @object_router.link_generator.agent
         - @object_router.link_generator.ticket
         - @object_router.link_generator.downloads
+        - @object_router.link_generator.feedback
 
   object_router.twig_extension:
     class: DeskPRO\Bundle\AppBundle\Twig\ObjectRouterExtension
@@ -62,6 +63,12 @@ services:
   object_router.link_generator.downloads:
     public: false
     class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\DownloadsLinkGenerator
+    arguments:
+      - @router
+
+  object_router.link_generator.feedback:
+    public: false
+    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\FeedbackLinkGenerator
     arguments:
       - @router
 

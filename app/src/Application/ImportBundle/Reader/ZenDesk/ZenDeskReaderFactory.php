@@ -28,6 +28,11 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
+use Application\ImportBundle\Reader\ReaderConfigInterface;
+use Application\ImportBundle\Reader\ReaderFactoryInterface;
+use Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI\PeopleLoader;
+use Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter\CategoryLoader;
+use Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter\SectionLoader;
 use DateTime;
 use Exception;
 use Monolog\Formatter\LineFormatter;
@@ -40,54 +45,18 @@ use Zendesk\API\Client;
  *
  * Class ZenDeskReaderFactory
  */
-class ZenDeskReaderFactory
+class ZenDeskReaderFactory implements ReaderFactoryInterface
 {
     /**
-     * Create a ZenDesk reader.
-     *
-     * @throws Exception
-     *
-     * @return ZenDeskReader
+     * {@inheritdoc}
      */
-    public static function createReaderByDeskPROConfig()
+    public function createReader(ReaderConfigInterface $config)
     {
-        $config = self::getZenDeskConfig();
-        $client = self::createClient($config);
+        if (!$config instanceof ZenDeskConfig) {
+            throw new \RuntimeException('Config expected to be instance of ZenDeskConfig');
+        }
 
-        return new ZenDeskReader(
-            new Request\RequestCacheAdapter(
-                new Request\RequestClientAdapter($client, self::getCurlRequestOptions($config))
-            ),
-
-            $config
-        );
-    }
-
-    /**
-     * @param ZenDeskConfig $config
-     *
-     * @return ZenDeskReader
-     */
-    public static function createReader(ZenDeskConfig $config)
-    {
-        $client = self::createClient($config);
-        $logger = new Logger('zendesk');
-
-        $formatter = new LineFormatter();
-        $formatter->ignoreEmptyContextAndExtra(true);
-
-        $handler = new StreamHandler(dp_get_log_dir().'/export_zendesk.log');
-        $handler->setFormatter($formatter);
-
-        $logger->pushHandler($handler);
-
-        return new ZenDeskReader(
-            new Request\RequestCacheAdapter(
-                new Request\RequestClientAdapter($client, self::getCurlRequestOptions($config), $logger)
-            ),
-
-            $config
-        );
+        return new ZenDeskReader(new Request\RequestCacheAdapter(self::createClientAdapter($config)), $config);
     }
 
     /**
@@ -102,13 +71,45 @@ class ZenDeskReaderFactory
         $config = self::getZenDeskConfig();
         $client = self::createClient($config);
 
+        $request_adapter = self::createClientAdapter($config);
+
+        $category_loader = new CategoryLoader($request_adapter);
+        $people_loader   = new PeopleLoader($request_adapter);
+        $section_loader  = new SectionLoader($request_adapter);
+
         $collection = new Fixtures\Collection();
         $collection
-            ->attach(new Fixtures\People($client))
-            ->attach(new Fixtures\Tickets($client))
+            ->attach(new Fixtures\CoreAPI\People($client))
+            ->attach(new Fixtures\CoreAPI\Tickets($client, $people_loader))
+            ->attach(new Fixtures\HelpCenter\Categories($client, $category_loader))
+            ->attach(new Fixtures\HelpCenter\Sections($client, $category_loader))
+            ->attach(new Fixtures\HelpCenter\Articles($client, $people_loader, $section_loader))
         ;
 
         return $collection;
+    }
+
+    /**
+     * Create ZenDesk client adapter.
+     *
+     * @param ZenDeskConfig $config
+     *
+     * @return Request\RequestClientAdapter
+     */
+    private static function createClientAdapter(ZenDeskConfig $config)
+    {
+        $client = self::createClient($config);
+        $logger = new Logger('zendesk');
+
+        $formatter = new LineFormatter();
+        $formatter->ignoreEmptyContextAndExtra(true);
+
+        $handler = new StreamHandler(dp_get_log_dir().'/export_zendesk.log');
+        $handler->setFormatter($formatter);
+
+        $logger->pushHandler($handler);
+
+        return new Request\RequestClientAdapter($client, self::getCurlRequestOptions($config), $logger);
     }
 
     /**
@@ -154,7 +155,7 @@ class ZenDeskReaderFactory
     {
         $dp_config = dp_get_config('zendesk_import');
         if (empty($dp_config)) {
-            throw new Exception('DeskPRO zendesk import config is not defined');
+            throw new Exception('ZenDesk import config is not defined');
         }
 
         $config = new ZenDeskConfig(

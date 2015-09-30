@@ -29,11 +29,12 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\Csv\CsvReaderException;
 use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
-use Symfony\Component\Translation\Exception\NotFoundResourceException;
+use Application\ImportBundle\Reader\NotFoundException;
 
 /**
  * Abstract csv parser.
@@ -42,62 +43,46 @@ use Symfony\Component\Translation\Exception\NotFoundResourceException;
  */
 abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
 {
-    const FILE_ARTICLES             = 'articles.csv';
-    const FILE_DOWNLOADS            = 'downloads.csv';
-    const FILE_DOWNLOAD_ATTACHMENTS = 'downloads_attachments.csv';
-    const FILE_FEEDBACK             = 'feedback.csv';
-    const FILE_FEEDBACK_ATTACHMENTS = 'feedback_attachments.csv';
-    const FILE_NEWS                 = 'news.csv';
-    const FILE_PEOPLE               = 'people.csv';
-    const FILE_TICKETS              = 'tickets.csv';
-    const FILE_TICKET_MESSAGES      = 'ticket_messages.csv';
-    const FILE_TICKET_ATTACHMENTS   = 'ticket_attachments.csv';
-
     /**
      * @var CsvReaderInterface
      */
     protected $reader;
 
     /**
+     * @var FormatterInterface
+     */
+    protected $formatter;
+
+    /**
      * Constructor.
      *
      * @param CsvReaderInterface $reader
+     * @param FormatterInterface $formatter
+     * @param ParserHelperSet    $helpers
      */
-    public function __construct(CsvReaderInterface $reader)
+    public function __construct(CsvReaderInterface $reader, FormatterInterface $formatter, ParserHelperSet $helpers)
     {
-        $this->reader = $reader;
-    }
-
-    /**
-     * Get csv reader config.
-     *
-     * @param string $record_type
-     *
-     * @return CsvConfig
-     */
-    protected function getReaderConfig($record_type)
-    {
-        /* @var CsvConfig $config */
-        $base   = $this->reader->getConfig();
-        $config = clone $base;
-        $config->setResource($base->getResource().'/'.$record_type);
-
-        return $config;
+        $this->reader    = $reader;
+        $this->formatter = $formatter;
+        $this->helpers   = $helpers;
     }
 
     /**
      * Returns rows count of csv file.
      *
-     * @param CsvConfig $config
+     * @param string $entity_type
      *
      * @return int
      */
-    protected function getReaderCount(CsvConfig $config)
+    protected function getReaderCount($entity_type)
     {
+        /** @var CsvConfig $config */
+        $config = $this->reader->getConfig();
+
         try {
-            return $this->reader->getRowsCount($config);
-        } catch (NotFoundResourceException $e) {
-            $this->logWarning(sprintf('Resource `%s` not found (Skipping)', $config->getResource()));
+            return $this->reader->getRowsCount($entity_type);
+        } catch (NotFoundException $e) {
+            $this->logInfo(sprintf('Resource `%s/%s` not found (Skipping)', $config->getPath(), $entity_type));
         }
 
         return 0;
@@ -106,25 +91,28 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     /**
      * Returns a collection of exporting data.
      *
-     * @param CsvConfig $config
+     * @param string $entity_type
      *
      * @return array
      */
-    protected function getReaderData(CsvConfig $config)
+    protected function getReaderData($entity_type)
     {
+        /** @var CsvConfig $config */
+        $config = $this->reader->getConfig();
+
         try {
-            $data = $this->reader->getData($config);
+            $data = $this->reader->getData($entity_type);
             if (count($data) === 0) {
-                $this->logWarning(sprintf('No records found in resource `%s`', $config->getResource()));
+                $this->logWarning(sprintf('No records found in resource `%s/%s`', $config->getPath(), $entity_type));
             }
 
             return $data;
-        } catch (NotFoundResourceException $e) {
-            $this->logWarning(sprintf('Resource `%s` not found (Skipping)', $config->getResource()));
+        } catch (NotFoundException $e) {
+            $this->logInfo(sprintf('Resource `%s/%s` not found (Skipping)', $config->getPath(), $entity_type));
         } catch (CsvReaderException $e) {
             $this->logWarning(sprintf(
-                'Csv reader throws an exception while reading `%s`. Reason: %s',
-                $config->getResource(), $e->getMessage()
+                'Csv reader throws an exception while reading `%s/%s`. Reason: %s',
+                $config->getPath(), $entity_type, $e->getMessage()
             ));
         }
 
@@ -132,92 +120,50 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
-     * Returns a collection of attachments.
-     *
-     * @param CsvConfig $config
-     * @param string    $destination_prefix
-     * @param string    $ref_column
-     *
-     * @return Entity\Collection
+     * @return Helper\Blob\Blob
      */
-    protected function exportAttachments(CsvConfig $config, $destination_prefix, $ref_column)
+    protected function getBlobParser()
     {
-        $collection  = new Entity\Collection();
-        $attachments = $this->getReaderData($config);
-
-        foreach ($attachments as $num => $attachment) {
-            try {
-                $entity = $this->exportAttachment($num, $destination_prefix, $attachment, $ref_column);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf(
-                        'Attachment of entity `%s%s` parsed successfully!',
-                        $destination_prefix, $entity->getOid())
-                    );
-                } else {
-                    $this->logWarning(sprintf('Invalid attachment record `%d` found (Skipping)', $num));
-                }
-            } catch (NoColumnException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid attachment record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            }
-        }
-
-        return $collection;
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_BLOB);
     }
 
     /**
-     * Returns an attachment entity.
-     *
-     * @param int    $num
-     * @param string $destination_prefix
-     * @param array  $attachment
-     * @param string $ref_column
-     *
-     * @return Entity\Attachment|null
+     * @return Helper\Blob\Attachment
      */
-    protected function exportAttachment($num, $destination_prefix, array $attachment, $ref_column)
+    protected function getAttachmentParser()
     {
-        if ($this->isAttachmentValid($attachment, $ref_column)) {
-            $entity = new Entity\Attachment();
-            $entity
-                ->setDestination($destination_prefix.$attachment[$ref_column])
-                ->setOid($num)
-                ->setPersonEmail($attachment['person'])
-                ->setBlobUrl($attachment['blob_url'])
-                ->setBlobPath($attachment['blob_path'])
-                ->setFileName($attachment['file_name'])
-                ->setContentType($attachment['content_type'])
-                ->setAsInline($this->isBooleanTrue($attachment['is_inline']));
-
-            return $entity;
-        }
-
-        return;
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_ATTACHMENT);
     }
 
     /**
-     * Check if an attachment has all required columns.
-     *
-     * @param array  $attachment
-     * @param string $ref_column
-     *
-     * @return bool
+     * @return Helper\ContactData\MultipleContactData
      */
-    protected function isAttachmentValid(array $attachment, $ref_column)
+    protected function getMultipleContactDataParser()
     {
-        $columns = array(
-            $ref_column,
-            'person',
-            'blob_url',
-            'blob_path',
-            'file_name',
-            'content_type',
-            'is_inline',
-        );
+        return $this->helpers->get($this, 'multiple_'.Entity\EntityInterface::TYPE_CONTACT_DATA);
+    }
 
-        return $this->hasRequiredColumns($attachment, $columns);
+    /**
+     * @return Helper\ContactData\Inline\InlineContactData
+     */
+    protected function getInlineContactDataParser()
+    {
+        return $this->helpers->get($this, 'inline_'.Entity\EntityInterface::TYPE_CONTACT_DATA);
+    }
+
+    /**
+     * @return Helper\CustomFields\MultipleCustomFields
+     */
+    protected function getMultipleCustomFieldsParser()
+    {
+        return $this->helpers->get($this, 'multiple_'.Entity\EntityInterface::TYPE_CUSTOM_FIELD);
+    }
+
+    /**
+     * @return Helper\CustomFields\InlineCustomFields
+     */
+    protected function getInlineCustomFieldsParser()
+    {
+        return $this->helpers->get($this, 'inline_'.Entity\EntityInterface::TYPE_CUSTOM_FIELD);
     }
 }

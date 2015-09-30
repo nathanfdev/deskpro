@@ -31,6 +31,7 @@
  */
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Usersource\Sync\Syncer\DbTableSyncer;
 use Application\DeskPRO\Usersource\Sync\Syncer\LdapSyncer;
@@ -41,14 +42,20 @@ class UsersourceSyncManagerService
 {
     public static function create(DeskproContainer $container)
     {
-        $helper = new SyncerHelper($container->getEm());
+        $us_logger = null;
+        if (App::getConfig('debug.enable_usersource_log')) {
+            // only instantiate the helper with the usersource logger if its enabled
+            $us_logger = $container->getUsersourceLogger();
+        }
+
+        $helper = new SyncerHelper($container->getEm(), $us_logger);
 
         $syncers = array();
 
         $syncers[] = new DbTableSyncer($helper);
         $syncers[] = new LdapSyncer($helper);
 
-        $sm = new SyncManager($syncers, $container->getEm(), $container->getJobQueue(), $container->getSystemService('usersource_manager'));
+        $sm = new SyncManager($syncers, $container->getEm(), $container->getJobQueue(), $container->getSystemService('usersource_manager'), $helper);
 
         return $sm;
     }

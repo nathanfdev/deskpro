@@ -31,6 +31,8 @@
  */
 namespace Application\DeskPRO\Ldap;
 
+use Application\DeskPRO\App;
+use Orb\Log\Logger;
 use Zend\Ldap\Exception\LdapException;
 use Zend\Ldap\Ldap as ZendLdap;
 use Zend\Stdlib\ErrorHandler;
@@ -73,13 +75,19 @@ class LdapPagedSearcher implements \Iterator
 
     public function executePagedSearch()
     {
+        $start_time = time();
+        $this->logIfPossible(Logger::INFO, 'executing actual LDAP search');
         if ($this->paged) {
             ldap_control_paged_result($this->resource, $this->page_size, false, $this->cookie);
         }
 
         $this->result = ldap_search($this->resource, $this->basedn, $this->filter, array(), 0, $this->paged ? $this->page_size : 0, 0);
 
-        sleep(1); // not sure why this hack works, but it avoids a hanging process, leaving it for now
+        usleep(100000); // not sure why this hack works, but it avoids a hanging process, leaving it for now
+
+
+        $time = ceil(time() - $start_time);
+        $this->logIfPossible(Logger::INFO, 'finished executing actual LDAP paged search (took '.$time.'s)');
 
         $this->rewind();
     }
@@ -90,6 +98,8 @@ class LdapPagedSearcher implements \Iterator
             return;
         }
 
+        $this->logIfPossible(Logger::INFO, 'getting next page');
+
         ldap_control_paged_result_response($this->resource, $this->result, $this->cookie);
         if ($this->cookie !== null && $this->cookie != '') {
             $this->executePagedSearch();
@@ -98,6 +108,7 @@ class LdapPagedSearcher implements \Iterator
 
     public function current()
     {
+        $curTime = microtime(true);
         if (!is_resource($this->current)) {
             $this->nextPage();
             if (!is_resource($this->current)) {
@@ -138,6 +149,12 @@ class LdapPagedSearcher implements \Iterator
                 $berIdentifier
             );
             ErrorHandler::stop();
+        }
+
+        $timeConsumed = round(microtime(true) - $curTime, 3) * 1000;
+        if ($timeConsumed >= 5) {
+            // only log if it took 1 second or more
+            $this->logIfPossible(Logger::INFO, 'finished getting current LDAP entry (took '.$timeConsumed.'ms)');
         }
 
         return $entry;
@@ -182,6 +199,7 @@ class LdapPagedSearcher implements \Iterator
 
     public function rewind()
     {
+        $this->logIfPossible(Logger::INFO, 'rewinding LDAP resource');
         $this->current = ldap_first_entry($this->resource, $this->result);
     }
 
@@ -197,6 +215,7 @@ class LdapPagedSearcher implements \Iterator
      */
     public function close()
     {
+        $this->logIfPossible(Logger::INFO, 'closing LDAP connection');
         $isClosed = false;
         if (is_resource($this->result)) {
             ErrorHandler::start();
@@ -208,5 +227,16 @@ class LdapPagedSearcher implements \Iterator
         }
 
         return $isClosed;
+    }
+
+    protected function logIfPossible($orb_priority, $message, array $info = array())
+    {
+        if (!App::getConfig('debug.enable_usersource_log')) {
+            return;
+        }
+
+        if ($logger = App::$container->getUsersourceLogger()) {
+            $logger->log('LDAP Paged Searcher: '.$message, $orb_priority, $info);
+        }
     }
 }

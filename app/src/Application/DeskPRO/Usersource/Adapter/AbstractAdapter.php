@@ -32,6 +32,7 @@
 namespace Application\DeskPRO\Usersource\Adapter;
 
 use Application\DeskPRO\Entity\Usersource;
+use Orb\Auth\Adapter\PluginAdapter;
 use Orb\Auth\Identity;
 use Orb\Util\CapabilityInformerInterface;
 use Orb\Util\Util;
@@ -113,7 +114,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
     /**
      * Get the adapter.
      *
-     * @return \Orb\Auth\Adapter\AdapterInterface
+     * @return \Orb\Auth\Adapter\AdapterInterface|\Orb\Auth\Adapter\PluginAdapter
      */
     public function getAuthAdapter()
     {
@@ -122,6 +123,11 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
         }
 
         $this->_auth_adapter = $this->_createAuthAdapterObject();
+        if ($this->_auth_adapter instanceof PluginAdapter) {
+            if ($filter = $this->usersource->getOption('raw_info_filter')) {
+                $this->_auth_adapter->setFilterExpression($filter);
+            }
+        }
 
         return $this->_auth_adapter;
     }

@@ -12,14 +12,17 @@
 
         {% if is_multi_language %}
         <li>
-            <select onchange="location.href='/'+this.value" class="button button-dropdown button-dropdown-language">
-                {% for language in enabled_languages %}
-                    <option value="{{ language.urlCode }}"
-                        {% if language.urlCode == current_language.urlCode %}selected="selected"{% endif %}>
-                        {{ language.title|capitalize }}
-                    </option>
-                {% endfor %}
-            </select>
+            <form method="POST" action="{{ path('portal_change_language') }}" id="language-changer" class="as-no-dpui">
+                <select name="lang_code" class="button button-dropdown button-dropdown-language">
+                    {% for language in enabled_languages %}
+                        <option value="{{ language.urlCode }}"
+                            {% if language.urlCode == current_language.urlCode %}selected="selected"{% endif %}>
+                            {{ language.title|capitalize }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <button class="button button-plain button-small" type="submit">Go</button>
+            </form>
         </li>
         {% endif %}
     </ul>

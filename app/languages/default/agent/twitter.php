@@ -28,7 +28,7 @@
 
 return array(
     'agent.twitter.account_rec_new_dm_from'       => '{{account}} received a new direct message from {{name}}',
-    'agent.twitter.account_rec_tweet_from'        => '{{account}} receieved a new tweet from {{name}}',
+    'agent.twitter.account_rec_tweet_from'        => '{{account}} received a new tweet from {{name}}',
     'agent.twitter.account_retweeted_by'          => '{{account}} was retweeted by {{name}}',
     'agent.twitter.add_note'                      => 'Add Note',
     'agent.twitter.added_by_agent'                => 'Added by agent {{name}}',

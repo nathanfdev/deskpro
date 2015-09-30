@@ -468,9 +468,13 @@ class Arrays
      */
     public static function arrayDiffIdentity(array $array1, array $array2)
     {
-        return array_udiff($array1, $array2, function ($a, $b) {
+        return array_udiff(
+            $array1,
+            $array2,
+            function ($a, $b) {
             return $a === $b ? 0 : -1;
-        });
+            }
+        );
     }
 
     /**
@@ -483,9 +487,13 @@ class Arrays
      */
     public static function arrayDiffAssocIdentity(array $array1, array $array2)
     {
-        return array_udiff_assoc($array1, $array2, function ($a, $b) {
+        return array_udiff_assoc(
+            $array1,
+            $array2,
+            function ($a, $b) {
             return $a === $b ? 0 : -1;
-        });
+            }
+        );
     }
 
     /**
@@ -1083,8 +1091,13 @@ class Arrays
      *
      * @return array
      */
-    public static function intoHierarchy($array, $top_id = 0, $parent_key = 'parent_id', $child_key = 'children', &$store_ids = null)
-    {
+    public static function intoHierarchy(
+        $array,
+        $top_id = 0,
+        $parent_key = 'parent_id',
+        $child_key = 'children',
+        &$store_ids = null
+    ) {
         $store_ids = array();
 
         return self::_intoHierarchy($array, $top_id, $parent_key, $child_key, $store_ids);
@@ -1140,8 +1153,12 @@ class Arrays
      *
      * @return array
      */
-    public static function flattenHierarchy(array $array, $index_key = 'id', $child_key = 'children', $depth_key = 'depth')
-    {
+    public static function flattenHierarchy(
+        array $array,
+        $index_key = 'id',
+        $child_key = 'children',
+        $depth_key = 'depth'
+    ) {
         $new_array = array();
 
         self::_flattenHierarcy($new_array, $array, $index_key, $child_key, $depth_key, 0);
@@ -1149,8 +1166,15 @@ class Arrays
         return $new_array;
     }
 
-    protected static function _flattenHierarcy(array &$new_array, $array, $index_key, $child_key, $depth_key, $current_depth = 0, &$count = 0)
-    {
+    protected static function _flattenHierarcy(
+        array &$new_array,
+        $array,
+        $index_key,
+        $child_key,
+        $depth_key,
+        $current_depth = 0,
+        &$count = 0
+    ) {
         foreach ($array as $arr) {
             if ($index_key !== null) {
                 $index = $arr[$index_key];
@@ -1168,7 +1192,16 @@ class Arrays
                 if (!is_array($sub_array)) {
                     $sub_array = iterator_to_array($sub_array);
                 }
-                self::_flattenHierarcy($new_array, $sub_array, $index_key, $child_key, $depth_key, $current_depth + 1, $count);
+                self::_flattenHierarcy(
+                    $new_array,
+                    $sub_array,
+                    $index_key,
+                    $child_key,
+                    $depth_key,
+                    $current_depth + 1,
+                    $count
+                )
+                ;
             }
         }
     }
@@ -1178,11 +1211,17 @@ class Arrays
      * @param string $order_key
      * @param string $parent_id_key
      */
-    public static function sortFlatHierarchyArray(&$array, $order_key = 'display_order', $parent_key = 'parent', $keep_keys = false)
-    {
+    public static function sortFlatHierarchyArray(
+        &$array,
+        $order_key = 'display_order',
+        $parent_key = 'parent',
+        $keep_keys = false
+    ) {
         $sort_fn = $keep_keys ? 'uasort' : 'usort';
 
-        $sort_fn($array, function ($a, $b) use ($order_key, $parent_key) {
+        $sort_fn(
+            $array,
+            function ($a, $b) use ($order_key, $parent_key) {
 
             if ($a[$parent_key]) {
                 $a_order = floatval($a[$parent_key][$order_key].'.'.$a[$order_key]);
@@ -1201,7 +1240,8 @@ class Arrays
             }
 
             return $a_order < $b_order ? -1 : 1;
-        });
+            }
+        );
     }
 
     /**
@@ -2197,8 +2237,12 @@ class Arrays
      *
      * @return array
      */
-    public static function sortIntoAlphabeticalIndex($array, $word_index = null, $maintain_keys = false, $empty_letters = false)
-    {
+    public static function sortIntoAlphabeticalIndex(
+        $array,
+        $word_index = null,
+        $maintain_keys = false,
+        $empty_letters = false
+    ) {
         $aindex = array();
 
         if ($empty_letters) {
@@ -2260,7 +2304,9 @@ class Arrays
      */
     public static function sortMulti(array &$array, $k, $sort_flags = \SORT_REGULAR)
     {
-        usort($array, function ($a, $b) use ($k, $sort_flags) {
+        usort(
+            $array,
+            function ($a, $b) use ($k, $sort_flags) {
             $a = $a[$k];
             $b = $b[$k];
 
@@ -2277,7 +2323,8 @@ class Arrays
             }
 
             return ($a < $b) ? -1 : 1;
-        });
+            }
+        );
     }
 
     /**

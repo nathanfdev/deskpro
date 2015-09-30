@@ -117,9 +117,11 @@ class RelatedContentFinder
      * fetchers that will know how to do things like apply permissions
      * based on the current user context.
      *
+     * @param bool $get_all True to get all entities (doesnt apply status filter or permissions)
+     *
      * @return array
      */
-    public function getRelatedEntities()
+    public function getRelatedEntities($get_all = false)
     {
         if ($this->related_entities !== null) {
             return $this->related_entities;
@@ -137,7 +139,7 @@ class RelatedContentFinder
 
             $fetcher = new $class($this->person);
 
-            $entities = $fetcher->getEntities($rels);
+            $entities = $fetcher->getEntities($rels, $get_all);
 
             if ($entities) {
                 $this->related_entities[$type] = $entities;

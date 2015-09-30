@@ -30,10 +30,9 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro person importer.
+ * DeskPRO person importer.
  *
  * Class Person
  */
@@ -49,12 +48,12 @@ final class Person extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Person
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        $this->records = new ArrayCollection();
+        if (!$entity instanceof Entity\Person) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
 
         if ($entity->isAgent()) {
             $this->logAlert(sprintf('Importing agent `%s`', $entity->getFirstEmail()));
@@ -62,20 +61,24 @@ final class Person extends AbstractImporter
 
         $person = $this->findOrCreatePerson($entity->getEmails());
         $person
-            ->setName($entity->getName())
             ->setFirstName($entity->getFirstName())
             ->setLastName($entity->getLastName())
+            ->setName($entity->getName())
             ->setTimezone($entity->getTimezone())
             ->setIsAgent($entity->isAgent())
             ->setCanAgent($entity->isAgent())
             ->setCanAdmin($entity->isAdmin())
+            ->setLanguage($entity->getLanguage() ? $this->findLanguage($entity->getLanguage()) : null)
+            ->setIsDisabled($entity->isDisabled())
+            ->setIsDeleted($entity->isDeleted())
             ->setDateCreated($entity->getDateCreated())
-            ->setLanguageId($this->findLanguageId($entity->getLanguage()))
             ->setOrganization($this->findOrCreateOrganization($entity->getOrganization()))
             ->setOrganizationPosition($entity->getOrganizationPosition())
             ->resetEmails()
             ->resetLabels()
             ->resetUsergroups()
+            ->resetContactData()
+            ->resetCustomData()
         ;
 
         if ($entity->isAgent() && !in_array('agent_all_safe_perms', $entity->getUserGroups(), true)) {
@@ -97,12 +100,9 @@ final class Person extends AbstractImporter
         foreach ($entity->getEmails() as $num => $email) {
             if ($this->getEmailAccountMapper()->findOneByEmail($email, false)) {
                 $this->logWarning(sprintf('Email `%s` is an a gateway account address (Skipping)', $email));
-            } else {
-                $person->addEmailAddress($this->findOrCreatePersonEmail($email));
-                $this->logDebug(sprintf(
-                    $num ? 'Set email `%s`' : 'Set primary email `%s`',
-                    $entity->getFirstEmail()
-                ));
+            } elseif (!$person->hasEmailAddress($email)) {
+                $person->addEmailAddressString($email);
+                $this->logDebug(sprintf($num ? 'Set email `%s`' : 'Set primary email `%s`', $entity->getFirstEmail()));
             }
         }
         foreach ($entity->getUserGroups() as $user_group_name) {
@@ -111,11 +111,17 @@ final class Person extends AbstractImporter
                 $person->addUsergroup($user_group);
             }
         }
+        foreach ($entity->getContactData() as $contact) {
+            $person->addContactData($this->createContactData($contact));
+        }
         foreach ($entity->getCustomFields() as $custom_field) {
-            $person->addCustomData($this->createCustomData($custom_field));
+            $custom_field = $this->createPersonCustomData($custom_field);
+            if ($custom_field) {
+                $person->addCustomData($custom_field);
+            }
         }
 
-        $this->records->add($person);
+        $this->records->setPrimaryEntity($person);
 
         return $this->records;
     }
@@ -152,66 +158,35 @@ final class Person extends AbstractImporter
     }
 
     /**
-     * Returns a person email entity.
+     * Returns person contact data entity.
      *
-     * @param string $email_string
+     * @param Entity\ContactData $entity
      *
-     * @return DeskPROEntity\PersonEmail
+     * @return DeskPROEntity\PersonContactData
      */
-    private function findOrCreatePersonEmail($email_string)
+    private function createContactData(Entity\ContactData $entity)
     {
-        $email = $this->getPersonEmailMapper()->findOneByEmail($email_string, false);
-        if ($email) {
-            $this->logDebug(sprintf(
-                'Found existing person email, id=`%d` with email `%s`',
-                $email->getId(), $email->getEmail()
-            ));
-        } else {
-            $email = new DeskPROEntity\PersonEmail();
-            $email
-                ->setEmail($email_string)
-                ->setIsValidated(true)
-            ;
+        $contact = new DeskPROEntity\PersonContactData();
+        $contact
+            ->setContactType($entity->getContactType())
+            ->setComment($entity->getComment())
+            ->setField1($entity->getField1())
+            ->setField2($entity->getField2())
+            ->setField3($entity->getField3())
+            ->setField4($entity->getField4())
+            ->setField5($entity->getField5())
+            ->setField6($entity->getField6())
+            ->setField7($entity->getField7())
+            ->setField8($entity->getField8())
+            ->setField9($entity->getField9())
+            ->setField10($entity->getField10())
+        ;
 
-            $this->records->add($email);
-            $this->logInfo(sprintf('Creating new person email `%s`', $email->getEmail()));
-        }
-
-        return $email;
+        return $contact;
     }
 
     /**
-     * Returns an user group by sys name.
-     *
-     * @param string $sys_name
-     *
-     * @throws \Exception
-     *
-     * @return DeskPROEntity\UserGroup|null
-     */
-    private function findUserGroup($sys_name)
-    {
-        /** @var Mapper\UserGroup $mapper */
-        $mapper     = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_USER_GROUP);
-        $user_group = null;
-
-        if ($sys_name) {
-            $user_group = $mapper->findOneBySysName($sys_name, false);
-            if ($user_group) {
-                $this->logDebug(sprintf(
-                    'Found existing user group `%d` with title `%s`',
-                    $user_group->getId(), $user_group->getTitle()
-                ));
-            } else {
-                $this->logWarning(sprintf('No user group `%s`', $sys_name));
-            }
-        }
-
-        return $user_group;
-    }
-
-    /**
-     * Returns custom def person entity.
+     * Returns person custom data entity.
      *
      * @param Entity\CustomField $entity
      *
@@ -219,65 +194,12 @@ final class Person extends AbstractImporter
      *
      * @return DeskPROEntity\CustomDataPerson
      */
-    private function createCustomData(Entity\CustomField $entity)
+    private function createPersonCustomData(Entity\CustomField $entity)
     {
-        $person_def   = $this->getCustomDefPersonMapper()->findOneByTitle($entity->getKey());
-        $custom_field = new DeskPROEntity\CustomDataPerson();
+        /** @var Mapper\CustomDefPerson $mapper */
+        $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_PERSON);
 
-        switch ($person_def->getTypeName()) {
-            case Entity\CustomField::FIELD_TYPE_TEXT:
-            case Entity\CustomField::FIELD_TYPE_TEXTAREA:
-                $custom_field
-                    ->setField($person_def)
-                    ->setRootField($person_def)
-                    ->setValue($entity->getValue());
-
-                break;
-
-            case Entity\CustomField::FIELD_TYPE_TOGGLE:
-                $custom_field
-                    ->setField($person_def)
-                    ->setRootField($person_def)
-                    ->setValue($entity->getValue() ? 1 : 0);
-
-                break;
-
-            case Entity\CustomField::FIELD_TYPE_DATE:
-                $custom_field
-                    ->setField($person_def)
-                    ->setRootField($person_def)
-                    ->setValue($entity->getValue() ? strtotime($entity->getValue()) : 0);
-
-                break;
-
-            case Entity\CustomField::FIELD_TYPE_CHOICE:
-                $choice_def = $this->getCustomDefPersonMapper()->findOneByTitle($entity->getValue());
-                $custom_field
-                    ->setField($choice_def)
-                    ->setRootField($person_def)
-                    ->setValue(1);
-
-                break;
-
-            default:
-                throw new ImporterException('Unknown custom field type `%s`', $person_def->getTypeName());
-        }
-
-        $this->records->add($custom_field);
-
-        return $custom_field;
-    }
-
-    /**
-     * Returns the person email mapper.
-     *
-     * @throws \Exception
-     *
-     * @return Mapper\PersonEmail
-     */
-    private function getPersonEmailMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_PERSON_EMAIL);
+        return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataPerson());
     }
 
     /**
@@ -290,17 +212,5 @@ final class Person extends AbstractImporter
     private function getEmailAccountMapper()
     {
         return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_EMAIL_ACCOUNT);
-    }
-
-    /**
-     * Returns the custom def person mapper.
-     *
-     * @throws \Exception
-     *
-     * @return Mapper\CustomDefPerson
-     */
-    private function getCustomDefPersonMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_PERSON);
     }
 }

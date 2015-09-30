@@ -14,12 +14,12 @@
                             </li>
                         {% endif %}
                         <li class="the-file">
-                            <a href="{{ portal_path(dl) }}">
+                            <a href="{{ portal_path(dl, 'serve') }}">
                                 {{ phrase('portal.downloads.download') }}
                                 {{ icons.dl(dl) }}
                             </a>
                         </li>
-                        <li class="the-cudos has-cudos"><a href="{{ portal_path(dl, 'vote_up') }}"><i class="fa fa-thumbs-up"></i> {{ dl.total_rating }}</a></li>
+                        <li class="the-cudos has-cudos"><a href="{{ portal_path(dl, 'vote_up') }}" class="post-link"><i class="fa fa-thumbs-up"></i> {{ dl.total_rating }}</a></li>
                     </ul>
                 </div>
 
@@ -31,7 +31,7 @@
                 <span class="date">{{ phrase('portal.downloads.uploaded-on') }}: {{ dl.date_created | date('Y-m-d') }}</span>
 
                 <p>
-                    {{ dl.content_html|raw }}
+                    {{ dl.content_desc|raw }}
                 </p>
             </li>
         {% endfor %}

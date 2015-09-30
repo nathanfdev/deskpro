@@ -122,6 +122,29 @@ class CommonController extends AbstractController
             }
         }
 
+        //
+        // DIFFERENT LANG
+        //
+        $person    = $this->getCurrentPerson();
+        $lang_diff = false;
+        if (!$person instanceof PersonGuest) {
+            // user can click "dismiss" and we store a session var
+            if (!$this->getSession()->get('ignore_language_warning', false)) {
+                $active_lang = $this->get('language_stack')->getActiveOrDefault();
+                if ($person_lang = $person->getLanguage()) {
+                    if ($person_lang->getId() != $active_lang->getId()) {
+                        $lang_diff = array(
+                            'active_lang' => $active_lang,
+                            'person_lang' => $person_lang,
+                        );
+                    }
+                }
+            }
+        }
+
+        //
+        // SAVED FORMS
+        //
         $saved_forms = array();
         if ($user && $all_saved = $this->getFormSaver()->getSavedForms($user)) {
             foreach ($all_saved as $saved) {
@@ -132,12 +155,15 @@ class CommonController extends AbstractController
             }
         }
 
+        $should_display = count($saved_forms) || $agent || count($validation_alerts) || $lang_diff;
+
         return $this->renderThemeView('Theme:Common:alerts.html.twig', array(
             'impersonator'      => $agent,
             'user'              => $user,
             'saved_forms'       => $saved_forms,
             'validation_alerts' => $validation_alerts,
-            'display_alerts'    => count($saved_forms) || $agent || count($validation_alerts),
+            'display_alerts'    => $should_display,
+            'lang_diff'         => $lang_diff,
         ));
     }
 

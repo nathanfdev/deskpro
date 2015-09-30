@@ -30,10 +30,9 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro article labels importer.
+ * DeskPRO article labels importer.
  *
  * Class ArticleLabel
  */
@@ -49,81 +48,26 @@ final class ArticleLabel extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Article
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        $this->records = new ArrayCollection();
-
-        $article = $this->getArticleMapper()->findOneByTitle($entity->getTitle());
-        $labels  = $this->getExistingLabelsNames($article->getId());
-
-        foreach ($entity->getLabels() as $label) {
-            if (in_array($label, $labels, true)) {
-                $this->logDebug(sprintf(
-                    'Found an existing label `%s` for article with oid `%d` (Skipping)',
-                    $label, $article->getId()
-                ));
-            } else {
-                $article->addLabel($this->createArticleLabel($label));
-                $this->logDebug(sprintf(
-                    'Creating a new label `%s` for article with oid `%d`',
-                    $label, $article->getId()
-                ));
-            }
+        if (!$entity instanceof Entity\Article) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
         }
+
+        $article = $this->getArticleMapper()->findOneBy(array('id' => $entity_id));
+        $article->resetLabels();
+
+        foreach ($entity->getLabels() as $label_name) {
+            $label = new DeskPROEntity\LabelArticle();
+            $label->setLabel($label_name);
+
+            $article->addLabel($label);
+            $this->logDebug(sprintf('Creating a new label `%s` for article with oid `%d`', $label_name, $article->getId()));
+        }
+
+        $this->records->setPrimaryEntity($article);
 
         return $this->records;
-    }
-
-    /**
-     * Returns a new article label entity.
-     *
-     * @param string $label
-     *
-     * @return DeskPROEntity\LabelArticle
-     */
-    private function createArticleLabel($label)
-    {
-        $entity = new DeskPROEntity\LabelArticle();
-        $entity->setLabel($label);
-
-        $this->records->add($entity);
-
-        return $entity;
-    }
-
-    /**
-     * Returns a collection of existing article label names.
-     *
-     * @param int $id
-     *
-     * @throws Mapper\MapperException
-     *
-     * @return array
-     */
-    private function getExistingLabelsNames($id)
-    {
-        $labels = $this->getArticleLabelMapper()->findByArticleId($id, false);
-        $names  = array();
-
-        foreach ($labels as $label) {
-            $names[] = $label->getLabel();
-        }
-
-        return $names;
-    }
-
-    /**
-     * Returns the article label mapper.
-     *
-     * @throws \Exception
-     *
-     * @return Mapper\ArticleLabel
-     */
-    private function getArticleLabelMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ARTICLE_LABEL);
     }
 }

@@ -1169,6 +1169,15 @@ $collection->create('agent_ticket_chargedelete', array(
     'requirements' => array('ticket_id' => '\\d+', 'charge_id' => '\\d+'),
 ));
 
+$collection->create(
+    'agent_ticket_chargeform',
+    array(
+        'path'         => '/ticket/{ticket_id}/charge/form',
+        'controller'   => 'AgentBundle:Ticket:ticketChargeForm',
+        'requirements' => array('ticket_id' => '\\d+'),
+    )
+);
+
 $collection->create('agent_ticket_addsla', array(
     'path'         => '/ticket/{ticket_id}/add-sla',
     'controller'   => 'AgentBundle:Ticket:addSla',
@@ -1191,6 +1200,20 @@ $collection->create('agent_ticket_spam', array(
     'path'         => '/tickets/{ticket_id}/spam',
     'controller'   => 'AgentBundle:Ticket:spam',
     'requirements' => array('ticket_id' => '\\d+'),
+));
+
+$collection->create('agent_ticket_close_problem', array(
+    'path'         => '/tickets/{ticket_id}/close_problem',
+    'controller'   => 'AgentBundle:Ticket:closeProblem',
+    'requirements' => array('ticket_id' => '\\d+'),
+    'methods'      => array('POST'),
+));
+
+$collection->create('agent_ticket_reopen_problem', array(
+    'path'         => '/tickets/{ticket_id}/reopen_problem',
+    'controller'   => 'AgentBundle:Ticket:reopenProblem',
+    'requirements' => array('ticket_id' => '\\d+'),
+    'methods'      => array('POST'),
 ));
 
 $collection->create('agent_ticket_link_existing_overlay', array(

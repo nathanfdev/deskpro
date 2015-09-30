@@ -21,7 +21,7 @@
 		</div>
 		<div ng-switch-when="phone_number">
 			<input type="tel" ng-required="setting.is_required"
-				dp-phone-number
+				dp-phone-number-no-ext
 				style="min-width:250px;"
 				class="form-control"
 				ng-model="setting_values[setting.name]"
@@ -42,6 +42,17 @@
 					value="{{ opt.value }}">{{ opt.label }}
 				</option>
 			</select>
+		</div>
+
+		<div ng-switch-when="dynamic_choice">
+			<div ng-if="setting.options_variable">
+				<select
+						ng-model="setting_values[setting.name]"
+						ng-options="obj.value as obj.label for obj in Ctrl[setting.options_variable]"
+						ng-required="setting.is_required"
+						>
+				</select>
+			</div>
 		</div>
 
 		<span class="help-block" ng-show="setting.description" ng-bind-html="setting.description"></span>

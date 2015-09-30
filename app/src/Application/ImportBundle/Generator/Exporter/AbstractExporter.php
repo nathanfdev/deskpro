@@ -32,11 +32,11 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Generator\LoggerAwareInterface;
 use Application\ImportBundle\Generator\ProgressBarAwareInterface;
-use Application\ImportBundle\Reader\BaseReader;
+use Application\ImportBundle\Reader\ReaderInterface;
 use Exception;
 
 /**
- * Base data exporter class methods.
+ * Base generator exporter.
  *
  * Class AbstractExporter
  */
@@ -47,15 +47,18 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
      */
     private $parsers;
 
+    /**
+     * @var ReaderInterface
+     */
     protected $reader;
 
     /**
      * Constructor.
      *
      * @param Parser\Collection $parsers
-     * @param BaseReader        $reader
+     * @param ReaderInterface   $reader
      */
-    public function __construct(Parser\Collection $parsers, BaseReader $reader)
+    public function __construct(Parser\Collection $parsers, ReaderInterface $reader)
     {
         $this->parsers = $parsers;
         $this->reader  = $reader;
@@ -112,31 +115,29 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
         $parser->setConfig($this->config);
 
         if ($this->logger && $parser instanceof LoggerAwareInterface) {
-            /* @var LoggerAwareInterface $parser */
             $parser->setLogger($this->logger);
         }
         if ($this->progress_bar && $parser instanceof ProgressBarAwareInterface) {
-            /* @var ProgressBarAwareInterface $parser */
             $parser->setProgressBarHelper($this->progress_bar);
         }
 
         return $parser;
     }
 
-    public function isReady()
-    {
-        return $this->reader->isReady();
-    }
-
+    /**
+     * @return array
+     */
     public static function getOrderedTypes()
     {
         return array(
+            Entity\EntityInterface::TYPE_ORGANIZATION,
             Entity\EntityInterface::TYPE_TICKET,
-            Entity\EntityInterface::TYPE_PERSON,
+            Entity\EntityInterface::TYPE_ARTICLE_CATEGORY,
             Entity\EntityInterface::TYPE_ARTICLE,
             Entity\EntityInterface::TYPE_DOWNLOAD,
             Entity\EntityInterface::TYPE_FEEDBACK,
             Entity\EntityInterface::TYPE_NEWS,
+            Entity\EntityInterface::TYPE_PERSON,
         );
     }
 }

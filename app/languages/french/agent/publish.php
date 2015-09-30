@@ -59,6 +59,7 @@ return array(
     'agent.publish.download_hotlink_btn'          => 'Lier un fichier existant',
     'agent.publish.download_specify_filename'     => 'Définir un nom de fichier différent (optionnel)',
     'agent.publish.download_specify_filesize'     => 'Définir la taille du fichier à afficher (optionnel). Ex: 50 MB or 2 KB.',
+    'agent.publish.download_specify_url'          => 'Insérer l\'URL complète d\'un fichier. L\'utilisateur qui cliquera sur le bouton "Télécharger" sera amené à cette URL.',
     'agent.publish.download_upload_btn'           => 'Télécharger un fichier',
     'agent.publish.downloads_highest_lowest'      => 'Nombre de téléchargements (ordre décroissant)',
     'agent.publish.downloads_list_title'          => '1 téléchargement|{{count}} téléchargements',

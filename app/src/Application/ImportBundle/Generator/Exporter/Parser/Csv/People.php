@@ -29,8 +29,10 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
-use DateTime;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
 
 /**
  * People csv file parser.
@@ -39,6 +41,8 @@ use DateTime;
  */
 final class People extends AbstractParser
 {
+    const PERSON_PREFIX = 'person_';
+
     /**
      * {@inheritdoc}
      */
@@ -52,7 +56,7 @@ final class People extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount($this->getPersonReaderConfig());
+        return $this->getReaderCount(CsvReaderInterface::FILE_PEOPLE);
     }
 
     /**
@@ -60,25 +64,40 @@ final class People extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $people     = $this->getReaderData($this->getPersonReaderConfig());
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->getReaderData(CsvReaderInterface::FILE_PEOPLE))
+            ->setPrefix('CSVPerson')
+            ->setRefColumn('email')
+            ->setMethod('exportPerson')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        foreach ($people as $num => $person) {
-            $this->advanceProgressBar();
+        $collection    = $this->exportCollection($config);
+        $contact_data  = $this->exportPersonContactData();
+        $custom_fields = $this->exportPersonCustomFields();
 
-            try {
-                $entity = $this->exportPerson($num, $person);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid person record `%d` found (Skipping)', $num));
+        foreach ($collection as $person) {
+            /* @var Entity\Person $person */
+            foreach ($contact_data as $contact) {
+                if ($person->getDestination() === $contact->getDestination()) {
+                    $person->addContact($contact);
                 }
-            } catch (NoColumnException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid person record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+            }
+            foreach ($custom_fields as $custom_field_entity) {
+                if ($person->getDestination() === $custom_field_entity->getDestination()) {
+                    $person->addCustomField($custom_field_entity);
+                }
+            }
+
+            $inline_contact_data = $this->getInlineContactDataParser()->export($person->getRawData(), $person->getDestination());
+            foreach ($inline_contact_data as $contact) {
+                $person->addContact($contact);
+            }
+
+            $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($person->getDestination(), $person->getRawData());
+            foreach ($inline_custom_fields as $custom_field_entity) {
+                $person->addCustomField($custom_field_entity);
             }
         }
 
@@ -88,62 +107,63 @@ final class People extends AbstractParser
     /**
      * Returns a person entity.
      *
-     * @param int   $num
      * @param array $person
+     * @param int   $num
      *
-     * @return Entity\Person|null
+     * @return Entity\Person
      */
-    private function exportPerson($num, array $person)
+    protected function exportPerson(array $person, $num)
     {
-        if ($this->isPersonValid($person)) {
+        $formatted = $this->formatter->format($person, array(
+            'id'          => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+                'default' => 'num_'.$num,
+            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix'  => self::PERSON_PREFIX,
+                'ref'     => array('original#id', 'email'),
+            )),
+            'name'         => TransformerInterface::TYPE_STRING,
+            'email'        => TransformerInterface::TYPE_STRING,
+            'date_created' => TransformerInterface::TYPE_DATE,
+            'is_agent'     => TransformerInterface::TYPE_BOOLEAN,
+        ));
+
             $entity = new Entity\Person();
             $entity
-                ->setDestination('person_'.$num)
-                ->setOid($num)
-                ->setAsAgent($this->isAgent($person))
-                ->setName($person['name'])
-                ->setDateCreated(new DateTime())
-                ->addEmail($person['email']);
+            ->setRawData($person)
+            ->setDestination($formatted['destination'])
+            ->setOid($formatted['id'])
+            ->setAsUser(true)
+            ->setAsAgent($formatted['is_agent'])
+            ->setName($formatted['name'])
+            ->setDateCreated($formatted['date_created'])
+            ->addEmail($formatted['email'])
+        ;
 
             return $entity;
         }
 
-        return;
+    /**
+     * Returns a collection of people custom field data.
+     *
+     * @return Entity\CustomField[]|Entity\Collection
+     */
+    private function exportPersonCustomFields()
+    {
+        $data = $this->getReaderData(CsvReaderInterface::FILE_PEOPLE_CUSTOM_FIELDS);
+
+        return $this->getMultipleCustomFieldsParser()->export($data, self::PERSON_PREFIX, 'person_id');
     }
 
     /**
-     * Check if person has all required columns.
+     * Returns a collection of people contact data.
      *
-     * @param array $person
-     *
-     * @return bool
+     * @return Entity\ContactData[]|Entity\Collection
      */
-    private function isPersonValid(array $person)
+    private function exportPersonContactData()
     {
-        $columns = array('name', 'email');
+        $data = $this->getReaderData(CsvReaderInterface::FILE_PEOPLE_CONTACT_DATA);
 
-        return $this->hasRequiredColumns($person, $columns);
-    }
-
-    /**
-     * Returns record type reader config.
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getPersonReaderConfig()
-    {
-        return $this->getReaderConfig(self::FILE_PEOPLE);
-    }
-
-    /**
-     * Check if person is agent.
-     *
-     * @param array $person
-     *
-     * @return bool
-     */
-    private function isAgent(array $person)
-    {
-        return isset($person['is_agent']) && $this->isBooleanTrue($person['is_agent']);
+        return $this->getMultipleContactDataParser()->export($data, self::PERSON_PREFIX, 'person_id');
     }
 }

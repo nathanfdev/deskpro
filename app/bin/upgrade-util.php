@@ -129,8 +129,8 @@ define('DP_UPGRADE_STARTTIME', microtime(true));
 
 $errors = array();
 
-if (!deskpro_install_check_version()) {
-    $errors[] = 'The version of PHP you have is too old. DeskPRO requires PHP v5.3.2 or newer. You need to upgrade your version.';
+if (!deskpro_install_check_version() && !defined('DP_IGNORE_VERSION_CHECK')) {
+    $errors[] = 'The version of PHP you have is too old. DeskPRO requires PHP v5.3.9 or newer. You need to upgrade your version.';
 }
 
 if (!deskpro_install_check_pcre()) {
@@ -2681,7 +2681,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
                 "<error>We could not fetch version information from our web server. There are a number of possible causes:\n"
                 ."    - Your server is behind a firewall\n"
                 ."    - There is a network problem between your server and ours\n"
-                ."    - Our version server may be having difficulties. Check http://www.deskpro.com/status/\n"
+                ."    - Our version server may be having difficulties. Check http://status.deskpro.com/\n"
                 ."\n"
                 .'You can try again but if you continue to experience trouble, you can contact us at support@deskpro.com</error>'
             );

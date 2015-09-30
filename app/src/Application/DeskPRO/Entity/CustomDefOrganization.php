@@ -53,6 +53,20 @@ class CustomDefOrganization extends CustomDefAbstract
      */
     protected $children = null;
 
+    /**
+     * Set parent.
+     *
+     * @param CustomDefOrganization $parent
+     *
+     * @return $this
+     */
+    public function setParent(CustomDefOrganization $parent = null)
+    {
+        $this->setModelField('parent', $parent);
+
+        return $this;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################

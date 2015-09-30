@@ -56,6 +56,7 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
     protected $expressionBuilder;
     protected $closed = false;
     protected $filterCollection;
+
     protected function __construct(Connection $conn, Configuration $config, EventManager $eventManager)
     {
         $this->conn               = $conn;
@@ -74,14 +75,17 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
             $config->getAutoGenerateProxyClasses()
         );
     }
+
     public function getConnection()
     {
         return $this->conn;
     }
+
     public function getMetadataFactory()
     {
         return $this->metadataFactory;
     }
+
     public function getExpressionBuilder()
     {
         if ($this->expressionBuilder === null) {
@@ -90,10 +94,12 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
 
         return $this->expressionBuilder;
     }
+
     public function beginTransaction()
     {
         $this->conn->beginTransaction();
     }
+
     public function transactional($func)
     {
         if (!is_callable($func)) {
@@ -112,18 +118,22 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
             throw $e;
         }
     }
+
     public function commit()
     {
         $this->conn->commit();
     }
+
     public function rollback()
     {
         $this->conn->rollback();
     }
+
     public function getClassMetadata($className)
     {
         return $this->metadataFactory->getMetadataFor($className);
     }
+
     public function createQuery($dql = '')
     {
         $query = new Query($this);
@@ -133,10 +143,12 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
 
         return $query;
     }
+
     public function createNamedQuery($name)
     {
         return $this->createQuery($this->config->getNamedQuery($name));
     }
+
     public function createNativeQuery($sql, ResultSetMapping $rsm)
     {
         $query = new NativeQuery($this);
@@ -145,21 +157,25 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
 
         return $query;
     }
+
     public function createNamedNativeQuery($name)
     {
         list($sql, $rsm) = $this->config->getNamedNativeQuery($name);
 
         return $this->createNativeQuery($sql, $rsm);
     }
+
     public function createQueryBuilder()
     {
         return new QueryBuilder($this);
     }
+
     public function flush($entity = null)
     {
         $this->errorIfClosed();
         $this->unitOfWork->commit($entity);
     }
+
     public function find($entityName, $id, $lockMode = LockMode::NONE, $lockVersion = null)
     {
         $class = $this->metadataFactory->getMetadataFor(ltrim($entityName, '\\'));
@@ -217,6 +233,7 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
                 return $persister->load($sortedId, null, null, array(), $lockMode);
         }
     }
+
     public function getReference($entityName, $id)
     {
         $class = $this->metadataFactory->getMetadataFor(ltrim($entityName, '\\'));
@@ -244,6 +261,7 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
 
         return $entity;
     }
+
     public function getPartialReference($entityName, $identifier)
     {
         $class = $this->metadataFactory->getMetadataFor(ltrim($entityName, '\\'));
@@ -260,15 +278,18 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
 
         return $entity;
     }
+
     public function clear($entityName = null)
     {
         $this->unitOfWork->clear($entityName);
     }
+
     public function close()
     {
         $this->clear();
         $this->closed = true;
     }
+
     public function persist($entity)
     {
         if (!is_object($entity)) {
@@ -277,6 +298,7 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
         $this->errorIfClosed();
         $this->unitOfWork->persist($entity);
     }
+
     public function remove($entity)
     {
         if (!is_object($entity)) {
@@ -285,6 +307,7 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
         $this->errorIfClosed();
         $this->unitOfWork->remove($entity);
     }
+
     public function refresh($entity)
     {
         if (!is_object($entity)) {
@@ -293,6 +316,7 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
         $this->errorIfClosed();
         $this->unitOfWork->refresh($entity);
     }
+
     public function detach($entity)
     {
         if (!is_object($entity)) {
@@ -300,6 +324,7 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
         }
         $this->unitOfWork->detach($entity);
     }
+
     public function merge($entity)
     {
         if (!is_object($entity)) {
@@ -309,50 +334,61 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
 
         return $this->unitOfWork->merge($entity);
     }
+
     public function copy($entity, $deep = false)
     {
         throw new \BadMethodCallException('Not implemented.');
     }
+
     public function lock($entity, $lockMode, $lockVersion = null)
     {
         $this->unitOfWork->lock($entity, $lockMode, $lockVersion);
     }
+
     public function getRepository($entityName)
     {
         return $this->repositoryFactory->getRepository($this, $entityName);
     }
+
     public function contains($entity)
     {
         return $this->unitOfWork->isScheduledForInsert($entity)
             || $this->unitOfWork->isInIdentityMap($entity)
             && !$this->unitOfWork->isScheduledForDelete($entity);
     }
+
     public function getEventManager()
     {
         return $this->eventManager;
     }
+
     public function getConfiguration()
     {
         return $this->config;
     }
+
     protected function errorIfClosed()
     {
         if ($this->closed) {
             throw ORMException::entityManagerClosed();
         }
     }
+
     public function isOpen()
     {
         return (!$this->closed);
     }
+
     public function getUnitOfWork()
     {
         return $this->unitOfWork;
     }
+
     public function getHydrator($hydrationMode)
     {
         return $this->newHydrator($hydrationMode);
     }
+
     public function newHydrator($hydrationMode)
     {
         switch ($hydrationMode) {
@@ -373,14 +409,17 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
         }
         throw ORMException::invalidHydrationMode($hydrationMode);
     }
+
     public function getProxyFactory()
     {
         return $this->proxyFactory;
     }
+
     public function initializeObject($obj)
     {
         $this->unitOfWork->initializeObject($obj);
     }
+
     public static function create($conn, Configuration $config, EventManager $eventManager = null)
     {
         if (!$config->getMetadataDriverImpl()) {
@@ -389,7 +428,9 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
         switch (true) {
             case (is_array($conn)):
                 $conn = \Doctrine\DBAL\DriverManager::getConnection(
-                    $conn, $config, ($eventManager ?: new EventManager())
+                    $conn,
+                    $config,
+                    ($eventManager ?: new EventManager())
                 );
                 break;
             case ($conn instanceof Connection):
@@ -403,6 +444,7 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
 
         return new static($conn, $config, $conn->getEventManager());
     }
+
     public function getFilters()
     {
         if (null === $this->filterCollection) {
@@ -411,10 +453,12 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
 
         return $this->filterCollection;
     }
+
     public function isFiltersStateClean()
     {
         return null === $this->filterCollection || $this->filterCollection->isClean();
     }
+
     public function hasFilters()
     {
         return null !== $this->filterCollection;

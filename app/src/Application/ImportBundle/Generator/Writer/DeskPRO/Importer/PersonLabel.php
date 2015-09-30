@@ -30,10 +30,9 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro person labels importer.
+ * DeskPRO person labels importer.
  *
  * Class PersonLabel
  */
@@ -49,81 +48,26 @@ final class PersonLabel extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Person
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        $this->records = new ArrayCollection();
+        if (!$entity instanceof Entity\Person) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
 
         $person = $this->getPersonMapper()->findOneByEmails($entity->getEmails());
-        $labels = $this->getExistingLabelsNames($person->getId());
+        $person->resetLabels();
 
-        foreach ($entity->getLabels() as $label) {
-            if (in_array($label, $labels, true)) {
-                $this->logDebug(sprintf(
-                    'Found an existing label `%s` for person with oid `%d` (Skipping)',
-                    $label, $person->getId()
-                ));
-            } else {
-                $person->addLabel($this->createPersonLabel($label));
-                $this->logDebug(sprintf(
-                    'Creating a new label `%s` for person with oid `%d`',
-                    $label, $person->getId()
-                ));
-            }
+        foreach ($entity->getLabels() as $label_name) {
+            $label = new DeskPROEntity\LabelPerson();
+            $label->setLabel($label_name);
+
+            $person->addLabel($label);
+            $this->logDebug(sprintf('Creating a new label `%s` for person with oid `%d`', $label_name, $person->getId()));
         }
+
+        $this->records->setPrimaryEntity($person);
 
         return $this->records;
-    }
-
-    /**
-     * Returns a new person label entity.
-     *
-     * @param string $label
-     *
-     * @return DeskPROEntity\LabelPerson
-     */
-    private function createPersonLabel($label)
-    {
-        $entity = new DeskPROEntity\LabelPerson();
-        $entity->setLabel($label);
-
-        $this->records->add($entity);
-
-        return $entity;
-    }
-
-    /**
-     * Returns a collection of existing person label names.
-     *
-     * @param int $id
-     *
-     * @throws Mapper\MapperException
-     *
-     * @return array
-     */
-    private function getExistingLabelsNames($id)
-    {
-        $labels = $this->getPersonLabelMapper()->findByPersonId($id, false);
-        $names  = array();
-
-        foreach ($labels as $label) {
-            $names[] = $label->getLabel();
-        }
-
-        return $names;
-    }
-
-    /**
-     * Returns the person label mapper.
-     *
-     * @throws \Exception
-     *
-     * @return Mapper\PersonLabel
-     */
-    private function getPersonLabelMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_PERSON_LABEL);
     }
 }

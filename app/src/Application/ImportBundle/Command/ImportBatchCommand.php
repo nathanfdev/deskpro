@@ -63,7 +63,7 @@ class ImportBatchCommand extends AbstractGenerateCommand
         $config->setWriterType(Generator\Writer\WriterInterface::TYPE_JSON);
 
         $generator = $this->createGenerator($config, $logger);
-        $this->createAndSetProgressBar($generator, $output);
+        $this->createAndSetProgressBar($generator, $input, $output);
         $this->generate($generator, $output);
 
         // Import data
@@ -81,7 +81,7 @@ class ImportBatchCommand extends AbstractGenerateCommand
         }
 
         $generator = $this->createGenerator($config, $logger);
-        $this->createAndSetProgressBar($generator, $output);
+        $this->createAndSetProgressBar($generator, $input, $output);
         $this->generate($generator, $output);
     }
 

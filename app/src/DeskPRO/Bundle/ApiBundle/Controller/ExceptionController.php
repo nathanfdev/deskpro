@@ -38,7 +38,6 @@ use FOS\RestBundle\View\View;
 use Symfony\Component\Debug\Debug;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 

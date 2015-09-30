@@ -54,8 +54,6 @@ interface BatchParserInterface
      *
      * @param array $config
      *
-     * @throws \Application\ImportBundle\Generator\Exporter\Parser\NoColumnException
-     *
      * @return bool
      */
     public function validate(array $config);

@@ -33,6 +33,8 @@ namespace Application\DeskPRO;
 
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\People\PersonGuest;
+use Orb\Log\Filter\CallbackFormatter;
+use Orb\Log\LogItem;
 use Orb\Util\Arrays;
 
 /**
@@ -551,6 +553,13 @@ class App
         if (strpos($log_name, 'worker_job') !== 0 || !defined('DP_DISABLE_DBCRONLOG')) {
             $writer = new \Application\DeskPRO\Log\Writer\LogItemEntity();
             $writer->addFilter(new \Orb\Log\Filter\PriorityFilter(\Orb\Log\Logger::INFO));
+            $writer->addFilter(new CallbackFormatter(function (LogItem $item) {
+                if (isset($item['is_email_info'])) {
+                    return;
+                }
+
+                return $item;
+            }));
             $logger->addWriter($writer);
         }
 

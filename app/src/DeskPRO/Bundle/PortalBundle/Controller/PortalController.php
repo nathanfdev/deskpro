@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -144,6 +145,50 @@ class PortalController extends AbstractController
         }
 
         return $this->redirectToRoute('portal_home');
+    }
+
+    /**
+     * @Route("/change-language", name="portal_change_language")
+     */
+    public function changeLanguageAction(Request $request)
+    {
+        $new_lang_code = $request->get('lang_code');
+        $referer       = $request->server->get('HTTP_REFERER');
+
+        $lang_changer = $this->get('language_changer');
+        $redirect_url = $lang_changer->changeLanguage($new_lang_code, $referer);
+
+        $person = $this->getCurrentPerson();
+        if (!$person instanceof PersonGuest) {
+            if ($lang = $this->get('language_manager')->getLanguage($new_lang_code)) {
+                $person->setLanguage($lang);
+                $this->persistAndFlushEntity($person);
+            }
+        }
+
+        return $this->redirect($redirect_url);
+    }
+
+    /**
+     * @Route("/dismiss-lang-alert", name="portal_dismiss_lang_alert")
+     */
+    public function ignoreLangAlert(Request $request)
+    {
+        $this->getSession()->set('ignore_language_warning', true);
+
+        $referer = $request->server->get('HTTP_REFERER');
+
+        return $this->redirect($referer);
+    }
+
+    public function removeTrailingSlashAction(Request $request)
+    {
+        $pathInfo   = $request->getPathInfo();
+        $requestUri = $request->getRequestUri();
+
+        $url = str_replace($pathInfo, rtrim($pathInfo, ' /'), $requestUri);
+
+        return $this->redirect($url, 301);
     }
 
     /**

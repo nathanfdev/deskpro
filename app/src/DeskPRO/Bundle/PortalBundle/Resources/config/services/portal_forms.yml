@@ -82,13 +82,6 @@ services:
       - { name: form.type, alias: person_registration }
 
 
-  form.person_manage_emails:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonManageEmailsType
-    arguments: [@doctrine.orm.default_entity_manager]
-    tags:
-      - { name: form.type, alias: person_manage_emails }
-
-
   form.person_profile:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonEditProfileType
     arguments: [@form_field_manager, @language_manager, @blob.storage, @doctrine.orm.default_entity_manager]

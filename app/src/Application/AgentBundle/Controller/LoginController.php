@@ -183,6 +183,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             'browser_warnings'  => $browser_warnings,
             'timeout'           => $this->in->getBool('timeout'),
             'captcha'           => $captcha,
+            'render_forgot_pw'  => $this->in->getString('forgot') ?: false,
         ));
     }
 

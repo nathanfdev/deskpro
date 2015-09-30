@@ -29,10 +29,9 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
-use Application\ImportBundle\Reader\Json\JsonConfig;
+use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Reader\Json\JsonReaderInterface;
-use Exception;
 
 /**
  * Abstract json parser.
@@ -47,154 +46,28 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     protected $reader;
 
     /**
+     * @var FormatterInterface
+     */
+    protected $formatter;
+
+    /**
      * Constructor.
      *
      * @param JsonReaderInterface $reader
+     * @param FormatterInterface  $formatter
+     * @param ParserHelperSet     $helpers
      */
-    public function __construct(JsonReaderInterface $reader)
+    public function __construct(JsonReaderInterface $reader, FormatterInterface $formatter, ParserHelperSet $helpers)
     {
-        $this->reader = $reader;
-    }
-
-    /**
-     * Get json reader config.
-     *
-     * @param string $record_type
-     *
-     * @return JsonConfig
-     */
-    protected function getReaderConfig($record_type)
-    {
-        return new JsonConfig(sprintf(
-            '%s/%d/%s',
-            $this->config->getInputPath(), $this->getBatchConfig()->getId() + 1, $record_type
-        ));
-    }
-
-    /**
-     * Exports custom fields.
-     *
-     * @param array $custom_fields
-     *
-     * @return Entity\Collection
-     */
-    protected function exportCustomFields(array $custom_fields)
-    {
-        $collection = new Entity\Collection();
-        foreach ($custom_fields as $num => $custom_field) {
-            try {
-                $entity = $this->exportCustomField($custom_field);
-                if ($entity) {
-                    $collection->attach($entity);
-                } else {
-                    $this->logWarning(sprintf('Invalid custom field record `%d` found (Skipping)', $num));
-                }
-            } catch (NoColumnException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid custom field record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            }
-        }
-
-        return $collection;
-    }
-
-    /**
-     * Returns a custom field entity.
-     *
-     * @param array $custom_field
-     *
-     * @return Entity\CustomField|null
-     */
-    protected function exportCustomField(array $custom_field)
-    {
-        if ($this->isCustomFieldValid($custom_field)) {
-            $entity = new Entity\CustomField();
-            $entity
-                ->setOid($custom_field['oid'])
-                ->setKey($custom_field['key'])
-                ->setValue($custom_field['value']);
-
-            return $entity;
-        }
-
-        return;
-    }
-
-    /**
-     * Returns an attachment entity.
-     *
-     * @param array $attachment
-     *
-     * @return Entity\Attachment|null
-     */
-    protected function exportAttachment(array $attachment)
-    {
-        if ($this->isAttachmentValid($attachment)) {
-            $entity = new Entity\Attachment();
-            $entity
-                ->setDestination('attachment_'.$attachment['oid'])
-                ->setOid($attachment['oid'])
-                ->setPersonEmail($attachment['person'])
-                ->setBlobData($attachment['blob_data'])
-                ->setBlobUrl($attachment['blob_url'])
-                ->setBlobPath($attachment['blob_path'])
-                ->setFileName($attachment['file_name'])
-                ->setContentType($attachment['content_type'])
-                ->setAsInline($attachment['is_inline']);
-
-            return $entity;
-        }
-
-        return;
-    }
-
-    /**
-     * Check if an attachment has all required columns.
-     *
-     * @param array $attachment
-     *
-     * @return bool
-     */
-    protected function isAttachmentValid(array $attachment)
-    {
-        $columns = array(
-            'oid',
-            'person',
-            'blob_data',
-            'blob_url',
-            'blob_path',
-            'file_name',
-            'content_type',
-            'is_inline',
-        );
-
-        return $this->hasRequiredColumns($attachment, $columns);
-    }
-
-    /**
-     * Check if custom field has all required columns.
-     *
-     * @param array $custom_field
-     *
-     * @return bool
-     */
-    protected function isCustomFieldValid(array $custom_field)
-    {
-        $columns = array(
-            'oid',
-            'key',
-            'value',
-        );
-
-        return $this->hasRequiredColumns($custom_field, $columns);
+        $this->reader    = $reader;
+        $this->formatter = $formatter;
+        $this->helpers   = $helpers;
     }
 
     /**
      * Returns batch config.
      *
-     * @throws Exception
+     * @throws \RuntimeException
      *
      * @return BatchConfig
      */
@@ -204,6 +77,54 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             return $this->config->getExporterBatchConfig();
         }
 
-        throw new Exception('Batch config is not defined');
+        throw new \RuntimeException('Batch config is not defined');
+    }
+
+    /**
+     * @return int
+     */
+    protected function getBatchNum()
+    {
+        return $this->getBatchConfig()->getId() + 1;
+    }
+
+    /**
+     * @return Helper\Blob
+     */
+    protected function getBlobParser()
+    {
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_BLOB);
+    }
+
+    /**
+     * @return Helper\Attachment
+     */
+    protected function getAttachmentParser()
+    {
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_ATTACHMENT);
+    }
+
+    /**
+     * @return Helper\CustomFields
+     */
+    protected function getCustomFieldsParser()
+    {
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_CUSTOM_FIELD);
+    }
+
+    /**
+     * @return Helper\ContactData
+     */
+    protected function getContactDataParser()
+    {
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_CONTACT_DATA);
+    }
+
+    /**
+     * @return Helper\Translations
+     */
+    protected function getTranslationsParser()
+    {
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_OBJECT_LANG);
     }
 }

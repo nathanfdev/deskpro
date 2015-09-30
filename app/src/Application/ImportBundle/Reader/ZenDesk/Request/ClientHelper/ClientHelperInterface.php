@@ -38,6 +38,13 @@ use Zendesk\API\Client;
 interface ClientHelperInterface
 {
     /**
+     * Constructor.
+     *
+     * @param array $params
+     */
+    public function __construct(array $params = array());
+
+    /**
      * Do request via ZenDesk client.
      *
      * @param Client $client

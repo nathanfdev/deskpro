@@ -32,7 +32,7 @@
 namespace Application\LegacyApiBundle\Controller;
 
 /**
- * SWG\Resource(
+ * @SWG\Resource(
  * 	resourcePath="/glossary",
  * 	description="Operations about Glossary Words",
  * 	basePath="/api"
@@ -41,15 +41,15 @@ namespace Application\LegacyApiBundle\Controller;
 class GlossaryController extends AbstractController
 {
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/glossary",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="List glossary words.",
      * 		notes="Returns list of words that matched.",
      *		type="array",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="word",
      *				description="If specified, gets words containing this string.",
      *				paramType="query",
@@ -73,15 +73,15 @@ class GlossaryController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/glossary/lookup",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Looks up a specific glossary word.",
      * 		notes="Information about the word, if in the glossary.",
      *		type="GlossaryWord",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="word",
      *				description="If specified, gets this word.",
      *				paramType="query",
@@ -105,20 +105,20 @@ class GlossaryController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/glossary",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Add a glossary word.",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="definition",
      *				description="Definition of given words.",
      *				paramType="query",
      *				required=true,
      *				type="string"
      *			),
-     *			SWG\Parameter(
+     *			@SWG\Parameter(
      *				name="word[]",
      *				description="Comma seperated list of words to associate with this definition.",
      *				paramType="query",
@@ -155,15 +155,15 @@ class GlossaryController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/glossary/{word_id}",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Gets a glossary word by word ID.",
      * 		notes="Information about the word by word ID, if in the glossary.",
      *		type="GlossaryWord",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="word_id",
      *				description="ID of the word that needs to be searched.",
      *				paramType="path",
@@ -171,7 +171,7 @@ class GlossaryController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="Glossary word not found")
+     *		@SWG\ResponseMessage(code=404, message="Glossary word not found")
      * 	)
      * ).
      */
@@ -183,13 +183,13 @@ class GlossaryController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/glossary/{word_id}",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="DELETE",
      * 		summary="Deletes a glossary word by ID.",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="word_id",
      *				description="ID of the word that needs to be deleted.",
      *				paramType="path",
@@ -197,7 +197,7 @@ class GlossaryController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="Glossary word not found")
+     *		@SWG\ResponseMessage(code=404, message="Glossary word not found")
      * 	)
      * ).
      */
@@ -216,15 +216,15 @@ class GlossaryController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/glossary/definitions/{definition_id}",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Gets a glossary word definition.",
      * 		notes="Information about the Glossary Word definition by definition ID, if in the glossary.",
      *		type="GlossaryWordDefinition",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="definition_id",
      *				description="ID of the word defination that needs to be searched.",
      *				paramType="path",
@@ -232,7 +232,7 @@ class GlossaryController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="Glossary definition not found")
+     *		@SWG\ResponseMessage(code=404, message="Glossary definition not found")
      * 	)
      * ).
      */
@@ -244,13 +244,13 @@ class GlossaryController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/glossary/definitions/{definition_id}",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Updates a glossary word definition.",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="definition_id",
      *				description="ID of the word defination that needs to be updated.",
      *				paramType="path",
@@ -258,7 +258,7 @@ class GlossaryController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="Glossary definition not found")
+     *		@SWG\ResponseMessage(code=404, message="Glossary definition not found")
      * 	)
      * ).
      */
@@ -281,13 +281,13 @@ class GlossaryController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/glossary/definitions/{definition_id}",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="DELETE",
      * 		summary="Deletes a glossary word definition.",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="definition_id",
      *				description="ID of the word defination that needs to be deleted.",
      *				paramType="path",
@@ -295,7 +295,7 @@ class GlossaryController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		SWG\ResponseMessage(code=404, message="Glossary definition not found")
+     *		@SWG\ResponseMessage(code=404, message="Glossary definition not found")
      * 	)
      * ).
      */

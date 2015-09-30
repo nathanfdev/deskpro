@@ -51,6 +51,10 @@ class SessData extends \Application\DeskPRO\Domain\DomainObject
 
     protected $sess_time;
 
+    protected $visitor_id;
+
+    protected $person_id;
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -68,6 +72,14 @@ class SessData extends \Application\DeskPRO\Domain\DomainObject
         $builder->addField('sess_time', 'integer', array(
                 'unsigned' => true,
                 'nullable' => false,
+            )
+        );
+        $builder->addField('visitor_id', 'string', array(
+                'nullable' => true,
+            )
+        );
+        $builder->addField('person_id', 'integer', array(
+                'nullable' => true,
             )
         );
         $builder->addField('sess_data', 'text', array(

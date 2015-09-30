@@ -54,6 +54,7 @@ class Environment extends \Twig_Environment
         if (!$has_done) {
             if (!in_array('dptpl', stream_get_wrappers())) {
                 stream_wrapper_register('dptpl', 'Application\\DeskPRO\\Twig\\Loader\\DbStreamWrapper', 0);
+                $has_done = true;
             }
             $has_done = true;
         }

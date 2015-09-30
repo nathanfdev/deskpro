@@ -1,37 +1,26 @@
 Installing DeskPRO
 ==================
 
-Full documentation for installing DeskPRO Download is available at:
+Full documentation for how to install and manage DeskPRO is available at:
 
-https://manuals.deskpro.com/html/admin/install-download/install-download.html
+https://manuals.deskpro.com/html/sysadmin/
 
-Documentation for managing a DeskPRO installation is available at:
-
-https://manuals.deskpro.com/html/admin/managing-download/managing-download.html
+This manual also covers importing data from legacy helpdesk systems into DeskPRO.
 
 
 Updating DeskPRO
 ================
 
-For most installations, you will be able to carry out an automatic update from the admin interface home screen when a new DeskPRO version is available.
+For most installations, you will be prompted to carry out an automatic update from the admin interface home screen when a new DeskPRO version is available.
 
 If the automatic update process gets stuck, consult:
 
-https://manuals.deskpro.com/html/admin/managing-download/updating.html#recovering-from-a-stuck-update
+https://manuals.deskpro.com/html/sysadmin/updating/updates.html#recovering-from-a-stuck-update
 
-If the automatic updater doesn’t work, alternative update methods are documented here:
+If the automatic updater doesn’t work, use the command-line updater:
 
-https://manuals.deskpro.com/html/admin/managing-download/updating.html#command-line-updater
+https://manuals.deskpro.com/html/sysadmin/updating/updates.html#command-line-updater
 
-If you are updating from v3 or earlier of DeskPRO (i.e. your installation has 
-not been updated for several years), you should follow this process:
+or the manual install process:
 
-https://manuals.deskpro.com/html/admin/managing-download/upgrading-old.html
-
-Importing Data
-==============
-
-If you have existing data (user records or tickets) that you want to import,
-see this section of the admin manual:
-
-https://manuals.deskpro.com/html/admin/importing-data/importing-data.html
+https://manuals.deskpro.com/html/sysadmin/updating/updates.html#manually-installing-updates

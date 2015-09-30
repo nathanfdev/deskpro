@@ -1,92 +1,97 @@
 <!DOCTYPE html>
 <html ng-app>
 <head>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width">
-	<title>{{ phrase('adm.general.deskpro_admin_interface') }}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>{{ phrase('adm.general.deskpro_admin_interface') }}</title>
 
-	<!--[if lte IE 8]>
-	<script type="text/javascript">window.location = '/{{ path('user')|ltrim('/') }}index.php?_sys=message&ie8_admin';</script>
-	<![endif]-->
+    <!--[if lte IE 8]>
+    <script type="text/javascript">window.location = '/{{ path('user')|ltrim(' / ') }}index.php?_sys=message&ie8_admin';</script>
+    <![endif]-->
 
-	<style type="text/css">
-		body {
-			overflow: hidden;
-			background: #fff !important;
-		}
-		#agent_chats_wrapper, #agent_chat_panel {
-			display: none;
-		}
+    <style type="text/css">
+        body {
+            overflow: hidden;
+            background: #fff !important;
+        }
 
-		#dp_loading {
-			position: absolute;
-			top: 0;
-			right: 0;
-			bottom: 0;
-			left: 0;
-			z-index: 1000000000;
+        #agent_chats_wrapper, #agent_chat_panel {
+            display: none;
+        }
 
-			background: #91ada1 url('{{ asset('images') }}/login/background.jpg') repeat center top fixed;
-			-webkit-background-size: cover;
-			-moz-background-size: cover;
-			-o-background-size: cover;
-			background-size: cover;
-			text-align: center;
-		}
+        #dp_loading {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000000000;
 
-		#dp_loading .msg-outer {
-			width: 250px;
+            background: #91ada1 url('{{ asset('images') }}/login/background.jpg') repeat center top fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            text-align: center;
+        }
 
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			margin-top: -120px;
-			margin-left: -125px;
-		}
+        #dp_loading .msg-outer {
+            width: 250px;
 
-		#dp_loading .msg {
-			-webkit-border-radius: 3px;
-			-moz-border-radius: 3px;
-			border-radius: 3px;
-			background: #ffffff;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -120px;
+            margin-left: -125px;
+        }
 
-			box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
-			-moz-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
-			-webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
+        #dp_loading .msg {
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+            background: #ffffff;
 
-			padding:  25px;
-			text-align: center;
-		}
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
+            -moz-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
+            -webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
 
-		#dp_loading h1 {
-			font-family: "Helvetica Neue", Helvetica, arial, sans-serif;
-			font-size: 15px;
-			text-align: left;
-			color: #000;
+            padding: 25px;
+            text-align: center;
+        }
 
-			display: inline-block;
-			text-align: center;
+        #dp_loading h1 {
+            font-family: "Helvetica Neue", Helvetica, arial, sans-serif;
+            font-size: 15px;
+            text-align: left;
+            color: #000;
 
-			background: url({{ asset('images/spinners/logo-loading.gif') }}) no-repeat 50% 0;
+            display: inline-block;
+            text-align: center;
 
-			margin: 0;
-			padding: 0;
-			padding-top: 108px;
-		}
+            background: url({{ asset('images/spinners/logo-loading.gif') }}) no-repeat 50% 0;
 
-		{# Agent links that are us dont appear clickable #}
-		.agent-link[data-agent-id="{{ app.user.id }}"]:hover, .agent-link[data-agent-id="0"]:hover {
-			text-decoration: none;
-			cursor: text;
-		}
-	</style>
+            margin: 0;
+            padding: 0;
+            padding-top: 108px;
+        }
+
+        {# Agent links that are us dont appear clickable #}
+        .agent-link[data-agent-id="{{ app.user.id }}"]:hover, .agent-link[data-agent-id="0"]:hover {
+            text-decoration: none;
+            cursor: text;
+        }
+    </style>
 </head>
 <body ng-controller="Admin_Main_Ctrl_MainBody">
-<div id="dp_loading"><div class="msg-outer"><div class="msg"><h1>{{ phrase('agent.general.loading_interface') }}</h1></div></div></div>
+<div id="dp_loading">
+    <div class="msg-outer">
+        <div class="msg"><h1>{{ phrase('agent.general.loading_interface') }}</h1></div>
+    </div>
+</div>
 
 {% if app.isDebug() %}
-	<dp-devbar></dp-devbar>
+    <dp-devbar></dp-devbar>
 {% endif %}
 
 <header class="dp-app-header">
@@ -98,93 +103,130 @@
 </header>
 
 <div id="dp_main_view" ng-controller="Admin_Main_Ctrl_MainPage">
-	<!-- Left Navigation Column -->
-	<nav class="dp-appstrip">
-		<ul ng-hide="isBillingInterface">
-			<li tooltip="{{ phrase('adm.general.home') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="home" class="state-on">
-				<a href="#/"><i class="app-icon app-icon-home"></i></a>
-			</li>
-			<li tooltip="{{ phrase('adm.general.apps_setup') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="setup">
-				<a href="#/setup"><i class="app-icon app-icon-setup"></i></a>
-			</li>
-			<li tooltip="{{ phrase('adm.general.apps_agents') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="agents">
-				<a href="#/agents"><i class="app-icon app-icon-agents"></i></a>
-			</li>
-			<li tooltip="{{ phrase('adm.general.apps_tickets') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="tickets">
-				<a href="#/tickets"><i class="app-icon app-icon-tickets"></i></a>
-			</li>
-			<li tooltip="{{ phrase('adm.general.apps_crm') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="crm">
-				<a href="#/crm"><i class="app-icon app-icon-users"></i></a>
-			</li>
-			<li tooltip="{{ phrase('adm.general.apps_portal') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="portal">
-				<a href="#/portal"><i class="app-icon app-icon-portal"></i></a>
-			</li>
-			<li tooltip="{{ phrase('adm.general.apps_chat') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="chat">
-				<a href="#/chat"><i class="app-icon app-icon-chat"></i></a>
-			</li>
-			<li tooltip="{{ phrase('adm.general.apps') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="apps">
-				<a href="#/apps"><i class="app-icon app-icon-apps"></i></a>
-			</li>
-            <li tooltip="{{ phrase('adm.general.tasks') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="tasks">
+    <!-- Left Navigation Column -->
+    <nav class="dp-appstrip">
+        <ul ng-hide="isBillingInterface">
+            <li tooltip="{{ phrase('adm.general.home') }}" tooltip-append-to-body="true" tooltip-placement="right"
+                dp-state-mark="home" class="state-on">
+                <a href="#/"><i class="app-icon app-icon-home"></i></a>
+            </li>
+            <li tooltip="{{ phrase('adm.general.apps_setup') }}" tooltip-append-to-body="true" tooltip-placement="right"
+                dp-state-mark="setup">
+                <a href="#/setup"><i class="app-icon app-icon-setup"></i></a>
+            </li>
+            <li tooltip="{{ phrase('adm.general.apps_agents') }}" tooltip-append-to-body="true"
+                tooltip-placement="right" dp-state-mark="agents">
+                <a href="#/agents"><i class="app-icon app-icon-agents"></i></a>
+            </li>
+            <li tooltip="{{ phrase('adm.general.apps_tickets') }}" tooltip-append-to-body="true"
+                tooltip-placement="right" dp-state-mark="tickets">
+                <a href="#/tickets"><i class="app-icon app-icon-tickets"></i></a>
+            </li>
+            <li tooltip="{{ phrase('adm.general.apps_crm') }}" tooltip-append-to-body="true" tooltip-placement="right"
+                dp-state-mark="crm">
+                <a href="#/crm"><i class="app-icon app-icon-users"></i></a>
+            </li>
+            <li tooltip="{{ phrase('adm.general.apps_portal') }}" tooltip-append-to-body="true"
+                tooltip-placement="right" dp-state-mark="portal">
+                <a href="#/portal"><i class="app-icon app-icon-portal"></i></a>
+            </li>
+            <li tooltip="{{ phrase('adm.general.apps_chat') }}" tooltip-append-to-body="true" tooltip-placement="right"
+                dp-state-mark="chat">
+                <a href="#/chat"><i class="app-icon app-icon-chat"></i></a>
+            </li>
+            {#
+                <li tooltip="{{ phrase('adm.general.apps_twitter') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="twitter">
+                    <a href="#/twitter"><i class="app-icon app-icon-twitter"></i></a>
+                </li>
+            #}
+            <li tooltip="{{ phrase('adm.general.apps') }}" tooltip-append-to-body="true" tooltip-placement="right"
+                dp-state-mark="apps">
+                <a href="#/apps"><i class="app-icon app-icon-apps"></i></a>
+            </li>
+            <li tooltip="{{ phrase('adm.general.tasks') }}" tooltip-append-to-body="true" tooltip-placement="right"
+                dp-state-mark="tasks">
                 <a href="#/tasks"><i class="app-icon app-icon-tasks"></i></a>
             </li>
-			{% if not app.isCloud() %}
-				<li tooltip="{{ phrase('adm.general.apps_server') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="server">
-					<a href="#/server"><i class="app-icon app-icon-server"></i></a>
-				</li>
-			{% endif %}
-		</ul>
+            {% if not app.isCloud() %}
+                <li tooltip="{{ phrase('adm.general.apps_server') }}" tooltip-append-to-body="true"
+                    tooltip-placement="right" dp-state-mark="server">
+                    <a href="#/server"><i class="app-icon app-icon-server"></i></a>
+                </li>
+            {% endif %}
+        </ul>
 
-		<ul class="btm normal">
-			<li tooltip="Go to Agent Interface" tooltip-append-to-body="true" tooltip-placement="right" class="agent-ifce-btn">
-				<a href="/{{ path('user')|ltrim('/') }}agent/"><i class="app-icon app-icon-agent-ifce"></i></a>
-			</li>
-			<li tooltip="Go to Reports Interface" tooltip-append-to-body="true" tooltip-placement="right" class="reports-ifce-btn">
-				<a href="/{{ path('user')|ltrim('/') }}reports/"><i class="app-icon app-icon-reports-ifce"></i></a>
-			</li>
-			<li ng-class="{'section-on': isBillingInterface}" tooltip="{{ ng_var("(isBillingInterface ? 'You are currently using the Billing Interface' : 'Go to Billing Interface')") }}" tooltip-append-to-body="true" tooltip-placement="right" class="lic-ifce-btn">
-				<a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
-			</li>
-			<li ng-class="{'section-on': !isBillingInterface}" tooltip="{{ ng_var("(isBillingInterface ? 'Go to Admin Interface' : 'You are currently using the Admin Interface')") }}" tooltip-append-to-body="true" tooltip-placement="right">
-				<a href="#/"><i class="app-icon app-icon-admin-ifce"></i></a>
-			</li>
-			<li tooltip="Go to User Interface" tooltip-append-to-body="true" tooltip-placement="right" class="user-ifce-btn">
-				<a href="{{ path('user') }}" dp-click-href="#/go_to_user"><i class="app-icon app-icon-user-ifce"></i></a>
-			</li>
-		</ul>
-		<ul class="btm mini-rest ng-hide" ng-show="miniAppStrip">
-			<li class="dotdotdot" ng-click="miniAppStrip = false">
-				<span><i class="fa fa-caret-down"></i></span>
-			</li>
-			<li tooltip="Go to Agent Interface" tooltip-append-to-body="true" tooltip-placement="right" class="agent-ifce-btn">
-				<a href="/{{ path('user')|ltrim('/') }}agent/"><i class="app-icon app-icon-agent-ifce"></i></a>
-			</li>
-			<li tooltip="Go to Reports Interface" tooltip-append-to-body="true" tooltip-placement="right" class="reports-ifce-btn">
-				<a href="/{{ path('user')|ltrim('/') }}reports/"><i class="app-icon app-icon-reports-ifce"></i></a>
-			</li>
-			<li ng-show="!isBillingInterface" tooltip="Go to Billing Interface" tooltip-append-to-body="true" tooltip-placement="right" class="lic-ifce-btn">
-				<a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
-			</li>
-			<li ng-show="isBillingInterface" tooltip="Go to Admin Interface" tooltip-append-to-body="true" tooltip-placement="right">
-				<a href="#/"><i class="app-icon app-icon-admin-ifce"></i></a>
-			</li>
-			<li tooltip="Go to User Interface" tooltip-append-to-body="true" tooltip-placement="right" class="user-ifce-btn">
-				<a href="{{ path('user') }}" dp-click-href="#/go_to_user"><i class="app-icon app-icon-user-ifce"></i></a>
-			</li>
-		</ul>
-		<ul class="btm mini">
-			<li class="dotdotdot" ng-hide="miniAppStrip" ng-click="miniAppStrip = true">
-				<span>&middot; &middot; &middot;</span>
-			</li>
-			<li ng-show="isBillingInterface" tooltip="You are currently using the Billing Interface" tooltip-append-to-body="true" tooltip-placement="right" class="lic-ifce-btn">
-				<a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
-			</li>
-			<li ng-show="!isBillingInterface" tooltip="You are currently using the Admin Interface" tooltip-append-to-body="true" tooltip-placement="right">
-				<a href="#/"><i class="app-icon app-icon-admin-ifce"></i></a>
-			</li>
-		</ul>
-	</nav>
-	<div class="dp-layout" ui-view></div>
+        <ul class="btm normal">
+            <li tooltip="Go to Agent Interface" tooltip-append-to-body="true" tooltip-placement="right"
+                class="agent-ifce-btn">
+                <a href="/{{ path('user')|ltrim('/') }}agent/"><i class="app-icon app-icon-agent-ifce"></i></a>
+            </li>
+            <li tooltip="Go to Reports Interface" tooltip-append-to-body="true" tooltip-placement="right"
+                class="reports-ifce-btn">
+                <a href="/{{ path('user')|ltrim('/') }}reports/"><i class="app-icon app-icon-reports-ifce"></i></a>
+            </li>
+            {% if not app.getSetting('disable_admin_billing') %}
+                <li ng-class="{'section-on': isBillingInterface}"
+                    tooltip="{{ ng_var("(isBillingInterface ? 'You are currently using the Billing Interface' : 'Go to Billing Interface')") }}"
+                    tooltip-append-to-body="true" tooltip-placement="right" class="lic-ifce-btn">
+                    <a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
+                </li>
+            {% endif %}
+            <li ng-class="{'section-on': !isBillingInterface}"
+                tooltip="{{ ng_var("(isBillingInterface ? 'Go to Admin Interface' : 'You are currently using the Admin Interface')") }}"
+                tooltip-append-to-body="true" tooltip-placement="right">
+                <a href="#/"><i class="app-icon app-icon-admin-ifce"></i></a>
+            </li>
+            <li tooltip="Go to User Interface" tooltip-append-to-body="true" tooltip-placement="right"
+                class="user-ifce-btn">
+                <a href="{{ path('user') }}" dp-click-href="#/go_to_user"><i
+                            class="app-icon app-icon-user-ifce"></i></a>
+            </li>
+        </ul>
+        <ul class="btm mini-rest ng-hide" ng-show="miniAppStrip">
+            <li class="dotdotdot" ng-click="miniAppStrip = false">
+                <span><i class="fa fa-caret-down"></i></span>
+            </li>
+            <li tooltip="Go to Agent Interface" tooltip-append-to-body="true" tooltip-placement="right"
+                class="agent-ifce-btn">
+                <a href="/{{ path('user')|ltrim('/') }}agent/"><i class="app-icon app-icon-agent-ifce"></i></a>
+            </li>
+            <li tooltip="Go to Reports Interface" tooltip-append-to-body="true" tooltip-placement="right"
+                class="reports-ifce-btn">
+                <a href="/{{ path('user')|ltrim('/') }}reports/"><i class="app-icon app-icon-reports-ifce"></i></a>
+            </li>
+            {% if not app.getSetting('disable_admin_billing') %}
+                <li ng-show="!isBillingInterface" tooltip="Go to Billing Interface" tooltip-append-to-body="true"
+                    tooltip-placement="right" class="lic-ifce-btn">
+                    <a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
+                </li>
+            {% endif %}
+            <li ng-show="isBillingInterface" tooltip="Go to Admin Interface" tooltip-append-to-body="true"
+                tooltip-placement="right">
+                <a href="#/"><i class="app-icon app-icon-admin-ifce"></i></a>
+            </li>
+            <li tooltip="Go to User Interface" tooltip-append-to-body="true" tooltip-placement="right"
+                class="user-ifce-btn">
+                <a href="{{ path('user') }}" dp-click-href="#/go_to_user"><i
+                            class="app-icon app-icon-user-ifce"></i></a>
+            </li>
+        </ul>
+        <ul class="btm mini">
+            <li class="dotdotdot" ng-hide="miniAppStrip" ng-click="miniAppStrip = true">
+                <span>&middot; &middot; &middot;</span>
+            </li>
+            {% if not app.getSetting('disable_admin_billing') %}
+                <li ng-show="isBillingInterface" tooltip="You are currently using the Billing Interface"
+                    tooltip-append-to-body="true" tooltip-placement="right" class="lic-ifce-btn">
+                    <a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
+                </li>
+            {% endif %}
+            <li ng-show="!isBillingInterface" tooltip="You are currently using the Admin Interface"
+                tooltip-append-to-body="true" tooltip-placement="right">
+                <a href="#/"><i class="app-icon app-icon-admin-ifce"></i></a>
+            </li>
+        </ul>
+    </nav>
+    <div class="dp-layout" ui-view></div>
 </div>
 
 {{ ng_tpl('AdminInterfaceBundle:Index:modal-network-error.html.twig') }}
@@ -205,46 +247,57 @@
 <link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/admin-style.css') }}"/>
 <link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/icons-style.css') }}"/>
 <link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/admin2-style.css') }}"/>
-<link rel="stylesheet" href="{{ asset('vendor/redactor/redactor.css') }}" type="text/css" />
+<link rel="stylesheet" href="{{ asset('vendor/redactor/redactor.css') }}" type="text/css"/>
+
 <link href='https://fonts.googleapis.com/css?family=Lato:400,700,900,100,300' rel='stylesheet' type='text/css'>
+{% if is_first_load %}
+    <!-- to preload JS -->
+    <iframe src="{{ path('agent') }}"
+            style="opacity: 0.01; width: 1px; height: 1px; border: none; padding: 0; margin: 0;" frameborder="0"
+            width="1" height="1"></iframe>
+{% endif %}
 
 <!-- legacy: portal editor -->
-<link rel="stylesheet" href="{{ asset('vendor/colorpicker/css/colorpicker.css') }}" type="text/css" />
+<link rel="stylesheet" href="{{ asset('vendor/colorpicker/css/colorpicker.css') }}" type="text/css"/>
 <script type="text/javascript">
-window.DP_ASSET_URL      = '{{ asset('') }}';
-window.DP_BASE_URL       = '/{{ path('user')|ltrim('/') }}';
-window.DP_BASE_API_URL   = '/{{ path('user')|ltrim('/') }}api';
-window.DP_BASE_ADMIN_URL = '/{{ path('admin')|trim('/') }}';
-window.DP_API_TOKEN      = '{{ api_token.getKeyString() }}';
-window.DP_SESSION_ID     = '{{ session.session_code }}';
-window.DP_REQUEST_TOKEN  = '{{ initial_request_token }}';
-window.DP_PERSON_ID      = {{ app.user.id }};
-window.DP_PERSON_EMAIL   = '{{ app.user.getPrimaryEmailAddress() }}';
-window.DP_PERSON_LANG_ID = {{ app.user.language.id }};
-window.DP_PERSON_TZ      = '{{ app.user.timezone|default('UTC') }}';
-window.DP_IS_DEBUG       = {% if app.isDebug() %}true{% else %}false{% endif %};
-window.DP_IS_TESTING     = {% if app.isTesting() %}true{% else %}false{% endif %};
-window.DP_IS_CLOUD       = {% if app.isCloud() %}true{% else %}false{% endif %};
-window.DP_SECURE_LIC_SERVER = '{{ license_server }}';
-{% if app.isCloud() %}
-window.DPC_SITE_DOMAIN   = '{{ constant('DPC_SITE_DOMAIN') }}';
-{% endif %}
-window.DP_USE_RJS_BUILD  = {% if (not app.isDebug() or app.getSetting('core.dev_use_rjs_build') and not app.getSetting('core.disable_rjs_build')) %}true{% else %}false{% endif %};
-window.DP_BUILD_TIME     = {{ app.getBuildTime() }};
+    window.DP_ASSET_URL = '{{ asset('') }}';
+    window.DP_BASE_URL = '/{{ path('portal_home')|ltrim('/') }}';
+    window.DP_BASE_API_URL = '/{{ path('user')|ltrim('/') }}api';
+    window.DP_BASE_ADMIN_URL = '/{{ path('admin')|trim('/') }}';
+    window.DP_API_TOKEN = '{{ api_token.getKeyString() }}';
+    window.DP_SESSION_ID = '{{ session.session_code }}';
+    window.DP_REQUEST_TOKEN = '{{ initial_request_token }}';
+    window.DP_PERSON_ID = {{ app.user.id }};
+    window.DP_PERSON_EMAIL = '{{ app.user.getPrimaryEmailAddress() }}';
+    window.DP_PERSON_LANG_ID = {{ app.user.language.id }};
+    window.DP_PERSON_TZ = '{{ app.user.timezone|default('UTC') }}';
+    window.DP_IS_DEBUG = {% if app.isDebug() %}true{% else %}false{% endif %};
+    window.DP_IS_TESTING = {% if app.isTesting() %}true{% else %}false{% endif %};
+    window.DP_IS_CLOUD = {% if app.isCloud() %}true{% else %}false{% endif %};
+    window.DP_SECURE_LIC_SERVER = '{{ license_server }}';
+    {% if app.isCloud() %}
+    window.DPC_SITE_DOMAIN = '{{ constant('DPC_SITE_DOMAIN') }}';
+    {% endif %}
+    window.DP_USE_RJS_BUILD = {% if (not app.isDebug() or app.getSetting('core.dev_use_rjs_build') and not app.getSetting('core.disable_rjs_build')) %}true{% else %}false{% endif %};
+    window.DP_BUILD_TIME = {{ app.getBuildTime() }};
+    {% if app.getSetting('custom_cloud_billing_authcode') %}
+    window.DP_USES_CUSTOM_BILLING = true;
+    {% endif %}
 
-{% if inhelp_states %}
-window.DP_INHELP_STATES = {{ inhelp_states|json_encode|raw }};
-{% endif %}
+    {% if inhelp_states %}
+    window.DP_INHELP_STATES = {{ inhelp_states|json_encode|raw }};
+    {% endif %}
 
-window.DP_REDIRECT_TO_LICENSE = {% if redirect_license %}true{% else %}false{% endif %};
+    window.DP_REDIRECT_TO_LICENSE = {% if redirect_license %}true{% else %}false{% endif %};
 </script>
 {{ js_error_tracking('admin_interface') }}
-<script	type="text/javascript" src="{{ asset('app/DeskPRO/preboot.js') }}"></script>
+<script type="text/javascript" src="{{ asset('app/DeskPRO/preboot.js') }}"></script>
 <script type="text/javascript">
-	window.name = "NG_DEFER_BOOTSTRAP!";
-	window.DP_INTERFACE_LOADER = 'AdminLoad';
+    window.name = "NG_DEFER_BOOTSTRAP!";
+    window.DP_INTERFACE_LOADER = 'AdminLoad';
 </script>
-<script	type="text/javascript" data-main="{{ asset('loader-build/requirejs-config.js') }}?v={{ app.getBuildTime() }}" src="{{ asset('bower_components/requirejs/require.js') }}"></script>
+<script type="text/javascript" data-main="{{ asset('loader-build/requirejs-config.js') }}?v={{ app.getBuildTime() }}"
+        src="{{ asset('bower_components/requirejs/require.js') }}"></script>
 <script type="text/javascript">{{ rjs_apps_config|raw }}</script>
 
 {% include 'DeskPRO:Common:notify-login-script.html.twig' with {show:true} %}

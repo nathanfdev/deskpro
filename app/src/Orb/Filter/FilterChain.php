@@ -44,10 +44,15 @@ class FilterChain extends AbstractFilter implements \Countable, \IteratorAggrega
      * Add a new filter to the chain.
      *
      * @param \Zend\Filter\FilterInterface $filter
+     * @param bool                         $at_start
      */
-    public function addFilter(\Zend\Filter\FilterInterface $filter)
+    public function addFilter(\Zend\Filter\FilterInterface $filter, $at_start = false)
     {
+        if ($at_start) {
+            array_unshift($this->_filters, $filter);
+        } else {
         $this->_filters[] = $filter;
+    }
     }
 
     /**

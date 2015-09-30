@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
 use Doctrine\DBAL\Connection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -130,6 +131,14 @@ class AbstractController extends BaseController
     public function getSession()
     {
         return $this->get('session');
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter
+     */
+    public function getObjectRouter()
+    {
+        return $this->get('object_router');
     }
 
     /**
@@ -401,5 +410,19 @@ class AbstractController extends BaseController
     protected function phrase($phrase, array $vars = array(), Language $lang = null)
     {
         return $this->get('language_manager')->phrase($phrase, $vars, $lang);
+    }
+
+    protected function makeJsonResponse(array $array)
+    {
+        $response = new JsonResponse(array('data' => $array));
+
+        // if its 5.4+ make the results pretty
+        if (constant('JSON_PRETTY_PRINT')) {
+            $options = $response->getEncodingOptions();
+            $options = $options | JSON_PRETTY_PRINT;
+            $response->setEncodingOptions($options);
+        }
+
+        return $response;
     }
 }

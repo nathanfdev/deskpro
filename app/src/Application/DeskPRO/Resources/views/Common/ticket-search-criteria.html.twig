@@ -783,14 +783,20 @@
 			<div class="builder-type" title="{{field.field_def.title}}" data-rule-group="Ticket Fields" data-rule-type="ticket_field[{{field.field_def.id}}]" {{ field.formViewCriteria.vars.rule_handler|raw }}>
 				<div class="builder-op">
 					<select name="op" class="op">
-						{% if search_context == 'filter' %}
-							{% for op in field.field_def.getFilterCapabilities(search_context) %}
-								<option value="{{op}}">{{op_lang[op]}}</option>
-							{% endfor %}
+						{% if 'date' == field.field_handler or 'datetime' == field.field_handler %}
+							<option value="lte">{{ phrase('agent.general.before') }}</option>
+							<option value="gte">{{ phrase('agent.general.after') }}</option>
+							<option value="between">{{ phrase('agent.general.between') }}</option>
 						{% else %}
-							{% for op in field.field_def.getSearchCapabilities(search_context) %}
-								<option value="{{op}}">{{op_lang[op]}}</option>
-							{% endfor %}
+							{% if search_context == 'filter' %}
+								{% for op in field.field_def.getFilterCapabilities(search_context) %}
+									<option value="{{op}}">{{op_lang[op]}}</option>
+								{% endfor %}
+							{% else %}
+								{% for op in field.field_def.getSearchCapabilities(search_context) %}
+									<option value="{{op}}">{{op_lang[op]}}</option>
+								{% endfor %}
+							{% endif %}
 						{% endif %}
 					</select>
 				</div>

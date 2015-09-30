@@ -271,7 +271,7 @@ class Date extends HandlerAbstract
 
     public function getSearchCapabilities()
     {
-        return array('before', 'after', 'between');
+        return array('lte', 'gte', 'between');
     }
 
     public function getSearchType()

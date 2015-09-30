@@ -53,6 +53,20 @@ class CustomDefArticle extends CustomDefAbstract
      */
     protected $children = null;
 
+    /**
+     * Set parent.
+     *
+     * @param CustomDefArticle $parent
+     *
+     * @return $this
+     */
+    public function setParent(CustomDefArticle $parent = null)
+    {
+        $this->setModelField('parent', $parent);
+
+        return $this;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################

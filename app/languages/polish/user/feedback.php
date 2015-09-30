@@ -59,6 +59,7 @@ return array(
     'user.feedback.title-feedback'           => 'Jest 1 opinia|Jest opinii - {{count}}',
     'user.feedback.title-feedback-closed'    => 'Jest 1 zamknięta opinia|Jest zamkniętych opinii - {{count}}',
     'user.feedback.title-status'             => 'Jest 1 otwarta i aktywna opinia|Jest otwartych i aktywnych opinii - {{count}}',
+    'user.feedback.type'                     => 'Rodzaj',
     'user.feedback.type_feedback'            => 'Sugestia',
     'user.feedback.voting_button-yes'        => 'Zgadzam się',
     'user.feedback.voting_closed'            => 'Głosowanie zostało zamknięte',

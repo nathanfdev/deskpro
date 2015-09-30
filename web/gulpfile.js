@@ -288,12 +288,24 @@ function addRjsTask(rjsBundle) {
 
   var target;
   switch (bundleName) {
-    case 'AdminLoad':        target = 'Admin/AdminLoad.min.js'; break;
-    case 'CloudAdminLoad':   target = 'Admin/Cloud/CloudAdminLoad.min.js'; break;
-    case 'AdminUpgradeLoad': target = 'AdminUpgrade/AdminUpgradeLoad.min.js'; break;
-    case 'AdminStartLoad':   target = 'AdminStart/AdminStartLoad.min.js'; break;
-    case 'ReportsLoad':      target = 'Reports/ReportsLoad.min.js'; break;
-    case 'AgentLoad':        target = 'Agent/AgentLoad.min.js'; break;
+    case 'AdminLoad':
+      target = 'Admin/AdminLoad.min.js';
+      break;
+    case 'CloudAdminLoad':
+      target = 'Admin/Cloud/CloudAdminLoad.min.js';
+      break;
+    case 'AdminUpgradeLoad':
+      target = 'AdminUpgrade/AdminUpgradeLoad.min.js';
+      break;
+    case 'AdminStartLoad':
+      target = 'AdminStart/AdminStartLoad.min.js';
+      break;
+    case 'ReportsLoad':
+      target = 'Reports/ReportsLoad.min.js';
+      break;
+    case 'AgentLoad':
+      target = 'Agent/AgentLoad.min.js';
+      break;
   }
 
   gulp.task(taskName, ['coffee', 'loader'], function () {

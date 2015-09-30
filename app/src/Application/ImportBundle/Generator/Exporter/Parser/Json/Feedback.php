@@ -29,10 +29,10 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
-use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
-use Application\ImportBundle\Generator\Writer\Json\Destination;
-use DateTime;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 
 /**
  * Feedback json file parser.
@@ -54,7 +54,7 @@ final class Feedback extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getDirectoryFilesCount($this->getFeedbackReaderConfig());
+        return $this->reader->getDirectoryFilesCount(JsonReaderInterface::ENTITY_FEEDBACK_PATH, $this->getBatchNum());
     }
 
     /**
@@ -62,153 +62,91 @@ final class Feedback extends AbstractParser
      */
     public function export()
     {
-        $collection     = new Entity\Collection();
-        $feedback_items = $this->reader->getData($this->getFeedbackReaderConfig());
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->getData(JsonReaderInterface::ENTITY_FEEDBACK_PATH, $this->getBatchNum()))
+            ->setPrefix('JSONFeedback')
+            ->setRefColumn('oid')
+            ->setMethod('exportFeedback')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        foreach ($feedback_items as $num => $feedback) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportFeedback($feedback);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid feedback record found (Skipping): %d', $num));
-                }
-            } catch (NoColumnException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid feedback record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            } catch (NotArrayException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid feedback record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
      * Returns a feedback entity.
      *
-     * @param array $feedback
+     * @param array $data
      *
      * @return Entity\Feedback
      */
-    private function exportFeedback(array $feedback)
+    protected function exportFeedback(array $data)
     {
-        if ($this->isFeedbackValid($feedback)) {
-            $entity = new Entity\Feedback();
-            $entity
-                ->setDestination('feedback_'.$feedback['oid'])
-                ->setOid($feedback['oid'])
-                ->setPersonEmail($feedback['person'])
-                ->setLanguage($feedback['language'])
-                ->setTitle($feedback['title'])
-                ->setContent($feedback['content'])
-                ->setSlug($feedback['slug'])
-                ->setPopularity($feedback['popularity'])
-                ->setStatus($feedback['status'])
-                ->setTotalRating($feedback['total_rating'])
-                ->setNumComments($feedback['num_comments'])
-                ->setNumRatings($feedback['num_ratings'])
-                ->setViewCount($feedback['view_count'])
-                ->setCategory($feedback['category'])
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($feedback['date_created']));
+        $formatted = $this->formatter->format($data, array(
+            'oid'            => TransformerInterface::TYPE_STRING,
+            'import_map_key' => TransformerInterface::TYPE_STRING,
+            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix'     => 'feedback_',
+                'ref'        => 'oid',
+            )),
+            'person'         => TransformerInterface::TYPE_STRING,
+            'language'       => TransformerInterface::TYPE_STRING,
+            'title'          => TransformerInterface::TYPE_STRING,
+            'slug'           => TransformerInterface::TYPE_STRING,
+            'content'        => TransformerInterface::TYPE_STRING,
+            'popularity'     => TransformerInterface::TYPE_STRING,
+            'status'         => TransformerInterface::TYPE_STRING,
+            'total_rating'   => TransformerInterface::TYPE_INT,
+            'num_comments'   => TransformerInterface::TYPE_INT,
+            'num_ratings'    => TransformerInterface::TYPE_INT,
+            'view_count'     => TransformerInterface::TYPE_INT,
+            'category'       => TransformerInterface::TYPE_STRING,
+            'date_created'   => TransformerInterface::TYPE_DATE,
+            'date_published' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
+                'null'       => true,
+            )),
+            'labels'        => TransformerInterface::TYPE_ARRAY,
+            'attachments'   => TransformerInterface::TYPE_ARRAY,
+            'custom_fields' => TransformerInterface::TYPE_ARRAY,
+        ));
 
-            if ($feedback['date_published']) {
-                $entity->setDatePublished(new DateTime($feedback['date_published']));
-            }
-            foreach ($feedback['labels'] as $label) {
-                $entity->addLabel($label);
-            }
+        $entity = new Entity\Feedback();
+        $entity
+            ->setRawData($data)
+            ->setOid($formatted['oid'])
+            ->setImportMapKey($formatted['import_map_key'])
+            ->setDestination($formatted['destination'])
+            ->setPersonEmail($formatted['person'])
+            ->setLanguage($formatted['language'])
+            ->setTitle($formatted['title'])
+            ->setContent($formatted['content'])
+            ->setSlug($formatted['slug'])
+            ->setPopularity($formatted['popularity'])
+            ->setStatus($formatted['status'])
+            ->setTotalRating($formatted['total_rating'])
+            ->setNumComments($formatted['num_comments'])
+            ->setNumRatings($formatted['num_ratings'])
+            ->setViewCount($formatted['view_count'])
+            ->setCategory($formatted['category'])
+            ->setDateCreated($formatted['date_created'])
+            ->setDatePublished($formatted['date_published'])
+        ;
 
-            $attachments = $this->exportAttachments($feedback['attachments']);
-            foreach ($attachments as $attachment) {
-                /* @var Entity\Attachment $attachment */
-                $entity->addAttachment($attachment);
-            }
-
-            return $entity;
+        foreach ($formatted['labels'] as $label) {
+            $entity->addLabel($label);
         }
 
-        return;
-    }
-
-    /**
-     * Returns a collection of the feedback item attachments.
-     *
-     * @param array $attachments
-     *
-     * @return Entity\Collection
-     */
-    private function exportAttachments(array $attachments)
-    {
-        $collection = new Entity\Collection();
-        foreach ($attachments as $num => $attachment) {
-            try {
-                $entity = $this->exportAttachment($attachment);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid feedback attachment record found (Skipping): %d', $num));
-                }
-            } catch (NoColumnException $e) {
-                $this->logError(sprintf(
-                    'Invalid feedback attachment record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            }
+        $attachments = $this->getAttachmentParser()->exportAttachments($formatted['attachments']);
+        foreach ($attachments as $attachment) {
+            $entity->addAttachment($attachment);
         }
 
-        return $collection;
-    }
+        $custom_fields = $this->getCustomFieldsParser()->export($formatted['custom_fields']);
+        foreach ($custom_fields as $custom_field) {
+            $entity->addCustomField($custom_field);
+        }
 
-    /**
-     * Returns record type reader config.
-     *
-     * @return \Application\ImportBundle\Reader\Json\JsonConfig
-     */
-    private function getFeedbackReaderConfig()
-    {
-        return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_FEEDBACK_PATH);
-    }
-
-    /**
-     * Check if feedback has all required columns.
-     *
-     * @param array $feedback
-     *
-     * @return bool
-     */
-    private function isFeedbackValid(array $feedback)
-    {
-        $columns = array(
-            'oid',
-            'person',
-            'language',
-            'title',
-            'content',
-            'popularity',
-            'status',
-            'total_rating',
-            'num_comments',
-            'num_ratings',
-            'view_count',
-            'category',
-            'labels',
-            'date_created',
-            'date_published',
-            'attachments',
-        );
-
-        return $this->hasRequiredColumns($feedback, $columns)
-            && $this->isArrayColumn($feedback, 'labels')
-            && $this->isArrayColumn($feedback, 'attachments');
+        return $entity;
     }
 }

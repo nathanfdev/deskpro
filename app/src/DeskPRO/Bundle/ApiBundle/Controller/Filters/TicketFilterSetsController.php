@@ -353,7 +353,7 @@ class TicketFilterSetsController extends BaseController
     {
         $status = $set->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
-        $form = $this->get('form.factory')
+        $form   = $this->get('form.factory')
             ->createNamedBuilder(null, 'filter_set', $set)
             ->getForm();
 

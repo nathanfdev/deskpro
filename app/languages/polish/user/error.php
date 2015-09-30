@@ -40,6 +40,8 @@ return array(
     'user.error.form_choice_max'         => 'Wybierz najwyżej 1 opcję|Wybierz najwyżej opcji - {{count}}',
     'user.error.form_choice_min'         => 'Wybierz co najmniej 1 opcję|Wybierz co najmniej opcji - {{count}}',
     'user.error.form_date_invalid'       => 'Wpisz poprawną datę',
+    'user.error.form_date_invalid_dow'   => 'Dzień tygodnia, który wybrałeś jest niedozwolony',
+    'user.error.form_date_invalid_range' => 'Data, którą wybrałeś jest poza dozwolonym zakresem',
     'user.error.form_required'           => 'To pole wymaga wypełnienia',
     'user.error.form_text_max'           => 'Wpisz najwyżej 1 znak|Wpisz najwyżej znaków - {{count}}',
     'user.error.form_text_min'           => 'Wpisz co najmniej 1 znak|Wpisz co najmniej znaków - {{count}}',

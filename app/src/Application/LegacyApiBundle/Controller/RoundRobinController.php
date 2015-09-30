@@ -75,7 +75,7 @@ class RoundRobinController extends AbstractController implements ProtectedContro
 
     public function getAction($id)
     {
-        /* @var $rr RoundRobin */
+        /** @var $rr RoundRobin */
         if (!$rr = $this->em->getRepository('DeskPRO:RoundRobin')->find($id)) {
             throw $this->createNotFoundException();
         }
@@ -124,7 +124,7 @@ class RoundRobinController extends AbstractController implements ProtectedContro
 
     public function deleteAction($id)
     {
-        /* @var $rr RoundRobin */
+        /** @var $rr RoundRobin */
         if (!$rr = $this->em->getRepository('DeskPRO:RoundRobin')->find($id)) {
             throw $this->createNotFoundException();
         }

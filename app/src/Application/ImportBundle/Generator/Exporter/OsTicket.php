@@ -93,7 +93,9 @@ final class OsTicket extends AbstractExporter implements ExporterBatchInterface
             ->setStaffMinId($people_parser->getCurrentStaffMinId())
             ->setUsersMinId($people_parser->getCurrentUsersMinId())
             ->setTicketsMinId($tickets_parser->getCurrentTicketsMinId())
-            ->setDateModified(new DateTime());
+            ->setDateModified(new DateTime())
+            ->setHasRemaining($tickets_parser->getCount() > 0 || $people_parser->getCount() > 0)
+        ;
 
         return $updated_config;
     }

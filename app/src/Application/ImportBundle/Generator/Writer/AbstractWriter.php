@@ -153,11 +153,16 @@ abstract class AbstractWriter extends AbstractGenerator implements WriterInterfa
         return true;
     }
 
+    /**
+     * @return array
+     */
     public static function getOrderedTypes()
     {
         return array(
+            EntityInterface::TYPE_ORGANIZATION,
             EntityInterface::TYPE_PERSON,
             EntityInterface::TYPE_TICKET,
+            EntityInterface::TYPE_ARTICLE_CATEGORY,
             EntityInterface::TYPE_ARTICLE,
             EntityInterface::TYPE_DOWNLOAD,
             EntityInterface::TYPE_FEEDBACK,

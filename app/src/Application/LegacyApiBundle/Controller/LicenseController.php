@@ -103,12 +103,27 @@ class LicenseController extends AbstractController implements ProtectedControlle
             $ma_login_url = str_replace('http://', 'https://', $ma_login_url);
         }
 
+        if ($custom_code = $this->settings->get('custom_cloud_billing_authcode')) {
+            $code                 = 'XX-'.$custom_code;
+            $custom_billing_frame = DP_MA_SERVER_SECURE.'/cloud/start/'.$this->settings->get('custom_cloud_billing_siteid').'/'.$code;
+            if (defined('DP_CLOUD_LIC_URL')) {
+                $custom_billing_frame = str_replace(
+                    array('{SITE_ID}', '{SITE_AUTH}'),
+                    array($this->settings->get('custom_cloud_billing_siteid'), $code),
+                    DP_CLOUD_LIC_URL
+                );
+            }
+        } else {
+            $custom_billing_frame = null;
+        }
+
         return $this->createApiResponse(array(
             'license'          => $lic_info,
             'limits'           => $limits,
             'lic_set_callback' => License::getSecureLicServer().'/api/license/set-license.json',
             'ma_token'         => $ma_token->toApiData(),
             'ma_login_url'     => $ma_login_url,
+            'custom_billing_frame' => $custom_billing_frame,
         ));
     }
 

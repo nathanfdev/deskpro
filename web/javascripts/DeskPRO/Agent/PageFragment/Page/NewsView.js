@@ -303,8 +303,14 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		});
 
 		endDate.on('click', function() {
-			$('.auto-unpublish .end-date-input', optWrap).datetimepicker('show');
+			dateInput.data('DateTimePicker').show();
 		});
+
+    dateInput.on('dp.change', function(e){
+      endDate.data('val', e.date.unix());
+      endDate.text(e.date.format('D MMM, YY'));
+      self.updateAutoUnPubOptions();
+    });
 	},
 
 	removeAutoUnPubOptions: function() {
@@ -387,9 +393,15 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 			})
 		});
 
-		pubDate.on('click', function() {
-			$('.auto-publish .pub-date-input', optWrap).datetimepicker('show');
-		});
+    pubDate.on('click', function() {
+      dateInput.data('DateTimePicker').show();
+    });
+
+    dateInput.on('dp.change', function(e){
+      pubDate.data('val', e.date.unix());
+      pubDate.text(e.date.format('D MMM, YY'));
+      self.updateAutoPubOptions();
+    });
 	},
 
 	removeAutoPubOptions: function() {

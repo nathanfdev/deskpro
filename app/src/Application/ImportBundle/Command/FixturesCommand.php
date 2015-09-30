@@ -65,6 +65,12 @@ class FixturesCommand extends ContainerAwareCommand
                 InputOption::VALUE_REQUIRED,
                 'Offset'
             )
+            ->addOption(
+                'delete',
+                'd',
+                InputOption::VALUE_NONE,
+                'Delete data'
+            )
         ;
 
         parent::configure();
@@ -94,15 +100,19 @@ class FixturesCommand extends ContainerAwareCommand
             ->setLogger($logger)
         ;
 
-        if ($fixture instanceof ZenDesk\Fixtures\FixturePrepareInterface) {
-            $fixture->prepare(new DateTime('-2 year'), new DateTime('-1 year'));
-        }
+        if ($input->getOption('delete')) {
+            if (!$fixture instanceof ZenDesk\Fixtures\FixtureDeleteInterface) {
+                throw new \RuntimeException('No delete methods');
+            }
 
-        /* @var ZenDesk\Fixtures\FixtureInterface $fixture */
-        $fixture->create(
-            $input->getOption('offset'),
-            new DateTime('-2 year'),
-            new DateTime('-1 year')
-        );
+            $fixture->delete();
+        } else {
+            /* @var ZenDesk\Fixtures\FixtureInterface $fixture */
+            $fixture->create(
+                $input->getOption('offset'),
+                new DateTime('-2 year'),
+                new DateTime('-1 year')
+            );
+        }
     }
 }

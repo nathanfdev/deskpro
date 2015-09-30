@@ -28,32 +28,42 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Reader\BaseConfig;
-use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Application\ImportBundle\Reader\OsTicket\OsTicketReaderInterface;
+use Application\ImportBundle\Reader\ReaderInterface;
 
 /**
  * OsTicket data exporter factory.
  *
  * Class OsTicketFactory
  */
-class OsTicketFactory extends AbstractFactory
+class OsTicketFactory extends AbstractExporterFactory
 {
     /**
      * {@inheritdoc}
      */
-    public static function createExporter(ContainerInterface $container, BaseConfig $config)
+    public function createExporter(ReaderInterface $reader)
     {
-        $reader  = OsTicketReaderFactory::createReader($config);
+        if (!$reader instanceof OsTicketReaderInterface) {
+            throw new \RuntimeException('Config expected to be instance of OsTicketReaderInterface');
+        }
+
+        $formatter = $this->container->get('deskpro.import.formatter');
+
+        $people_storage = new Parser\PeopleStorage();
+        $ticket_people  = new Parser\OsTicket\TicketPeopleStorage($reader, $people_storage);
+
         $parsers = new Parser\Collection();
         $parsers
-            ->attach(new Parser\OsTicket\Downloads($reader))
-            ->attach(new Parser\OsTicket\Feedback($reader))
-            ->attach(new Parser\OsTicket\Articles($reader))
-            ->attach(new Parser\OsTicket\News($reader))
-            ->attach(new Parser\OsTicket\People($reader))
-            ->attach(new Parser\OsTicket\Tickets($reader));
+            ->attach(new Parser\OsTicket\Downloads($reader, $formatter))
+            ->attach(new Parser\OsTicket\Feedback($reader, $formatter))
+            ->attach(new Parser\OsTicket\Articles($reader, $formatter))
+            ->attach(new Parser\OsTicket\ArticleCategories($reader, $formatter))
+            ->attach(new Parser\OsTicket\News($reader, $formatter))
+            ->attach(new Parser\OsTicket\People($reader, $formatter, $people_storage))
+            ->attach(new Parser\OsTicket\Tickets($reader, $formatter, $ticket_people))
+            ->attach(new Parser\OsTicket\Organizations($reader, $formatter))
+        ;
 
-        return new Osticket($parsers, $reader);
+        return new OsTicket($parsers, $reader);
     }
 }

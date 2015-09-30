@@ -51,11 +51,13 @@ define ['angular', 'moment'], (angular, moment) ->
           e.preventDefault()
           e.stopPropagation()
 
-        documentHandler = () ->
-          if $scope.isOpen && event.target != $el[0]
-            $scope.$apply -> $scope.isOpen = false
+        documentHandler = (event) ->
+          $scope.$apply ->
+            if $scope.isOpen && event.target != $el[0]
+              $scope.isOpen = false
 
-        $el.on 'click', -> $scope.isOpen = true
+        $el.on 'click', ->
+          $scope.$apply -> $scope.isOpen = true
         $document.on 'click', documentHandler
 
         $scope.$watch 'isOpen', (val) ->

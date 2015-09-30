@@ -41,6 +41,11 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 final class TicketMessage extends AbstractEntity implements PersonAwareInterface, AttachmentsAwareInterface
 {
     /**
+     * @var Ticket
+     */
+    private $ticket;
+
+    /**
      * @var string
      */
     private $person_email;
@@ -84,6 +89,34 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
     public function getType()
     {
         return self::TYPE_TICKET_MESSAGE;
+    }
+
+    /**
+     * @return Ticket
+     */
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @return $this
+     */
+    public function setTicket(Ticket $ticket)
+    {
+        $this->ticket = $ticket;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOid()
+    {
+        return ($this->ticket ? $this->ticket->getOid().'-' : '').parent::getOid();
     }
 
     /**
@@ -237,12 +270,6 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
             throw new Exception('Date created is not set up');
         }
 
-        $attachments = array();
-        foreach ($this->attachments as $attachment) {
-            /* @var Attachment $attachment */
-            $attachments[] = $attachment->toArray();
-        }
-
         return array(
             'oid'          => $this->oid,
             'person'       => $this->person_email,
@@ -250,7 +277,7 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
             'message_text' => $this->message_text,
             'message_html' => $this->message_html,
             'is_note'      => $this->is_note,
-            'attachments'  => $attachments,
+            'attachments'  => $this->attachments->entitiesToArray(),
         );
     }
 
@@ -268,6 +295,8 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
             ->addPropertyConstraint('date_created', new Constraints\NotBlank())
             ->addPropertyConstraint('date_created', new Constraints\DateTime())
 
-            ->addGetterConstraint('messageContent', new Constraints\True());
+            ->addGetterConstraint('messageContent', new Constraints\True())
+            ->addPropertyConstraint('attachments', new Constraints\Valid())
+        ;
     }
 }

@@ -1,0 +1,2 @@
+feedback_id;person;blob_url;blob_path;file_name;content_type;is_inline
+1;some@email.tld;;/deskpro/www/app/src/Application/ImportBundle/Resources/example/csv/feedback.csv;feedback.csv;csv;

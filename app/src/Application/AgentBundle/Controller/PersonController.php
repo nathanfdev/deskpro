@@ -248,22 +248,10 @@ class PersonController extends AbstractController
 
             foreach ($contact_data as $c_data) {
                 foreach ($c_data as $data) {
+                    if (!isset($data['contact_type'])) {
+                        continue;
+                    }
                     switch ($data['contact_type']) {
-                        case 'phone':
-                            if (empty($data['number'])) {
-                                break;
-                            }
-
-                            $tel = '';
-
-                            if (!empty($data['country_calling_code'])) {
-                                $tel .= '+'.$data['country_calling_code'].'-';
-                            }
-
-                            $tel .= $data['number'];
-
-                            $vcard->addTelephone($tel);
-                            break;
                         case 'website':
                             $vcard->setURL($data['url']);
                             break;
@@ -280,6 +268,10 @@ class PersonController extends AbstractController
                             break;
                     }
                 }
+            }
+
+            foreach ($person->phone_numbers as $phone) {
+                $vcard->addTelephone($phone->getFormattedForVCard());
             }
 
             $response->setContent($vcard->fetch());
@@ -572,31 +564,17 @@ class PersonController extends AbstractController
                     $data['html']            = '';
                 }
 
-                if ($person->organization) {
-                    $tickets = $this->em->createQuery('
-                        SELECT t
-                        FROM DeskPRO:Ticket t
-                        WHERE t.person = ?0 AND t.organization IS NULL
-                        ORDER BY t.id DESC
-                    ')->setMaxResults(250)->execute(array($person));
-
-                    foreach ($tickets as $t) {
-                        $t->organization = $person->organization;
-                        $this->em->persist($t);
-                        $this->em->flush();
-                    }
-                } elseif ($old_org) {
-                    $tickets = $this->em->createQuery('
-                        SELECT t
-                        FROM DeskPRO:Ticket t
-                        WHERE t.person = ?0 AND t.organization = ?1
-                        ORDER BY t.id DESC
-                    ')->setMaxResults(250)->execute(array($person, $old_org));
-                    foreach ($tickets as $t) {
-                        $t->organization = null;
-                        $this->em->persist($t);
-                        $this->em->flush();
-                    }
+                $conn = $this->em->getConnection();
+                foreach (array('tickets', 'tickets_search_active') as $table) {
+                    $conn->executeQuery(
+                        sprintf(
+                            'update %s set organization_id = %s where person_id = %d and organization_id %s',
+                            $table,
+                            $person->organization ? $person->organization['id'] : 'null',
+                            $person['id'],
+                            $old_org ? ' = '.$old_org['id'] : 'is null'
+                        )
+                    );
                 }
 
                 break;
@@ -1420,14 +1398,11 @@ class PersonController extends AbstractController
         # Custom fields
         #------------------------------
 
-        // Custom fields
-        $user_field_defs      = App::getApi('custom_fields.people')->getEnabledFields();
-        $user_data_structured = App::getApi('custom_fields.util')->createDataHierarchy(array(), $user_field_defs);
-
         // We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
         // So dont remove it even though it looks like it's not used! :-)
         $custom_fields_form = $this->get('form.factory')->createNamedBuilder('newperson_custom_fields', 'form');
-        $custom_fields      = App::getApi('custom_fields.people')->getFieldsDisplayArray($user_field_defs, $user_data_structured, $custom_fields_form);
+        $field_manager      = $this->container->getPersonFieldManager();
+        $custom_fields      = $field_manager->getDisplayArrayForObject(new Entity\Person(), $custom_fields_form);
 
         $manager                   = $this->container->getCustomFieldManager();
         $custom_fields_definitions = $manager->createDefinitionsFormForContext(new Entity\Person());
@@ -1510,6 +1485,10 @@ class PersonController extends AbstractController
             }
         }
 
+        if ($language = $this->in->getUint('newperson.language')) {
+            $newperson->language = $this->container->getDataService('Language')->get($language);
+        }
+
         if ($isVCard) {
             $newperson->save();
 
@@ -1517,29 +1496,37 @@ class PersonController extends AbstractController
 
             $vCardReader->applyToPerson($content, $person);
 
-            $this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newperson', $this->person->id);
+            $this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId(
+                'agent.ui.state.newperson',
+                $this->person->id
+            );
 
-                    // Notify about new person
-                    foreach (PeopleClientMessages::createNewPersonMessages($person) as $cm) {
-                        $this->em->persist($cm);
-                    }
+            // Notify about new person
+            foreach (PeopleClientMessages::createNewPersonMessages($person) as $cm) {
+                $this->em->persist($cm);
+            }
             $this->em->flush();
 
             if ($this->in->getString('newperson.send_welcome_email')) {
                 /** @var Mailer $mailer */
-                        $mailer = $this->get('mailer');
-                $message        = $mailer->createMessage();
+                $mailer  = $this->get('mailer');
+                $message = $mailer->createMessage();
                 $message->setToPerson($person);
-                $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', array(
-                            'person' => $person,
-                        ));
+                $message->setTemplate(
+                    'DeskPRO:emails_user:register-welcome-byagent.html.twig',
+                    array(
+                        'person' => $person,
+                    )
+                );
                 $mailer->send($message);
             }
 
-            return $this->createJsonResponse(array(
-                            'success'   => true,
-                            'person_id' => $person['id'],
-                    ));
+            return $this->createJsonResponse(
+                array(
+                    'success'   => true,
+                    'person_id' => $person['id'],
+                )
+            );
         }
 
         $formType = new \Application\AgentBundle\Form\Type\NewPerson();
@@ -1573,6 +1560,9 @@ class PersonController extends AbstractController
             $this->em->flush();
 
             if ($this->in->getString('newperson.send_welcome_email')) {
+                $trans = $this->container->getTranslator();
+                $trans->setPersonContext($newperson->getPerson());
+
                 /** @var Mailer $mailer */
                 $mailer  = $this->get('mailer');
                 $message = $mailer->createMessage();
@@ -1582,6 +1572,7 @@ class PersonController extends AbstractController
                 ));
 
                 $mailer->send($message);
+                $trans->setPersonContext($this->person);
             }
 
             return $this->createJsonResponse(array(

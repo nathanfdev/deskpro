@@ -307,7 +307,8 @@ class FilterChangeDetector
             if ($this->extended_log_info) {
                 $logger->debug(sprintf('[FilterChangeDetector] ----- BEGIN #%d %s -- %d scopes -----', $filter->id, $filter->title, count($agent_scopes)));
             }
-            $cached_terms = array();
+            $cached_terms_orig = array();
+            $cached_terms_new  = array();
 
             foreach ($agent_scopes as $agent_id => $agent) {
 
@@ -385,13 +386,13 @@ class FilterChangeDetector
                             // there is no such thing as an original match with a new ticket
                             $orig_match = false;
                         } else {
-                            $orig_match = $searcher->doesTicketMatch($orig_ticket, 'orig_match', $orig_match_failterm, $cached_terms);
+                            $orig_match = $searcher->doesTicketMatch($orig_ticket, 'orig_match', $orig_match_failterm, $cached_terms_orig);
                         }
                         $orig_match_real = $orig_match;
                     }
 
                     if ($new_match_failterm === null) {
-                        $new_match      = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm, $cached_terms);
+                        $new_match      = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm, $cached_terms_new);
                         $new_match_real = $new_match;
                     }
 
@@ -412,9 +413,9 @@ class FilterChangeDetector
                         if ($is_new_ticket) {
                             $orig_match = false;
                         } else {
-                            $orig_match = $searcher->doesTicketMatch($orig_ticket, 'orig_match', $orig_match_failterm, $cached_terms);
+                            $orig_match = $searcher->doesTicketMatch($orig_ticket, 'orig_match', $orig_match_failterm, $cached_terms_orig);
                         }
-                        $new_match = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm, $cached_terms);
+                        $new_match = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm, $cached_terms_new);
 
                         $orig_match_real = $orig_match;
                         $new_match_real  = $new_match;
@@ -436,6 +437,7 @@ class FilterChangeDetector
 
                     if ($new_match_real !== null && $orig_match_real !== null && !isset($generic_match_cache[$filter_id]) && !isset($not_cachable_filters[$filter_id])) {
                         if (!$searcher->needsPersonContext()) {
+
                             // Two types of matches:
 
                             // Pre-matches are matches with any special logic

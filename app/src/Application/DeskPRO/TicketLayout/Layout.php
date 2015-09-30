@@ -57,6 +57,25 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
     }
 
     /**
+     * Create a new Layout by filtering fields through $fn. $fn must return true for a field to be added to the new layout.
+     *
+     * @param callable $fn
+     *
+     * @return Layout
+     */
+    public function filter($fn)
+    {
+        $layout = new self();
+        foreach ($this->fields as $f) {
+            if (call_user_func($fn, $f) === true) {
+                $layout->add($f);
+            }
+        }
+
+        return $layout;
+    }
+
+    /**
      * @param LayoutField $field
      * @param string      $before_field Field ID of a field to insert the field before. If not specified, the field is added to the end.
      */

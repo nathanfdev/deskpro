@@ -40,40 +40,8 @@ final class Person extends AbstractConstraintValidator
     /**
      * {@inheritdoc}
      */
-    public function getRecordType()
+    public function getEntityType()
     {
         return Entity\EntityInterface::TYPE_PERSON;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @var Entity\Person
-     */
-    public function validate(Entity\EntityInterface $entity)
-    {
-        $errors = $this->validator->validate($entity);
-        if (count($errors) > 0) {
-            throw new ValidatorConstraintException($entity, $errors);
-        }
-
-        if ($entity->getOrganizationPosition()) {
-            if (!$entity->getOrganization()) {
-                throw new ValidatorException('Person organization is not defined');
-            }
-        }
-        if ($entity->isAdmin()) {
-            if (!$entity->isAgent()) {
-                throw new ValidatorException('Person is admin but is not agent');
-            }
-        }
-
-        foreach ($entity->getCustomFields() as $custom_field) {
-            /* @var Entity\CustomField $custom_field */
-            $errors = $this->validator->validate($custom_field);
-            if (count($errors) > 0) {
-                throw new ValidatorConstraintException($entity, $errors);
-            }
-        }
     }
 }

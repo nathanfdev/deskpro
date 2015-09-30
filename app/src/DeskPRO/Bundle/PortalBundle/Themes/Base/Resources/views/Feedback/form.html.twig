@@ -1,83 +1,70 @@
 {{ form_errors(form) }}
 {{ form_start(form) }}
 <div class="feedback-form">
-    <span>{{ phrase('portal.feedback.form_i_have_a') }}:</span>
-    {{ form_errors(form.category) }}
-    {{ form_widget(form.category) }}
-    <a href="#" class="button feedback-selected-start">{{ phrase('portal.feedback.form_start') }}</a>
-
-    <div class="feedback-form-expanded as-no-dpui" style="margin-top: 50px;">
-
-        {% if is_user() %}
-            <div>
-                <a class="user-logged-in" href="#">
-                    <i class="fa fa-user"></i> {{ phrase('portal.feedback.form_logged_in_as') }}:
-                    <span>{{ user.name }}</span>, {{ phrase('portal.feedback.form_from_email') }}
-                    <span>{{ user.primary_email_address }}</span>
-                </a>
-            </div>
-        {% endif %}
-
-        <div class="bucket">
-            <label>{{ phrase('portal.feedback.form_title') }}</label>
-            {{ form_errors(form.title) }}
-            {{ form_widget(form.title, { attr: { placeholder: 'A one-sentance summary', style: 'width: 100%' } }) }}
-        </div>
-
-        <div class="bucket">
-            <label>{{ phrase('portal.feedback.form_tell_us_more') }}</label>
-            {{ form_errors(form.content) }}
-            {{ form_widget(form.content, { attr: { placeholder: 'More details...' } } ) }}
-        </div>
-
-        {{ form_widget(form.custom_data_collection) }}
-
-        <div class="bucket new-ticket-attachements">
-            {#<a class="attach-file" href="#">Click to attach a file (or just drag &amp; drop a file here)</a>#}
-
-            <div class="title">{{ phrase('portal.feedback.form_attach_files') }}:</div>
-            {{ form_errors(form.attachments) }}
-            {{ form_widget(form.attachments) }}
-            {{ form_widget(form.more_attachments) }}
-            {#<ul>#}
-            {#<li>#}
-            {#<a href="#">Screen Shot 2014-09-30 at 6.14.15 PM.png</a><span#}
-            {#class="file-size">(245kb)</span>#}
-            {#<a class="remove-attachement" href="#"><i class="fa fa-times"></i>Remove</a>#}
-            {#</li>#}
-
-            {#<li>#}
-            {#<a href="#">a_doc_file.doc</a><span class="file-size">(84kb)</span>#}
-            {#<a class="remove-attachement" href="#"><i class="fa fa-times"></i>Remove</a>#}
-            {#</li>#}
-            {#</ul>#}
-        </div>
-
-        {% if form.name is defined %}
-            <div class="bucket">
-            {{ phrase('portal.feedback.form_name_not_shown') }}:<br>
-            {{ form_errors(form.name) }}
-            {{ form_widget(form.name) }}
-            </div>
-        {% endif %}
-
-        {% if form.email is defined %}
-            <div class="bucket">
-            {{ phrase('portal.feedback.form_email_not_shown') }}:<br>
-            {{ form_errors(form.email) }}
-            {{ form_widget(form.email) }}
-            </div>
-        {% endif %}
-
-        {% if form.captcha is defined %}
-            <div class="bucket">
-            {{ form_errors(form.captcha) }}
-            {{ form_widget(form.captcha) }}
-            </div>
-        {% endif %}
-
-            <input class="main-input button" type="submit" value="{{ phrase('portal.feedback.form_btn_submit') }}">
+    <div class="main-input">
+        <span>{{ phrase('portal.feedback.form_i_have_a') }}:</span>
+        {{ form_errors(form.category) }}
+        {{ form_widget(form.category) }}
+        <a href="#" class="button feedback-selected-start">{{ phrase('portal.feedback.form_start') }}</a>
     </div>
+</div>
+
+<div class="feedback-form-expanded as-no-dpui"{% if form_was_submitted %} data-do-show="true"{% endif %}>
+    {% if is_user() %}
+        <div>
+            <a class="user-logged-in" href="#">
+                <i class="fa fa-user"></i> {{ phrase('portal.feedback.form_logged_in_as') }}:
+                <span>{{ user.name }}</span>, {{ phrase('portal.feedback.form_from_email') }}
+                <span>{{ user.primary_email_address }}</span>
+            </a>
+        </div>
+    {% endif %}
+
+    <div class="bucket">
+        <label>{{ phrase('portal.feedback.form_title') }}</label>
+        {{ form_errors(form.title) }}
+        {{ form_widget(form.title, { attr: { placeholder: 'A one-sentance summary', style: 'width: 100%' } }) }}
+    </div>
+
+    <div class="bucket">
+        <label>{{ phrase('portal.feedback.form_tell_us_more') }}</label>
+        {{ form_errors(form.content) }}
+        {{ form_widget(form.content, { attr: { placeholder: 'More details...' } } ) }}
+    </div>
+
+    {{ form_widget(form.custom_data_collection) }}
+
+    <div class="bucket new-ticket-attachements">
+        <div class="title">{{ phrase('portal.feedback.form_attach_files') }}:</div>
+        {{ form_errors(form.attachments) }}
+        {{ form_widget(form.attachments) }}
+        {{ form_widget(form.more_attachments) }}
+    </div>
+
+    {% if form.name is defined %}
+        <div class="bucket">
+        {{ phrase('portal.feedback.form_name_not_shown') }}:<br>
+        {{ form_errors(form.name) }}
+        {{ form_widget(form.name) }}
+        </div>
+    {% endif %}
+
+    {% if form.email is defined %}
+        <div class="bucket">
+        {{ phrase('portal.feedback.form_email_not_shown') }}:<br>
+        {{ form_errors(form.email) }}
+        {{ form_widget(form.email) }}
+        </div>
+    {% endif %}
+
+    {% if form.captcha is defined %}
+        <div class="bucket">
+        {{ form_errors(form.captcha) }}
+        {{ form_widget(form.captcha) }}
+        </div>
+    {% endif %}
+
+    <button class="main-input button" type="submit">{{ phrase('portal.feedback.form_btn_submit') }}</button>
 </div>
 {{ form_rest(form) }}
 {{ form_end(form) }}

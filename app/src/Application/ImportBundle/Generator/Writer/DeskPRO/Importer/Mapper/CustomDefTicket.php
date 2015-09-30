@@ -36,7 +36,7 @@ use Application\DeskPRO\EntityRepository;
  *
  * Class CustomDefTicket
  */
-final class CustomDefTicket implements MapperInterface, MapperByTitleInterface
+final class CustomDefTicket extends AbstractCustomDefMapper
 {
     /**
      * @var EntityRepository\CustomDefTicket
@@ -73,13 +73,5 @@ final class CustomDefTicket implements MapperInterface, MapperByTitleInterface
         }
 
         return $record;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findOneByTitle($title, $throw_exception = true)
-    {
-        return $this->findOneBy(array('title' => $title), $throw_exception);
     }
 }

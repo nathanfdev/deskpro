@@ -183,9 +183,9 @@ class SessionNamespace implements SessionInterface
     public function getIterator()
     {
         if (isset($this->session->data[$this->namespace])) {
-            return \ArrayIterator($this->session->data[$this->namespace]);
+            return new \ArrayIterator($this->session->data[$this->namespace]);
         } else {
-            return \ArrayIterator(array());
+            return new \ArrayIterator(array());
         }
     }
 

@@ -46,7 +46,9 @@ class BatchFactory
         $parsers
             ->attach(new Parser\Json\Batch())
             ->attach(new Parser\OsTicket\Batch())
-            ->attach(new Parser\ZenDesk\Batch());
+            ->attach(new Parser\ZenDesk\Batch())
+            ->attach(new Parser\DeskPRO\Batch())
+        ;
 
         return new Batch($parsers);
     }

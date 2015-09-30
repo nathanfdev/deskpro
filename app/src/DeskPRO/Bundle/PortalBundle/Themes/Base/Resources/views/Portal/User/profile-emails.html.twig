@@ -1,0 +1,100 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% block inner_content %}
+    <div class="breadcrumbs">
+        {% show breadcrumbs %}
+    </div>
+    <div class="column-full">
+        <div class="column-full">
+            <div>
+                <header class="section-header">
+                    <h1>{{ phrase('portal.account.section-title-your-account') }}</h1>
+                </header>
+            </div>
+        </div>
+        <div class="column-full">
+            <div>
+                <nav class="tabs secondary-tabs">
+                    <ul>
+                        <li class="tab-inactive">
+                            <a href="{{ path('portal_user_profile') }}">
+                                <div>
+                                    <span class="title">
+                                        {{ phrase('portal.account.section-title-profile') }}
+                                    </span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="tab-active active">
+                            <a href="{{ path('portal_user_profile_emails') }}">
+                                <div>
+                                    <span class="title">
+                                        {{ phrase('portal.account.section-title-emails') }}
+                                    </span>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <div class="column-full">
+            {% if validating_emails %}
+                <div class="alerts">
+                    {% for email,resend_link in validating_emails %}
+                        <div class="alert">
+                            <a class="button button-plain button-small"
+                               href="{{ resend_link }}">{{ phrase('portal.account.resend_email') }}</a>
+                            <strong>{{ email }}</strong>
+                            {{ phrase('portal.account.emails_are_awaiting_validation') }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if person.isEmailValidated() %}
+                {{ form_start(add_email_form) }}
+                <table>
+                    {% for email in person.emails %}
+                        <tr>
+                            <td>{{ email.email }}</td>
+                            {% if email.isPrimary %}
+                                <td colspan="2">
+                                    <strong>{{ phrase('portal.account.email-primary-indicator') }}</strong>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <a class="button button-secondary button-small"
+                                       href="{{ path('portal_user_profile_emails', { new_primary: email.id }) }}">
+                                        {{ phrase('portal.account.email-btn-make-primary') }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a class="button button-small cancel"
+                                       href="{{ path('portal_user_profile_emails', { remove_email: email.id }) }}">
+                                        {{ phrase('portal.account.email-btn-remove') }}
+                                    </a>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td>
+                            {{ form_errors(add_email_form) }}
+                            {{ form_widget(add_email_form.email) }}
+                        </td>
+                        <td>
+                            <button class="button button-small"
+                                    type="submit">{{ phrase('portal.account.email-btn-add') }}</button>
+                        </td>
+                    </tr>
+                </table>
+                {{ form_rest(add_email_form) }}
+                {{ form_end(add_email_form) }}
+            {% else %}
+                {{ phrase('portal.account.email-primary-needs-validation', { email: person.primary_email.email, verify_url: verify_url }) }}
+            {% endif %}
+        </div>
+    </div>
+{% endblock inner_content %}

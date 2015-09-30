@@ -81,7 +81,7 @@ if (!isset($DP_LOG_MESSAGES)) {
  * Since we can now trust the filename, we can use it to guess a mime-type based on extension, and send the correct headers,
  * all without connecting to the database.
  */
-class serve_file extends LoaderAbstract
+class serve_file extends serve_abstract
 {
     /**
      * @var string
@@ -228,11 +228,11 @@ class serve_file extends LoaderAbstract
     public function userPublicAsset($brand_id, $path)
     {
         if ($path == 'DeskPRO/Bundle/Build/Resources/style/DeskPRO_PortalBundle_style.css') {
-            $path = DP_WEB_ROOT.'/pub/build/DeskPRO_PortalBundle_style.css';
+            $path = DP_WEB_ROOT.'/pub/build/DeskPRO/Bundle/Build/Resources/style/DeskPRO_PortalBundle_style.css';
             $src  = file_get_contents($path);
             $size = strlen($src);
 
-            header('Content-Type: text/css; filename="DeskPRO_PortalBundle_style.css"');
+            header('Content-Type: text/css; filename="portal-style.css"');
             header('Content-Length: '.$size);
             echo $src;
             exit;
@@ -822,6 +822,24 @@ class serve_file extends LoaderAbstract
             $sth = $this->getPdoRead()->prepare('SELECT * FROM blobs WHERE id = :id');
             $sth->execute(array('id' => $blob_id));
             $blob = $sth->fetch(\PDO::FETCH_ASSOC);
+
+            // Try to detect bad css file and reload it automatically
+            if ($filename == 'main.css') {
+                $is_css = false;
+                $q      = $this->getPdoRead()->query('SELECT css_blob_id FROM styles');
+                while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
+                    if ($r['css_blob_id'] == $blob_id) {
+                        $is_css = true;
+                        break;
+                    }
+                }
+
+                if ($is_css) {
+                    $this->getPdo()->exec('UPDATE styles SET css_blob_id = NULL');
+                    $this->userCssAction();
+                    exit;
+                }
+            }
 
             // Fallback on DB check, it may have been moved
             if ($blob['storage_loc'] != 'fs') {
@@ -1443,5 +1461,5 @@ class serve_file extends LoaderAbstract
     }
 }
 
-$file_loader = new FilestorageLoader();
+$file_loader = new serve_file();
 $file_loader->run();

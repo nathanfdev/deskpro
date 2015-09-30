@@ -28,6 +28,8 @@
 
 namespace Application\ImportBundle\Reader\OsTicket;
 
+use Application\ImportBundle\Reader\ReaderConfigInterface;
+use Application\ImportBundle\Reader\ReaderFactoryInterface;
 use Exception;
 
 /**
@@ -35,34 +37,39 @@ use Exception;
  *
  * Class OsTicketReaderFactory
  */
-class OsTicketReaderFactory
+class OsTicketReaderFactory implements ReaderFactoryInterface
 {
     /**
-     * Create os ticket reader using deskpro config.
-     *
-     * @throws Exception
-     *
-     * @return OsTicketReader
+     * {@inheritdoc}
      */
-    public static function createReader(OsTicketConfig $config)
+    public function createReader(ReaderConfigInterface $config)
     {
         $config = $config ?: self::getDefaultConfig();
+        if (!$config instanceof OsTicketConfig) {
+            throw new \RuntimeException('Config expected to be instance of OsTicketConfig');
+        }
 
         return new OsTicketReader($config);
     }
 
+    /**
+     * @throws Exception
+     *
+     * @return \Application\ImportBundle\Reader\OsTicket\OsTicketConfig
+     */
     public static function getDefaultConfig()
     {
-        $dp_config = dp_get_config('osticket_import');
-        if (empty($dp_config)) {
-            throw new \Exception('DeskPRO os ticket import config is not defined');
+        $config = dp_get_config('osticket_import');
+        if (empty($config)) {
+            throw new \Exception('OsTicket import config is not defined');
         }
 
         return new OsTicketConfig(
-            $dp_config['db_host'],
-            $dp_config['db_name'],
-            $dp_config['db_username'],
-            $dp_config['db_password']
+            $config['db_host'],
+            isset($config['db_port']) ? $config['db_port'] : null,
+            $config['db_name'],
+            $config['db_username'],
+            $config['db_password']
         );
     }
 }

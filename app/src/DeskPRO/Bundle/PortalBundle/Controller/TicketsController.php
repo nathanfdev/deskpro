@@ -64,23 +64,24 @@ class TicketsController extends AbstractController
         }
 
         // create data service filters
-        $awaiting_user_filter = new TicketFilter(
+        $awaiting_user_sort_param = 'user_sort';
+        $awaiting_user_filter     = new TicketFilter(
             $type,
             TicketFilter::CATEGORY_AWAITING_USER,
-            $request->query->get('user_sort', 'activity'),
-            $request->query->get('user_direction', 'desc')
+            $request->query->get($awaiting_user_sort_param, 'activity'),
+            $request->query->get($awaiting_user_sort_dir_param = 'user_direction', 'desc')
         );
         $awaiting_agent_filter = new TicketFilter(
             $type,
             TicketFilter::CATEGORY_AWAITING_AGENT,
-            $request->query->get('agent_sort', 'activity'),
-            $request->query->get('agent_direction', 'desc')
+            $request->query->get($awaiting_agent_sort_param = 'agent_sort', 'activity'),
+            $request->query->get($awaiting_agent_sort_dir_param = 'agent_direction', 'desc')
         );
         $resolved_filter = new TicketFilter(
             $type,
             TicketFilter::CATEGORY_RESOLVED,
-            $request->query->get('resolved_sort', 'activity'),
-            $request->query->get('resolved_direction', 'desc')
+            $request->query->get($resolved_sort_param = 'resolved_sort', 'activity'),
+            $request->query->get($resolved_sort_dir_param = 'resolved_direction', 'desc')
         );
 
         // page
@@ -103,19 +104,28 @@ class TicketsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Tickets:index.html.twig',
             array(
-                'awaiting_user_tickets'          => $awaiting_user_pager,
-                'awaiting_user_tickets_pg_param' => $awaiting_user_pg_param,
-
+                'awaiting_user_tickets'           => $awaiting_user_pager,
+                'awaiting_user_tickets_pg_param'  => $awaiting_user_pg_param,
+                'awaiting_user_sort'              => $awaiting_user_filter->getSort(),
+                'awaiting_user_sort_param'        => $awaiting_user_sort_param,
+                'awaiting_user_sort_dir'          => $awaiting_user_filter->getSortDirection(),
+                'awaiting_user_sort_dir_param'    => $awaiting_user_sort_dir_param,
                 'awaiting_agent_tickets'          => $awaiting_agent_pager,
                 'awaiting_agent_tickets_pg_param' => $awaiting_agent_pg_param,
-
-                'resolved_tickets'          => $resolved_pager,
-                'resolved_tickets_pg_param' => $resolved_pg_param,
-
-                'type'        => $type,
-                'person'      => $person,
-                'breadcrumbs' => $breadcrumbs,
-                'page_title'  => $this->createPageTitle()->tickets(),
+                'awaiting_agent_sort'             => $awaiting_agent_filter->getSort(),
+                'awaiting_agent_sort_param'       => $awaiting_agent_sort_param,
+                'awaiting_agent_sort_dir'         => $awaiting_agent_filter->getSortDirection(),
+                'awaiting_agent_sort_dir_param'   => $awaiting_agent_sort_dir_param,
+                'resolved_tickets'                => $resolved_pager,
+                'resolved_tickets_pg_param'       => $resolved_pg_param,
+                'resolved_sort'                   => $resolved_filter->getSort(),
+                'resolved_sort_param'             => $resolved_sort_param,
+                'resolved_sort_dir'               => $resolved_filter->getSortDirection(),
+                'resolved_sort_dir_param'         => $resolved_sort_dir_param,
+                'type'                            => $type,
+                'person'                          => $person,
+                'breadcrumbs'                     => $breadcrumbs,
+                'page_title'                      => $this->createPageTitle()->tickets(),
             )
         );
     }
@@ -124,7 +134,7 @@ class TicketsController extends AbstractController
      * @Route("/tickets/{ticket_ref}", name="portal_tickets_view")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
      */
-    public function viewAction(Request $request, $ticket_ref)
+    public function viewAction(Request $request, $ticket_ref, $visitor_id)
     {
         if (!$ticket = $this->getTicketByRefOrId($ticket_ref)) {
             throw new NotFoundHttpException(sprintf('no ticket with ref or id "%s" found', $ticket_ref));
@@ -138,6 +148,9 @@ class TicketsController extends AbstractController
             'ticket_message' => $message = new TicketMessage(),
             'attachments'    => new ArrayCollection(),
         );
+
+        $message->setVisitorId($visitor_id);
+        $message->setIpAddress($request->getClientIp());
 
         $form = $this->createForm('ticket_reply', $form_data, array(
             'ticket'         => $ticket,
@@ -283,7 +296,7 @@ class TicketsController extends AbstractController
             throw new NotFoundHttpException(sprintf('no ticket with ref or id "%s" found', $ticket_ref));
         }
 
-        if (!$this->isGranted(TicketsVoter::TICKET_EDIT, $ticket)) {
+        if (!$this->isGranted(TicketsVoter::TICKET_VIEW, $ticket)) {
             throw new AccessDeniedException();
         }
 
@@ -322,7 +335,7 @@ class TicketsController extends AbstractController
             throw new NotFoundHttpException(sprintf('no ticket with ref or id "%s" found', $ticket_ref));
         }
 
-        if (!$this->isGranted(TicketsVoter::TICKET_EDIT, $ticket)) {
+        if (!$this->isGranted(TicketsVoter::TICKET_VIEW, $ticket)) {
             throw new AccessDeniedException();
         }
 
@@ -373,7 +386,9 @@ class TicketsController extends AbstractController
             $em->persist($ticket);
 
             $ticket_manager = $this->getTicketManager();
-            $context        = $ticket_manager->createUserExecutorContext($person, $event_type, 'portal');
+            // we handle this the new way (TicketManager), so disable the doctrine auto ticket process
+            $ticket->disableAutoTicketProcess();
+            $context = $ticket_manager->createUserExecutorContext($person, $event_type, 'portal');
 
             $ticket_manager->saveTicket($ticket, $context);
             $em->flush();
@@ -397,11 +412,30 @@ class TicketsController extends AbstractController
 
         try {
             $ticket->addMessage($message);
+
+            // If status is pending, we'll switch it to open so agents will see it
+            if (in_array(
+                $ticket->getStatusCode(),
+                array(
+                    Ticket::STATUS_AWAITING_USER,
+                    Ticket::STATUS_RESOLVED,
+                )
+            )) {
+                $ticket->setStatus(Ticket::STATUS_AWAITING_AGENT);
+            }
+
+            if ($person->getId() && !$ticket->hasParticipantPerson($person)) {
+                // someone like the org manager replying - need to make sure they're CC'd
+                $ticket->addParticipantPerson($person);
+            }
+
             $em->persist($ticket);
             $em->persist($message);
 
             $ticket_manager = $this->getTicketManager();
-            $context        = $ticket_manager->createUserExecutorContext($person, $event_type, 'portal');
+            // we handle this the new way (TicketManager), so disable the doctrine auto ticket process
+            $ticket->disableAutoTicketProcess();
+            $context = $ticket_manager->createUserExecutorContext($person, $event_type, 'portal');
 
             $ticket_manager->saveTicket($ticket, $context);
             $em->flush();

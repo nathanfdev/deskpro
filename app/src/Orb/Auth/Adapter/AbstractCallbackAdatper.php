@@ -41,7 +41,7 @@ use Orb\Log\Logger;
  * A shell abstract adapter useful for all types that follow the two(or more)-step process of redirecting
  * the user offsite and back.
  */
-abstract class AbstractCallbackAdatper implements AdapterInterface, SessionStateInterface, CallbackInterface, Loggable
+abstract class AbstractCallbackAdatper extends PluginAdapter implements SessionStateInterface, CallbackInterface, Loggable
 {
     const DISLPAY_CONTEXT_PAGE  = 'page';
     const DISLPAY_CONTEXT_POPUP = 'popup';
@@ -128,7 +128,7 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
      *
      * @return \Orb\Auth\Result
      */
-    public function authenticate()
+    public function doAuthenticate()
     {
         if ($this->logger) {
             $this->logger->log('START '.get_class($this).'::authenticate', Logger::DEBUG);

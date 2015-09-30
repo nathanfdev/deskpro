@@ -88,10 +88,33 @@ abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandl
                     if ($permission_group) {
                         $us->agent_permission_group = $permission_group;
                     }
+                } else {
+                    $us->user_permission_group = null;
                 }
             } else {
                 $us->auto_agent             = false;
                 $us->agent_permission_group = null;
+            }
+        } else {
+            throw new \RuntimeException('please ensure an installer context is present');
+        }
+    }
+
+    public function setupUsergroup(Usersource $us, $permission_group_id)
+    {
+        if ($context = $this->context) {
+            if (Usersource::TYPE_USER == $us->type) {
+                if ($permission_group_id) {
+                    $permission_group = $context->getEm()->getRepository('DeskPRO:Usergroup')->find($permission_group_id);
+
+                    if ($permission_group) {
+                        $us->user_permission_group = $permission_group;
+                    }
+                } else {
+                    $us->user_permission_group = null;
+                }
+            } else {
+                $us->user_permission_group = null;
             }
         } else {
             throw new \RuntimeException('please ensure an installer context is present');

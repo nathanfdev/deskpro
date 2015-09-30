@@ -182,7 +182,7 @@ class ArticlesController extends AbstractController
      * @Security("is_granted('USE_ARTICLES') and is_granted('VIEW_ARTICLE', article)")
      * @PageHttpCache(content="article")
      */
-    public function viewAction(Request $request, Article $article)
+    public function viewAction(Request $request, Article $article, $visitor_id)
     {
         //
         // COMMENT FORM
@@ -191,6 +191,8 @@ class ArticlesController extends AbstractController
         if ($this->isGranted(ContentCommentVoter::COMMENT_ARTICLE, $article)) {
             $form_handler     = $this->get('form_handler.comment');
             $comment          = new ArticleComment();
+            $comment->setVisitorId($visitor_id);
+            $comment->setIpAddress($request->getClientIp());
             $new_comment_form = $form_handler->createForm($comment);
             if ($form_result = $form_handler->handle($new_comment_form, $request, $article, $comment)) {
                 if ($form_result instanceof Response) {
@@ -209,7 +211,11 @@ class ArticlesController extends AbstractController
         //
         // RATING
         //
-        $rating = $this->getRatingsHelper()->getPersonRating($article, $this->getUser());
+        if (!$rating = $this->getRatingsHelper()->getPersonRating($article, $this->getUser())) {
+            // TODO: flagging this: using $visitor_id is potentially dangerous due to HTTP caching
+            //       we should consider showing this via a client-side JS request instead.
+            $rating = $this->getRatingsHelper()->findVisitorRating($article, $visitor_id);
+        }
 
         //
         // SUBSCRIPTION

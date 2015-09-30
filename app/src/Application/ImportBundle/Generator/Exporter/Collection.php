@@ -43,11 +43,11 @@ final class Collection extends AbstractCollection implements TypeOrderInterface
     /**
      * Add a validator.
      *
-     * @param ExporterInterface $exporter
+     * @param AbstractExporter $exporter
      *
      * @return $this
      */
-    public function attach(ExporterInterface $exporter)
+    public function attach(AbstractExporter $exporter)
     {
         $this->collection[$exporter::getType()] = $exporter;
 

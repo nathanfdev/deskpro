@@ -111,17 +111,19 @@ class LicenseController extends BaseLicenseController
         $this->em->persist($tmpdata);
         $this->em->flush();
 
-        $url = DP_MA_SERVER_SECURE.'/cloud/start/'.DPC_SITE_ID.'/'.$tmpdata->getCode();
+        $code = $tmpdata->getCode();
+
+        $url = DP_MA_SERVER_SECURE.'/cloud/start/'.DPC_SITE_ID.'/'.$code;
         if (defined('DP_CLOUD_LIC_URL')) {
             $url = str_replace(
                 array('{SITE_ID}', '{SITE_AUTH}'),
-                array(DPC_SITE_ID, $tmpdata->getCode()),
+                array(DPC_SITE_ID, $code),
                 DP_CLOUD_LIC_URL
             );
         }
 
         return $this->createJsonResponse(array(
-            'code'   => $tmpdata->getCode(),
+            'code'   => $code,
             'ma_url' => $url,
         ));
     }

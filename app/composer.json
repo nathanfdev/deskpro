@@ -68,7 +68,9 @@
 	  "phpspec/prophecy-phpunit": "~1.0",
 	  "leafo/scssphp": "~0.1.8",
 	  "beberlei/DoctrineExtensions": "^1.0",
-		"fabpot/php-cs-fixer": "^1.10"
+		"willdurand/negotiation": "^1.4",
+		"fabpot/php-cs-fixer": "^1.10",
+        "defuse/php-encryption": "^1.2"
 	},
 	"preferred-install": "dist"
 }

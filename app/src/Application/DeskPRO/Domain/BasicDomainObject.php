@@ -41,6 +41,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\PropertyChangedListener;
+use Doctrine\ORM\PersistentCollection;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
@@ -477,7 +478,12 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
                     continue;
                 }
 
-                $new_coll = new ArrayCollection($val->toArray());
+                if ($val instanceof PersistentCollection) {
+                    $val->initialize();
+                    $new_coll = new ArrayCollection($val->getSnapshot());
+                } else {
+                    $new_coll = $val;
+                }
                 $this->_state_clone->__setPropValue__($prop, $new_coll);
             }
         }

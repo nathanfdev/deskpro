@@ -58,56 +58,11 @@ final class RequestCacheAdapter implements RequestAdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function doPeopleIncrementalExportRequest(array $params = array())
+    public function doRequest($helper_class, array $params = array())
     {
-        return $this->doRequest(__FUNCTION__, $params);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function doPeopleFindRequest(array $params = array())
-    {
-        return $this->doRequest(__FUNCTION__, $params);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function doOrganizationFindRequest(array $params = array())
-    {
-        return $this->doRequest(__FUNCTION__, $params);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function doTicketsIncrementalExportRequest(array $params = array())
-    {
-        return $this->doRequest(__FUNCTION__, $params);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function doTicketCommentsFindAllRequest(array $params = array())
-    {
-        return $this->doRequest(__FUNCTION__, $params);
-    }
-
-    /**
-     * Do request to ZenDesk API or get from cache.
-     *
-     * @param string $method
-     * @param array  $params
-     *
-     * @return \stdClass
-     */
-    private function doRequest($method, array $params)
-    {
-        $hash = md5($method.json_encode($params));
+        $hash = md5($helper_class.json_encode($params));
         if (!isset($this->cache[$hash])) {
-            $this->cache[$hash] = $this->request_adapter->$method($params);
+            $this->cache[$hash] = $this->request_adapter->doRequest($helper_class, $params);
         }
 
         return $this->cache[$hash];

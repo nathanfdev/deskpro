@@ -105,7 +105,7 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set blob data.
+     * Set blob entity.
      *
      * @param Blob $blob
      *

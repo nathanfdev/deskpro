@@ -46,6 +46,7 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
         $this->addOption('tpl', null, InputOption::VALUE_REQUIRED, 'The template to use: text, html, fwd, fwd_with_reply');
         $this->addOption('subject', null, InputOption::VALUE_REQUIRED, "A subject line. Defults to a generated one. Prefix with 'twig:' to pass the subject string throug twig.");
         $this->addOption('message', null, InputOption::VALUE_REQUIRED, "A message. Defaults to a generated one. Prefix with 'twig:' to pass the string through twig.");
+        $this->addOption('message-file', null, InputOption::VALUE_REQUIRED, "A file containing a message. Prefix with 'twig:' to pass the file through twig.");
         $this->addOption('ticket-reply', null, InputOption::VALUE_REQUIRED, 'Make this a reply to this ticket ID. If the --from is an agent, then it will be as an agent reply.');
         $this->addOption('vars', null, InputOption::VALUE_REQUIRED, 'Extra vars to make available to the templates. Should be a JSON encoded string');
         $this->addOption('is-bounce', null, InputOption::VALUE_NONE, 'Set is_bounce=true in vars');
@@ -168,7 +169,26 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             }
         }
 
-        $message = $input->getOption('message') ?: sprintf('Test Message #%s -- %s -- %s', date('Hi'), date('Y-m-d'), date('s'));
+        if ($message_file = $input->getOption('message-file')) {
+            $is_twig = false;
+            if (substr($message_file, 0, 5) === 'twig:') {
+                $is_twig      = true;
+                $message_file = substr($message_file, 5);
+            }
+
+            $message = file_get_contents($message_file);
+            if (!$message) {
+                $output->writeln('<error>--message-file: No such file (or the file is empty)</error>');
+
+                return 1;
+            }
+
+            if ($is_twig) {
+                $message = 'twig:'.$message;
+            }
+        } else {
+            $message = $input->getOption('message') ?: sprintf('Test Message #%s -- %s -- %s', date('Hi'), date('Y-m-d'), date('s'));
+        }
 
         #------------------------------
         # Tpl

@@ -758,12 +758,9 @@ class OrganizationController extends AbstractController
         # Custom fields
         #------------------------------
 
-        // Custom fields
-        $field_defs      = App::getApi('custom_fields.organizations')->getEnabledFields();
-        $data_structured = App::getApi('custom_fields.util')->createDataHierarchy(array(), $field_defs);
-
         $custom_fields_form = $this->get('form.factory')->createNamedBuilder('org_custom_fields', 'form');
-        $custom_fields      = App::getApi('custom_fields.organizations')->getFieldsDisplayArray($field_defs, $data_structured, $custom_fields_form);
+        $field_manager      = $this->container->getOrgFieldManager();
+        $custom_fields      = $field_manager->getDisplayArrayForObject(new Entity\Organization(), $custom_fields_form);
 
         return $this->render('AgentBundle:Organization:neworganization.html.twig', array(
             'state'         => $state,

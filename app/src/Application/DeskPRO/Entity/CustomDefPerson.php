@@ -53,6 +53,20 @@ class CustomDefPerson extends CustomDefAbstract
      */
     protected $children = null;
 
+    /**
+     * Set parent.
+     *
+     * @param CustomDefPerson $parent
+     *
+     * @return $this
+     */
+    public function setParent(CustomDefPerson $parent = null)
+    {
+        $this->setModelField('parent', $parent);
+
+        return $this;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################

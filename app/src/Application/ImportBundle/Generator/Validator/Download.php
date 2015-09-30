@@ -40,21 +40,8 @@ final class Download extends AbstractConstraintValidator
     /**
      * {@inheritdoc}
      */
-    public function getRecordType()
+    public function getEntityType()
     {
         return Entity\EntityInterface::TYPE_DOWNLOAD;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @var Entity\Download
-     */
-    public function validate(Entity\EntityInterface $entity)
-    {
-        $errors = $this->validator->validate($entity);
-        if (count($errors) > 0) {
-            throw new ValidatorConstraintException($entity, $errors);
-        }
     }
 }

@@ -1,0 +1,10 @@
+organization_id;contact_id;field_name;value
+Some Organization;contact_1;contact_type;phone
+Some Organization;contact_1;comment;some comment
+Some Organization;contact_1;country_calling_code;+7
+Some Organization;contact_1;number;1234567
+Some Organization;contact_1;type;phone
+Some Organization;contact_2;contact_type;fax
+Some Organization;contact_2;number;+12025550156
+Some Organization;contact_3;contact_type;mobile
+Some Organization;contact_3;number;1234567

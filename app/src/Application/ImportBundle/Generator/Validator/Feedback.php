@@ -40,29 +40,8 @@ final class Feedback extends AbstractConstraintValidator
     /**
      * {@inheritdoc}
      */
-    public function getRecordType()
+    public function getEntityType()
     {
         return Entity\EntityInterface::TYPE_FEEDBACK;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @var Entity\Feedback
-     */
-    public function validate(Entity\EntityInterface $entity)
-    {
-        $errors = $this->validator->validate($entity);
-        if (count($errors) > 0) {
-            throw new ValidatorConstraintException($entity, $errors);
-        }
-
-        foreach ($entity->getAttachments() as $attachment) {
-            /* @var Entity\Attachment $attachment */
-            $errors = $this->validator->validate($attachment);
-            if (count($errors) > 0) {
-                throw new ValidatorConstraintException($entity, $errors);
-            }
-        }
     }
 }

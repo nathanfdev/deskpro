@@ -521,6 +521,18 @@ class DeskproContainer extends Container
         return $this->getSystemService('imagine');
     }
 
+    public function getUsersourceLogger()
+    {
+        static $logger = null;
+
+        if ($logger === null) {
+            $logger = new \Orb\Log\Logger();
+            $logger->addWriter(new \Orb\Log\Writer\Stream($this->getLogDir().'/usersource_log.log'));
+        }
+
+        return $logger;
+    }
+
     /**
      * Get the person activity logger.
      *
@@ -690,6 +702,14 @@ class DeskproContainer extends Container
     public function getPersonFieldManager()
     {
         return $this->getSystemService('person_fields_manager');
+    }
+
+    /**
+     * @return \Application\DeskPRO\CustomFields\BillingFieldManager
+     */
+    public function getBillingFieldManager()
+    {
+        return $this->getSystemService('billing_fields_manager');
     }
 
     /**
@@ -912,6 +932,10 @@ class DeskproContainer extends Container
         }
 
         return $this->agent_app_perms;
+    }
+
+    public function getAppManagerFiltered()
+    {
     }
 
     /**

@@ -59,6 +59,7 @@ return array(
     'user.feedback.title-feedback'           => 'Il y a 1 remarque|Il y a {{count}} remarques',
     'user.feedback.title-feedback-closed'    => '1 remarque fermée|{{count}} remarques fermées',
     'user.feedback.title-status'             => '1 remarque ouverte et active|{{count}} remarques ouvertes et actives',
+    'user.feedback.type'                     => 'Type',
     'user.feedback.type_feedback'            => 'Suggestion',
     'user.feedback.voting_button-yes'        => 'Je suis d\'accord',
     'user.feedback.voting_closed'            => 'Votes clos',

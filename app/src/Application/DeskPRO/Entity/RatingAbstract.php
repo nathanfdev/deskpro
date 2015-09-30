@@ -138,7 +138,7 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     public function rateDown()
     {
-        return $this->setRating(-1);
+        $this->setRating(-1);
     }
 
     public function getPersonId()

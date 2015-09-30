@@ -29,14 +29,14 @@
 namespace Application\ImportBundle\Generator\Validator;
 
 use Application\ImportBundle\Entity;
-use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
  * Exporter validator exception.
  *
  * Class ValidatorException
  */
-final class ValidatorConstraintException extends \Exception implements ValidatorExceptionInterface
+final class ValidatorConstraintException extends \RuntimeException implements ValidatorExceptionInterface
 {
     /**
      * @var Entity\EntityInterface
@@ -44,7 +44,7 @@ final class ValidatorConstraintException extends \Exception implements Validator
     private $entity;
 
     /**
-     * @var ConstraintViolationList
+     * @var ConstraintViolationListInterface
      */
     private $errors;
 
@@ -52,18 +52,16 @@ final class ValidatorConstraintException extends \Exception implements Validator
      * Constructor.
      *
      * @param Entity\EntityInterface  $entity
-     * @param ConstraintViolationList $errors
+     * @param ConstraintViolationListInterface $errors
      */
-    public function __construct(Entity\EntityInterface $entity, ConstraintViolationList $errors)
+    public function __construct(Entity\EntityInterface $entity, ConstraintViolationListInterface $errors)
     {
         $this->entity = $entity;
         $this->errors = $errors;
     }
 
     /**
-     * Returns the fail entity.
-     *
-     * @return Entity\EntityInterface
+     * {@inheritdoc}
      */
     public function getEntity()
     {
@@ -71,9 +69,7 @@ final class ValidatorConstraintException extends \Exception implements Validator
     }
 
     /**
-     * Returns a collection of the errors.
-     *
-     * @return ConstraintViolationList
+     * {@inheritdoc}
      */
     public function getErrors()
     {

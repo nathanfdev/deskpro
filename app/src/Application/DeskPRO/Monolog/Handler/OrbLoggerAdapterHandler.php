@@ -70,9 +70,6 @@ class OrbLoggerAdapterHandler extends AbstractHandler
         if (!$this->orb_logger->isEnabled()) {
             return false;
         }
-        if (!count($this->orb_logger->getWriterChain())) {
-            return false;
-        }
 
         return true;
     }

@@ -31,7 +31,6 @@
   background: $bg;
 }
 
-
 @mixin make-this-a-button($bg, $text, $padding-vertical, $padding-horizontal) {
   display: inline-block;
   padding: $padding-vertical $padding-horizontal;
@@ -48,6 +47,13 @@
     border-bottom: 1px solid shade($bg, 15%);
     background: shade($bg, 5%);
     color: #ffffff;
+  }
+}
+
+@mixin remove-link-styling {
+  a {
+    text-decoration: none;
+    color: $text-color-darker;
   }
 }
 
@@ -269,6 +275,11 @@ section {
   margin-right: 0;
 }
 
+.divide-left {
+  padding-left: 20px;
+  border-left: 1px dashed $divider-color;
+}
+
 .container, .row {
   @include row();
 }
@@ -329,6 +340,17 @@ button, .button, input[type="submit"] {
     display: block;
     margin-bottom: 10px;
     width: 100%;
+  }
+
+  &.button-small {
+    padding: 0.5em 1em;
+  }
+
+  &.button-plain {
+    border-bottom: 0;
+    background: none;
+    color: $text-color;
+    text-shadow: none;
   }
 
   &.cancel {
@@ -481,7 +503,7 @@ textarea {
   min-height: 70px;
   width: 100%;
   outline: none;
-  border: 0;
+  border: 1px solid $text-faded;
   font-size: 14px;
 }
 
@@ -588,11 +610,74 @@ textarea {
   display: none;
 }
 
+// Hide 'add attachments' submit button when js-capable
+.with-dpui #ticket_reply_more_attachments {
+  display: none;
+}
+
 .attach-file {
   // Grab the same styles as the logged in user button
   @extend .user-logged-in;
 
+  div {
+    // revert the "div" mods on .user-logged-in
+    position: initial;
+    padding: 0;
+    border: 0;
+    background: inherit;
+    color: inherit;
+    line-height: inherit;
+    font-size: inherit;
+  }
+
+  div.frame {
+    display: inline-block;
+    padding: 5px;
+    border-radius: 1px;
+    background: $text-color-lighter;
+    color: $grey;
+    font-size: 0.9em;
+    line-height: 1em;
+    margin-right: 5px;
+    text-align: center;
+    span {
+      color: #ffffff;
+      display: block;
+      white-space: nowrap;
+    }
+    .caption {
+      margin-top: 10px;
+      display: block;
+      clear: both;
+    }
+    img {
+      margin: auto;
+      margin-bottom: 10px;
+      text-align: center;
+      display: block;
+      clear: both;
+    }
+  }
+
+  div.previews {
+    display: block;
+  }
+
+  span {
+    color: $text-color-lighter;
+    font-weight: normal;
+    text-decoration: none;
+  }
+
+  color: $text-color;
+  text-decoration: none;
   margin-bottom: 0;
+  cursor: pointer;
+}
+
+.attach-file-active {
+  @extend .attach-file;
+  border: 1px solid black;
 }
 
 .remove-attachement {
@@ -795,7 +880,20 @@ textarea {
     margin-bottom: 7px;
     padding-left: $form-padding-horizontal;
     color: $text-color;
-    font-weight: lighter;
+    font-weight: darker;
+  }
+
+  .deskpro-choice-widget {
+    .title {
+      display: inline;
+      font-weight: lighter;
+      padding-left: 0;
+    }
+    padding-left: $form-padding-horizontal;
+  }
+
+  .ticket_user_email label {
+      display: inline;
   }
 
   .form-widget {
@@ -829,6 +927,14 @@ textarea {
     &:focus {
       border: 1px solid $button-color;
       background: #f0f0e8;
+    }
+    &.shorter {
+      width: 33%;
+    }
+    &.show-error {
+      border: 1px solid $red;
+      border-top-right-radius: 0;
+      background: #fff0ec;
     }
   }
 
@@ -1560,16 +1666,73 @@ form {
       }
     }
 
-    .button-small.button-language {
-      padding-left: 35px;
 
-      img {
-        position: absolute;
-        top: 6px;
-        left: 5px;
-        height: 13px;
+    .language-changer-widget:hover .language-dropdown, .language-changer-widget .language-dropdown:hover {
+      display: block;
+    }
+
+    .language-changer-widget {
+      .button-small.button-language {
+        padding-left: 35px;
+
+        img {
+          position: absolute;
+          top: 6px;
+          left: 5px;
+          height: 13px;
+        }
       }
+      .language-dropdown {
+        display: none;
 
+        position: absolute;
+        top: 45px;
+        right: 0;
+        border: 1px solid #e3e3e3;
+        width: 110px;
+        z-index: 999;
+        background: $page-background;
+
+        ul {
+          margin: 0;
+          padding: 0;
+          width: 100%;
+          list-style: none;
+        }
+
+        li {
+          display: block;
+        }
+
+        a {
+          display: inline-block;
+          position: relative;
+          width: 100%;
+          color: #9e9e9e;
+          text-decoration: none;
+          line-height: 1em;
+          padding: 7px 14px;
+          text-transform: uppercase;
+          font-size: 10px;
+          font-weight: 500;
+          cursor: pointer;
+          text-align: left;
+          padding-left: 35px;
+          text-decoration: none;
+
+          &:hover {
+            background: #f1f1f1;
+          }
+
+          img {
+            top: 5px;
+            position: absolute;
+            left: 5px;
+            height: 13px;
+          }
+        }
+
+      }
     }
 
     .button-small.button-login {
@@ -1588,13 +1751,23 @@ form {
 // Live results
 .live-results-container {
   position: absolute;
-  top: 56px;
+  top: 60px;
+  z-index: 999;
+  display: none;
+  &.show {
+    display: block;
+  }
 }
 
 .search-box-results {
+  width: 585px;
   display: block;
   background: darken($form-input, 2.5%);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+
+  a.omnisearch-type {
+    cursor: pointer;
+  }
 
   header {
     padding: 10px 15px;
@@ -1611,6 +1784,9 @@ form {
 
   .pagination {
     margin-left: 10px;
+    a{
+      cursor: pointer;
+    }
   }
 }
 
@@ -1964,12 +2140,12 @@ $search-btn-height: $search-height - 24;
 
     .dropdown-content {
       position: absolute;
-      top: 70px;
-      left: 0px;
+      top: 60px;
+      left: 12px;
       border: 1px solid #d6d6d6;
       border-top: 3px solid #3062a7;
       background: #f9f9f9;
-      min-width: 270px;
+      min-width: 231px;
       z-index: 3999;
 
       ul {
@@ -2409,6 +2585,8 @@ header {
 
   .select-dropdown {
     border: 1px solid $form-border-color;
+    position: absolute;
+    top: 20px;
 
     a {
       display: block;
@@ -2441,13 +2619,20 @@ header {
   }
 }
 
-.active-button-dropdown {
-  position: absolute;
-  position: absolute;
-  top: 30px;
-  right: 4px;
-  z-index: 99;
+.dropdown-group:hover .active-button-dropdown {
   display: block;
+}
+.dropdown-group .active-button-dropdown:hover {
+  display: block;
+}
+
+.active-button-dropdown {
+  display: none;
+  position: absolute;
+  position: absolute;
+  top: 45px;
+  right: 0;
+  z-index: 999;
   padding: 7px 14px;
   padding-bottom: 14px;
   min-width: 135px;
@@ -2589,6 +2774,65 @@ div.large-title {
     max-width: 160px;
     border: 1px solid $divider-color;
     border-radius: 2px;
+  }
+}
+
+.lang-diff-alert-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9998;
+  padding: 1px 0;
+  width: 100%;
+  background: #81CEC7;
+  font-size: $font-mid;
+  ul {
+    @include blank-list;
+
+    li {
+      display: inline;
+    }
+  }
+
+  form {
+    display: inline;
+    margin: 0;
+    float:right;
+    button {
+      padding: 10px;
+      margin: 2px;
+    }
+  }
+
+  a {
+    display: block;
+    float: right;
+    margin-left: 1px;
+    padding: 7px 10px;
+    background: #4c4c4c;
+    color: #d2d2d2;
+    text-decoration: none;
+
+    span {
+      color: #a2a2a2;
+      font-weight: 500;
+    }
+
+    &:hover {
+      background: #323232;
+      color: $grey;
+    }
+
+    i {
+      margin-left: 5px;
+      color: #838383;
+    }
+
+    .fa-edit {
+      position: relative;
+      top: 2px;
+      font-size: 1.2em;
+    }
   }
 }
 
@@ -4136,6 +4380,9 @@ h1.fancy-header {
 }
 
 .front-page-news {
+
+  @include remove-link-styling;
+
   header, footer {
     text-align: center;
     hr {
@@ -4173,6 +4420,7 @@ h1.fancy-header {
 
         a {
           text-decoration: none;
+          color: $text-color-lighter;
         }
       }
 
@@ -4211,10 +4459,12 @@ h1.fancy-header {
 }
 
 .front-page-news-tiny {
+  @include remove-link-styling;
+
   ul {
     li {
       a {
-        color: $button-color;
+        color: $text-color;
       }
     }
   }
@@ -4302,9 +4552,11 @@ h1.fancy-header {
     margin: 0 4px;
     color: $text-color-lighter;
     font-size: 0.9em;
+    cursor: pointer;
   }
 
   .slider-options {
+
     padding: 0 8px;
     border-left: 1px solid $divider-color;
     font-size: 0.9em;
@@ -4316,7 +4568,7 @@ h1.fancy-header {
   @include blank-list;
 
   display: block;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   border-bottom: 1px solid $divider-color;
 
   li {
@@ -4327,12 +4579,10 @@ h1.fancy-header {
   a {
     display: block;
     padding-bottom: 3px;
-    border-bottom: 3px solid $page-background;
     color: $text-color-lighter;
     text-decoration: none;
 
     &:hover, &.active {
-      border-bottom: 3px solid $button-color-secondary;
       color: $text-color-darker;
     }
   }
@@ -4358,6 +4608,86 @@ h1.fancy-header {
       color: $page-background;
     }
   }
+
+  .quick-jump {
+    background: $page-background;
+    color: $text-color;;
+    padding: 0;
+    position: relative;
+    display: inline-block;
+    z-index: 300;
+    cursor: pointer;
+
+    .fa {
+      padding-left: 5px;
+    }
+
+    small {
+      font-size: 0.7em;
+    }
+  }
+
+  .no-dropdown a:hover {
+    color: $text-color-darker;
+    border-bottom: 3px solid $button-color-secondary;
+  }
+
+  .quick-jump a.active {
+    color: $text-color-darker;
+    border-bottom: 3px solid $button-color-secondary;
+  }
+
+  .quick-jump:hover .dropdown-content, .quick-jump .dropdown-content:hover {
+    display: block;
+  }
+
+  .quick-jump .dropdown-content {
+    @include generate-background-and-border($surface-secondary);
+    text-align: left;
+    border-top: 3px solid $button-color-secondary;
+    min-width: 120px;
+    position: absolute;
+    margin-left: 0;
+    top: 27px;
+    left: 0;
+    display: none;
+
+    ul {
+      text-align: left;
+      width: 100%;
+      display: block;
+      padding: 0;
+      border-bottom: 1px solid $divider-color;
+      border-left: 1px solid $divider-color;
+      border-right: 1px solid $divider-color;
+      li {
+        .cat-checkbox-title {
+          white-space: nowrap;
+          display: block;
+          width: 100%;
+          &:hover {
+            background-color: $surface-main;
+          }
+          input {
+            display: inline-block;
+            margin-right: 4px;
+          }
+          a {
+            display: inline-block;
+          }
+        }
+        &:hover {
+          background-color: $surface-main;
+        }
+        white-space: nowrap;
+        padding: 5px;
+        margin: 0;
+        text-align: left;
+        width: 100%;
+        display: block;
+      }
+    }
+  }
 }
 
 .feedback-form {
@@ -4369,9 +4699,14 @@ h1.fancy-header {
 
     .input, .button, span {
       display: inline-block;
-      padding: 10px 15px;
+      padding: 5px 10px;
       font-size: 1.2em;
       line-height: 1em;
+      margin-top: 10px;
+    }
+
+    .deskpro-choice-widget {
+      display: inline-block;
     }
 
     .input {
@@ -4396,6 +4731,7 @@ h1.fancy-header {
       background: $button-color-secondary;
       text-align: center;
       text-shadow: none;
+      margin-top: 10px;
     }
 
     @media screen and (max-width: 760px) {
@@ -4413,10 +4749,20 @@ h1.fancy-header {
   top: -30px;
   left: 20px;
   padding: 10px;
-  padding-bottom: 1px;
+  padding-bottom: 10px;
   max-width: 600px;
   border-radius: 4px;
   background: darken($page-background, 5%);
+
+  .button {
+    width: 34%;
+    border: 1px solid $button-color;
+    border-bottom: none;
+    background: $button-color;
+    text-align: center;
+    text-shadow: none;
+    margin-top: 15px;
+  }
 
   &:before {
     position: absolute;
@@ -4454,6 +4800,10 @@ h1.fancy-header {
     }
   }
 
+  .paged-results {
+    min-height: 100px;
+  }
+
   .feedback-item-controls, .feedback-item-content {
     display: block;
     padding-top: 10px;
@@ -4477,6 +4827,10 @@ h1.fancy-header {
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
     font-weight: 500;
     font-size: 0.8em;
+    a {
+      text-decoration: none;
+      color: #ffffff;
+    }
   }
 
   .feedback-item-controls {
@@ -4505,6 +4859,14 @@ h1.fancy-header {
           color: #14d3a1;
           opacity: 1;
         }
+      }
+    }
+
+    .agreed {
+      border: 1px solid #14d3a1;
+      i {
+        color: #14d3a1;
+        opacity: 1;
       }
     }
 
@@ -4572,6 +4934,14 @@ h1.fancy-header {
         &:after {
           display: none;
         }
+        a {
+          text-decoration: none;
+          color: $text-color;
+        }
+      }
+      a {
+        text-decoration: none;
+        color: $text-color;
       }
     }
 
@@ -4608,6 +4978,8 @@ h1.fancy-header {
 
 // Small feedback list
 .front-page-feedback {
+  @include remove-link-styling;
+
   ul {
     li {
       span.thumbs {
@@ -4749,6 +5121,8 @@ h1.fancy-header {
 
 // Downloads
 .front-page-downloads {
+  @include remove-link-styling;
+
   ul {
     li {
       .file-icon {
@@ -4781,6 +5155,10 @@ h1.fancy-header {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Knowledgebase
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+.front-page-kb {
+  @include remove-link-styling;
+}
 
 //Big list of articles
 .article-categories-expandable {

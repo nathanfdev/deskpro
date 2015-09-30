@@ -35,7 +35,7 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonEmailValidating;
 use DeskPRO\Bundle\AppBundle\DataService\EmailDataService;
-use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService;
+use DeskPRO\Bundle\AppBundle\DataService\FeedbackDataService;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\EmailSender\PortalEmailSender;
 use DeskPRO\Bundle\PortalBundle\Routing\PortalRouter;
@@ -236,13 +236,13 @@ class PersonValidator
 
         switch ($type) {
             case self::TYPE_EMAIL:
-                $this->portal_email_sender->sendEmailConfirmationEmail($person_email);
-
+                // TODO: validation
+                //$this->portal_email_sender->sendEmailConfirmationEmail($person_email);
                 return true;
 
             case self::TYPE_EMAIL_PRIMARY:
-                $this->portal_email_sender->sendEmailConfirmationEmail($person_email, true);
-
+                // TODO: validation
+                //$this->portal_email_sender->sendEmailConfirmationEmail($person_email, true);
                 return true;
 
             case self::TYPE_FEEDBACK:

@@ -147,6 +147,11 @@ class FeedbackController extends AbstractController
             }
         }
 
+        $form_was_submitted = false;
+        if ($form->isSubmitted()) {
+            $form_was_submitted = true;
+        }
+
         //
         // BREADCRUMBS
         //
@@ -155,13 +160,18 @@ class FeedbackController extends AbstractController
         //
         // FILTER CATEGORIES
         //
-        $feedback_categories = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
+        $feedback_types = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
 
         //
         // JS INITIAL DATA
         //
-        $filter    = new FeedbackFilter(); // get the defaults
-        $filter_js = json_encode($filter->toJsArray($feedback_categories, array()), JSON_FORCE_OBJECT | JSON_NUMERIC_CHECK);
+        $filter               = new FeedbackFilter(); // get the defaults$allowed_types_parsed = array();
+        $allowed_types_parsed = array();
+        foreach ($feedback_types as $cat) {
+            $allowed_types_parsed[] = $cat->getId();
+        }
+        $filter->setTypes($allowed_types_parsed);
+        $filter_js = $this->generateFilterJs($filter, $feedback_types, $page);
 
         //
         // RENDER THEME
@@ -169,22 +179,23 @@ class FeedbackController extends AbstractController
         return $this->renderThemeView(
             'Theme:Feedback:index.html.twig',
             array(
-                'page'                => $page,
-                'feedback_categories' => $feedback_categories,
-                'count'               => $this->getBrandSetting('portal.per_page_content'),
-                'show_pagination'     => true,
-                'status'              => $filter->getStatus(),
-                'status_categories'   => $filter->getStatusCategories(),
-                'types'               => $filter->getTypes(),
-                'sort'                => $filter->getSort(),
-                'sort_direction'      => $filter->getSortDirection(),
-                'form'                => $form->createView(),
-                'user'                => $this->getUser(),
-                'rerendering_saved'   => $rerendering_saved,
-                'breadcrumbs'         => $breadcrumbs,
-                'page_title'          => $this->createPageTitle()->feedback(),
-                'rss_link'            => $rss_link,
-                'filter_js'           => $filter_js,
+                'page'               => $page,
+                'feedback_types'     => $feedback_types,
+                'count'              => $this->getBrandSetting('portal.per_page_content'),
+                'show_pagination'    => true,
+                'status'             => $filter->getStatus(),
+                'status_categories'  => $filter->getStatusCategories(),
+                'types'              => $filter->getTypes(),
+                'sort'               => $filter->getSort(),
+                'sort_direction'     => $filter->getSortDirection(),
+                'form'               => $form->createView(),
+                'form_was_submitted' => $form_was_submitted,
+                'user'               => $this->getUser(),
+                'rerendering_saved'  => $rerendering_saved,
+                'breadcrumbs'        => $breadcrumbs,
+                'page_title'         => $this->createPageTitle()->feedback(),
+                'rss_link'           => $rss_link,
+                'filter_js'          => $filter_js,
             )
         );
     }
@@ -219,8 +230,9 @@ class FeedbackController extends AbstractController
             }
         }
 
-        // order was incorrect, redirect
-        if ($filter_uri != $generated_uri = $uri_helper->generateUriSegment($filter)) {
+        // order was incorrect, redirect, but only if this is not an ajax request
+        $generated_uri = $uri_helper->generateUriSegment($filter);
+        if (!$request->isXmlHttpRequest() && $filter_uri != $generated_uri) {
             if (strlen($generated_uri) < 1) {
                 // actually, in this case, it is all the defaults, so go back to the index
                 return $this->redirectToRoute(
@@ -228,7 +240,10 @@ class FeedbackController extends AbstractController
                 );
             }
 
-            return $this->redirectToRoute('portal_feedback_browse', array('filter_uri' => $generated_uri), Response::HTTP_MOVED_PERMANENTLY);
+            return $this->redirectToRoute('portal_feedback_browse', array(
+                'filter_uri' => $generated_uri,
+                'page'       => $page,
+            ), Response::HTTP_MOVED_PERMANENTLY);
         }
 
         //
@@ -239,22 +254,23 @@ class FeedbackController extends AbstractController
         //
         // FILTER CATEGORIES
         //
-        $feedback_categories = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
+        $feedback_types = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
+        $filter_js      = $this->generateFilterJs($filter, $feedback_types, $page);
 
         $page_options = array(
-            'page'                => $page,
-            'feedback_categories' => $feedback_categories,
-            'count'               => $this->getBrandSetting('portal.per_page_content'),
-            'show_pagination'     => true,
-            'status'              => $filter->getStatus(),
-            'status_categories'   => $filter->getStatusCategories(),
-            'types'               => $filter->getTypes(),
-            'sort'                => $filter->getSort(),
-            'sort_direction'      => $filter->getSortDirection(),
-            'breadcrumbs'         => $breadcrumbs,
-            'page_title'          => $this->createPageTitle()->feedback(),
-            'filter_js'           => json_encode($filter->toArray()),
-            'rerendering_saved'   => false, // wont happen here because we always rerender on index
+            'page'              => $page,
+            'feedback_types'    => $feedback_types,
+            'count'             => $this->getBrandSetting('portal.per_page_content'),
+            'show_pagination'   => true,
+            'status'            => $filter->getStatus(),
+            'status_categories' => $filter->getStatusCategories(),
+            'types'             => $filter->getTypes(),
+            'sort'              => $filter->getSort(),
+            'sort_direction'    => $filter->getSortDirection(),
+            'breadcrumbs'       => $breadcrumbs,
+            'page_title'        => $this->createPageTitle()->feedback(),
+            'filter_js'         => $filter_js,
+            'rerendering_saved' => false, // wont happen here because we always rerender on index
         );
 
         if ($request->isXmlHttpRequest()) {
@@ -274,8 +290,9 @@ class FeedbackController extends AbstractController
         ));
 
         $page_options = array_merge($page_options, array(
-            'form' => $form->createView(),
-            'user' => $this->getUser(),
+            'form'               => $form->createView(),
+            'form_was_submitted' => false,
+            'user'               => $this->getUser(),
         ));
 
         //
@@ -294,15 +311,17 @@ class FeedbackController extends AbstractController
      * @Security("is_granted('USE_FEEDBACK') and is_granted('VIEW_FEEDBACK', item)")
      * @PageHttpCache(content="item")
      */
-    public function viewAction(Request $request, Feedback $item)
+    public function viewAction(Request $request, Feedback $item, $visitor_id)
     {
         //
         // COMMENT FORM
         //
         $new_comment_form = null;
         if ($this->isGranted(ContentCommentVoter::COMMENT_FEEDBACK, $item)) {
-            $form_handler     = $this->get('form_handler.comment');
-            $comment          = new FeedbackComment();
+            $form_handler = $this->get('form_handler.comment');
+            $comment      = new FeedbackComment();
+            $comment->setVisitorId($visitor_id);
+            $comment->setIpAddress($request->getClientIp());
             $new_comment_form = $form_handler->createForm($comment);
             if ($form_result = $form_handler->handle($new_comment_form, $request, $item, $comment)) {
                 if ($form_result instanceof Response) {
@@ -321,7 +340,11 @@ class FeedbackController extends AbstractController
         //
         // RATING
         //
-        $rating = $this->getRatingsHelper()->getPersonRating($item, $this->getUser());
+        if (!$rating = $this->getRatingsHelper()->getPersonRating($item, $this->getUser())) {
+            // TODO: flagging this: using $visitor_id is potentially dangerous due to HTTP caching
+            //       we should consider showing this via a client-side JS request instead.
+            $rating = $this->getRatingsHelper()->findVisitorRating($item, $visitor_id);
+        }
 
         //
         // RENDER THEME
@@ -371,5 +394,50 @@ class FeedbackController extends AbstractController
         $default_status_category    = $this->getFeedbackDataService()->getFeedbackStatusCategory($default_status_category_id);
 
         return $default_status_category;
+    }
+
+    /**
+     * @param $filter
+     * @param $feedback_types
+     *
+     * @return string
+     */
+    public function generateFilterJs(FeedbackFilter $filter, array $feedback_types, $page)
+    {
+        $allowed_types_parsed = array();
+        foreach ($feedback_types as $cat) {
+            $allowed_types_parsed[$cat->getId()] = $cat->getTitle();
+        }
+
+        $status_categories        = array();
+        $status_categories_entity = $this->getRepo('DeskPRO:FeedbackStatusCategory')->findBy(array('status_type' => FeedbackFilter::$statuses));
+        foreach ($status_categories_entity as $status_category) {
+            $status_type = $status_category->getStatusType();
+            if (!array_key_exists($status_type, $status_categories)) {
+                $status_categories[$status_type] = array();
+            }
+            $status_categories[$status_type][] = array(
+                'id'    => $status_category->getId(),
+                'title' => $status_category->getTitle(),
+            );
+        }
+
+        $the_array = array(
+            'filter'    => array_merge($filter->toArray(), array('page' => $page)),
+            'available' => array(
+                'status'            => FeedbackFilter::$statuses_translated,
+                'status_categories' => $status_categories,
+                'types'             => $allowed_types_parsed,
+                'sorts'             => FeedbackFilter::$sorts_translated,
+                'sort_directions'   => FeedbackFilter::$sort_directions_translated,
+            ),
+        );
+
+        $filter_js = json_encode(
+            $the_array,
+            JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_NUMERIC_CHECK
+        );
+
+        return $filter_js;
     }
 }

@@ -32,14 +32,16 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\SearchLog;
+use Application\DeskPRO\Labels\ContentLabelCloud;
 use Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchContextFactory;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Search\StickyWordSearch;
+use DeskPRO\Bundle\AppBundle\Pagerfanta\Adapter\DeskproSearchAdapter;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Numbers;
+use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -59,7 +61,21 @@ class SearchController extends AbstractController
         $results        = array();
         $total          = 0;
         $cur_page       = $request->get('page', 1);
-        $per_page       = 5;
+        $per_page       = 10;
+
+        ////////////////////////////////////////////////////////////////////////
+        // search types
+        $allowed_search_types = array('article', 'news', 'download', 'feedback');
+        if (!$limit_types_array = $request->get('types', null)) {
+            $limit_types_array = $allowed_search_types;
+        }
+        if (!is_array($limit_types_array)) {
+            $limit_types_array = explode(',', $limit_types_array);
+        }
+        $limit_types_array = array_filter($limit_types_array, function ($value) use ($allowed_search_types) {
+            return in_array($value, $allowed_search_types);
+        });
+        $limit_types = implode(',', $limit_types_array);
 
         if ($q) {
             $is_search = true;
@@ -69,7 +85,7 @@ class SearchController extends AbstractController
             $context        = $contextFactory->createUserSearchContext($person);
 
             /** @var \Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet $result_set */
-            $result_set = $se->getUserSearch()->search($context, $q, array('page' => $cur_page, 'per_page' => $per_page));
+            $result_set = $se->getUserSearch()->search($context, $q, array('page' => $cur_page, 'per_page' => $per_page, 'limit_types' => $limit_types));
 
             $total   = $result_set->getTotal();
             $results = $result_set->getTypedResults();
@@ -107,6 +123,23 @@ class SearchController extends AbstractController
 
         $pageinfo = Numbers::getPaginationPages($total, $cur_page, $per_page);
 
+        if ($request->isXmlHttpRequest()) {
+            $serialized_results = $this->get('portal_search_serializer')->serializeArray($results);
+
+            return $this->makeJsonResponse(
+                array(
+                    'results'  => $serialized_results,
+                    'pageinfo' => $pageinfo,
+                )
+            );
+        }
+
+        $pagination = new Pagerfanta(new DeskproSearchAdapter($pageinfo));
+        $pagination->setMaxPerPage((int) $pageinfo['per_page']);
+        $pagination->setCurrentPage((int) $pageinfo['curpage']);
+
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildSearch($q);
+
         return $this->renderThemeView(
             'Theme:Search:search_results.html.twig',
             array(
@@ -116,15 +149,110 @@ class SearchController extends AbstractController
                 'query'          => $q,
                 'pageinfo'       => $pageinfo,
                 'num_results'    => $total,
+                'pager'          => $pagination,
+                'breadcrumbs'    => $breadcrumbs,
+                'page_title'     => $this->createPageTitle()->search(),
+                'limit_types'    => $limit_types_array,
             )
         );
     }
 
     /**
-     * @Route("/search/similar/{content_type}", name="portal_search_similar")
-     * @Route("/search/similar/{content_type}", name="user_search_similarto")
+     * @Route("/search/labels/{type}/{label}", name="portal_search_labels", defaults={"type": "all", "label": ""}, requirements={"label":".*"})
+     * @Route("/search/labels/{type}/{label}", name="user_search_labels", defaults={"type": "all", "label": ""}, requirements={"label":".*"})
      */
-    public function similarToAction(Request $request, $content_type)
+    public function labelSearchAction(Request $request, $type, $label)
+    {
+        if ($request->getMethod() === 'POST') {
+            $t = $request->request->get('type');
+            $l = $request->request->get('label');
+            if (!in_array($type, array(
+                    'all',
+                    'articles',
+                    'feedback',
+                    'downloads',
+                    'news', ))
+            ) {
+                $type = 'all';
+            }
+
+            return $this->redirectToRoute('portal_search_labels', array('type' => $t, 'label' => $l));
+        }
+
+        if (!$type or !in_array($type, array('all', 'articles', 'feedback', 'downloads', 'news'))) {
+            $type = 'all';
+        }
+
+        $total    = 0;
+        $per_page = 25;
+        $cur_page = $request->query->get('page', 1);
+
+        switch ($type) {
+            case 'all':
+                $search_types = array('article', 'feedback', 'download', 'news');
+                break;
+            case 'articles':
+                $search_types = array('article');
+                break;
+            case 'feedback':
+                $search_types = array('feedback');
+                break;
+            case 'downloads':
+                $search_types = array('download');
+                break;
+            case 'news':
+                $search_types = array('news');
+                break;
+            default:
+                $search_types = array();
+        }
+
+        $results  = null;
+        $pageinfo = null;
+        if ($label) {
+            $search_adapter = $this->get('deskpro.search_adapter');
+            $search_adapter->setPersonContext($this->getCurrentPerson());
+            $result_set = $search_adapter->getContentSearcher()->labelled(array($label), $per_page, $cur_page, $search_types);
+            $results    = $search_adapter->getResultSetObjects($result_set, true);
+
+            $total    = $result_set->totalCount();
+            $pageinfo = Numbers::getPaginationPages($total, $cur_page, $per_page);
+        }
+
+        #------------------------------
+        # Make combined search cloud
+        #------------------------------
+
+        $content_cloud = new ContentLabelCloud();
+        $cloud         = $content_cloud->getCloud();
+
+        $pagination = new Pagerfanta(new DeskproSearchAdapter($pageinfo ?: array()));
+        $pagination->setMaxPerPage($pageinfo ? (int) $pageinfo['per_page'] : $per_page);
+        $pagination->setCurrentPage($pageinfo ? (int) $pageinfo['curpage'] : $cur_page);
+
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildLabelSearch($type, $label);
+
+        return $this->renderThemeView(
+            'Theme:Search:search_labels_results.html.twig',
+            array(
+                'pager'       => $pagination,
+                'cloud'       => $cloud,
+                'label'       => $label,
+                'results'     => $results,
+                'type'        => $type,
+                'pageinfo'    => $pageinfo,
+                'num_results' => $total,
+                'breadcrumbs' => $breadcrumbs,
+                'page_title'  => $this->createPageTitle()->labelSearch(),
+            )
+        );
+    }
+
+    /**
+     * @Route("/search/similar/{content_type}", name="portal_search_similar", defaults={"content_type":null})
+     * @Route("/search/similar/{content_type}", name="user_search_similarto", defaults={"content_type":null})
+     */
+    public function similarToAction(Request $request, $content_type = null)
     {
         $content = $request->get('content', '');
 
@@ -137,6 +265,14 @@ class SearchController extends AbstractController
             );
         }
 
+        $allowed_types = array('article', 'news', 'download', 'feedback');
+
+        if (null === $content_type) {
+            $content_type = $allowed_types;
+        } else {
+            $content_type = array($content_type);
+        }
+
         $person         = $this->getUser() ?: new PersonGuest();
         $se             = $this->get('search_engine');
         $contextFactory = new SearchContextFactory($this->getContainer());
@@ -146,7 +282,7 @@ class SearchController extends AbstractController
         $results = $se->getUserSearch()->similarTo(
             $context,
             $content,
-            array('limit_types' => array($content_type))
+            array('limit_types' => $content_type)
         );
 
         $search_results = $results->getTypedResults();
@@ -155,7 +291,6 @@ class SearchController extends AbstractController
         $property_accessor = PropertyAccess::createPropertyAccessor();
         $typed_results     = array();
         $words             = array();
-        $allowed_types     = array('article','news','download','feedback');
         foreach ($search_results as $result) {
             if (isset($result['type']) && in_array($result['type'], $allowed_types)) {
                 $typed_results[] = $result;
@@ -181,19 +316,5 @@ class SearchController extends AbstractController
                 'words'   => $words,
             )
         );
-    }
-
-    protected function makeJsonResponse(array $array)
-    {
-        $response = new JsonResponse(array('data' => $array));
-
-        // if its 5.4+ make the results pretty
-        if (constant('JSON_PRETTY_PRINT')) {
-            $options = $response->getEncodingOptions();
-            $options = $options | JSON_PRETTY_PRINT;
-            $response->setEncodingOptions($options);
-        }
-
-        return $response;
     }
 }

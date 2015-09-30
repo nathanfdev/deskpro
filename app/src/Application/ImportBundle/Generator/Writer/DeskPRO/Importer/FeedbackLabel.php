@@ -30,10 +30,9 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro feedback labels importer.
+ * DeskPRO feedback labels importer.
  *
  * Class FeedbackLabel
  */
@@ -49,81 +48,26 @@ final class FeedbackLabel extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Feedback
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        $this->records = new ArrayCollection();
+        if (!$entity instanceof Entity\Feedback) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
 
         $feedback = $this->getFeedbackMapper()->findOneByTitle($entity->getTitle());
-        $labels   = $this->getExistingLabelsNames($feedback->getId());
+        $feedback->resetLabels();
 
-        foreach ($entity->getLabels() as $label) {
-            if (in_array($label, $labels, true)) {
-                $this->logDebug(sprintf(
-                    'Found an existing label `%s` for feedback with oid `%d` (Skipping)',
-                    $label, $feedback->getId()
-                ));
-            } else {
-                $feedback->addLabel($this->createFeedbackLabel($label));
-                $this->logDebug(sprintf(
-                    'Creating a new label `%s` for feedback with oid `%d`',
-                    $label, $feedback->getId()
-                ));
-            }
+        foreach ($entity->getLabels() as $label_name) {
+            $label = new DeskPROEntity\LabelFeedback();
+            $label->setLabel($label_name);
+
+            $feedback->addLabel($label);
+            $this->logDebug(sprintf('Creating a new label `%s` for feedback with oid `%d`', $label_name, $feedback->getId()));
         }
+
+        $this->records->setPrimaryEntity($feedback);
 
         return $this->records;
-    }
-
-    /**
-     * Returns a new feedback label entity.
-     *
-     * @param string $label
-     *
-     * @return DeskPROEntity\LabelFeedback
-     */
-    private function createFeedbackLabel($label)
-    {
-        $entity = new DeskPROEntity\LabelFeedback();
-        $entity->setLabel($label);
-
-        $this->records->add($entity);
-
-        return $entity;
-    }
-
-    /**
-     * Returns a collection of existing feedback label names.
-     *
-     * @param int $id
-     *
-     * @throws Mapper\MapperException
-     *
-     * @return array
-     */
-    private function getExistingLabelsNames($id)
-    {
-        $labels = $this->getFeedbackLabelMapper()->findByFeedbackId($id, false);
-        $names  = array();
-
-        foreach ($labels as $label) {
-            $names[] = $label->getLabel();
-        }
-
-        return $names;
-    }
-
-    /**
-     * Returns the feedback label mapper.
-     *
-     * @throws \Exception
-     *
-     * @return Mapper\FeedbackLabel
-     */
-    private function getFeedbackLabelMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_FEEDBACK_LABEL);
     }
 }

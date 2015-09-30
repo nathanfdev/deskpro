@@ -36,6 +36,8 @@ use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class InstallKernel extends BaseKernel
 {
@@ -72,6 +74,15 @@ class InstallKernel extends BaseKernel
 
         $this->container->kernel = $this;
         App::$container          = $this->container;
+    }
+
+    public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
+    {
+        $response = parent::handle($request, $type, $catch);
+
+        $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
+
+        return $response;
     }
 
     public function getName()
@@ -149,7 +160,9 @@ class InstallKernel extends BaseKernel
     {
         $v = libxml_disable_entity_loader(false);
 
+        $GLOBALS['DP_CONTAINER_IS_BUILDING'] = true;
         parent::initializeContainer();
+        unset($GLOBALS['DP_CONTAINER_IS_BUILDING']);
 
         libxml_disable_entity_loader($v);
     }

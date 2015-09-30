@@ -82,6 +82,14 @@ class CustomPerFieldManager
         return $def;
     }
 
+    public function createNewOption(CustomFieldDefinition $def, $title, $context_id)
+    {
+        $child             = $def->spawnChild($title);
+        $child->context_id = $context_id;
+
+        return $child;
+    }
+
     public function getOrCreateCustomPerFieldData(CustomFieldDefinition $def, CustomFieldContext $context)
     {
         if ($data = $this->getCustomPerFieldData($def, $context)) {

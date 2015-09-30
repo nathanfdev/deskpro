@@ -30,7 +30,7 @@ return array(
     'agent.search.by'                            => 'Par',
     'agent.search.chat_conversations'            => 'Conversations Chat',
     'agent.search.find_by_above_criteria'        => 'Trouver par le critère ci-dessus',
-    'agent.search.find_person'                   => 'Trouver une personne',
+    'agent.search.find_person'                   => 'Trouver un utilisateur',
     'agent.search.loading'                       => 'En cours de chargement',
     'agent.search.no_email'                      => 'Pas d\'email',
     'agent.search.no_people_match_your_criteria' => 'Personne ne correspond aux critères de recherche',
@@ -45,7 +45,7 @@ return array(
     'agent.search.type_feedback'                 => 'Remarques',
     'agent.search.type_news'                     => 'Actualités',
     'agent.search.type_organization'             => 'Organisations',
-    'agent.search.type_person'                   => 'Personnes',
+    'agent.search.type_person'                   => 'Utilisateurs',
     'agent.search.type_ticket'                   => 'Tickets',
     'agent.search.view_all_results'              => 'Voir tous les résultats',
 );

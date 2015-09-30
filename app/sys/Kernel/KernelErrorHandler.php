@@ -157,9 +157,6 @@ class KernelErrorHandler
         if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
             return;
         }
-        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException) {
-            return;
-        }
         if ($exception instanceof \Symfony\Component\Routing\Exception\MethodNotAllowedException) {
             return;
         }
@@ -311,6 +308,10 @@ class KernelErrorHandler
             return;
         }
         self::$is_logging = true;
+
+        if (!empty($GLOBALS['DP_CONTAINER_IS_BUILDING'])) {
+            return;
+        }
 
         if (!class_exists('Application\DeskPRO\App')) {
             return;

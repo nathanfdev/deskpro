@@ -104,6 +104,8 @@ return array(
     'user.tickets.remove_participant'                  => 'Supprimer ces participants',
     'user.tickets.reply.form.button'                   => 'Soumettre une réponse',
     'user.tickets.reply.if_resolved'                   => 'Avons-nous répondu à votre question ? N\'hésitez pas à <a href="{{link_url}}">clôturer ce ticket</a>',
+    'user.tickets.reply.resolved_explain'              => 'Ce ticket a été mis en  <strong>Résolu</strong>. Nos agents ne le liront plus ou n\'y répondront plus.',
+    'user.tickets.reply.set_unresolved'                => 'Vous avez encore besoin d\'aide? N\'hésitez pas à <a href="{{link_url}}">réouvrir ce ticket</a>.',
     'user.tickets.resolve_my_ticket_btn'               => 'Clôturer mon ticket',
     'user.tickets.resolve_my_ticket_send_feedback_btn' => 'Clôturer mon ticket et faire une remarque',
     'user.tickets.resolve_ticket'                      => 'Clôturer le ticket: {{subject}}',

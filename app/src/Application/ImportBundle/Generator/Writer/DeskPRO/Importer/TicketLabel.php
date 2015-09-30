@@ -30,10 +30,9 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro ticket labels importer.
+ * DeskPRO ticket labels importer.
  *
  * Class TicketLabel
  */
@@ -49,79 +48,26 @@ final class TicketLabel extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Ticket
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
     {
-        $this->records = new ArrayCollection();
+        if (!$entity instanceof Entity\Ticket) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
 
         $ticket = $this->getTicketMapper()->findOneByRef($entity->getRef());
-        $labels = $this->getExistingLabelsNames($ticket->getId());
+        $ticket->resetLabels();
 
-        foreach ($entity->getLabels() as $label) {
-            if (in_array($label, $labels, true)) {
-                $this->logDebug(sprintf(
-                    'Found an existing label `%s` for ticket with oid `%d` (Skipping)',
-                    $label, $ticket->getId()
-                ));
-            } else {
-                $ticket->addLabel($this->createTicketLabel($label));
-                $this->logInfo(sprintf(
-                    'Creating a new label `%s` for ticket with oid `%d`',
-                    $label, $ticket->getId()
-                ));
-            }
+        foreach ($entity->getLabels() as $label_name) {
+            $label = new DeskPROEntity\LabelTicket();
+            $label->setLabel($label_name);
+
+            $ticket->addLabel($label);
+            $this->logInfo(sprintf('Creating a new label `%s` for ticket with oid `%d`', $label_name, $ticket->getId()));
         }
+
+        $this->records->setPrimaryEntity($ticket);
 
         return $this->records;
-    }
-
-    /**
-     * Returns a new ticket label entity.
-     *
-     * @param string $label
-     *
-     * @return DeskPROEntity\LabelTicket
-     */
-    private function createTicketLabel($label)
-    {
-        $entity = new DeskPROEntity\LabelTicket();
-        $entity->setLabel($label);
-
-        return $entity;
-    }
-
-    /**
-     * Returns a collection of existing ticket label names.
-     *
-     * @param int $id
-     *
-     * @throws Mapper\MapperException
-     *
-     * @return array
-     */
-    private function getExistingLabelsNames($id)
-    {
-        $labels = $this->getTicketLabelMapper()->findByTicketId($id, false);
-        $names  = array();
-
-        foreach ($labels as $label) {
-            $names[] = $label->getLabel();
-        }
-
-        return $names;
-    }
-
-    /**
-     * Returns the person label mapper.
-     *
-     * @throws \Exception
-     *
-     * @return Mapper\TicketLabel
-     */
-    private function getTicketLabelMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_TICKET_LABEL);
     }
 }

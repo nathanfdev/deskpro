@@ -77,4 +77,5 @@ return array(
     'agent.chrome.nav_tickets'                    => 'Тикеты',
     'agent.chrome.nav_twitter'                    => 'Twitter',
     'agent.chrome.nav_userchat'                   => 'Чат пользователя',
+    'agent.chrome.recent_list-none'               => 'У вас нет открытых вкладок.',
 );

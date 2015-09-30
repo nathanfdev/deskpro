@@ -59,7 +59,7 @@ class CheckExportCommand extends AbstractExportCommand
     protected function doExecute(Generator\GeneratorConfig $config, LoggerInterface $logger, InputInterface $input, OutputInterface $output)
     {
         $generator = $this->createGenerator($config, $logger);
-        $this->createAndSetProgressBar($generator, $output);
+        $this->createAndSetProgressBar($generator, $input, $output);
 
         $exceptions = $generator->validate();
         foreach ($exceptions as $exception) {

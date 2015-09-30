@@ -40,48 +40,8 @@ final class Ticket extends AbstractConstraintValidator
     /**
      * {@inheritdoc}
      */
-    public function getRecordType()
+    public function getEntityType()
     {
         return Entity\EntityInterface::TYPE_TICKET;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @var Entity\Ticket
-     */
-    public function validate(Entity\EntityInterface $entity)
-    {
-        $errors = $this->validator->validate($entity);
-        if (count($errors) > 0) {
-            throw new ValidatorConstraintException($entity, $errors);
-        }
-
-        if ($entity->getPriority()) {
-            $this->validator->validate($entity->getPriority());
-        }
-
-        foreach ($entity->getMessages() as $message) {
-            /* @var Entity\TicketMessage $message */
-            $errors = $this->validator->validate($message);
-            if (count($errors) > 0) {
-                throw new ValidatorConstraintException($entity, $errors);
-            }
-
-            foreach ($message->getAttachments() as $attachment) {
-                /* @var Entity\Attachment $attachment */
-                $errors = $this->validator->validate($attachment);
-                if (count($errors) > 0) {
-                    throw new ValidatorConstraintException($entity, $errors);
-                }
-            }
-        }
-        foreach ($entity->getCustomFields() as $custom_field) {
-            /* @var Entity\CustomField $custom_field */
-            $errors = $this->validator->validate($custom_field);
-            if (count($errors) > 0) {
-                throw new ValidatorConstraintException($entity, $errors);
-            }
-        }
     }
 }

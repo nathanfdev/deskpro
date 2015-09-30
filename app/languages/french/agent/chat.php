@@ -71,7 +71,7 @@ return array(
     'agent.chat.other_agents'                     => 'Autres agents',
     'agent.chat.show_offline'                     => 'Montrer hors-ligne',
     'agent.chat.snippets'                         => 'Snippets',
-    'agent.chat.take_chat'                        => 'Prendre le chat',
+    'agent.chat.take_chat'                        => 'Chatter',
     'agent.chat.team_chats'                       => 'Chats de l\'équipe',
     'agent.chat.title_active_chats'               => 'Tous les chats ouverts',
     'agent.chat.title_chat_id'                    => 'Chat {{chat_id}}',

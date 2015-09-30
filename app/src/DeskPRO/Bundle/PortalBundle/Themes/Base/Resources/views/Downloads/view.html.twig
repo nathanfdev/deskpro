@@ -34,9 +34,9 @@
         <div class="header-button-container">
             <div class="header-buttons">
                 {% show download_subscription_link %}
-                <a href="#">{{ phrase('portal.general.btn-email') }} <i class="fa fa-envelope"></i></a>
-                <a href="#">{{ phrase('portal.general.btn-print') }} <i class="fa fa-print"></i></a>
-                <a href="#">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>
+                {#<a href="#">{{ phrase('portal.general.btn-email') }} <i class="fa fa-envelope"></i></a>#}
+                {#<a href="#">{{ phrase('portal.general.btn-print') }} <i class="fa fa-print"></i></a>#}
+                {#<a href="#">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>#}
             </div>
         </div>
 
@@ -51,7 +51,7 @@
                 <ul>
                     <li class="tag-list-header"><i class="fa fa-tags"></i> {{ phrase('portal.general.tags') }}</li>
                     {% for l in file.labels %}
-                        <li class="tag-list-item"><a href="#">{{ l }}</a></li>
+                        <li class="tag-list-item"><a href="{{ path('portal_search_labels', { label: l }) }}">{{ l }}</a></li>
                     {% endfor %}
                 </ul>
             </div>

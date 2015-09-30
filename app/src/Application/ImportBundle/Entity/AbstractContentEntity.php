@@ -189,21 +189,21 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
      */
     public function setStatus($status)
     {
-        $this->status = $status;
+        $this->status = $status ?: 'hidden.'.ContentAbstract::HIDDEN_STATUS_UNPUBLISHED;
 
         return $this;
     }
 
     /**
-     * Checks if status is valid.
+     * Returns a list of available statuses.
      *
-     * @return bool
+     * @return array
      */
-    public function isStatusValid()
+    public static function getValidStatuses()
     {
         $hidden_prefix = 'hidden.';
 
-        $statuses = array(
+        return array(
             ContentAbstract::STATUS_PUBLISHED,
             ContentAbstract::STATUS_ARCHIVED,
             ContentAbstract::STATUS_HIDDEN,
@@ -216,8 +216,16 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
             $hidden_prefix.ContentAbstract::HIDDEN_STATUS_DRAFT,
             $hidden_prefix.ContentAbstract::HIDDEN_STATUS_TEMP,
         );
+    }
 
-        return in_array($this->status, $statuses, true);
+    /**
+     * Checks if status is valid.
+     *
+     * @return bool
+     */
+    public function isStatusValid()
+    {
+        return in_array($this->status, static::getValidStatuses(), true);
     }
 
     /**
@@ -321,7 +329,7 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     /**
      * {@inheritdoc}
      */
-    public function setDatePublished(DateTime $date_published)
+    public function setDatePublished(DateTime $date_published = null)
     {
         $this->date_published = $date_published;
 
@@ -345,7 +353,9 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
                 'pattern' => '/^[a-z0-9-]+$/',
             )))
 
-            ->addGetterConstraint('statusValid', new Constraints\True())
+            ->addGetterConstraint('statusValid', new Constraints\True(array(
+                'message' => sprintf('Value is not valid, use one of (%s): ', implode(', ', self::getValidStatuses())),
+            )))
         ;
     }
 }

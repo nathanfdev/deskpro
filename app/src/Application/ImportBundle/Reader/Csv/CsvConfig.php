@@ -28,19 +28,19 @@
 
 namespace Application\ImportBundle\Reader\Csv;
 
-use Application\ImportBundle\Reader\BaseConfig;
+use Application\ImportBundle\Reader\ReaderConfigInterface;
 
 /**
  * Csv data parser configuration.
  *
  * Class CsvConfig
  */
-class CsvConfig extends BaseConfig
+class CsvConfig implements ReaderConfigInterface
 {
     /**
      * @var string
      */
-    private $resource;
+    private $path;
 
     /**
      * @var string
@@ -60,31 +60,19 @@ class CsvConfig extends BaseConfig
     /**
      * Constructor.
      *
-     * @param string $resource
+     * @param string $path
      */
-    public function __construct($resource)
+    public function __construct($path)
     {
-        $this->resource = $resource;
+        $this->path = $path;
     }
 
     /**
      * @return string
      */
-    public function getResource()
+    public function getPath()
     {
-        return $this->resource;
-    }
-
-    /**
-     * @param string $resource
-     *
-     * @return $this
-     */
-    public function setResource($resource)
-    {
-        $this->resource = $resource;
-
-        return $this;
+        return $this->path;
     }
 
     /**
@@ -147,15 +135,20 @@ class CsvConfig extends BaseConfig
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function fromArray(array $data)
     {
         $config = new self(@$data['resource'] ?: @$data['temp'].'/in');
 
-        if ($delimeter = @$data['delimeter']) {
+        $delimeter = @$data['delimeter'];
+        if ($delimeter) {
             $config->setDelimiter($delimeter);
         }
 
-        if ($enclosure = @$data['enclosure']) {
+        $enclosure = @$data['enclosure'];
+        if ($enclosure) {
             $config->setDelimiter($enclosure);
         }
 

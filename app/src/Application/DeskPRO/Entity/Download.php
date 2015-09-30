@@ -93,6 +93,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     protected $num_downloads = 0;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $labels;
 
@@ -112,6 +113,15 @@ class Download extends ContentAbstract implements HighlightableModelInterface
      * @var \DateTime
      */
     protected $date_updated;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->setModelField('date_updated', new \DateTime());
+    }
 
     public function _preUpdate()
     {
@@ -281,6 +291,22 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
+     * Reset labels.
+     *
+     * @return $this
+     */
+    public function resetLabels()
+    {
+        foreach ($this->labels as $data) {
+            $this->labels->removeElement($data);
+        }
+
+        $this->_onPropertyChanged('labels', null, $this->labels);
+
+        return $this;
+    }
+
+    /**
      * Add a label.
      *
      * @param \Application\DeskPRO\Entity\LabelDownload $label
@@ -289,6 +315,14 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     {
         $label['download'] = $this;
         $this->labels->add($label);
+    }
+
+    /**
+     * @return \Application\DeskPRO\Entity\LabelDownload[]
+     */
+    public function getLabels()
+    {
+        return $this->labels;
     }
 
     /**
@@ -328,6 +362,9 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         $cache->invalidateRegex('/_downloads(-|_files_'.intval($this->getId()).'-|_\d+)/');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data = parent::toApiData($primary, $deep, $visited);
@@ -593,7 +630,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
                 'type'       => 'datetime',
                 'precision'  => 0,
                 'scale'      => 0,
-                'nullable'   => true,
+                'nullable'   => false,
                 'columnName' => 'date_updated',
             )
         );

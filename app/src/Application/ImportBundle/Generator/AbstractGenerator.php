@@ -82,11 +82,19 @@ abstract class AbstractGenerator
     /**
      * {@inheritdoc}
      */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger = null)
     {
         $this->logger = $logger;
 
         return $this;
+    }
+
+    /**
+     * @return LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
     }
 
     /**
@@ -97,6 +105,14 @@ abstract class AbstractGenerator
         $this->progress_bar = $progress_bar;
 
         return $this;
+    }
+
+    /**
+     * @return ProgressBar
+     */
+    public function getProgressBarHelper()
+    {
+        return $this->progress_bar;
     }
 
     /**

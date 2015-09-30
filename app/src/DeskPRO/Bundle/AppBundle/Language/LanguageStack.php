@@ -107,6 +107,16 @@ class LanguageStack
         return;
     }
 
+    /**
+     * Get the active languge from the stack. If the stack is empty, return the default.
+     *
+     * @return Language
+     */
+    public function getActiveOrDefault()
+    {
+        return $this->getActive() ?: $this->getDefaultLanguage();
+    }
+
     public function getStack()
     {
         return $this->stack;

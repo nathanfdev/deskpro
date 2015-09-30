@@ -29,10 +29,9 @@
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro importer interface.
+ * DeskPRO importer interface.
  *
  * Interface ImporterInterface
  */
@@ -46,13 +45,21 @@ interface ImporterInterface
     public function getEntityType();
 
     /**
-     * Returns a collection of the importing DeskPro doctrine entities.
+     * Clears doctrine records.
+     *
+     * @return $this
+     */
+    public function reset();
+
+    /**
+     * Returns a collection of the importing DeskPRO doctrine entities.
      *
      * @param Entity\EntityInterface $entity
+     * @param int|null               $entity_id
      *
      * @throws \Exception
      *
-     * @return ArrayCollection
+     * @return DoctrineEntities
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity);
+    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null);
 }
