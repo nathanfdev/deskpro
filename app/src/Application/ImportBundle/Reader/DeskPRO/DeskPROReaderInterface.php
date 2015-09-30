@@ -103,12 +103,12 @@ interface DeskPROReaderInterface
      *
      * @return ArrayCollection|Entity\CustomDefPerson[]
      */
-    public function findCustomPersonDef();
+    public function findCustomDefPerson();
 
     /**
      * Returns a collection of organization custom field def.
      *
      * @return ArrayCollection|Entity\CustomDefOrganization[]
      */
-    public function findCustomOrganizationDef();
+    public function findCustomDefOrganization();
 }

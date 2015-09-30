@@ -175,9 +175,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      */
     public $field_manager = null;
 
-
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -310,9 +309,9 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     public function resetChildren()
     {
         $this->children->clear();
+
         return $this;
     }
-
 
     /**
      * @param int $def_id
@@ -345,7 +344,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * Returns handler class
+     * Returns handler class.
      *
      * @return string
      */
@@ -474,14 +473,16 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * Set options
+     * Set options.
      *
      * @param array $options
+     *
      * @return $this
      */
     public function setOptions(array $options)
     {
         $this->setModelField('options', $options);
+
         return $this;
     }
 
@@ -504,6 +505,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         }
 
         $this->_onPropertyChanged('options', $old_opt, $this->options);
+
         return $this;
     }
 
@@ -518,14 +520,16 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * Mark as enabled
+     * Mark as enabled.
      *
      * @param bool $is_enabled
+     *
      * @return $this
      */
     public function setIsEnabled($is_enabled)
     {
-        $this->setModelField('is_enabled', (bool)$is_enabled);
+        $this->setModelField('is_enabled', (bool) $is_enabled);
+
         return $this;
     }
 
@@ -538,14 +542,16 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * Mark as agent field
+     * Mark as agent field.
      *
      * @param bool $is_agent_field
+     *
      * @return $this
      */
     public function setIsAgentField($is_agent_field)
     {
-        $this->setModelField('is_agent_field', (bool)$is_agent_field);
+        $this->setModelField('is_agent_field', (bool) $is_agent_field);
+
         return $this;
     }
 
@@ -558,14 +564,16 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * Mark as user enabled
+     * Mark as user enabled.
      *
-     * @param bool $is_user_enabled
+     * @param bool $is_user_enabled.
+     *
      * @return $this
      */
     public function setIsUserEnabled($is_user_enabled)
     {
-        $this->setModelField('is_user_enabled', (bool)$is_user_enabled);
+        $this->setModelField('is_user_enabled', (bool) $is_user_enabled);
+
         return $this;
     }
 
@@ -578,15 +586,25 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * Set default value
+     * Set default value.
      *
      * @param mixed $default_value
+     *
      * @return $this
      */
     public function setDefaultValue($default_value)
     {
         $this->setModelField('default_value', $default_value);
+
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultValue()
+    {
+        return $this->default_value;
     }
 
     /**
