@@ -50,7 +50,7 @@ final class PeopleCustomDef extends AbstractCustomDefParser
      */
     public function getCount()
     {
-        return count($this->reader->findCustomDefPerson());
+        return count($this->reader->findCustomDefPeople());
     }
 
     /**
@@ -60,7 +60,7 @@ final class PeopleCustomDef extends AbstractCustomDefParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->reader->findCustomDefPerson())
+            ->setData($this->reader->findCustomDefPeople())
             ->setPrefix('DPCustomDefPerson')
             ->setRefColumn('id')
             ->setMethod('exportCustomDef')

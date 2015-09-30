@@ -50,7 +50,7 @@ final class OrganizationCustomDef extends AbstractCustomDefParser
      */
     public function getCount()
     {
-        return count($this->reader->findCustomDefOrganization());
+        return count($this->reader->findCustomDefOrganizations());
     }
 
     /**
@@ -60,7 +60,7 @@ final class OrganizationCustomDef extends AbstractCustomDefParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->reader->findCustomDefOrganization())
+            ->setData($this->reader->findCustomDefOrganizations())
             ->setPrefix('DPCustomDefOrganization')
             ->setRefColumn('id')
             ->setMethod('exportCustomDef')

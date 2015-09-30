@@ -96,28 +96,28 @@ interface DeskPROReaderInterface
      *
      * @return ArrayCollection|Entity\CustomDefTicket[]
      */
-    public function findCustomDefTicket();
+    public function findCustomDefTickets();
 
     /**
      * Returns a collection of person custom field def.
      *
      * @return ArrayCollection|Entity\CustomDefPerson[]
      */
-    public function findCustomDefPerson();
+    public function findCustomDefPeople();
 
     /**
      * Returns a collection of organization custom field def.
      *
      * @return ArrayCollection|Entity\CustomDefOrganization[]
      */
-    public function findCustomDefOrganization();
+    public function findCustomDefOrganizations();
 
     /**
      * Returns a collection of article custom field def.
      *
      * @return ArrayCollection|Entity\CustomDefArticle[]
      */
-    public function findCustomDefArticle();
+    public function findCustomDefArticles();
 
     /**
      * Returns a collection of feedback custom field def.

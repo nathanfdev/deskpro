@@ -50,7 +50,7 @@ final class ArticleCustomDef extends AbstractCustomDefParser
      */
     public function getCount()
     {
-        return count($this->reader->findCustomDefArticle());
+        return count($this->reader->findCustomDefArticles());
     }
 
     /**
@@ -60,7 +60,7 @@ final class ArticleCustomDef extends AbstractCustomDefParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->reader->findCustomDefArticle())
+            ->setData($this->reader->findCustomDefArticles())
             ->setPrefix('DPCustomDefArticle')
             ->setRefColumn('id')
             ->setMethod('exportCustomDef')

@@ -140,7 +140,7 @@ class DeskPROReader extends AbstractReader implements DeskPROReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function findCustomDefTicket()
+    public function findCustomDefTickets()
     {
         return $this->em->getRepository('DeskPRO:CustomDefTicket')->findAll();
     }
@@ -148,7 +148,7 @@ class DeskPROReader extends AbstractReader implements DeskPROReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function findCustomDefPerson()
+    public function findCustomDefPeople()
     {
         return $this->em->getRepository('DeskPRO:CustomDefPerson')->findAll();
     }
@@ -156,7 +156,7 @@ class DeskPROReader extends AbstractReader implements DeskPROReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function findCustomDefOrganization()
+    public function findCustomDefOrganizations()
     {
         return $this->em->getRepository('DeskPRO:CustomDefOrganization')->findAll();
     }
@@ -164,7 +164,7 @@ class DeskPROReader extends AbstractReader implements DeskPROReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function findCustomDefArticle()
+    public function findCustomDefArticles()
     {
         return $this->em->getRepository('DeskPRO:CustomDefArticle')->findAll();
     }

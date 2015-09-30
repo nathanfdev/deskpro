@@ -50,7 +50,7 @@ final class TicketCustomDef extends AbstractCustomDefParser
      */
     public function getCount()
     {
-        return count($this->reader->findCustomDefTicket());
+        return count($this->reader->findCustomDefTickets());
     }
 
     /**
@@ -60,7 +60,7 @@ final class TicketCustomDef extends AbstractCustomDefParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->reader->findCustomDefPerson())
+            ->setData($this->reader->findCustomDefPeople())
             ->setPrefix('DPCustomDefTicket')
             ->setRefColumn('id')
             ->setMethod('exportCustomDef')
