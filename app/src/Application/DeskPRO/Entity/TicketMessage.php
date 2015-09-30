@@ -552,7 +552,12 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
     public function addAttachment(TicketAttachment $attach)
     {
+        if (!$this->ticket) {
+            throw new \RuntimeException('Unable to add attachment, message is not added to ticket.');
+        }
+
         $this->attachments->add($attach);
+
         $attach['ticket']                = $this->ticket;
         $attach['message']               = $this;
         $this->ticket['has_attachments'] = true;
