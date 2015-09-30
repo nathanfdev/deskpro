@@ -29,14 +29,12 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Parser\NotSupportedInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
  * Class ArticleCustomDef.
- *
- * todo implement
  */
-final class ArticleCustomDef extends AbstractParser implements NotSupportedInterface
+final class ArticleCustomDef extends AbstractParser
 {
     /**
      * {@inheritdoc}
@@ -51,7 +49,7 @@ final class ArticleCustomDef extends AbstractParser implements NotSupportedInter
      */
     public function getCount()
     {
-        return 0;
+        return count($this->reader->findCustomDefArticle());
     }
 
     /**
@@ -59,6 +57,23 @@ final class ArticleCustomDef extends AbstractParser implements NotSupportedInter
      */
     public function export()
     {
-        return new Entity\Collection();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->findCustomDefArticle())
+            ->setPrefix('DPCustomDefArticle')
+            ->setRefColumn('id')
+            ->setMethod('exportCustomDef')
+            ->setAdvanceProgressbar(true)
+        ;
+
+        return $this->exportCollection($config);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultCustomDefEntity()
+    {
+        return new Entity\ArticleCustomDef();
     }
 }

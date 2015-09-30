@@ -29,14 +29,12 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Parser\NotSupportedInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
  * Class FeedbackCustomDef.
- *
- * todo implement
  */
-final class FeedbackCustomDef extends AbstractParser implements NotSupportedInterface
+final class FeedbackCustomDef extends AbstractParser
 {
     /**
      * {@inheritdoc}
@@ -51,7 +49,7 @@ final class FeedbackCustomDef extends AbstractParser implements NotSupportedInte
      */
     public function getCount()
     {
-        return 0;
+        return count($this->reader->findCustomDefFeedback());
     }
 
     /**
@@ -59,6 +57,23 @@ final class FeedbackCustomDef extends AbstractParser implements NotSupportedInte
      */
     public function export()
     {
-        return new Entity\Collection();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->findCustomDefFeedback())
+            ->setPrefix('DPCustomDefFeedback')
+            ->setRefColumn('id')
+            ->setMethod('exportCustomDef')
+            ->setAdvanceProgressbar(true)
+        ;
+
+        return $this->exportCollection($config);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultCustomDefEntity()
+    {
+        return new Entity\FeedbackCustomDef();
     }
 }
