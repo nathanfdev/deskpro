@@ -656,31 +656,19 @@ define [
       return def
 
     getFilterOrgId: (options = {}) ->
-      prop_name = options.propName = 'org_ids'
-      options.dataName = 'organizations'
-      options.optionsFormatter = (options) -> ({value: entry.id, title: entry.name} for k, entry of options)
-      def = @getStandardSelect options
-      def.getDataFormatter = ->
-        return {
-        getViewValue: (value = {}, data) ->
-          val = value.options?[prop_name] || null
-          if val == null and data.options and prop_name
-            val = data.options[0]?.value || null
-          if val && val[0]
-            val = val[0].split ','
-          else
-            val = []
-
-          return {value: val, op: value.op || data.operators[0]}
-        getValue:     (model = {}, data) ->
-          value = {}
-          value.type = options.type
-          value.op = model.op
-          value.options = {}
-          value.options[prop_name] = (model.value || []).join ','
-          return value
-        }
-      def
+      options.propName = 'org_ids'
+      options.operators = ['is', 'not']
+      options.url = '/organizations'
+      options.map = (data) ->
+        id: data.organization?.id
+        name: data.organization?.name
+      format = (item) -> item['name']
+      options.inputOptions =
+        formatResult: format
+        formatSelection: format
+        ajax:
+          data: (term, page) -> { query: term, limit: 10 }
+      @getRemoteInput options
 
     getFilterOrgName: (options = {}) ->
       options.propName = 'name'
