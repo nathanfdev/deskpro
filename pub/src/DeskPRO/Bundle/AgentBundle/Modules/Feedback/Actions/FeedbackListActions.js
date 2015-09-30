@@ -2,6 +2,7 @@ import { createAction } from 'Ampliflux';
 import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
 import { loadPeople } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { loadFeedbackComments } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCommentsActions';
+import { loadFeedbackStatuses } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackStatusesActions';
 import { sortingDataSelector, filterDataSelector } from '../Selectors/list';
 import { groupDataSelector } from '../Selectors/nav';
 
@@ -22,18 +23,21 @@ export const getAuthors = createAction(
       }
       unique[feedback.data[i].person_id] = 0;
     }
-      return dispatch(loadPeople(recordStoresId, ids));
+    return dispatch(loadPeople(recordStoresId, ids));
   }
 );
 
 export const getComments = createAction(
   'FEEDBACK_GET_COMMENTS',
-    feedback => dispatch => {
-    let ids = [];
-    for (var i in feedback.data) {
-      ids.push(feedback.data[i].id);
-    }
+    ids => dispatch => {
     return dispatch(loadFeedbackComments(recordStoresId, ids));
+  }
+);
+
+export const getStatuses = createAction(
+  'FEEDBACK_GET_STATUSES',
+    ids => dispatch => {
+    return dispatch(loadFeedbackStatuses(recordStoresId, ids));
   }
 );
 
@@ -51,8 +55,13 @@ export const loadFeedbackList = createAction(
     const params            = {...currentParams, ...overwriteParams};
     return dispatch =>Feedback.getList(params).then(promise => {
       const feedback = promise.getData();
+      let ids        = [];
+      for (var i in feedback.data) {
+        ids.push(feedback.data[i].id);
+      }
       dispatch(getAuthors(feedback));
-      dispatch(getComments(feedback));
+      dispatch(getComments(ids));
+      dispatch(getStatuses(ids));
       return feedback;
     });
   }
