@@ -36,6 +36,11 @@ class Build1443607597 extends AbstractBuild
     public function run()
     {
         $this->out("Update 'has_attachment' field");
-        $this->execMutateSql('update tickets set has_attachments = 1 where id in (select ticket_id from tickets_attachments)');
+        $this->execMutateSql('
+            UPDATE tickets
+            LEFT JOIN tickets_attachments ON (tickets_attachments.ticket_id = tickets.id)
+            SET has_attachments = 1
+            WHERE tickets_attachments.ticket_id IS NOT NULL AND tickets.has_attachments = 0;
+        ');
     }
 }

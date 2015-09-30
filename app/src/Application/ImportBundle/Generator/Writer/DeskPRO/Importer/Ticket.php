@@ -207,8 +207,10 @@ final class Ticket extends AbstractImporter
      */
     private function createTicketMessage(Entity\TicketMessage $entity, DeskPROEntity\Ticket $ticket)
     {
-        $message = $this->updateTicketMessage($entity, new DeskPROEntity\TicketMessage());
+        $message = new DeskPROEntity\TicketMessage();
         $message->setTicket($ticket);
+
+        $this->updateTicketMessage($entity, $message);
 
         if ($entity->getImportMapKey()) {
             $this->records->addImportMapEntity(new OidEntityMap($entity, $message));
