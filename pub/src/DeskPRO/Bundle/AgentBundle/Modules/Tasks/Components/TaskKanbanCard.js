@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from 'react-dom';
 import Moment from "moment";
 import { DragSource, DropTarget } from "react-dnd";
 import { IntlMixin, FormattedDate } from "react-intl";
@@ -17,7 +18,7 @@ const cardTarget = {
 
 const listCardSource = {
   beginDrag(props, monitor, component) {
-    const width = $(React.findDOMNode(component)).width();
+    const width = $(ReactDOM.findDOMNode(component)).width();
 
     return {
       id: props.task.id,

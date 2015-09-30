@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import Moment from 'moment';
 import { DragSource } from 'react-dnd';
 import $ from 'jquery';
@@ -6,7 +7,7 @@ import DragTypes from '../../../Services/DragTypes.js';
 
 const cardSource = {
   beginDrag(props, monitor, component) {
-    const width = $(React.findDOMNode(component)).width();
+    const width = $(ReactDOM.findDOMNode(component)).width();
 
     return {
       id: props.task.id,

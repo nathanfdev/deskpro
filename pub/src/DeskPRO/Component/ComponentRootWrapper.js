@@ -1,11 +1,12 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 import $ from 'jquery';
 
 export default class ComponentRootWrapper extends React.Component {
 
   componentDidMount() {
-    this.node = React.findDOMNode(this);
+    this.node = ReactDOM.findDOMNode(this);
     $(this.node).detach();
     $('body').append(this.node);
 

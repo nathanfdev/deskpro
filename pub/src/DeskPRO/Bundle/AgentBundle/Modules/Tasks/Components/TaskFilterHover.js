@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from 'react-dom';
 import Formsy from "formsy-react";
 import FRC from "../../../../../Component/FormComponents/main.js";
 import Picker from "anytime";
@@ -55,8 +56,8 @@ const TaskFilterHover = React.createClass({
 
     dateFields.forEach((field) => {
       let options = pickerOptions;
-      options.input = React.findDOMNode(this.refs[field + '_value']);
-      options.button = React.findDOMNode(this.refs[field + '_button']);
+      options.input = ReactDOM.findDOMNode(this.refs[field + '_value']);
+      options.button = ReactDOM.findDOMNode(this.refs[field + '_button']);
       options.offset = 16;
 
       // Create the picker

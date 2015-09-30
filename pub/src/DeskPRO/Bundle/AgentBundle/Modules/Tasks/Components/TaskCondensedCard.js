@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from 'react-dom';
 import { DragSource, DropTarget } from "react-dnd";
 import { connect } from 'react-redux';
 import $ from 'jquery';
@@ -22,7 +23,7 @@ const cardTarget = {
 
 const cardSource = {
   beginDrag(props, monitor, component) {
-    const width = $(React.findDOMNode(component)).width();
+    const width = $(ReactDOM.findDOMNode(component)).width();
 
     return {
       id: props.task.id,
@@ -131,8 +132,8 @@ const TaskCondensedCard = React.createClass({
 
       // Create the picker
       let picker = new Picker({
-        input: React.findDOMNode(this.refs[dueField]),
-        button: React.findDOMNode(this.refs[dueButton]),
+        input: ReactDOM.findDOMNode(this.refs[dueField]),
+        button: ReactDOM.findDOMNode(this.refs[dueButton]),
         initialValue: initial,
         format: "hh:mm, MMMM D, YYYY"
       });
