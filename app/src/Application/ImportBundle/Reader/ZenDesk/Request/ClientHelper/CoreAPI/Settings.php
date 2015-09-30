@@ -29,20 +29,20 @@
 namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI;
 
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
-use Zendesk\API\Client;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperFindAllInterface;
 
 /**
  * ZenDesk account settings find request client helper.
  *
  * Class SettingsFindAll
  */
-final class SettingsFindAll extends AbstractHelper
+final class Settings extends AbstractHelper implements ClientHelperFindAllInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function request(Client $client)
+    public function findAll(array $params = array())
     {
-        return $client->settings()->findAll($this->params);
+        return $this->client->settings()->findAll($params);
     }
 }
