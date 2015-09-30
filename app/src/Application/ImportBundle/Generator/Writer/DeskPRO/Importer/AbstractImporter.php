@@ -194,7 +194,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
      *
      * @throws ImporterException
      *
-     * @return DeskPROEntity\CustomDataTicket
+     * @return DeskPROEntity\CustomDataTicket|null
      */
     protected function createCustomData(AbstractCustomDefMapper $mapper, Entity\CustomField $entity, DeskPROEntity\CustomDataAbstract $custom_field)
     {
@@ -206,6 +206,10 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
         switch ($custom_field_def->getTypeName()) {
             case Entity\CustomField::FIELD_TYPE_TEXT:
             case Entity\CustomField::FIELD_TYPE_TEXTAREA:
+                if (!$entity->getValue()) {
+                    return;
+                }
+
                 $custom_field
                     ->setField($custom_field_def)
                     ->setRootField($custom_field_def)
@@ -224,10 +228,14 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
 
             case Entity\CustomField::FIELD_TYPE_DATE:
             case Entity\CustomField::FIELD_TYPE_DATETIME:
+                if (!$entity->getValue()) {
+                    return;
+                }
+
                 $custom_field
                     ->setField($custom_field_def)
                     ->setRootField($custom_field_def)
-                    ->setValue($entity->getValue() ? strtotime($entity->getValue()) : 0)
+                    ->setValue(strtotime($entity->getValue()))
                 ;
 
                 break;
