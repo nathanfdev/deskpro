@@ -59,7 +59,6 @@ class CustomDefOrganization extends AbstractFixture
 
     /**
      * @param ObjectManager $manager
-     * @return void
      */
     private function addTextField(ObjectManager $manager)
     {
@@ -75,7 +74,6 @@ class CustomDefOrganization extends AbstractFixture
 
     /**
      * @param ObjectManager $manager
-     * @return void
      */
     private function addTextareaField(ObjectManager $manager)
     {
@@ -91,7 +89,6 @@ class CustomDefOrganization extends AbstractFixture
 
     /**
      * @param ObjectManager $manager
-     * @return void
      */
     private function addSelectBoxField(ObjectManager $manager)
     {
@@ -121,7 +118,6 @@ class CustomDefOrganization extends AbstractFixture
 
     /**
      * @param ObjectManager $manager
-     * @return void
      */
     private function addMultipleSelectBoxField(ObjectManager $manager)
     {
@@ -179,7 +175,6 @@ class CustomDefOrganization extends AbstractFixture
 
     /**
      * @param ObjectManager $manager
-     * @return void
      */
     private function addRadioButtonField(ObjectManager $manager)
     {
@@ -209,7 +204,6 @@ class CustomDefOrganization extends AbstractFixture
 
     /**
      * @param ObjectManager $manager
-     * @return void
      */
     private function addCheckboxField(ObjectManager $manager)
     {
@@ -239,7 +233,6 @@ class CustomDefOrganization extends AbstractFixture
 
     /**
      * @param ObjectManager $manager
-     * @return void
      */
     private function addToggleField(ObjectManager $manager)
     {
@@ -255,7 +248,6 @@ class CustomDefOrganization extends AbstractFixture
 
     /**
      * @param ObjectManager $manager
-     * @return void
      */
     private function addDateField(ObjectManager $manager)
     {
@@ -271,7 +263,6 @@ class CustomDefOrganization extends AbstractFixture
 
     /**
      * @param ObjectManager $manager
-     * @return void
      */
     private function addDatetimeField(ObjectManager $manager)
     {
@@ -287,7 +278,6 @@ class CustomDefOrganization extends AbstractFixture
 
     /**
      * @param ObjectManager $manager
-     * @return void
      */
     private function addDisplayField(ObjectManager $manager)
     {
@@ -303,7 +293,6 @@ class CustomDefOrganization extends AbstractFixture
 
     /**
      * @param ObjectManager $manager
-     * @return void
      */
     private function addHiddenField(ObjectManager $manager)
     {

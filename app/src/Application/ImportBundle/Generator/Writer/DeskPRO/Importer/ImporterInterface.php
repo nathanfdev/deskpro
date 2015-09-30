@@ -57,7 +57,6 @@ interface ImporterInterface
      * @param Entity\EntityInterface $entity
      * @param int|null               $entity_id
      *
-     * @return void
      * @throws \Exception
      */
     public function prepare(Entity\EntityInterface $entity, $entity_id = null);

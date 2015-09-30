@@ -39,6 +39,7 @@ interface ClientHelperCreateInterface extends ClientHelperInterface
      * Do create request via ZenDesk client.
      *
      * @param array $params
+     *
      * @return \stdClass
      */
     public function create(array $params = array());

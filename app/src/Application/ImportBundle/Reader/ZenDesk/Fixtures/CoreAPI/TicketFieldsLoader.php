@@ -31,10 +31,7 @@ namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI;
 use Application\ImportBundle\Reader\ZenDesk\Request\Request;
 
 /**
- * Class TicketFieldsLoader
- * @package Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI
- *
- * todo handle system fields (not removable)
+ * Class TicketFieldsLoader.
  */
 class TicketFieldsLoader extends AbstractFieldsLoader
 {
@@ -43,12 +40,12 @@ class TicketFieldsLoader extends AbstractFieldsLoader
      */
     public function load()
     {
-        $response = $this->request_adapter->doRequest(Request::createCoreAPI('TicketField', 'findAll'));
+        $response     = $this->request_adapter->doRequest(Request::createCoreAPI('TicketField', 'findAll'));
         $this->fields = $this->toArray($response->ticket_fields);
     }
 
     /**
-     * Returns random fields values
+     * Returns random fields values.
      *
      * @return array
      */

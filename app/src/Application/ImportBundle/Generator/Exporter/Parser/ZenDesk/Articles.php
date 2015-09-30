@@ -117,10 +117,10 @@ final class Articles extends AbstractParser
     {
         $entity    = new Entity\Article();
         $formatted = $this->formatter->format($data, array(
-            'id'           => TransformerInterface::TYPE_INT,
-            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => $entity->getDestinationPrefix(),
-                'ref'    => 'id',
+            'id'          => TransformerInterface::TYPE_INT,
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix'  => $entity->getDestinationPrefix(),
+                'ref'     => 'id',
             )),
             'author_id'    => TransformerInterface::TYPE_INT,
             'section_id'   => TransformerInterface::TYPE_INT,
@@ -229,8 +229,8 @@ final class Articles extends AbstractParser
         $formatted = $this->formatter->format($data, array(
             'id'          => TransformerInterface::TYPE_INT,
             'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix' => $entity->getDestinationPrefix(),
-                'ref'    => 'id',
+                'prefix'  => $entity->getDestinationPrefix(),
+                'ref'     => 'id',
             )),
             'body'       => TransformerInterface::TYPE_STRING,
             'author_id'  => TransformerInterface::TYPE_INT,

@@ -85,8 +85,8 @@ final class Tickets extends AbstractFixture
 
         $type   = $types[rand(0, count($types) - 1)];
         $params = array(
-            'subject'       => 'Fake ticket '.$num,
-            'comment'       => array(
+            'subject' => 'Fake ticket '.$num,
+            'comment' => array(
                 'type'   => 'Comment',
                 'body'   => 'Thanks for your help!',
                 'public' => true,

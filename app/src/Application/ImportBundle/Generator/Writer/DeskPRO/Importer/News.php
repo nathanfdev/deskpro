@@ -79,7 +79,7 @@ final class News extends AbstractImporter implements SkipDuplicateInterface
     /**
      * {@inheritdoc}
      *
-     * @var Entity\News $entity
+     * @var Entity\News
      */
     public function checkAlreadyExists(Entity\EntityInterface $entity)
     {

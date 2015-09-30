@@ -57,26 +57,27 @@ abstract class AbstractFields extends AbstractFixture implements FixtureDeleteIn
 
     /**
      * @param int $num
+     *
      * @return array
      */
     protected function createParams($num)
     {
-        $types  = array('text', 'checkbox', 'date', 'integer', 'decimal', 'regexp', 'tagger');
-        $type   = $types[rand(0, count($types) - 1)];
+        $types = array('text', 'checkbox', 'date', 'integer', 'decimal', 'regexp', 'tagger');
+        $type  = $types[rand(0, count($types) - 1)];
 
         $params = array(
             'type'        => $type,
-            'title'       => 'Field ' . $num,
-            'description' => 'Field description ' . $num,
+            'title'       => 'Field '.$num,
+            'description' => 'Field description '.$num,
             'required'    => $this->getRandomBool(),
         );
 
         if ($type === 'tagger') {
-            for ($i = 0; $i < 5; $i++) {
-                $offset = $num + $i;
+            for ($i = 0; $i < 5; ++$i) {
+                $offset                           = $num + $i;
                 $params['custom_field_options'][] = array(
-                    'name'  => 'Option ' . $offset,
-                    'value' => 'value_' . $offset,
+                    'name'  => 'Option '.$offset,
+                    'value' => 'value_'.$offset,
                 );
             }
         }
@@ -90,5 +91,5 @@ abstract class AbstractFields extends AbstractFixture implements FixtureDeleteIn
     /**
      * @return mixed
      */
-    protected abstract function getClient();
+    abstract protected function getClient();
 }

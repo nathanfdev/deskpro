@@ -180,7 +180,7 @@ final class Collection extends AbstractCollection
     public function getOids()
     {
         return array_map(
-            function(EntityInterface $entity) {
+            function (EntityInterface $entity) {
                 return $entity->getOid();
             },
             $this->collection

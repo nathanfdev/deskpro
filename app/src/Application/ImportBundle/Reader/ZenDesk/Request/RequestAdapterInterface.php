@@ -39,6 +39,7 @@ interface RequestAdapterInterface
      * ZenDesk API request.
      *
      * @param Request $request
+     *
      * @return \stdClass
      */
     public function doRequest(Request $request);

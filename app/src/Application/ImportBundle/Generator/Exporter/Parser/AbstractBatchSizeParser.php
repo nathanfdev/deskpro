@@ -50,7 +50,6 @@ abstract class AbstractBatchSizeParser extends AbstractBatchParser
             ));
 
             $config->setBatchSize($formatted['batch_size']);
-
         } else {
             throw new Exception(sprintf(
                 'Batch config `%s` should be instance of BatchSizeConfigInterface',

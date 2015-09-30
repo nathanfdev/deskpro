@@ -31,8 +31,8 @@ namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixtureLoader;
 use Application\ImportBundle\Reader\ZenDesk\Request\Request;
-use Doctrine\Common\Collections\ArrayCollection;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class PeopleIdsLoader.

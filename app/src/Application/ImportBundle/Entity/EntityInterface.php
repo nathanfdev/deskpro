@@ -58,14 +58,14 @@ interface EntityInterface
     const TYPE_OBJECT_LANG             = 'object_lang';
 
     /**
-     * Returns raw data
+     * Returns raw data.
      *
      * @return array
      */
     public function getRawData();
 
     /**
-     * Set raw data
+     * Set raw data.
      *
      * @param array $raw_data
      */
@@ -73,14 +73,14 @@ interface EntityInterface
 
     /**
      * Returns import map key
-     * Uses to save mapping between legacy and new entities
+     * Uses to save mapping between legacy and new entities.
      *
      * @return string
      */
     public function getImportMapKey();
 
     /**
-     * Set import map key
+     * Set import map key.
      *
      * @param string $import_map_key
      *
@@ -111,7 +111,7 @@ interface EntityInterface
     public function getDestination();
 
     /**
-     * Get entity prefix
+     * Get entity prefix.
      *
      * @return string
      */

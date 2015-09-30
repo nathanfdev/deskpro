@@ -27,6 +27,7 @@
  */
 
 namespace Application\ImportBundle\Generator\Exporter;
+
 use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 
 /**
@@ -40,6 +41,7 @@ class BatchFactory
      * Creates an exporter instance.
      *
      * @param FormatterInterface $formatter
+     *
      * @return Batch
      */
     public static function createExporter(FormatterInterface $formatter)

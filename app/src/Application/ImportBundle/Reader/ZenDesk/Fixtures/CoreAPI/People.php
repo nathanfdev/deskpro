@@ -46,7 +46,7 @@ final class People extends AbstractFixture
     private $people_fields_loader;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Client             $client
      * @param PeopleFieldsLoader $people_fields_loader

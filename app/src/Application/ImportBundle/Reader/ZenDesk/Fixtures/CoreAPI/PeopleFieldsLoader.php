@@ -31,8 +31,7 @@ namespace Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI;
 use Application\ImportBundle\Reader\ZenDesk\Request\Request;
 
 /**
- * Class PeopleFieldsLoader
- * @package Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI
+ * Class PeopleFieldsLoader.
  */
 class PeopleFieldsLoader extends AbstractFieldsLoader
 {
@@ -41,12 +40,12 @@ class PeopleFieldsLoader extends AbstractFieldsLoader
      */
     public function load()
     {
-        $response = $this->request_adapter->doRequest(Request::createCoreAPI('PersonField', 'findAll'));
+        $response     = $this->request_adapter->doRequest(Request::createCoreAPI('PersonField', 'findAll'));
         $this->fields = $this->toArray($response->user_fields);
     }
 
     /**
-     * Returns random fields values
+     * Returns random fields values.
      *
      * @return array
      */

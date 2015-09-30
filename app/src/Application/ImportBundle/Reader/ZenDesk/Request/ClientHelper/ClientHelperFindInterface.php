@@ -39,6 +39,7 @@ interface ClientHelperFindInterface extends ClientHelperInterface
      * Do find request via ZenDesk client.
      *
      * @param array $params
+     *
      * @return \stdClass
      */
     public function find(array $params = array());

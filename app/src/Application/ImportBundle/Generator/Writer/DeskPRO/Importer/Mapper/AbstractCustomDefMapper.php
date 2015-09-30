@@ -44,7 +44,7 @@ abstract class AbstractCustomDefMapper extends AbstractImportMapMapper
     protected $custom_def_repository;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param EntityRepository\CustomDefAbstract $custom_def_repository
      * @param EntityRepository\ImportMap         $import_map_repository
@@ -84,7 +84,7 @@ abstract class AbstractCustomDefMapper extends AbstractImportMapMapper
             ));
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -108,7 +108,7 @@ abstract class AbstractCustomDefMapper extends AbstractImportMapMapper
         }
 
         /** @var DeskPROEntity\CustomDefAbstract $record */
-        if ( ! $record && $throw_exception) {
+        if (!$record && $throw_exception) {
             throw new MapperException(sprintf('Custom def `%s` not found', $this->getType()), $criteria);
         }
 
