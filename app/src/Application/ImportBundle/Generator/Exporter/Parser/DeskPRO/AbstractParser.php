@@ -114,12 +114,9 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      */
     protected function exportCustomData(DeskPROEntity\CustomDataAbstract $custom_data)
     {
-        $key_chain = array();
-        if ($custom_data->root_field) {
-            $key_chain[] = $custom_data->root_field->getRealTitle();
-        }
-        if ($custom_data->root_field != $custom_data->field) {
-            $key_chain[] = $custom_data->field->getRealTitle();
+        $value = $custom_data->getData();
+        if ($custom_data->root_field->isChoiceType()) {
+            // todo value chain
         }
 
         $entity = new Entity\CustomField();
@@ -127,8 +124,8 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             ->setRawData($custom_data->toApiData())
             ->setOid($custom_data->getId())
             ->setDestination($entity->getDestinationPrefix().$custom_data->getId())
-            ->setKey(implode(' > ', $key_chain))
-            ->setValue($custom_data->getData())
+            ->setKey($custom_data->root_field->getRealTitle())
+            ->setValue($value)
         ;
 
         return $entity;

@@ -50,6 +50,7 @@ abstract class AbstractCustomDefParser extends AbstractParser
             ->setRawData($custom_def->toArray($custom_def::TOARRAY_DEEP))
             ->setOid($custom_def->getId())
             ->setDestination($entity->getDestinationPrefix().$custom_def->getId())
+            ->setImportMapKey($this->getImportMapKey())
             ->setTitle($custom_def->getRealTitle())
             ->setDescription($custom_def->getRealDescription())
             ->setOptions($custom_def->getAllOptions())
@@ -73,4 +74,11 @@ abstract class AbstractCustomDefParser extends AbstractParser
      * @return Entity\AbstractCustomDef
      */
     abstract protected function getDefaultCustomDefEntity();
+
+    /**
+     * Returns import map key.
+     *
+     * @return string
+     */
+    abstract protected function getImportMapKey();
 }

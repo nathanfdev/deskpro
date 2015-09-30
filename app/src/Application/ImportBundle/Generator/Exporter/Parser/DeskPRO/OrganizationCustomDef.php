@@ -28,6 +28,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
+use Application\DeskPRO\Entity\ImportMap;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
@@ -75,5 +76,13 @@ final class OrganizationCustomDef extends AbstractCustomDefParser
     protected function getDefaultCustomDefEntity()
     {
         return new Entity\OrganizationCustomDef();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getImportMapKey()
+    {
+        return ImportMap::TYPE_DESKPRO_ORGANIZATION_FIELD;
     }
 }
