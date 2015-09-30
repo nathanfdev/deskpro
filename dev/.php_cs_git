@@ -41,7 +41,7 @@ $changed_files = array_filter($outputs, function($filename) use ($filename_patte
             return false;
         }
     }
-    foreach ($exclude_dirs as $test) {
+    foreach ($exclude_file_names as $test) {
         if ($filename === $test) {
             return false;
         }
