@@ -31,9 +31,9 @@ if ($dry_run) {
 
 echo 'Attempting to fix code changed since git HEAD' . PHP_EOL;
 echo "Executing: $cmd" . PHP_EOL;
-exec($cmd, $outputs, $return_status);
+system($cmd, $return_status);
 if (0 !== $return_status) {
-    echo implode(PHP_EOL, $outputs), PHP_EOL;
+    //echo implode(PHP_EOL, $outputs), PHP_EOL;
     exit($return_status);
 }
-echo 'Well done. No code style changes necessary.' . PHP_EOL;
+echo PHP_EOL.PHP_EOL.'Well done. No code style changes necessary.' . PHP_EOL;

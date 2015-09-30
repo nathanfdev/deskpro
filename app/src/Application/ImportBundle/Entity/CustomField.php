@@ -134,7 +134,6 @@ final class CustomField extends AbstractEntity
 
         $metadata
             ->addPropertyConstraint('key', new Constraints\NotBlank())
-            ->addPropertyConstraint('value', new Constraints\NotBlank())
         ;
     }
 }

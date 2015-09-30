@@ -57,219 +57,252 @@ class CustomDefPerson extends AbstractFixture
         $manager->flush();
     }
 
+    /**
+     * @param ObjectManager $manager
+     */
     private function addTextField(ObjectManager $manager)
     {
-        $ticket_def = new Entity\CustomDefPerson();
-        $ticket_def
+        $person_def = new Entity\CustomDefPerson();
+        $person_def
             ->setTitle('Text field')
             ->setDescription('Text field description')
             ->setHandlerClass(Entity\CustomDefPerson::HANDLER_CLASS_TEXT)
         ;
 
-        $manager->persist($ticket_def);
+        $manager->persist($person_def);
     }
 
+    /**
+     * @param ObjectManager $manager
+     */
     private function addTextareaField(ObjectManager $manager)
     {
-        $ticket_def = new Entity\CustomDefPerson();
-        $ticket_def
+        $person_def = new Entity\CustomDefPerson();
+        $person_def
             ->setTitle('Textarea field')
             ->setDescription('Textarea field description')
             ->setHandlerClass(Entity\CustomDefPerson::HANDLER_CLASS_TEXTAREA)
         ;
 
-        $manager->persist($ticket_def);
+        $manager->persist($person_def);
     }
 
+    /**
+     * @param ObjectManager $manager
+     */
     private function addSelectBoxField(ObjectManager $manager)
     {
-        $ticket_def = new Entity\CustomDefPerson();
-        $ticket_def
+        $person_def = new Entity\CustomDefPerson();
+        $person_def
             ->setTitle('Custom ticket select box field')
             ->setDescription('Select box field description')
             ->setHandlerClass(Entity\CustomDefPerson::HANDLER_CLASS_CHOICE)
         ;
 
-        $ticket_def_choice1 = new Entity\CustomDefPerson();
-        $ticket_def_choice1
+        $person_def_choice1 = new Entity\CustomDefPerson();
+        $person_def_choice1
             ->setTitle('Choice 1')
-            ->setParent($ticket_def)
+            ->setParent($person_def)
         ;
 
-        $ticket_def_choice2 = new Entity\CustomDefPerson();
-        $ticket_def_choice2
+        $person_def_choice2 = new Entity\CustomDefPerson();
+        $person_def_choice2
             ->setTitle('Choice 2')
-            ->setParent($ticket_def)
+            ->setParent($person_def)
         ;
 
-        $manager->persist($ticket_def);
-        $manager->persist($ticket_def_choice1);
-        $manager->persist($ticket_def_choice2);
+        $manager->persist($person_def);
+        $manager->persist($person_def_choice1);
+        $manager->persist($person_def_choice2);
     }
 
+    /**
+     * @param ObjectManager $manager
+     */
     private function addMultipleSelectBoxField(ObjectManager $manager)
     {
-        $ticket_def = new Entity\CustomDefPerson();
-        $ticket_def
+        $person_def = new Entity\CustomDefPerson();
+        $person_def
             ->setTitle('Multiple-select box field')
             ->setDescription('Multiple-select box field description')
             ->setHandlerClass(Entity\CustomDefPerson::HANDLER_CLASS_CHOICE)
         ;
 
-        $ticket_def_choice1 = new Entity\CustomDefPerson();
-        $ticket_def_choice1
+        $person_def_choice1 = new Entity\CustomDefPerson();
+        $person_def_choice1
             ->setTitle('Choice 1')
-            ->setParent($ticket_def)
+            ->setParent($person_def)
         ;
 
-        $ticket_def_choice2 = new Entity\CustomDefPerson();
-        $ticket_def_choice2
+        $person_def_choice2 = new Entity\CustomDefPerson();
+        $person_def_choice2
             ->setTitle('Choice 2')
-            ->setParent($ticket_def_choice1)
+            ->setParent($person_def)
         ;
 
-        $ticket_def_choice3 = new Entity\CustomDefPerson();
-        $ticket_def_choice3
+        $person_def_choice3 = new Entity\CustomDefPerson();
+        $person_def_choice3
             ->setTitle('Choice 3')
-            ->setParent($ticket_def_choice1)
+            ->setParent($person_def)
         ;
 
-        $ticket_def_choice4 = new Entity\CustomDefPerson();
-        $ticket_def_choice4
+        $person_def_choice4 = new Entity\CustomDefPerson();
+        $person_def_choice4
             ->setTitle('Choice 4')
-            ->setParent($ticket_def)
+            ->setParent($person_def)
         ;
 
-        $ticket_def_choice5 = new Entity\CustomDefPerson();
-        $ticket_def_choice5
+        $person_def_choice5 = new Entity\CustomDefPerson();
+        $person_def_choice5
             ->setTitle('Choice 5')
-            ->setParent($ticket_def_choice4)
+            ->setParent($person_def)
         ;
 
-        $ticket_def_choice6 = new Entity\CustomDefPerson();
-        $ticket_def_choice6
+        $person_def_choice6 = new Entity\CustomDefPerson();
+        $person_def_choice6
             ->setTitle('Choice 6')
-            ->setParent($ticket_def_choice4)
+            ->setParent($person_def)
         ;
 
-        $manager->persist($ticket_def);
-        $manager->persist($ticket_def_choice1);
-        $manager->persist($ticket_def_choice2);
-        $manager->persist($ticket_def_choice3);
-        $manager->persist($ticket_def_choice4);
-        $manager->persist($ticket_def_choice5);
-        $manager->persist($ticket_def_choice6);
+        $manager->persist($person_def);
+        $manager->persist($person_def_choice1);
+        $manager->persist($person_def_choice2);
+        $manager->persist($person_def_choice3);
+        $manager->persist($person_def_choice4);
+        $manager->persist($person_def_choice5);
+        $manager->persist($person_def_choice6);
     }
 
+    /**
+     * @param ObjectManager $manager
+     */
     private function addRadioButtonField(ObjectManager $manager)
     {
-        $ticket_def = new Entity\CustomDefPerson();
-        $ticket_def
+        $person_def = new Entity\CustomDefPerson();
+        $person_def
             ->setTitle('Radio button field')
             ->setDescription('Radio button field description')
             ->setHandlerClass(Entity\CustomDefPerson::HANDLER_CLASS_CHOICE)
         ;
 
-        $ticket_def_choice1 = new Entity\CustomDefPerson();
-        $ticket_def_choice1
+        $person_def_choice1 = new Entity\CustomDefPerson();
+        $person_def_choice1
             ->setTitle('Choice 1')
-            ->setParent($ticket_def)
+            ->setParent($person_def)
         ;
 
-        $ticket_def_choice2 = new Entity\CustomDefPerson();
-        $ticket_def_choice2
+        $person_def_choice2 = new Entity\CustomDefPerson();
+        $person_def_choice2
             ->setTitle('Choice 2')
-            ->setParent($ticket_def)
+            ->setParent($person_def)
         ;
 
-        $manager->persist($ticket_def);
-        $manager->persist($ticket_def_choice1);
-        $manager->persist($ticket_def_choice2);
+        $manager->persist($person_def);
+        $manager->persist($person_def_choice1);
+        $manager->persist($person_def_choice2);
     }
 
+    /**
+     * @param ObjectManager $manager
+     */
     private function addCheckboxField(ObjectManager $manager)
     {
-        $ticket_def = new Entity\CustomDefPerson();
-        $ticket_def
+        $person_def = new Entity\CustomDefPerson();
+        $person_def
             ->setTitle('Checkbox field')
             ->setDescription('Checkbox field description')
             ->setHandlerClass(Entity\CustomDefPerson::HANDLER_CLASS_CHOICE)
         ;
 
-        $ticket_def_choice1 = new Entity\CustomDefPerson();
-        $ticket_def_choice1
+        $person_def_choice1 = new Entity\CustomDefPerson();
+        $person_def_choice1
             ->setTitle('Choice 1')
-            ->setParent($ticket_def)
+            ->setParent($person_def)
         ;
 
-        $ticket_def_choice2 = new Entity\CustomDefPerson();
-        $ticket_def_choice2
+        $person_def_choice2 = new Entity\CustomDefPerson();
+        $person_def_choice2
             ->setTitle('Choice 2')
-            ->setParent($ticket_def)
+            ->setParent($person_def)
         ;
 
-        $manager->persist($ticket_def);
-        $manager->persist($ticket_def_choice1);
-        $manager->persist($ticket_def_choice2);
+        $manager->persist($person_def);
+        $manager->persist($person_def_choice1);
+        $manager->persist($person_def_choice2);
     }
 
+    /**
+     * @param ObjectManager $manager
+     */
     private function addToggleField(ObjectManager $manager)
     {
-        $ticket_def = new Entity\CustomDefPerson();
-        $ticket_def
+        $person_def = new Entity\CustomDefPerson();
+        $person_def
             ->setTitle('Toggle field')
             ->setDescription('Toggle field description')
             ->setHandlerClass(Entity\CustomDefPerson::HANDLER_CLASS_TOGGLE)
         ;
 
-        $manager->persist($ticket_def);
+        $manager->persist($person_def);
     }
 
+    /**
+     * @param ObjectManager $manager
+     */
     private function addDateField(ObjectManager $manager)
     {
-        $ticket_def = new Entity\CustomDefPerson();
-        $ticket_def
+        $person_def = new Entity\CustomDefPerson();
+        $person_def
             ->setTitle('Date field')
             ->setDescription('Date field description')
             ->setHandlerClass(Entity\CustomDefPerson::HANDLER_CLASS_DATE)
         ;
 
-        $manager->persist($ticket_def);
+        $manager->persist($person_def);
     }
 
+    /**
+     * @param ObjectManager $manager
+     */
     private function addDatetimeField(ObjectManager $manager)
     {
-        $ticket_def = new Entity\CustomDefPerson();
-        $ticket_def
+        $person_def = new Entity\CustomDefPerson();
+        $person_def
             ->setTitle('Datetime field')
             ->setDescription('Datetime field description')
             ->setHandlerClass(Entity\CustomDefPerson::HANDLER_CLASS_DATETIME)
         ;
 
-        $manager->persist($ticket_def);
+        $manager->persist($person_def);
     }
 
+    /**
+     * @param ObjectManager $manager
+     */
     private function addDisplayField(ObjectManager $manager)
     {
-        $ticket_def = new Entity\CustomDefPerson();
-        $ticket_def
+        $person_def = new Entity\CustomDefPerson();
+        $person_def
             ->setTitle('Display field')
             ->setDescription('Display field description')
             ->setHandlerClass(Entity\CustomDefPerson::HANDLER_CLASS_DISPLAY)
         ;
 
-        $manager->persist($ticket_def);
+        $manager->persist($person_def);
     }
 
+    /**
+     * @param ObjectManager $manager
+     */
     private function addHiddenField(ObjectManager $manager)
     {
-        $ticket_def = new Entity\CustomDefPerson();
-        $ticket_def
+        $person_def = new Entity\CustomDefPerson();
+        $person_def
             ->setTitle('Hidden field')
             ->setDescription('Hidden field description')
             ->setHandlerClass(Entity\CustomDefPerson::HANDLER_CLASS_HIDDEN)
         ;
 
-        $manager->persist($ticket_def);
+        $manager->persist($person_def);
     }
 }

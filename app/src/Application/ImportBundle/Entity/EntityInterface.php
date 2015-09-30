@@ -35,39 +35,53 @@ namespace Application\ImportBundle\Entity;
  */
 interface EntityInterface
 {
-    const TYPE_PERSON          = 'person';
-    const TYPE_TICKET          = 'ticket';
-    const TYPE_TICKET_MESSAGE  = 'ticket_message';
-    const TYPE_TICKET_PRIORITY = 'ticket_priority';
-    const TYPE_BLOB             = 'blob';
-    const TYPE_ATTACHMENT      = 'attachment';
-    const TYPE_CUSTOM_FIELD    = 'custom_field';
-    const TYPE_DOWNLOAD        = 'download';
-    const TYPE_NEWS            = 'news';
-    const TYPE_ARTICLE         = 'article';
-    const TYPE_ARTICLE_CATEGORY = 'article_category';
-    const TYPE_ARTICLE_COMMENT  = 'article_comment';
-    const TYPE_FEEDBACK        = 'feedback';
-    const TYPE_ORGANIZATION     = 'organization';
-    const TYPE_CONTACT_DATA     = 'contact_data';
-    const TYPE_OBJECT_LANG      = 'object_lang';
+    const TYPE_PERSON                  = 'person';
+    const TYPE_PERSON_CUSTOM_DEF       = 'person_custom_def';
+    const TYPE_TICKET                  = 'ticket';
+    const TYPE_TICKET_MESSAGE          = 'ticket_message';
+    const TYPE_TICKET_PRIORITY         = 'ticket_priority';
+    const TYPE_TICKET_CUSTOM_DEF       = 'ticket_custom_def';
+    const TYPE_BLOB                    = 'blob';
+    const TYPE_ATTACHMENT              = 'attachment';
+    const TYPE_CUSTOM_FIELD            = 'custom_field';
+    const TYPE_DOWNLOAD                = 'download';
+    const TYPE_NEWS                    = 'news';
+    const TYPE_ARTICLE                 = 'article';
+    const TYPE_ARTICLE_CATEGORY        = 'article_category';
+    const TYPE_ARTICLE_COMMENT         = 'article_comment';
+    const TYPE_ARTICLE_CUSTOM_DEF      = 'article_custom_def';
+    const TYPE_FEEDBACK                = 'feedback';
+    const TYPE_FEEDBACK_CUSTOM_DEF     = 'feedback_custom_def';
+    const TYPE_ORGANIZATION            = 'organization';
+    const TYPE_ORGANIZATION_CUSTOM_DEF = 'organization_custom_def';
+    const TYPE_CONTACT_DATA            = 'contact_data';
+    const TYPE_OBJECT_LANG             = 'object_lang';
 
     /**
+     * Returns raw data.
+     *
      * @return array
      */
     public function getRawData();
 
     /**
+     * Set raw data.
+     *
      * @param array $raw_data
      */
     public function setRawData($raw_data);
 
     /**
+     * Returns import map key
+     * Uses to save mapping between legacy and new entities.
+     *
      * @return string
      */
     public function getImportMapKey();
 
     /**
+     * Set import map key.
+     *
      * @param string $import_map_key
      *
      * @return $this
@@ -90,10 +104,18 @@ interface EntityInterface
 
     /**
      * Get entity destination.
+     * It could be a file name or db name.
      *
      * @return string
      */
     public function getDestination();
+
+    /**
+     * Get entity prefix.
+     *
+     * @return string
+     */
+    public function getDestinationPrefix();
 
     /**
      * Convert to array.

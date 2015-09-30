@@ -185,4 +185,18 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 
         return $data;
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return sprintf(
+            '[#%s -- %s:%s] %s',
+            $this->id ?: '?',
+            $this->field ? $this->field->id : '?',
+            $this->field ? $this->field->getTypeName() : 'unknown',
+            $this->getData()
+        );
+    }
 }

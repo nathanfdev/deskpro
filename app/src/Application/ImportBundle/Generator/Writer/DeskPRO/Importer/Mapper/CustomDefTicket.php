@@ -28,9 +28,6 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
 
-use Application\DeskPRO\Entity;
-use Application\DeskPRO\EntityRepository;
-
 /**
  * Custom def ticket record mapper.
  *
@@ -39,39 +36,10 @@ use Application\DeskPRO\EntityRepository;
 final class CustomDefTicket extends AbstractCustomDefMapper
 {
     /**
-     * @var EntityRepository\CustomDefTicket
-     */
-    private $repository;
-
-    /**
-     * Constructor.
-     *
-     * @param EntityRepository\CustomDefTicket $repository
-     */
-    public function __construct(EntityRepository\CustomDefTicket $repository)
-    {
-        $this->repository = $repository;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getType()
     {
         return self::TYPE_CUSTOM_DEF_TICKET;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findOneBy(array $criteria, $throw_exception = true)
-    {
-        /** @var Entity\CustomDefTicket $record */
-        $record = $this->repository->findOneBy($criteria);
-        if (!$record && $throw_exception) {
-            throw new MapperException('Custom def ticket not found', $criteria);
-        }
-
-        return $record;
     }
 }

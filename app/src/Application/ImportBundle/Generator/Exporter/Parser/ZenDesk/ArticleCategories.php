@@ -45,8 +45,8 @@ final class ArticleCategories extends AbstractParser
     const VIEWABLE_BY_SIGNED    = 'signed_in_users'; // only authenticated users
     const VIEWABLE_BY_STAFF     = 'staff';           // only agents and Help Center managers
 
-    const MANAGEABLE_BY_STAFF    = 'staff';        // agents and managers
-    const MANAGEABLE_BY_MANAGERS = 'managers';    // only Help Center managers
+    const MANAGEABLE_BY_STAFF    = 'staff';    // agents and managers
+    const MANAGEABLE_BY_MANAGERS = 'managers'; // only Help Center managers
 
     /**
      * {@inheritdoc}

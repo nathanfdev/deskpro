@@ -30,9 +30,6 @@ namespace Application\ImportBundle\Reader\ZenDesk;
 
 use Application\ImportBundle\Reader\ReaderConfigInterface;
 use Application\ImportBundle\Reader\ReaderFactoryInterface;
-use Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI\PeopleLoader;
-use Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter\CategoryLoader;
-use Application\ImportBundle\Reader\ZenDesk\Fixtures\HelpCenter\SectionLoader;
 use DateTime;
 use Exception;
 use Monolog\Formatter\LineFormatter;
@@ -73,14 +70,18 @@ class ZenDeskReaderFactory implements ReaderFactoryInterface
 
         $request_adapter = self::createClientAdapter($config);
 
-        $category_loader = new CategoryLoader($request_adapter);
-        $people_loader   = new PeopleLoader($request_adapter);
-        $section_loader  = new SectionLoader($request_adapter);
+        $people_loader        = new Fixtures\CoreAPI\PeopleLoader($request_adapter);
+        $people_fields_loader = new Fixtures\CoreAPI\PeopleFieldsLoader($request_adapter);
+        $ticket_fields_loader = new Fixtures\CoreAPI\TicketFieldsLoader($request_adapter);
+        $category_loader      = new Fixtures\HelpCenter\CategoryLoader($request_adapter);
+        $section_loader       = new Fixtures\HelpCenter\SectionLoader($request_adapter);
 
         $collection = new Fixtures\Collection();
         $collection
-            ->attach(new Fixtures\CoreAPI\People($client))
-            ->attach(new Fixtures\CoreAPI\Tickets($client, $people_loader))
+            ->attach(new Fixtures\CoreAPI\People($client, $people_fields_loader))
+            ->attach(new Fixtures\CoreAPI\PeopleFields($client))
+            ->attach(new Fixtures\CoreAPI\Tickets($client, $people_loader, $ticket_fields_loader))
+            ->attach(new Fixtures\CoreAPI\TicketFields($client))
             ->attach(new Fixtures\HelpCenter\Categories($client, $category_loader))
             ->attach(new Fixtures\HelpCenter\Sections($client, $category_loader))
             ->attach(new Fixtures\HelpCenter\Articles($client, $people_loader, $section_loader))

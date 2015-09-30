@@ -47,15 +47,23 @@ final class Tickets extends AbstractFixture
     private $people_loader;
 
     /**
+     * @var TicketFieldsLoader
+     */
+    private $ticket_fields_loader;
+
+    /**
      * Constructor.
      *
-     * @param Client       $client
-     * @param PeopleLoader $people_loader
+     * @param Client             $client
+     * @param PeopleLoader       $people_loader
+     * @param TicketFieldsLoader $ticket_fields_loader
      */
-    public function __construct(Client $client, PeopleLoader $people_loader)
+    public function __construct(Client $client, PeopleLoader $people_loader, TicketFieldsLoader $ticket_fields_loader)
     {
         parent::__construct($client);
-        $this->people_loader = $people_loader;
+
+        $this->people_loader        = $people_loader;
+        $this->ticket_fields_loader = $ticket_fields_loader;
     }
 
     /**
@@ -83,11 +91,12 @@ final class Tickets extends AbstractFixture
                 'body'   => 'Thanks for your help!',
                 'public' => true,
             ),
-            'type'         => $type,
-            'priority'     => $priorities[rand(0, count($priorities) - 1)],
-            'status'       => $statuses[rand(0, count($statuses) - 1)],
-            'requester_id' => $this->people_loader->getRandomPersonId(),
-            'submitter_id' => $this->people_loader->getRandomPersonId(),
+            'type'          => $type,
+            'priority'      => $priorities[rand(0, count($priorities) - 1)],
+            'status'        => $statuses[rand(0, count($statuses) - 1)],
+            'requester_id'  => $this->people_loader->getRandomPersonId(),
+            'submitter_id'  => $this->people_loader->getRandomPersonId(),
+            'custom_fields' => $this->ticket_fields_loader->getRandomFieldsValues(),
         );
 
         if ($type === 'task') {
@@ -96,7 +105,7 @@ final class Tickets extends AbstractFixture
 
         $response = $this->client->tickets()->create($params);
         $this->logger->info('Ticket created successfully');
-        $this->logger->debug(json_encode($response->ticket));
+        $this->logger->debug(json_encode($response));
 
         for ($i = 1; $i <= 100; ++$i) {
             try {

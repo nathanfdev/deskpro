@@ -74,7 +74,7 @@ interface BatchConfigInterface
      *
      * @return $this
      */
-    public function setDateCreated(DateTime $date_created);
+    public function setDateCreated(DateTime $date_created = null);
 
     /**
      * Returns date modified.
@@ -90,7 +90,7 @@ interface BatchConfigInterface
      *
      * @return $this
      */
-    public function setDateModified(DateTime $date_modified);
+    public function setDateModified(DateTime $date_modified = null);
 
     /**
      * Set has remaining.

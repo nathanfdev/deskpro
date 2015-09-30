@@ -54,7 +54,10 @@ final class ArticleCategories extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getDirectoryFilesCount(JsonReaderInterface::ENTITY_ARTICLE_CATEGORY_PATH, $this->getBatchNum());
+        return $this->reader->getDirectoryFilesCount(
+            JsonReaderInterface::ENTITY_ARTICLE_CATEGORY_PATH,
+            $this->getBatchNum()
+        );
     }
 
     /**
@@ -62,7 +65,9 @@ final class ArticleCategories extends AbstractParser
      */
     public function export()
     {
-        return $this->exportCategories($this->reader->getData(JsonReaderInterface::ENTITY_ARTICLE_CATEGORY_PATH, $this->getBatchNum()), true);
+        $data = $this->reader->getData(JsonReaderInterface::ENTITY_ARTICLE_CATEGORY_PATH, $this->getBatchNum());
+
+        return $this->exportCategories($data, true);
     }
 
     /**

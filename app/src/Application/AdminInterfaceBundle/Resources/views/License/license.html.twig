@@ -141,7 +141,7 @@
 								</div>
 								<div class="col-lg-10">
 									<div class="inner-group">
-										<textarea class="form-control" style="width: 400px; height: 160px; font-family: Monaco, Consolas, monospace; font-size: 11px;" ng-model="lic_code"></textarea>
+										<textarea class="form-control" style="width: 400px; height: 160px; font-family: Monaco, Consolas, monospace; font-size: 11px;" ng-model="form.lic_code"></textarea>
 										<br/>
 										<div dp-hide-spinning="saving" ng-show="lic_code != Ctrl.license.licenseCode" style="padding-top: 3px;">
 											<button class="btn btn-primary" ng-click="$event.preventDefault(); Ctrl.saveLicenseCode()"><i class="fa fa-save"></i> Update License Code</button>

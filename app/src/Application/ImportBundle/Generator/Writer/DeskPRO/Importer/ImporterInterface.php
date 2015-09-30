@@ -52,14 +52,19 @@ interface ImporterInterface
     public function reset();
 
     /**
-     * Returns a collection of the importing DeskPRO doctrine entities.
+     * Parses to a collection of the importing DeskPRO doctrine entities.
      *
      * @param Entity\EntityInterface $entity
      * @param int|null               $entity_id
      *
      * @throws \Exception
+     */
+    public function prepare(Entity\EntityInterface $entity, $entity_id = null);
+
+    /**
+     * Returns a collection of DeskPRO doctrine entities.
      *
      * @return DoctrineEntities
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null);
+    public function getDoctrineEntities();
 }

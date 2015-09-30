@@ -63,12 +63,17 @@ class JsonFactory extends AbstractExporterFactory
         $parsers
             ->attach(new Parser\Json\Downloads($reader, $formatter, $helpers))
             ->attach(new Parser\Json\Feedback($reader, $formatter, $helpers))
+            ->attach(new Parser\Json\FeedbackCustomDef($reader, $formatter, $helpers))
             ->attach(new Parser\Json\Articles($reader, $formatter, $helpers))
             ->attach(new Parser\Json\ArticleCategories($reader, $formatter, $helpers))
+            ->attach(new Parser\Json\ArticleCustomDef($reader, $formatter, $helpers))
             ->attach(new Parser\Json\News($reader, $formatter, $helpers))
             ->attach(new Parser\Json\People($reader, $formatter, $helpers))
+            ->attach(new Parser\Json\PeopleCustomDef($reader, $formatter, $helpers))
             ->attach(new Parser\Json\Tickets($reader, $formatter, $helpers))
+            ->attach(new Parser\Json\TicketCustomDef($reader, $formatter, $helpers))
             ->attach(new Parser\Json\Organizations($reader, $formatter, $helpers))
+            ->attach(new Parser\Json\OrganizationCustomDef($reader, $formatter, $helpers))
         ;
 
         return new Json($parsers, $reader);
