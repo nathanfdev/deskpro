@@ -124,7 +124,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
 
         $entity = new Entity\CustomField();
         $entity
-            ->setRawData($custom_data->toArray($custom_data::TOARRAY_DEEP))
+            ->setRawData($custom_data->toApiData())
             ->setOid($custom_data->getId())
             ->setDestination($entity->getDestinationPrefix().$custom_data->getId())
             ->setKey(implode(' > ', $key_chain))

@@ -138,13 +138,13 @@ abstract class AbstractParserHelper extends AbstractGenerator implements ParserH
      *
      * todo remove entity_type argument
      *
-     * @param string     $prefix
-     * @param string     $entity_type
-     * @param string     $ref_column
-     * @param \Exception $e
-     * @param array      $data
+     * @param string       $prefix
+     * @param string       $entity_type
+     * @param string       $ref_column
+     * @param \Exception   $e
+     * @param array|object $data
      */
-    protected function logUnknownException($prefix, $entity_type, $ref_column, \Exception $e, array $data)
+    protected function logUnknownException($prefix, $entity_type, $ref_column, \Exception $e, $data)
     {
         $oid = isset($data[$ref_column]) ? $data[$ref_column] : '?';
 
