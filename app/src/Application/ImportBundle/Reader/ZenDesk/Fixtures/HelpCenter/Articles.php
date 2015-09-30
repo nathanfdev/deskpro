@@ -32,10 +32,10 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\AbstractFixture;
 use Application\ImportBundle\Reader\ZenDesk\Fixtures\CoreAPI\PeopleLoader;
 use Application\ImportBundle\Reader\ZenDesk\LocaleMapper;
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleAttachmentCreate;
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleCommentCreate;
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleCreate;
-use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleTranslationCreate;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleAttachment;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleComment;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\Article;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\HelpCenter\ArticleTranslation;
 use DateTime;
 use Zendesk\API\Client;
 use Zendesk\API\ResponseException;
@@ -85,7 +85,12 @@ final class Articles extends AbstractFixture
      */
     protected function createItem($num, DateTime $initial_time, DateTime $end_time)
     {
-        $helper = new ArticleCreate(array(
+        $article_helper             = new Article($this->client);
+        $article_comment_helper     = new ArticleComment($this->client);
+        $article_attachment_helper  = new ArticleAttachment($this->client);
+        $article_translation_helper = new ArticleTranslation($this->client);
+
+        $response = $article_helper->create(array(
             'id'      => $this->section_loader->getRandomSectionId(),
             'article' => array(
                 'title'       => 'Fake article '.$num,
@@ -95,15 +100,14 @@ final class Articles extends AbstractFixture
             ),
         ));
 
-        $response = $helper->request($this->client);
-        $article  = $response->article;
+        $article = $response->article;
 
         $this->logger->info('Article created successfully');
         $this->logger->debug(json_encode($article));
 
         for ($i = 1; $i <= 10; ++$i) {
             try {
-                $helper = new ArticleCommentCreate(array(
+                $response = $article_comment_helper->create(array(
                     'id'      => $article->id,
                     'comment' => array(
                         'author_id' => $this->people_loader->getRandomPersonId(),
@@ -111,8 +115,6 @@ final class Articles extends AbstractFixture
                         'locale'    => 'en-us',
                     ),
                 ));
-
-                $response = $helper->request($this->client);
 
                 $this->logger->info('Article comment created successfully');
                 $this->logger->debug(json_encode($response->comment));
@@ -123,13 +125,11 @@ final class Articles extends AbstractFixture
 
         for ($i = 1; $i <= 2; ++$i) {
             try {
-                $helper = new ArticleAttachmentCreate(array(
+                $response = $article_attachment_helper->create(array(
                     'id'     => $article->id,
                     'file'   => $this->getRandomUploadFile(),
                     'inline' => $this->getRandomBoolString(),
                 ));
-
-                $response = $helper->request($this->client);
 
                 $this->logger->info('Article attachment created successfully');
                 $this->logger->debug(json_encode($response->article_attachment));
@@ -142,7 +142,7 @@ final class Articles extends AbstractFixture
 
         foreach ($locales as $locale) {
             try {
-                $helper = new ArticleTranslationCreate(array(
+                $response = $article_translation_helper->create(array(
                     'id'          => $article->id,
                     'translation' => array(
                         'locale' => $locale,
@@ -150,8 +150,6 @@ final class Articles extends AbstractFixture
                         'body'   => 'Translation body '.$locale,
                     ),
                 ));
-
-                $response = $helper->request($this->client);
 
                 $this->logger->info('Article translation created successfully');
                 $this->logger->debug(json_encode($response->translation));

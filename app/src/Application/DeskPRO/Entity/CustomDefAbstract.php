@@ -141,12 +141,12 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     /**
      * Can the field be viewed by the user?
      *
-     * @var string
+     * @var bool
      */
     protected $is_user_enabled = true;
 
     /**
-     * @var string
+     * @var bool
      */
     protected $is_enabled = true;
 
@@ -161,7 +161,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     protected $default_value = null;
 
     /**
-     * @var string
+     * @var bool
      */
     protected $is_agent_field = false;
 
@@ -175,16 +175,26 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      */
     public $field_manager = null;
 
+
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->children = new ArrayCollection();
     }
 
+    /**
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * @return int
+     */
     public function getParentId()
     {
         if ($this->parent) {
@@ -295,6 +305,16 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * @return $this
+     */
+    public function resetChildren()
+    {
+        $this->children->clear();
+        return $this;
+    }
+
+
+    /**
      * @param int $def_id
      *
      * @return CustomDefAbstract
@@ -325,6 +345,16 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * Returns handler class
+     *
+     * @return string
+     */
+    public function getHandlerClass()
+    {
+        return $this->handler_class;
+    }
+
+    /**
      * Get the DeskPRO form field object that knows how to render data etc.
      *
      * @return \Application\DeskPRO\CustomFields\Handler\HandlerAbstract
@@ -352,7 +382,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return \Doctrine\Common\Collections\ArrayCollection|CustomDefAbstract[]
      */
     public function getAllChildren()
     {
@@ -444,10 +474,24 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * Set options
+     *
+     * @param array $options
+     * @return $this
+     */
+    public function setOptions(array $options)
+    {
+        $this->setModelField('options', $options);
+        return $this;
+    }
+
+    /**
      * Set a value of an option.
      *
      * @param string $name
      * @param mixed  $value
+     *
+     * @return $this
      */
     public function setOption($name, $value)
     {
@@ -460,6 +504,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         }
 
         $this->_onPropertyChanged('options', $old_opt, $this->options);
+        return $this;
     }
 
     /**
@@ -470,6 +515,78 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     public function isRequired()
     {
         return $this->getOption('required', false);
+    }
+
+    /**
+     * Mark as enabled
+     *
+     * @param bool $is_enabled
+     * @return $this
+     */
+    public function setIsEnabled($is_enabled)
+    {
+        $this->setModelField('is_enabled', (bool)$is_enabled);
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->is_enabled;
+    }
+
+    /**
+     * Mark as agent field
+     *
+     * @param bool $is_agent_field
+     * @return $this
+     */
+    public function setIsAgentField($is_agent_field)
+    {
+        $this->setModelField('is_agent_field', (bool)$is_agent_field);
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAgentField()
+    {
+        return $this->is_agent_field;
+    }
+
+    /**
+     * Mark as user enabled
+     *
+     * @param bool $is_user_enabled
+     * @return $this
+     */
+    public function setIsUserEnabled($is_user_enabled)
+    {
+        $this->setModelField('is_user_enabled', (bool)$is_user_enabled);
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUserEnabled()
+    {
+        return $this->is_user_enabled;
+    }
+
+    /**
+     * Set default value
+     *
+     * @param mixed $default_value
+     * @return $this
+     */
+    public function setDefaultValue($default_value)
+    {
+        $this->setModelField('default_value', $default_value);
+        return $this;
     }
 
     /**

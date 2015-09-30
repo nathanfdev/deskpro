@@ -49,7 +49,7 @@ final class Person extends AbstractImporter
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
+    public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
         if (!$entity instanceof Entity\Person) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
@@ -122,12 +122,10 @@ final class Person extends AbstractImporter
         }
 
         $this->records->setPrimaryEntity($person);
-
-        return $this->records;
     }
 
     /**
-     * Returns a person entity
+     * Returns a person entity.
      * Creates a new person if not found.
      *
      * @param array $emails
@@ -189,23 +187,16 @@ final class Person extends AbstractImporter
      * Returns person custom data entity.
      *
      * @param Entity\CustomField $entity
-     *
-     * @throws ImporterException
-     *
+     * 
      * @return DeskPROEntity\CustomDataPerson
      */
     private function createPersonCustomData(Entity\CustomField $entity)
     {
-        /** @var Mapper\CustomDefPerson $mapper */
-        $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_PERSON);
-
-        return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataPerson());
+        return $this->createCustomData($this->getPersonCustomDefMapper(), $entity, new DeskPROEntity\CustomDataPerson());
     }
 
     /**
      * Returns the email account mapper.
-     *
-     * @throws \Exception
      *
      * @return Mapper\EmailAccount
      */

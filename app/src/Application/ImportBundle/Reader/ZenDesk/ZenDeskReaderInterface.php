@@ -43,6 +43,24 @@ interface ZenDeskReaderInterface extends ReaderInterface
     const CODE_TOO_MANY_REQUESTS     = 429;
     const CODE_NOT_FOUND             = 404;
 
+    const FIELD_TYPE_SYSTEM_SUBJECT        = 'subject';
+    const FIELD_TYPE_SYSTEM_DESCRIPTION    = 'description';
+    const FIELD_TYPE_SYSTEM_STATUS         = 'status';
+    const FIELD_TYPE_SYSTEM_TICKET_TYPE    = 'tickettype';
+    const FIELD_TYPE_SYSTEM_PRIORITY       = 'priority';
+    const FIELD_TYPE_SYSTEM_BASIC_PRIORITY = 'basic_priority';
+    const FIELD_TYPE_SYSTEM_GROUP          = 'group';
+    const FIELD_TYPE_SYSTEM_ASSIGNEE       = 'assignee';
+    const FIELD_TYPE_TAGGER                = 'tagger';
+    const FIELD_TYPE_CHECKBOX              = 'checkbox';
+    const FIELD_TYPE_DATE                  = 'date';
+    const FIELD_TYPE_DECIMAL               = 'decimal';
+    const FIELD_TYPE_DROPDOWN              = 'dropdown';
+    const FIELD_TYPE_INTEGER               = 'integer';
+    const FIELD_TYPE_REGEXP                = 'regexp';
+    const FIELD_TYPE_TEXT                  = 'text';
+    const FIELD_TYPE_TEXTAREA              = 'textarea';
+
     /**
      * Returns account settings.
      *
@@ -104,6 +122,15 @@ interface ZenDeskReaderInterface extends ReaderInterface
     public function getPeopleByIds(array $ids);
 
     /**
+     * Returns user fields collection.
+     *
+     * @throws RetryAfterException
+     *
+     * @return array
+     */
+    public function getPeopleFields();
+
+    /**
      * Returns an organization by id.
      *
      * @param int $id
@@ -111,6 +138,13 @@ interface ZenDeskReaderInterface extends ReaderInterface
      * @return mixed
      */
     public function getOrganizationById($id);
+
+    /**
+     * Returns organization fields collection.
+     *
+     * @return mixed
+     */
+    public function getOrganizationFields();
 
     /**
      * Returns a batch count of users tickets.
@@ -135,15 +169,6 @@ interface ZenDeskReaderInterface extends ReaderInterface
     public function getTickets(DateTime $start_time = null);
 
     /**
-     * Returns a collection of ticket comments.
-     *
-     * @param int $id
-     *
-     * @return array
-     */
-    public function getTicketComments($id);
-
-    /**
      * Returns a batch end time of the tickets collection.
      *
      * @param DateTime $start_time
@@ -153,6 +178,25 @@ interface ZenDeskReaderInterface extends ReaderInterface
      * @return DateTime
      */
     public function getTicketsEndTime(DateTime $start_time = null);
+
+    /**
+     * Returns a collection of ticket comments.
+     *
+     * @param int $id
+     *
+     * @return array
+     */
+    public function getTicketComments($id);
+
+    /**
+     * Returns ticket fields collection.
+     * Returns a batch end time of the tickets collection.
+     *
+     * @throws RetryAfterException
+     *
+     * @return array
+     */
+    public function getTicketFields();
 
     /**
      * Returns a batch count of articles.

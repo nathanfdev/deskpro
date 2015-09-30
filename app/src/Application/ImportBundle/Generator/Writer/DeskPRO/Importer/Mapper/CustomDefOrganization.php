@@ -39,39 +39,10 @@ use Application\DeskPRO\EntityRepository;
 final class CustomDefOrganization extends AbstractCustomDefMapper
 {
     /**
-     * @var EntityRepository\CustomDefOrganization
-     */
-    private $repository;
-
-    /**
-     * Constructor.
-     *
-     * @param EntityRepository\CustomDefOrganization $repository
-     */
-    public function __construct(EntityRepository\CustomDefOrganization $repository)
-    {
-        $this->repository = $repository;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getType()
     {
         return self::TYPE_CUSTOM_DEF_ORGANIZATION;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findOneBy(array $criteria, $throw_exception = true)
-    {
-        /** @var Entity\CustomDefOrganization $record */
-        $record = $this->repository->findOneBy($criteria);
-        if (!$record && $throw_exception) {
-            throw new MapperException('Custom def organization not found', $criteria);
-        }
-
-        return $record;
     }
 }

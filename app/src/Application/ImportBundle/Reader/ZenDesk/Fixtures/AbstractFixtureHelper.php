@@ -92,6 +92,19 @@ abstract class AbstractFixtureHelper
     }
 
     /**
+     * Returns random boolean value.
+     *
+     * @return mixed
+     */
+    protected function getRandomBool()
+    {
+        $rand   = rand(0, 1);
+        $values = array(true, false);
+
+        return $values[$rand];
+    }
+
+    /**
      * Returns random boolean string value.
      *
      * @return mixed

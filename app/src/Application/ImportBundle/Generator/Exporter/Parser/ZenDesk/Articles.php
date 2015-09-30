@@ -115,11 +115,12 @@ final class Articles extends AbstractParser
      */
     protected function exportArticle(array $data)
     {
+        $entity    = new Entity\Article();
         $formatted = $this->formatter->format($data, array(
-            'id'          => TransformerInterface::TYPE_INT,
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => 'article_',
-                'ref'     => 'id',
+            'id'           => TransformerInterface::TYPE_INT,
+            'destination'  => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix' => $entity->getDestinationPrefix(),
+                'ref'    => 'id',
             )),
             'author_id'    => TransformerInterface::TYPE_INT,
             'section_id'   => TransformerInterface::TYPE_INT,
@@ -146,7 +147,6 @@ final class Articles extends AbstractParser
             throw new SkippingException('Unable to get article author, skipping', $formatted);
         }
 
-        $entity = new Entity\Article();
         $entity
             ->setRawData($data)
             ->setDestination($formatted['destination'])
@@ -225,11 +225,12 @@ final class Articles extends AbstractParser
      */
     protected function exportComment(array $data)
     {
+        $entity    = new Entity\ArticleComment();
         $formatted = $this->formatter->format($data, array(
             'id'          => TransformerInterface::TYPE_INT,
             'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => 'article_comment_',
-                'ref'     => 'id',
+                'prefix' => $entity->getDestinationPrefix(),
+                'ref'    => 'id',
             )),
             'body'       => TransformerInterface::TYPE_STRING,
             'author_id'  => TransformerInterface::TYPE_INT,
@@ -245,7 +246,6 @@ final class Articles extends AbstractParser
             throw new SkippingException('Unable to get article comment author, skipping', $formatted);
         }
 
-        $entity = new Entity\ArticleComment();
         $entity
             ->setRawData($data)
             ->setOid($formatted['id'])

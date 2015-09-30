@@ -49,11 +49,14 @@ interface CsvReaderInterface extends ReaderInterface
     const FILE_PEOPLE                     = 'people.csv';
     const FILE_PEOPLE_CONTACT_DATA        = 'people_contact_data.csv';
     const FILE_PEOPLE_CUSTOM_FIELDS       = 'people_custom_fields.csv';
+    const FILE_PEOPLE_CUSTOM_DEF          = 'people_custom_def.csv';
     const FILE_TICKETS                    = 'tickets.csv';
     const FILE_TICKET_MESSAGES            = 'ticket_messages.csv';
     const FILE_TICKET_ATTACHMENTS         = 'ticket_attachments.csv';
     const FILE_TICKET_CUSTOM_FIELDS       = 'ticket_custom_fields.csv';
+    const FILE_TICKET_CUSTOM_DEF          = 'ticket_custom_def.csv';
     const FILE_ORGANIZATIONS              = 'organizations.csv';
+    const FILE_ORGANIZATION_CUSTOM_DEF    = 'organization_custom_def.csv';
     const FILE_ORGANIZATION_CONTACT_DATA  = 'organization_contact_data.csv';
     const FILE_ORGANIZATION_CUSTOM_FIELDS = 'organization_custom_fields.csv';
 

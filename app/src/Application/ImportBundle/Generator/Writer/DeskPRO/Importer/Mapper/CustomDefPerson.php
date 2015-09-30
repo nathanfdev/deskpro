@@ -39,39 +39,10 @@ use Application\DeskPRO\EntityRepository;
 final class CustomDefPerson extends AbstractCustomDefMapper
 {
     /**
-     * @var EntityRepository\CustomDefPerson
-     */
-    private $repository;
-
-    /**
-     * Constructor.
-     *
-     * @param EntityRepository\CustomDefPerson $repository
-     */
-    public function __construct(EntityRepository\CustomDefPerson $repository)
-    {
-        $this->repository = $repository;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getType()
     {
         return self::TYPE_CUSTOM_DEF_PERSON;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findOneBy(array $criteria, $throw_exception = true)
-    {
-        /** @var Entity\CustomDefPerson $record */
-        $record = $this->repository->findOneBy($criteria);
-        if (!$record && $throw_exception) {
-            throw new MapperException('Custom def people not found', $criteria);
-        }
-
-        return $record;
     }
 }

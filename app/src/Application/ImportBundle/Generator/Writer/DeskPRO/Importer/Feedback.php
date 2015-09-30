@@ -72,7 +72,7 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
      * $record['num_ratings']		= $fval->num_ratings;
      * $record['popularity']		= $fval->popularity;
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
+    public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
         if (!$entity instanceof Entity\Feedback) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
@@ -106,14 +106,12 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
         }
 
         $this->records->setPrimaryEntity($feedback);
-
-        return $this->records;
     }
 
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Feedback
+     * @var Entity\Feedback $entity
      */
     public function checkAlreadyExists(Entity\EntityInterface $entity)
     {
@@ -123,7 +121,7 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
     }
 
     /**
-     * Returns an feedback category by title
+     * Returns an feedback category by title.
      * Creates a new feedback category if not found.
      *
      * @param string $title
@@ -180,28 +178,10 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
      * Returns custom def feedback entity.
      *
      * @param Entity\CustomField $entity
-     *
-     * @throws ImporterException
-     *
      * @return DeskPROEntity\CustomDataFeedback
      */
     private function createFeedbackCustomData(Entity\CustomField $entity)
     {
-        /** @var Mapper\CustomDefFeedback $mapper */
-        $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_FEEDBACK);
-
-        return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataFeedback());
-    }
-
-    /**
-     * Returns the feedback category mapper.
-     *
-     * @throws \Exception
-     *
-     * @return Mapper\FeedbackCategory
-     */
-    private function getFeedbackCategoryMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_FEEDBACK_CATEGORY);
+        return $this->createCustomData($this->getFeedbackCustomDefMapper(), $entity, new DeskPROEntity\CustomDataFeedback());
     }
 }

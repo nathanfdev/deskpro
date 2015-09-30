@@ -66,7 +66,7 @@ final class Organization extends AbstractImporter
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
+    public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
         if (!$entity instanceof Entity\Organization) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
@@ -100,8 +100,6 @@ final class Organization extends AbstractImporter
         }
 
         $this->records->setPrimaryEntity($organization);
-
-        return $this->records;
     }
 
     /**
@@ -143,9 +141,6 @@ final class Organization extends AbstractImporter
      */
     private function createOrganizationCustomData(Entity\CustomField $entity)
     {
-        /** @var Mapper\CustomDefOrganization $mapper */
-        $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_ORGANIZATION);
-
-        return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataOrganization());
+        return $this->createCustomData($this->getOrganizationCustomDefMapper(), $entity, new DeskPROEntity\CustomDataOrganization());
     }
 }

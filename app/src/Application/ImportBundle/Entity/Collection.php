@@ -173,6 +173,21 @@ final class Collection extends AbstractCollection
     }
 
     /**
+     * Returns containing entity oids.
+     *
+     * @return array
+     */
+    public function getOids()
+    {
+        return array_map(
+            function(EntityInterface $entity) {
+                return $entity->getOid();
+            },
+            $this->collection
+        );
+    }
+
+    /**
      * Returns the max oid.
      *
      * @return mixed

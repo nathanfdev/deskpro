@@ -57,6 +57,10 @@ class CustomDefOrganization extends AbstractFixture
         $manager->flush();
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     private function addTextField(ObjectManager $manager)
     {
         $organization_def = new Entity\CustomDefOrganization();
@@ -69,6 +73,10 @@ class CustomDefOrganization extends AbstractFixture
         $manager->persist($organization_def);
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     private function addTextareaField(ObjectManager $manager)
     {
         $organization_def = new Entity\CustomDefOrganization();
@@ -81,6 +89,10 @@ class CustomDefOrganization extends AbstractFixture
         $manager->persist($organization_def);
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     private function addSelectBoxField(ObjectManager $manager)
     {
         $organization_def = new Entity\CustomDefOrganization();
@@ -107,6 +119,10 @@ class CustomDefOrganization extends AbstractFixture
         $manager->persist($organization_def_choice2);
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     private function addMultipleSelectBoxField(ObjectManager $manager)
     {
         $organization_def = new Entity\CustomDefOrganization();
@@ -125,13 +141,13 @@ class CustomDefOrganization extends AbstractFixture
         $organization_def_choice2 = new Entity\CustomDefOrganization();
         $organization_def_choice2
             ->setTitle('Choice 2')
-            ->setParent($organization_def_choice1)
+            ->setParent($organization_def)
         ;
 
         $organization_def_choice3 = new Entity\CustomDefOrganization();
         $organization_def_choice3
             ->setTitle('Choice 3')
-            ->setParent($organization_def_choice1)
+            ->setParent($organization_def)
         ;
 
         $organization_def_choice4 = new Entity\CustomDefOrganization();
@@ -143,13 +159,13 @@ class CustomDefOrganization extends AbstractFixture
         $organization_def_choice5 = new Entity\CustomDefOrganization();
         $organization_def_choice5
             ->setTitle('Choice 5')
-            ->setParent($organization_def_choice4)
+            ->setParent($organization_def)
         ;
 
         $organization_def_choice6 = new Entity\CustomDefOrganization();
         $organization_def_choice6
             ->setTitle('Choice 6')
-            ->setParent($organization_def_choice4)
+            ->setParent($organization_def)
         ;
 
         $manager->persist($organization_def);
@@ -161,6 +177,10 @@ class CustomDefOrganization extends AbstractFixture
         $manager->persist($organization_def_choice6);
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     private function addRadioButtonField(ObjectManager $manager)
     {
         $organization_def = new Entity\CustomDefOrganization();
@@ -187,6 +207,10 @@ class CustomDefOrganization extends AbstractFixture
         $manager->persist($organization_def_choice2);
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     private function addCheckboxField(ObjectManager $manager)
     {
         $organization_def = new Entity\CustomDefOrganization();
@@ -213,6 +237,10 @@ class CustomDefOrganization extends AbstractFixture
         $manager->persist($organization_def_choice2);
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     private function addToggleField(ObjectManager $manager)
     {
         $organization_def = new Entity\CustomDefOrganization();
@@ -225,6 +253,10 @@ class CustomDefOrganization extends AbstractFixture
         $manager->persist($organization_def);
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     private function addDateField(ObjectManager $manager)
     {
         $organization_def = new Entity\CustomDefOrganization();
@@ -237,6 +269,10 @@ class CustomDefOrganization extends AbstractFixture
         $manager->persist($organization_def);
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     private function addDatetimeField(ObjectManager $manager)
     {
         $organization_def = new Entity\CustomDefOrganization();
@@ -249,6 +285,10 @@ class CustomDefOrganization extends AbstractFixture
         $manager->persist($organization_def);
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     private function addDisplayField(ObjectManager $manager)
     {
         $organization_def = new Entity\CustomDefOrganization();
@@ -261,6 +301,10 @@ class CustomDefOrganization extends AbstractFixture
         $manager->persist($organization_def);
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     private function addHiddenField(ObjectManager $manager)
     {
         $organization_def = new Entity\CustomDefOrganization();

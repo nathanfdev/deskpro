@@ -57,6 +57,10 @@ class CustomDefArticle extends AbstractFixture
         $manager->flush();
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     private function addTextField(ObjectManager $manager)
     {
         $ticket_def = new Entity\CustomDefArticle();
@@ -69,6 +73,10 @@ class CustomDefArticle extends AbstractFixture
         $manager->persist($ticket_def);
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     private function addTextareaField(ObjectManager $manager)
     {
         $ticket_def = new Entity\CustomDefArticle();
@@ -81,6 +89,10 @@ class CustomDefArticle extends AbstractFixture
         $manager->persist($ticket_def);
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     private function addSelectBoxField(ObjectManager $manager)
     {
         $ticket_def = new Entity\CustomDefArticle();
@@ -107,6 +119,10 @@ class CustomDefArticle extends AbstractFixture
         $manager->persist($ticket_def_choice2);
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     private function addMultipleSelectBoxField(ObjectManager $manager)
     {
         $ticket_def = new Entity\CustomDefArticle();
@@ -125,13 +141,13 @@ class CustomDefArticle extends AbstractFixture
         $ticket_def_choice2 = new Entity\CustomDefArticle();
         $ticket_def_choice2
             ->setTitle('Choice 2')
-            ->setParent($ticket_def_choice1)
+            ->setParent($ticket_def)
         ;
 
         $ticket_def_choice3 = new Entity\CustomDefArticle();
         $ticket_def_choice3
             ->setTitle('Choice 3')
-            ->setParent($ticket_def_choice1)
+            ->setParent($ticket_def)
         ;
 
         $ticket_def_choice4 = new Entity\CustomDefArticle();
@@ -143,13 +159,13 @@ class CustomDefArticle extends AbstractFixture
         $ticket_def_choice5 = new Entity\CustomDefArticle();
         $ticket_def_choice5
             ->setTitle('Choice 5')
-            ->setParent($ticket_def_choice4)
+            ->setParent($ticket_def)
         ;
 
         $ticket_def_choice6 = new Entity\CustomDefArticle();
         $ticket_def_choice6
             ->setTitle('Choice 6')
-            ->setParent($ticket_def_choice4)
+            ->setParent($ticket_def)
         ;
 
         $manager->persist($ticket_def);
@@ -161,6 +177,10 @@ class CustomDefArticle extends AbstractFixture
         $manager->persist($ticket_def_choice6);
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     private function addRadioButtonField(ObjectManager $manager)
     {
         $ticket_def = new Entity\CustomDefArticle();
@@ -187,6 +207,10 @@ class CustomDefArticle extends AbstractFixture
         $manager->persist($ticket_def_choice2);
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     private function addCheckboxField(ObjectManager $manager)
     {
         $ticket_def = new Entity\CustomDefArticle();
@@ -213,6 +237,10 @@ class CustomDefArticle extends AbstractFixture
         $manager->persist($ticket_def_choice2);
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     private function addToggleField(ObjectManager $manager)
     {
         $ticket_def = new Entity\CustomDefArticle();
@@ -225,6 +253,10 @@ class CustomDefArticle extends AbstractFixture
         $manager->persist($ticket_def);
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     private function addDateField(ObjectManager $manager)
     {
         $ticket_def = new Entity\CustomDefArticle();
@@ -237,6 +269,10 @@ class CustomDefArticle extends AbstractFixture
         $manager->persist($ticket_def);
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     private function addDatetimeField(ObjectManager $manager)
     {
         $ticket_def = new Entity\CustomDefArticle();
@@ -249,6 +285,10 @@ class CustomDefArticle extends AbstractFixture
         $manager->persist($ticket_def);
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     private function addDisplayField(ObjectManager $manager)
     {
         $ticket_def = new Entity\CustomDefArticle();
@@ -261,6 +301,10 @@ class CustomDefArticle extends AbstractFixture
         $manager->persist($ticket_def);
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     private function addHiddenField(ObjectManager $manager)
     {
         $ticket_def = new Entity\CustomDefArticle();

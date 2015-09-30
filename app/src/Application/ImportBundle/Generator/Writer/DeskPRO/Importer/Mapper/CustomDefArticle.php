@@ -39,39 +39,10 @@ use Application\DeskPRO\EntityRepository;
 final class CustomDefArticle extends AbstractCustomDefMapper
 {
     /**
-     * @var EntityRepository\CustomDefArticle
-     */
-    private $repository;
-
-    /**
-     * Constructor.
-     *
-     * @param EntityRepository\CustomDefArticle $repository
-     */
-    public function __construct(EntityRepository\CustomDefArticle $repository)
-    {
-        $this->repository = $repository;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getType()
     {
         return self::TYPE_CUSTOM_DEF_ARTICLE;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findOneBy(array $criteria, $throw_exception = true)
-    {
-        /** @var Entity\CustomDefTicket $record */
-        $record = $this->repository->findOneBy($criteria);
-        if (!$record && $throw_exception) {
-            throw new MapperException('Custom def article not found', $criteria);
-        }
-
-        return $record;
     }
 }

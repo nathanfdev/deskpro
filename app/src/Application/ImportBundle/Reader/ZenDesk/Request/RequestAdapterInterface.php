@@ -36,12 +36,10 @@ namespace Application\ImportBundle\Reader\ZenDesk\Request;
 interface RequestAdapterInterface
 {
     /**
-     * Request a batch collection of people.
+     * ZenDesk API request.
      *
-     * @param string $helper_class
-     * @param array  $params
-     *
+     * @param Request $request
      * @return \stdClass
      */
-    public function doRequest($helper_class, array $params = array());
+    public function doRequest(Request $request);
 }

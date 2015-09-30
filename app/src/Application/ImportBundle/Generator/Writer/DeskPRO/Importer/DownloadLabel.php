@@ -49,7 +49,7 @@ final class DownloadLabel extends AbstractImporter
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity, $entity_id = null)
+    public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
         if (!$entity instanceof Entity\Download) {
             Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
@@ -67,7 +67,5 @@ final class DownloadLabel extends AbstractImporter
         }
 
         $this->records->setPrimaryEntity($download);
-
-        return $this->records;
     }
 }

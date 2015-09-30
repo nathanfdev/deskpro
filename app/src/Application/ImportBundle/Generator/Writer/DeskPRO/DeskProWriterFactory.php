@@ -70,8 +70,8 @@ class DeskProWriterFactory extends AbstractWriterFactory
         $custom_def_organization_repository = $entity_manager->getRepository('DeskPRO:CustomDefOrganization');
         /** @var EntityRepository\CustomDefArticle $custom_def_article_repository */
         $custom_def_article_repository = $entity_manager->getRepository('DeskPRO:CustomDefArticle');
-        /** @var EntityRepository\Department $departmentRepository */
-        $departmentRepository = $entity_manager->getRepository('DeskPRO:Department');
+        /** @var EntityRepository\Department $department_repository */
+        $department_repository = $entity_manager->getRepository('DeskPRO:Department');
         /** @var EntityRepository\Download $download_repository */
         $download_repository = $entity_manager->getRepository('DeskPRO:Download');
         /** @var EntityRepository\DownloadCategory $download_category_repository */
@@ -112,8 +112,12 @@ class DeskProWriterFactory extends AbstractWriterFactory
         $ticket_category_repository = $entity_manager->getRepository('DeskPRO:TicketCategory');
         /** @var EntityRepository\LabelTicket $ticket_label_repository */
         $ticket_label_repository = $entity_manager->getRepository('DeskPRO:LabelTicket');
+        /** @var ObjectRepository $ticket_layout_repository */
+        $ticket_layout_repository = $entity_manager->getRepository('DeskPRO:TicketLayout');
         /** @var EntityRepository\TicketWorkflow $ticket_workflow_repository */
         $ticket_workflow_repository = $entity_manager->getRepository('DeskPRO:TicketWorkflow');
+        /** @var EntityRepository\TicketMessage $ticket_message_repository */
+        $ticket_message_repository = $entity_manager->getRepository('DeskPRO:TicketMessage');
         /** @var EntityRepository\Usergroup $user_group_repository */
         $user_group_repository = $entity_manager->getRepository('DeskPRO:Usergroup');
         /** @var ObjectRepository $object_lang_repository */
@@ -129,12 +133,12 @@ class DeskProWriterFactory extends AbstractWriterFactory
             ->attach(new Importer\Mapper\ArticleCategory($article_category_repository))
             ->attach(new Importer\Mapper\ArticleLabel($article_label_repository))
             ->attach(new Importer\Mapper\ArticleComment($article_comment_repository, $entity_manager))
-            ->attach(new Importer\Mapper\CustomDefPerson($custom_def_person_repository))
-            ->attach(new Importer\Mapper\CustomDefTicket($custom_def_ticket_repository))
-            ->attach(new Importer\Mapper\CustomDefFeedback($custom_def_feedback_repository))
-            ->attach(new Importer\Mapper\CustomDefOrganization($custom_def_organization_repository))
-            ->attach(new Importer\Mapper\CustomDefArticle($custom_def_article_repository))
-            ->attach(new Importer\Mapper\Department($departmentRepository))
+            ->attach(new Importer\Mapper\CustomDefPerson($custom_def_person_repository, $import_map_repository))
+            ->attach(new Importer\Mapper\CustomDefTicket($custom_def_ticket_repository, $import_map_repository))
+            ->attach(new Importer\Mapper\CustomDefFeedback($custom_def_feedback_repository, $import_map_repository))
+            ->attach(new Importer\Mapper\CustomDefOrganization($custom_def_organization_repository, $import_map_repository))
+            ->attach(new Importer\Mapper\CustomDefArticle($custom_def_article_repository, $import_map_repository))
+            ->attach(new Importer\Mapper\Department($department_repository))
             ->attach(new Importer\Mapper\Download($download_repository))
             ->attach(new Importer\Mapper\DownloadCategory($download_category_repository))
             ->attach(new Importer\Mapper\DownloadLabel($download_label_repository))
@@ -152,16 +156,18 @@ class DeskProWriterFactory extends AbstractWriterFactory
             ->attach(new Importer\Mapper\PersonEmail($person_email_repository))
             ->attach(new Importer\Mapper\Product($product_repository))
             ->attach(new Importer\Mapper\Ticket($ticket_repository))
-            ->attach(new Importer\Mapper\TicketMessage($entity_manager))
+            ->attach(new Importer\Mapper\TicketMessage($ticket_message_repository, $import_map_repository))
             ->attach(new Importer\Mapper\TicketPriority($ticket_priority_repository))
             ->attach(new Importer\Mapper\TicketCategory($ticket_category_repository))
             ->attach(new Importer\Mapper\TicketLabel($ticket_label_repository))
-            ->attach(new Importer\Mapper\TicketDepartment($departmentRepository))
+            ->attach(new Importer\Mapper\TicketLayout($ticket_layout_repository))
+            ->attach(new Importer\Mapper\TicketDepartment($department_repository))
             ->attach(new Importer\Mapper\TicketWorkflow($ticket_workflow_repository))
             ->attach(new Importer\Mapper\UserGroup($user_group_repository))
             ->attach(new Importer\Mapper\BlobData())
             ->attach(new Importer\Mapper\EmailAccount($email_account_manager))
             ->attach(new Importer\Mapper\ObjectLang($object_lang_repository, $entity_manager))
+            ->attach(new Importer\Mapper\ImportMap($import_map_repository))
         ;
 
         $blob_storage = $this->container->getBlobStorage();
@@ -174,18 +180,24 @@ class DeskProWriterFactory extends AbstractWriterFactory
         $importers
             ->attach(new Importer\Download($mappers, $blob_adapter))
             ->attach(new Importer\DownloadLabel($mappers))
+            ->attach(new Importer\FeedbackCustomDef($mappers))
             ->attach(new Importer\Feedback($mappers, $blob_adapter))
             ->attach(new Importer\FeedbackLabel($mappers))
+            ->attach(new Importer\ArticleCustomDef($mappers))
             ->attach(new Importer\Article($mappers, $blob_adapter))
             ->attach(new Importer\ArticleLabel($mappers))
             ->attach(new Importer\ArticleTranslation($mappers))
             ->attach(new Importer\ArticleCategory($mappers, $entity_manager))
             ->attach(new Importer\News($mappers))
             ->attach(new Importer\NewsLabel($mappers))
+            ->attach(new Importer\PersonCustomDef($mappers))
             ->attach(new Importer\Person($mappers))
             ->attach(new Importer\PersonLabel($mappers))
+            ->attach(new Importer\TicketCustomDef($mappers))
+            ->attach(new Importer\TicketCustomDefLayout($mappers))
             ->attach(new Importer\Ticket($mappers, $ticket_manager, $blob_adapter))
             ->attach(new Importer\TicketLabel($mappers))
+            ->attach(new Importer\OrganizationCustomDef($mappers))
             ->attach(new Importer\Organization($mappers, $blob_adapter))
             ->attach(new Importer\OrganizationLabel($mappers))
         ;

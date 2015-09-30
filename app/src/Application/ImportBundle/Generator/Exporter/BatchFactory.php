@@ -27,6 +27,7 @@
  */
 
 namespace Application\ImportBundle\Generator\Exporter;
+use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
 
 /**
  * Batch config files exporter factory.
@@ -38,16 +39,17 @@ class BatchFactory
     /**
      * Creates an exporter instance.
      *
+     * @param FormatterInterface $formatter
      * @return Batch
      */
-    public static function createExporter()
+    public static function createExporter(FormatterInterface $formatter)
     {
         $parsers = new Parser\BatchCollection();
         $parsers
-            ->attach(new Parser\Json\Batch())
-            ->attach(new Parser\OsTicket\Batch())
-            ->attach(new Parser\ZenDesk\Batch())
-            ->attach(new Parser\DeskPRO\Batch())
+            ->attach(new Parser\Json\Batch($formatter))
+            ->attach(new Parser\OsTicket\Batch($formatter))
+            ->attach(new Parser\ZenDesk\Batch($formatter))
+            ->attach(new Parser\DeskPRO\Batch($formatter))
         ;
 
         return new Batch($parsers);

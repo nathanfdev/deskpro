@@ -68,6 +68,21 @@ class ZenDeskTest extends \DpIntegrationTestCase
     private $person_repository;
 
     /**
+     * @var EntityRepository\CustomDefTicket
+     */
+    private $custom_def_ticket_repository;
+
+    /**
+     * @var EntityRepository\CustomDefPerson
+     */
+    private $custom_def_person_repository;
+
+    /**
+     * @var EntityRepository\CustomDefOrganization
+     */
+    private $custom_def_organization_repository;
+
+    /**
      * @var JsonMockAdapter
      */
     private $adapter;
@@ -93,9 +108,12 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();
 
-        $this->ticket_repository            = $entity_manager->getRepository('DeskPRO:Ticket');
-        $this->ticket_attachment_repository = $entity_manager->getRepository('DeskPRO:TicketAttachment');
-        $this->person_repository            = $entity_manager->getRepository('DeskPRO:Person');
+        $this->ticket_repository                  = $entity_manager->getRepository('DeskPRO:Ticket');
+        $this->ticket_attachment_repository       = $entity_manager->getRepository('DeskPRO:TicketAttachment');
+        $this->person_repository                  = $entity_manager->getRepository('DeskPRO:Person');
+        $this->custom_def_ticket_repository       = $entity_manager->getRepository('DeskPRO:CustomDefTicket');
+        $this->custom_def_person_repository       = $entity_manager->getRepository('DeskPRO:CustomDefPerson');
+        $this->custom_def_organization_repository = $entity_manager->getRepository('DeskPRO:CustomDefOrganization');
 
         $this->output_path = dp_get_data_dir().'/import/zendesk/export';
         if (!is_dir($this->output_path)) {
@@ -223,6 +241,22 @@ class ZenDeskTest extends \DpIntegrationTestCase
     {
         $this->helper->seeFileFound('output.batch.json');
 
+        // Checking for organization custom def
+        $this->helper->seeFileFound('1/organizations_custom_def/organization_custom_def_1.json');
+        $this->helper->seeFileFound('1/organizations_custom_def/organization_custom_def_2.json');
+        $this->helper->seeFileFound('1/organizations_custom_def/organization_custom_def_3.json');
+        $this->helper->seeFileFound('1/organizations_custom_def/organization_custom_def_4.json');
+        $this->helper->seeFileFound('1/organizations_custom_def/organization_custom_def_5.json');
+        $this->helper->seeFileFound('1/organizations_custom_def/organization_custom_def_6.json');
+
+        // Checking for people custom def
+        $this->helper->seeFileFound('1/people_custom_def/person_custom_def_1.json');
+        $this->helper->seeFileFound('1/people_custom_def/person_custom_def_2.json');
+        $this->helper->seeFileFound('1/people_custom_def/person_custom_def_3.json');
+        $this->helper->seeFileFound('1/people_custom_def/person_custom_def_4.json');
+        $this->helper->seeFileFound('1/people_custom_def/person_custom_def_5.json');
+        $this->helper->seeFileFound('1/people_custom_def/person_custom_def_6.json');
+
         // Checking for people
         $this->helper->seeFileFound('1/people/person_1.json');
         $this->helper->seeInThisFile('Person 1');
@@ -240,6 +274,14 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->helper->seeInThisFile('"is_disabled":true');
         $this->helper->seeInThisFile('"timezone":"America\/Los_Angeles"');
         $this->helper->seeInThisFile('"emails":["imported.user.100000@example.com"]');
+
+        // Checking for ticket custom def
+        $this->helper->seeFileFound('1/tickets_custom_def/ticket_custom_def_1.json');
+        $this->helper->seeFileFound('1/tickets_custom_def/ticket_custom_def_2.json');
+        $this->helper->seeFileFound('1/tickets_custom_def/ticket_custom_def_3.json');
+        $this->helper->seeFileFound('1/tickets_custom_def/ticket_custom_def_4.json');
+        $this->helper->seeFileFound('1/tickets_custom_def/ticket_custom_def_5.json');
+        $this->helper->seeFileFound('1/tickets_custom_def/ticket_custom_def_6.json');
 
         // Checking for tickets
         $this->helper->seeFileFound('1/tickets/ticket_1.json');
@@ -291,10 +333,309 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $date4 = new \DateTime('-1 months');
         $now   = new \DateTime();
 
+        $crm_fields = array(
+            (object)array(
+                'id'                    => 1,
+                'type'                  => 'dropdown',
+                'key'                   => 'drop_down_list_field',
+                'title'                 => 'Drop-down list field',
+                'raw_title'             => 'Drop-down list field',
+                'description'           => 'Drop-down list field description',
+                'raw_description'       => 'Drop-down list field description',
+                'position'              => 0,
+                'active'                => true,
+                'system'                => false,
+                'regexp_for_validation' => null,
+                'created_at'            => $date1->format('c'),
+                'updated_at'            => $date2->format('c'),
+                'custom_field_options'  => array(
+                    (object)array(
+                        'id'       => 11,
+                        'name'     => 'Option 1',
+                        'raw_name' => 'Option 1',
+                        'value'    => 'option_1',
+                    ),
+                    (object)array(
+                        'id'       => 12,
+                        'name'     => 'Option 2',
+                        'raw_name' => 'Option 2',
+                        'value'    => 'option_2',
+                    ),
+                    (object)array(
+                        'id'       => 13,
+                        'name'     => 'Option 3',
+                        'raw_name' => 'Option 3',
+                        'value'    => 'option_3',
+                    ),
+                    (object)array(
+                        'id'       => 14,
+                        'name'     => 'Option 3',
+                        'raw_name' => 'Option 3',
+                        'value'    => 'option_4_duplicate_title',
+                    ),
+                ),
+            ),
+            (object)array(
+                'id'                    => 2,
+                'type'                  => 'text',
+                'key'                   => 'text_field',
+                'title'                 => 'Text field',
+                'raw_title'             => 'Text field',
+                'description'           => 'Text field description',
+                'raw_description'       => 'Text field description',
+                'position'              => 1,
+                'active'                => false,
+                'system'                => false,
+                'regexp_for_validation' => null,
+                'created_at'            => $date1->format('c'),
+                'updated_at'            => $date2->format('c'),
+            ),
+            (object)array(
+                'id'                    => 3,
+                'type'                  => 'integer',
+                'key'                   => 'numeric',
+                'title'                 => 'Numeric field',
+                'raw_title'             => 'Numeric field',
+                'description'           => 'Numeric field description',
+                'raw_description'       => 'Numeric field description',
+                'position'              => 2,
+                'active'                => true,
+                'system'                => false,
+                'regexp_for_validation' => null,
+                'created_at'            => $date1->format('c'),
+                'updated_at'            => $date2->format('c'),
+            ),
+            (object)array(
+                'id'                    => 4,
+                'type'                  => 'decimal',
+                'key'                   => 'decimal_field',
+                'title'                 => 'Decimal field',
+                'raw_title'             => 'Decimal field',
+                'description'           => 'Decimal field description',
+                'raw_description'       => 'Decimal field description',
+                'position'              => 3,
+                'active'                => true,
+                'system'                => false,
+                'regexp_for_validation' => null,
+                'created_at'            => $date1->format('c'),
+                'updated_at'            => $date2->format('c'),
+            ),
+            (object)array(
+                'id'                    => 5,
+                'type'                  => 'date',
+                'key'                   => 'date_field',
+                'title'                 => 'Date field',
+                'raw_title'             => 'Date field',
+                'description'           => 'Date field description',
+                'raw_description'       => 'Date field description',
+                'position'              => 4,
+                'active'                => true,
+                'system'                => false,
+                'regexp_for_validation' => '\A([0-9]{4})-(1[0-2]|0[1-9])-(3[01]|[12][0-9]|0[1-9])\z',
+                'created_at'            => $date1->format('c'),
+                'updated_at'            => $date2->format('c'),
+            ),
+            (object)array(
+                'id'                    => 6,
+                'type'                  => 'regexp',
+                'key'                   => 'regular_expression_field',
+                'title'                 => 'Regular expression field',
+                'raw_title'             => 'Regular expression field',
+                'description'           => 'Regular expression field description',
+                'raw_description'       => 'Regular expression field description',
+                'position'              => 5,
+                'active'                => true,
+                'system'                => false,
+                'regexp_for_validation' => '[0-9]+',
+                'created_at'            => $date1->format('c'),
+                'updated_at'            => $date2->format('c'),
+            ),
+        );
+
         $this->adapter
-            ->addTicketsIncrementalExportResponse((object) array(
-                'tickets' => array(
-                    (object) array(
+            ->addPeopleFieldsResponse((object)array(
+                'user_fields' => $crm_fields,
+            ))
+            ->addTicketFieldsResponse((object)array(
+                'ticket_fields' => array(
+                    (object)array(
+                        'id'                    => 1,
+                        'type'                  => 'tickettype',
+                        'title'                 => 'Type',
+                        'raw_title'             => 'Type',
+                        'description'           => 'Request type',
+                        'raw_description'       => 'Request type',
+                        'title_in_portal'       => 'Type',
+                        'raw_title_in_portal'   => 'Type',
+                        'tag'                   => null,
+                        'regexp_for_validation' => null,
+                        'position'              => 4,
+                        'required'              => false,
+                        'active'                => true,
+                        'visible_in_portal'     => true,
+                        'editable_in_portal'    => false,
+                        'required_in_portal'    => false,
+                        'system_field_options'  => array(
+                            (object)array(
+                                'name'  => 'Question',
+                                'value' => 'question',
+                            ),
+                            (object)array(
+                                'name'  => 'Incident',
+                                'value' => 'incident',
+                            ),
+                            (object)array(
+                                'name'  => 'Problem',
+                                'value' => 'problem',
+                            ),
+                            (object)array(
+                                'name'  => 'Task',
+                                'value' => 'task',
+                            ),
+                        ),
+                        'created_at'            => $date1->format('c'),
+                        'updated_at'            => $date2->format('c'),
+                        'removable'             => false,
+                    ),
+                    (object)array(
+                        'id'                    => 2,
+                        'type'                  => 'decimal',
+                        'title'                 => 'Decimal field for agents',
+                        'raw_title'             => 'Decimal field for agents',
+                        'description'           => 'Decimal field for users description',
+                        'raw_description'       => 'Decimal field for users description',
+                        'title_in_portal'       => 'Decimal field for users',
+                        'raw_title_in_portal'   => 'Decimal field for users',
+                        'tag'                   => null,
+                        'regexp_for_validation' => '\A[-+]?[0-9]*[.,]?[0-9]+\z',
+                        'position'              => 9999,
+                        'required'              => true,
+                        'active'                => false,
+                        'visible_in_portal'     => true,
+                        'editable_in_portal'    => true,
+                        'required_in_portal'    => false,
+                        'created_at'            => $date1->format('c'),
+                        'updated_at'            => $date2->format('c'),
+                        'removable'             => true,
+                    ),
+                    (object)array(
+                        'id'                    => 3,
+                        'type'                  => 'integer',
+                        'title'                 => 'Numeric field for agents',
+                        'raw_title'             => 'Numeric field for agents',
+                        'description'           => 'Numeric field for users description',
+                        'raw_description'       => 'Numeric field for users description',
+                        'title_in_portal'       => 'Numeric field for users',
+                        'raw_title_in_portal'   => 'Numeric field for users',
+                        'tag'                   => null,
+                        'regexp_for_validation' => '\A[-+]?\d+\z',
+                        'position'              => 9999,
+                        'required'              => true,
+                        'active'                => true,
+                        'visible_in_portal'     => true,
+                        'editable_in_portal'    => true,
+                        'required_in_portal'    => true,
+                        'created_at'            => $date1->format('c'),
+                        'updated_at'            => $date2->format('c'),
+                        'removable'             => true,
+                    ),
+                    (object)array(
+                        'id'                    => 4,
+                        'type'                  => 'checkbox',
+                        'title'                 => 'Checkbox field for agents',
+                        'raw_title'             => 'Checkbox field for agents',
+                        'description'           => 'Checkbox field for users Description',
+                        'raw_description'       => 'Checkbox field for users Description',
+                        'title_in_portal'       => 'Checkbox field for users',
+                        'raw_title_in_portal'   => 'Checkbox field for users',
+                        'position'              => 9999,
+                        'required'              => true,
+                        'active'                => true,
+                        'visible_in_portal'     => true,
+                        'editable_in_portal'    => true,
+                        'required_in_portal'    => true,
+                        'regexp_for_validation' => null,
+                        'tag'                   => 'my_checkbox_tag',
+                        'created_at'            => $date1->format('c'),
+                        'updated_at'            => $date2->format('c'),
+                        'removable'             => true,
+                    ),
+                    (object)array(
+                        'id'                    => 5,
+                        'type'                  => 'tagger',
+                        'title'                 => 'My drop down list',
+                        'raw_title'             => 'My drop down list',
+                        'description'           => '',
+                        'raw_description'       => '',
+                        'title_in_portal'       => 'My drop down list (for users)',
+                        'raw_title_in_portal'   => 'My drop down list (for users)',
+                        'regexp_for_validation' => null,
+                        'position'              => 9999,
+                        'required'              => true,
+                        'active'                => true,
+                        'visible_in_portal'     => true,
+                        'editable_in_portal'    => false,
+                        'required_in_portal'    => false,
+                        'tag'                   => null,
+                        'created_at'            => $date1->format('c'),
+                        'updated_at'            => $date2->format('c'),
+                        'removable'             => true,
+                        'custom_field_options'  => array(
+                            (object)array(
+                                'id'       => 51,
+                                'name'     => 'Option 1',
+                                'raw_name' => 'Option 1',
+                                'value'    => 'option_1',
+                            ),
+                            (object)array(
+                                'id'       => 52,
+                                'name'     => 'Option 2',
+                                'raw_name' => 'Option 2',
+                                'value'    => 'option_2',
+                            ),
+                            (object)array(
+                                'id'       => 53,
+                                'name'     => 'Option 3',
+                                'raw_name' => 'Option 3',
+                                'value'    => 'option_3',
+                            ),
+                            (object)array(
+                                'id'       => 54,
+                                'name'     => 'Option 3',
+                                'raw_name' => 'Option 3',
+                                'value'    => 'option_4_duplicate_title',
+                            ),
+                        ),
+                    ),
+                    (object)array(
+                        'id'                    => 6,
+                        'type'                  => 'regexp',
+                        'title'                 => 'Regular expression field for agents',
+                        'raw_title'             => 'Regular expression field for agents',
+                        'description'           => 'Regular expression field for agents Description',
+                        'raw_description'       => 'Regular expression field for agents Description',
+                        'title_in_portal'       => 'Regular expression field for agents',
+                        'raw_title_in_portal'   => 'Regular expression field for agents',
+                        'regexp_for_validation' => '\d+',
+                        'position'              => 9999,
+                        'required'              => true,
+                        'active'                => true,
+                        'visible_in_portal'     => true,
+                        'editable_in_portal'    => false,
+                        'required_in_portal'    => false,
+                        'tag'                   => null,
+                        'created_at'            => $date1->format('c'),
+                        'updated_at'            => $date2->format('c'),
+                        'removable'             => true,
+                    ),
+                ),
+            ))
+            ->addOrganizationFieldsResponse((object)array(
+                'organization_fields' => $crm_fields,
+            ))
+            ->addTicketsIncrementalExportResponse((object)array(
+                'tickets'  => array(
+                    (object)array(
                         'id'               => 1,
                         'requester_id'     => 1,
                         'assignee_id'      => 3,
@@ -707,6 +1048,9 @@ class ZenDeskTest extends \DpIntegrationTestCase
     {
         $this->checkDbTicketsData();
         $this->checkDbPeopleData();
+        $this->checkDbPeopleCustomDefData();
+        $this->checkDbTicketsCustomDefData();
+        $this->checkDbOrganizationsCustomDefData();
     }
 
     private function checkDbTicketsData()
@@ -780,5 +1124,71 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $person = $this->person_repository->findOneByEmail('imported.user.200000@example.com');
         $this->assertTrue($person->isDisabled());
         $this->assertFalse($person->isDeleted());
+    }
+
+    private function checkDbPeopleCustomDefData()
+    {
+        $this->assertEquals(10, $this->custom_def_person_repository->countAll());
+
+        /** @var Entity\CustomDefPerson $custom_def */
+        $custom_def = $this->custom_def_person_repository->find(1);
+        $this->assertEquals('Drop-down list field', $custom_def->getTitle());
+        $this->assertEquals('Drop-down list field description', $custom_def->getDescription());
+        $this->assertEquals(Entity\CustomDefAbstract::HANDLER_CLASS_CHOICE, $custom_def->getHandlerClass());
+        $this->assertTrue($custom_def->isEnabled());
+
+        $this->assertCount(4, $custom_def->getAllChildren());
+
+        $custom_def = $this->custom_def_person_repository->find(6);
+        $this->assertEquals('Text field', $custom_def->getTitle());
+        $this->assertEquals('Text field description', $custom_def->getDescription());
+        $this->assertEquals(Entity\CustomDefAbstract::HANDLER_CLASS_TEXT, $custom_def->getHandlerClass());
+        $this->assertFalse($custom_def->isEnabled());
+
+        $custom_def = $this->custom_def_person_repository->find(7);
+        $this->assertEquals('Numeric field', $custom_def->getTitle());
+        $this->assertEquals('Numeric field description', $custom_def->getDescription());
+        $this->assertEquals(Entity\CustomDefAbstract::HANDLER_CLASS_TEXT, $custom_def->getHandlerClass());
+        $this->assertEquals('regex', $custom_def->getOption('validation_type'));
+        $this->assertEquals('regex', $custom_def->getOption('agent_validation_type'));
+        $this->assertEquals('/^[-+]?\d+$/', $custom_def->getOption('regex'));
+        $this->assertEquals('/^[-+]?\d+$/', $custom_def->getOption('agent_regex'));
+        $this->assertTrue($custom_def->isEnabled());
+
+        $custom_def = $this->custom_def_person_repository->find(8);
+        $this->assertEquals('Decimal field', $custom_def->getTitle());
+        $this->assertEquals('Decimal field description', $custom_def->getDescription());
+        $this->assertEquals(Entity\CustomDefAbstract::HANDLER_CLASS_TEXT, $custom_def->getHandlerClass());
+        $this->assertEquals('regex', $custom_def->getOption('validation_type'));
+        $this->assertEquals('regex', $custom_def->getOption('agent_validation_type'));
+        $this->assertEquals('/^[-+]?[0-9]*[.,]?[0-9]+$/', $custom_def->getOption('regex'));
+        $this->assertEquals('/^[-+]?[0-9]*[.,]?[0-9]+$/', $custom_def->getOption('agent_regex'));
+        $this->assertTrue($custom_def->isEnabled());
+
+        $custom_def = $this->custom_def_person_repository->find(9);
+        $this->assertEquals('Date field', $custom_def->getTitle());
+        $this->assertEquals('Date field description', $custom_def->getDescription());
+        $this->assertEquals(Entity\CustomDefAbstract::HANDLER_CLASS_DATE, $custom_def->getHandlerClass());
+        $this->assertTrue($custom_def->isEnabled());
+
+        $custom_def = $this->custom_def_person_repository->find(10);
+        $this->assertEquals('Regular expression field', $custom_def->getTitle());
+        $this->assertEquals('Regular expression field description', $custom_def->getDescription());
+        $this->assertEquals(Entity\CustomDefAbstract::HANDLER_CLASS_TEXT, $custom_def->getHandlerClass());
+        $this->assertEquals('regex', $custom_def->getOption('validation_type'));
+        $this->assertEquals('regex', $custom_def->getOption('agent_validation_type'));
+        $this->assertEquals('/[0-9]+/', $custom_def->getOption('regex'));
+        $this->assertEquals('/[0-9]+/', $custom_def->getOption('agent_regex'));
+        $this->assertTrue($custom_def->isEnabled());
+    }
+
+    private function checkDbTicketsCustomDefData()
+    {
+        $this->assertEquals(14, $this->custom_def_ticket_repository->countAll());
+    }
+
+    private function checkDbOrganizationsCustomDefData()
+    {
+        $this->assertEquals(10, $this->custom_def_organization_repository->countAll());
     }
 }
