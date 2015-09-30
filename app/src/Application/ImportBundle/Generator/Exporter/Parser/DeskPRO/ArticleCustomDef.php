@@ -34,7 +34,7 @@ use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 /**
  * Class ArticleCustomDef.
  */
-final class ArticleCustomDef extends AbstractParser
+final class ArticleCustomDef extends AbstractCustomDefParser
 {
     /**
      * {@inheritdoc}

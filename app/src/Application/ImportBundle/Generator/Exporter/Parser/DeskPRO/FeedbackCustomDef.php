@@ -34,7 +34,7 @@ use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 /**
  * Class FeedbackCustomDef.
  */
-final class FeedbackCustomDef extends AbstractParser
+final class FeedbackCustomDef extends AbstractCustomDefParser
 {
     /**
      * {@inheritdoc}
