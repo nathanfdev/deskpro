@@ -168,7 +168,6 @@ const BaseItem = React.createClass({
           hasMenu = true;
           const parentLevel = this.props.parentMenuLevel ? this.props.parentMenuLevel : 1;
           const childProps = child.props;
-          childProps.menuLevel = parentLevel + 1;
 
           return (<Positioned isOpen
                               positionMy="left top"
@@ -176,7 +175,7 @@ const BaseItem = React.createClass({
                               collision="none"
                               positionTarget={this}
                               key={child}>
-              <Menu {...childProps}
+              <Menu {...childProps} menuLevel={parentLevel + 1}
                     isOpen={this.props.activeItem === this} closeMenu={this.closeMenu} />
           </Positioned>);
         }
