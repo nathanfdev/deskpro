@@ -60,7 +60,7 @@ final class TicketCustomDef extends AbstractCustomDefParser
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->reader->findCustomDefPeople())
+            ->setData($this->reader->findCustomDefTickets())
             ->setPrefix('DPCustomDefTicket')
             ->setRefColumn('id')
             ->setMethod('exportCustomDef')
