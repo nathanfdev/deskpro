@@ -41,9 +41,10 @@ class JsonMockAdapter implements RequestAdapterInterface
     private $responses = array();
 
     /**
-     * Stores a people fields response
+     * Stores a people fields response.
      *
      * @param string|array $response
+     *
      * @return $this
      */
     public function addPeopleFieldsResponse($response)
@@ -54,7 +55,7 @@ class JsonMockAdapter implements RequestAdapterInterface
     }
 
     /**
-     * Stores a people incremental export response
+     * Stores a people incremental export response.
      *
      * @param string|array $response
      *
@@ -82,9 +83,10 @@ class JsonMockAdapter implements RequestAdapterInterface
     }
 
     /**
-     * Stores a organization fields response
+     * Stores a organization fields response.
      *
      * @param string|array $response
+     *
      * @return $this
      */
     public function addOrganizationFieldsResponse($response)
@@ -95,7 +97,20 @@ class JsonMockAdapter implements RequestAdapterInterface
     }
 
     /**
-     * Stores a organization find response
+     * Stores a organization findAll response.
+     *
+     * @param string|array $response
+     *
+     * @return $this
+     */
+    public function addOrganizationFindAllResponse($response)
+    {
+        $this->addResponse('CoreAPI\Organization::findAll', $response);
+
+        return $this;
+    }
+
+    /**
      * Stores a organization find response.
      *
      * @param string|array $response
@@ -110,9 +125,10 @@ class JsonMockAdapter implements RequestAdapterInterface
     }
 
     /**
-     * Stores a ticket fields response
+     * Stores a ticket fields response.
      *
      * @param string|array $response
+     *
      * @return $this
      */
     public function addTicketFieldsResponse($response)
@@ -123,7 +139,7 @@ class JsonMockAdapter implements RequestAdapterInterface
     }
 
     /**
-     * Stores a ticket incremental export response
+     * Stores a ticket incremental export response.
      *
      * @param string|array $response
      *

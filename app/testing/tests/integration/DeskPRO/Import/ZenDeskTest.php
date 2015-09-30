@@ -334,7 +334,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $now   = new \DateTime();
 
         $crm_fields = array(
-            (object)array(
+            (object) array(
                 'id'                    => 1,
                 'type'                  => 'dropdown',
                 'key'                   => 'drop_down_list_field',
@@ -349,25 +349,25 @@ class ZenDeskTest extends \DpIntegrationTestCase
                 'created_at'            => $date1->format('c'),
                 'updated_at'            => $date2->format('c'),
                 'custom_field_options'  => array(
-                    (object)array(
+                    (object) array(
                         'id'       => 11,
                         'name'     => 'Option 1',
                         'raw_name' => 'Option 1',
                         'value'    => 'option_1',
                     ),
-                    (object)array(
+                    (object) array(
                         'id'       => 12,
                         'name'     => 'Option 2',
                         'raw_name' => 'Option 2',
                         'value'    => 'option_2',
                     ),
-                    (object)array(
+                    (object) array(
                         'id'       => 13,
                         'name'     => 'Option 3',
                         'raw_name' => 'Option 3',
                         'value'    => 'option_3',
                     ),
-                    (object)array(
+                    (object) array(
                         'id'       => 14,
                         'name'     => 'Option 3',
                         'raw_name' => 'Option 3',
@@ -375,7 +375,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                     ),
                 ),
             ),
-            (object)array(
+            (object) array(
                 'id'                    => 2,
                 'type'                  => 'text',
                 'key'                   => 'text_field',
@@ -390,7 +390,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                 'created_at'            => $date1->format('c'),
                 'updated_at'            => $date2->format('c'),
             ),
-            (object)array(
+            (object) array(
                 'id'                    => 3,
                 'type'                  => 'integer',
                 'key'                   => 'numeric',
@@ -405,7 +405,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                 'created_at'            => $date1->format('c'),
                 'updated_at'            => $date2->format('c'),
             ),
-            (object)array(
+            (object) array(
                 'id'                    => 4,
                 'type'                  => 'decimal',
                 'key'                   => 'decimal_field',
@@ -420,7 +420,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                 'created_at'            => $date1->format('c'),
                 'updated_at'            => $date2->format('c'),
             ),
-            (object)array(
+            (object) array(
                 'id'                    => 5,
                 'type'                  => 'date',
                 'key'                   => 'date_field',
@@ -435,7 +435,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                 'created_at'            => $date1->format('c'),
                 'updated_at'            => $date2->format('c'),
             ),
-            (object)array(
+            (object) array(
                 'id'                    => 6,
                 'type'                  => 'regexp',
                 'key'                   => 'regular_expression_field',
@@ -453,12 +453,12 @@ class ZenDeskTest extends \DpIntegrationTestCase
         );
 
         $this->adapter
-            ->addPeopleFieldsResponse((object)array(
+            ->addPeopleFieldsResponse((object) array(
                 'user_fields' => $crm_fields,
             ))
-            ->addTicketFieldsResponse((object)array(
+            ->addTicketFieldsResponse((object) array(
                 'ticket_fields' => array(
-                    (object)array(
+                    (object) array(
                         'id'                    => 1,
                         'type'                  => 'tickettype',
                         'title'                 => 'Type',
@@ -476,28 +476,28 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'editable_in_portal'    => false,
                         'required_in_portal'    => false,
                         'system_field_options'  => array(
-                            (object)array(
+                            (object) array(
                                 'name'  => 'Question',
                                 'value' => 'question',
                             ),
-                            (object)array(
+                            (object) array(
                                 'name'  => 'Incident',
                                 'value' => 'incident',
                             ),
-                            (object)array(
+                            (object) array(
                                 'name'  => 'Problem',
                                 'value' => 'problem',
                             ),
-                            (object)array(
+                            (object) array(
                                 'name'  => 'Task',
                                 'value' => 'task',
                             ),
                         ),
-                        'created_at'            => $date1->format('c'),
-                        'updated_at'            => $date2->format('c'),
-                        'removable'             => false,
+                        'created_at' => $date1->format('c'),
+                        'updated_at' => $date2->format('c'),
+                        'removable'  => false,
                     ),
-                    (object)array(
+                    (object) array(
                         'id'                    => 2,
                         'type'                  => 'decimal',
                         'title'                 => 'Decimal field for agents',
@@ -518,7 +518,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'updated_at'            => $date2->format('c'),
                         'removable'             => true,
                     ),
-                    (object)array(
+                    (object) array(
                         'id'                    => 3,
                         'type'                  => 'integer',
                         'title'                 => 'Numeric field for agents',
@@ -539,7 +539,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'updated_at'            => $date2->format('c'),
                         'removable'             => true,
                     ),
-                    (object)array(
+                    (object) array(
                         'id'                    => 4,
                         'type'                  => 'checkbox',
                         'title'                 => 'Checkbox field for agents',
@@ -560,7 +560,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'updated_at'            => $date2->format('c'),
                         'removable'             => true,
                     ),
-                    (object)array(
+                    (object) array(
                         'id'                    => 5,
                         'type'                  => 'tagger',
                         'title'                 => 'My drop down list',
@@ -581,25 +581,25 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'updated_at'            => $date2->format('c'),
                         'removable'             => true,
                         'custom_field_options'  => array(
-                            (object)array(
+                            (object) array(
                                 'id'       => 51,
                                 'name'     => 'Option 1',
                                 'raw_name' => 'Option 1',
                                 'value'    => 'option_1',
                             ),
-                            (object)array(
+                            (object) array(
                                 'id'       => 52,
                                 'name'     => 'Option 2',
                                 'raw_name' => 'Option 2',
                                 'value'    => 'option_2',
                             ),
-                            (object)array(
+                            (object) array(
                                 'id'       => 53,
                                 'name'     => 'Option 3',
                                 'raw_name' => 'Option 3',
                                 'value'    => 'option_3',
                             ),
-                            (object)array(
+                            (object) array(
                                 'id'       => 54,
                                 'name'     => 'Option 3',
                                 'raw_name' => 'Option 3',
@@ -607,7 +607,7 @@ class ZenDeskTest extends \DpIntegrationTestCase
                             ),
                         ),
                     ),
-                    (object)array(
+                    (object) array(
                         'id'                    => 6,
                         'type'                  => 'regexp',
                         'title'                 => 'Regular expression field for agents',
@@ -630,12 +630,15 @@ class ZenDeskTest extends \DpIntegrationTestCase
                     ),
                 ),
             ))
-            ->addOrganizationFieldsResponse((object)array(
+            ->addOrganizationFieldsResponse((object) array(
                 'organization_fields' => $crm_fields,
             ))
-            ->addTicketsIncrementalExportResponse((object)array(
-                'tickets'  => array(
-                    (object)array(
+            ->addOrganizationFindAllResponse((object) array(
+                'organizations' => array(),
+            ))
+            ->addTicketsIncrementalExportResponse((object) array(
+                'tickets' => array(
+                    (object) array(
                         'id'               => 1,
                         'requester_id'     => 1,
                         'assignee_id'      => 3,
@@ -1027,7 +1030,6 @@ class ZenDeskTest extends \DpIntegrationTestCase
     {
         $output = $command_tester->getDisplay();
 
-        $this->assertContains('Entity `organization` is not supported', $output);
         $this->assertContains('Unable to set ticket agent, `imported.user.4@example.com` is not an agent', $output);
         $this->assertContains('Creating new person with email `imported.user.100000@example.com`', $output);
         $this->assertContains('Creating new person with email `imported.user.100000@example.com`', $output);

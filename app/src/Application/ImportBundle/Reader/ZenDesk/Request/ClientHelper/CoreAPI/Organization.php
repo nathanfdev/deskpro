@@ -29,6 +29,7 @@
 namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\CoreAPI;
 
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\AbstractHelper;
+use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperFindAllInterface;
 use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperFindInterface;
 
 /**
@@ -36,7 +37,7 @@ use Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\ClientHelperFin
  *
  * Class Organization
  */
-final class Organization extends AbstractHelper implements ClientHelperFindInterface
+final class Organization extends AbstractHelper implements ClientHelperFindInterface, ClientHelperFindAllInterface
 {
     /**
      * {@inheritdoc}
@@ -44,5 +45,13 @@ final class Organization extends AbstractHelper implements ClientHelperFindInter
     public function find(array $params = array())
     {
         return $this->client->organizations()->find($params);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findAll(array $params = array())
+    {
+        return $this->client->organizations()->findAll($params);
     }
 }

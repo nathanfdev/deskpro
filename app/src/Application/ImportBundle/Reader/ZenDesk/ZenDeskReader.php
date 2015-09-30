@@ -31,15 +31,14 @@ namespace Application\ImportBundle\Reader\ZenDesk;
 use Application\ImportBundle\Reader\AbstractReader;
 use Application\ImportBundle\Reader\ZenDesk\Request\Request;
 use Application\ImportBundle\Reader\ZenDesk\Request\RequestAdapterInterface;
-use Zendesk\API;
 use DateTime;
 
 /**
  * ZenDesk reader.
  *
- * see https://developer.zendesk.com/rest_api/docs/core/introduction
- * see https://developer.zendesk.com/rest_api/docs/core/incremental_export
- * see https://support.zendesk.com/hc/en-us/articles/204232743
+ * @see https://developer.zendesk.com/rest_api/docs/core/introduction
+ * @see https://developer.zendesk.com/rest_api/docs/core/incremental_export
+ * @see https://support.zendesk.com/hc/en-us/articles/204232743
  *
  * Class ZenDeskReader
  *
@@ -180,6 +179,16 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
     /**
      * {@inheritdoc}
      */
+    public function getOrganizations()
+    {
+        $result = $this->adapter->doRequest(Request::createCoreAPI('Organization', 'findAll'));
+
+        return $this->toArray($result->organizations);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getOrganizationById($id)
     {
         $result = $this->adapter->doRequest(Request::createCoreAPI('Organization', 'find', array(
@@ -306,7 +315,7 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
     {
         $response_categories = $this->adapter->doRequest(Request::createHelpCenter('Category', 'findAll'));
         $response_categories = $this->toArray($response_categories->categories);
-        
+
         $response_sections = $this->adapter->doRequest(Request::createHelpCenter('Section', 'findAll'));
         $response_sections = $this->toArray($response_sections->sections);
 
@@ -324,7 +333,7 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
             $section = $sections[$section_id];
         } else {
             $response_section = $this->adapter->doRequest(Request::createHelpCenter('Section', 'find', array(
-                'id' => $section_id
+                'id' => $section_id,
             )));
 
             return $this->toArray($response_section->section);
@@ -335,7 +344,7 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
                 $category = $categories[$section['category_id']];
             } else {
                 $response_section = $this->adapter->doRequest(Request::createHelpCenter('Category', 'find', array(
-                    'id' => $section['category_id'])
+                    'id' => $section['category_id'], )
                 ));
 
                 $category = $this->toArray($response_section->category);
@@ -369,7 +378,7 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
     public function getArticles(DateTime $start_time = null)
     {
         $articles = array();
-        $result  = $this->adapter->doRequest(Request::createHelpCenter('Article', 'incrementalExport', array(
+        $result   = $this->adapter->doRequest(Request::createHelpCenter('Article', 'incrementalExport', array(
             'start_time' => $this->getStartTimeTimestamp($start_time),
         )));
 
@@ -480,7 +489,7 @@ class ZenDeskReader extends AbstractReader implements ZenDeskReaderInterface
             foreach ($result->sections as $section) {
                 $section = $this->toArray($section);
                 $access  = $this->adapter->doRequest(Request::createHelpCenter('SectionAccessPolicy', 'find', array(
-                    'id' => $section['id'])
+                    'id' => $section['id'], )
                 ));
                 $access  = $access ? $this->toArray($access) : null;
                 $section = array_merge($section, $access);

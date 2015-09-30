@@ -131,6 +131,13 @@ interface ZenDeskReaderInterface extends ReaderInterface
     public function getPeopleFields();
 
     /**
+     * Returns organizations collection.
+     *
+     * @return array
+     */
+    public function getOrganizations();
+
+    /**
      * Returns an organization by id.
      *
      * @param int $id
