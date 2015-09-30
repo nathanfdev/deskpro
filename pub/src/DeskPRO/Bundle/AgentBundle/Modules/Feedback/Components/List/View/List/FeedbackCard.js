@@ -23,8 +23,21 @@ export class FeedbackCard extends Component {
     }
   }
 
+  renderStatus(status) {
+    if (status.title) {
+      status = status.title;
+    }
+    else if (status.status === 'new') {
+      status = 'New';
+    }
+    else {
+      status = status.hidden_status;
+    }
+    return <CardLineItem>{status}</CardLineItem>;
+  }
+
   render() {
-    const {feedback, author, type,  massAction, feedbackLabels, feedbackComments} = this.props;
+    const {feedback, author, type,  massAction, feedbackLabels, feedbackComments, feedbackStatus} = this.props;
     const labels   = feedbackLabels ? feedbackLabels.labels : false;
     const comments = feedbackComments ? feedbackComments.counter : 0;
 
@@ -43,7 +56,7 @@ export class FeedbackCard extends Component {
           </CardLineLeft>
 
           <CardLineRight>
-            <CardLineItem>{feedback.status}</CardLineItem>
+            {this.renderStatus(feedbackStatus)}
           </CardLineRight>
         </CardLine>
 

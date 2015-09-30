@@ -43,7 +43,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * API access to feedback comments.
  */
-class FeedbackCommentsController extends BaseController
+class FeedbackCommentController extends BaseController
 {
     /**
      * @ApiDoc(
@@ -69,7 +69,7 @@ class FeedbackCommentsController extends BaseController
         if ($ids) {
             $qb
                 ->andWhere('f.id IN (:ids)')
-                ->setParameter('ids', $ids);
+                ->setParameter('ids', explode(',',$ids));
         }
 
         $comments = $qb->getQuery()->getResult();

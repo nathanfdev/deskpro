@@ -4,6 +4,7 @@ import { createPeopleRequestSelectors }
 import{createFeedbackTypesRequestSelectors} from '../RecordStores/Selectors/feedbackTypesSelectors';
 import{createFeedbackLabelsRequestSelectors} from '../RecordStores/Selectors/feedbackLabelsSelectors';
 import{createFeedbackCommentsRequestSelectors} from '../RecordStores/Selectors/feedbackCommentsSelectors';
+import{createFeedbackStatusesRequestSelectors} from '../RecordStores/Selectors/feedbackStatusesSelectors';
 
 const stateSelector = state => state.Feedback.list;
 
@@ -40,4 +41,9 @@ export const feedbackLabelsSelector = createSelector(
 export const feedbackCommentsSelector = createSelector(
   createFeedbackCommentsRequestSelectors('feedback').recordsSel,
     comments => comments.toJS()
+);
+
+export const feedbackStatusesSelector = createSelector(
+  createFeedbackStatusesRequestSelectors('feedback').recordsSel,
+    statuses => statuses.toJS()
 );
