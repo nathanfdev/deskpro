@@ -6,7 +6,7 @@ import AgentsListItem from './AgentsListItem';
  * TODO: rendering this template at the very first time you have nothing in props.agents, cause ajax still on progress
  * TODO: and promise have no data yet.
  */
-const AgentsList = React.createClass(
+export const AgentsList = React.createClass(
     {
     getInitialState: function() {
         return {
@@ -29,22 +29,24 @@ const AgentsList = React.createClass(
                 </form>
                 <div className="im-list-wrapper">
                     <ul className="im-list">
-                        {this.state.agents.length > 0 ? this.state.agents.map((agent, index) => <AgentsListItem agentClickHandler={this.props.handler} key={index} agent={agent} highlight={this.state.value}/>) : (this.props.agents.length ? this.props.agents.map((agent, index) => <AgentsListItem key={index} agent={agent} />) : null)}
+                        {
+                            this.state.agents.length > 0
+                            ? this.state.agents.map(
+                                (agent, index) =>
+                                    <AgentsListItem agentClickHandler={this.props.handler} key={index} agent={agent} highlight={this.state.value}/>)
+                            : (this.props.agents.length
+                                ? this.props.agents.map(
+                                    (agent, index) =>
+                                        <AgentsListItem key={index} agent={agent} />)
+                                : null)
+                        }
                     </ul>
                 </div>
             </div>
         );
     },
 
-    onChange: function(event)
-    {
-        const newState = {
-            ...this.state,
-            agents: this.filterAgents(event.target.value),
-            value: event.target.value,
-        }
-        this.setState(newState);
-    },
+
 
     filterAgents: function(value = '')
     {
@@ -61,7 +63,15 @@ const AgentsList = React.createClass(
         }
 
         return newAgents;
-    }
-});
+    },
 
-module.exports = AgentsList;
+    onChange: function(event)
+    {
+        const newState = {
+          ...this.state,
+          agents: this.filterAgents(event.target.value),
+          value: event.target.value,
+        }
+        this.setState(newState);
+    },
+});

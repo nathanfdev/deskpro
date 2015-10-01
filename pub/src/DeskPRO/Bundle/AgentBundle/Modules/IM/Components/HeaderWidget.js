@@ -106,7 +106,7 @@ export class HeaderWidget extends React.Component {
                 IMs <i className="fa fa-angle-down"></i>
             </span>
           </a>
-          { this.props.recentAgents.size > 0 ? this.props.recentAgents.map((agent, index) => <Recent agentClickHandler={this.agentClickHandler} key={index} agent={agent}/>) : null}
+          { this.props.recentAgents.length > 0 ? this.props.recentAgents.map((agent, index) => <Recent agentClickHandler={this.agentClickHandler} key={index} agent={agent}/>) : null}
           { this.state.overlayShown ? <Overlay/> : null }
           { this.state.chating ? <Chat messages={this.state.messages}/> : null }
         </div>
