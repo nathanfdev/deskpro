@@ -60,5 +60,10 @@ $changed_files = array_filter($outputs, function($filename) use ($filename_patte
 $changed_files = array_map(function($filename) {
     return new \SplFileInfo($filename);
 }, $changed_files);
+print "Scanning changeset for code style fixes. Files include:".PHP_EOL;
+foreach ($changed_files as $file) {
+    print $file.PHP_EOL;
+}
+
 $config->finder(new ArrayObject($changed_files));
 return $config;
