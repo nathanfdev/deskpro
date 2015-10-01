@@ -155,17 +155,17 @@ final class People extends AbstractParser
             ->setOid($person->getId())
 
             ->setName($person->getDisplayName())
-            ->setFirstName($person['first_name'])
-            ->setLastName($person['last_name'])
-            ->setAsAgent((bool) $person['is_agent'])
-            ->setAsUser(!$person['is_agent'])
-            ->setAsAdmin((bool) $person['can_admin'])
+            ->setFirstName($person->first_name)
+            ->setLastName($person->last_name)
+            ->setAsAgent($person->is_agent)
+            ->setAsUser($person->is_user)
+            ->setAsAdmin($person->can_admin)
 
-            ->setOrganization($person->organization ? $person->organization['name'] : null)
+            ->setOrganization($person->organization ? $person->organization->getName() : null)
             ->setOrganizationPosition($person['organization_position'])
 
             ->setLanguage($person->language ? $person->language['title'] : null)
-            ->setPassword($person['password'])
+            ->setPassword(Entity\Person::INITIAL_PASSWORD)
             ->setPasswordScheme(Entity\Person::PASSWORD_SCHEME_BCRYPT)
 
             ->setTimezone($person->getDateTimezone())
