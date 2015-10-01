@@ -1,5 +1,4 @@
 import React, {Component, PropTypes} from 'react';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 import { ControlButton } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/ControlBar';
 
 export class OrderBy extends Component {
@@ -12,11 +11,16 @@ export class OrderBy extends Component {
 
   render() {
     const { order, currentSortMode, toggleDropdown } = this.props;
-
-    let label = `${currentSortMode.label} (${order})`;
+    const label = `${currentSortMode.label} (${order})`;
     return (
       <li>
-        <ControlButton title="Order by:" icon={currentSortMode.icon} label={label} toggleDropdown={toggleDropdown}/>
+        <ControlButton
+          title="Order by:"
+          icon={currentSortMode.icon}
+          label={label}
+          toggleDropdown={toggleDropdown}
+          />
+        {this.props.children}
       </li>
     );
   }

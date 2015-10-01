@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from 'react-dom';
 
 import * as TicketActions from "../../Actions/FiltersActions";
 import * as SidebarActions from "../../Actions/SidebarHoverActions";
@@ -18,13 +19,13 @@ export default class FilterGroupingOptions extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    const title = React.findDOMNode(this.refs.title).value.trim();
-    const grouping = React.findDOMNode(this.refs.grouping).value;
+    const title = ReactDOM.findDOMNode(this.refs.title).value.trim();
+    const grouping = ReactDOM.findDOMNode(this.refs.grouping).value;
     this.dispatch(SidebarActions.hideSidebarHover());
     this.dispatch(TicketActions.loadFilterGroups(this.filter.id, grouping));
     
-    React.findDOMNode(this.refs.grouping).value = '';
-    React.findDOMNode(this.refs.title).value = '';
+    ReactDOM.findDOMNode(this.refs.grouping).value = '';
+    ReactDOM.findDOMNode(this.refs.title).value = '';
   }
   
   render() {

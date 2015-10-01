@@ -35,7 +35,6 @@ use Application\DeskPRO\Entity\FeedbackComment;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\Exception\AlreadySubmittedException;
@@ -46,32 +45,42 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * API access to feedback comments.
  */
-class FeedbackCommentsController extends BaseController
+class FeedbackCommentController extends BaseController
 {
     /**
      * @ApiDoc(
-     *      description="create a new comment",
-     *      input={"class"="comment", "name"=""},
+     *      description="get list of feedback comments",
      *      statusCodes={
-     *          201="Created",
-     *          400="Bad Request"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\FeedbackComment"
+     *          200="Success"
+     *      }
      * )
-     * @Post("/task_comments", name="api_task_comments_post")
+     * @Get("/feedback_comments", name="api_feedback_comments")
      *
      * @param Request $request
      *
-     * @throws InvalidFormException
-     * @throws \LogicException
-     *
      * @return View
      */
-    public function postAction(Request $request)
+    public function cgetAction(Request $request)
     {
-        $comment = new FeedbackComment();
+        /* @ToDo move below functionality into FeedbackComment repository after removing old code */
+        $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $qb
+            ->select('f.id', 'count(c.id) as counter')
+            ->from('DeskPRO:FeedbackComment', 'c')
+            ->innerJoin('c.feedback', 'f');
+        $ids = $request->get('ids');
+        if ($ids) {
+            $qb
+                ->andWhere('f.id IN (:ids)')
+                ->setParameter('ids', explode(',', $ids));
+        }
 
-        return $this->handleFormSubmission($request, $comment);
+        $comments = $qb->getQuery()->getResult();
+
+        return View::create(
+            $this->createRepresentation($comments),
+            Response::HTTP_OK
+        );
     }
 
     /**

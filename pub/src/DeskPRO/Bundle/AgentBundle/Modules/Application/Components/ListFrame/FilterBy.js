@@ -9,10 +9,16 @@ export class FilterBy extends Component {
   };
 
   render() {
-    const {currentFilterMode, toggleDropdown}=this.props;
+    const {currentFilterMode, toggleDropdown} = this.props;
     return (
       <li>
-        <ControlButton title="Filter by:" icon={currentFilterMode.icon} label={currentFilterMode.label} toggleDropdown={toggleDropdown}/>
+        <ControlButton
+          title="Filter by:"
+          icon={currentFilterMode.icon}
+          label={currentFilterMode.label}
+          toggleDropdown={toggleDropdown}
+          />
+        {this.props.children}
       </li>
     );
   }

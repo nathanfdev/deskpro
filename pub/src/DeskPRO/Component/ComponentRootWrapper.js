@@ -1,11 +1,12 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 import $ from 'jquery';
 
 export default class ComponentRootWrapper extends React.Component {
 
   componentDidMount() {
-    this.node = React.findDOMNode(this);
+    this.node = ReactDOM.findDOMNode(this);
     $(this.node).detach();
     $('body').append(this.node);
 
@@ -28,7 +29,7 @@ export default class ComponentRootWrapper extends React.Component {
     props = props || this.props;
 
     // Render the component with react
-    React.render(props.children, this.node);
+    ReactDOM.render(props.children, this.node);
 
     // Can show and hide a node depending on the open property
     if (props.open) {

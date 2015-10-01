@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import $ from "jquery";
+import $ from 'jquery';
 import classNames from 'classnames';
 
 export class ControlBar extends Component {
@@ -8,20 +8,12 @@ export class ControlBar extends Component {
       <div className="control-bar">
         <div className="ticket-controls-bulk-editing">
           <div className="dpwd-navigation-dropdown-top-row">
-            {this.props.children}
+            <ul className="dpwd-navigation-dropdown-top-row-main-list">
+              {this.props.children}
+            </ul>
           </div>
         </div>
       </div>
-    );
-  }
-}
-
-export class ControlButtonsRow extends Component {
-  render() {
-    return (
-      <ul className="dpwd-navigation-dropdown-top-row-main-list">
-        {this.props.children}
-      </ul>
     );
   }
 }

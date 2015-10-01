@@ -5,17 +5,48 @@ import { Card, CardLine, CardLineLeft, CardLineRight, CardLineItem, CardCheckbox
 export class FeedbackCard extends Component {
 
   static propTypes = {
-    feedback: PropTypes.object.isRequired
+    feedback: PropTypes.object.isRequired,
+    selected: PropTypes.bool.isRequired,
+    toggleSelected: PropTypes.func.isRequired,
+    author: PropTypes.object.isRequired,
+    type: PropTypes.object.isRequired,
+    feedbackLabels: PropTypes.object.isRequired
   };
 
+  renderLabels(labels) {
+    if (labels) {
+      return (
+        <CardLineLeft>
+          {labels.map((label, index)=><CardLineItem key={index}>{label};&nbsp;</CardLineItem>)}
+          <CardDisc/>
+        </CardLineLeft>
+      );
+    }
+  }
+
+  renderStatus(status) {
+    if (status.title) {
+      status = status.title;
+    }
+    else if (status.status === 'new') {
+      status = 'New';
+    }
+    else {
+      status = status.hidden_status;
+    }
+    return <CardLineItem>{status}</CardLineItem>;
+  }
+
   render() {
-    const {feedback, author, type,  massAction, feedbackLabels} = this.props;
-    //const labels = feedbackLabels.filter((obj)=>obj.id === feedback.id);
-    const labels = feedbackLabels ? feedbackLabels.labels : [];
+    const { feedback, author, type, selected, toggleSelected, feedbackLabels, feedbackComments, feedbackStatus }
+      = this.props;
+    const labels   = feedbackLabels ? feedbackLabels.labels : false;
+    const comments = feedbackComments ? feedbackComments.counter : 0;
+
     return (
       <Card type="feedback">
 
-        <CardCheckbox massAction={massAction}/>
+        <CardCheckbox selected={selected} onClick={toggleSelected(feedback.id)} />
 
         <CardLine>
           <CardLineLeft>
@@ -27,7 +58,7 @@ export class FeedbackCard extends Component {
           </CardLineLeft>
 
           <CardLineRight>
-            <CardLineItem>{feedback.status}</CardLineItem>
+            {this.renderStatus(feedbackStatus)}
           </CardLineRight>
         </CardLine>
 
@@ -35,18 +66,20 @@ export class FeedbackCard extends Component {
           <CardLineLeft>
             <CardLineItem icon="fa-book">{type.title}</CardLineItem>
             <CardDisc/>
-            {labels.map((label, index)=><CardLineItem key={index}>{label};&nbsp;</CardLineItem>)}
-            <CardDisc/>
+          </CardLineLeft>
+          { this.renderLabels(labels) }
+          <CardLineLeft>
             <CardLineItem>
               <CardUser user={author}/>
             </CardLineItem>
           </CardLineLeft>
 
           <CardLineRight>
-            <CardLineItem icon="fa-comment">5</CardLineItem>
+            <CardLineItem icon="fa-comment">{comments}</CardLineItem>
           </CardLineRight>
         </CardLine>
       </Card>
     );
   }
+
 }

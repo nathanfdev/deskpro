@@ -1,12 +1,13 @@
 import { createReducer } from 'Ampliflux';
 import { async, setFullPayload } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/FeedbackListActions';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 const initialState = {
   currentContent: 'feedback',
   massAction: false,
   feedback: [],
+  selected: [], // array of IDs
   comments: [],
   viewModeOptions: [
     {field: constants.VIEW_MODE_TABLE, label: 'Table view', icon: 'fa-table', current: false},
@@ -16,7 +17,7 @@ const initialState = {
   sortOptions: [
     {field: 'date_created', label: 'Date', icon: 'fa-calendar-o', current: true},
     {field: 'total_rating', label: 'Rating', icon: 'fa-calendar-o', current: false},
-    {field: 'num_ratings', label: 'Number of votes', icon: 'fa-calendar-o', current: false}
+    {field: 'num_ratings', label: 'Votes', icon: 'fa-calendar-o', current: false}
   ],
   filterOptions: [
     {field: 'category', label: 'Type', icon: 'fa-calendar-o', value: '', current: true},
@@ -82,7 +83,31 @@ export default createReducer(initialState, {
     }
   }),
   [actions.toggleMassAction]: (state) => {
-    return state.set('massAction', !state.get('massAction'));
+    let next = state.set('massAction', !state.get('massAction'));
+    let selected = next.get('selected');
+
+    if (next.get('massAction')) {
+      const elements = next.get('feedback');
+      elements.forEach((element) => {
+        if (!selected.includes(element.id)) {
+          selected = selected.push(element.id);
+        }
+      });
+    } else {
+      selected = selected.clear();
+    }
+
+    next = next.set('selected', selected);
+
+    return next;
+  },
+  [actions.toggleSelectedAction]: (state, payload) => {
+    let selected = state.get('selected');
+    selected = selected.includes(payload)
+             ? selected.delete(selected.indexOf(payload))
+             : selected.push(payload);
+
+    return state.set('selected', selected);
   },
   [actions.toggleViewMode]: (state, payload) => {
     let viewModeOptions = [];

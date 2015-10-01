@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import jQuery from 'jquery';
 import position from 'jquery-ui/position';
 
@@ -38,7 +39,7 @@ export default class Positioned extends React.Component {
    * @returns {void}
    */
   componentDidMount() {
-    this.node = React.findDOMNode(this);
+    this.node = ReactDOM.findDOMNode(this);
     jQuery(this.node).detach();
     jQuery('body').prepend(this.node);
 
@@ -91,8 +92,8 @@ export default class Positioned extends React.Component {
 
       if (this.props.positionTarget) {
         placement.of = this.props.positionTarget;
-        if (!(this.props.positionTarget instanceof jQuery) && React.findDOMNode(this.props.positionTarget) !== null) {
-          placement.of = React.findDOMNode(this.props.positionTarget);
+        if (!(this.props.positionTarget instanceof jQuery) && ReactDOM.findDOMNode(this.props.positionTarget) !== null) {
+          placement.of = ReactDOM.findDOMNode(this.props.positionTarget);
         }
 
         placement.collision = this.props.collision || placement.collision;
@@ -130,13 +131,13 @@ export default class Positioned extends React.Component {
     // Render the component with react, or don't if the prop changes
     if (this.props.isOpen) {
       // Put the element inside a div that we can position
-      React.render(<div className="positioned-element">{this.props.children}</div>, this.node);
+      ReactDOM.render(<div className="positioned-element">{this.props.children}</div>, this.node);
       this.updatePosition();
       if (this.shouldFire() && this.props.onOpen) {
         this.props.onOpen();
       }
     } else {
-      React.render(<div />, this.node);
+      ReactDOM.render(<div />, this.node);
       if (this.shouldFire() && this.props.onClose) {
         this.props.onClose();
       }
