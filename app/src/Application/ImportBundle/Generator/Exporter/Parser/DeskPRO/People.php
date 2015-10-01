@@ -31,6 +31,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 use Application\DeskPRO\Entity\Person;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Generator\Exporter\Parser\PeopleStorage;
 use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderInterface;
 
@@ -55,11 +56,12 @@ final class People extends AbstractParser
      * Constructor.
      *
      * @param DeskPROReaderInterface $reader
+     * @param ParserHelperSet        $helpers
      * @param PeopleStorage          $tickets_people
      */
-    public function __construct(DeskPROReaderInterface $reader, PeopleStorage $tickets_people)
+    public function __construct(DeskPROReaderInterface $reader, ParserHelperSet $helpers, PeopleStorage $tickets_people)
     {
-        parent::__construct($reader);
+        parent::__construct($reader, $helpers);
         $this->people_storage = $tickets_people;
     }
 
@@ -148,41 +150,42 @@ final class People extends AbstractParser
     {
         $entity = new Entity\Person();
         $entity
-            ->setRawData($person->toArray())
+            ->setRawData($person->toBasicApiData())
             ->setDestination('user_'.$person->getId())
             ->setOid($person->getId())
 
             ->setName($person->getDisplayName())
-            ->setFirstName($person['first_name'])
-            ->setLastName($person['last_name'])
-            ->setAsAgent((bool) $person['is_agent'])
-            ->setAsUser(!$person['is_agent'])
-            ->setAsAdmin((bool) $person['can_admin'])
+            ->setFirstName($person->first_name)
+            ->setLastName($person->last_name)
+            ->setAsAgent($person->is_agent)
+            ->setAsUser($person->is_user)
+            ->setAsAdmin($person->can_admin)
 
-            ->setOrganization($person->organization ? $person->organization['name'] : null)
+            ->setOrganization($person->organization ? $person->organization->getName() : null)
             ->setOrganizationPosition($person['organization_position'])
 
             ->setLanguage($person->language ? $person->language['title'] : null)
-            ->setPassword($person['password'])
-            ->setPasswordScheme(Entity\Person::PASSWORD_SCHEME_BCRYPT)
 
             ->setTimezone($person->getDateTimezone())
             ->setDateCreated($person->getDateCreated())
+            ->setAsDisabled($person->isDisabled())
+            ->setAsDeleted($person->isDeleted())
         ;
 
         foreach ($person->emails as $email) {
             $entity->addEmail($email['email']);
         }
-
         foreach ($person->usergroups as $usergroup) {
             $entity->addUserGroup($usergroup['title']);
         }
-
         foreach ($person->labels as $label) {
             $entity->addLabel($label['label']);
         }
 
-        // todo custom fields
+        $custom_fields = $this->getCustomFieldsParser()->export($person->custom_data);
+        foreach ($custom_fields as $custom_field) {
+            $entity->addCustomField($custom_field);
+        }
 
         return $entity;
     }

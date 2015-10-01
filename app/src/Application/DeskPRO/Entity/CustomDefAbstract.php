@@ -600,6 +600,14 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * @return string
+     */
+    public function getDefaultValue()
+    {
+        return $this->default_value;
+    }
+
+    /**
      * Get the phrasename for the handler class. This is just
      * the key of the phrase when showing this fields type.
      * For example, for phrases like "Text box" or "Checkbox" etc listed in the admin interface.

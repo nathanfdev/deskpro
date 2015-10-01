@@ -28,6 +28,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Reader\DeskPRO\DeskPROConfig;
 use Application\ImportBundle\Reader\DeskPRO\DeskPROReader;
 use Application\ImportBundle\Reader\ReaderInterface;
@@ -54,21 +55,24 @@ class DeskPROFactory extends AbstractExporterFactory
         $people_storage = new Parser\PeopleStorage();
         $ticket_people  = new Parser\DeskPRO\Storage\TicketPeopleStorage($reader, $people_storage);
 
+        $helpers = new ParserHelperSet();
+        $helpers->attach(new Parser\DeskPRO\Helper\CustomFields());
+
         $parsers = new Parser\Collection();
         $parsers
-            ->attach(new Parser\DeskPRO\People($reader, $people_storage))
-            ->attach(new Parser\DeskPRO\PeopleCustomDef($reader))
-            ->attach(new Parser\DeskPRO\Tickets($reader, $ticket_people, $config->getStartTicketId()))
-            ->attach(new Parser\DeskPRO\TicketCustomDef($reader))
-            ->attach(new Parser\DeskPRO\Articles($reader))
-            ->attach(new Parser\DeskPRO\ArticleCategories($reader))
-            ->attach(new Parser\DeskPRO\ArticleCustomDef($reader))
-            ->attach(new Parser\DeskPRO\Downloads($reader))
-            ->attach(new Parser\DeskPRO\Feedback($reader))
-            ->attach(new Parser\DeskPRO\FeedbackCustomDef($reader))
-            ->attach(new Parser\DeskPRO\News($reader))
-            ->attach(new Parser\DeskPRO\Organizations($reader))
-            ->attach(new Parser\DeskPRO\OrganizationCustomDef($reader))
+            ->attach(new Parser\DeskPRO\People($reader, $helpers, $people_storage))
+            ->attach(new Parser\DeskPRO\PeopleCustomDef($reader, $helpers))
+            ->attach(new Parser\DeskPRO\Tickets($reader, $helpers, $ticket_people, $config->getStartTicketId()))
+            ->attach(new Parser\DeskPRO\TicketCustomDef($reader, $helpers))
+            ->attach(new Parser\DeskPRO\Articles($reader, $helpers))
+            ->attach(new Parser\DeskPRO\ArticleCategories($reader, $helpers))
+            ->attach(new Parser\DeskPRO\ArticleCustomDef($reader, $helpers))
+            ->attach(new Parser\DeskPRO\Downloads($reader, $helpers))
+            ->attach(new Parser\DeskPRO\Feedback($reader, $helpers))
+            ->attach(new Parser\DeskPRO\FeedbackCustomDef($reader, $helpers))
+            ->attach(new Parser\DeskPRO\News($reader, $helpers))
+            ->attach(new Parser\DeskPRO\Organizations($reader, $helpers))
+            ->attach(new Parser\DeskPRO\OrganizationCustomDef($reader, $helpers))
         ;
 
         return new DeskPRO($parsers, $reader);

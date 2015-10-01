@@ -48,6 +48,11 @@ class ImportMap extends \Application\DeskPRO\Domain\DomainObject
     const TYPE_ZENDESK_TICKET_MESSAGE     = 'zd_ticket_message';
     const TYPE_ZENDESK_ARTICLE            = 'zd_article';
     const TYPE_ZENDESK_ARTICLE_CATEGORY   = 'zd_article_category';
+    const TYPE_DESKPRO_ORGANIZATION_FIELD = 'dp_organization_field';
+    const TYPE_DESKPRO_USER_FIELD         = 'dp_user_field';
+    const TYPE_DESKPRO_TICKET_FIELD       = 'dp_ticket_field';
+    const TYPE_DESKPRO_ARTICLE_FIELD      = 'dp_article_field';
+    const TYPE_DESKPRO_FEEDBACK_FIELD     = 'dp_feedback_field';
     const TYPE_CSV_ARTICLE                = 'csv_article';
     const TYPE_CSV_TICKET                 = 'csv_ticket';
 

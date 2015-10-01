@@ -28,15 +28,14 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
+use Application\DeskPRO\Entity\ImportMap;
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Parser\NotSupportedInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
  * Class OrganizationCustomDef.
- *
- * todo implement
  */
-final class OrganizationCustomDef extends AbstractParser implements NotSupportedInterface
+final class OrganizationCustomDef extends AbstractCustomDefParser
 {
     /**
      * {@inheritdoc}
@@ -51,7 +50,7 @@ final class OrganizationCustomDef extends AbstractParser implements NotSupported
      */
     public function getCount()
     {
-        return 0;
+        return count($this->reader->findCustomDefOrganizations());
     }
 
     /**
@@ -59,6 +58,31 @@ final class OrganizationCustomDef extends AbstractParser implements NotSupported
      */
     public function export()
     {
-        return new Entity\Collection();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->findCustomDefOrganizations())
+            ->setPrefix('DPCustomDefOrganization')
+            ->setRefColumn('id')
+            ->setMethod('exportCustomDef')
+            ->setAdvanceProgressbar(true)
+        ;
+
+        return $this->exportCollection($config);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultCustomDefEntity()
+    {
+        return new Entity\OrganizationCustomDef();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getImportMapKey()
+    {
+        return ImportMap::TYPE_DESKPRO_ORGANIZATION_FIELD;
     }
 }

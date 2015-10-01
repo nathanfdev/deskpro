@@ -91,8 +91,8 @@ use Orb\Util\Util;
  * @property PersonEmail[] $emails
  * @property PhoneNumber[] $phone_numbers
  * @property ArrayCollection|LabelPerson[] $labels
- * @property CustomDataPerson[] $custom_data
- * @property PersonContactData[] $contact_data
+ * @property ArrayCollection|CustomDataPerson[] $custom_data
+ * @property ArrayCollection|PersonContactData[] $contact_data
  * @property Usergroup[] $usergroups
  * @property TwitterAccount[] $twitter_accounts
  * @property TwitterUser[] $twitter_users
