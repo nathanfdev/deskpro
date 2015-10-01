@@ -142,26 +142,6 @@ if (!$IMPORT_INSTALL) {
     $em->flush();
 }
 
-################################################################################
-# Feedback
-################################################################################
-
-##BEGIN:create_feedback.default##
-$DEFAULT_IDEA_CAT          = new \Application\DeskPRO\Entity\FeedbackCategory();
-$DEFAULT_IDEA_CAT['title'] = $translate->phrase('user.defaults.feedback_type_suggestion');
-$em->persist($DEFAULT_IDEA_CAT);
-$em->flush();
-
-$cat          = new \Application\DeskPRO\Entity\FeedbackCategory();
-$cat['title'] = $translate->phrase('user.defaults.feedback_type_feature-request');
-$em->persist($cat);
-$em->flush();
-
-$cat          = new \Application\DeskPRO\Entity\FeedbackCategory();
-$cat['title'] = $translate->phrase('user.defaults.feedback_type_bug-report');
-$em->persist($cat);
-$em->flush();
-
 // Statuses are done as part of FeedbackCatsStep so we can map id's
 if (!$IMPORT_INSTALL) {
     // ensure gathering-feedback is always first, such that it's ID = 1
@@ -500,20 +480,22 @@ for ($i = 0; $i < 15; ++$i) {
 // downloads
 //////////////////////////////////////////////////////////////
 
-function make_blob(\Doctrine\ORM\EntityManager $em)
-{
-    $storage = new \Application\DeskPRO\BlobStorage\DeskproBlobStorage($em);
+if (!function_exists('make_blob')) {
+    function make_blob(\Doctrine\ORM\EntityManager $em)
+    {
+        $storage = new \Application\DeskPRO\BlobStorage\DeskproBlobStorage($em);
 
-    $blob = $storage->createBlobRecordFromFile(
-        realpath(__DIR__.'/../../../../../web/images/dp-logo-130.png'),
-        'dp-logo-130.png',
-        'image/png'
-    )
+        $blob = $storage->createBlobRecordFromFile(
+            realpath(__DIR__.'/../../../../../web/images/dp-logo-130.png'),
+            'dp-logo-130.png',
+            'image/png'
+        )
         ;
 
-    $blob->authcode = rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18);
+        $blob->authcode = rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18);
 
-    return $blob;
+        return $blob;
+    }
 }
 
 $ac        = new \Application\DeskPRO\Entity\DownloadCategory();
@@ -568,23 +550,28 @@ for ($i = 0; $i < 15; ++$i) {
 // feedback
 //////////////////////////////////////////////////////////////
 
-function rand_fb_status_pair(\Doctrine\ORM\EntityManager $em)
-{
-    $array = array();
+if (!function_exists('rand_fb_status_pair')) {
+    function rand_fb_status_pair(\Doctrine\ORM\EntityManager $em)
+    {
+        $array = array();
 
-    $opts = array(
-        \Application\DeskPRO\Entity\Feedback::STATUS_ACTIVE,
-        \Application\DeskPRO\Entity\Feedback::STATUS_CLOSED,
-    );
-    $array['status'] = $opts[rand(0, (count($opts) - 1))];
+        $opts = array(
+            \Application\DeskPRO\Entity\Feedback::STATUS_ACTIVE,
+            \Application\DeskPRO\Entity\Feedback::STATUS_CLOSED,
+        );
+        $array['status'] = $opts[rand(0, (count($opts) - 1))];
 
-    $scs = $em->getRepository('DeskPRO:FeedbackStatusCategory')->findBy(array(
-        'status_type' => $array['status'],
-    ));
+        $scs = $em->getRepository('DeskPRO:FeedbackStatusCategory')->findBy(
+            array(
+                'status_type' => $array['status'],
+            )
+        )
+        ;
 
-    $array['status_category'] = $scs[rand(0, (count($scs) - 1))];
+        $array['status_category'] = $scs[rand(0, (count($scs) - 1))];
 
-    return $array;
+        return $array;
+    }
 }
 
 for ($i = 0; $i < 30; ++$i) {
