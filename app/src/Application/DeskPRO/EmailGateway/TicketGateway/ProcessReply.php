@@ -214,7 +214,7 @@ class ProcessReply extends ProcessAbstract
             $message['show_full_hint'] = true;
         }
 
-        if ($this->person->is_agent) {
+        if ($this->person->is_agent && $context === 'agent') {
             if (!$email_info->agent_reply_as_note || isset($this->ticket_email->reply_actions['is_reply'])) {
                 $this->logMessage('Reply mode: reply');
                 $message['is_agent_note']          = false;
