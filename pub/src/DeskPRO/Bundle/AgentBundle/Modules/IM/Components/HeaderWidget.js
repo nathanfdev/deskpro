@@ -70,7 +70,7 @@ export class HeaderWidget extends React.Component {
     this.setState(newState);
   }
 
-  agentClickHandler() {
+  handleClickParticipant(id, type, event) {
     const newState = {
       overlayShown: false,
       chating: true,
@@ -106,8 +106,14 @@ export class HeaderWidget extends React.Component {
                 IMs <i className="fa fa-angle-down"></i>
             </span>
           </a>
-          { this.props.recentAgents.length > 0 ? this.props.recentAgents.map((agent, index) => <Recent agentClickHandler={this.agentClickHandler} key={index} agent={agent}/>) : null}
-          { this.state.overlayShown ? <Overlay/> : null }
+          { this.props.recentAgents.length > 0
+            ? this.props.recentAgents.map(
+              (agent, index) =>
+                <Recent handleClickParticipant={this.handleClickParticipant.bind(this, agent.id, 'agent')} key={index} agent={agent}/>
+            )
+            : null
+          }
+          { this.state.overlayShown ? <Overlay handleClickParticipant={this.handleClickParticipant.bind(this)}/> : null }
           { this.state.chating ? <Chat messages={this.state.messages}/> : null }
         </div>
     );

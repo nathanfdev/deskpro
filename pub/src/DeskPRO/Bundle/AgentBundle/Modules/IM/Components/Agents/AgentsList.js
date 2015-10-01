@@ -33,7 +33,7 @@ export const AgentsList = React.createClass(
                             this.state.agents.length > 0
                             ? this.state.agents.map(
                                 (agent, index) =>
-                                    <AgentsListItem agentClickHandler={this.props.handler} key={index} agent={agent} highlight={this.state.value}/>)
+                                    <AgentsListItem handleClickParticipant={this.props.handleClickParticipant.bind(this, agent.id, 'agent')} key={index} agent={agent} highlight={this.state.value}/>)
                             : (this.props.agents.length
                                 ? this.props.agents.map(
                                     (agent, index) =>
