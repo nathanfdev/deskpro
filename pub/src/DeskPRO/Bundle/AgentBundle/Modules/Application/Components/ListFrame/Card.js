@@ -139,9 +139,8 @@ export class CardDate extends Component {
 }
 
 export class CardUser extends Component {
-
   render() {
-    const {user} = this.props || {};
+    const user = this.props.user || {};
     return (
       <div className="dpwd--card-assigned">
               <span className="dpw--avatar-face"

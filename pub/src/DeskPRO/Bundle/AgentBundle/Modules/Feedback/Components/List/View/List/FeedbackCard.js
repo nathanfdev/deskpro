@@ -24,7 +24,7 @@ export class FeedbackCard extends Component {
     }
   }
 
-  renderStatus(status) {
+  renderStatus(status = {}) {
     if (status.title) {
       status = status.title;
     }

@@ -55,6 +55,16 @@ export class ControlButton extends Component {
 
 export class MassActionCheckbox extends Component {
 
+  renderCount(count) {
+    if (count) {
+      return (
+        <div className="dpwd-navigation-top-row-mass-action-checkbox-count">
+          <span>{count}</span>
+        </div>
+      );
+    }
+  }
+
   render() {
     const {count, massAction, onClick} = this.props;
 
@@ -66,10 +76,7 @@ export class MassActionCheckbox extends Component {
         <div className={divClasses} onClick={onClick}>
           <i className={checkboxClasses}></i>
         </div>
-
-        <div className="dpwd-navigation-top-row-mass-action-checkbox-count">
-          <span>{count}</span>
-        </div>
+        {this.renderCount(count)}
       </div>
     );
   }

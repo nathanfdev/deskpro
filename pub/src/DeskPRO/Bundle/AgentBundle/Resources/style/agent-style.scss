@@ -148,7 +148,7 @@ $kanban-frame-width: 800px;
     background: #f8f8f8;
     border-right: 1px solid darken(#f8f8f8, 10%);
     height: auto;
-    overflow-y: auto;
+    //overflow-y: hidden;
 
     transition: all 0.25s ease;
 
@@ -158,7 +158,8 @@ $kanban-frame-width: 800px;
   }
 
   .dp-list-frame-contents {
-    padding-top: 45px;
+    //padding-top: 45px;
+    overflow: auto;
   }
 
   .dp-tab-frame {
