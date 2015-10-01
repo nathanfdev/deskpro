@@ -35,9 +35,11 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
 use Doctrine\ORM\Query\QueryException;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -45,6 +47,22 @@ use Pagerfanta\Pagerfanta;
 
 class FeedbackDataService extends AbstractDataService
 {
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
+
+    /**
+     * @var PortalPermissionsManager
+     */
+    protected $permissions_manager;
+
+    public function __construct(EntityManager $em, PortalPermissionsManager $permissions_manager)
+    {
+        parent::__construct($em);
+        $this->permissions_manager = $permissions_manager;
+    }
+
     /**
      * @return bool
      */
@@ -71,6 +89,7 @@ class FeedbackDataService extends AbstractDataService
     public function getItemsPager($page, $max_per_page, FeedbackFilter $filter, Person $person)
     {
         $em                  = $this->em;
+        $permissions_manager = $this->permissions_manager;
 
         return $this->generateAndCache(
             array(
@@ -124,9 +143,6 @@ class FeedbackDataService extends AbstractDataService
                 // array(6,1,4)
                 if (count($status_categories = $filter->getStatusCategories())) {
                     $qb->andWhere('f.status_category IN (:status_categories)')->setParameter('status_categories', $status_categories);
-                        'status_categories',
-                        $status_categories
-                    );
                 }
 
                 // types
@@ -219,6 +235,7 @@ class FeedbackDataService extends AbstractDataService
     public function getFeedbackCategoriesForPerson(Person $person)
     {
         $permissions_bag = $this->permissions_manager->getPermissionsBagForPerson($person);
+
         return $this->getFeedbackCategoryRepo()->findBy(
             array(
                 'id' => $permissions_bag->getAllowedFeedbackCategoryIds(),
