@@ -1,11 +1,8 @@
 import React from 'react';
-import { ControlBar, ControlButtonsRow } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/ControlBar';
+import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/ControlBar';
 import { OrderByContainer } from './OrderByContainer';
 import { FilterContainer } from './FilterContainer';
 import { ViewSwitcherContainer } from './ViewSwitcherContainer';
-import { OrderByDropdownContainer } from './OrderByDropdownContainer';
-import { FilterByDropdownContainer } from './FilterByDropdownContainer';
-import { ViewSwitcherDropdownContainer } from './ViewSwitcherDropdownContainer';
 import { MassActionCheckboxContainer } from './MassActionCheckboxContainer';
 
 export class FeedbackListControlBar extends React.Component {
@@ -18,52 +15,6 @@ export class FeedbackListControlBar extends React.Component {
       viewModeDropdownIsExpanded: false,
       dropdownOffset: {left: 0, top: 0}
     };
-  }
-
-  render() {
-    return (
-      <ControlBar>
-        <MassActionCheckboxContainer/>
-        <ControlButtonsRow>
-          <OrderByContainer toggleDropdown={this.toggleOrderByDropdown}/>
-          <li>
-            <hr/>
-          </li>
-          <FilterContainer toggleDropdown={this.toggleFilterByDropdown}/>
-          <li>
-            <hr/>
-          </li>
-          <ViewSwitcherContainer toggleDropdown={this.toggleViewModeDropdown}/>
-        </ControlButtonsRow>
-        {this.renderOrderByDropdown()}
-        {this.renderFilterByDropdown()}
-        {this.renderViewModeDropdown()}
-      </ControlBar>
-    );
-  }
-
-  renderOrderByDropdown() {
-    if (this.state.orderByDropdownIsExpanded) {
-      return (
-        <OrderByDropdownContainer offset={this.state.dropdownOffset}/>
-      );
-    }
-  }
-
-  renderFilterByDropdown() {
-    if (this.state.filterByDropdownIsExpanded) {
-      return (
-        <FilterByDropdownContainer offset={this.state.dropdownOffset}/>
-      );
-    }
-  }
-
-  renderViewModeDropdown() {
-    if (this.state.viewModeDropdownIsExpanded) {
-      return (
-        <ViewSwitcherDropdownContainer offset={this.state.dropdownOffset}/>
-      );
-    }
   }
 
   toggleOrderByDropdown = (offset) => {
@@ -92,4 +43,33 @@ export class FeedbackListControlBar extends React.Component {
       dropdownOffset: offset
     });
   };
+
+  render() {
+    return (
+      <ControlBar>
+        <MassActionCheckboxContainer/>
+        <OrderByContainer
+          expanded={this.state.orderByDropdownIsExpanded}
+          toggleDropdown={this.toggleOrderByDropdown}
+          offset={this.state.dropdownOffset}
+          />
+        <li>
+          <hr/>
+        </li>
+        <FilterContainer
+          expanded={this.state.filterByDropdownIsExpanded}
+          toggleDropdown={this.toggleFilterByDropdown}
+          offset={this.state.dropdownOffset}
+          />
+        <li>
+          <hr/>
+        </li>
+        <ViewSwitcherContainer
+          expanded={this.state.viewModeDropdownIsExpanded}
+          toggleDropdown={this.toggleViewModeDropdown}
+          offset={this.state.dropdownOffset}
+          />
+      </ControlBar>
+    );
+  }
 }

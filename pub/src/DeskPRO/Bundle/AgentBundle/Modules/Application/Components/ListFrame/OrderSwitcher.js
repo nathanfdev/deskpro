@@ -1,21 +1,21 @@
 import React, {Component, PropTypes} from 'react';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 import classNames from 'classnames';
 
 export class OrderSwitcher extends Component {
 
   static propTypes = {
     order: PropTypes.string.isRequired,
-    toggleOrder: PropTypes.func.isRequired
+    toggleOrder: PropTypes.func.isRequired,
+    toggleDropdown: PropTypes.func.isRequired
   };
 
   render() {
-    const {order, toggleOrder} = this.props;
+    const {order, toggleOrder, toggleDropdown} = this.props;
     return (
       <div className="dpw-navigation-dropdown-options-ordering">
         <span>Sort type:</span>
-        <Radio type="asc" order={order} toggleOrder={toggleOrder}/>
-        <Radio type="desc" order={order} toggleOrder={toggleOrder}/>
+        <Radio type="asc" order={order} toggleOrder={toggleOrder} toggleDropdown={toggleDropdown}/>
+        <Radio type="desc" order={order} toggleOrder={toggleOrder} toggleDropdown={toggleDropdown}/>
       </div>
     );
   }
@@ -40,7 +40,8 @@ export class Radio extends Component {
   handleClick(type, event) {
     event.preventDefault();
     event.stopPropagation();
-    const {toggleOrder} = this.props;
+    const {toggleOrder, toggleDropdown} = this.props;
     toggleOrder(type);
+    toggleDropdown();
   }
 }
