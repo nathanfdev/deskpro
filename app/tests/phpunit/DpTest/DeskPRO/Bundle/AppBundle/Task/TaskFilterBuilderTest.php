@@ -48,6 +48,10 @@ class TaskFilterBuilderTest extends PortalTestCase
     public function setUp()
     {
         $this->em = $this->getContainer()->get('doctrine')->getManager();
+        $this->em = $this->em->create(
+            $this->em->getConnection(),
+            $this->em->getConfiguration()
+        );
 
         // Install the API dataset
         $this->installDataSet('api');
@@ -61,7 +65,7 @@ class TaskFilterBuilderTest extends PortalTestCase
         // Set the request up
         $request = new ParameterBag([
             'assigned'   => 'me',                 // Check it can be assigned to "me" i.e. the admin
-            'irrelevant' => 'parameter',        // Irrelevant parameters should be ignored
+            'irrelevant' => 'parameter',          // Irrelevant parameters should be ignored
         ]);
 
         // Set the user to think of as "me"
@@ -69,15 +73,15 @@ class TaskFilterBuilderTest extends PortalTestCase
 
         // Create the filter and apply it
         $filter  = new TaskFilterBuilder($this->em, $person);
-        $results = $filter->filterRequest($request);
+        $query = $filter->filterRequest($request);
 
         // Validate that we get a query back
-        $this->assertInstanceOf('Doctrine\ORM\Query', $results);
-
-        $this->assertGreaterThan(0, count($results));
+        $this->assertInstanceOf('Doctrine\ORM\Query', $query);
 
         // Run the query
-        foreach ($results->getResult() as $result) {
+        $results = $query->getResult();
+        $this->assertGreaterThan(0, count($results));
+        foreach ($results as $result) {
             $this->assertNotEmpty($result->getAssigned());
 
             foreach ($result->getAssigned() as $assigned) {

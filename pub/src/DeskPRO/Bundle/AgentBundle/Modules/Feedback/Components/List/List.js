@@ -11,6 +11,8 @@ export class List extends Component {
 
   static propTypes = {
     feedback: PropTypes.array.isRequired,
+    selected: PropTypes.array.isRequired,
+    toggleSelected: PropTypes.func.isRequired,
     comments: PropTypes.array.isRequired,
     currentContent: PropTypes.string.isRequired,
     currentViewMode: PropTypes.object.isRequired
@@ -25,16 +27,20 @@ export class List extends Component {
   }
 
   renderFeedback() {
-    const {currentViewMode, feedback, people, feedbackTypes, massAction, feedbackLabels, feedbackComments, feedbackStatuses} = this.props;
+    const {
+      currentViewMode, feedback, selected, toggleSelected, people, feedbackTypes, massAction, feedbackLabels,
+      feedbackComments, feedbackStatuses } = this.props;
+
     var viewMode = currentViewMode.field;
     if (viewMode === constants.VIEW_MODE_LIST) {
       return (
-        <FeedbackList elements={feedback} people={people} feedbackLabels={feedbackLabels} feedbackTypes={feedbackTypes}
-                      feedbackComments={feedbackComments} feedbackStatuses={feedbackStatuses} massAction={massAction}/>
+        <FeedbackList elements={feedback} selected={selected} toggleSelected={toggleSelected} people={people}
+                      feedbackLabels={feedbackLabels} feedbackTypes={feedbackTypes} feedbackComments={feedbackComments}
+                      feedbackStatuses={feedbackStatuses} massAction={massAction} />
       );
     }
     return (
-      <FeedbackTable elements={feedback} people={people}/>
+      <FeedbackTable elements={feedback} selected={selected} toggleSelected={toggleSelected} people={people}/>
     );
   }
 
