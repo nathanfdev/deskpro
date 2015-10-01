@@ -23,11 +23,7 @@ export class Overlay extends React.Component {
             <div className="dropdown im-dropdown" id="im-dropdown">
                 <header className="dropdown-header">Agent Instant Messages</header>
                 <div className="wrapper">
-                    <div className="bucket left">
-                        <h1>Agents</h1>
-                        <AgentsList handler={this.props.agentClickHandler} agents={this.props.agents}/>
-                    </div>
-
+                    <AgentsList handler={this.props.agentClickHandler} agents={this.props.agents}/>
                     <div className="bucket right">
                         <a href="#" className="broadcast-to-all"><i className="fa fa-bullhorn"></i> Broadcast to Everyone</a>
                         <div className="im-list-wrapper">

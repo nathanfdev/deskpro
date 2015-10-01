@@ -17,7 +17,8 @@ const AgentsList = React.createClass(
 
     render: function() {
         return (
-            <div>
+            <div className="bucket left">
+                <h1>Agents</h1>
                 <div className="show-offline-agents">
                     <input type="checkbox" id="checkbox-name" /><label for="checkbox-name"></label> Show offline agents?
                 </div>
