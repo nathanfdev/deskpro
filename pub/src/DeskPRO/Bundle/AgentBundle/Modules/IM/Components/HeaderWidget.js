@@ -4,9 +4,10 @@ import { Overlay } from './Overlay';
 import Chat from './ChatWindow/Chat';
 import Recent from './Recent';
 import * as actions from '../Actions/imListActions';
+import { getRecentAgents } from '../Selectors/list';
 
 @connect(state => ({
-  recentAgents: state.IM.list.get('recentAgents')
+  recentAgents: getRecentAgents(state)
 }))
 export class HeaderWidget extends React.Component {
   static propTypes = {
@@ -18,7 +19,7 @@ export class HeaderWidget extends React.Component {
     this.props.dispatch(actions.loadRecentAgents());
     this.state = {
       overlayShown: false,
-      chating: true,
+      chating: false,
       messages: [
         {
           author: {
@@ -40,62 +41,6 @@ export class HeaderWidget extends React.Component {
         }
       ]
     };
-  }
-
-  onClick() {
-    const newState = {
-      overlayShown: !this.state.overlayShown,
-      chating: this.state.chating,
-      messages: [
-        {
-          author: {
-            gravatar_url: 'http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm'
-          },
-          text: 'test'
-        },
-        {
-          author: {
-            gravatar_url: 'http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm'
-          },
-          text: 'test'
-        },
-        {
-          author: {
-            gravatar_url: 'http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm'
-          },
-          text: 'test'
-        }
-      ]
-    };
-    this.setState(newState);
-  }
-
-  handleClickParticipant(id, type, event) {
-    const newState = {
-      overlayShown: false,
-      chating: true,
-      messages: [
-        {
-          author: {
-            gravatar_url: 'http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm'
-          },
-          text: 'test'
-        },
-        {
-          author: {
-            gravatar_url: 'http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm'
-          },
-          text: 'test'
-        },
-        {
-          author: {
-            gravatar_url: 'http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm'
-          },
-          text: 'test'
-        }
-      ]
-    };
-    this.setState(newState);
   }
 
   render() {
@@ -114,8 +59,34 @@ export class HeaderWidget extends React.Component {
             : null
           }
           { this.state.overlayShown ? <Overlay handleClickParticipant={this.handleClickParticipant.bind(this)}/> : null }
-          { this.state.chating ? <Chat messages={this.state.messages}/> : null }
+          { this.state.chating ? <Chat messages={this.state.messages} handleCloseChat={this.handleCloseChat.bind(this)}/> : null }
         </div>
     );
   }
+
+  handleCloseChat() {
+    "use strict";
+    let newState = {...this.state};
+    newState.chating =false;
+    this.setState(newState);
+  }
+
+  onClick() {
+    let newState = {
+      ...this.state,
+    };
+    newState.overlayShown = !this.state.overlayShown,
+    newState.chating = this.state.chating
+    this.setState(newState);
+  }
+
+  handleClickParticipant(id, type, event) {
+    let newState = {
+      ...this.state
+    };
+    newState.chating = true;
+    newState.overlayShown = false;
+    this.setState(newState);
+  }
+
 }
