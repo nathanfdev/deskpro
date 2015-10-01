@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "14e02d04efb1731e786e49e44eb08cbb",
-    "content-hash": "5eecce5bae745bd723a007c89ca24ed8",
+    "hash": "48afc62d6b2f878e0e2840cd6ff55aee",
+    "content-hash": "90911c60564e2d24f0bdcec58e0b77bd",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -1194,7 +1194,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/53bc23173fb82bcc08c0c8aae66f8122d08a1866",
+                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/5674222e181c9236abdabed19fc660f35619d82c",
                 "reference": "53bc23173fb82bcc08c0c8aae66f8122d08a1866",
                 "shasum": ""
             },
@@ -6256,16 +6256,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.22.2",
+            "version": "v1.21.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "79249fc8c9ff62e41e217e0c630e2e00bcadda6a"
+                "reference": "ddce1136beb8db29b9cd7dffa8ab518b978c9db3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/79249fc8c9ff62e41e217e0c630e2e00bcadda6a",
-                "reference": "79249fc8c9ff62e41e217e0c630e2e00bcadda6a",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/ddce1136beb8db29b9cd7dffa8ab518b978c9db3",
+                "reference": "ddce1136beb8db29b9cd7dffa8ab518b978c9db3",
                 "shasum": ""
             },
             "require": {
@@ -6278,7 +6278,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.22-dev"
+                    "dev-master": "1.21-dev"
                 }
             },
             "autoload": {
@@ -6313,7 +6313,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2015-09-22 13:59:32"
+            "time": "2015-09-09 05:28:51"
         },
         {
             "name": "vipsoft/code-coverage-common",
@@ -6692,7 +6692,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/5bbb58904d506f244d890ef35557a2b969cdec08",
+                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/a76781cad3b21a941a34c104ea0b27c2adbd62b1",
                 "reference": "5bbb58904d506f244d890ef35557a2b969cdec08",
                 "shasum": ""
             },
