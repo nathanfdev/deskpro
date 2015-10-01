@@ -165,8 +165,6 @@ final class People extends AbstractParser
             ->setOrganizationPosition($person['organization_position'])
 
             ->setLanguage($person->language ? $person->language['title'] : null)
-            ->setPassword(Entity\Person::INITIAL_PASSWORD)
-            ->setPasswordScheme(Entity\Person::PASSWORD_SCHEME_BCRYPT)
 
             ->setTimezone($person->getDateTimezone())
             ->setDateCreated($person->getDateCreated())
