@@ -3,11 +3,18 @@ import { connect } from 'react-redux';
 import { Overlay } from './Overlay';
 import Chat from './ChatWindow/Chat';
 import Recent from './Recent';
-import * as actions from '../Actions/imListActions';
+import * as listActions from '../Actions/imListActions';
+import * as chatsActions from '../Actions/imChatsActions';
+import * as messagesActions from '../Actions/imMessagesActions';
 import { getRecentAgents } from '../Selectors/list';
+import { createMessagesRequestSelectors } from '../Selectors/messages';
+
+
+const messagesSel = createMessagesRequestSelectors('messages');
 
 @connect(state => ({
-  recentAgents: getRecentAgents(state)
+  recentAgents: getRecentAgents(state),
+  messages: messagesSel.recordsSel(state)
 }))
 export class HeaderWidget extends React.Component {
   static propTypes = {
@@ -16,30 +23,11 @@ export class HeaderWidget extends React.Component {
 
   constructor(props) {
     super(props);
-    this.props.dispatch(actions.loadRecentAgents());
+    this.props.dispatch(listActions.loadRecentAgents());
     this.state = {
       overlayShown: false,
       chating: false,
-      messages: [
-        {
-          author: {
-            gravatar_url: 'http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm'
-          },
-          text: 'test'
-        },
-        {
-          author: {
-            gravatar_url: 'http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm'
-          },
-          text: 'test'
-        },
-        {
-          author: {
-            gravatar_url: 'http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm'
-          },
-          text: 'test'
-        }
-      ]
+      target: {id: 0}
     };
   }
 
@@ -59,7 +47,7 @@ export class HeaderWidget extends React.Component {
             : null
           }
           { this.state.overlayShown ? <Overlay handleClickParticipant={this.handleClickParticipant.bind(this)}/> : null }
-          { this.state.chating ? <Chat messages={this.state.messages} handleCloseChat={this.handleCloseChat.bind(this)}/> : null }
+          { this.state.chating ? <Chat target={this.state.target} messages={this.props.messages} handleCloseChat={this.handleCloseChat.bind(this)}/> : null }
         </div>
     );
   }
@@ -86,6 +74,9 @@ export class HeaderWidget extends React.Component {
     };
     newState.chating = true;
     newState.overlayShown = false;
+    newState.target = {id: id, type: type};
+    this.props.dispatch(chatsActions.findChat(id));
+    this.props.dispatch(messagesActions.loadRecentMessages());
     this.setState(newState);
   }
 

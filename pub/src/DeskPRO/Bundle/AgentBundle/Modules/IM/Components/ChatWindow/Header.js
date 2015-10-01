@@ -10,7 +10,7 @@ export default class Header extends React.Component {
                       <a href="#" onClick={this.props.handleCloseChat}><i className="fa fa-times"></i></a>
                     </span>
                 </div>
-                <h1>Your IM with <span>Jennifer Pham</span><b className="user-status online"></b></h1>
+                <h1>Your IM with <span>{this.props.target.type} {this.props.target.id}</span><b className="user-status online"></b></h1>
             </header>
         );
     }
