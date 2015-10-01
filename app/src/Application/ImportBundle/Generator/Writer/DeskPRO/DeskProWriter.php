@@ -130,7 +130,7 @@ final class DeskProWriter extends AbstractWriter
                     $importer->checkAlreadyExists($entity);
                 }
 
-                /** @var ImporterInterface $importer */
+                /* @var ImporterInterface $importer */
                 $importer->reset()->prepare($entity, $entity_id);
 
                 $records = $importer->getDoctrineEntities();

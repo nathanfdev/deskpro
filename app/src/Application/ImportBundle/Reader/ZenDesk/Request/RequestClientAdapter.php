@@ -101,13 +101,13 @@ final class RequestClientAdapter implements RequestAdapterInterface
         try {
             API\Http::$curl = new CurlRequest(null, $this->options);
 
-            $helper = 'Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\\' . $request->concatClass();
-            if ( ! class_exists($helper)) {
+            $helper = 'Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper\\'.$request->concatClass();
+            if (!class_exists($helper)) {
                 trigger_error(sprintf('ZenDesk reader helper class `%s` not found', $helper), E_ERROR);
             }
 
             $helper = new $helper($this->client);
-            if ( ! $helper instanceof ClientHelperInterface) {
+            if (!$helper instanceof ClientHelperInterface) {
                 trigger_error('Helper is not instance of ClientHelperInterface', E_ERROR);
             }
 

@@ -1517,6 +1517,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     public function setCustomData($field_id, $value_type, $value)
     {
         $custom_data = $this->getCustomDataForField($field_id);
+        $orig_data   = $custom_data;
         $is_new      = false;
 
         if (!$custom_data) {
@@ -1559,8 +1560,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         if ($is_new) {
             $this->addCustomData($custom_data);
         }
-
-        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
 
         return $custom_data;
     }
@@ -1615,6 +1614,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function addCustomData(CustomDataTicket $data)
     {
+        $exist = $this->getCustomDataForField($data->field) ?: null;
+        if ($exist) {
+            $exist = clone $exist;
+        }
+
         $this->custom_data->add($data);
         $data['ticket'] = $this;
 
@@ -1626,9 +1630,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         }
 
         if ($parent_id) {
-            $this->getStateChangeRecorder()->record("custom_data.$parent_id", null, $data, true);
+            $this->getStateChangeRecorder()->record("custom_data.$parent_id", $exist, $data, true);
         } else {
-            $this->getStateChangeRecorder()->record("custom_data.$field_id", null, $data, true);
+            $this->getStateChangeRecorder()->record("custom_data.$field_id", $exist, $data, true);
         }
 
         $this->_onPropertyChanged('custom_data', null, $this->custom_data);

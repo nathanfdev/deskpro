@@ -97,7 +97,7 @@ final class Categories extends AbstractFixture implements FixtureDeleteInterface
                     'category' => array(
                         'name'        => 'Primary Category',
                         'description' => 'Primary Category description',
-                    )
+                    ),
                 ));
 
                 $this->logInfo('Primary category imported successfully');

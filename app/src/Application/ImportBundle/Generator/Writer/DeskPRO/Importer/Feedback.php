@@ -111,7 +111,7 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Feedback $entity
+     * @var Entity\Feedback
      */
     public function checkAlreadyExists(Entity\EntityInterface $entity)
     {
@@ -178,6 +178,7 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
      * Returns custom def feedback entity.
      *
      * @param Entity\CustomField $entity
+     *
      * @return DeskPROEntity\CustomDataFeedback
      */
     private function createFeedbackCustomData(Entity\CustomField $entity)

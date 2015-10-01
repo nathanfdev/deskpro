@@ -47,7 +47,7 @@ abstract class AbstractHelper implements ClientHelperInterface
     protected $client;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Client $client
      */
@@ -70,17 +70,18 @@ abstract class AbstractHelper implements ClientHelperInterface
     {
         $response = Http::send($this->client, $end_point);
 
-        if ( ! is_object($response) || $this->client->getDebug()->lastResponseCode != 200) {
+        if (!is_object($response) || $this->client->getDebug()->lastResponseCode != 200) {
             throw new ResponseException(__METHOD__);
         }
 
         $this->client->setSideload(null);
+
         return $response;
     }
 
     /**
      * Incremental exports with a supplied start_time
-     * Not implemented in zendesk_api_client_php yet
+     * Not implemented in zendesk_api_client_php yet.
      *
      * @param string $type
      * @param array  $params
@@ -96,18 +97,18 @@ abstract class AbstractHelper implements ClientHelperInterface
      */
     protected function doIncrementalExportRequest($type, array $params, $api_group = '')
     {
-        if ( ! $params['start_time']) {
+        if (!$params['start_time']) {
             throw new MissingParametersException(__METHOD__, array('start_time'));
         }
 
-        $request_url = rtrim($api_group, '/') . '/' . sprintf('incremental/%s.json?start_time=%s', $type, $params['start_time']);
+        $request_url = rtrim($api_group, '/').'/'.sprintf('incremental/%s.json?start_time=%s', $type, $params['start_time']);
         $end_point   = Http::prepare($request_url);
 
         return $this->doGetRequest($end_point);
     }
 
     /**
-     * Sends a post request
+     * Sends a post request.
      *
      * @param string $end_point
      * @param array  $params
@@ -125,11 +126,12 @@ abstract class AbstractHelper implements ClientHelperInterface
             Response::HTTP_CREATED,
         );
 
-        if ( ! is_object($response) || ! in_array($this->client->getDebug()->lastResponseCode, $success_codes)) {
+        if (!is_object($response) || !in_array($this->client->getDebug()->lastResponseCode, $success_codes)) {
             throw new ResponseException($end_point);
         }
 
         $this->client->setSideload(null);
+
         return $response;
     }
 
@@ -150,11 +152,12 @@ abstract class AbstractHelper implements ClientHelperInterface
             Response::HTTP_NO_CONTENT,
         );
 
-        if ( ! in_array($this->client->getDebug()->lastResponseCode, $success_codes)) {
+        if (!in_array($this->client->getDebug()->lastResponseCode, $success_codes)) {
             throw new ResponseException($end_point);
         }
 
         $this->client->setSideload(null);
+
         return $response;
     }
 }

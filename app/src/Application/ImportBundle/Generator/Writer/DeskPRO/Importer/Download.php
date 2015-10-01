@@ -98,7 +98,7 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Download $entity
+     * @var Entity\Download
      */
     public function checkAlreadyExists(Entity\EntityInterface $entity)
     {

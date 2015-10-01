@@ -566,7 +566,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     /**
      * Mark as user enabled.
      *
-     * @param bool $is_user_enabled.
+     * @param bool $is_user_enabled
      *
      * @return $this
      */

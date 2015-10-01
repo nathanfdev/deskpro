@@ -35,6 +35,7 @@ use Application\ImportBundle\Generator\Validator\ValidatorExceptionInterface;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Application\ImportBundle\Importer\Importer;
 use DeskPRO\Kernel\KernelErrorHandler;
+use Doctrine\DBAL\DBALException;
 use Exception;
 
 /**
@@ -197,8 +198,9 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
                 $this->importer->setStatus($this->config->getExporterType(), self::STATUS_DONE);
             }
         } catch (\Exception $e) {
-            // todo em closed
-            // $this->importer->setStatus($this->config->getExporterType(), self::STATUS_ERROR);
+            if (!$e instanceof DBALException) {
+                $this->importer->setStatus($this->config->getExporterType(), self::STATUS_ERROR);
+            }
             throw $e;
         }
     }
