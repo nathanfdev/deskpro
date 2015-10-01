@@ -249,6 +249,20 @@ class Manager
         $app_syncer->runUpdates();
         $app_syncer->runSync();
 
+        #------------------------------
+        # Clear error logs
+        #------------------------------
+
+        foreach (array('cli-phperr.log', 'server-phperr-web.log', 'error.log') as $l) {
+            $path = dp_get_log_dir().DIRECTORY_SEPARATOR.$l;
+            if (file_exists($path)) {
+                if ($this->logger) {
+                    $this->logger->debug('resetting '.$l);
+                }
+                @file_put_contents($path, '');
+            }
+        }
+
         if ($this->logger) {
             $this->logger->debug('Post upgrade done');
         }
