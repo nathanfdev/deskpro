@@ -65,6 +65,7 @@ use Application\DeskPRO\Tickets\TicketSplit;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\Common\Collections\ArrayCollection;
+use Orb\Util\Arrays;
 use Orb\Util\Dates;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
@@ -1259,18 +1260,25 @@ class TicketController extends AbstractController
 
         $message->convertEmbeddedImagesToInlineAttach();
 
-        if ($this->in->getBool('options.is_snippet')) {
-            $snippet = $this->em->find('DeskPRO:TextSnippet', (int) $this->in->getString('options.snippet_id'));
+        if ($snippet_ids = $this->in->getString('options.snippet_ids')) {
+            $snippet_ids = explode(',', $snippet_ids);
+            $snippet_ids = array_map(function ($x) { return (int) trim($x); }, $snippet_ids);
+            $snippet_ids = Arrays::removeFalsey($snippet_ids);
+            $snippet_ids = array_unique($snippet_ids, SORT_NUMERIC);
 
-            if ($snippet) {
-                $snippetLog = new Entity\TextSnippetLog();
+            foreach ($snippet_ids as $snip_id) {
+                $snippet = $this->em->find('DeskPRO:TextSnippet', $snip_id);
 
-                $snippetLog['ticket']  = $ticket;
-                $snippetLog['person']  = $this->getPerson();
-                $snippetLog['snippet'] = $snippet;
+                if ($snippet) {
+                    $snippetLog = new Entity\TextSnippetLog();
 
-                $this->em->persist($snippetLog);
-                $this->em->flush();
+                    $snippetLog['ticket']  = $ticket;
+                    $snippetLog['person']  = $this->getPerson();
+                    $snippetLog['snippet'] = $snippet;
+
+                    $this->em->persist($snippetLog);
+                    $this->em->flush();
+                }
             }
         }
 

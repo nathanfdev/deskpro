@@ -522,6 +522,13 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		// Snippets Viewer
 		//------------------------------
 
+		var recordSnippetUse = function(snippetId) {
+			var el = $("#" + self.page.meta.baseId + "_snippet_ids");
+			var current = el.val() || '';
+			var newval = current.length ? current + ',' + snippetId : snippetId+'';
+			el.val(newval);
+		}
+
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
 			driver: DeskPRO_Window.ticketSnippetDriver,
 			triggerElement: snippetBtn,
@@ -622,8 +629,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					self.page.insertTextInReply(result);
 				}
 
-                                $("#" + self.page.meta.baseId + "_is_snippet").val(1);
-                                $("#" + self.page.meta.baseId + "_snippet_id").val(snippetId);
+				recordSnippetUse(snippetId);
 
 				self.snippetsViewer.close();
 			}
@@ -700,6 +706,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
                 var ticketLangId = self.page ? self.page.getEl('value_form').find('.language_id').val() : 0;
                 var snippetId = snippet.id;
                 var snippetCode = snippet.snippet;
+
+								recordSnippetUse(snippetId);
 
                 var agentText;
                 var defaultText;
