@@ -168,6 +168,8 @@ final class People extends AbstractParser
 
             ->setTimezone($person->getDateTimezone())
             ->setDateCreated($person->getDateCreated())
+            ->setAsDisabled($person->isDisabled())
+            ->setAsDeleted($person->isDeleted())
         ;
 
         foreach ($person->emails as $email) {
