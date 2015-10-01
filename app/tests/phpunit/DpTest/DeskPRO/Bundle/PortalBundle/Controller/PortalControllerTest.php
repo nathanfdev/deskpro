@@ -37,7 +37,7 @@ class PortalControllerTest extends PortalTestCase
 {
     public function testHomepageLoads()
     {
-        $this->installDataSet('fresh');
+        $this->installDataSet('fresh', true);
 
         $client = $this->getClient();
 

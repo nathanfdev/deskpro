@@ -2620,11 +2620,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         if ($status != 'awaiting_agent' && $this->is_hold) {
             $this['is_hold'] = false;
         }
-        $status_code = $status;
-        $hstatus     = null;
-        if (strpos($status, '.')) {
-            list($status, $hstatus) = explode('.', $status, 2);
-        }
 
         if (!$status || !in_array(
                 $status,

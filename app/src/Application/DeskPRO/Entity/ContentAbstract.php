@@ -678,8 +678,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getDateCreated()
     {
-        $this->setModelField('date_published', $date_published);
-
         return $this->date_created;
     }
 
