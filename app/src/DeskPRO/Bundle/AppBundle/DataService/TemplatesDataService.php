@@ -37,16 +37,6 @@ use Application\DeskPRO\ORM\EntityManager;
 class TemplatesDataService extends AbstractDataService
 {
     /**
-     * @var EntityManager
-     */
-    private $em;
-
-    public function __construct(EntityManager $em)
-    {
-        $this->em = $em;
-    }
-
-    /**
      * @param int|null|Template $template
      *
      * @return Template|null
