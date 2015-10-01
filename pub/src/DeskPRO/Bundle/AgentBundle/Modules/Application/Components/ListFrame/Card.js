@@ -83,11 +83,11 @@ export class CardLineItem extends Component {
 export class CardCheckbox extends Component {
 
   render() {
-    const { massAction } = this.props;
-    var classes = classNames('fa', {'fa-check': massAction});
+    const { selected, onClick } = this.props;
+    var classes = classNames('fa', {'fa-check': selected});
 
     return (
-      <div className="dpm--card-checkbox">
+      <div className="dpm--card-checkbox" onClick={onClick}>
         <i className={classes}></i>
       </div>
     );

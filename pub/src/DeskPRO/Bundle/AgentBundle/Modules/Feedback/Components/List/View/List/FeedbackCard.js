@@ -6,9 +6,10 @@ export class FeedbackCard extends Component {
 
   static propTypes = {
     feedback: PropTypes.object.isRequired,
+    selected: PropTypes.bool.isRequired,
+    toggleSelected: PropTypes.func.isRequired,
     author: PropTypes.object.isRequired,
     type: PropTypes.object.isRequired,
-    massAction: PropTypes.bool.isRequired,
     feedbackLabels: PropTypes.object.isRequired
   };
 
@@ -37,14 +38,15 @@ export class FeedbackCard extends Component {
   }
 
   render() {
-    const {feedback, author, type,  massAction, feedbackLabels, feedbackComments, feedbackStatus} = this.props;
+    const { feedback, author, type, selected, toggleSelected, feedbackLabels, feedbackComments, feedbackStatus }
+      = this.props;
     const labels   = feedbackLabels ? feedbackLabels.labels : false;
     const comments = feedbackComments ? feedbackComments.counter : 0;
 
     return (
       <Card type="feedback">
 
-        <CardCheckbox massAction={massAction}/>
+        <CardCheckbox selected={selected} onClick={toggleSelected(feedback.id)} />
 
         <CardLine>
           <CardLineLeft>

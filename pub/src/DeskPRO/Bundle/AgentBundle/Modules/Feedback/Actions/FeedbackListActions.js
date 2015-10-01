@@ -165,6 +165,10 @@ export const toggleMassAction = createAction(
   'FEEDBACK_TOGGLE_MASS_ACTION'
 );
 
+export const toggleSelectedAction = createAction(
+  'FEEDBACK_TOGGLE_SELECTED_ACTION'
+);
+
 /** @ToDo migrate to Ampliflux v2 after FilterBy block design */
 export const setFilterValue = createAction(
   "FEEDBACK_SET_FILTER_VALUE",
