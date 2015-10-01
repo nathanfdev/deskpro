@@ -5,26 +5,17 @@ import * as messagesActions from '../Actions/imMessagesActions';
 import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 import Immutable from 'immutable';
 
-const messages = [
+const chats = [
   {
     id: 1,
-    author: {
-      gravatar_url: 'http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm'
-    },
     text: 'test'
   },
   {
     id: 2,
-    author: {
-      gravatar_url: 'http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm'
-    },
     text: 'test'
   },
   {
     id: 3,
-    author: {
-      gravatar_url: 'http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm'
-    },
     text: 'test'
   }
 ];
@@ -38,7 +29,7 @@ export const findChat = createAction(
   'IM_CHAT_FIND_CHAT',
   recordStoreActions.requestRecords(['IM', 'chats', 'agentChats'], (entity_id, type) => {
     return new Promise((resolve) => {
-      const recordMap = mapKeyedFromArray(messages, 'id');
+      const recordMap = mapKeyedFromArray(chats, 'id');
       resolve(recordMap);
     });
   })
