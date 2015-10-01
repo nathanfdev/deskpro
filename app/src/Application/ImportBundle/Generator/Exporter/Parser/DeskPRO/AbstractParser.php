@@ -116,7 +116,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     {
         $value = $custom_data->getData();
         if ($custom_data->root_field->isChoiceType()) {
-            // todo value chain
+            $value = $custom_data->field->getRealTitle();
         }
 
         $entity = new Entity\CustomField();
