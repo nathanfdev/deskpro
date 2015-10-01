@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 @connect(state => ({
   massAction: state.Feedback.list.get('massAction'),
-  count: state.Feedback.list.get('feedback').size
+  count: state.Feedback.list.get('selected').size
 }))
 
 export class MassActionCheckboxContainer extends Component {
