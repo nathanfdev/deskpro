@@ -1,26 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import classNames from 'classnames';
 
-export class DropdownMenu extends Component {
-
-  static propTypes = {
-    offset: PropTypes.object.isRequired
-  };
-
-  render() {
-    const {offset} = this.props;
-
-    return (
-      <div className={'dpw-navigation-dropdown'} style={{left:offset.left, top:offset.bottom}}>
-        <ul>
-          {this.props.children}
-        </ul>
-      </div>
-    );
-  }
-
-}
-
 export class Option extends Component {
 
   static propTypes = {
@@ -29,6 +9,13 @@ export class Option extends Component {
     callback: PropTypes.func.isRequired
   };
 
+  handleClick(option, event) {
+    event.preventDefault();
+    const {callback, toggleDropdown} = this.props;
+    toggleDropdown();
+    callback(option);
+  }
+
   render() {
     const {active, option } = this.props;
     var classes = classNames('dpw-navigation-dropdown-item', {
@@ -36,9 +23,7 @@ export class Option extends Component {
     });
     var icons   = classNames('fa', option.icon);
     var click   = active ?
-                  (e)=> {
-                    e.preventDefault()
-                  }
+                  (e)=> e.preventDefault()
       : this.handleClick.bind(this, option);
     return (
       <li>
@@ -57,18 +42,11 @@ export class Option extends Component {
       </li>
     );
   }
-
-  handleClick(option, event) {
-    event.preventDefault();
-    const {callback} = this.props;
-    callback(option);
-  }
 }
 
 export class DropdownMenuFooter extends Component {
 
   render() {
-
     return (
       <li>
         <div className="dpw-navigation-dropdown-item dpw-navigation-dropdown-footer">

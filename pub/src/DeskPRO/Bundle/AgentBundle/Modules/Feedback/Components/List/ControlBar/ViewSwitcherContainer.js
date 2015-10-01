@@ -13,16 +13,28 @@ import { ViewSwitcherDropdownContainer } from './ViewSwitcherDropdownContainer.j
   listViewFields: state.Feedback.list.get('listViewFields'),
   currentViewMode: viewDataSelector(state)
 }))
+
 export class ViewSwitcherContainer extends React.Component {
-  render() {
-    return (
-      <ViewModeSwitcher {...this.props} />
-    );
-  }
 
   displayFieldsStatus(type, field, status) {
     const {dispatch, query, sort, order, filters, tableViewFields, listViewFields } = this.props;
     dispatch(changeDisplayFieldsStatus(type, field, status, query, sort, order, filters, tableViewFields, listViewFields));
   }
 
+  renderDropdown() {
+    const {expanded, offset, toggleDropdown} = this.props;
+    if (expanded) {
+      return (
+        <ViewSwitcherDropdownContainer offset={offset} toggleDropdown={toggleDropdown}/>
+      );
+    }
+  }
+
+  render() {
+    return (
+      <ViewModeSwitcher {...this.props}>
+        {this.renderDropdown()}
+      </ViewModeSwitcher>
+    );
+  }
 }

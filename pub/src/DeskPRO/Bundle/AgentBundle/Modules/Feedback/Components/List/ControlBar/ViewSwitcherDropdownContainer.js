@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
-import { DropdownMenu, Option, DropdownMenuFooter } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/GlobalWidgets/DropdownMenu';
+import { Option, DropdownMenuFooter } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/GlobalWidgets/DropdownMenu';
+import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/GlobalWidgets/Menu';
 import { ViewOptionsSubmenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/ViewOptionsSubmenu';
 import { toggleViewMode } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { viewDataSelector } from '../../../Selectors/list';
@@ -25,13 +26,18 @@ export class ViewSwitcherDropdownContainer extends Component {
   }
 
   render() {
-    const { viewModeOptions, currentViewMode, offset } = this.props;
+    const { viewModeOptions, currentViewMode, offset, toggleDropdown } = this.props;
 
     return (
-      <DropdownMenu offset={offset}>
+      <Menu offset={offset} toggleDropdown={toggleDropdown}>
         {viewModeOptions.map((option, index)=>
-            <Option key={index} active={currentViewMode.field === option.field} option={option}
-                    callback={this.toggleView.bind(this)}/>
+            <Option
+              key={index}
+              active={currentViewMode.field === option.field}
+              option={option}
+              callback={this.toggleView.bind(this)}
+              toggleDropdown={toggleDropdown}
+              />
         )}
         <DropdownMenuFooter>
           <div className="dpw-navigation-dropdown-options-link">
@@ -39,7 +45,7 @@ export class ViewSwitcherDropdownContainer extends Component {
           </div>
         </DropdownMenuFooter>
         {this.renderOptionsSubmenu()}
-      </DropdownMenu>
+      </Menu>
     );
   }
 

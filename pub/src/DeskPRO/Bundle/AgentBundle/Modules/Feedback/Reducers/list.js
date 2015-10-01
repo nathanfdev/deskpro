@@ -16,7 +16,7 @@ const initialState = {
   sortOptions: [
     {field: 'date_created', label: 'Date', icon: 'fa-calendar-o', current: true},
     {field: 'total_rating', label: 'Rating', icon: 'fa-calendar-o', current: false},
-    {field: 'num_ratings', label: 'Number of votes', icon: 'fa-calendar-o', current: false}
+    {field: 'num_ratings', label: 'Votes', icon: 'fa-calendar-o', current: false}
   ],
   filterOptions: [
     {field: 'category', label: 'Type', icon: 'fa-calendar-o', value: '', current: true},
