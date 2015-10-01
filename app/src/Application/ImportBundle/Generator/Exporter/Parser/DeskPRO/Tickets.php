@@ -31,6 +31,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserPeopleStorageInterface;
 use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderInterface;
 
@@ -55,12 +56,13 @@ final class Tickets extends AbstractParser
      * Constructor.
      *
      * @param DeskPROReaderInterface       $reader
+     * @param ParserHelperSet              $helpers
      * @param ParserPeopleStorageInterface $tickets_people
      * @param int                          $min_id
      */
-    public function __construct(DeskPROReaderInterface $reader, ParserPeopleStorageInterface $tickets_people, $min_id = 0)
+    public function __construct(DeskPROReaderInterface $reader, ParserHelperSet $helpers, ParserPeopleStorageInterface $tickets_people, $min_id = 0)
     {
-        parent::__construct($reader);
+        parent::__construct($reader, $helpers);
 
         $this->tickets_people = $tickets_people;
         $this->tickets_min_id = (int) $min_id;
@@ -165,8 +167,10 @@ final class Tickets extends AbstractParser
         foreach ($ticket->participants as $participant) {
             $entity->addParticipant($participant->getPerson()->getPrimaryEmail()->email);
         }
-        foreach ($ticket->custom_data as $custom_field_data) {
-            $entity->addCustomField($this->exportCustomData($custom_field_data));
+
+        $custom_fields = $this->getCustomFieldsParser()->export($ticket->custom_data);
+        foreach ($custom_fields as $custom_field) {
+            $entity->addCustomField($custom_field);
         }
 
         return $entity;

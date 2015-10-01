@@ -28,8 +28,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
-use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderInterface;
 
 /**
@@ -55,10 +55,12 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      * Constructor.
      *
      * @param DeskPROReaderInterface $reader
+     * @param ParserHelperSet        $helpers
      */
-    public function __construct(DeskPROReaderInterface $reader)
+    public function __construct(DeskPROReaderInterface $reader, ParserHelperSet $helpers)
     {
-        $this->reader = $reader;
+        $this->reader  = $reader;
+        $this->helpers = $helpers;
     }
 
     /**
@@ -106,28 +108,12 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
-     * Returns custom field entity.
+     * Returns custom fields parser.
      *
-     * @param DeskPROEntity\CustomDataAbstract $custom_data
-     *
-     * @return Entity\CustomField
+     * @return Helper\CustomFields
      */
-    protected function exportCustomData(DeskPROEntity\CustomDataAbstract $custom_data)
+    protected function getCustomFieldsParser()
     {
-        $value = $custom_data->getData();
-        if ($custom_data->root_field->isChoiceType()) {
-            $value = $custom_data->field->getRealTitle();
-        }
-
-        $entity = new Entity\CustomField();
-        $entity
-            ->setRawData($custom_data->toApiData())
-            ->setOid($custom_data->getId())
-            ->setDestination($entity->getDestinationPrefix().$custom_data->getId())
-            ->setKey($custom_data->root_field->getRealTitle())
-            ->setValue($value)
-        ;
-
-        return $entity;
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_CUSTOM_FIELD);
     }
 }
