@@ -3,6 +3,9 @@ import TaskFilterHover from '../Components/TaskFilterHover';
 import TaskOrderHover from '../Components/TaskOrderHover';
 import ComponentRootWrapper from 'DeskPRO/Component/ComponentRootWrapper';
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned';
+import ListFrameMenu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameMenu';
+import TaskControlsViewSwitcher from '../Components/TaskControlsViewSwitcher';
+import $ from 'jquery';
 
 export default class TaskControls extends React.Component {
   constructor(props) {
@@ -45,11 +48,31 @@ export default class TaskControls extends React.Component {
 
   render() {
     const taskView = this.props.windowProps.taskView;
-    return (<span className="ticket-controls-default">
-          <a href="#" className="ticket-control-button" onClick={this.toggleShowOrder.bind(this)}>
+    const viewSwitcherPosition = $('.task-list-view-switcher');
+
+    const {actionable, toggleAllMassActions, setView} = this.props;
+    return (
+      <ListFrameMenu ref="ticketControlBar">
+        <div className="dpwd-navigation-top-row-mass-action-checkbox-container">
+          <div className="dpwd-navigation-top-row-mass-action-checkbox">
+            <a href="#" onClick={toggleAllMassActions.bind(this)}>
+                <span className="checkbox">
+                  {actionable > 0 ? <i className="fa fa-check"/> : ''}
+                </span>
+            </a>
+              <span className="count" style={actionable > 0 ? {} : {display: 'none'}}>
+                <span>{actionable}</span>
+              </span>
+          </div>
+        </div>
+
+        <li>
+          <a href="#" className="dpwd-navigation-dropdown-top-row-button" onClick={this.toggleShowOrder.bind(this)}>
             <span className="title">Order by:</span>
-            <span className="focus" ref="orderButton">{ this.props.order.charAt(0).toUpperCase() + this.props.order.slice(1) }</span>
-            <span className="down">{ this.props.direction.charAt(0).toUpperCase() + this.props.direction.slice(1) } <i className="fa fa-caret-down" /></span>
+            <span className="focus"
+                  ref="orderButton">{ this.props.order.charAt(0).toUpperCase() + this.props.order.slice(1) }</span>
+            <span className="down">{ this.props.direction.charAt(0).toUpperCase() + this.props.direction.slice(1) } <i
+              className="fa fa-caret-down"/></span>
           </a>
 
           <Positioned isOpen={this.state.changeOrder}
@@ -63,11 +86,15 @@ export default class TaskControls extends React.Component {
               direction={this.props.direction}
               />
           </Positioned>
-
-          <a href="#" className="ticket-control-button" onClick={this.toggleWindow.bind(this)}>
+        </li>
+        <li>
+          <hr/>
+        </li>
+        <li>
+          <a href="#" className="dpwd-navigation-dropdown-top-row-button" onClick={this.toggleWindow.bind(this)}>
             <span className="title">Filter by:</span>
             <span className="focus">12</span>
-            <span className="down">Completed <i className="fa fa-caret-down" /></span>
+            <span className="down">Completed <i className="fa fa-caret-down"/></span>
           </a>
 
           <ComponentRootWrapper open={this.state.showWindow}>
@@ -83,14 +110,29 @@ export default class TaskControls extends React.Component {
               taskFilter={this.props.taskFilter}
               />
           </ComponentRootWrapper>
-
-          <a href="#" className="ticket-control-button" onClick={this.props.toggleView.bind(this)}>
+        </li>
+        <li>
+          <hr/>
+        </li>
+        <li>
+          <a href="#" className="dpwd-navigation-dropdown-top-row-button" onClick={this.props.toggleView.bind(this)}>
             <span className="title">View:</span>
             <span className="multi task-list-view-switcher">
               { taskView.charAt(0).toUpperCase() + taskView.slice(1) }
-              <span className="multi-down"><i className="fa fa-caret-down" /></span>
+              <span className="multi-down"><i className="fa fa-caret-down"/></span>
             </span>
           </a>
-        </span>);
+
+          <Positioned isOpen={this.state.changeView}
+                      positionAt="left bottom"
+                      positionTarget={viewSwitcherPosition}>
+            <TaskControlsViewSwitcher
+              setView={setView.bind(this)}
+              view={this.state.view}
+              />
+          </Positioned>
+        </li>
+      </ListFrameMenu>
+    );
   }
 }

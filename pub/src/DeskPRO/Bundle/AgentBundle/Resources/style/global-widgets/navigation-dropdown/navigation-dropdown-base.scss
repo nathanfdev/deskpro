@@ -154,7 +154,7 @@ $border-color: #d4d4d4;
       border-top-right-radius: 2px;
     }
 
-    > li:first-child > a:hover { border-top: 1px solid $hover-color; }
+    > li:first-child > a:hover { border-top: 0; }
 
     > li:last-child > a {
       border-bottom-left-radius: 2px;
@@ -177,9 +177,8 @@ $border-color: #d4d4d4;
     padding: 12px 10px 10px 30px;
     display: block;
     height: 38px;
-    border-bottom: 1px solid $border-color;
-    border-left: 1px solid $border-color;
-    border-right: 1px solid $border-color;
+    border: 1px solid $border-color;
+    border-top: 0;
     margin-top: -1px;
     position: relative;
     z-index: 997;
@@ -187,10 +186,6 @@ $border-color: #d4d4d4;
 
   .dpw-navigation-dropdown-item:hover {
     background: #579f7f;
-    border: 1px solid $hover-color;
-    border-bottom: 1px solid #579f7f;
-    border-top: 1px solid #579f7f;
-    border-top: 0;
     color: #fff;
     position: relative;
     z-index: 999;

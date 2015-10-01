@@ -3,6 +3,7 @@ import { ListFrame }  from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Compo
 import { FeedbackListControlBar } from './ControlBar/FeedbackListControlBar';
 import { FeedbackList } from './View/List/FeedbackList';
 import { FeedbackTable } from './View/Table/FeedbackTable';
+import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 
@@ -28,7 +29,8 @@ export class List extends Component {
     var viewMode = currentViewMode.field;
     if (viewMode === constants.VIEW_MODE_LIST) {
       return (
-        <FeedbackList elements={feedback} people={people} feedbackLabels={feedbackLabels} feedbackTypes={feedbackTypes} feedbackComments={feedbackComments} feedbackStatuses={feedbackStatuses} massAction={massAction}/>
+        <FeedbackList elements={feedback} people={people} feedbackLabels={feedbackLabels} feedbackTypes={feedbackTypes}
+                      feedbackComments={feedbackComments} feedbackStatuses={feedbackStatuses} massAction={massAction}/>
       );
     }
     return (
@@ -53,7 +55,9 @@ export class List extends Component {
     return (
       <ListFrame>
         <FeedbackListControlBar count={this.props.feedback.size}/>
-        {this.contentChoice()}
+        <ListFrameContents>
+          {this.contentChoice()}
+        </ListFrameContents>
       </ListFrame>
     );
   }

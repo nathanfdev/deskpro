@@ -1,5 +1,6 @@
 import React from 'react';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/ControlBar';
+import ListFrameMenu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameMenu';
 import { OrderByContainer } from './OrderByContainer';
 import { FilterContainer } from './FilterContainer';
 import { ViewSwitcherContainer } from './ViewSwitcherContainer';
@@ -46,7 +47,7 @@ export class FeedbackListControlBar extends React.Component {
 
   render() {
     return (
-      <ControlBar>
+      <ListFrameMenu>
         <MassActionCheckboxContainer/>
         <OrderByContainer
           expanded={this.state.orderByDropdownIsExpanded}
@@ -69,7 +70,7 @@ export class FeedbackListControlBar extends React.Component {
           toggleDropdown={this.toggleViewModeDropdown}
           offset={this.state.dropdownOffset}
           />
-      </ControlBar>
+      </ListFrameMenu>
     );
   }
 }
