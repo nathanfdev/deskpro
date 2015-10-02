@@ -237,7 +237,6 @@ class Display
         'task_comments'               => 'DeskPRO:TaskComment',
         'text_snippets'               => 'DeskPRO:TextSnippet',
         'text_snippet_categories'     => 'DeskPRO:TextSnippetCategory',
-        'text_snippet_logs'           => 'DeskPRO:TextSnippetLog',
         'tickets'                     => 'DeskPRO:Ticket',
         'ticket_categories'           => 'DeskPRO:TicketCategory',
         'ticket_escalation_logs'      => 'DeskPRO:TicketEscalationLog',

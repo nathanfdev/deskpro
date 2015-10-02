@@ -1270,12 +1270,7 @@ class TicketController extends AbstractController
                 $snippet = $this->em->find('DeskPRO:TextSnippet', $snip_id);
 
                 if ($snippet) {
-                    $snippetLog = new Entity\TextSnippetLog();
-
-                    $snippetLog['ticket']  = $ticket;
-                    $snippetLog['person']  = $this->getPerson();
-                    $snippetLog['snippet'] = $snippet;
-
+                    $snippetLog = Entity\TicketObjectUseLog::createSnippetLog($ticket, $this->getPerson(), $snippet);
                     $this->em->persist($snippetLog);
                     $this->em->flush();
                 }
