@@ -1827,7 +1827,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var self = this;
 		$([this.getEl('unlock_ticket').get(0), this.getEl('unlock_ticket2').get(0)]).on('click', function() {
 			self.wrapper.find('.hide-locked').removeClass('hide-locked');
-			self.wrapper.find('.lock-overlay').remove();
+			self.wrapper.find('.lock-overlay').hide();
 			self.getEl('locked_message').hide();
 			self.getEl('locked_message').data('locked-self', false);
 			self.getEl('lock_ticket').show();
@@ -1843,7 +1843,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 
 		this.getEl('lock_ticket').on('click', function() {
-			self.wrapper.find('.lock-overlay').remove();
+			self.wrapper.find('.lock-overlay').hide();
 			self.getEl('locked_message').data('locked-self', true);
 			self.getEl('locked_message').show();
 			self.getEl('locked_message_self').show();
