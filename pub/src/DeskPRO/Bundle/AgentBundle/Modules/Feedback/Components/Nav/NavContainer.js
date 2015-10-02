@@ -23,7 +23,6 @@ import { loadFeedbackLabels } from '../../RecordStores/Actions/feedbackLabelsAct
 export class NavContainer extends Component {
 
   static propTypes = {
-    groupChoice: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     currentFilterMode: PropTypes.object.isRequired,
     toValidateCount: PropTypes.string.isRequired,
@@ -61,6 +60,15 @@ export class NavContainer extends Component {
     event.stopPropagation();
     const {dispatch } = this.props;
     dispatch(actions.changeGroupState(group));
+    dispatch(actions.loadFeedbackList());
+  }
+
+  commentsView(group, event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const {dispatch } = this.props;
+    dispatch(actions.changeGroupState(group));
+    dispatch(actions.loadCommentsList());
   }
 
   render() {
@@ -77,6 +85,7 @@ export class NavContainer extends Component {
         customCategories={customCategories}
         currentGroup={currentGroup}
         groupChoice={this.groupChoice.bind(this)}
+        commentsView={this.commentsView.bind(this)}
         />
     );
   }
