@@ -7,9 +7,13 @@
 
   .notification-button {
     position: relative;
-    margin-right: 2px;
+    padding-right: 5px;
     .notification-count {
       right: -3px;
+    }
+
+    i:last-child {
+      margin-left: 5px;
     }
   }
 
