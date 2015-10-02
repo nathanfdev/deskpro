@@ -19,12 +19,12 @@ export class Header extends React.Component {
 
       <div className="user-options">
         <a href="#" className="notification-button">
-          <span className="title"><i className="fa fa-dollar"></i></span>
+          <span className="title"><i className="fa fa-dollar"></i> <i className="fa fa-angle-down"></i></span>
         </a>
 
         <a href="#" className="notification-button">
           <span className="notification-count">23</span>
-          <span className="title"><i className="fa fa-cog"></i> Admin</span>
+          <span className="title"><i className="fa fa-cog"></i> Admin <i className="fa fa-angle-down"></i></span>
         </a>
 
         <a href="#" className="user-options-button">
