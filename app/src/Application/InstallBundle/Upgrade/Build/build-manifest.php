@@ -1533,6 +1533,6 @@ return array(
     ),
     1443785221 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/10/Build1443785221.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Users/chroder/Dev/deskpro/dp/alt/app/src/Application/InstallBundle/Upgrade/Build/2015/10/Build1443785221',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1443785221',
     ),
 );
