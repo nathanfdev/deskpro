@@ -81,7 +81,7 @@
     "eslint": "eslint src || true",
     "gulp": "gulp",
     "gulp-prod": "gulp",
-    "postinstall": "node node_modules_patch/react-0.14-rc1-apply-45f85a6cc5707cd798aba350ae4f6dbe99ede6dc.js"
+    "postinstall": "node node_modules_patch/react-0.14-rc1-apply-45f85a6cc5707cd798aba350ae4f6dbe99ede6dc.js && node_modules_patch/build-formsy.sh"
   },
   "jest": {
     "testDirectoryName": "tests",
