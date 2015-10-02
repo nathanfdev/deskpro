@@ -19,7 +19,7 @@ export class Header extends React.Component {
 
       <div className="user-options">
         <a href="#" className="notification-button">
-          <span className="title"><i className="fa fa-dollar"></i> <i className="fa fa-angle-down"></i></span>
+          <span className="title"><i className="fa fa-columns"></i><i className="fa fa-angle-down"></i></span>
         </a>
 
         <a href="#" className="notification-button">
