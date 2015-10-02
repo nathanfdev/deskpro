@@ -1,5 +1,6 @@
 import { createAction } from 'Ampliflux';
 import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
+import { loadFeedback } from '../RecordStores/Actions/feedbackActions';
 import { loadPeople } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { loadFeedbackCommentsCounter } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCommentsActions';
 import { loadFeedbackStatuses } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackStatusesActions';
@@ -49,7 +50,7 @@ export const loadFeedbackList = createAction(
       order: feedbackListState.order
     };
     const params            = {...currentParams, ...overwriteParams};
-    return dispatch => Feedback.getList(params).then(promise => {
+    return dispatch => dispatch(loadFeedback(params)).then(promise => {
       const feedback = promise.getData();
       let ids        = [];
       for (var i in feedback.data) {
