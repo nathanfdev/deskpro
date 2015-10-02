@@ -15,6 +15,7 @@ export class List extends Component {
     feedback: PropTypes.array.isRequired,
     people: PropTypes.array.isRequired,
     selected: PropTypes.array.isRequired,
+    feedbackFromStore: PropTypes.array.isRequired,
     toggleSelected: PropTypes.func.isRequired,
     comments: PropTypes.array.isRequired,
     massAction: PropTypes.bool.isRequired,
@@ -62,7 +63,7 @@ export class List extends Component {
   }
 
   renderComments() {
-    const {currentViewMode, comments, selected, toggleSelected, massAction, people} = this.props;
+    const {feedbackFromStore, currentViewMode, comments, selected, toggleSelected, massAction, people} = this.props;
     var viewMode = currentViewMode.field;
     if (viewMode === constants.VIEW_MODE_LIST) {
       return (
@@ -72,6 +73,7 @@ export class List extends Component {
           toggleSelected={toggleSelected}
           people={people}
           massAction={massAction}
+          feedback={feedbackFromStore}
           />
       );
     }

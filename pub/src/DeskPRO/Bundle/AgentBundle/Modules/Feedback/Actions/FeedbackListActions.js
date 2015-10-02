@@ -3,6 +3,7 @@ import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
 import { loadPeople } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { loadFeedbackCommentsCounter } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCommentsActions';
 import { loadFeedbackStatuses } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackStatusesActions';
+import { loadFeedback } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackActions';
 import { sortingDataSelector, filterDataSelector } from '../Selectors/list';
 import { groupDataSelector } from '../Selectors/nav';
 
@@ -37,6 +38,11 @@ export const getStatuses = createAction(
     ids => dispatch => dispatch(loadFeedbackStatuses(recordStoresId, ids))
 );
 
+export const getFeedbackForComments = createAction(
+  'FEEDBACK_GET_STATUSES',
+    ids => dispatch => dispatch(loadFeedback(recordStoresId, ids))
+);
+
 export const loadFeedbackList = createAction(
   'FEEDBACK_LIST',
   (overwriteParams = {}) => (dispatch, getState)=> {
@@ -65,9 +71,15 @@ export const loadFeedbackList = createAction(
 
 export const loadCommentsList = createAction(
   'COMMENTS_LIST',
-  () => dispatch => {
-    return dispatch => Feedback.commentsToReviewList().then(promise => promise.getData());
-  }
+  () => dispatch =>  Feedback.commentsToReviewList().then(promise => {
+    const comments = promise.getData();
+    let ids        = [];
+    for (var i in comments.data) {
+      ids.push(comments.data[i].feedback_id);
+    }
+    dispatch(getFeedbackForComments(ids));
+    return comments;
+  })
 );
 
 
