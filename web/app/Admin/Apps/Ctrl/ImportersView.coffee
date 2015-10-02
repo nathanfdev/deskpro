@@ -115,7 +115,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @Api.sendGet('/server/importers/' + @$scope.id).then (res) =>
         @$scope.importer = res.data
         updated = @$scope.importer.updated
-        if updated && Math.round(Date.now() / 1000) > updated - 600
+        if updated && Math.round(Date.now() / 1000) > updated + 600
           return @$scope.importer.status = 'error'
 
 
