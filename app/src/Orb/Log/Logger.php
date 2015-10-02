@@ -243,7 +243,6 @@ class Logger
                 case 'STRICT': $priority = self::STRICT; break;
                 default: $priority       = self::NOTICE; break;
             }
-            $priority = constant('Orb\\Log\\Logger::'.strtoupper($priority));
         }
 
         $info[LogItem::MESSAGE]       = $message;
