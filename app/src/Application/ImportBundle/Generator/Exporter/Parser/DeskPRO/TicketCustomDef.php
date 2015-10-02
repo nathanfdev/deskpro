@@ -28,15 +28,14 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
+use Application\DeskPRO\Entity\ImportMap;
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Parser\NotSupportedInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 
 /**
  * Class TicketCustomDef.
- *
- * todo implement
  */
-final class TicketCustomDef extends AbstractParser implements NotSupportedInterface
+final class TicketCustomDef extends AbstractCustomDefParser
 {
     /**
      * {@inheritdoc}
@@ -51,7 +50,7 @@ final class TicketCustomDef extends AbstractParser implements NotSupportedInterf
      */
     public function getCount()
     {
-        return 0;
+        return count($this->reader->findCustomDefTickets());
     }
 
     /**
@@ -59,6 +58,31 @@ final class TicketCustomDef extends AbstractParser implements NotSupportedInterf
      */
     public function export()
     {
-        return new Entity\Collection();
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->reader->findCustomDefTickets())
+            ->setPrefix('DPCustomDefTicket')
+            ->setRefColumn('id')
+            ->setMethod('exportCustomDef')
+            ->setAdvanceProgressbar(true)
+        ;
+
+        return $this->exportCollection($config);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultCustomDefEntity()
+    {
+        return new Entity\TicketCustomDef();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getImportMapKey()
+    {
+        return ImportMap::TYPE_DESKPRO_TICKET_FIELD;
     }
 }

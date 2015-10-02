@@ -89,7 +89,8 @@ final class Person extends AbstractImporter
             if ($entity->isPlainPasswordScheme()) {
                 $person->setPassword($entity->getPassword());
             } else {
-                $this->logAlert(sprintf('Password scheme `%s` is not supported', $entity->getPasswordScheme()));
+                $this->logAlert(sprintf('Password scheme `%s` is not supported. Set initial password.', $entity->getPasswordScheme()));
+                $person->setPassword(Entity\Person::INITIAL_PASSWORD);
             }
         } else {
             if ($entity->isUser()) {

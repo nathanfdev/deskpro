@@ -245,6 +245,13 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
                 }
 
                 $choice = $mapper->findChoiceCustomDef($entity->getValue(), $custom_field_def);
+                if (!$choice) {
+                    throw new ImporterException(sprintf(
+                        'Choice `%s` not found for custom def id=%s, title=%s',
+                        $entity->getType(), $custom_field_def->getId(), $custom_field_def->getRealTitle()
+                    ));
+                }
+
                 $custom_field
                     ->setField($choice)
                     ->setRootField($custom_field_def)
@@ -258,7 +265,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
                 return;
 
             default:
-                throw new ImporterException('Unknown custom field type `%s`', $custom_field_def->getTypeName());
+                throw new ImporterException(sprintf('Unknown custom field type `%s`', $custom_field_def->getTypeName()));
         }
 
         return $custom_field;

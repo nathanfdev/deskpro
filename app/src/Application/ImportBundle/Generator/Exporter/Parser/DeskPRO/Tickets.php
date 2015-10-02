@@ -31,6 +31,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserPeopleStorageInterface;
 use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderInterface;
 
@@ -55,12 +56,13 @@ final class Tickets extends AbstractParser
      * Constructor.
      *
      * @param DeskPROReaderInterface       $reader
+     * @param ParserHelperSet              $helpers
      * @param ParserPeopleStorageInterface $tickets_people
      * @param int                          $min_id
      */
-    public function __construct(DeskPROReaderInterface $reader, ParserPeopleStorageInterface $tickets_people, $min_id = 0)
+    public function __construct(DeskPROReaderInterface $reader, ParserHelperSet $helpers, ParserPeopleStorageInterface $tickets_people, $min_id = 0)
     {
-        parent::__construct($reader);
+        parent::__construct($reader, $helpers);
 
         $this->tickets_people = $tickets_people;
         $this->tickets_min_id = (int) $min_id;
@@ -118,8 +120,8 @@ final class Tickets extends AbstractParser
     {
         $entity = new Entity\Ticket();
         $entity
-            ->setRawData($ticket->toArray())
-            ->setDestination('ticket_'.$ticket->getId())
+            ->setRawData($ticket->toApiData())
+            ->setDestination($entity->getDestinationPrefix().$ticket->getId())
             ->setOid($ticket->getId())
             ->setRef($ticket->getRef())
 
@@ -163,12 +165,13 @@ final class Tickets extends AbstractParser
             $entity->addLabel($label['label']);
         }
         foreach ($ticket->participants as $participant) {
-            /* @var $participant DeskPROEntity\Person */
-            $entity->addParticipant($participant->getPrimaryEmail()->email);
+            $entity->addParticipant($participant->getPerson()->getPrimaryEmail()->email);
         }
 
-        // todo custom fields
-
+        $custom_fields = $this->getCustomFieldsParser()->export($ticket->custom_data);
+        foreach ($custom_fields as $custom_field) {
+            $entity->addCustomField($custom_field);
+        }
 
         return $entity;
     }
@@ -182,10 +185,10 @@ final class Tickets extends AbstractParser
     {
         $entity = new Entity\TicketMessage();
         $entity
-            ->setRawData($message->toArray())
-            ->setDestination('message_'.$message->getId())
+            ->setRawData($message->toApiData())
+            ->setDestination($entity->getDestinationPrefix().$message->getId())
             ->setOid($message->getId())
-            ->setPersonEmail($message->person->getPrimaryEmail()->email)
+            ->setPersonEmail($message->person ? $message->person->getPrimaryEmail()->email : null)
             ->setDateCreated($message['date_created'])
             ->setMessageHtml($message['message'])
             ->setAsNote((bool) $message['is_agent_note'])
@@ -208,7 +211,7 @@ final class Tickets extends AbstractParser
         $blob   = $attachment->getBlob();
         $entity = new Entity\Attachment();
         $entity
-            ->setDestination('attachment_'.$attachment->getId())
+            ->setDestination($entity->getDestinationPrefix().$attachment->getId())
             ->setOid($attachment->getId())
             ->setBlobData(base64_encode($this->reader->getBlobData($blob)))
             ->setFileName($blob['filename'])
