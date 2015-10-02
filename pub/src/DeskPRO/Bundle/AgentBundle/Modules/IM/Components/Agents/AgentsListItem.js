@@ -21,7 +21,7 @@ const AgentsListItem = React.createClass(
         return (
 
             <li>
-                <a href="#" onClick={this.props.handler}>
+                <a href="#" onClick={this.props.handleClickParticipant}>
                     <span className="chat-avatar" style={style}></span>
                     <span className="agent"><span dangerouslySetInnerHTML={{__html: name}}/><span className="datestamp">2d ago</span></span>
                 </a>

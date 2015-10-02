@@ -4,7 +4,6 @@ import * as actions from '../Actions/FeedbackListActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 const initialState = {
-  currentContent: 'feedback',
   massAction: false,
   feedback: [],
   selected: [], // array of IDs
@@ -70,6 +69,7 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
+
   [actions.getFilterValues]: async({
     success: (state, payload) => {
       let values = [];
@@ -77,13 +77,21 @@ export default createReducer(initialState, {
       return state.setIn(['filterValues'], values);
     }
   }),
+
   [actions.loadFeedbackList]: async({
     success: (state, payload) => {
       return state.set('feedback', payload.data);
     }
   }),
+
+  [actions.loadCommentsList]: async({
+    success: (state, payload) => {
+      return state.set('comments', payload.data);
+    }
+  }),
+
   [actions.toggleMassAction]: (state) => {
-    let next = state.set('massAction', !state.get('massAction'));
+    let next     = state.set('massAction', !state.get('massAction'));
     let selected = next.get('selected');
 
     if (next.get('massAction')) {
@@ -103,9 +111,9 @@ export default createReducer(initialState, {
   },
   [actions.toggleSelectedAction]: (state, payload) => {
     let selected = state.get('selected');
-    selected = selected.includes(payload)
-             ? selected.delete(selected.indexOf(payload))
-             : selected.push(payload);
+    selected     = selected.includes(payload)
+      ? selected.delete(selected.indexOf(payload))
+      : selected.push(payload);
 
     return state.set('selected', selected);
   },

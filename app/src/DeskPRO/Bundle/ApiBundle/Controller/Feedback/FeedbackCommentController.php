@@ -54,13 +54,50 @@ class FeedbackCommentController extends BaseController
      *          200="Success"
      *      }
      * )
-     * @Get("/feedback_comments", name="api_feedback_comments")
+     * @Get("/feedback_comments_list", name="api_feedback_comments_list")
      *
      * @param Request $request
      *
      * @return View
+     * @throws \LogicException
      */
     public function cgetAction(Request $request)
+    {
+        /* @ToDo move below functionality into FeedbackComment repository after removing old code */
+        $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $qb
+            ->select('c')
+            ->from('DeskPRO:FeedbackComment', 'c');
+        $awaitingValidation = $request->get('awaiting_validation');
+        if ($awaitingValidation) {
+            $qb
+                ->andWhere('c.status = :validating')
+                ->setParameter('validating', FeedbackComment::STATUS_VALIDATING)
+                ->orWhere('c.status = :visible AND c.is_reviewed = 0')
+                ->setParameter('visible', FeedbackComment::STATUS_VISIBLE);
+        }
+        $comments = $qb->getQuery()->getResult();
+
+        return View::create(
+            $this->dataSerialize($comments),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="get counter of comments for feedback",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     * @Get("/feedback_comments_counter", name="api_feedback_comments_counter")
+     *
+     * @param Request $request
+     * @return View
+     * @throws \LogicException
+     */
+    public function counterAction(Request $request)
     {
         /* @ToDo move below functionality into FeedbackComment repository after removing old code */
         $qb = $this->getDoctrine()->getManager()->createQueryBuilder();

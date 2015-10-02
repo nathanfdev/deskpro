@@ -1,8 +1,9 @@
 import { createAction } from 'Ampliflux';
 import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
 import { loadPeople } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
-import { loadFeedbackComments } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCommentsActions';
+import { loadFeedbackCommentsCounter } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCommentsActions';
 import { loadFeedbackStatuses } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackStatusesActions';
+import { loadFeedback } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackActions';
 import { sortingDataSelector, filterDataSelector } from '../Selectors/list';
 import { groupDataSelector } from '../Selectors/nav';
 
@@ -27,18 +28,19 @@ export const getAuthors = createAction(
   }
 );
 
-export const getComments = createAction(
-  'FEEDBACK_GET_COMMENTS',
-    ids => dispatch => {
-    return dispatch(loadFeedbackComments(recordStoresId, ids));
-  }
+export const getCommentsCounter = createAction(
+  'FEEDBACK_GET_COMMENTS_COUNTER',
+    ids => dispatch => dispatch(loadFeedbackCommentsCounter(recordStoresId, ids))
 );
 
 export const getStatuses = createAction(
   'FEEDBACK_GET_STATUSES',
-    ids => dispatch => {
-    return dispatch(loadFeedbackStatuses(recordStoresId, ids));
-  }
+    ids => dispatch => dispatch(loadFeedbackStatuses(recordStoresId, ids))
+);
+
+export const getFeedbackForComments = createAction(
+  'FEEDBACK_GET_STATUSES',
+    ids => dispatch => dispatch(loadFeedback(recordStoresId, ids))
 );
 
 export const loadFeedbackList = createAction(
@@ -53,19 +55,33 @@ export const loadFeedbackList = createAction(
       order: feedbackListState.order
     };
     const params            = {...currentParams, ...overwriteParams};
-    return dispatch =>Feedback.getList(params).then(promise => {
+    return dispatch => Feedback.getList(params).then(promise => {
       const feedback = promise.getData();
       let ids        = [];
       for (var i in feedback.data) {
         ids.push(feedback.data[i].id);
       }
       dispatch(getAuthors(feedback));
-      dispatch(getComments(ids));
+      dispatch(getCommentsCounter(ids));
       dispatch(getStatuses(ids));
       return feedback;
     });
   }
 );
+
+export const loadCommentsList = createAction(
+  'COMMENTS_LIST',
+  () => dispatch =>  Feedback.commentsToReviewList().then(promise => {
+    const comments = promise.getData();
+    let ids        = [];
+    for (var i in comments.data) {
+      ids.push(comments.data[i].feedback_id);
+    }
+    dispatch(getFeedbackForComments(ids));
+    return comments;
+  })
+);
+
 
 export const feedbackToValidate = createAction(
   'FEEDBACK_TO_VALIDATE',
@@ -106,10 +122,7 @@ export const feedbackHiddenStatus = createAction(
 
 export const changeGroupState = createAction(
   'FEEDBACK_CHANGE_GROUP',
-    group =>   dispatch => {
-    dispatch(loadFeedbackList({group: group}));
-    return group;
-  }
+    group =>  group
 );
 
 export const getFilterValues = createAction(

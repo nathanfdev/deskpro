@@ -9,7 +9,7 @@ export default class Chat extends React.Component {
      render () {
         return (
             <div className="dropdown active-chat-dropdown" id="active-chat-dropdown">
-                <Header />
+                <Header target={this.props.target} handleCloseChat={this.props.handleCloseChat}/>
 
                 <SearchForm />
 

@@ -1,7 +1,6 @@
 import { createReducer } from 'Ampliflux';
 import { async, setFullPayload } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/FeedbackListActions';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 
 const initialState = {
   groups: [
@@ -11,7 +10,8 @@ const initialState = {
     {name: 'no_labels', value: 1, current: false},
     {name: 'status_category', value: '', current: false},
     {name: 'category', value: '', current: false},
-    {name: 'custom_category', value: '', current: false}
+    {name: 'custom_category', value: '', current: false},
+    {name: 'feedback_comments', value: '', current: false}
   ],
   toValidateCount: 0,
   commentsToReviewCount: 0,
@@ -83,6 +83,6 @@ export default createReducer(initialState, {
       }
       groups.push(nextObj);
     });
-    return state.set('groups', Immutable.fromJS(groups))
+    return state.set('groups', Immutable.fromJS(groups));
   }
 });
