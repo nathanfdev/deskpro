@@ -23,17 +23,22 @@ export class Nav extends Component {
   };
 
   render() {
-    const { currentGroup, groupChoice, labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dispatch, dp_window } = this.props;
+    const { currentGroup, groupChoice, labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dispatch, dp_window, commentsView } = this.props;
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dp_window={dp_window}>
 
         <NavFrameHeader icon="fa-thumbs-up" dispatch={dispatch.bind(this)}>
-          <FormattedMessage id="feedback.nav.title" />
+          <FormattedMessage id="feedback.nav.title"/>
         </NavFrameHeader>
 
-        <Pending toValidateCount={toValidateCount} commentsToReviewCount={commentsToReviewCount}
-                 currentGroup={currentGroup} onClick={groupChoice.bind(this)} />
+        <Pending
+          toValidateCount={toValidateCount}
+          commentsToReviewCount={commentsToReviewCount}
+          currentGroup={currentGroup}
+          onClick={groupChoice.bind(this)}
+          commentsView={commentsView.bind(this)}
+          />
 
         <TabsPane>
           <Tab title={this.props.intl.formatMessage({id: 'feedback.nav.tabs.status'})}>
@@ -47,7 +52,8 @@ export class Nav extends Component {
             <TypeTab currentGroup={currentGroup} types={types} onClick={groupChoice.bind(this)}/>
           </Tab>
           <Tab title="Category">
-            <CategoryTab currentGroup={currentGroup} customCategories={customCategories} onClick={groupChoice.bind(this)}/>
+            <CategoryTab currentGroup={currentGroup} customCategories={customCategories}
+                         onClick={groupChoice.bind(this)}/>
           </Tab>
         </TabsPane>
       </NavFrame>
