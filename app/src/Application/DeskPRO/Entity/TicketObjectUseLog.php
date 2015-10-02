@@ -202,9 +202,10 @@ class TicketObjectUseLog extends DomainObject
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->inheritanceType      = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
-        $metadata->changeTrackingPolicy = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
-        $metadata->generatorType        = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
+        $metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+        $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+        $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketObjectUseLog';
         $metadata->setPrimaryTable(array(
             'name' => 'ticket_object_use_logs',
         ));

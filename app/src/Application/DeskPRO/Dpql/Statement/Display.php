@@ -245,6 +245,7 @@ class Display
         'ticket_filter_subscriptions' => 'DeskPRO:TicketFilterSubscription',
         'ticket_layouts'              => 'DeskPRO:TicketLayout',
         'ticket_macros'               => 'DeskPRO:TicketMacro',
+        'ticket_object_use_logs'      => 'DeskPRO:TicketObjectUseLog',
         'ticket_priorities'           => 'DeskPRO:TicketPriority',
         'ticket_triggers'             => 'DeskPRO:TicketTrigger',
         'ticket_workflows'            => 'DeskPRO:TicketWorkflow',
