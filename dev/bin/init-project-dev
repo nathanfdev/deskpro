@@ -10,6 +10,8 @@ rm -rf $DIR_ROOT/web/app-build
 rm -rf $DIR_ROOT/web/loader-build
 rm -rf $DIR_ROOT/web/bower_components
 rm -rf $DIR_ROOT/web/node_modules
+rm -rf $DIR_ROOT/pub/node_modules
+rm -rf $DIR_ROOT/pub/build
 echo ".. done"
 echo
 
