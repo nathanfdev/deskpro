@@ -16,6 +16,23 @@ export class Header extends React.Component {
     return (<header className="dp-window-header top-bar">
       <a href="https://www.deskpro.com/" className="logo"></a>
       <HeaderWidget/>
+
+      <div className="user-options">
+        <a href="#" className="notification-button">
+          <span className="title"><i className="fa fa-columns"></i><i className="fa fa-angle-down"></i></span>
+        </a>
+
+        <a href="#" className="notification-button">
+          <span className="notification-count">23</span>
+          <span className="title"><i className="fa fa-cog"></i> Admin <i className="fa fa-angle-down"></i></span>
+        </a>
+
+        <a href="#" className="user-options-button">
+          <span className="user-photo" style={{backgroundImage: 'url(' + user.picture_url + ')'}}></span>
+          <span className="title">Settings <i className="fa fa-angle-down"></i></span>
+        </a>
+      </div>
+
     </header>);
   }
 }
