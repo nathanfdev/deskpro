@@ -7,17 +7,19 @@ export class FeedbackCommentList extends Component {
     comments: PropTypes.array.isRequired,
     toggleSelected: PropTypes.func.isRequired,
     people: PropTypes.array.isRequired,
+    feedback: PropTypes.array.isRequired,
     massAction: PropTypes.bool.isRequired,
     selected: PropTypes.array.isRequired
   };
 
   render() {
-    const {comments, selected, toggleSelected, massAction, people} = this.props;
+    const {comments, selected, toggleSelected, massAction, people, feedback} = this.props;
 
     return (
       <div>
         {comments.map((element, index) =>
           <FeedbackCommentCard
+            feedback={feedback[element.feedback_id]}
             selected={selected.includes(element.id)}
             toggleSelected={toggleSelected}
             massAction={massAction}

@@ -6,13 +6,14 @@ export class FeedbackCommentCard extends Component {
 
   static propTypes = {
     comment: PropTypes.object.isRequired,
+    feedback: PropTypes.object.isRequired,
     toggleSelected: PropTypes.func.isRequired,
     author: PropTypes.object.isRequired,
     selected: PropTypes.array.isRequired
   };
 
   render() {
-    const { comment, author, selected, toggleSelected } = this.props;
+    const { comment, author, feedback, selected, toggleSelected } = this.props;
 
     return (
       <Card type="feedback">
@@ -40,6 +41,8 @@ export class FeedbackCommentCard extends Component {
             <CardLineItem>
               <CardDate date={comment.date_created}/>
             </CardLineItem>
+          <CardDisc/>
+            <CardLineItem>{feedback.title}</CardLineItem>
           </CardLineLeft>
         </CardLine>
       </Card>

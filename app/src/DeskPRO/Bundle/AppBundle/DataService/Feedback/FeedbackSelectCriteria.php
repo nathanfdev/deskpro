@@ -46,10 +46,15 @@ class FeedbackSelectCriteria extends Criteria
     public function applyFilters(QueryBuilder $qb)
     {
         $alias = $qb->getRootAliases()[0];
-        $sort  = "$alias.date_created";
+        $sort = "$alias.date_created";
         $order = 'asc';
         foreach ($this->filters as $field => $value) {
             switch ($field) {
+                case 'ids':
+                    $qb
+                        ->andWhere("$alias.id IN (:ids)")
+                        ->setParameter('ids', explode(',', $value));
+                    break;
                 case 'awaiting_validation':
                     $qb
                         ->andWhere("$alias.hidden_status = :validating")
@@ -97,7 +102,7 @@ class FeedbackSelectCriteria extends Criteria
 
     /**
      * @param OptionsResolver $resolver
-     * @param array           $data
+     * @param array $data
      *
      * @throws AccessException
      * @throws UndefinedOptionsException
@@ -117,6 +122,7 @@ class FeedbackSelectCriteria extends Criteria
                 'order',
                 'page',
                 'count',
+                'ids',
             ]
         );
         $resolver->setAllowedValues('awaiting_validation', '1');

@@ -1,7 +1,7 @@
 import React from 'react';
 import { List } from './List';
 import { connect } from 'react-redux';
-import { viewDataSelector, peopleSelector, feedbackTypesSelector, feedbackLabelsSelector, feedbackCommentsSelector, feedbackStatusesSelector } from '../../Selectors/list';
+import { viewDataSelector, peopleSelector, feedbackTypesSelector, feedbackLabelsSelector, feedbackCommentsSelector, feedbackStatusesSelector, feedbackSelector } from '../../Selectors/list';
 import { toggleSelectedAction } from '../../Actions/FeedbackListActions';
 import { groupDataSelector } from '../../Selectors/nav';
 
@@ -16,6 +16,7 @@ import { groupDataSelector } from '../../Selectors/nav';
     feedbackTypes: feedbackTypesSelector(state),
     feedbackLabels: feedbackLabelsSelector(state),
     feedbackComments: feedbackCommentsSelector(state),
+    feedbackFromStore: feedbackSelector(state),
     feedbackStatuses: feedbackStatusesSelector(state),
     currentGroup: groupDataSelector(state)
   });
@@ -23,7 +24,7 @@ import { groupDataSelector } from '../../Selectors/nav';
 export class ListContainer extends React.Component {
   render() {
     const { currentGroup, massAction, feedback, selected, comments, currentViewMode, people, feedbackTypes,
-            feedbackLabels, feedbackComments, feedbackStatuses } = this.props;
+            feedbackLabels, feedbackComments, feedbackStatuses, feedbackFromStore } = this.props;
 
     const toggleSelected = (id) => () => this.props.dispatch(toggleSelectedAction(id));
 
@@ -41,6 +42,7 @@ export class ListContainer extends React.Component {
         feedbackLabels={feedbackLabels}
         feedbackComments={feedbackComments}
         feedbackStatuses={feedbackStatuses}
+        feedbackFromStore={feedbackFromStore}
         />
     );
   }
