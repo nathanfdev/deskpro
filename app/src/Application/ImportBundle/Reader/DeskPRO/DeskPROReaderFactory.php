@@ -31,6 +31,7 @@ namespace Application\ImportBundle\Reader\DeskPRO;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\ImportBundle\Reader\ReaderConfigInterface;
 use Application\ImportBundle\Reader\ReaderFactoryInterface;
+use Doctrine\DBAL\DriverManager;
 use Symfony\Component\DependencyInjection\Container;
 
 /**
@@ -64,7 +65,19 @@ class DeskPROReaderFactory implements ReaderFactoryInterface
             throw new \RuntimeException('Config expected to be instance of DeskPROConfig');
         }
 
-        return new DeskPROReader($config, $this->container);
+        $blob_storage = $this->container->getBlobStorage();
+        $em           = $this->container->getEm()->create(
+            DriverManager::getConnection(array(
+                'dbname'   => $config->getDatabase(),
+                'user'     => $config->getUser(),
+                'password' => $config->getPassword(),
+                'host'     => $config->getHost(),
+                'driver'   => 'pdo_mysql',
+            )),
+            $this->container->getEm()->getConfiguration()
+        );
+
+        return new DeskPROReader($config, $em, $blob_storage);
     }
 
     /**

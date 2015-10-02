@@ -26,63 +26,70 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
+namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO\Helper;
 
-use Application\DeskPRO\Entity\ImportMap;
+use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\AbstractParserHelper;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Class ArticleCustomDef.
+ * Class CustomFields.
  */
-final class ArticleCustomDef extends AbstractCustomDefParser
+class CustomFields extends AbstractParserHelper
 {
     /**
      * {@inheritdoc}
      */
     public function getEntityType()
     {
-        return Entity\EntityInterface::TYPE_ARTICLE_CUSTOM_DEF;
+        return Entity\EntityInterface::TYPE_CUSTOM_FIELD;
     }
 
     /**
-     * {@inheritdoc}
+     * Exports custom fields.
+     *
+     * @param ArrayCollection|array $custom_fields
+     *
+     * @return Entity\CustomField[]
      */
-    public function getCount()
-    {
-        return count($this->reader->findCustomDefArticles());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function export()
+    public function export($custom_fields)
     {
         $config = new ExportCollectionConfig();
         $config
-            ->setData($this->reader->findCustomDefArticles())
-            ->setPrefix('DPCustomDefArticle')
+            ->setData($custom_fields)
+            ->setPrefix('DPCustomField')
             ->setRefColumn('id')
-            ->setMethod('exportCustomDef')
-            ->setAdvanceProgressbar(true)
+            ->setMethod('exportCustomField')
         ;
 
         return $this->exportCollection($config);
     }
 
     /**
-     * {@inheritdoc}
+     * Returns custom field entity.
+     *
+     * @param DeskPROEntity\CustomDataAbstract $custom_data
+     *
+     * @return Entity\CustomField
      */
-    protected function getDefaultCustomDefEntity()
+    protected function exportCustomField(DeskPROEntity\CustomDataAbstract $custom_data)
     {
-        return new Entity\ArticleCustomDef();
-    }
+        $value = $custom_data->getData();
+        if ($custom_data->root_field->isChoiceType()) {
+            $value = $custom_data->field->getRealTitle();
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function getImportMapKey()
-    {
-        return ImportMap::TYPE_DESKPRO_ARTICLE_FIELD;
+        $entity = new Entity\CustomField();
+        $entity
+            ->setRawData($custom_data->toApiData())
+            ->setOid($custom_data->getId())
+            ->setDestination($entity->getDestinationPrefix().$custom_data->getId())
+            ->setKey($custom_data->root_field->getRealTitle())
+            ->setValue($value)
+        ;
+
+        return $entity;
     }
 }

@@ -28,13 +28,12 @@
 
 namespace Application\ImportBundle\Reader\DeskPRO;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
-use Application\DeskPRO\ORM\EntityManager;
 use Application\ImportBundle\Reader\AbstractReader;
 use Doctrine\Common\Collections\Criteria;
-use Doctrine\DBAL\DriverManager;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Class DeskPROReader.
@@ -44,37 +43,28 @@ use Doctrine\DBAL\DriverManager;
 class DeskPROReader extends AbstractReader implements DeskPROReaderInterface
 {
     /**
-     * @var DeskproContainer
-     */
-    protected $container;
-
-    /**
      * @var EntityManager
      */
     protected $em;
 
     /**
+     * @var DeskproBlobStorage
+     */
+    protected $blob_storage;
+
+    /**
      * Constructor.
      *
-     * @param DeskPROConfig    $config
-     * @param DeskproContainer $container
+     * @param DeskPROConfig      $config
+     * @param EntityManager      $em
+     * @param DeskproBlobStorage $blob_storage
      */
-    public function __construct(DeskPROConfig $config, DeskproContainer $container)
+    public function __construct(DeskPROConfig $config, EntityManager $em, DeskproBlobStorage $blob_storage)
     {
         parent::__construct($config);
-        $this->container = $container;
 
-        $em       = $container->getEm();
-        $this->em = $em->create(
-            DriverManager::getConnection(array(
-                'dbname'   => $config->getDatabase(),
-                'user'     => $config->getUser(),
-                'password' => $config->getPassword(),
-                'host'     => $config->getHost(),
-                'driver'   => 'pdo_mysql',
-            )),
-            $em->getConfiguration()
-        );
+        $this->em           = $em;
+        $this->blob_storage = $blob_storage;
     }
 
     /**
@@ -150,8 +140,48 @@ class DeskPROReader extends AbstractReader implements DeskPROReaderInterface
     /**
      * {@inheritdoc}
      */
+    public function findCustomDefTickets()
+    {
+        return $this->em->getRepository('DeskPRO:CustomDefTicket')->findBy(array('parent' => null));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findCustomDefPeople()
+    {
+        return $this->em->getRepository('DeskPRO:CustomDefPerson')->findBy(array('parent' => null));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findCustomDefOrganizations()
+    {
+        return $this->em->getRepository('DeskPRO:CustomDefOrganization')->findBy(array('parent' => null));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findCustomDefArticles()
+    {
+        return $this->em->getRepository('DeskPRO:CustomDefArticle')->findBy(array('parent' => null));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findCustomDefFeedback()
+    {
+        return $this->em->getRepository('DeskPRO:CustomDefFeedback')->findBy(array('parent' => null));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getBlobData(Entity\Blob $blob)
     {
-        return $this->container->getBlobStorage()->copyBlobRecordToString($blob);
+        return $this->blob_storage->copyBlobRecordToString($blob);
     }
 }

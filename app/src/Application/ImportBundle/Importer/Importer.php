@@ -146,6 +146,8 @@ class Importer
             return $importer;
         }
 
+        file_put_contents('/tmp/importers', @file_get_contents('/tmp/importers')."\n no importer found $name");
+
         $importer         = new DataStore();
         $importer['name'] = $name;
         $importer->setData('id', $id);
@@ -347,7 +349,7 @@ class Importer
 
         $importer->setData('status', null);
         $importer->setData('log', null);
-        $importer->setData('log_updated', null);
+        $importer->setData('updated', null);
         $importer->setData('progress_start', null);
         $importer->setData('progress_step', null);
         $importer->setData('progress_max', null);

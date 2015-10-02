@@ -28,6 +28,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
+use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderInterface;
 
 /**
@@ -53,10 +55,12 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      * Constructor.
      *
      * @param DeskPROReaderInterface $reader
+     * @param ParserHelperSet        $helpers
      */
-    public function __construct(DeskPROReaderInterface $reader)
+    public function __construct(DeskPROReaderInterface $reader, ParserHelperSet $helpers)
     {
-        $this->reader = $reader;
+        $this->reader  = $reader;
+        $this->helpers = $helpers;
     }
 
     /**
@@ -101,5 +105,15 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         }
 
         throw new \RuntimeException('Batch config is not defined');
+    }
+
+    /**
+     * Returns custom fields parser.
+     *
+     * @return Helper\CustomFields
+     */
+    protected function getCustomFieldsParser()
+    {
+        return $this->helpers->get($this, Entity\EntityInterface::TYPE_CUSTOM_FIELD);
     }
 }

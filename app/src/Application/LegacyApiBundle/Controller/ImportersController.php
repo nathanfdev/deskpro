@@ -94,10 +94,11 @@ class ImportersController extends AbstractController implements ProtectedControl
      */
     public function getAction($id)
     {
-        $importer         = $this->get('deskpro.import')->getImporter($id);
-        $importer['icon'] = $this->getIcon($importer);
+        $importer     = $this->get('deskpro.import')->getImporter($id);
+        $data         = $importer->getData();
+        $data['icon'] = $this->getIcon($importer);
 
-        return $this->createJsonResponse($importer->getData());
+        return $this->createJsonResponse($data);
     }
 
     /**

@@ -13,7 +13,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
       @$scope.$watch 'importer.status', (val) =>
         if val && 'testing' != val && 'done' != val && 'error' != val
-          @updateImportStatus = @$interval (=> @importGet()), 1000 if !@updateImportStatus
+          @updateImportStatus = @$interval (=> @importGet()), 5000 if !@updateImportStatus
         else if @updateImportStatus
           @$interval.cancel @updateImportStatus
           @updateImportStatus = null
@@ -114,8 +114,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     importGet: ->
       @Api.sendGet('/server/importers/' + @$scope.id).then (res) =>
         @$scope.importer = res.data
-        updated = @$scope.importer.log_updated
-        if updated && Math.round(Date.now() / 1000) > updated - 600
+        updated = @$scope.importer.updated
+        if updated && Math.round(Date.now() / 1000) > updated + 600
           return @$scope.importer.status = 'error'
 
 

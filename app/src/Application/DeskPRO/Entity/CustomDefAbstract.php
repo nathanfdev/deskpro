@@ -268,14 +268,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     /**
      * @return string
      */
-    public function getDefaultValue()
-    {
-        return $this->default_value;
-    }
-
-    /**
-     * @return string
-     */
     public function isUserEnabled()
     {
         return $this->is_user_enabled;
@@ -672,6 +664,14 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         $this->setModelField('default_value', $default_value);
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultValue()
+    {
+        return $this->default_value;
     }
 
     /**
