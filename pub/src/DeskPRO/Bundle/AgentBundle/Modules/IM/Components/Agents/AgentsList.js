@@ -1,77 +1,84 @@
 import React from 'react';
-import AgentsListItem from './AgentsListItem';
+import { AgentsListItem } from './AgentsListItem';
 
 /**
- * TODO: find a way to avoid this really strong dark magic arount porps.agents and state.agents. The point is that when
+ * TODO: find a way to avoid this really strong dark magic around porps.agents and state.agents. The point is that when
  * TODO: rendering this template at the very first time you have nothing in props.agents, cause ajax still on progress
  * TODO: and promise have no data yet.
  */
 export const AgentsList = React.createClass(
-    {
-    getInitialState: function() {
-        return {
-            value: false,
-            agents: this.filterAgents()
-        };
+  {
+    getInitialState: function () {
+      return {
+        value: false,
+        agents: this.filterAgents
+      };
     },
 
-    render: function() {
-        return (
-            <div className="bucket left">
-                <h1>Agents</h1>
-                <div className="show-offline-agents">
-                    <input type="checkbox" id="checkbox-name" /><label for="checkbox-name"></label> Show offline agents?
-                </div>
-                <form>
-                    <div>
-                        <input type="text" onChange={this.onChange} placeholder="Filter agents by name" />
-                    </div>
-                </form>
-                <div className="im-list-wrapper">
-                    <ul className="im-list">
-                        {
-                            this.state.agents.length > 0
-                            ? this.state.agents.map(
-                                (agent, index) =>
-                                    <AgentsListItem handleClickParticipant={this.props.handleClickParticipant.bind(this, agent.id, 'agent')} key={index} agent={agent} highlight={this.state.value}/>)
-                            : (this.props.agents.length
-                                ? this.props.agents.map(
-                                    (agent, index) =>
-                                        <AgentsListItem key={index} agent={agent} />)
-                                : null)
-                        }
-                    </ul>
-                </div>
+    render: function () {
+      return (
+        <div className="bucket left">
+          <h1>Agents</h1>
+
+          <div className="show-offline-agents">
+            <input type="checkbox" id="checkbox-name"/><label htmlFor="checkbox-name"></label> Show offline agents?
+          </div>
+          <form>
+            <div>
+              <input type="text" onChange={this.onChange} placeholder="Filter agents by name"/>
             </div>
-        );
+          </form>
+          <div className="im-list-wrapper">
+            <ul className="im-list">
+              {
+                this.state.agents.length > 0
+                  ? this.state.agents.map(
+                  (agent, index) =>
+                    <AgentsListItem
+                      handleClickParticipant={this.props.handleClickParticipant}
+                      key={index}
+                      agent={agent}
+                      highlight={this.state.value}/>)
+                  : (this.props.agents.length > 0
+                  ? this.props.agents.map(
+                  (agent, index) =>
+                    <AgentsListItem
+                      handleClickParticipant={this.props.handleClickParticipant}
+                      key={index}
+                      agent={agent}/>)
+                  : null)
+              }
+            </ul>
+          </div>
+        </div>
+      );
     },
 
 
+    filterAgents: (value = '') => {
+      let newAgents = [];
+      if (typeof value == 'string' && value.trim().length > 0) {
+        this.props.agents.forEach((agent) => {
+          const name = agent.name.toLowerCase();
+          if (name.indexOf(value.toLowerCase()) >= 0) {
+            newAgents.push(agent);
+          }
+        });
+      } else {
+        newAgents = this.props.agents;
+      }
 
-    filterAgents: function(value = '')
-    {
-        let newAgents = [];
-        if(typeof value == 'string' && value.trim().length > 0) {
-            this.props.agents.forEach((agent) => {
-                const name = agent.name.toLowerCase();
-                if(name.indexOf(value.toLowerCase()) >= 0) {
-                    newAgents.push(agent);
-                }
-            });
-        } else {
-            newAgents = this.props.agents;
-        }
-
-        return newAgents;
+      return newAgents;
     },
 
-    onChange: function(event)
-    {
-        const newState = {
-          ...this.state,
-          agents: this.filterAgents(event.target.value),
-          value: event.target.value,
-        }
-        this.setState(newState);
-    },
-});
+
+    onChange: function (event) {
+      const oldState = this.state;
+      const newState = {
+        ...oldState,
+        agents: this.filterAgents(event.target.value),
+        value: event.target.value
+      };
+      this.setState(newState);
+    }
+  });

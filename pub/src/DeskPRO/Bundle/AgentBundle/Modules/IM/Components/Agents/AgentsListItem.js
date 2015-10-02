@@ -1,9 +1,10 @@
 import React from 'react';
+import { findChat } from '../../RecordStores/Actions/imChatsActions'
+import { connect } from 'react-redux';
 
-const AgentsListItem = React.createClass(
-{
-    render: function()
-    {
+@connect()
+export class AgentsListItem extends React.Component {
+    render() {
         const style = {
             backgroundImage: 'url("'+this.props.agent.gravatar_url+'")'
         };
@@ -21,14 +22,18 @@ const AgentsListItem = React.createClass(
         return (
 
             <li>
-                <a href="#" onClick={this.props.handleClickParticipant}>
+                <a href="#"
+                   onClick={this.startChat.bind(null, this.props.agent.id, 'agent', this.props.handleClickParticipant)}
+                  >
                     <span className="chat-avatar" style={style}></span>
                     <span className="agent"><span dangerouslySetInnerHTML={{__html: name}}/><span className="datestamp">2d ago</span></span>
                 </a>
             </li>
         );
-    },
-});
+    }
 
-module.exports = AgentsListItem;
-
+    startChat = (id, type, callback) => {
+        "use strict";
+        callback();
+    }
+}
