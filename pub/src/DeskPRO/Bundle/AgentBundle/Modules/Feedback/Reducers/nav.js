@@ -6,6 +6,7 @@ const initialState = {
   groups: [
     {name: 'awaiting_validation', value: 1, current: true},
     {name: 'status', value: '', current: false},
+    {name: 'hidden_status', value: '', current: false},
     {name: 'label', value: '', current: false},
     {name: 'no_labels', value: 1, current: false},
     {name: 'status_category', value: '', current: false},
