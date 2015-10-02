@@ -329,7 +329,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         }
 
         $data['categories']     = $this->getApiData($cats, false);
-        $data['default_id']     = $ticket_cats->count() ? $ticket_cats->getDefaultCategory()->getId() : 0;
+        $data['default_id']     = $ticket_cats->getDefaultCategory() ? $ticket_cats->getDefaultCategory()->getId() : 0;
         $data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_cat_user_required') ? true : false;
         $data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_cat_agent_required') ? true : false;
         $data['enabled']        = $field_manager->isCategoryEnabled();
@@ -477,7 +477,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         $ticket_works = $this->container->getSystemService('ticket_workflows');
 
         $data['workflows']      = $this->getApiData($ticket_works->getAll(), false);
-        $data['default_id']     = $ticket_works->count() ? $ticket_works->getDefaultWorkflow()->getId() : 0;
+        $data['default_id']     = $ticket_works->getDefaultWorkflow() ? $ticket_works->getDefaultWorkflow()->getId() : 0;
         $data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_work_user_required') ? true : false;
         $data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_work_agent_required') ? true : false;
         $data['enabled']        = $field_manager->isWorkflowEnabled();
@@ -550,7 +550,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         $ticket_pris = $this->container->getSystemService('ticket_priorities');
 
         $data['priorities']     = $this->getApiData($ticket_pris->getAll(), false);
-        $data['default_id']     = $ticket_pris->count() ? $ticket_pris->getDefaultPriority()->getId() : 0;
+        $data['default_id']     = $ticket_pris->getDefaultPriority() ? $ticket_pris->getDefaultPriority()->getId() : 0;
         $data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_pri_user_required') ? true : false;
         $data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_pri_agent_required') ? true : false;
         $data['enabled']        = $field_manager->isPriorityEnabled();
