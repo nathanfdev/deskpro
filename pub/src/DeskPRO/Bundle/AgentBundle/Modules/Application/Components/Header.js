@@ -29,8 +29,7 @@ export class Header extends React.Component {
 
         <a href="#" className="user-options-button">
           <span className="user-photo" style={{backgroundImage: 'url(' + user.picture_url + ')'}}></span>
-          Settings
-          <i className="fa fa-angle-down"></i>
+          <span className="title">Settings <i className="fa fa-angle-down"></i></span>
         </a>
       </div>
 
