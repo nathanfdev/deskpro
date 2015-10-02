@@ -1890,6 +1890,15 @@ class TicketSearchController extends AbstractController
         $permission_errors = array();
         $success           = array();
 
+        if ($snippet_ids = $this->in->getString('snippet_ids')) {
+            $snippet_ids = explode(',', $snippet_ids);
+            $snippet_ids = array_map(function ($x) { return (int) trim($x); }, $snippet_ids);
+            $snippet_ids = Arrays::removeFalsey($snippet_ids);
+            $snippet_ids = array_unique($snippet_ids, SORT_NUMERIC);
+        } else {
+            $snippet_ids = array();
+        }
+
         if (($actions || $actions_set || $macro) && $tickets) {
             if ($macro) {
                 foreach ($tickets as $ticket) {
@@ -1901,10 +1910,17 @@ class TicketSearchController extends AbstractController
                             $permission_errors[] = $ticket->getId();
                             continue;
                         }
+
+                        if ($macro) {
+                            $macroLog = Entity\TicketObjectUseLog::createMacroLog($ticket, $this->getPerson(), $macro);
+                            $this->em->persist($macroLog);
+                        }
+
                         $actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
                         $this->em->persist($ticket);
                         $this->em->flush();
                         $ticket->getTicketLogger()->done();
+
                         $this->db->commit();
                     } catch (\Exception $e) {
                         $this->db->rollback();
@@ -1952,6 +1968,18 @@ class TicketSearchController extends AbstractController
                         }
                         $collection->apply(null, $ticket, $this->person);
                         $this->em->persist($ticket);
+
+                        if ($snippet_ids) {
+                            foreach ($snippet_ids as $snip_id) {
+                                $snippet = $this->em->find('DeskPRO:TextSnippet', $snip_id);
+
+                                if ($snippet) {
+                                    $snippetLog = Entity\TicketObjectUseLog::createSnippetLog($ticket, $this->getPerson(), $snippet);
+                                    $this->em->persist($snippetLog);
+                                }
+                            }
+                        }
+
                         $this->em->flush();
                         $this->db->commit();
 

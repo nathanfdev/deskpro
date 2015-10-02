@@ -1277,6 +1277,11 @@ class TicketController extends AbstractController
             }
         }
 
+        if ($macro) {
+            $macroLog = Entity\TicketObjectUseLog::createMacroLog($ticket, $this->getPerson(), $macro);
+            $this->em->persist($macroLog);
+        }
+
         if ($dupe_message = $this->em->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket)) {
             return $this->createJsonResponse(array(
                 'dupe_message' => true,
@@ -2450,6 +2455,12 @@ class TicketController extends AbstractController
             if ($e instanceof ValidatorException) {
                 return $this->createJsonResponse(array('error' => true, 'error_messages' => explode('|', $e->getMessage())));
             }
+        }
+
+        if ($macro) {
+            $macroLog = Entity\TicketObjectUseLog::createMacroLog($ticket, $this->getPerson(), $macro);
+            $this->em->persist($macroLog);
+            $this->em->flush();
         }
 
         if ($permission_errors) {
@@ -4245,6 +4256,28 @@ class TicketController extends AbstractController
                             $ticket->associateProblem($problem);
                         }
                     }
+                }
+
+                if ($snippet_ids = $this->in->getString('options.snippet_ids')) {
+                    $snippet_ids = explode(',', $snippet_ids);
+                    $snippet_ids = array_map(function ($x) { return (int) trim($x); }, $snippet_ids);
+                    $snippet_ids = Arrays::removeFalsey($snippet_ids);
+                    $snippet_ids = array_unique($snippet_ids, SORT_NUMERIC);
+
+                    foreach ($snippet_ids as $snip_id) {
+                        $snippet = $this->em->find('DeskPRO:TextSnippet', $snip_id);
+
+                        if ($snippet) {
+                            $snippetLog = Entity\TicketObjectUseLog::createSnippetLog($ticket, $this->getPerson(), $snippet);
+                            $this->em->persist($snippetLog);
+                            $this->em->flush();
+                        }
+                    }
+                }
+
+                if ($macro) {
+                    $macroLog = Entity\TicketObjectUseLog::createMacroLog($ticket, $this->getPerson(), $macro);
+                    $this->em->persist($macroLog);
                 }
 
                 $ticket->recomputeHash();
