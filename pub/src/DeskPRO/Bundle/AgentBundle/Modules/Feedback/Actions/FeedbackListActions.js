@@ -82,7 +82,6 @@ export const loadCommentsList = createAction(
   })
 );
 
-
 export const feedbackToValidate = createAction(
   'FEEDBACK_TO_VALIDATE',
   () => dispatch => Feedback.toValidate().then(promise => promise.getData()));

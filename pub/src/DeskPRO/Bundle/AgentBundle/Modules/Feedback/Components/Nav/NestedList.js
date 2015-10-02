@@ -10,10 +10,10 @@ export class NestedList extends React.Component {
       'active': active
     });
     return (
-      <li className="counter-display" onClick={onClick.bind(this, {name:'status', value:status})}>
+      <li className="counter-display" onClick={onClick.bind(this, {name: 'status', value: status})}>
         <RenderCount count={node.count} active={active}/>
         <a href="#" className={classes}>{label}</a>
-        {this.renderChildren(node.nested)}
+        {this.renderChildren(node.nested, status)}
       </li>
     );
   }
@@ -37,11 +37,16 @@ export class NestedList extends React.Component {
     if (nested.length === 0) {
       return;
     }
-    const {currentGroup, onClick} = this.props;
+    const {status, currentGroup, onClick} = this.props;
     return (
       <ul className="with-connectors">
-        {nested.map((item, index) => <ChildListItem key={index} item={item} currentGroup={currentGroup}
-                                                    onClick={onClick}/>
+        {nested.map((item, index) => <ChildListItem
+            key={index}
+            item={item}
+            currentGroup={currentGroup}
+            onClick={onClick}
+            status={status}
+            />
         )}
       </ul>
     );
@@ -51,13 +56,21 @@ export class NestedList extends React.Component {
 
 export class ChildListItem extends React.Component {
   render() {
-    const { item, onClick, currentGroup } = this.props;
-    var active  = currentGroup.name === 'status_category' && currentGroup.value === item.group;
+    const { item, status, onClick, currentGroup } = this.props;
+    var active      = false,
+          groupName = 'status_category';
+    if (status !== 'hidden') {
+      active = currentGroup.name === groupName && currentGroup.value === item.group;
+    }
+    else {
+      groupName = 'hidden_status';
+      active    = currentGroup.name === groupName && currentGroup.value === item.group;
+    }
     var classes = classNames('item', {
       'active': active
     });
     return (
-      <li onClick={onClick.bind(this, {name:'status_category', value:item.group})}>
+      <li onClick={onClick.bind(this, {name: groupName, value: item.group})}>
         <RenderCount count={item.count} active={active}/>
         <a href="#" className={classes}>{item.group}</a>
       </li>

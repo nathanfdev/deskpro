@@ -89,6 +89,11 @@ class FeedbackSelectCriteria extends Criteria
                         ->andWhere("$alias.status = :status")
                         ->setParameter('status', $value);
                     break;
+                case 'hidden_status':
+                    $qb
+                        ->andWhere("$alias.hidden_status = :status")
+                        ->setParameter('status', $value);
+                    break;
                 case 'sort':
                     $sort = "$alias.$value";
                     break;
@@ -113,6 +118,7 @@ class FeedbackSelectCriteria extends Criteria
             [
                 'awaiting_validation',
                 'status',
+                'hidden_status',
                 'status_category',
                 'category',
                 'custom_category',
