@@ -1,78 +1,35 @@
-import ActionTypes from '../Actions/ActionTypes';
-import { Reducer } from 'Ampliflux/reducers';
+import * as actions from '../Actions/AppActions';
+import { createReducer } from 'Ampliflux';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
-export default class dp_window extends Reducer {
-    getInitialState() {
-        return {
-            isLoaded: false,
-            activeAppId: 'tickets',
-            collapseNav: false,
-            expandedSwitcher: false,
-            taskView: constants.VIEW_MODE_LIST
-        };
-    }
+const initialState = {
+  isLoaded: false,
+  activeAppId: 'tickets',
+  collapseNav: false,
+  expandedSwitcher: false,
+  taskView: constants.VIEW_MODE_LIST
+};
 
-    appHasLoaded(state, action) {
-        return {
-            ...state,
-            isLoaded: true
-        };
-    }
-
-    setActiveApp(state, action) {
-        return {
-            ...state,
-            activeAppId: action.payload,
-            expandedSwitcher: false
-        };
-    }
-
-    collapseNav(state, action) {
-        return {
-            ...state,
-            collapseNav: true
-        };
-    }
-
-    expandNav(state, action) {
-        return {
-            ...state,
-            collapseNav: false
-        };
-    }
-
-    expandSwitcher(state, action) {
-        return {
-            ...state,
-            expandedSwitcher: true
-        };
-    }
-
-    collapseSwitcher(state, action) {
-        return {
-            ...state,
-            expandedSwitcher: false
-        };
-    }
-
-    toggleView(state, action) {
-        const taskView = action.payload;
-
-        return {
-            ...state,
-            taskView: taskView
-        }
-    }
-
-    registerHandlers() {
-        this
-            .r(ActionTypes.APP_IS_LOADED, this.appHasLoaded)
-            .r(ActionTypes.SET_ACTIVE_APP, this.setActiveApp)
-            .r(ActionTypes.COLLAPSE_NAV, this.collapseNav)
-            .r(ActionTypes.EXPAND_NAV, this.expandNav)
-            .r(ActionTypes.EXPAND_SWITCHER, this.expandSwitcher)
-            .r(ActionTypes.COLLAPSE_SWITCHER, this.collapseSwitcher)
-            .r(ActionTypes.TOGGLE_VIEW, this.toggleView)
-    }
-}
+export default createReducer(initialState, {
+  [actions.setIsLoaded]: state => {
+    return state.set('isLoaded', true);
+  },
+  [actions.setActiveApp]: (state, payload) => {
+    return state.merge({activeAppId: payload, expandedSwitcher: false});
+  },
+  [actions.collapseNav]: state => {
+    return state.set('collapseNav', true);
+  },
+  [actions.expandNav]: state => {
+    return state.set('collapseNav', false);
+  },
+  [actions.expandSwitcher]: state => {
+    return state.set('expandedSwitcher', true);
+  },
+  [actions.collapseSwitcher]: state => {
+    return state.set('expandedSwitcher', false);
+  },
+  [actions.toggleView]: (state, payload) => {
+    return state.set('taskView', payload);
+  }
+});
