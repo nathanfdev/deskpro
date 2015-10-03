@@ -1,5 +1,5 @@
 import { createAction } from 'Ampliflux';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import * as PeopleApi from 'DeskPRO/Bundle/AgentBundle/Services/Api/People';
 import ActionTypes from './ActionTypes';
 
 export const setAppUser = createAction(ActionTypes.APP_SET_USER);
@@ -23,8 +23,8 @@ export function transitionTo(pathname, query = null, state = null) {
 }
 
 export const loadWindow = createAction(
-  'LOAD_WINDOW',
-  () => dispatch => DpApi.sendGet('DP_API/me').then(promise => {
+  'APP_LOAD_WINDOW',
+  () => dispatch => PeopleApi.loadMe().then(promise => {
     dispatch(setAppUser(promise.getData().data));
     dispatch(setIsLoaded());
   }
