@@ -21,7 +21,7 @@ export class HeaderWidget extends React.Component {
   constructor(props) {
     super(props);
     const { dispatch } = this.props;
-    dispatch(chatsActions.loadChats([1,2]));
+    dispatch(chatsActions.loadChats('chats', [1,2]));
     dispatch(listActions.loadRecentAgents());
     this.state = {
       overlayShown: false,
@@ -33,7 +33,6 @@ export class HeaderWidget extends React.Component {
   render() {
     return (
         <div className="agent-ims">
-          { console.log(this.props.agentChats) }
           <a href="#" onClick={this.onClick} className="show-more">
             <span>
                 IMs <i className="fa fa-angle-down"></i>

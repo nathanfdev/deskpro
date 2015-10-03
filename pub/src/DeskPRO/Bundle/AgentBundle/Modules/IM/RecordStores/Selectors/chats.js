@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 import { createStoreSelectors, createRequestSelectorsBuilder } from 'Ampliflux/common/record-store/selectors';
 
 function appChatsStateSel(state) {
-  return state.RecordStores.chats;
+  return state.RecordStores.chats.chats;
 }
 
 // This creates a number of selectors for records, status and requests

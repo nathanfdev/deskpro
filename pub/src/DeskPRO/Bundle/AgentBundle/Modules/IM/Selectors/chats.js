@@ -3,5 +3,5 @@ import { createChatsRequestSelectors } from '../RecordStores/Selectors/chats';
 
 export const chatsSelector = createSelector(
   createChatsRequestSelectors('chats').recordsSel,
-    chats => { console.log(chats), chats.toJS(); }
+    chats => { return chats.toJS(); }
 );
