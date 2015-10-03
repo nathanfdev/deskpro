@@ -1,5 +1,5 @@
-import ActionTypes from "../Actions/ActionTypes";
-import { handleActions } from "redux-actions";
+import ActionTypes from '../Actions/ActionTypes';
+import { handleActions } from 'redux-actions';
 
 const initialState = {
 	id: null

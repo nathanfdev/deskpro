@@ -1,6 +1,6 @@
-import ActionTypes from "../Actions/ActionTypes";
-import { Reducer } from "Ampliflux/reducers";
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
+import ActionTypes from '../Actions/ActionTypes';
+import { Reducer } from 'Ampliflux/reducers';
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export default class dp_window extends Reducer {
     getInitialState() {
