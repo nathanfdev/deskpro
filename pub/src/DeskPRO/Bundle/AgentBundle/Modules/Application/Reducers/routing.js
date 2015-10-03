@@ -1,5 +1,5 @@
-import ActionTypes from "../Actions/ActionTypes";
-import { createReducer } from "Ampliflux";
+import ActionTypes from '../Actions/ActionTypes';
+import { createReducer } from 'Ampliflux';
 
 const initialState = {
   router: null
