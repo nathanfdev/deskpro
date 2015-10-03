@@ -1,4 +1,4 @@
-import ActionTypes from '../Actions/ActionTypes';
+import * as actions from '../Actions/AppActions';
 import { createReducer } from 'Ampliflux';
 
 const initialState = {
@@ -6,14 +6,14 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-  [ActionTypes.TRANSITION_TO]: (state, payload) => {
+  [actions.doTransitionTo]: (state, payload) => {
     if (state.router) {
       state.router.transitionTo.apply(null, payload);
     }
 
     return state;
   },
-  [ActionTypes.ROUTING_STARTED]: (state, payload) => {
+  [actions.routingStarted]: (state, payload) => {
     return state.merge({router: payload});
   }
 });
