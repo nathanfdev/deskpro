@@ -1,10 +1,10 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { PropTypes } from 'react';
 
-@connect(state => ({
-  dpWindow: state.Application.dpWindow
-}))
 export default class TabFrame extends React.Component {
+  static propTypes = {
+    dpWindow: PropTypes.object.isRequired
+  };
+
   render() {
     const { dpWindow } = this.props;
 

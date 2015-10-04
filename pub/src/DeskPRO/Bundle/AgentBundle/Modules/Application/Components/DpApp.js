@@ -13,7 +13,8 @@ import {FeedbackApp} from "DeskPRO/Bundle/AgentBundle/Modules/Feedback/Component
 import { routingStarted } from "../Actions/AppActions";
 
 @connect(state => ({
-  ...state
+  ...state,
+  dpWindow: state.Application.dpWindow
 }))
 export default class DpApp extends React.Component {
   constructor(props) {
@@ -23,6 +24,8 @@ export default class DpApp extends React.Component {
   }
 
   render() {
+    const { dpWindow } = this.props;
+
     return (
       <div className="dp-window">
         <Header />
@@ -30,7 +33,7 @@ export default class DpApp extends React.Component {
 
         {this.props.children}
 
-        <TabFrame />
+        <TabFrame dpWindow={dpWindow} />
       </div>
     );
   }
