@@ -5,7 +5,7 @@ import { Link } from 'react-router';
 
 @connect(state => ({
   user: state.Application.user,
-  dp_window: state.Application.dp_window
+  dpWindow: state.Application.dpWindow
 }))
 export class AppSwitcher extends React.Component {
   constructor(props) {
@@ -23,7 +23,7 @@ export class AppSwitcher extends React.Component {
   }
 
   renderAppIcon(appId, title, iconClass) {
-    const { dp_window, dispatch } = this.props;
+    const { dpWindow, dispatch } = this.props;
     const clickHandler = () => dispatch(AppActions.setActiveApp(appId));
     const className = 'fa ' + iconClass;
 
@@ -37,9 +37,9 @@ export class AppSwitcher extends React.Component {
   }
 
   render() {
-    const { dp_window, dispatch } = this.props;
+    const { dpWindow, dispatch } = this.props;
 
-    const my_classes = 'dp-app-switcher' + (dp_window.get('expandedSwitcher') ? ' expanded' : '');
+    const my_classes = 'dp-app-switcher' + (dpWindow.get('expandedSwitcher') ? ' expanded' : '');
 
     return (
     <nav onMouseEnter={this.hoverSwitcher.bind(this)}

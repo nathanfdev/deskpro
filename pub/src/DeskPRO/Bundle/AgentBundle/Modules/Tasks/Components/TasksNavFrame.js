@@ -19,7 +19,7 @@ import $ from "jquery";
   departmentList: state.departmentList,
   user: state.Application.user,
   createdProject: state.createdProject,
-  dp_window: state.Application.dp_window
+  dpWindow: state.Application.dpWindow
 }))
 export default class TasksNavFrame extends React.Component {
   constructor(props) {
@@ -48,13 +48,13 @@ export default class TasksNavFrame extends React.Component {
 
   render() {
     const { taskList, projectList, agentList, labelList, departmentList,
-            teamList, createdProject, dp_window, dispatch } = this.props;
+            teamList, createdProject, dpWindow, dispatch } = this.props;
 
-    const className = dp_window.collapseNav ? "sidebar-wrapper sidebar-collapsed" : "sidebar-wrapper";
+    const className = dpWindow.get('collapseNav') ? 'sidebar-wrapper sidebar-collapsed' : 'sidebar-wrapper';
     const expandNav = () => dispatch(AppActions.expandNav());
 
     return (
-      <NavFrame dispatch={dispatch.bind(this)} dp_window={dp_window}>
+      <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
         <div part="inner">
           <NavFrameHeader dispatch={dispatch.bind(this)} icon="fa-check-square-o">Tasks</NavFrameHeader>
 

@@ -2,21 +2,21 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 @connect(state => ({
-  dp_window: state.Application.dp_window
+  dpWindow: state.Application.dpWindow
 }))
 export default class TabFrame extends React.Component {
   render() {
-    const { dp_window } = this.props;
+    const { dpWindow } = this.props;
 
     let classes = ['dp-tab-frame'];
 
-    if (dp_window.get('expandedSwitcher')) {
+    if (dpWindow.get('expandedSwitcher')) {
       classes.push('expanded');
     }
-    if (dp_window.get('collapseNav')) {
+    if (dpWindow.get('collapseNav')) {
       classes.push('collapsed-nav');
     }
-    if (dp_window.get('taskView') !== 'list') {
+    if (dpWindow.get('taskView') !== 'list') {
       classes.push('kanban-shifted');
     }
 

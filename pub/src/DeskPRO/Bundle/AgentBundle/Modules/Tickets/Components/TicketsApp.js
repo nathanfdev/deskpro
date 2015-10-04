@@ -8,7 +8,7 @@ import TicketsListFrame from "./TicketsListFrame";
 
 @connect(state => ({
   user: state.Application.user,
-  dp_window: state.Application.dp_window
+  dpWindow: state.Application.dpWindow
 }))
 export default class TicketsApp extends React.Component {
   render() {

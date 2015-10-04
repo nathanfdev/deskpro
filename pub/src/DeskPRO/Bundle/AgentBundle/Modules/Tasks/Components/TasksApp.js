@@ -11,7 +11,7 @@ import TasksListFrame from "./TasksListFrame";
 
 @connect(state => ({
   user: state.Application.user,
-  dp_window: state.Application.dp_window
+  dpWindow: state.Application.dpWindow
 }))
 class TasksApp extends React.Component {
   render() {

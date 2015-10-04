@@ -5,14 +5,14 @@ import { ListContainer } from './List/ListContainer';
 import { connect } from 'react-redux';
 
 @connect(state => ({
-  dp_window: state.Application.dp_window
+  dpWindow: state.Application.dpWindow
 }))
 export class PublishApp extends React.Component {
 
   render() {
     return (
       <AppContainer thisAppId="publish" {...this.props}>
-        <NavContainer dp_window={this.props.dp_window} />
+        <NavContainer dpWindow={this.props.dpWindow} />
         <ListContainer />
       </AppContainer>
     );

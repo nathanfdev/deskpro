@@ -25,7 +25,7 @@ class ReactRouterWrapper extends React.Component {
 
 @connect((state) => {
   return {
-    dp_window: state.Application.dp_window,
+    dpWindow: state.Application.dpWindow,
     routing: state.Application.routing
   };
 })
@@ -33,9 +33,9 @@ export default class DpAppContainer extends React.Component {
   constructor(props) {
     super(props);
 
-    const { dp_window, dispatch } = this.props;
+    const { dpWindow, dispatch } = this.props;
 
-    if (!dp_window.get('isLoaded')) {
+    if (!dpWindow.get('isLoaded')) {
       dispatch(AppActions.loadWindow());
     }
   }
@@ -53,11 +53,11 @@ export default class DpAppContainer extends React.Component {
   }
 
   render() {
-    const { dp_window, history } = this.props;
+    const { dpWindow, history } = this.props;
     const base_path = this.workOutBasePath();
     const default_path = `${base_path}/tasks`;
 
-    if (dp_window.get('isLoaded')) {
+    if (dpWindow.get('isLoaded')) {
       return (
         <Router history={history}>
           <Redirect from={base_path} to={default_path}/>
