@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import DpApp from './DpApp';
 
 export default class ReactRouterWrapper extends React.Component {
+  static propTypes = {
+    children: PropTypes.object.isRequired
+  };
+
   render() {
     return (
       <DpApp>
