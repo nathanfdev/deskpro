@@ -8,9 +8,10 @@ function agentTeamsStateSel(state) {
 
 export const agentTeamsStateSelector = createStoreSelectors(agentTeamsStateSel);
 export const createAgentTeamsRequestSelectors = createRequestSelectorsBuilder(agentTeamsStateSelector);
+
 export const agentTeamsSelector = createSelector(
   createAgentTeamsRequestSelectors('all').recordsSel,
-  teams => teams.toJS()
+  teams => teams
 );
 
 export const agentTeamNamesSelector = createSelector(

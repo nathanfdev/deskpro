@@ -5,7 +5,7 @@ import { createPeopleRequestSelectors }
 
 export const agentsSelector = createSelector(
   createPeopleRequestSelectors('agents').recordsSel,
-  agents => agents.toJS()
+  agents => agents
 );
 
 export const agentNamesSelector = createSelector(

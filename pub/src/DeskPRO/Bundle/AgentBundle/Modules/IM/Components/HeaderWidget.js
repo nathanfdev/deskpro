@@ -8,10 +8,13 @@ import { getRecentAgents } from '../Selectors/list';
 import { chatsSelector } from '../Selectors/chats';
 import * as chatsActions from '../RecordStores/Actions/imChatsActions';
 
+
+
 @connect(state => ({
   recentAgents: getRecentAgents(state),
   agentChats: chatsSelector(state),
-  messages: []
+  messages: [],
+
 }))
 export class HeaderWidget extends React.Component {
   static propTypes = {

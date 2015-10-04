@@ -6,10 +6,10 @@ import { connect } from 'react-redux';
 export class AgentsListItem extends React.Component {
     render() {
         const style = {
-            backgroundImage: 'url("'+this.props.agent.gravatar_url+'")'
+            backgroundImage: 'url("'+this.props.agent.get('gravatar_url')+'")'
         };
 
-        let name = this.props.agent.name;
+        let name = this.props.agent.get('name');
         if(this.props.highlight) {
             const escape = this.props.highlight.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
             const tagStr = '<span class="search-matched-word">$&</span>';
@@ -23,7 +23,7 @@ export class AgentsListItem extends React.Component {
 
             <li>
                 <a href="#"
-                   onClick={this.startChat.bind(null, this.props.agent.id, 'agent', this.props.handleClickParticipant)}
+                   onClick={this.startChat.bind(null, this.props.agent.get('id'), 'agent', this.props.handleClickParticipant)}
                   >
                     <span className="chat-avatar" style={style}></span>
                     <span className="agent"><span dangerouslySetInnerHTML={{__html: name}}/><span className="datestamp">2d ago</span></span>

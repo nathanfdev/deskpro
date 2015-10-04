@@ -5,27 +5,6 @@ import * as Departments from 'DeskPRO/Bundle/AgentBundle/Services/Api/Department
 import * as IM from 'DeskPRO/Bundle/AgentBundle/Services/Api/IM';
 import _ from 'lodash';
 
-export const loadAgents = createAction(
-    'IM_LIST_LOAD_AGENTS',
-    () => {
-      return Agents.loadAgents().then(promise => promise.getData().data);
-    }
-);
-
-export const loadTeams = createAction(
-    'IM_LIST_LOAD_TEAMS',
-    () => {
-      return Teams.loadAll().then(promise => promise.getData().data);
-    }
-);
-
-export const loadDepartments = createAction(
-    'IM_LIST_LOAD_DEPARTMENTS',
-    () => {
-      return Departments.loadDepartments().then(promise => promise.getData().data);
-    }
-);
-
 export const loadRecentAgents = createAction(
     'IM_LIST_LOAD_RECENT_AGENTS',
     () => {

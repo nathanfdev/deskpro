@@ -1,16 +1,33 @@
-import React from 'react';
-import DepartmentsListItem from './DepartmentsListItem';
+import React, {Component, PropTypes} from 'react';
+import { DepartmentsListItem } from './DepartmentsListItem';
 
-export default class DeparmentsList extends React.Component {
-    render() {
-        return (
-            <ul className="im-list short">
-                {
-                  this.props.departments.length > 0
-                  ? this.props.departments.map((department, index) => <DepartmentsListItem key={index} department={department} />)
-                  : null
-                }
-            </ul>
-        );
-    }
+import { connect } from 'react-redux';
+
+import { loadDepartments, loadAllDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Actions/departmentsActions';
+import { departmentsSelector, allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Selectors/departmentsSelectors';
+
+@connect(state => ({
+  departments: allDepartmentsSelector(state),
+
+}))
+export class DepartmentsList extends Component {
+
+  static propTypes = {
+    departments: PropTypes.object.isRequired
+  };
+
+  componentWillMount() {
+    "use strict";
+    this.props.dispatch(loadAllDepartments());
+  }
+
+  render() {
+    return (
+      <ul className="im-list short">
+        {
+          this.props.departments.map((department, index) => <DepartmentsListItem key={index} department={department}/>)
+        }
+      </ul>
+    );
+  }
 }
