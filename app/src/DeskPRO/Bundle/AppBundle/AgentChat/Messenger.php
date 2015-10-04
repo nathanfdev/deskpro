@@ -93,7 +93,7 @@ class Messenger
         $agentChatRepository = $this->em->getRepository('App:AgentChat');
         $chats               = $agentChatRepository->findChatWithAgent($agent_id, $my_id);
         if ($chats) {
-            return array_shift($chat);
+            return array_shift($chats);
         }
 
         return false;

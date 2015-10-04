@@ -3,7 +3,7 @@ import * as actions from '../Actions/chatsActions';
 import Immutable from 'immutable';
 
 const initialState = {
-  current: {target_id: 0, target_type: 'agent'}
+  current: {}
 };
 
 export default createReducer(initialState, {

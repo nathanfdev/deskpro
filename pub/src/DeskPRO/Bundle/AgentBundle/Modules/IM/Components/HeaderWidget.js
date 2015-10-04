@@ -1,20 +1,21 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Overlay } from './Overlay';
-import Chat from './ChatWindow/Chat';
+import { Chat } from './ChatWindow/Chat';
 import { Recent } from './Recent';
 import * as listActions from '../Actions/imListActions';
 import { getRecentAgents } from '../Selectors/list';
 
 @connect(state => ({
   recentAgents: getRecentAgents(state),
-  target: state.IM.chats.get('current'),
+  current: state.IM.chats.get('current'),
+  me: state.user,
   messages: []
 }))
 export class HeaderWidget extends React.Component {
   static propTypes = {
     recentAgents: PropTypes.array.isRequired,
-    target: PropTypes.object.isRequired
+    current: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -29,22 +30,27 @@ export class HeaderWidget extends React.Component {
 
   render() {
     return (
-        <div className="agent-ims">
-          <a href="#" onClick={this.onClick} className="show-more">
+      <div className="agent-ims">
+        <a href="#" onClick={this.onClick} className="show-more">
             <span>
                 IMs <i className="fa fa-angle-down"></i>
             </span>
-          </a>
-          { this.props.recentAgents.length > 0
-            ? this.props.recentAgents.map(
-              (agent, index) =>
-                <Recent handleClickParticipant={this.handleClickParticipant} key={index} agent={agent} />
-            )
-            : null
+        </a>
+        { this.props.recentAgents.length > 0
+          ? this.props.recentAgents.map(
+          (agent, index) => {
+            "use strict";
+            if (agent.id !== this.props.me.id) {
+              return <Recent handleClickParticipant={this.handleClickParticipant} key={index} agent={agent}/>
+            }
           }
-          { this.state.overlayShown ? <Overlay handleClickParticipant={this.handleClickParticipant} /> : null }
-          { this.state.chating ? <Chat target={this.props.target} messages={this.props.messages} handleCloseChat={this.handleCloseChat}/> : null }
-        </div>
+        )
+          : null
+        }
+        { this.state.overlayShown ? <Overlay handleClickParticipant={this.handleClickParticipant}/> : null }
+        { this.state.chating && this.props.current.id ? <Chat current={this.props.current} messages={this.props.messages}
+                                     handleCloseChat={this.handleCloseChat}/> : null }
+      </div>
     );
   }
 
@@ -52,7 +58,7 @@ export class HeaderWidget extends React.Component {
     "use strict";
     const oldState = this.state;
     let newState = {...oldState};
-    newState.chating =false;
+    newState.chating = false;
     this.setState(newState);
   };
 
@@ -60,7 +66,7 @@ export class HeaderWidget extends React.Component {
     const oldState = this.state;
     let newState = {...oldState};
     newState.overlayShown = !this.state.overlayShown,
-    newState.chating = this.state.chating
+      newState.chating = this.state.chating
     this.setState(newState);
   };
 

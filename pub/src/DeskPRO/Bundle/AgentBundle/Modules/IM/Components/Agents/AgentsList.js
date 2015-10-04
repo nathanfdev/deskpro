@@ -12,91 +12,103 @@ import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordS
  * TODO: and promise have no data yet.
  */
 @connect(state => ({
-  agents: agentsSelector(state)
+  agents: agentsSelector(state),
+  me: state.user
 }))
-export class AgentsList extends Component
-  {
+export class AgentsList extends Component {
 
-    static propTypes = {
-      agents: PropTypes.object.isRequired
+  static propTypes = {
+    agents: PropTypes.object.isRequired
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: false,
+      agents: this.filterAgents.bind(this)
     };
+  }
 
-    constructor(props) {
-      super(props);
-      this.state = {
-        value: false,
-        agents: this.filterAgents.bind(this)
-      };
-    }
+  componentWillMount() {
+    "use strict";
+    this.props.dispatch(loadAllAgents());
+  }
 
-    componentWillMount() {
-      "use strict";
-      this.props.dispatch(loadAllAgents());
-    }
+  render() {
+    return (
+      <div className="bucket left">
+        <h1>Agents</h1>
 
-    render() {
-      return (
-        <div className="bucket left">
-          <h1>Agents</h1>
-
-          <div className="show-offline-agents">
-            <input type="checkbox" id="checkbox-name"/><label htmlFor="checkbox-name"></label> Show offline agents?
+        <div className="show-offline-agents">
+          <input type="checkbox" id="checkbox-name"/><label htmlFor="checkbox-name"></label> Show offline agents?
+        </div>
+        <form>
+          <div>
+            <input type="text" onChange={this.onChange.bind(this)} placeholder="Filter agents by name"/>
           </div>
-          <form>
-            <div>
-              <input type="text" onChange={this.onChange.bind(this)} placeholder="Filter agents by name"/>
-            </div>
-          </form>
-          <div className="im-list-wrapper">
-            <ul className="im-list">
-              {
-                this.state.agents.length > 0
-                  ? this.state.agents.map(
-                  (agent, index) =>
-                    <AgentsListItem
+        </form>
+        <div className="im-list-wrapper">
+          <ul className="im-list">
+            {
+              this.state.agents.length > 0
+                ? this.state.agents.map(
+                (agent, index) => {
+                  "use strict";
+                  if (this.props.me.id !== agent.get('id')) {
+                    return <AgentsListItem
                       handleClickParticipant={this.props.handleClickParticipant}
                       key={index}
                       agent={agent}
-                      highlight={this.state.value}/>)
-                  : this.props.agents.map(
-                  (agent, index) =>
-                    <AgentsListItem
+                      highlight={this.state.value}/>
+                  }
+
+                }
+              )
+                : this.props.agents.map(
+                (agent, index) => {
+                  "use strict";
+                  if (this.props.me.id !== agent.get('id')) {
+                    return <AgentsListItem
                       handleClickParticipant={this.props.handleClickParticipant}
                       key={index}
-                      agent={agent}/>)
-              }
-            </ul>
-          </div>
+                      agent={agent}
+                      highlight={this.state.value}/>
+                  }
+                }
+              )
+            }
+          </ul>
         </div>
-      );
-    }
-
-
-    filterAgents(value = '') {
-      let newAgents = [];
-      if ( typeof value == 'string' && value.trim() ) {
-        this.props.agents.forEach((agent) => {
-          const name = agent.get('name').toLowerCase();
-          if (name.indexOf(value.toLowerCase()) >= 0) {
-            newAgents.push(agent);
-          }
-        });
-      } else {
-        newAgents = this.props.agents.toArray();
-      }
-
-      return newAgents;
-    }
-
-
-    onChange(event) {
-      "use strict";
-      const oldState = this.state;
-      const newState = {
-        ...oldState,
-        agents: this.filterAgents(event.target.value),
-        value: event.target.value
-      };
-      this.setState(newState);
-    }
+      </div>
+    );
   }
+
+
+  filterAgents(value = '') {
+    let newAgents = [];
+    if (typeof value == 'string' && value.trim()) {
+      this.props.agents.forEach((agent) => {
+        const name = agent.get('name').toLowerCase();
+        if (name.indexOf(value.toLowerCase()) >= 0) {
+          newAgents.push(agent);
+        }
+      });
+    } else {
+      newAgents = this.props.agents.toArray();
+    }
+
+    return newAgents;
+  }
+
+
+  onChange(event) {
+    "use strict";
+    const oldState = this.state;
+    const newState = {
+      ...oldState,
+      agents: this.filterAgents(event.target.value),
+      value: event.target.value
+    };
+    this.setState(newState);
+  }
+}

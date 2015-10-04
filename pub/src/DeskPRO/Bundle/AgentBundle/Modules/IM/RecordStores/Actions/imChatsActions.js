@@ -5,9 +5,9 @@ import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import * as Agents from 'DeskPRO/Bundle/AgentBundle/Services/Api/Agents';
 
 export const loadChats = createAction(
-  'IM_CHAT_LOAD_CHATS',
+  'IM_LOAD_CHATS',
   requestRecords(
-    ['RecordStores', 'chats', 'chats'],
+    ['RecordStores', 'chats'],
       missingIds => {
         return new Promise(
           (resolve, reject) =>
@@ -16,13 +16,5 @@ export const loadChats = createAction(
               .error(response => reject(response))
         );
       }
-  )
-);
-
-export const loadRecentAgents = createAction(
-  'IM_CHAT_LOAD_RECENT_AGENTS',
-  requestRecords(
-    ['RecordStores', 'chats', 'recentAgents'],
-    (agents) => Agents.loadAgents({ids: agents.join(',')})
   )
 );

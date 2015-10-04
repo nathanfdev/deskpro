@@ -244,6 +244,8 @@ class ChatsController extends AbstractController
             $status = Response::HTTP_FOUND;
         } else {
             $chat = $messenger->createChat($user, [$agent]);
+            $this->em()->persist($chat);
+            $this->em()->flush();
         }
 
         return View::create(
