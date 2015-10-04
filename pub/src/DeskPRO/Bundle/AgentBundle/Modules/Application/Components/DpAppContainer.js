@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import DpApp from './DpApp';
 import DpAppLoading from './DpAppLoading';
@@ -29,6 +29,13 @@ class ReactRouterWrapper extends React.Component {
   };
 })
 export default class DpAppContainer extends React.Component {
+  static propTypes = {
+    dpWindow: PropTypes.object.isRequired,
+    routing: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired
+  };
+
   constructor(props) {
     super(props);
 
