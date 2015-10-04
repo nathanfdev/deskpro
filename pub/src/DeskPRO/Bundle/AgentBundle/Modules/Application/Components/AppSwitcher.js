@@ -4,8 +4,8 @@ import * as AppActions from "../Actions/AppActions";
 import { Link } from 'react-router';
 
 @connect(state => ({
-  user: state.user,
-  dp_window: state.dp_window
+  user: state.Application.user,
+  dp_window: state.Application.dp_window
 }))
 export class AppSwitcher extends React.Component {
   constructor(props) {

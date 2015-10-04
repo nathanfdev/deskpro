@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { HeaderWidget } from '../../IM/Components/HeaderWidget';
 
 @connect(state => ({
-  user: state.user
+  user: state.Application.user
 }))
 export class Header extends React.Component {
   static propTypes = {
@@ -28,7 +28,7 @@ export class Header extends React.Component {
         </a>
 
         <a href="#" className="user-options-button">
-          <span className="user-photo" style={{backgroundImage: 'url(' + user.picture_url + ')'}}></span>
+          <span className="user-photo" style={{backgroundImage: 'url(' + user.get('picture_url') + ')'}}></span>
           <span className="title">Settings <i className="fa fa-angle-down"></i></span>
         </a>
       </div>

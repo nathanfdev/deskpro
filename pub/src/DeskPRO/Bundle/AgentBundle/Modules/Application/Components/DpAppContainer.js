@@ -25,8 +25,8 @@ class ReactRouterWrapper extends React.Component {
 
 @connect((state) => {
   return {
-    dp_window: state.dp_window,
-    routing: state.routing
+    dp_window: state.Application.dp_window,
+    routing: state.Application.routing
   };
 })
 export default class DpAppContainer extends React.Component {
