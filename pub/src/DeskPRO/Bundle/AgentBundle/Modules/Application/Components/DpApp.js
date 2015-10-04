@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Header } from './Header';
 import { AppSwitcher } from './AppSwitcher';
@@ -11,21 +11,29 @@ import { routingStarted } from '../Actions/AppActions';
   dpWindow: state.Application.dpWindow
 }))
 export default class DpApp extends React.Component {
+  static propTypes = {
+    user: PropTypes.object.isRequired,
+    children: PropTypes.object.isRequired,
+    dpWindow: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired
+  };
+
   constructor(props) {
     super(props);
+
     const { dispatch, router } = this.props;
     dispatch(routingStarted(router));
   }
 
   render() {
-    const { user, dpWindow, dispatch } = this.props;
+    const { user, dpWindow, dispatch, children } = this.props;
 
     return (
       <div className="dp-window">
         <Header user={user} />
         <AppSwitcher dpWindow={dpWindow} dispatch={dispatch} />
 
-        {this.props.children}
+        {children}
 
         <TabFrame dpWindow={dpWindow} />
       </div>
