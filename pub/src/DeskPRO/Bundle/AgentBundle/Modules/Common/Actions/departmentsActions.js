@@ -3,7 +3,7 @@ import * as rsa from 'Ampliflux/common/record-store/actions';
 import { load as apiLoad, loadDepartments as apiLoadDepartments } from 'DeskPRO/Bundle/AgentBundle/Services/Api/Departments';
 
 const statePath   = ['Common', 'department'];
-const loadMissing = (ids) => apiLoad(ids).then(response => response.getData().data)
+const loadMissing = (ids) => apiLoad(ids).then(response => response.getData().data);
 
 export const gcDepartments             = createAction('GC_DEPARTMENTS',              rsa.gcRecords());
 export const releaseDepartments        = createAction('RELEASE_DEPARTMENTS',         rsa.releaseRecords());

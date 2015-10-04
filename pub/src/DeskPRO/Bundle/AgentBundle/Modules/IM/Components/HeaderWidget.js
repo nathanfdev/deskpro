@@ -2,34 +2,28 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Overlay } from './Overlay';
 import Chat from './ChatWindow/Chat';
-import Recent from './Recent';
+import { Recent } from './Recent';
 import * as listActions from '../Actions/imListActions';
 import { getRecentAgents } from '../Selectors/list';
-import { chatsSelector } from '../Selectors/chats';
-import * as chatsActions from '../RecordStores/Actions/imChatsActions';
-
-
 
 @connect(state => ({
   recentAgents: getRecentAgents(state),
-  agentChats: chatsSelector(state),
-  messages: [],
-
+  target: state.IM.chats.get('current'),
+  messages: []
 }))
 export class HeaderWidget extends React.Component {
   static propTypes = {
-    recentAgents: PropTypes.array.isRequired
+    recentAgents: PropTypes.array.isRequired,
+    target: PropTypes.object.isRequired
   };
 
   constructor(props) {
     super(props);
     const { dispatch } = this.props;
-    dispatch(chatsActions.loadChats('chats', [1,2]));
     dispatch(listActions.loadRecentAgents());
     this.state = {
       overlayShown: false,
       chating: false,
-      target: {id: 0}
     };
   }
 
@@ -49,7 +43,7 @@ export class HeaderWidget extends React.Component {
             : null
           }
           { this.state.overlayShown ? <Overlay handleClickParticipant={this.handleClickParticipant} /> : null }
-          { this.state.chating ? <Chat target={this.state.target} messages={this.props.messages} handleCloseChat={this.handleCloseChat}/> : null }
+          { this.state.chating ? <Chat target={this.props.target} messages={this.props.messages} handleCloseChat={this.handleCloseChat}/> : null }
         </div>
     );
   }

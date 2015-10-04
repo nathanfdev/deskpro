@@ -63,16 +63,10 @@ export const addMessage = createAction(
   }
 );
 
-export const startChat = createAction(
-  'IM_CHAT_START_CHAT',
-  (target_id, target_type = 'agent') => {
-    return true;
-  }
-);
+
 
 export const searchInChat = createAction(
   'IM_CHAT_SEARCH_IN_CHAT',
   () => {
-    return messages;
   }
 );

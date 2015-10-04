@@ -1,5 +1,5 @@
 import React from 'react';
-import { findChat } from '../../RecordStores/Actions/imChatsActions'
+import { startChat } from '../../Actions/chatsActions';
 import { connect } from 'react-redux';
 
 @connect()
@@ -34,6 +34,7 @@ export class AgentsListItem extends React.Component {
 
     startChat = (id, type, callback) => {
         "use strict";
+        this.props.dispatch(startChat(id, type));
         callback();
     }
 }

@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
 use Application\DeskPRO\Entity\Person as PersonEntity;
@@ -46,5 +47,26 @@ class AgentChat extends EntityRepository
      */
     public function findAllPersonChats(PersonEntity $person)
     {
+    }
+
+    /**
+     * @param int $agent_id
+     * @param int $my_id
+     *
+     * @return mixed
+     */
+    public function findChatWithAgent($agent_id, $my_id)
+    {
+        $qb = $this->createQueryBuilder('ac');
+        $qb->innerJoin('App:AgentChatParticipant', 'acp')
+            ->innerJoin('App:AgentChatParticipant', 'acp2')
+            ->andWhere('acp.agent_id = :agent_id')
+            ->andWhere('acp2.agent_id = :my_id')
+            ->setParameter('agent_chat_id', $agent_id)
+            ->setParameter('my_id', $my_id);
+
+        $results = $qb->getQuery()->getResult();
+
+        return $results;
     }
 }
