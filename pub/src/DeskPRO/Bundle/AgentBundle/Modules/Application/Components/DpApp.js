@@ -25,12 +25,12 @@ export default class DpApp extends React.Component {
   }
 
   render() {
-    const { user, dpWindow } = this.props;
+    const { user, dpWindow, dispatch } = this.props;
 
     return (
       <div className="dp-window">
         <Header user={user} />
-        <AppSwitcher />
+        <AppSwitcher dpWindow={dpWindow} dispatch={dispatch} />
 
         {this.props.children}
 
