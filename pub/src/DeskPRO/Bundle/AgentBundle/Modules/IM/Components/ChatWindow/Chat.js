@@ -5,19 +5,21 @@ import { MessageList } from './MessageList';
 import { Offline } from './Offline';
 import { SearchForm } from './SearchForm';
 import { connect } from 'react-redux';
-
+import { loadMessages } from '../../Actions/imMessagesActions';
 import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions'
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 
 @connect(state => ({
   me: state.user,
-  agents: agentsSelector(state)
+  agents: agentsSelector(state),
+  messages: state.IM.messages.chatMessages.messages
 }))
 export class Chat extends React.Component {
 
   componentWillMount() {
     "use strict";
     this.props.dispatch(loadAllAgents());
+    this.props.dispatch(loadMessages(this.props.current.id));
   }
 
   render() {
@@ -30,7 +32,7 @@ export class Chat extends React.Component {
 
         <div className="chat-controls"><a href="#">Load old messages</a></div>
 
-        <MessageList messages={this.props.messages}/>
+        <MessageList messages={this.props.messages[this.props.current.id]}/>
 
         //<div className="active-chat-user-typing">Jeniffer is typing a message <span id="typing">...</span></div>
 

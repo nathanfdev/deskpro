@@ -10,7 +10,6 @@ import { getRecentAgents } from '../Selectors/list';
   recentAgents: getRecentAgents(state),
   current: state.IM.chats.get('current'),
   me: state.user,
-  messages: []
 }))
 export class HeaderWidget extends React.Component {
   static propTypes = {
@@ -48,8 +47,8 @@ export class HeaderWidget extends React.Component {
           : null
         }
         { this.state.overlayShown ? <Overlay handleClickParticipant={this.handleClickParticipant}/> : null }
-        { this.state.chating && this.props.current.id ? <Chat current={this.props.current} messages={this.props.messages}
-                                     handleCloseChat={this.handleCloseChat}/> : null }
+        { this.state.chating && this.props.current.id ? <Chat current={this.props.current}
+                                                              handleCloseChat={this.handleCloseChat}/> : null }
       </div>
     );
   }

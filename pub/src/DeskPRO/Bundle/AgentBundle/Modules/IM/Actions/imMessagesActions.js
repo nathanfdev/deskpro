@@ -1,8 +1,5 @@
 import { createAction } from 'Ampliflux';
-import * as recordStoreActions from 'Ampliflux/common/record-store/actions';
 import * as IM from 'DeskPRO/Bundle/AgentBundle/Services/Api/IM';
-import * as messagesActions from '../Actions/imMessagesActions';
-import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 import Immutable from 'immutable';
 
 const messages = [
@@ -29,32 +26,22 @@ const messages = [
   }
 ];
 
-export const gcMessages              = createAction('GC_MESSAGES',             recordStoreActions.gcRecords());
-export const releaseMessages         = createAction('RELEASE_MESSAGES',        recordStoreActions.releaseRecords());
-export const releaseMessageRequest   = createAction('RELEASE_MESSAGE_REQUEST', recordStoreActions.releaseRequest());
-export const setMessagesRequest      = createAction('SET_MESSAGES_REQUEST',    recordStoreActions.setRequestRecords());
-
-export const loadRecentMessages = createAction(
-  'IM_LOAD_RECENT_MESSAGES',
-  recordStoreActions.requestRecords(['IM', 'messages'], (entity_id, type) => {
-    return new Promise((resolve) => {
-      const recordMap = mapKeyedFromArray(messages, 'id');
-      resolve(recordMap);
-    });
-  })
-);
-
 export const loadMessages = createAction(
-  'IM_CHAT_LOAD_MESSAGES',
+  'IM_LOAD_MESSAGES',
   (chat_id) => {
-    return messages;
+    return new Promise((resolve) => {
+      let chatMessages = {};
+      chatMessages[chat_id] = messages;
+      resolve(chatMessages);
+    });
   }
 );
+
 
 export const addMessage = createAction(
   'IM_CHAT_ADD_MESSAGE',
   (chat_id, message) => {
-    return   {
+    return {
       author: {
         gravatar_url: 'http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm'
       },
@@ -62,8 +49,6 @@ export const addMessage = createAction(
     };
   }
 );
-
-
 
 export const searchInChat = createAction(
   'IM_CHAT_SEARCH_IN_CHAT',
