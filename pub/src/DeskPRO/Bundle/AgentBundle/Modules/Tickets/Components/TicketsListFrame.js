@@ -8,18 +8,18 @@ import * as TicketActions from "../Actions/FiltersActions";
   dp_window: state.Application.dp_window
 }))
 export default class TicketsListFrame extends React.Component {
-    getClasses(dp_window) {
-        let classes = ['ticket-list-frame', 'dp-list-frame'];
+  getClasses(dp_window) {
+    let classes = ['ticket-list-frame', 'dp-list-frame'];
 
-        if(dp_window.collapseNav) {
-            classes.push('expanded');
-        }
-        if(dp_window.expandedSwitcher) {
-            classes.push('shifted');
-        }
-
-        return classes.join(' ');
+    if (dp_window.get('collapseNav')) {
+      classes.push('expanded');
     }
+    if (dp_window.get('expandedSwitcher')) {
+      classes.push('shifted');
+    }
+
+    return classes.join(' ');
+  }
 
   render() {
     const { TicketsList, dp_window } = this.props;

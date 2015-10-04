@@ -39,7 +39,7 @@ export class AppSwitcher extends React.Component {
   render() {
     const { dp_window, dispatch } = this.props;
 
-    const my_classes = "dp-app-switcher" + (dp_window.expandedSwitcher ? ' expanded' : '');
+    const my_classes = 'dp-app-switcher' + (dp_window.get('expandedSwitcher') ? ' expanded' : '');
 
     return (
     <nav onMouseEnter={this.hoverSwitcher.bind(this)}

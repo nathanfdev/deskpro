@@ -21,7 +21,7 @@ import { NavFrame, NavFrameHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/App
   LabelsList: state.Tickets.LabelsList,
   StarsCounts: state.Tickets.StarsCounts,
   Translations: state.Translations,
-  dp_window: state.Application.dp_window,
+  dp_window: state.Application.dp_window
 }))
 export default class TicketsNavContent extends React.Component {
   constructor(props) {
@@ -61,16 +61,16 @@ export default class TicketsNavContent extends React.Component {
   }
 
   getClasses(dp_window) {
-      let classes = ['ticket-nav-frame', 'dp-nav-frame'];
+    let classes = ['ticket-nav-frame', 'dp-nav-frame'];
 
-      if(dp_window.collapseNav) {
-          classes.push('collapsed');
-      }
-      if(dp_window.expandedSwitcher) {
-          classes.push('shifted');
-      }
+    if (dp_window.get('collapseNav')) {
+      classes.push('collapsed');
+    }
+    if (dp_window.get('expandedSwitcher')) {
+      classes.push('shifted');
+    }
 
-      return classes.join(' ');
+    return classes.join(' ');
   }
 
   render() {

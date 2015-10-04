@@ -14,7 +14,7 @@ export class NavFrame extends React.Component {
       });
     }
 
-    const className = this.props.dp_window && this.props.dp_window.collapseNav
+    const className = this.props.dp_window && this.props.dp_window.get('collapseNav')
                     ? 'sidebar-wrapper sidebar-collapsed'
                     : 'sidebar-wrapper';
 
