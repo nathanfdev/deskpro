@@ -3,7 +3,12 @@ import * as PeopleApi from 'DeskPRO/Bundle/AgentBundle/Services/Api/People';
 import ActionTypes from './ActionTypes';
 
 export const setAppUser = createAction(ActionTypes.APP_SET_USER);
-export const setIsLoaded = createAction(ActionTypes.APP_IS_LOADED);
+
+export const setIsLoaded = createAction(
+  ActionTypes.APP_IS_LOADED,
+  params => params
+);
+
 export const setActiveApp = createAction(ActionTypes.SET_ACTIVE_APP);
 export const routingStarted = createAction(ActionTypes.ROUTING_STARTED);
 export const doTransitionTo = createAction(ActionTypes.TRANSITION_TO);
@@ -22,7 +27,11 @@ export function transitionTo(pathname, query = null, state = null) {
 export const loadWindow = createAction(
   'APP_LOAD_WINDOW',
   () => dispatch => PeopleApi.loadMe().then(promise => {
-    dispatch(setAppUser(promise.getData().data));
+    const user = promise.getData().data;
+
+    dispatch(setAppUser(user));
     dispatch(setIsLoaded());
+
+    return user;
   }
 ));
