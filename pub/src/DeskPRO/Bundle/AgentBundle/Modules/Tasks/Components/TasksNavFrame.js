@@ -17,9 +17,9 @@ import $ from "jquery";
   labelList: state.labelList,
   teamList: state.teamList,
   departmentList: state.departmentList,
-  user: state.user,
+  user: state.Application.user,
   createdProject: state.createdProject,
-  dp_window: state.dp_window
+  dp_window: state.Application.dp_window
 }))
 export default class TasksNavFrame extends React.Component {
   constructor(props) {

@@ -5,7 +5,7 @@ import * as TicketActions from "../Actions/FiltersActions";
 
 @connect(state => ({
   TicketsList: state.Tickets.TicketsList,
-  dp_window: state.dp_window
+  dp_window: state.Application.dp_window
 }))
 export default class TicketsListFrame extends React.Component {
     getClasses(dp_window) {

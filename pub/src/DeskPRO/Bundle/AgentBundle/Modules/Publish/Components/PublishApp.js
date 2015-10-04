@@ -5,7 +5,7 @@ import { ListContainer } from './List/ListContainer';
 import { connect } from 'react-redux';
 
 @connect(state => ({
-  dp_window: state.dp_window
+  dp_window: state.Application.dp_window
 }))
 export class PublishApp extends React.Component {
 

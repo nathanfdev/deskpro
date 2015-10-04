@@ -10,8 +10,8 @@ import TasksNavFrame from "./TasksNavFrame";
 import TasksListFrame from "./TasksListFrame";
 
 @connect(state => ({
-  user: state.user,
-  dp_window: state.dp_window
+  user: state.Application.user,
+  dp_window: state.Application.dp_window
 }))
 class TasksApp extends React.Component {
   render() {

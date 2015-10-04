@@ -42,7 +42,7 @@ import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Compone
   agentList: state.agentList,
   teamList: state.teamList,
   departmentList: state.departmentList,
-  dp_window: state.dp_window
+  dp_window: state.Application.dp_window
 }))
 export default
 class TasksListFrame extends React.Component {
