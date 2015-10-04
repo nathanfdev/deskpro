@@ -7,7 +7,6 @@ export default class TabFrame extends React.Component {
 
   render() {
     const { dpWindow } = this.props;
-
     let classes = ['dp-tab-frame'];
 
     if (dpWindow.get('expandedSwitcher')) {
