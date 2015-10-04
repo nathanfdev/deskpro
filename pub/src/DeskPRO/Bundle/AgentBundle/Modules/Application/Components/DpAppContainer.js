@@ -37,15 +37,8 @@ export default class DpAppContainer extends React.Component {
 
   workOutBasePath() {
     const baseEnd = DP_BASE_URL.indexOf('/', DP_BASE_URL.indexOf('://') + 3);
-    let bp;
 
-    if (baseEnd === -1) {
-      bp = '/agent';
-    } else {
-      bp = DP_BASE_URL.substr(baseEnd) + '/agent';
-    }
-
-    return bp;
+    return (baseEnd !== -1 ? DP_BASE_URL.substr(baseEnd) : '') + '/agent';
   }
 
   render() {
