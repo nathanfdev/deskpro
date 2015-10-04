@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import DpApp from './DpApp';
+import ReactRouterWrapper from './ReactRouterWrapper';
 import DpAppLoading from './DpAppLoading';
 import TicketsApp from '../../Tickets/Components/TicketsApp';
 import TasksApp from '../../Tasks/Components/TasksApp';
@@ -11,16 +11,6 @@ import { ChatApp } from '../../Chat/Components/ChatApp';
 import { PublishApp } from '../../Publish/Components/PublishApp';
 import * as AppActions from '../Actions/AppActions';
 import { Router, Route, Redirect } from 'react-router';
-
-class ReactRouterWrapper extends React.Component {
-  render() {
-    return (
-      <DpApp>
-        {this.props.children}
-      </DpApp>
-    );
-  }
-}
 
 @connect((state) => {
   return {
@@ -38,7 +28,6 @@ export default class DpAppContainer extends React.Component {
 
   constructor(props) {
     super(props);
-
     const { dpWindow, dispatch } = this.props;
 
     if (!dpWindow.get('isLoaded')) {
