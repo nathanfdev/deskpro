@@ -14,6 +14,7 @@ import { routingStarted } from "../Actions/AppActions";
 
 @connect(state => ({
   ...state,
+  user: state.Application.user,
   dpWindow: state.Application.dpWindow
 }))
 export default class DpApp extends React.Component {
@@ -24,11 +25,11 @@ export default class DpApp extends React.Component {
   }
 
   render() {
-    const { dpWindow } = this.props;
+    const { user, dpWindow } = this.props;
 
     return (
       <div className="dp-window">
-        <Header />
+        <Header user={user} />
         <AppSwitcher />
 
         {this.props.children}

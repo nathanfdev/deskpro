@@ -2,9 +2,6 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { HeaderWidget } from '../../IM/Components/HeaderWidget';
 
-@connect(state => ({
-  user: state.Application.user
-}))
 export class Header extends React.Component {
   static propTypes = {
     user: PropTypes.object.isRequired
