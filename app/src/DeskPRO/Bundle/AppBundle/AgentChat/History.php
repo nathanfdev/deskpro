@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\AgentChat;
 
 use Application\DeskPRO\Entity\Person;
@@ -87,7 +88,7 @@ class History
         $messages = array();
         if ($ids) {
             $messageRepo = $this->em->getRepository('App:AgentChatMessage');
-            $messages    = $messageRepo->findBy(array('id' => $ids), array($orderBy => 'DESC'));
+            $messages    = $messageRepo->findBy(array('id' => $ids), array($orderBy => 'ASC'));
         }
 
         return $messages;

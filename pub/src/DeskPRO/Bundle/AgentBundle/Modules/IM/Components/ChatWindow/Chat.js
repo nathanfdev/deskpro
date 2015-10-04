@@ -12,9 +12,16 @@ import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordS
 @connect(state => ({
   me: state.user,
   agents: agentsSelector(state),
-  messages: state.IM.messages.chatMessages.messages
+  messages: state.IM.messages
 }))
 export class Chat extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      searchQuery: ''
+    };
+  }
 
   componentWillMount() {
     "use strict";
@@ -22,25 +29,39 @@ export class Chat extends React.Component {
     this.props.dispatch(loadMessages(this.props.current.id));
   }
 
+  handleQuery = (event) => {
+    "use strict";
+    const oldState = this.state;
+    const newState = {...oldState};
+    newState.searchQuery = event.target.value;
+    this.setState(newState);
+  }
+
+  handleSearch = () => {
+    "use strict";
+    this.props.dispatch(loadMessages(this.props.current.id, this.state.searchQuery));
+  }
+
   render() {
     return (
       <div className="dropdown active-chat-dropdown" id="active-chat-dropdown">
         { this.head() }
-
-
-        <SearchForm />
-
-        <div className="chat-controls"><a href="#">Load old messages</a></div>
-
-        <MessageList messages={this.props.messages[this.props.current.id]}/>
-
-        //<div className="active-chat-user-typing">Jeniffer is typing a message <span id="typing">...</span></div>
-
-        <Offline />
-
+        { this.searchForm() }
+        <div className="chat-controls"><a href="#">Load old messages</a><a onClick={this.refresh} href="#">Refresh</a></div>
+        <MessageList
+          agents={this.props.agents}
+          me={this.props.me}
+          messages={this.props.messages.get('chatMessages')[this.props.current.id]}/>
         <Footer />
       </div>
     );
+  }
+
+  searchForm() {
+    "use strict";
+    if(this.props.agents.size > 0) {
+      return <SearchForm handleQuery={this.handleQuery} handleSearch={this.handleSearch} />
+    }
   }
 
   head() {
@@ -49,5 +70,21 @@ export class Chat extends React.Component {
       return <Header agents={this.props.agents} me={this.props.me} current={this.props.current}
                      handleCloseChat={this.props.handleCloseChat}/>
     }
+  }
+
+  refresh = () =>
+  {
+    "use strict";
+    this.props.dispatch(loadMessages(this.props.current.id));
+  }
+
+  static typing() {
+    "use strict";
+    return <div className="active-chat-user-typing">Jeniffer is typing a message <span id="typing">...</span></div>
+  }
+
+  static offline() {
+    "use strict";
+    return <Offline />
   }
 }
