@@ -53,26 +53,27 @@ export default class DpAppContainer extends React.Component {
 
   render() {
     const { dpWindow, history } = this.props;
+
+    if (!dpWindow.get('isLoaded')) {
+      return <DpAppLoading />;
+    }
+
     const basePath = this.workOutBasePath();
     const defaultPath = `${basePath}/tasks`;
 
-    if (dpWindow.get('isLoaded')) {
-      return (
-        <Router history={history}>
-          <Redirect from={basePath} to={defaultPath}/>
-          <Route path={basePath} component={ReactRouterWrapper}>
-            <Route name="crm" path="crm" component={CrmApp}/>
-            <Route name="chat" path="chat" component={ChatApp}/>
-            <Route name="tickets" path="tickets" component={TicketsApp}/>
-            <Route name="tasks" path="tasks" component={TasksApp}/>
-            <Route name="publish" path="publish" component={PublishApp}/>
-            <Route name="feedback" path="feedback" component={FeedbackApp}/>
-            <Route name="test" path="test" component={TestApp}/>
-          </Route>
-        </Router>
-      );
-    }
-
-    return <DpAppLoading />;
+    return (
+      <Router history={history}>
+        <Redirect from={basePath} to={defaultPath}/>
+        <Route path={basePath} component={ReactRouterWrapper}>
+          <Route name="crm" path="crm" component={CrmApp}/>
+          <Route name="chat" path="chat" component={ChatApp}/>
+          <Route name="tickets" path="tickets" component={TicketsApp}/>
+          <Route name="tasks" path="tasks" component={TasksApp}/>
+          <Route name="publish" path="publish" component={PublishApp}/>
+          <Route name="feedback" path="feedback" component={FeedbackApp}/>
+          <Route name="test" path="test" component={TestApp}/>
+        </Route>
+      </Router>
+    );
   }
 }
