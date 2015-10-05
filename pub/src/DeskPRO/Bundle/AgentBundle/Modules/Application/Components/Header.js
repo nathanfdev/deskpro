@@ -43,7 +43,7 @@ export class Header extends React.Component {
         </a>
       </div>
 
-      <div style={{position: 'absolute', left: '100px', top: '20px', display: this.state.isWorkspaceOpen ? '' : 'none'}}>
+      <div style={{display: this.state.isWorkspaceOpen ? '' : 'none'}}>
         <Workspace dpWindow={dpWindow} />
       </div>
 

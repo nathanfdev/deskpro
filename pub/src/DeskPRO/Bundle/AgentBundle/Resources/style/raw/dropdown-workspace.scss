@@ -1,3 +1,19 @@
+.workspace-dropdown {
+  @include corner-top;
+  @include clearfix;
+
+  width: 240px;
+  right: 208px;
+  top: 42px;
+  background: #f5f6f7;
+  z-index: 999;
+  position: absolute;
+
+  &:before {
+    left: 208px;
+  }
+}
+
 .dpw-workspace-type-container {
   padding: 5px;
   padding-bottom: 10px;
