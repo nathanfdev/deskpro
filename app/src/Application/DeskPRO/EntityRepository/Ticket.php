@@ -953,6 +953,7 @@ class Ticket extends AbstractEntityRepository
                         'ticket_id'  => $id,
                         'is_locked'  => false,
                         'locked_by'  => null,
+                        'locked_by_name' => null,
                         'via_person' => null,
                     )),
                 );

@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;
+use League\Url\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -97,6 +98,11 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('col_count', array($this, 'countTruthy')),
             new \Twig_SimpleFunction('has_permission', array($this, 'hasPermission')),
             new \Twig_SimpleFunction('url_full', array($this, 'urlFull')),
+            new \Twig_SimpleFunction('base_url', array($this, 'baseUrl')),
+            new \Twig_SimpleFunction('root_url', array($this, 'rootUrl')),
+            new \Twig_SimpleFunction('is_multi_lang', array($this, 'isMultLang')),
+            new \Twig_SimpleFunction('lang_code', array($this, 'langCode')),
+            new \Twig_SimpleFunction('enabled_languages', array($this, 'enabledLanguages')),
             new \Twig_SimpleFunction('date', array($this, 'date')),
         );
 
@@ -183,6 +189,58 @@ class PortalSupportExtension extends \Twig_Extension
         }
 
         return false;
+    }
+
+    public function enabledLanguages()
+    {
+        return $this->container->get('language_manager')->getEnabledLanguages();
+    }
+
+    public function langCode()
+    {
+        if (!$lang = $this->container->get('language_stack')->getActive()) {
+            $lang = $this->container->get('language_stack')->getDefaultLanguage();
+        }
+
+        return $lang->getTwoLetterLanguageCode();
+    }
+
+    public function isMultLang()
+    {
+        return $this->container->get('language_manager')->isMultiLanguagePortal();
+    }
+
+    public function baseUrl()
+    {
+        $portal_router = $this->container->get('router');
+
+        // $base_url is the base URL to generate API calls to, it includes mode/language info.
+        $base_url = $portal_router->generate(
+            'portal_home',
+            array(),
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
+        return $base_url;
+    }
+
+    public function rootUrl()
+    {
+        $portal_router = $this->container->get('router');
+
+        // one of the rare time we use this $base_symfony_router. This is used to
+        // generate the URL without the /mode/lang_code prefix appended to the base url.
+        // JS uses this to generate paths to /web/images and such.
+        $base_symfony_router = $portal_router->getBaseRouter();
+
+        // $root_url is the url that the root index.php lives on
+        $root_url = $base_symfony_router->generate(
+            'portal_home',
+            array(),
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
+        return $root_url;
     }
 
     /**

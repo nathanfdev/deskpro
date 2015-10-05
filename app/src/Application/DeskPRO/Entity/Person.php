@@ -99,9 +99,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property PersonEmail $primary_email
  * @property PersonEmail[] $emails
  * @property PhoneNumber[] $phone_numbers
- * @property LabelPerson[] $labels
- * @property CustomDataPerson[] $custom_data
- * @property PersonContactData[] $contact_data
+ * @property ArrayCollection|LabelPerson[] $labels
+ * @property ArrayCollection|CustomDataPerson[] $custom_data
+ * @property ArrayCollection|PersonContactData[] $contact_data
  * @property Usergroup[] $usergroups
  * @property TwitterAccount[] $twitter_accounts
  * @property TwitterUser[] $twitter_users
@@ -384,10 +384,12 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     protected $phone_numbers;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $labels;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $custom_data;
 
@@ -674,6 +676,23 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
+     * @param string $type 'agent' or 'user'
+     *
+     * @return bool
+     */
+    public function hasDeskproUsersource($type)
+    {
+        foreach ($this->usersource_assoc as $assoc) {
+            $us = $assoc->usersource;
+            if ($us->type == $type && $us->source_type == 'Application\DeskPRO\Usersource\Adapter\DeskPRO') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Try to guess an org name based on profile info.
      *
      * @return string
@@ -789,6 +808,18 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return (bool) $this->is_agent_confirmed;
     }
 
+    /**
+     * @param bool $yesno
+     *
+     * @return $this
+     */
+    public function setIsDisabled($yesno)
+    {
+        $this->setModelField('is_disabled', $yesno);
+
+        return $this;
+    }
+
     public function getProjectMembers()
     {
         return $this->project_members;
@@ -799,9 +830,19 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      *
      * @return bool
      */
+    public function isDisabled()
+    {
+        return $this->is_disabled;
+    }
+
     public function isAgent()
     {
         return $this->is_agent;
+    }
+
+    public function isAdmin()
+    {
+        return $this->can_admin;
     }
 
     /**
@@ -826,6 +867,18 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      *
      * @return $this
      */
+    public function setIsDeleted($yesno)
+    {
+        $this->setModelField('is_deleted', $yesno);
+
+        return $this;
+    }
+
+    /**
+     * @param bool $yesno
+     *
+     * @return $this
+     */
     public function setCanAdmin($yesno)
     {
         if ($yesno) {
@@ -835,6 +888,15 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $this->setModelField('can_admin', $yesno);
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     * @return $this
+     */
+    public function isDeleted()
+    {
+        return $this->is_deleted;
     }
 
     /**
@@ -1476,6 +1538,20 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
+     * Set language.
+     *
+     * @param Language|null $language
+     *
+     * @return $this
+     */
+    public function setLanguage(Language $language = null)
+    {
+        $this->setModelField('language', $language);
+
+        return $this;
+    }
+
+    /**
      * @param int $id
      *
      * @return $this
@@ -1600,9 +1676,22 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
+     * Reset contact data
+     * todo add onPropertyChanged() if change tracking is needed.
+     *
+     * @return $this
+     */
+    public function resetContactData()
+    {
+        $this->contact_data->clear();
+
+        return $this;
+    }
+
+    /**
      * @param null $type
      *
-     * @return array
+     * @return PersonContactData[]
      */
     public function getContactData($type = null)
     {
@@ -1651,12 +1740,29 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             $parent_id = $field->parent['id'];
         }
 
+        $change = false;
         foreach ($this->custom_data as $data) {
             if ($data['field_id'] == $field_id or $data['field_id'] == $parent_id) {
+                $change = true;
                 $this->custom_data->removeElement($data);
-                $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
+
+                if ($parent_id) {
+                    $this->getStateChangeRecorder()->record("custom_data.$parent_id", $data, null, true);
+                } else {
+                    $this->getStateChangeRecorder()->record("custom_data.$field_id", $data, null, true);
+                }
             }
         }
+
+        if ($change) {
+            $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+        }
+    }
+
+    public function removeCustomData(CustomDataPerson $data)
+    {
+        $this->custom_data->removeElement($data);
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
     }
 
     /**
@@ -1687,10 +1793,24 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             $custom_data['field'] = $field;
         }
 
+        $field = $custom_data->field;
+        if ($field->parent) {
+            foreach ($this->custom_data as $d) {
+                if ($d->field && $d->field->parent && $d->field->parent['id'] == $field->parent['id']) {
+                    $this->custom_data->removeElement($d);
+                }
+            }
+        }
+
+        $this->custom_data->removeElement($custom_data);
+
         if ($value === null) {
             $this->custom_data->removeElement($custom_data);
-            $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
 
+            return;
+        }
+
+        if ($field->getTypeName() == 'choice') {
             return;
         }
 
@@ -1699,6 +1819,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         if ($is_new) {
             $this->addCustomData($custom_data);
         }
+
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
 
         return $custom_data;
     }
@@ -1717,6 +1839,19 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $this->custom_data->add($data);
         $data->person = $this;
         $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
+    }
+
+    /**
+     * Reset custom data
+     * todo add onPropertyChanged() if change tracking is needed.
+     *
+     * @return $this
+     */
+    public function resetCustomData()
+    {
+        $this->custom_data->clear();
+
+        return $this;
     }
 
     /**
@@ -1937,10 +2072,13 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     /**
      * @return array
      */
-    public function getEmailAddresses()
+    public function getEmailAddresses($skipPrimary = false)
     {
         $arr = array();
         foreach ($this->emails as $email) {
+            if ($skipPrimary && $email->email === $this->primary_email->email) {
+                continue;
+            }
             if ($email->is_validated) {
                 $arr[] = $email->email;
             }
@@ -2132,14 +2270,14 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
-     * Reset emails collection.
+     * Reset emails collection
+     * todo add onPropertyChanged() if change tracking is needed.
      *
      * @return $this
      */
     public function resetEmails()
     {
-        $this->emails = new ArrayCollection();
-        $this->_onPropertyChanged('emails', null, $this->emails);
+        $this->emails->clear();
 
         return $this;
     }
@@ -2212,20 +2350,20 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
-     * Remove all usergroups.
+     * Remove all usergroups
+     * todo add onPropertyChanged() if change tracking is needed.
      *
      * @return $this
      */
     public function resetUsergroups()
     {
-        $this->usergroups = new ArrayCollection();
-        $this->_onPropertyChanged('usergroups', null, $this->usergroups);
+        $this->usergroups->clear();
 
         return $this;
     }
 
     /**
-     * Check if hte user belongs to a usergroup.
+     * Check if the user belongs to a usergroup.
      *
      * @param $usergroup
      *
@@ -2240,12 +2378,16 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * Add a label.
      *
      * @param \Application\DeskPRO\Entity\LabelPerson $label
+     *
+     * @return $this
      */
     public function addLabel(LabelPerson $label)
     {
         $label['person'] = $this;
         $this->labels->add($label);
         $this->_onPropertyChanged('labels', $this->labels, $this->labels);
+
+        return $this;
     }
 
     public function removeLabelByString($l)
@@ -2268,7 +2410,10 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function resetLabels()
     {
-        $this->labels = new ArrayCollection();
+        foreach ($this->labels as $data) {
+            $this->labels->removeElement($data);
+        }
+
         $this->_onPropertyChanged('labels', null, $this->labels);
 
         return $this;
@@ -2327,8 +2472,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function getPictureUrl($size = 80, $secure = null, $default = false)
     {
-        return ''; //TODO
-
         // Null means detect
         if ($secure === null and App::isWebRequest()) {
             $request = App::getRequest();
@@ -3605,6 +3748,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'fieldName'    => 'language',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language',
                 'mappedBy'     => null,
+                'cascade'      => array('persist'),
                 'inversedBy'   => null,
                 'joinColumns'  => array(
                     0 => array(
@@ -3636,7 +3780,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'dpApi' => true,
             )
         );
-        $metadata->mapManyToOne(
+        $metadata->mapOneToOne(
             array(
                 'fieldName'    => 'primary_email',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail',
@@ -3729,7 +3873,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             array(
                 'fieldName'    => 'preferences',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonPref',
-                'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                'cascade'      => array('persist', 'remove', 'merge'),
                 'mappedBy'     => 'person',
             )
         );
@@ -3738,6 +3882,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'fieldName'    => 'usersource_assoc',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonUsersourceAssoc',
                 'mappedBy'     => 'person',
+                'cascade'      => array('persist', 'remove'),
             )
         );
         $metadata->mapOneToMany(
@@ -3828,8 +3973,12 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
 
     public function clear()
     {
-        $this->_permissions_manager->clear();
-        $this->_person_logger->clear();
+        if ($this->_permissions_manager) {
+            $this->_permissions_manager->clear();
+        }
+        if ($this->_person_logger) {
+            $this->_person_logger->clear();
+        }
     }
 
     /**

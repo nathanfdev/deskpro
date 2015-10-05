@@ -28,7 +28,7 @@
 
 return array(
     'user.widget.chat_form_error_department'    => 'Veuillez choisir un service',
-    'user.widget.chat_form_submit'              => 'Démarrer la conversation',
+    'user.widget.chat_form_submit'              => 'Démarrer le Chat',
     'user.widget.chat_form_wait'                => 'Nous vous mettons en relation avec un agent, merci de patienter.',
     'user.widget.chat_form_wait_title'          => 'Veuillez patienter',
     'user.widget.email'                         => 'Votre adresse email',

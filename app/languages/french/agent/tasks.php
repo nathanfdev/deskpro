@@ -42,8 +42,8 @@ return array(
     'agent.tasks.linked_ticket'      => 'Ticket lié',
     'agent.tasks.list_title'         => '1 tâche|{{count}} tâches',
     'agent.tasks.my_tasks'           => 'Mes tâches',
-    'agent.tasks.my_teams'           => 'Mes groupes',
-    'agent.tasks.my_teamstasks'      => 'Les tâches de mes groupes',
+    'agent.tasks.my_teams'           => 'Mes équipes',
+    'agent.tasks.my_teamstasks'      => 'Les tâches de mes équipes',
     'agent.tasks.no_due_date'        => 'Pas d\'échéance',
     'agent.tasks.no_due_time'        => 'Pas d\'heure précisée',
     'agent.tasks.or'                 => 'ou',
@@ -53,5 +53,5 @@ return array(
     'agent.tasks.task_has_deal_x'    => 'Tâche liée à : Affaire "{{label}}"',
     'agent.tasks.task_has_ticket_x'  => 'Tâche liée à : Ticket "{{label}}"',
     'agent.tasks.tasks_i_delegated'  => 'Tâches que j\'ai déléguées',
-    'agent.tasks.team_assigned_by'   => 'Votre équipe a été assignée à cette tâche par {{name}}',
+    'agent.tasks.team_assigned_by'   => 'Votre équipe est assignée à cette tâche par {{name}}',
 );

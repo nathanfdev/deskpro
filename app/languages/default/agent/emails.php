@@ -123,4 +123,7 @@ return array(
     'agent.emails.newagent-help'                        => 'If you need any help or have questions, please check out the DeskPRO support site at <a href="https://support.deskpro.com/">https://support.deskpro.com/</a> or contact us directly at <a href="mailto:support@deskpro.com">support@deskpro.com</a>.',
     'agent.emails.newagent-welcome-to-deskpro'          => 'Welcome to DeskPRO!',
     'agent.emails.message-is-note'                      => 'The following message is an internal agent note.',
+    'agent.emails.reply_is_as_note'                     => 'Your reply will be added as a private agent note',
+    'agent.emails.reply_sent_to_user'                   => 'Your reply will be sent to the user {{user}}',
+    'agent.emails.reply_sent_to_ccs'                    => 'and {{count}} CC\'d user:|and {{count}} CC\'d users:',
 );

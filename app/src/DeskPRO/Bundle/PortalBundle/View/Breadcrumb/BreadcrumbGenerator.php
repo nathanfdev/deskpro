@@ -226,6 +226,20 @@ class BreadcrumbGenerator
     }
 
     #####################################################################################################################
+    # Search
+    #####################################################################################################################
+
+    public function buildSearch($query)
+    {
+        return $this->createBuilder()->addSearch($query)->done();
+    }
+
+    public function buildLabelSearch($type, $label)
+    {
+        return $this->createBuilder()->addLabelSearch($type, $label)->done();
+    }
+
+    #####################################################################################################################
     # Tickets
     #####################################################################################################################
 
@@ -267,7 +281,12 @@ class BreadcrumbGenerator
 
     public function buildProfile()
     {
-        return $this->createBuilder()->addProfile()->done();
+        return $this->createBuilder()->addYourAccount()->addProfile()->done();
+    }
+
+    public function buildProfileEmails()
+    {
+        return $this->createBuilder()->addYourAccount()->addEditEmails()->done();
     }
 
     public function buildLogin()

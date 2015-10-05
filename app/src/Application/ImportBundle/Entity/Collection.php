@@ -34,6 +34,8 @@ use Application\ImportBundle\AbstractCollection;
  * Exporting collection of entities.
  *
  * Class Collection
+ *
+ * @property EntityInterface[]|array $collection
  */
 final class Collection extends AbstractCollection
 {
@@ -87,6 +89,24 @@ final class Collection extends AbstractCollection
     }
 
     /**
+     * Remove an entity.
+     *
+     * @param EntityInterface $entity
+     *
+     * @return $this
+     */
+    public function detach(EntityInterface $entity)
+    {
+        $key = array_search($entity, $this->collection, true);
+
+        if ($key !== false) {
+            unset($this->collection[$key]);
+        }
+
+        return $this;
+    }
+
+    /**
      * Merge another entity collection.
      *
      * @param Collection $collection
@@ -103,5 +123,84 @@ final class Collection extends AbstractCollection
         }
 
         return $this;
+    }
+
+    /**
+     * Converts collection's entities to array.
+     *
+     * @return array
+     */
+    public function entitiesToArray()
+    {
+        $entities = array();
+        foreach ($this->collection as $entity) {
+            /* @var EntityInterface $entity */
+            $entities[] = $entity->toArray();
+        }
+
+        return $entities;
+    }
+
+    /**
+     * Checks if all entities has import map key.
+     *
+     * @return bool
+     */
+    public function hasImportMapKey()
+    {
+        foreach ($this->collection as $entity) {
+            if (!$entity->getImportMapKey()) {
+                return false;
+            }
+        }
+
+        return count($this->collection) > 0;
+    }
+
+    /**
+     * Returns containing entity destinations.
+     *
+     * @return array
+     */
+    public function getDestinations()
+    {
+        return array_map(
+            function (EntityInterface $entity) {
+                return $entity->getDestination();
+            },
+            $this->collection
+        );
+    }
+
+    /**
+     * Returns containing entity oids.
+     *
+     * @return array
+     */
+    public function getOids()
+    {
+        return array_map(
+            function (EntityInterface $entity) {
+                return $entity->getOid();
+            },
+            $this->collection
+        );
+    }
+
+    /**
+     * Returns the max oid.
+     *
+     * @return mixed
+     */
+    public function getMaxOid()
+    {
+        return empty($this->collection) ? 0 : max(
+            array_map(
+                function (EntityInterface $entity) {
+                    return $entity->getOid();
+                },
+                $this->collection
+            )
+        );
     }
 }

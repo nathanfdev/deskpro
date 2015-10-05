@@ -36,7 +36,7 @@ return array(
     'agent.organizations.email_domain_assoc_explain'      => 'Пользователи с e-mail в этом домене будут автоматически связаны с этой организацией.',
     'agent.organizations.email_domain_assoc_move'         => 'Связать 1 пользователя|Связать {{count}} пользователей',
     'agent.organizations.email_domain_assoc_move_all'     => 'Связать 1 пользователя, принадлежащего другой организации|Связать {{count}} пользователей, принадлежащих другой организации',
-    'agent.organizations.email_domain_assoc_none'         => 'Разрешить домену автоматически связывать пользователей с этой организацией.',
+    'agent.organizations.email_domain_assoc_none'         => 'Указать почтовый домен организации для автоматической привязки пользователей.',
     'agent.organizations.email_domain_assoc_remove'       => 'Удалить домен',
     'agent.organizations.email_domain_assoc_remove_users' => 'Удалить домен и отписать 1 пользователя от этой организации|Удалить домен и отписать {{count}} пользователей от этой организации',
     'agent.organizations.email_domain_assoc_title'        => 'Домен связан с {{name}}',

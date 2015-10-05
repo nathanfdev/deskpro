@@ -1,4 +1,5 @@
 <?php
+
 /*
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
@@ -24,6 +25,7 @@
  *
  * ~ Thanks, Everyone at Team DeskPRO
  */
+
 /**
  * DeskPRO.
  */
@@ -55,6 +57,7 @@ class FeedbackCommentController extends BaseController
      * @Get("/feedback_comments_list", name="api_feedback_comments_list")
      *
      * @param Request $request
+     *
      * @return View
      * @throws \LogicException
      */

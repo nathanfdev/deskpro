@@ -28,30 +28,48 @@
 
 namespace Application\ImportBundle\Reader\Json;
 
+use Application\ImportBundle\Reader\ReaderInterface;
+
 /**
  * Json data parser interface.
  *
  * Interface JsonReaderInterface
  */
-interface JsonReaderInterface
+interface JsonReaderInterface extends ReaderInterface
 {
+    const ENTITY_PERSON_PATH                  = 'people/';
+    const ENTITY_PERSON_CUSTOM_DEF_PATH       = 'people_custom_def/';
+    const ENTITY_TICKET_PATH                  = 'tickets/';
+    const ENTITY_TICKET_CUSTOM_DEF_PATH       = 'tickets_custom_def/';
+    const ENTITY_ARTICLE_PATH                 = 'articles/';
+    const ENTITY_ARTICLE_CATEGORY_PATH        = 'article_categories/';
+    const ENTITY_ARTICLE_CUSTOM_DEF_PATH      = 'article_custom_def/';
+    const ENTITY_DOWNLOAD_PATH                = 'downloads/';
+    const ENTITY_FEEDBACK_PATH                = 'feedback/';
+    const ENTITY_FEEDBACK_CUSTOM_DEF_PATH     = 'feedback_custom_def/';
+    const ENTITY_NEWS_PATH                    = 'news/';
+    const ENTITY_ORGANIZATION_PATH            = 'organizations/';
+    const ENTITY_ORGANIZATION_CUSTOM_DEF_PATH = 'organizations_custom_def/';
+
     /**
      * Returns count of json files in the dir
      * One record per file.
      *
-     * @param JsonConfig $config
+     * @param string $entity_path
+     * @param int    $batch_num
      *
      * @return int
      */
-    public function getDirectoryFilesCount(JsonConfig $config);
+    public function getDirectoryFilesCount($entity_path, $batch_num);
 
     /**
      * Returns directory files data
      * Reads all directory json files, decode and returns  array.
      *
-     * @param JsonConfig $config
+     * @param string $entity_path
+     * @param int    $batch_num
      *
      * @return array
      */
-    public function getData(JsonConfig $config);
+    public function getData($entity_path, $batch_num);
 }

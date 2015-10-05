@@ -97,14 +97,93 @@ class CustomDataTicket extends CustomDataAbstract
     {
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomDataTicket';
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(array('name' => 'custom_data_ticket', 'indexes' => array('obj_id_idx' => array('columns' => array(0 => 'ticket_id')), 'field_id_idx' => array('columns' => array(0 => 'field_id', 1 => 'ticket_id')))));
+        $metadata->setPrimaryTable(
+            array(
+                'name'    => 'custom_data_ticket',
+                'indexes' => array(
+                    'obj_id_idx'   => array('columns' => array(0 => 'ticket_id')),
+                    'field_id_idx' => array('columns' => array(0 => 'field_id', 1 => 'ticket_id')),
+                ),
+            )
+        );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'value', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'value'));
-        $metadata->mapField(array('fieldName' => 'input', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'input'));
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'id',
+                'id'         => true,
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'value',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'value',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'input',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'input',
+            )
+        );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
-        $metadata->mapManyToOne(array('fieldName' => 'field', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefTicket', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'field_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
-        $metadata->mapManyToOne(array('fieldName' => 'root_field', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefTicket', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'root_field_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'ticket',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
+                'inversedBy'   => 'custom_data',
+                'joinColumns'  => array(
+                    0 => array(
+                        'name'                 => 'ticket_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
+                    ),
+                ),
+            )
+        );
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'field',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefTicket',
+                'joinColumns'  => array(
+                    0 => array(
+                        'name'                 => 'field_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
+                    ),
+                ),
+            )
+        );
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'root_field',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefTicket',
+                'joinColumns'  => array(
+                    0 => array(
+                        'name'                 => 'root_field_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
+                    ),
+                ),
+            )
+        );
     }
 }

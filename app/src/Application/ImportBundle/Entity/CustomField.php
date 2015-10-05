@@ -43,6 +43,9 @@ final class CustomField extends AbstractEntity
     const FIELD_TYPE_CHOICE   = 'choice';
     const FIELD_TYPE_TOGGLE   = 'toggle';
     const FIELD_TYPE_DATE     = 'date';
+    const FIELD_TYPE_DATETIME = 'datetime';
+    const FIELD_TYPE_DISPLAY  = 'display';
+    const FIELD_TYPE_HIDDEN   = 'hidden';
 
     /**
      * @var string
@@ -131,6 +134,6 @@ final class CustomField extends AbstractEntity
 
         $metadata
             ->addPropertyConstraint('key', new Constraints\NotBlank())
-            ->addPropertyConstraint('value', new Constraints\NotBlank());
+        ;
     }
 }

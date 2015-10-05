@@ -35,6 +35,7 @@ use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\AppBundle\Person\Events\PersonCreateEvent;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
@@ -58,21 +59,33 @@ class PersonFactory
      */
     private $brand_stack;
 
-    public function __construct(EntityManager $em, EventDispatcherInterface $event_dispatcher, BrandStack $brand_stack)
+    /**
+     * @var LanguageStack
+     */
+    private $language_stack;
+
+    public function __construct(EntityManager $em, EventDispatcherInterface $event_dispatcher, BrandStack $brand_stack, LanguageStack $language_stack)
     {
         $this->em               = $em;
         $this->brand_stack      = $brand_stack;
         $this->event_dispatcher = $event_dispatcher;
+        $this->language_stack   = $language_stack;
     }
 
     public function createNewPerson()
     {
-        return new Person();
+        $person = new Person();
+
+        $person->setLanguage($this->language_stack->getActiveOrDefault());
+
+        return $person;
     }
 
     public function createPersonByEmail($raw_email, CreatePersonContext $context)
     {
         $person = new Person();
+
+        $person->setLanguage($this->language_stack->getActiveOrDefault());
 
         $email = new PersonEmail();
         $email->setEmail($raw_email);
@@ -109,6 +122,10 @@ class PersonFactory
     public function saveNewPerson(Person $person, CreatePersonContext $context)
     {
         $email = $person->getPrimaryEmail();
+
+        if (!$person->getLanguage()) {
+            $person->setLanguage($this->language_stack->getActiveOrDefault());
+        }
 
         if ($this->getBrandSetting('core.email_validation')) {
             $email->is_validated = false;
@@ -187,6 +204,8 @@ class PersonFactory
             // Still no, if we're here then we make a new person
             if (!$person) {
                 $person = Person::newContactPerson();
+                $person->setLanguage($this->language_stack->getActiveOrDefault());
+
                 if ($guest->name) {
                     $person->name = $guest->name;
                 }

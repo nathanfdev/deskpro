@@ -179,6 +179,7 @@ class UserChatManager
                     }
                     $new_person->setEmail($convo->person_email);
                     $convo->person = $new_person;
+                    $new_person->language = $this->tr->getLanguage();
                 }
             }
             $is_new_convo = true;

@@ -29,7 +29,10 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
 
 /**
  * Downloads csv file parser.
@@ -53,7 +56,7 @@ final class Downloads extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount($this->getDownloadReaderConfig());
+        return $this->getReaderCount(CsvReaderInterface::FILE_DOWNLOADS);
     }
 
     /**
@@ -61,98 +64,68 @@ final class Downloads extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $downloads  = $this->getReaderData($this->getDownloadReaderConfig());
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->getReaderData(CsvReaderInterface::FILE_DOWNLOADS))
+            ->setPrefix('CSVDownload')
+            ->setRefColumn('id')
+            ->setMethod('exportDownload')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        foreach ($downloads as $num => $download) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportDownload($num, $download);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid download record `%d` found (Skipping)', $num));
-                }
-            } catch (NoColumnException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid download record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
      * Returns a download entity
      * Download data contains attachment params.
      *
+     * @param array $data
      * @param int   $num
-     * @param array $download
      *
-     * @return Entity\Download|null
+     * @return Entity\Download
      */
-    private function exportDownload($num, array $download)
+    protected function exportDownload(array $data, $num)
     {
-        if ($this->isDownloadValid($download) && $this->isAttachmentValid($download, 'person')) {
+        $formatted = $this->formatter->format($data, array(
+            'id'          => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+                'default' => 'num_'.$num,
+            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix'  => self::DOWNLOAD_PREFIX,
+                'ref'     => 'id',
+            )),
+            'person'       => TransformerInterface::TYPE_STRING,
+            'title'        => TransformerInterface::TYPE_STRING,
+            'content'      => TransformerInterface::TYPE_STRING,
+            'slug'         => TransformerInterface::TYPE_STRING,
+            'language'     => TransformerInterface::TYPE_STRING,
+            'category'     => TransformerInterface::TYPE_STRING,
+            'status'       => TransformerInterface::TYPE_STRING,
+            'date_created' => TransformerInterface::TYPE_DATE,
+            'label'        => TransformerInterface::TYPE_STRING,
+        ));
+
             $entity = new Entity\Download();
             $entity
-                ->setDestination(self::DOWNLOAD_PREFIX.$num)
-                ->setOid($num)
-                ->setPersonEmail($download['person'])
-                ->setTitle($download['title'])
-                ->setContent($download['content'])
-                ->setSlug($download['slug'])
-                ->setLanguage($download['language'])
-                ->setCategory($download['category'])
-                ->setStatus($download['status'])
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($download['date_created']))
-                ->setAttachment($this->exportAttachment($num, self::DOWNLOAD_PREFIX, $download, 'person'));
+            ->setRawData($data)
+            ->setDestination($formatted['destination'])
+            ->setOid($formatted['id'])
+            ->setPersonEmail($formatted['person'])
+            ->setTitle($formatted['title'])
+            ->setContent($formatted['content'])
+            ->setSlug($formatted['slug'])
+            ->setLanguage($formatted['language'])
+            ->setCategory($formatted['category'])
+            ->setStatus($formatted['status'])
+            ->setDateCreated($formatted['date_created'])
+            ->setAttachment($this->getAttachmentParser()->exportAttachment($num, self::DOWNLOAD_PREFIX, $data, 'person'))
+        ;
 
-            if ($download['label']) {
-                $entity->addLabel($download['label']);
+        if ($formatted['label']) {
+            $entity->addLabel($formatted['label']);
             }
 
             return $entity;
         }
-
-        return;
-    }
-
-    /**
-     * Check if download has all required columns.
-     *
-     * @param array $download
-     *
-     * @return bool
-     */
-    private function isDownloadValid(array $download)
-    {
-        $columns = array(
-            'person',
-            'title',
-            'content',
-            'slug',
-            'language',
-            'category',
-            'status',
-            'date_created',
-            'label',
-        );
-
-        return $this->hasRequiredColumns($download, $columns);
-    }
-
-    /**
-     * Returns record type reader config.
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getDownloadReaderConfig()
-    {
-        return $this->getReaderConfig(self::FILE_DOWNLOADS);
-    }
 }

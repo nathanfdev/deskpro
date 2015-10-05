@@ -184,7 +184,7 @@ class NewsController extends AbstractController
      * @Security("is_granted('USE_NEWS') and is_granted('VIEW_NEWS', post)")
      * @PageHttpCache(content="post")
      */
-    public function viewAction(Request $request, News $post)
+    public function viewAction(Request $request, News $post, $visitor_id)
     {
         //
         // COMMENT FORM
@@ -193,6 +193,8 @@ class NewsController extends AbstractController
         if ($this->isGranted(ContentCommentVoter::COMMENT_NEWS, $post)) {
             $form_handler     = $this->get('form_handler.comment');
             $comment          = new NewsComment();
+            $comment->setVisitorId($visitor_id);
+            $comment->setIpAddress($request->getClientIp());
             $new_comment_form = $form_handler->createForm($comment);
             if ($form_result = $form_handler->handle($new_comment_form, $request, $post, $comment)) {
                 if ($form_result instanceof Response) {
@@ -211,7 +213,11 @@ class NewsController extends AbstractController
         //
         // RATINGS
         //
-        $rating = $this->getRatingsHelper()->getPersonRating($post, $this->getUser());
+        if (!$rating = $this->getRatingsHelper()->getPersonRating($post, $this->getUser())) {
+            // TODO: flagging this: using $visitor_id is potentially dangerous due to HTTP caching
+            //       we should consider showing this via a client-side JS request instead.
+            $rating = $this->getRatingsHelper()->findVisitorRating($post, $visitor_id);
+        }
 
         //
         // SUBSCRIPTIONS

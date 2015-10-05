@@ -106,25 +106,6 @@ class FeedbackFilter
         );
     }
 
-    public function toJsArray(array $allowed_status_categories, array  $allowed_types)
-    {
-        $status_categories = array();
-        foreach ($allowed_status_categories as $cat) {
-            $status_categories[$cat->getId()] = $cat->getTitle();
-        }
-
-        return array(
-            'filter'    => $this->toArray(),
-            'available' => array(
-                'status'            => self::$statuses_translated,
-                'status_categories' => $status_categories,
-                'types'             => $allowed_types,
-                'sorts'             => self::$sorts_translated,
-                'sort_directions'   => self::$sort_directions_translated,
-            ),
-        );
-    }
-
     public function replaceArray(array $filter_values)
     {
         $this->setStatus($filter_values['status']);

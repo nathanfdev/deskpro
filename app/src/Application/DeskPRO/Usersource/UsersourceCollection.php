@@ -96,6 +96,8 @@ class UsersourceCollection extends \ArrayObject
     /**
      * Limits to this ID only, still allowing other filters to fit your criteria.
      *
+     * @param int $id id
+     *
      * @return UsersourceCollection
      */
     public function mustHaveId($id)

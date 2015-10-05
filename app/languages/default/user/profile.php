@@ -92,6 +92,7 @@ return array(
     'user.profile.register_password_unused'                => 'You cannot use a password you have used before',
     'user.profile.register_password_mismatch'              => 'The two password fields did not match.',
     'user.profile.register_password_short'                 => 'The password is too short',
+    'user.profile.register_password_forbid_reuse'          => 'You can\'t use the same password',
     'user.profile.remove_email_address'                    => 'Remove email address',
     'user.profile.remove_your_current_picture'             => 'Remove your current picture',
     'user.profile.repeat_password'                         => 'Repeat Password',

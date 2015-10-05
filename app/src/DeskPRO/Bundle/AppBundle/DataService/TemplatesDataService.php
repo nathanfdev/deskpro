@@ -32,7 +32,6 @@
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\Template;
-use Application\DeskPRO\ORM\EntityManager;
 
 class TemplatesDataService extends AbstractDataService
 {

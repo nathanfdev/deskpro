@@ -32,17 +32,13 @@
 namespace Orb\Auth\Adapter;
 
 use Application\DeskPRO\Ldap\LdapPagedSearcher;
+use Orb\Log\Loggable;
 use Orb\Log\Logger;
 use Zend\Ldap\Ldap;
 
-abstract class AbstractLdapBasedAdapter
+abstract class AbstractLdapBasedAdapter extends PluginAdapter implements Loggable
 {
     protected $options;
-
-    /**
-     * @return \Psr\Log\LoggerInterface
-     */
-    abstract public function getLogger();
 
     /**
      * @return \Zend\Authentication\Adapter\Ldap

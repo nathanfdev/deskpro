@@ -35,12 +35,11 @@ namespace Orb\Auth\Adapter;
 
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
-use Orb\Log\Loggable;
 use Orb\Log\Logger;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
-class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInterface, Loggable
+class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInterface
 {
     const OPT_HOST              = 'host';
     const OPT_PORT              = 'port';
@@ -132,9 +131,9 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
      *
      * @return Result
      */
-    public function authenticate()
+    public function doAuthenticate()
     {
-        $res = $this->doAuthenticate();
+        $res = $this->doAdAuthenticate();
 
         if (!$res->isValid() && strpos($this->set_username, '@')) {
             $record = $this->findRecordViaEmail();
@@ -281,7 +280,7 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
      *
      * @return Result
      */
-    public function doAuthenticate()
+    public function doAdAuthenticate()
     {
         if (!$this->set_username) {
             if ($this->logger) {
@@ -479,7 +478,7 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
     /**
      * @param \Orb\Log\Logger $logger
      */
-    public function setLogger(\Orb\Log\Logger $logger)
+    public function setLogger(Logger $logger)
     {
         $this->logger = $logger;
     }

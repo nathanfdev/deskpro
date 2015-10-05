@@ -55,6 +55,12 @@ class DpTransferSessionAuthListener extends AbstractAuthenticationListener imple
             return false;
         }
 
+        if ($request->getSession()->get('is_impersonating', false)) {
+            return false;
+        }
+
+        $session = $request->getSession()->all();
+
         if ($session_id = $this->checkAgentInterfaceAuthNeedsTransfer($request)) {
             return true;
         }
@@ -117,7 +123,9 @@ class DpTransferSessionAuthListener extends AbstractAuthenticationListener imple
             return $tokenOrResponse;
         }
 
-        return $this->authenticationManager->authenticate($tokenOrResponse);
+        $r = $this->authenticationManager->authenticate($tokenOrResponse);
+
+        return $r;
     }
 
     /**

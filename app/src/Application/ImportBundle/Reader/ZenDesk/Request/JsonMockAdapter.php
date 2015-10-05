@@ -41,6 +41,20 @@ class JsonMockAdapter implements RequestAdapterInterface
     private $responses = array();
 
     /**
+     * Stores a people fields response.
+     *
+     * @param string|array $response
+     *
+     * @return $this
+     */
+    public function addPeopleFieldsResponse($response)
+    {
+        $this->addResponse('CoreAPI\PersonField::findAll', $response);
+
+        return $this;
+    }
+
+    /**
      * Stores a people incremental export response.
      *
      * @param string|array $response
@@ -49,7 +63,7 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addPeopleIncrementalExportResponse($response)
     {
-        $this->addResponse('people_incremental_export', $response);
+        $this->addResponse('CoreAPI\Person::incrementalExport', $response);
 
         return $this;
     }
@@ -63,7 +77,35 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addPeopleFindResponse($response)
     {
-        $this->addResponse('people_find', $response);
+        $this->addResponse('CoreAPI\Person::find', $response);
+
+        return $this;
+    }
+
+    /**
+     * Stores a organization fields response.
+     *
+     * @param string|array $response
+     *
+     * @return $this
+     */
+    public function addOrganizationFieldsResponse($response)
+    {
+        $this->addResponse('CoreAPI\OrganizationField::findAll', $response);
+
+        return $this;
+    }
+
+    /**
+     * Stores a organization findAll response.
+     *
+     * @param string|array $response
+     *
+     * @return $this
+     */
+    public function addOrganizationFindAllResponse($response)
+    {
+        $this->addResponse('CoreAPI\Organization::findAll', $response);
 
         return $this;
     }
@@ -77,7 +119,21 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addOrganizationFindResponse($response)
     {
-        $this->addResponse('organization_find', $response);
+        $this->addResponse('CoreAPI\Organization::find', $response);
+
+        return $this;
+    }
+
+    /**
+     * Stores a ticket fields response.
+     *
+     * @param string|array $response
+     *
+     * @return $this
+     */
+    public function addTicketFieldsResponse($response)
+    {
+        $this->addResponse('CoreAPI\TicketField::findAll', $response);
 
         return $this;
     }
@@ -91,7 +147,7 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addTicketsIncrementalExportResponse($response)
     {
-        $this->addResponse('tickets_incremental_export', $response);
+        $this->addResponse('CoreAPI\Ticket::incrementalExport', $response);
 
         return $this;
     }
@@ -105,7 +161,119 @@ class JsonMockAdapter implements RequestAdapterInterface
      */
     public function addTicketCommentsFindAllResponse($response)
     {
-        $this->addResponse('ticket_comments_find_all', $response);
+        $this->addResponse('CoreAPI\TicketComment::findAll', $response);
+
+        return $this;
+    }
+
+    /**
+     * Stores an article incremental export response.
+     *
+     * @param string|array $response
+     *
+     * @return $this
+     */
+    public function addArticlesIncrementalExportResponse($response)
+    {
+        $this->addResponse('HelpCenter\Article::incrementalExport', $response);
+
+        return $this;
+    }
+
+    /**
+     * Stores an article comments response.
+     *
+     * @param string|array $response
+     *
+     * @return $this
+     */
+    public function addArticleCommentsFindAllResponse($response)
+    {
+        $this->addResponse('HelpCenter\ArticleComment::findAll', $response);
+
+        return $this;
+    }
+
+    /**
+     * Stores an article attachments response.
+     *
+     * @param string|array $response
+     *
+     * @return $this
+     */
+    public function addArticleAttachmentsFindAllResponse($response)
+    {
+        $this->addResponse('HelpCenter\ArticleAttachment::findAll', $response);
+
+        return $this;
+    }
+
+    /**
+     * Stores an article translations response.
+     *
+     * @param string|array$response
+     *
+     * @return $this
+     */
+    public function addArticleTranslationsFindAllResponse($response)
+    {
+        $this->addResponse('HelpCenter\ArticleTranslation::findAll', $response);
+
+        return $this;
+    }
+
+    /**
+     * Stores an article categories response.
+     *
+     * @param string|array $response
+     *
+     * @return $this
+     */
+    public function addArticleCategoriesFindAll($response)
+    {
+        $this->addResponse('HelpCenter\Category::findAll', $response);
+
+        return $this;
+    }
+
+    /**
+     * Stores an article sections response.
+     *
+     * @param string|array $response
+     *
+     * @return $this
+     */
+    public function addArticleSectionsFindAll($response)
+    {
+        $this->addResponse('HelpCenter\Section::findAll', $response);
+
+        return $this;
+    }
+
+    /**
+     * Stores an article category response.
+     *
+     * @param string|array $response
+     *
+     * @return $this
+     */
+    public function addArticleSectionFindResponse($response)
+    {
+        $this->addResponse('HelpCenter\Section::find', $response);
+
+        return $this;
+    }
+
+    /**
+     * Stores an article category access policy response.
+     *
+     * @param string|array $response
+     *
+     * @return $this
+     */
+    public function addArticleSectionAccessPolicyFindResponse($response)
+    {
+        $this->addResponse('HelpCenter\SectionAccessPolicy::find', $response);
 
         return $this;
     }
@@ -113,41 +281,15 @@ class JsonMockAdapter implements RequestAdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function doPeopleIncrementalExportRequest(array $params = array())
+    public function doRequest(Request $request)
     {
-        return $this->getResponse('people_incremental_export', $params);
-    }
+        $hash = $request->concatMethod();
 
-    /**
-     * {@inheritdoc}
-     */
-    public function doPeopleFindRequest(array $params = array())
-    {
-        return $this->getResponse('people_find', $params);
-    }
+        if (empty($this->responses[$hash])) {
+            throw new RuntimeException(sprintf('No response exists for `%s`', $hash));
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function doOrganizationFindRequest(array $params = array())
-    {
-        return $this->getResponse('organization_find', $params);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function doTicketsIncrementalExportRequest(array $params = array())
-    {
-        return $this->getResponse('tickets_incremental_export', $params);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function doTicketCommentsFindAllRequest(array $params = array())
-    {
-        return $this->getResponse('ticket_comments_find_all', $params);
+        return array_shift($this->responses[$hash]);
     }
 
     /**
@@ -171,23 +313,5 @@ class JsonMockAdapter implements RequestAdapterInterface
         }
 
         $this->responses[$type][] = $response;
-    }
-
-    /**
-     * Returns a response by request.
-     *
-     * @param string $type
-     *
-     * @throws RuntimeException
-     *
-     * @return array
-     */
-    private function getResponse($type)
-    {
-        if (empty($this->responses[$type])) {
-            throw new RuntimeException(sprintf('No response exists for `%s`', $type));
-        }
-
-        return array_shift($this->responses[$type]);
     }
 }

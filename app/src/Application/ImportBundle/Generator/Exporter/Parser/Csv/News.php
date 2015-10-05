@@ -29,8 +29,10 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
-use DateTime;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerConfiguration;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
+use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
 
 /**
  * News csv file parser.
@@ -52,7 +54,7 @@ final class News extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount($this->getNewsReaderConfig());
+        return $this->getReaderCount(CsvReaderInterface::FILE_NEWS);
     }
 
     /**
@@ -60,101 +62,69 @@ final class News extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $news_list  = $this->getReaderData($this->getNewsReaderConfig());
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($this->getReaderData(CsvReaderInterface::FILE_NEWS))
+            ->setPrefix('CSVNews')
+            ->setRefColumn('id')
+            ->setMethod('exportNews')
+            ->setAdvanceProgressbar(true)
+        ;
 
-        foreach ($news_list as $num => $news) {
-            $this->advanceProgressBar();
-
-            try {
-                $entity = $this->exportNews($num, $news);
-                if ($entity) {
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
-                } else {
-                    $this->logWarning(sprintf('Invalid news record `%d` found (Skipping)', $num));
-                }
-            } catch (NoColumnException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid news record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-            }
-        }
-
-        return $collection;
+        return $this->exportCollection($config);
     }
 
     /**
      * Returns a news entity.
      *
+     * @param array $data
      * @param int   $num
-     * @param array $news
      *
-     * @return Entity\News|null
+     * @return Entity\News
      */
-    private function exportNews($num, array $news)
+    protected function exportNews(array $data, $num)
     {
-        if ($this->isNewsValid($news)) {
+        $formatted = $this->formatter->format($data, array(
+            'id'          => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+                'default' => 'num_'.$num,
+            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+                'prefix'  => 'news_',
+                'ref'     => 'id',
+            )),
+            'person'         => TransformerInterface::TYPE_STRING,
+            'title'          => TransformerInterface::TYPE_STRING,
+            'content'        => TransformerInterface::TYPE_STRING,
+            'slug'           => TransformerInterface::TYPE_STRING,
+            'language'       => TransformerInterface::TYPE_STRING,
+            'status'         => TransformerInterface::TYPE_STRING,
+            'date_created'   => TransformerInterface::TYPE_DATE,
+            'date_published' => TransformerInterface::TYPE_DATE,
+            'category'       => TransformerInterface::TYPE_STRING,
+            'label'          => TransformerInterface::TYPE_STRING,
+        ));
+
             $entity = new Entity\News();
             $entity
-                ->setDestination('news_'.$num)
-                ->setOid($num)
-                ->setPersonEmail($news['person'])
-                ->setLanguage($news['language'])
-                ->setSlug($news['slug'])
-                ->setTitle($news['title'])
-                ->setContent($news['content'])
-                ->setSlug($news['slug'])
-                ->setStatus($news['status'])
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($news['date_created']))
-                ->setCategory($news['category']);
+            ->setRawData($data)
+            ->setDestination($formatted['destination'])
+            ->setOid($formatted['id'])
+            ->setPersonEmail($formatted['person'])
+            ->setLanguage($formatted['language'])
+            ->setSlug($formatted['slug'])
+            ->setTitle($formatted['title'])
+            ->setContent($formatted['content'])
+            ->setSlug($formatted['slug'])
+            ->setStatus($formatted['status'])
+            ->setDateCreated($formatted['date_created'])
+            ->setCategory($formatted['category'])
+            ->setDatePublished($formatted['date_published'])
+        ;
 
-            if ($news['date_published']) {
-                $entity->setDatePublished(new DateTime($news['date_published']));
-            }
-            if ($news['label']) {
-                $entity->addLabel($news['label']);
+        if ($formatted['label']) {
+            $entity->addLabel($formatted['label']);
             }
 
             return $entity;
         }
-
-        return;
-    }
-
-    /**
-     * Check if news has all required columns.
-     *
-     * @param array $news
-     *
-     * @return bool
-     */
-    private function isNewsValid(array $news)
-    {
-        $columns = array(
-            'person',
-            'title',
-            'content',
-            'slug',
-            'language',
-            'status',
-            'date_created',
-            'date_published',
-            'category',
-            'label',
-        );
-
-        return $this->hasRequiredColumns($news, $columns);
-    }
-
-    /**
-     * Returns record type reader config.
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getNewsReaderConfig()
-    {
-        return $this->getReaderConfig(self::FILE_NEWS);
-    }
 }

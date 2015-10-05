@@ -30,15 +30,31 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro article importer.
+ * DeskPRO article importer.
  *
  * Class Article
  */
-final class Article extends AbstractImporter implements SkipDuplicateInterface
+final class Article extends AbstractImporter
 {
+    /**
+     * @var BlobAdapterInterface
+     */
+    private $blob_adapter;
+
+    /**
+     * Constructor.
+     *
+     * @param Mapper\Collection    $mappers
+     * @param BlobAdapterInterface $blob_adapter
+     */
+    public function __construct(Mapper\Collection $mappers, BlobAdapterInterface $blob_adapter)
+    {
+        parent::__construct($mappers);
+        $this->blob_adapter = $blob_adapter;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -52,16 +68,15 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
      *
      * todo add referred objects
      * $record['total_rating'] = $kbval->total_rating;
-     * $record['num_comments'] = $kbval->num_comments;
      * $record['num_ratings']  = $kbval->num_ratings;
-     *
-     * @var Entity\Article
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
-        $this->records = new ArrayCollection();
+        if (!$entity instanceof Entity\Article) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
 
-        $article = new DeskPROEntity\Article();
+        $article = $this->findOrCreateArticle($entity_id);
         $article
             ->setTitle($entity->getTitle())
             ->setContent($entity->getContent())
@@ -73,32 +88,99 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
             ->setDatePublished($entity->getDatePublished())
             ->setDateEnd($entity->getDateEnd())
             ->setEndAction($entity->getEndAction())
-            ->setViewsCount($entity->getViewCount());
+            ->setViewsCount($entity->getViewCount())
+            ->resetCustomData()
+            ->resetLabels()
+            ->resetCategories()
+            ->resetAttachments()
+        ;
+
+        if ($article->getId()) {
+            $this->getArticleCommentMapper()->resetComments($article->getId());
+            $this->getObjectLangMapper()->removeBy('articles', $article->getId());
+        }
 
         foreach ($entity->getCategories() as $category) {
             $article->addToCategory($this->findOrCreateArticleCategory($category));
         }
+        foreach ($entity->getCustomFields() as $custom_field) {
+            $custom_field = $this->createArticleCustomData($custom_field);
+            if ($custom_field) {
+                $article->addCustomData($custom_field);
+            }
+        }
+        foreach ($entity->getAttachments() as $attachment) {
+            $article->addAttachment($this->createAttachment($attachment, $entity->getPersonEmail()));
+        }
+        foreach ($entity->getComments() as $comment) {
+            $article->addComment($this->createArticleComment($comment));
+        }
 
-        $this->records->add($article);
-
-        return $this->records;
+        $this->records->setPrimaryEntity($article);
     }
 
     /**
-     * {@inheritdoc}
+     * Returns an article by oid
+     * Creates a new article if not found.
      *
-     * @var Entity\Article
+     * @param int $entity_id
+     *
+     * @return DeskPROEntity\Article
      */
-    public function checkAlreadyExists(Entity\EntityInterface $entity)
+    protected function findOrCreateArticle($entity_id)
     {
-        $this->logDebug(sprintf(
-            'Looking for existing article with title `%s`, oid `%d`',
-            $entity->getTitle(), $entity->getOid()
-        ));
+        $article = $this->getArticleMapper()->findOneBy(array('id' => $entity_id), false);
+        if ($article) {
+            $this->logDebug(sprintf('Found existing article `%s`', $article->getRealTitle()));
 
-        if ($this->getArticleMapper()->findOneByTitle($entity->getTitle(), false)) {
-            throw new DuplicateException();
+            return $article;
         }
+
+        $this->logDebug('Creating new article');
+
+        return new DeskPROEntity\Article();
+    }
+
+    /**
+     * Creates an article comment entity.
+     *
+     * @param Entity\ArticleComment $entity
+     *
+     * @return DeskPROEntity\ArticleComment
+     */
+    public function createArticleComment(Entity\ArticleComment $entity)
+    {
+        $article_comment = new DeskPROEntity\ArticleComment();
+        $article_comment
+            ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
+            ->setContent($entity->getContent())
+            ->setStatus($entity->getStatus())
+            ->setDateCreated($entity->getDateCreated())
+        ;
+
+        $this->records->addRelatedEntity($article_comment);
+
+        return $article_comment;
+    }
+
+    /**
+     * Returns the importing DeskPRO doctrine article attachment entity.
+     *
+     * @param Entity\Attachment $entity
+     * @param string            $person_email
+     *
+     * @return DeskPROEntity\ArticleAttachment
+     */
+    private function createAttachment(Entity\Attachment $entity, $person_email)
+    {
+        $email      = $entity->getPersonEmail() ?: $person_email;
+        $attachment = new DeskPROEntity\ArticleAttachment();
+        $attachment
+            ->setPerson($this->getPersonMapper()->findOneByEmail($email))
+            ->setBlob($this->blob_adapter->createByBlob($entity))
+        ;
+
+        return $attachment;
     }
 
     /**
@@ -122,7 +204,7 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
                 $category = new DeskPROEntity\ArticleCategory();
                 $category->setRealTitle($title);
 
-                $this->records->add($category);
+                $this->records->addRelatedEntity($category);
                 $this->logInfo(sprintf('New article category creating `%s`', $category->getTitle()));
             }
         }
@@ -131,14 +213,28 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
     }
 
     /**
-     * Returns the article category mapper.
+     * Returns custom def article entity.
+     *
+     * @param Entity\CustomField $entity
+     *
+     * @throws ImporterException
+     *
+     * @return DeskPROEntity\CustomDataArticle
+     */
+    private function createArticleCustomData(Entity\CustomField $entity)
+    {
+        return $this->createCustomData($this->getArticleCustomDefMapper(), $entity, new DeskPROEntity\CustomDataArticle());
+    }
+
+    /**
+     * Returns the article comment mapper.
      *
      * @throws \Exception
      *
-     * @return Mapper\ArticleCategory
+     * @return Mapper\ArticleComment
      */
-    private function getArticleCategoryMapper()
+    private function getArticleCommentMapper()
     {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ARTICLE_CATEGORY);
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ARTICLE_COMMENT);
     }
 }

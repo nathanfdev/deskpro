@@ -60,6 +60,13 @@ $DP_CONFIG['SETTINGS']['core.use_mail_queue'] = 'never';
 $DP_CONFIG['SETTINGS']['core.show_share_widget'] = false;
 $DP_CONFIG['SETTINGS']['core.use_gravatar'] = false;
 $DP_CONFIG['SETTINGS']['core.default_timezone'] = 'EST';
+$DP_CONFIG['SETTINGS']['portal.http_cache_etags'] = false;
+$DP_CONFIG['SETTINGS']['portal.http_cache_last_modified'] = false;
+$DP_CONFIG['SETTINGS']['portal.smaxage_guest_page'] = 0;
+$DP_CONFIG['SETTINGS']['portal.smaxage_guest_tag'] = 0;
+$DP_CONFIG['SETTINGS']['portal.smaxage_user_page'] = 0;
+$DP_CONFIG['SETTINGS']['portal.smaxage_user_tag'] = 0;
+
 $DP_CONFIG['rewrite_urls'] = false;
 
 $DP_CONFIG['enable_termengine_log'] = true;

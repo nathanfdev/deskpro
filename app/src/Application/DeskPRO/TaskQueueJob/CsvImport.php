@@ -582,7 +582,7 @@ class CsvImport extends AbstractJob
             $em->flush($label);
         }
 
-        if ($this->_data['welcome_email'] && $send_welcome && !defined('DPC_IS_CLOUD')) {
+        if ($this->_data['welcome_email'] && $send_welcome) {
             $mailer = App::getContainer()->getMailer();
 
             $message = $mailer->createMessage();

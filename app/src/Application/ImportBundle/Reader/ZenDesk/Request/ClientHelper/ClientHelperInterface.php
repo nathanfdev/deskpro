@@ -38,11 +38,9 @@ use Zendesk\API\Client;
 interface ClientHelperInterface
 {
     /**
-     * Do request via ZenDesk client.
+     * Constructor.
      *
      * @param Client $client
-     *
-     * @return \stdClass
      */
-    public function request(Client $client);
+    public function __construct(Client $client);
 }

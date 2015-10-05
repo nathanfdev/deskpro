@@ -98,7 +98,6 @@ if (in_array('--skip-assetic', $_SERVER['argv'])) {
         exit($proc->getExitCode());
     }
 }
-
 echo ' DONE '.sprintf('%.f', microtime(true) - $time);
 echo "\n";
 

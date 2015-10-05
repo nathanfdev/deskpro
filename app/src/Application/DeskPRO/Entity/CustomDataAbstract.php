@@ -35,6 +35,12 @@ namespace Application\DeskPRO\Entity;
 
 /**
  * Base class used for storing custom field data.
+ *
+ * @method $this setField(CustomDefAbstract $field)
+ * @method $this setRootField(CustomDefAbstract $root_field)
+ *
+ * @property CustomDefAbstract $field
+ * @property CustomDefAbstract $root_field
  */
 abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -44,29 +50,6 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
      * @var int
      */
     protected $id = null;
-
-    /**
-     * IMPLEMENT IN CHILD CLASS
-     * The form field this is attached to.
-     *
-     * @var \Application\DeskPRO\Entity\CustomDefXXX
-     */
-    //protected $field = null;
-
-    /**
-     * IMPLEMENT IN CHILD CLASS
-     * The root custom field this is attached to.
-     *
-     * @var \Application\DeskPRO\Entity\CustomDefXXX
-     */
-    //protected $root_field = null;
-
-    /**
-     * IMPLEMENT IN CHILD CLASS.
-     *
-     * @var \Application\DeskPRO\Entity\Xxx
-     */
-    //protected $xxx;
 
     /**
      * User numeric data.
@@ -85,6 +68,8 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
     public function __construct()
     {
         $this->input = '';
+
+        return $this;
     }
 
     /**
@@ -93,6 +78,29 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return int
+     * @return $this
+     */
+    public function setValue($value)
+    {
+        $this->setModelField('value', $value);
+
+        return $this;
+    }
+
+    /**
+     * @param string $input
+     *
+     * @return $this
+     */
+    public function setInput($input)
+    {
+        $this->setModelField('input', $input);
+
+        return $this;
     }
 
     /**
@@ -143,6 +151,9 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
         return $this->field->getId();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data = parent::toApiData($primary, $deep, $visited);
@@ -156,5 +167,19 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
         }
 
         return $data;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return sprintf(
+            '[#%s -- %s:%s] %s',
+            $this->id ?: '?',
+            $this->field ? $this->field->id : '?',
+            $this->field ? $this->field->getTypeName() : 'unknown',
+            $this->getData()
+        );
     }
 }

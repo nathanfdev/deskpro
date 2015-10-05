@@ -65,12 +65,14 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
             'login_custom_text' => $app->getSetting('login_custom_text'),
             'logout_agent_url'  => $app->getSetting('logout_agent_url'),
             'logout_user_url'   => $app->getSetting('logout_user_url'),
+            'raw_info_filter'   => $app->getSetting('raw_info_filter') ?: null,
         );
         $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
         $us->lost_password_url = $app->getSetting('url') ?: '';
         $us->source_type       = 'deskpro_us_jwt\\Usersource\\Adapter\\Jwt';
 
         $this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
+        $this->setupUsergroup($us, $app->getSetting('auto_user_permission_group'));
 
         if ('auto' == $app->getSetting('sso_type')) {
             $us->makeSsoAutoOnly();

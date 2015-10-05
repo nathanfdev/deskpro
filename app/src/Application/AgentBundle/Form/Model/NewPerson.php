@@ -32,6 +32,7 @@
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 
@@ -62,6 +63,9 @@ class NewPerson
 
     /** @var string */
     public $password;
+
+    /** @var Language */
+    public $language;
 
     /** @var Person */
     protected $_person;
@@ -106,6 +110,10 @@ class NewPerson
             $person->setPassword($this->password);
         }
 
+        if ($this->language) {
+            $person->language = $this->language;
+        }
+
         if ($this->organization_id) {
             $org = $this->_em->find('DeskPRO:Organization', $this->organization_id);
             if ($org) {
@@ -134,12 +142,8 @@ class NewPerson
         $this->_em->flush();
 
         if ($this->custom_fields) {
-            $user_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
-            foreach ($user_field_defs as $field_def) {
-                foreach ($field_def->getHandler()->getDataFromForm($this->custom_fields) as $info) {
-                    $person->setCustomData($info[0], $info[1], $info[2]);
-                }
-            }
+            $manager = App::$container->getPersonFieldManager();
+            $manager->saveFormToObject($this->custom_fields, $person);
         }
 
         $this->_em->flush();

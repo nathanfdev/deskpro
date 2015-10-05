@@ -28,26 +28,38 @@
 
 namespace Application\ImportBundle\Generator\Writer\Json;
 
-use Application\ImportBundle\Generator\Writer\AbstractFactory;
+use Application\ImportBundle\Entity\EntityInterface;
+use Application\ImportBundle\Generator\Writer\AbstractWriterFactory;
+use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 
 /**
- * Class JsonWriterFactory.
+ * Generator json writer factory.
+ *
+ * Class JsonWriterFactory
  */
-class JsonWriterFactory extends AbstractFactory
+class JsonWriterFactory extends AbstractWriterFactory
 {
     /**
      * {@inheritdoc}
      */
     public function createWriter()
     {
-        $mapping = new Destination\Collection();
+        $mapping = new DestinationCollection();
         $mapping
-            ->attach(new Destination\Article())
-            ->attach(new Destination\Download())
-            ->attach(new Destination\Feedback())
-            ->attach(new Destination\News())
-            ->attach(new Destination\Person())
-            ->attach(new Destination\Ticket());
+            ->attach(new Destination(EntityInterface::TYPE_ARTICLE, JsonReaderInterface::ENTITY_ARTICLE_PATH))
+            ->attach(new Destination(EntityInterface::TYPE_ARTICLE_CATEGORY, JsonReaderInterface::ENTITY_ARTICLE_CATEGORY_PATH))
+            ->attach(new Destination(EntityInterface::TYPE_ARTICLE_CUSTOM_DEF, JsonReaderInterface::ENTITY_ARTICLE_CUSTOM_DEF_PATH))
+            ->attach(new Destination(EntityInterface::TYPE_DOWNLOAD, JsonReaderInterface::ENTITY_DOWNLOAD_PATH))
+            ->attach(new Destination(EntityInterface::TYPE_FEEDBACK, JsonReaderInterface::ENTITY_FEEDBACK_PATH))
+            ->attach(new Destination(EntityInterface::TYPE_FEEDBACK_CUSTOM_DEF, JsonReaderInterface::ENTITY_FEEDBACK_CUSTOM_DEF_PATH))
+            ->attach(new Destination(EntityInterface::TYPE_NEWS, JsonReaderInterface::ENTITY_NEWS_PATH))
+            ->attach(new Destination(EntityInterface::TYPE_PERSON, JsonReaderInterface::ENTITY_PERSON_PATH))
+            ->attach(new Destination(EntityInterface::TYPE_PERSON_CUSTOM_DEF, JsonReaderInterface::ENTITY_PERSON_CUSTOM_DEF_PATH))
+            ->attach(new Destination(EntityInterface::TYPE_TICKET, JsonReaderInterface::ENTITY_TICKET_PATH))
+            ->attach(new Destination(EntityInterface::TYPE_TICKET_CUSTOM_DEF, JsonReaderInterface::ENTITY_TICKET_CUSTOM_DEF_PATH))
+            ->attach(new Destination(EntityInterface::TYPE_ORGANIZATION, JsonReaderInterface::ENTITY_ORGANIZATION_PATH))
+            ->attach(new Destination(EntityInterface::TYPE_ORGANIZATION_CUSTOM_DEF, JsonReaderInterface::ENTITY_ORGANIZATION_CUSTOM_DEF_PATH))
+        ;
 
         return new JsonWriter($mapping);
     }

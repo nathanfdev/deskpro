@@ -94,6 +94,77 @@ class ArticleCategory extends CategoryAbstract
     public function __construct()
     {
         $this->articles = new ArrayCollection();
+        $this->usergroups = new ArrayCollection();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAgent()
+    {
+        return $this->is_agent;
+    }
+
+    /**
+     * @param bool $is_agent
+     *
+     * @return $this
+     */
+    public function setIsAgent($is_agent)
+    {
+        $this->setModelField('is_agent', (bool) $is_agent);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBook()
+    {
+        return $this->is_book;
+    }
+
+    /**
+     * @param bool $is_book
+     *
+     * @return $this
+     */
+    public function setIsBook($is_book)
+    {
+        $this->setModelField('is_book', (bool) $is_book);
+
+        return $this;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getUserGroups()
+    {
+        return $this->usergroups;
+    }
+
+    /**
+     * @param \Application\DeskPRO\Entity\Usergroup $usergroup
+     */
+    public function addUsergroup(Usergroup $usergroup)
+    {
+        if (!$this->usergroups->contains($usergroup)) {
+            $this->usergroups->add($usergroup);
+        }
+    }
+
+    /**
+     * Remove all user groups.
+     *
+     * @return $this
+     */
+    public function resetUserGroups()
+    {
+        $this->usergroups->clear();
+
+        return $this;
     }
 
     ############################################################################

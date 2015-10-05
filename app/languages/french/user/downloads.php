@@ -28,6 +28,7 @@
 
 return array(
     'user.downloads.button-download'     => 'Télécharger',
+    'user.downloads.change_file'         => 'Changer le fichier',
     'user.downloads.downloads-count'     => 'Ce fichier a été téléchargé 1 fois|Ce fichier a été téléchargé {{count}} fois',
     'user.downloads.file_not_found'      => 'Le fichier est introuvable',
     'user.downloads.message_no-files'    => 'Il n\'y a aucun fichier dans ce dossier',

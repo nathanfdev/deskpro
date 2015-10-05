@@ -72,6 +72,13 @@
 				<% } %>
 			<% } %>
 		<% } %>
+            <% if (field == 'problems') { %>
+            <% if (ticket_display.problems) { %>
+            <% for (var problemIdx = 0; problemIdx < ticket_display.problems.length; problemIdx++) { %>
+            <span class="listing-tag" dp-label="<%- ticket_display.problems[problemIdx] %>"><%- ticket_display.problems[problemIdx] %></span>
+            <% } %>
+            <% } %>
+            <% } %>
 		<% if (field == 'organization') { %>
 			<a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': '<%= ticket_display.organization.id %>'}) }}" data-route-title="@text"><%- ticket_display.organization.name %></a>
 		<% } %>

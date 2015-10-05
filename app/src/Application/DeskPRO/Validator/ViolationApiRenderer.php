@@ -210,7 +210,7 @@ class ViolationApiRenderer
         }
 
         if (!$code) {
-            $code = 'undefined';
+            $code = 'undefined:'.$err->getMessage();
         }
 
         return array(

@@ -29,8 +29,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractBatchParser;
-use DateTime;
 
 /**
  * ZenDesk batch parser.
@@ -58,40 +58,24 @@ final class Batch extends AbstractBatchParser
     /**
      * {@inheritdoc}
      */
-    public function validate(array $config)
+    public function parse(array $data)
     {
-        $columns = array(
-            'people_end_time',
-            'tickets_end_time',
-            'retry_after_time',
-        );
+        $formatted = $this->formatter->format($data, array(
+            'people_end_time'   => TransformerInterface::TYPE_DATE,
+            'tickets_end_time'  => TransformerInterface::TYPE_DATE,
+            'articles_end_time' => TransformerInterface::TYPE_DATE,
+            'retry_after_time'  => TransformerInterface::TYPE_DATE,
+        ));
 
-        return parent::validate($config) && $this->hasRequiredColumns($config, $columns);
-    }
+        /** @var BatchConfig $config */
+        $config = parent::parse($data);
+        $config
+            ->setPeopleEndTime($formatted['people_end_time'])
+            ->setTicketsEndTime($formatted['tickets_end_time'])
+            ->setArticlesEndTime($formatted['articles_end_time'])
+            ->setRetryAfterTime($formatted['retry_after_time'])
+        ;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function parse(array $config)
-    {
-        /** @var BatchConfig $batch_config */
-        $batch_config = parent::parse($config);
-
-        if ($config['people_end_time']) {
-            $batch_config->setPeopleEndTime(new DateTime($config['people_end_time']));
-        }
-        if ($config['tickets_end_time']) {
-            $batch_config->setTicketsEndTime(new DateTime($config['tickets_end_time']));
-        }
-        if ($config['retry_after_time']) {
-            $batch_config->setRetryAfterTime(new DateTime($config['retry_after_time']));
-        }
-        if ($config['has_remaining']) {
-            $batch_config->setHasRemaining($config['has_remaining']);
-        } else {
-            $batch_config->setHasRemaining(false);
-        }
-
-        return $batch_config;
+        return $config;
     }
 }

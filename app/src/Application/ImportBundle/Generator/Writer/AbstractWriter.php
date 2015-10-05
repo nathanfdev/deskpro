@@ -88,7 +88,11 @@ abstract class AbstractWriter extends AbstractGenerator implements WriterInterfa
         $this->createDirIfNotExist($this->config->getBatchFileDir());
         $this->logInfo('');
 
-        return $this->writeJsonFile($this->batch_config->toArray(), $this->config->getBatchFilePath());
+        if (!$this->writeJsonFile($this->batch_config->toArray(), $this->config->getBatchFilePath())) {
+            throw new RuntimeException('Unable to create batch config file');
+        }
+
+        return true;
     }
 
     /**
@@ -147,17 +151,29 @@ abstract class AbstractWriter extends AbstractGenerator implements WriterInterfa
             }
             if (@file_put_contents($path, $data) === false) {
                 $this->logError(sprintf('Unable to write file `%s`', $path));
+
+                return false;
             }
         }
 
         return true;
     }
 
+    /**
+     * @return array
+     */
     public static function getOrderedTypes()
     {
         return array(
+            EntityInterface::TYPE_ORGANIZATION_CUSTOM_DEF,
+            EntityInterface::TYPE_TICKET_CUSTOM_DEF,
+            EntityInterface::TYPE_PERSON_CUSTOM_DEF,
+            EntityInterface::TYPE_ARTICLE_CUSTOM_DEF,
+            EntityInterface::TYPE_FEEDBACK_CUSTOM_DEF,
+            EntityInterface::TYPE_ORGANIZATION,
             EntityInterface::TYPE_PERSON,
             EntityInterface::TYPE_TICKET,
+            EntityInterface::TYPE_ARTICLE_CATEGORY,
             EntityInterface::TYPE_ARTICLE,
             EntityInterface::TYPE_DOWNLOAD,
             EntityInterface::TYPE_FEEDBACK,

@@ -81,6 +81,13 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
     protected $label;
 
     /**
+     * An extension for the number - optional.
+     *
+     * @var string
+     */
+    protected $ext;
+
+    /**
      * The ISO 3166-1 country/region code of the phone number (2 char).
      *
      * @var string
@@ -140,27 +147,58 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * We do logic here (with the help of Google's libphonenumber) to
-     * get the region code, and validate/format the number.
-     *
-     * @param string $number
+     * @return int
      */
-    public function setNumber($number)
+    public function getId()
     {
-        if (!PhoneNumbers::isValid($number)) {
-            throw new \InvalidArgumentException('Phone number is invalid');
+        return $this->id;
+    }
+
+    public function getFullFormatted()
+    {
+        $num = $this->getNumberFormatted();
+
+        if ($ext = $this->ext) {
+            $num .= ' ext . '.$this->ext;
         }
 
-        $region    = PhoneNumbers::getRegionForNumber($number);
-        $formatted = PhoneNumbers::toE164Format($number);
-        if ($region && $formatted) {
-            $guessed_type = PhoneNumbers::getTypeCode($formatted);
-            $this->setRegion($region);
-            $this->setModelField('number', $formatted);
-            $this->setModelField('guessed_type', $guessed_type);
-        } else {
-            throw new \InvalidArgumentException("Phone number is invalid - couldn't extract region information");
+        return $num;
+    }
+
+    public function getNumberFormatted()
+    {
+        try {
+            return PhoneNumbers::toInternationalFormat($this->number);
+        } catch (\Exception $e) {
+            return $this->number;
         }
+    }
+
+    public function getFormattedForVCard()
+    {
+        $number = (string) $this->getPhoneNumber();
+
+        if ($ext = $this->ext) {
+            $number .= ';ext='.$ext;
+        }
+
+        return $number;
+    }
+
+    /**
+     * @return string|int|null
+     */
+    public function getExt()
+    {
+        return $this->ext;
+    }
+
+    /**
+     * @param string|int|null $ext
+     */
+    public function setExt($ext)
+    {
+        $this->setModelField('ext', $ext);
     }
 
     /**
@@ -200,9 +238,12 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
 
         $metadata->mapField(array('fieldName' => 'number', 'type' => 'string', 'length' => 30, 'precision' => 0,
                                    'scale'    => 0, 'nullable' => false, 'columnName' => 'number', ));
-        $metadata->mapField(array('fieldName' => 'label', 'type' => 'string', 'length' => 100, 'precision' => 0,
 
-                                   'scale' => 0, 'nullable' => true, 'columnName' => 'label', ));
+        $metadata->mapField(array('fieldName' => 'ext', 'type' => 'string', 'length' => 30, 'precision' => 0,
+                                   'scale'    => 0, 'nullable' => true, 'columnName' => 'ext', ));
+
+        $metadata->mapField(array('fieldName' => 'label', 'type' => 'string', 'length' => 100, 'precision' => 0,
+                                   'scale'    => 0, 'nullable' => true, 'columnName' => 'label', ));
 
         $metadata->mapField(array('fieldName' => 'region', 'type' => 'string', 'length' => 2, 'precision' => 0,
                                    'scale'    => 0, 'nullable' => false, 'columnName' => 'region', ));

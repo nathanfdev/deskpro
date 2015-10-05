@@ -1,15 +1,13 @@
 import { createReducer } from 'Ampliflux';
-import * as actions from '../Actions/imChatsActions';
+import * as actions from '../Actions/chatsActions';
 import Immutable from 'immutable';
 
 const initialState = {
-  agentChats: [],
+  current: {}
 };
 
 export default createReducer(initialState, {
-  [actions.findChat]: (state, payload) => {
-    let agentChats = state.get('agentChats');
-    agentChats.push(payload);
-    return state.set('agentChats', agentChats);
+  [actions.startChat]: (state, payload) => {
+    return state.set('current', payload);
   }
 });

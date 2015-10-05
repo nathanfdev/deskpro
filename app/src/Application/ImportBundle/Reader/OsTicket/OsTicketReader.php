@@ -28,8 +28,8 @@
 
 namespace Application\ImportBundle\Reader\OsTicket;
 
-use Application\ImportBundle\Reader\BaseReader;
-use Pdo;
+use Application\ImportBundle\Reader\AbstractReader;
+use PDO;
 
 /**
  * Os ticket reader.
@@ -59,7 +59,7 @@ use Pdo;
  *
  * Class OsTicketReader
  */
-class OsTicketReader extends BaseReader implements OsTicketReaderInterface
+class OsTicketReader extends AbstractReader implements OsTicketReaderInterface
 {
     /**
      * @var ConnectionWrapperInterface
@@ -86,14 +86,74 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
      */
     private $ticket_priorities_loaded = false;
 
+    /**
+     * Constructor.
+     *
+     * @param OsTicketConfig $config
+     */
     public function __construct(OsTicketConfig $config)
     {
         parent::__construct($config);
-        $this->connection_wrapper = new LazyConnectionWrapper(
-            sprintf('mysql:dbname=%s;host=%s', $config->getDatabase(), $config->getHost()),
-            $config->getUser(),
-            $config->getPassword()
+
+        $dsn = sprintf('mysql:dbname=%s;host=%s', $config->getDatabase(), $config->getHost());
+        if ($config->getPort()) {
+            $dsn .= sprintf(';port=%s', $config->getPort());
+        }
+
+        $this->connection_wrapper = new LazyConnectionWrapper($dsn, $config->getUser(), $config->getPassword());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function checkConfig()
+    {
+        $stmt = $this->getConnection()->prepare('SHOW TABLES');
+        if ($stmt->execute() === false) {
+            throw new OsTicketReaderException('Unable to get a list of tables', $stmt->errorCode(), $stmt->errorInfo());
+        }
+
+        $tables = array();
+        $result = $stmt->fetchAll(PDO::FETCH_NUM);
+
+        foreach ($result as $table_info) {
+            $tables[] = $table_info[0];
+        }
+
+        $check_tables = array(
+            'ost_staff',
+            'ost_user',
+            'ost_ticket',
+            'ost_ticket_thread',
+            'ost_ticket_attachment',
+            'ost_department',
+            'ost_organization',
+            'ost_groups',
+            'ost_user_email',
+            'ost_team',
+            'ost_file_chunk',
+            'ost_timezone',
+            'ost_ticket_priority',
         );
+
+        $exist_tables = array_intersect($tables, $check_tables);
+
+        sort($exist_tables);
+        sort($check_tables);
+
+        if ($exist_tables != $check_tables) {
+            throw new \RuntimeException(sprintf(
+                'Not all required tables found, please check for: %s.',
+                implode(', ', array_map(
+                    function ($table) {
+                        return '`'.$table.'`';
+                    },
+                    array_diff($check_tables, $exist_tables)
+                ))
+            ));
+        }
+
+        return true;
     }
 
     /**
@@ -103,7 +163,7 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
     {
         $query = 'SELECT count(staff_id) FROM ost_staff WHERE staff_id > :min_id ORDER BY staff_id ASC';
         $stmt  = $this->getConnection()->prepare($query);
-        $stmt->bindValue(':min_id', $min_id, PDO::PARAM_INT);
+        $stmt->bindValue(':min_id', (int) $min_id, PDO::PARAM_INT);
 
         if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to get staff count', $stmt->errorCode(), $stmt->errorInfo());
@@ -119,7 +179,7 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
     {
         $query = 'SELECT count(id) FROM ost_user WHERE id > :min_id ORDER BY id ASC';
         $stmt  = $this->getConnection()->prepare($query);
-        $stmt->bindValue(':min_id', $min_id, PDO::PARAM_INT);
+        $stmt->bindValue(':min_id', (int) $min_id, PDO::PARAM_INT);
 
         if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to get users count', $stmt->errorCode(), $stmt->errorInfo());
@@ -135,7 +195,7 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
     {
         $query = 'SELECT count(ticket_id) FROM ost_ticket WHERE ticket_id > :min_id ORDER BY ticket_id ASC';
         $stmt  = $this->getConnection()->prepare($query);
-        $stmt->bindValue(':min_id', $min_id, PDO::PARAM_INT);
+        $stmt->bindValue(':min_id', (int) $min_id, PDO::PARAM_INT);
 
         if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to get tickets count', $stmt->errorCode(), $stmt->errorInfo());
@@ -151,11 +211,32 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
     {
         $query = 'SELECT * FROM ost_staff WHERE staff_id > :min_id ORDER BY staff_id ASC LIMIT :limit';
         $stmt  = $this->getConnection()->prepare($query);
-        $stmt->bindValue(':limit',  $limit,  PDO::PARAM_INT);
-        $stmt->bindValue(':min_id', $min_id, PDO::PARAM_INT);
+        $stmt->bindValue(':limit',  (int) $limit,  PDO::PARAM_INT);
+        $stmt->bindValue(':min_id', (int) $min_id, PDO::PARAM_INT);
 
         if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find staff', $stmt->errorCode(), $stmt->errorInfo());
+        }
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findStaffByIds(array $ids)
+    {
+        if (empty($ids)) {
+            throw new OsTicketReaderException('Empty ids list');
+        }
+
+        $marks = implode(',', array_fill(0, count($ids), '?'));
+        $query = 'SELECT * FROM ost_staff WHERE staff_id IN ('.$marks.') ORDER BY staff_id ASC';
+
+        $stmt = $this->getConnection()->prepare($query);
+
+        if ($stmt->execute($ids) === false) {
+            throw new OsTicketReaderException('Unable to find users', $stmt->errorCode(), $stmt->errorInfo());
         }
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -168,10 +249,31 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
     {
         $query = 'SELECT *, u.id user_id FROM ost_user u LEFT JOIN ost_user_email e ON u.id = e.user_id WHERE u.id > :min_id ORDER BY u.id ASC LIMIT :limit';
         $stmt  = $this->getConnection()->prepare($query);
-        $stmt->bindValue(':limit',  $limit,  PDO::PARAM_INT);
-        $stmt->bindValue(':min_id', $min_id, PDO::PARAM_INT);
+        $stmt->bindValue(':limit',  (int) $limit,  PDO::PARAM_INT);
+        $stmt->bindValue(':min_id', (int) $min_id, PDO::PARAM_INT);
 
         if ($stmt->execute() === false) {
+            throw new OsTicketReaderException('Unable to find users', $stmt->errorCode(), $stmt->errorInfo());
+        }
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findUsersByIds(array $ids)
+    {
+        if (empty($ids)) {
+            throw new OsTicketReaderException('Empty ids list');
+        }
+
+        $marks = implode(',', array_fill(0, count($ids), '?'));
+        $query = 'SELECT *, u.id user_id FROM ost_user u LEFT JOIN ost_user_email e ON u.id = e.user_id WHERE u.id IN ('.$marks.') ORDER BY u.id ASC';
+
+        $stmt = $this->getConnection()->prepare($query);
+
+        if ($stmt->execute($ids) === false) {
             throw new OsTicketReaderException('Unable to find users', $stmt->errorCode(), $stmt->errorInfo());
         }
 
@@ -185,8 +287,8 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
     {
         $query = 'SELECT * FROM ost_ticket t LEFT JOIN ost_ticket__cdata c ON t.ticket_id = c.ticket_id WHERE t.ticket_id > :min_id ORDER BY t.ticket_id ASC LIMIT :limit';
         $stmt  = $this->getConnection()->prepare($query);
-        $stmt->bindValue(':limit',  $limit,  PDO::PARAM_INT);
-        $stmt->bindValue(':min_id', $min_id, PDO::PARAM_INT);
+        $stmt->bindValue(':limit',  (int) $limit,  PDO::PARAM_INT);
+        $stmt->bindValue(':min_id', (int) $min_id, PDO::PARAM_INT);
 
         if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find tickets', $stmt->errorCode(), $stmt->errorInfo());
@@ -202,7 +304,7 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
     {
         $query = 'SELECT id, thread_type, staff_id, user_id, body, created FROM ost_ticket_thread WHERE ticket_id = :ticket_id';
         $stmt  = $this->getConnection()->prepare($query);
-        $stmt->bindValue(':ticket_id', $ticket_id, PDO::PARAM_INT);
+        $stmt->bindValue(':ticket_id', (int) $ticket_id, PDO::PARAM_INT);
 
         if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find ticket messages', $stmt->errorCode(), $stmt->errorInfo());
@@ -218,7 +320,7 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
     {
         $query = 'SELECT f.name, f.type, a.file_id FROM ost_file f JOIN ost_ticket_attachment a ON f.id = a.file_id WHERE a.ref_id = :message_id';
         $stmt  = $this->getConnection()->prepare($query);
-        $stmt->bindValue(':message_id', $message_id, PDO::PARAM_INT);
+        $stmt->bindValue(':message_id', (int) $message_id, PDO::PARAM_INT);
 
         if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find message attachments', $stmt->errorCode(), $stmt->errorInfo());
@@ -234,7 +336,7 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
     {
         $query = 'SELECT dept_name FROM ost_department WHERE dept_id = :id';
         $stmt  = $this->getConnection()->prepare($query);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':id', (int) $id, PDO::PARAM_INT);
 
         if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find department', $stmt->errorCode(), $stmt->errorInfo());
@@ -250,7 +352,7 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
     {
         $query = 'SELECT name FROM ost_organization WHERE id = :id';
         $stmt  = $this->getConnection()->prepare($query);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':id', (int) $id, PDO::PARAM_INT);
 
         if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find organization', $stmt->errorCode(), $stmt->errorInfo());
@@ -266,7 +368,7 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
     {
         $query = 'SELECT group_name FROM ost_groups WHERE group_id = :id';
         $stmt  = $this->getConnection()->prepare($query);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':id', (int) $id, PDO::PARAM_INT);
 
         if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find user group', $stmt->errorCode(), $stmt->errorInfo());
@@ -282,7 +384,7 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
     {
         $query = 'SELECT address FROM ost_user_email e LEFT JOIN ost_user u ON e.user_id = u.id WHERE u.id = :id';
         $stmt  = $this->getConnection()->prepare($query);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':id', (int) $id, PDO::PARAM_INT);
 
         if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find user email', $stmt->errorCode(), $stmt->errorInfo());
@@ -296,9 +398,9 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
      */
     public function findStaffEmailById($id)
     {
-        $query = 'SELECT email FROM ost_staff WHERE id = :id';
+        $query = 'SELECT email FROM ost_staff WHERE staff_id = :id';
         $stmt  = $this->getConnection()->prepare($query);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':id', (int) $id, PDO::PARAM_INT);
 
         if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find staff email', $stmt->errorCode(), $stmt->errorInfo());
@@ -312,9 +414,9 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
      */
     public function findTeamNameById($id)
     {
-        $query = 'SELECT name FROM ost_team WHERE id = :id';
+        $query = 'SELECT name FROM ost_team WHERE team_id = :id';
         $stmt  = $this->getConnection()->prepare($query);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':id', (int) $id, PDO::PARAM_INT);
 
         if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find team name', $stmt->errorCode(), $stmt->errorInfo());
@@ -350,7 +452,7 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
     {
         $query = 'SELECT filedata FROM ost_file_chunk WHERE file_id = :file_id';
         $stmt  = $this->getConnection()->prepare($query);
-        $stmt->bindValue(':file_id', $file_id, PDO::PARAM_INT);
+        $stmt->bindValue(':file_id', (int) $file_id, PDO::PARAM_INT);
 
         if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find attachment data', $stmt->errorCode(), $stmt->errorInfo());
@@ -433,15 +535,5 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
     private function getConnection()
     {
         return $this->connection_wrapper->getConnection();
-    }
-
-    /**
-     * @throws OsTicketReaderException
-     *
-     * @return bool
-     */
-    public function isReady()
-    {
-        return null !== $this->getUsersCount();
     }
 }

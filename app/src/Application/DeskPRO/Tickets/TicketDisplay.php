@@ -244,6 +244,9 @@ class TicketDisplay implements PersonContextInterface
 
     public function getMessageAttachments($message, $include_inline = false)
     {
+        if (!$message) {
+            return;
+        }
         $id              = $message->getId();
         $messagetoattach = $this->getMessagesToAttachments($include_inline);
 

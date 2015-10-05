@@ -29,7 +29,7 @@
 namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Reader\Json\NotFoundException;
+use Application\ImportBundle\Reader\NotFoundException;
 use DateTime;
 use Exception;
 
@@ -81,7 +81,14 @@ final class Json extends AbstractExporter implements ExporterBatchInterface
         $updated_config = clone $this->config->getExporterBatchConfig();
         $updated_config
             ->setId($updated_config->getId() + 1)
-            ->setDateModified(new DateTime());
+            ->setDateModified(new DateTime())
+        ;
+
+        if (is_dir($this->getConfig()->getInputPath().DIRECTORY_SEPARATOR.$updated_config->getId())) {
+            $updated_config->setHasRemaining(true);
+        } else {
+            $updated_config->setHasRemaining(false);
+        }
 
         return $updated_config;
     }

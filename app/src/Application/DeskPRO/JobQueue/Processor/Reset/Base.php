@@ -83,6 +83,8 @@ abstract class Base extends AbstractJobProcessor
                 $dep->depends_on_job = $new;
             }
             $this->em->flush();
+
+            $this->em->getRepository('DeskPRO:Ticket')->fillSearchTable();
         }
 
         return true;

@@ -28,6 +28,7 @@
 
 /**
  * DeskPRO.
+ *.
  *
  * @category Entities
  */
@@ -93,14 +94,14 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * View counts.
      *
-     * @var string
+     * @var int
      */
     protected $view_count = 0;
 
     /**
      * Total rating: This is a tally and must be updated when a rating is added.
      *
-     * @var string
+     * @var int
      */
     protected $total_rating = 0;
 
@@ -114,7 +115,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Total rating.
      *
-     * @var string
+     * @var int
      */
     protected $num_ratings = 0;
 
@@ -225,6 +226,8 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @deprecated use $this->get('object_router')->getPortalUrl($this) instead
+     *
+     * @return $this
      */
     public function getLink()
     {
@@ -268,6 +271,18 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * @param Language $language
+     *
+     * @return $this
+     */
+    public function setLanguage(Language $language = null)
+    {
+        $this->setModelField('language', $language);
+
+        return $this;
     }
 
     public function getLanguage()
@@ -636,6 +651,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @return Person
+     * @return $this
      */
     public function getPerson()
     {
@@ -664,5 +680,22 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getDateCreated()
     {
         return $this->date_created;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContentDesc()
+    {
+        $content = $this->content;
+        $content = Strings::html2Text($content);
+        $content = str_replace("\n", ' ', $content);
+        $content = preg_replace('# {2,}#', ' ', $content);
+
+        if (strlen($content) > 120) {
+            $content = substr($content, 0, 120).'...';
+        }
+
+        return $content;
     }
 }

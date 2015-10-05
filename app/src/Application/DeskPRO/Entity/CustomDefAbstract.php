@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
+use Doctrine\Common\Collections\ArrayCollection;
 use Orb\Util\Numbers;
 
 /**
@@ -47,6 +48,15 @@ use Orb\Util\Numbers;
  */
 class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
+    const HANDLER_CLASS_TEXT     = 'Application\\DeskPRO\\CustomFields\\Handler\\Text';
+    const HANDLER_CLASS_TEXTAREA = 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea';
+    const HANDLER_CLASS_CHOICE   = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice';
+    const HANDLER_CLASS_TOGGLE   = 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle';
+    const HANDLER_CLASS_DATE     = 'Application\\DeskPRO\\CustomFields\\Handler\\Date';
+    const HANDLER_CLASS_DATETIME = 'Application\\DeskPRO\\CustomFields\\Handler\\Datetime';
+    const HANDLER_CLASS_DISPLAY  = 'Application\\DeskPRO\\CustomFields\\Handler\\Display';
+    const HANDLER_CLASS_HIDDEN   = 'Application\\DeskPRO\\CustomFields\\Handler\\Hidden';
+
     /**
      * The unique ID.
      *
@@ -133,12 +143,12 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     /**
      * Can the field be viewed by the user?
      *
-     * @var string
+     * @var bool
      */
     protected $is_user_enabled = true;
 
     /**
-     * @var string
+     * @var bool
      */
     protected $is_enabled = true;
 
@@ -153,7 +163,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     protected $default_value = null;
 
     /**
-     * @var string
+     * @var bool
      */
     protected $is_agent_field = false;
 
@@ -167,16 +177,25 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      */
     public $field_manager = null;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
-        $this->children = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->children = new ArrayCollection();
     }
 
+    /**
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * @return int
+     */
     public function getParentId()
     {
         if ($this->parent) {
@@ -187,11 +206,17 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * @return string
+     * Set title.
+     *
+     * @param string $title
+     *
+     * @return $this
      */
-    public function getTitle()
+    public function setTitle($title)
     {
-        return App::getTranslator()->getPhraseObject($this, 'title');
+        $this->setModelField('title', $title);
+
+        return $this;
     }
 
     /**
@@ -200,6 +225,14 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     public function getRealTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return App::getTranslator()->getPhraseObject($this, 'title');
     }
 
     /**
@@ -219,27 +252,17 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * @return string
+     * Set description.
+     *
+     * @param string $description
+     *
+     * @return $this
      */
-    public function isEnabled()
+    public function setDescription($description)
     {
-        return $this->is_enabled;
-    }
+        $this->setModelField('description', $description);
 
-    /**
-     * @return string
-     */
-    public function getDefaultValue()
-    {
-        return $this->default_value;
-    }
-
-    /**
-     * @return string
-     */
-    public function isAgentField()
-    {
-        return $this->is_agent_field;
+        return $this;
     }
 
     /**
@@ -320,6 +343,16 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * @return $this
+     */
+    public function resetChildren()
+    {
+        $this->children->clear();
+
+        return $this;
+    }
+
+    /**
      * @param int $def_id
      *
      * @return CustomDefAbstract
@@ -331,8 +364,30 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
                 return $v;
             }
         }
+    }
 
-        return;
+    /**
+     * Set handler class.
+     *
+     * @param null $handler_class
+     *
+     * @return $this
+     */
+    public function setHandlerClass($handler_class = null)
+    {
+        $this->setModelField('handler_class', $handler_class);
+
+        return $this;
+    }
+
+    /**
+     * Returns handler class.
+     *
+     * @return string
+     */
+    public function getHandlerClass()
+    {
+        return $this->handler_class;
     }
 
     /**
@@ -362,13 +417,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return $this->_handler_instance;
     }
 
-    public function getHandlerClass()
-    {
-        return $this->handler_class;
-    }
-
     /**
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return \Doctrine\Common\Collections\ArrayCollection|CustomDefAbstract[]
      */
     public function getAllChildren()
     {
@@ -460,10 +510,26 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * Set options.
+     *
+     * @param array $options
+     *
+     * @return $this
+     */
+    public function setOptions(array $options)
+    {
+        $this->setModelField('options', $options);
+
+        return $this;
+    }
+
+    /**
      * Set a value of an option.
      *
      * @param string $name
      * @param mixed  $value
+     *
+     * @return $this
      */
     public function setOption($name, $value)
     {
@@ -476,6 +542,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         }
 
         $this->_onPropertyChanged('options', $old_opt, $this->options);
+
+        return $this;
     }
 
     /**
@@ -524,6 +592,86 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         $option_name = ($isAgent ? 'agent_' : '').'regex';
 
         return $this->getOption($option_name, null);
+    }
+
+    /**
+     * Mark as enabled.
+     *
+     * @param bool $is_enabled
+     *
+     * @return $this
+     */
+    public function setIsEnabled($is_enabled)
+    {
+        $this->setModelField('is_enabled', (bool) $is_enabled);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->is_enabled;
+    }
+
+    /**
+     * Mark as agent field.
+     *
+     * @param bool $is_agent_field
+     *
+     * @return $this
+     */
+    public function setIsAgentField($is_agent_field)
+    {
+        $this->setModelField('is_agent_field', (bool) $is_agent_field);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAgentField()
+    {
+        return $this->is_agent_field;
+    }
+
+    /**
+     * Mark as user enabled.
+     *
+     * @param bool $is_user_enabled
+     *
+     * @return $this
+     */
+    public function setIsUserEnabled($is_user_enabled)
+    {
+        $this->setModelField('is_user_enabled', (bool) $is_user_enabled);
+
+        return $this;
+    }
+
+    /**
+     * Set default value.
+     *
+     * @param mixed $default_value
+     *
+     * @return $this
+     */
+    public function setDefaultValue($default_value)
+    {
+        $this->setModelField('default_value', $default_value);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultValue()
+    {
+        return $this->default_value;
     }
 
     /**

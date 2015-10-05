@@ -79,7 +79,7 @@ class PreProcessor extends AbstractGatewayProcessor
         # Invalid From
         #------------------------------
 
-        $validator = new \Orb\Validator\StringEmail();
+        $validator = new \Orb\Validator\StringEmail(array('reject_example' => true));
 
         if (!$validator->isValid($from)) {
             $this->error         = EmailSource::ERR_FROM_INVALID;

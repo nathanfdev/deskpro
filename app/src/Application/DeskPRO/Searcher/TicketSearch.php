@@ -89,6 +89,7 @@ class TicketSearch extends SearcherAbstract
     const TERM_SLA_STATUS            = 'sla_status';
     const TERM_SLA_COMPLETED         = 'sla_completed';
     const TERM_IP_ADDRESS            = 'ip_address';
+    const TERM_PROBLEMS              = 'problems';
 
     /**
      * True to search in the non-search tables (aka all tickets not just active).
@@ -521,6 +522,9 @@ class TicketSearch extends SearcherAbstract
                     case 'time_created':
                     case 'time_last_user_reply':
                         break;
+                    case self::TERM_PROBLEMS:
+                        $this->affected_fields[] = 'ticket.problems';
+                        break;
                     case self::TERM_DAY_CREATED:
                         break;
                 }
@@ -649,9 +653,6 @@ class TicketSearch extends SearcherAbstract
             $table = 'tickets_search_active';
         }
 
-        $sql  = "SELECT COUNT(tickets.id) AS count FROM $table AS tickets ";
-        $sql2 = "SELECT COUNT(part_perm.id) AS count FROM tickets_participants AS part_perm LEFT JOIN $table AS tickets ON (tickets.id = part_perm.ticket_id) ";
-
         #------------------------------
         # Standard for permissions
         #------------------------------
@@ -756,7 +757,24 @@ class TicketSearch extends SearcherAbstract
             $where .= ' AND '.implode(' AND ', $ticket_parts['wheres']);
         }
         if (!empty($ticket_parts['wheres_any'])) {
-            $where .= ' AND ('.implode(' OR ', $ticket_parts['wheres_any']).')';
+            $where .= 'AND (';
+            $where .= implode(' OR ', $ticket_parts['wheres_any']);
+            if (!empty($user_parts['wheres_any'])) {
+                $where .= ' OR '.implode(' OR ', $user_parts['wheres_any']);
+            }
+            if (!empty($org_parts['wheres_any'])) {
+                $where .= ' OR '.implode(' OR ', $org_parts['wheres_any']);
+            }
+            $where .= ')';
+        } elseif (!empty($user_parts['wheres_any']) || !empty($org_parts['wheres_any'])) {
+            $where .= 'AND (';
+            if (!empty($user_parts['wheres_any'])) {
+                $where .= ' OR '.implode(' OR ', $user_parts['wheres_any']);
+            }
+            if (!empty($org_parts['wheres_any'])) {
+                $where .= ' OR '.implode(' OR ', $org_parts['wheres_any']);
+            }
+            $where .= ')';
         }
         if (!empty($user_parts['wheres'])) {
             $where .= ' AND '.implode(' AND ', $user_parts['wheres']);
@@ -773,6 +791,13 @@ class TicketSearch extends SearcherAbstract
             $where .= " AND tickets.status NOT IN ('archived', 'hidden') ";
         }
 
+        $sql  = "SELECT tickets.id AS ticket_id FROM $table AS tickets ";
+        $sql2 = "SELECT tickets.id AS ticket_id FROM tickets_participants AS part_perm LEFT JOIN $table AS tickets ON (tickets.id = part_perm.ticket_id) ";
+
+        if (!$with_part_union) {
+            $sql = "SELECT COUNT(DISTINCT tickets.id) FROM $table AS tickets ";
+        }
+
         $sql .= " $sql_joins ";
         $sql2 .= " $sql_joins ";
 
@@ -782,16 +807,16 @@ class TicketSearch extends SearcherAbstract
             $sql2 .= " AND part_perm.person_id = {$this->person->getId()} ";
         }
 
-        $sql .= ' ';
-        $sql2 .= ' ';
+        $sql .= ' LIMIT 10000 ';
+        $sql2 .= ' LIMIT 10000 ';
 
         if ($with_part_union) {
             $count_sql = "
-                SELECT SUM(count)
+                SELECT COUNT(DISTINCT ticket_id)
                 FROM (
-                    $sql
+                    ($sql)
                     UNION
-                    $sql2
+                    ($sql2)
                 ) a
             ";
         } else {
@@ -972,7 +997,24 @@ class TicketSearch extends SearcherAbstract
             $where .= ' AND '.implode(' AND ', $ticket_parts['wheres']);
         }
         if (!empty($ticket_parts['wheres_any'])) {
-            $where .= ' AND ('.implode(' OR ', $ticket_parts['wheres_any']).')';
+            $where .= 'AND (';
+            $where .= implode(' OR ', $ticket_parts['wheres_any']);
+            if (!empty($user_parts['wheres_any'])) {
+                $where .= ' OR '.implode(' OR ', $user_parts['wheres_any']);
+            }
+            if (!empty($org_parts['wheres_any'])) {
+                $where .= ' OR '.implode(' OR ', $org_parts['wheres_any']);
+            }
+            $where .= ')';
+        } elseif (!empty($user_parts['wheres_any']) || !empty($org_parts['wheres_any'])) {
+            $where .= 'AND (';
+            if (!empty($user_parts['wheres_any'])) {
+                $where .= ' OR '.implode(' OR ', $user_parts['wheres_any']);
+            }
+            if (!empty($org_parts['wheres_any'])) {
+                $where .= ' OR '.implode(' OR ', $org_parts['wheres_any']);
+            }
+            $where .= ')';
         }
         if (!empty($user_parts['wheres'])) {
             $where .= ' AND '.implode(' AND ', $user_parts['wheres']);
@@ -1985,11 +2027,8 @@ class TicketSearch extends SearcherAbstract
 
                         $search_type = $field_def->getHandler()->getSearchType();
 
-                        if (is_array($choice) && isset($choice['custom_fields']['field_'.$term_id])) {
-                            $choice = $choice['custom_fields']['field_'.$term_id];
-                        }
-
-                        if (is_array($choice) && isset($choice['value'])) {
+                        $isDate = isset($choice['date1']) || isset($choice['date1_relative']);
+                        if (is_array($choice) && isset($choice['value']) && !$isDate) {
                             $choice = $choice['value'];
                         }
 
@@ -2049,25 +2088,26 @@ class TicketSearch extends SearcherAbstract
                                         break;
                                     case self::OP_LTE:
                                     case self::OP_GTE:
-                                        $op     = self::OP_LTE === $op ? '<=' : '>=';
-                                        $_parts = explode('|', $choice);
-                                        if ('date' === @$_parts[0] && @$_parts[1]) {
-                                            $wheres[] = "$field $op ".(int) $_parts[1];
-                                        } elseif ('date_relative' === @$_parts[0]) {
-                                            @list($i, $g) = @$_parts[1];
-                                            $wheres[]     = "$field $op ".strtotime('-'.(int) $i.' '.$g);
+                                        $op = self::OP_LTE === $op ? '<=' : '>=';
+                                        if ($isDate) {
+                                            if (!empty($choice['date1'])) {
+                                                $wheres[] = "$field $op ".(int) $choice['date1'];
+                                            } elseif (!empty($choice['date1_relative'])) {
+                                                $wheres[] = "$field $op ".strtotime('-'.$choice['date1_relative'].' '.$choice['date1_relative_type']);
+                                            }
+                                        } else {
+                                            $wheres[] = "$field $op ".$this->quoteDbValue('%'.$choice.'%');
                                         }
                                         break;
                                     case self::OP_BETWEEN:
-                                        $_parts = explode('|', $choice);
-                                        if ('date' === @$_parts[0] && @$_parts[1] && @$_parts[2]) {
-                                            $d1       = (int) $_parts[1];
-                                            $d2       = (int) $_parts[2];
-                                            $wheres[] = "$field BETWEEN $d1 AND $d2";
-                                        } elseif ('date_relative' === @$_parts[0]) {
-                                            $d1       = strtotime('-'.$_parts[1]);
-                                            $d2       = strtotime('-'.$_parts[2]);
-                                            $wheres[] = "$field BETWEEN $d1 AND $d2";
+                                        if ($isDate) {
+                                            if (!empty($choice['date1'])) {
+                                                $wheres[] = $field.' BETWEEN '.(int) $choice['date1'].' AND '.(int) @$choice['date2'];
+                                            } elseif (!empty($choice['date1_relative'])) {
+                                                $d1       = strtotime('-'.$choice['date1_relative'].' '.$choice['date1_relative_type']);
+                                                $d2       = strtotime('-'.@$choice['date2_relative'].' '.@$choice['date2_relative_type']);
+                                                $wheres[] = "$field BETWEEN $d1 AND $d2";
+                                            }
                                         }
                                         break;
                                 }
@@ -2235,6 +2275,39 @@ class TicketSearch extends SearcherAbstract
                             continue;
                         }
                         $wheres[] = $this->_choiceMatch("DATE_FORMAT(tickets.date_created, '%w')", $op, $days, true);
+                        break;
+
+                    case self::TERM_PROBLEMS:
+
+                        if (!$choice) {
+                            break;
+                        }
+
+                        $this->affected_fields[] = 'ticket.problems';
+
+                        $choices_in = array();
+                        foreach ($choice as $c) {
+                            $choices_in[] = (int) $c;
+                        }
+                        $choices_in = implode(',', $choices_in);
+
+                        switch ($op) {
+                            case self::OP_IS:
+                            case self::OP_CONTAINS:
+                                $joins[] = array(
+                                    'problem2tickets',
+                                    "JOIN problem2tickets AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.problem_id IN ($choices_in))",
+                                );
+                                break;
+
+                            case self::OP_NOT:
+                            case self::OP_NOTCONTAINS:
+                                $joins[] = array(
+                                    'problem2tickets',
+                                    "JOIN problem2tickets AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.problem_id NOT IN ($choices_in))",
+                                );
+                                break;
+                        }
                         break;
 
                     default:
@@ -2693,6 +2766,35 @@ class TicketSearch extends SearcherAbstract
                         return !$exists;
                 }
                 break;
+
+            case self::TERM_PROBLEMS:
+                $choice_problems = array();
+                if (!empty($choice['problems'])) {
+                    if (!is_array($choice['problems'])) {
+                        $choice['problems'] = explode(',', $choice['problems']);
+                    }
+                    $choice_problems = $choice['problems'];
+                }
+
+                $has = false;
+                foreach ($ticket->problems as $p) {
+                    if (in_array($p->id, $choice_problems)) {
+                        $has = true;
+                        break;
+                    }
+                }
+
+                if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
+                    if (!$has) {
+                        return false;
+                    }
+                } else {
+                    if ($has) {
+                        return false;
+                    }
+                }
+                break;
+
             default:
                 $terms = new TicketTerms(array(array(
                     'type'    => $term,

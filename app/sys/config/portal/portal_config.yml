@@ -10,13 +10,6 @@ parameters:
   monolog.logger.class: DeskPRO\Bundle\AppBundle\Logging\NoExceptionsLogger
   file_locator.class: DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator
 
-app:
-    term_engine:
-        dbal:
-            ticket_filter:
-
-
-
 framework:
     esi:             { enabled: true }
     fragments:       { path: /_proxy }
@@ -133,3 +126,6 @@ white_october_pagerfanta:
         out_of_range_page:        to_http_not_found
         not_valid_current_page:   to_http_not_found
 
+jms_serializer:
+    metadata:
+        cache: none

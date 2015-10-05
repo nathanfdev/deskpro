@@ -35,6 +35,13 @@ namespace Application\ImportBundle\Generator;
  */
 interface GeneratorInterface extends GeneratorConfigAwareInterface
 {
+    const STATUS_PENDING    = 'pending';
+    const STATUS_EXPORT     = 'export';
+    const STATUS_VALIDATION = 'validation';
+    const STATUS_IMPORT     = 'import';
+    const STATUS_ERROR      = 'error';
+    const STATUS_DONE       = 'done';
+
     /**
      * Returns generator configuration.
      *
@@ -51,8 +58,6 @@ interface GeneratorInterface extends GeneratorConfigAwareInterface
 
     /**
      * Generates and writes a collection of entities.
-     *
-     * @throws GeneratorException
      */
     public function generate();
 

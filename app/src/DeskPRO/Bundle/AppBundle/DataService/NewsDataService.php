@@ -43,9 +43,14 @@ use Pagerfanta\Pagerfanta;
 class NewsDataService extends AbstractDataService
 {
     /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
+
+    /**
      * @var PortalPermissionsManager
      */
-    private $permissions_manager;
+    protected $permissions_manager;
 
     public function __construct(EntityManager $em, PortalPermissionsManager $permissions_manager)
     {

@@ -38,6 +38,7 @@ use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
 use Application\DeskPRO\Email\EmailAccount\Repository\EmailAccountRepository;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\EmailGateway\TicketGatewayProcessor;
+use Application\DeskPRO\Encryption\DpEnc;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Exception\MissingConfigurationException;
@@ -93,15 +94,21 @@ class EmailAccountManager
     private $default_out_account = null;
 
     /**
+     * @var DpEnc
+     */
+    private $enc;
+
+    /**
      * @param EmailAccountRepository $repos
      * @param RawTransportFactory    $transport_factory
      * @param FetcherStorageFactory  $fetcher_storage_factory
      */
-    public function __construct(EmailAccountRepository $repos, RawTransportFactory $transport_factory, FetcherStorageFactory $fetcher_storage_factory)
+    public function __construct(EmailAccountRepository $repos, RawTransportFactory $transport_factory, FetcherStorageFactory $fetcher_storage_factory, DpEnc $enc)
     {
         $this->repos                   = $repos;
         $this->transport_factory       = $transport_factory;
         $this->fetcher_storage_factory = $fetcher_storage_factory;
+        $this->enc                     = $enc;
     }
 
     ####################################################################################################################
@@ -494,7 +501,7 @@ class EmailAccountManager
             return $this->loaded_transports[$key];
         }
 
-        $tr                            = $this->transport_factory->createTransport($acc->outgoing_account);
+        $tr                            = $this->transport_factory->createTransport(EmailAccountUtil::decryptOutgoingAccount($acc->outgoing_account, $this->enc));
         $this->loaded_transports[$key] = $tr;
 
         return $tr;
@@ -590,7 +597,7 @@ class EmailAccountManager
             return $this->loaded_fetcher_storages[$key];
         }
 
-        $fethcer                             = $this->fetcher_storage_factory->createFetcherStorage($acc->incoming_account);
+        $fethcer                             = $this->fetcher_storage_factory->createFetcherStorage(EmailAccountUtil::decryptIncomingAccount($acc->incoming_account, $this->enc));
         $this->loaded_fetcher_storages[$key] = $fethcer;
 
         return $fethcer;

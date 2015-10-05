@@ -7,10 +7,28 @@
 
   .notification-button {
     position: relative;
-    margin-right: 2px;
+    margin-right: 5px;
+    padding-right: 5px;
     .notification-count {
       right: -3px;
     }
+
+    i:last-child {
+      margin-left: 5px;
+    }
+  }
+
+  .user-options-button {
+    .title {
+      padding-left: 10px;
+      padding-right: 5px;
+      display: inline-block;
+      margin-top: $text-top-margin;
+    }
+  }
+
+  .fa {
+    font-size: 1.2em;
   }
 }
 
@@ -36,7 +54,6 @@
   i {
     margin-left: 5px;
     margin-right: 5px;
-    top: 7px;
   }
 
   &:hover { background: #32628b; }

@@ -28,6 +28,7 @@
 
 namespace Application\ImportBundle\Entity;
 
+use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
@@ -44,7 +45,12 @@ abstract class AbstractEntity implements EntityInterface
     protected $raw_data = array();
 
     /**
-     * @var int
+     * @var string
+     */
+    protected $import_map_key;
+
+    /**
+     * @var int|string
      */
     protected $oid;
 
@@ -54,7 +60,7 @@ abstract class AbstractEntity implements EntityInterface
     protected $destination;
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getRawData()
     {
@@ -62,13 +68,29 @@ abstract class AbstractEntity implements EntityInterface
     }
 
     /**
-     * @param array $raw_data
-     *
-     * @return $this
+     * {@inheritdoc}
      */
     public function setRawData($raw_data)
     {
         $this->raw_data = $raw_data;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getImportMapKey()
+    {
+        return $this->import_map_key;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setImportMapKey($import_map_key)
+    {
+        $this->import_map_key = $import_map_key;
 
         return $this;
     }
@@ -84,13 +106,13 @@ abstract class AbstractEntity implements EntityInterface
     /**
      * Set entity oid.
      *
-     * @param int $oid
+     * @param int|string $oid
      *
      * @return $this
      */
     public function setOid($oid)
     {
-        $this->oid = (int) $oid;
+        $this->oid = $oid;
 
         return $this;
     }
@@ -116,6 +138,17 @@ abstract class AbstractEntity implements EntityInterface
         $this->destination = $destination;
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDestinationPrefix()
+    {
+        $class = new \ReflectionClass($this);
+        $name  = $class->getShortName();
+
+        return Strings::camelCaseToUnderscore($name);
     }
 
     /**

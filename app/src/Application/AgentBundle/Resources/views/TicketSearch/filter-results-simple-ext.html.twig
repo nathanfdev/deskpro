@@ -34,7 +34,6 @@
 	pageMeta.loadSingleUrl = '{{ path('agent_ticketsearch_singleticketrow', {'content_type': 'sla', 'content_id': sla_id|default('0')}) }}?ticket_id=$ticket_id&view_type=$view_type&view_name={{ view_name }}';
 	pageMeta.resultTypeName = 'sla';
 	pageMeta.resultTypeId = {{ sla_id|default(0) }};
-
 {% else %}
 	pageMeta.cache_id = {{cache_id}};
 	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.List.TicketList';

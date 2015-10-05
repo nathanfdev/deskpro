@@ -107,7 +107,18 @@ class PageTitleGenerator
     {
         $builder = $this->createHelpdeskTitleBuilder();
 
+        $builder->prependSection($this->phrase('portal.account.section-title-your-account'));
         $builder->prependSection($this->phrase('portal.account.section-title-profile'));
+
+        return (string) $builder;
+    }
+
+    public function profileEmails()
+    {
+        $builder = $this->createHelpdeskTitleBuilder();
+
+        $builder->prependSection($this->phrase('portal.account.section-title-your-account'));
+        $builder->prependSection($this->phrase('portal.account.section-title-emails'));
 
         return (string) $builder;
     }
@@ -262,6 +273,24 @@ class PageTitleGenerator
         } else {
             $builder->prependSection($section_title);
         }
+
+        return (string) $builder;
+    }
+
+    public function search()
+    {
+        $builder = $this->createHelpdeskTitleBuilder();
+
+        $builder->prependSection($this->phrase('portal.general.search-section-title'));
+
+        return (string) $builder;
+    }
+
+    public function labelSearch()
+    {
+        $builder = $this->createHelpdeskTitleBuilder();
+
+        $builder->prependSection($this->phrase('portal.general.search-labels-section-title'));
 
         return (string) $builder;
     }

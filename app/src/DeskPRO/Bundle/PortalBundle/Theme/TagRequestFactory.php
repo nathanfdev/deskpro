@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -44,9 +45,15 @@ class TagRequestFactory
      */
     private $stack;
 
-    public function __construct(RequestStack $stack)
+    /**
+     * @var LanguageManager
+     */
+    private $language_manager;
+
+    public function __construct(RequestStack $stack, LanguageManager $language_manager)
     {
         $this->stack = $stack;
+        $this->language_manager = $language_manager;
     }
 
     public function create(Tag $tag, array $arguments = array())
@@ -83,9 +90,16 @@ class TagRequestFactory
             $new_args[$key] = $value;
         }
 
-        $tag_options = array_merge($tag->getDefaultOptions(), $new_args, array('_tag_name' => $tag->getName()));
+        $tag_options = array_merge($tag->getDefaultOptions(), $new_args, array(
+            '_tag_name' => $tag->getName(),
+        ));
 
-        return array('tag_options' => $tag_options);
+        $language_stack = $this->language_manager->getLanguageStack();
+        if (!$lang = $language_stack->getActive()) {
+            $lang = $language_stack->getDefaultLanguage();
+        }
+
+        return array('tag_options' => $tag_options, 'lang_url_code' => $lang->getUrlCode());
     }
 
     /**

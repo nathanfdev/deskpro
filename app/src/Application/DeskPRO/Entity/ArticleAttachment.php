@@ -68,6 +68,9 @@ class ArticleAttachment extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $date_created;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->setModelField('date_created', new \DateTime());
@@ -79,6 +82,34 @@ class ArticleAttachment extends \Application\DeskPRO\Domain\DomainObject
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set person.
+     *
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function setPerson(Person $person)
+    {
+        $this->setModelField('person', $person);
+
+        return $this;
+    }
+
+    /**
+     * Set blob data.
+     *
+     * @param Blob $blob
+     *
+     * @return $this
+     */
+    public function setBlob(Blob $blob)
+    {
+        $this->setModelField('blob', $blob);
+
+        return $this;
     }
 
     ############################################################################

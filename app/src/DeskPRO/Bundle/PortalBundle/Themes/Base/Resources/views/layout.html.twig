@@ -21,7 +21,8 @@
           display: block;
       }
   </style>
-  <link href="{{ path('serve_brand_asset', { brand_id: brand('id'), file: 'DeskPRO/Bundle/Build/Resources/style/DeskPRO_PortalBundle_style.css' }) }}" media="all" rel="stylesheet" />
+  {#<link href="{{ path('serve_brand_asset', { brand_id: brand('id'), file: 'DeskPRO/Bundle/Build/Resources/style/DeskPRO_PortalBundle_style.css' }) }}" media="all" rel="stylesheet" />#}
+  <link href="{{ asset('DeskPRO_PortalBundle_style.css', 'app_assets') }}" media="all" rel="stylesheet" type="text/css" />
   <link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,500,700|Open+Sans:400,300,600,700|Roboto:400,300,500,700|Lato:400,300,700' rel='stylesheet' type='text/css' />
 </head>
 <body>
@@ -33,6 +34,13 @@
   document.body.className = document.body.className + ' with-dpui';
 
   window.DP_LOAD_FN = [];
+
+  window.DESKPRO_BASE_URL = '{{ base_url() }}';
+  window.DESKPRO_ROOT_URL = '{{ root_url() }}';
+  window.DESKPRO_WEB_URL = '{{ root_url() }}/web';
+  window.DESKPRO_MULTI_LANG = {{ is_multi_lang() ? 'true' : 'false' }};
+  window.DESKPRO_LANG = '{{ lang_code() }}';
+  window.DESKPRO_ENABLED_LANGS = [{% for language in enabled_languages() %}{{ '{' }}code: '{{ language.urlCode }}', title:'{{ language.title|capitalize }}',flag:'{{ language.flag_image }}'{{ '}' }}{% if not loop.last %},{% endif %}{% endfor %}];
 })();
 </script>
 {% block doc_begin %}{% endblock %}

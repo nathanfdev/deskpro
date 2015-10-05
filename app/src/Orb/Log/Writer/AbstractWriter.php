@@ -45,10 +45,15 @@ abstract class AbstractWriter
      */
     protected $_filter_chain = null;
 
+    public function __destruct()
+    {
+        $this->shutdown();
+    }
+
     /**
      * Get the filter chain instance.
      *
-     * @return Orb\Filter\FilterChain
+     * @return \Orb\Filter\FilterChain
      */
     public function getFilterChain()
     {
@@ -125,6 +130,14 @@ abstract class AbstractWriter
      * Perform shutdown activities.
      */
     public function shutdown()
+    {
+        $this->flush();
+    }
+
+    /**
+     * Can be called manually to flush any cached entries.
+     */
+    public function flush()
     {
     }
 }

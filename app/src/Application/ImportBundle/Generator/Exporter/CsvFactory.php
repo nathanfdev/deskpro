@@ -28,33 +28,54 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Reader\BaseConfig;
-use Application\ImportBundle\Reader\Csv\CsvReader;
+use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Application\ImportBundle\Reader\ReaderInterface;
 
 /**
  * Csv data exporter factory.
  *
  * Class CsvFactory
  */
-class CsvFactory extends AbstractFactory
+class CsvFactory extends AbstractExporterFactory
 {
     /**
      * {@inheritdoc}
      */
-    public static function createExporter(ContainerInterface $container, BaseConfig $config)
+    public function createExporter(ReaderInterface $reader)
     {
-        /** @var CsvReaderInterface $reader */
-        $reader  = new CsvReader($config);
+        if (!$reader instanceof CsvReaderInterface) {
+            throw new \RuntimeException('Reader expected to be instance of CsvReaderInterface');
+        }
+
+        $formatter = $this->container->get('deskpro.import.formatter');
+
+        $helpers = new ParserHelperSet();
+        $helpers
+            ->attach(new Parser\Csv\Helper\ContactData\MultipleContactData($formatter))
+            ->attach(Parser\Csv\Helper\ContactData\Inline\InlineContactDataFactory::create())
+            ->attach(new Parser\Csv\Helper\CustomFields\MultipleCustomFields($formatter))
+            ->attach(new Parser\Csv\Helper\CustomFields\InlineCustomFields())
+            ->attach(new Parser\Csv\Helper\Blob\Blob($formatter))
+            ->attach(new Parser\Csv\Helper\Blob\Attachment($formatter))
+        ;
+
         $parsers = new Parser\Collection();
         $parsers
-            ->attach(new Parser\Csv\Downloads($reader))
-            ->attach(new Parser\Csv\Feedback($reader))
-            ->attach(new Parser\Csv\Articles($reader))
-            ->attach(new Parser\Csv\News($reader))
-            ->attach(new Parser\Csv\People($reader))
-            ->attach(new Parser\Csv\Tickets($reader));
+            ->attach(new Parser\Csv\Downloads($reader, $formatter, $helpers))
+            ->attach(new Parser\Csv\Feedback($reader, $formatter, $helpers))
+            ->attach(new Parser\Csv\FeedbackCustomDef($reader, $formatter, $helpers))
+            ->attach(new Parser\Csv\Articles($reader, $formatter, $helpers))
+            ->attach(new Parser\Csv\ArticleCategories($reader, $formatter, $helpers))
+            ->attach(new Parser\Csv\ArticleCustomDef($reader, $formatter, $helpers))
+            ->attach(new Parser\Csv\News($reader, $formatter, $helpers))
+            ->attach(new Parser\Csv\People($reader, $formatter, $helpers))
+            ->attach(new Parser\Csv\PeopleCustomDef($reader, $formatter, $helpers))
+            ->attach(new Parser\Csv\Tickets($reader, $formatter, $helpers))
+            ->attach(new Parser\Csv\TicketCustomDef($reader, $formatter, $helpers))
+            ->attach(new Parser\Csv\Organizations($reader, $formatter, $helpers))
+            ->attach(new Parser\Csv\OrganizationCustomDef($reader, $formatter, $helpers))
+        ;
 
         return new Csv($parsers, $reader);
     }

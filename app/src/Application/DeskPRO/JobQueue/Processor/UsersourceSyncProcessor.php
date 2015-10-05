@@ -39,6 +39,7 @@ use Application\DeskPRO\Usersource\Sync\SyncManager;
 use Application\DeskPRO\Usersource\UsersourceManager;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\DBAL\Connection;
+use Orb\Log\Logger;
 use Orb\Util\Env;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -99,24 +100,37 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
 
     public function process(array $data, array $job)
     {
+        $this->sync_manager->getSyncHelper()->log(Logger::INFO, 'BOOTING up UsersourceSyncProcessor');
         try {
             static::$max_time = time() + static::MAX_TIME;
             static::$aborted  = false;
             static::$count    = 0;
 
-            static::$max_memory_usage = min(Env::getMemoryLimit(), 500 * 1024 * 1024) * 0.8;
+            // set max memory for the job
+            // we use 500MB as an absolute max base memory, and we only use up to 80% of that
+            // if the php.ini is set to lower than 500MB, that is ok, we still only use 80% of that.
+            $five_hundred_mb = 500 * 1024 * 1024;
+            $max_memory      = Env::getMemoryLimit();
+            if ($max_memory < 0) { // unlimited
+                $max_memory = $five_hundred_mb;
+            }
+            static::$max_memory_usage = min($max_memory, $five_hundred_mb) * 0.8;
+
+            $this->sync_manager->getSyncHelper()->log(Logger::INFO, 'Set max memory that can be used: '.static::$max_memory_usage);
+
             if (1 == $data['phase']) {
+                $this->sync_manager->getSyncHelper()->log(Logger::INFO, 'Initiating PHASE 1 of the sync');
                 $return = $this->runPhaseOne($data);
-                $this->sync_manager->getEm()->clear();
 
                 return $return;
             } else {
+                $this->sync_manager->getSyncHelper()->log(Logger::INFO, 'Initiating PHASE 2 of the sync');
                 $return = $this->runPhaseTwo($data);
-                $this->sync_manager->getEm()->clear();
 
                 return $return;
             }
         } catch (\Exception $e) {
+            $this->sync_manager->getSyncHelper()->log(Logger::ERR, 'FATAL SYNC ERROR, aborting ('.get_class($e).' '.$e->getMessage().')');
             $this->abort(true);
             throw $e;
         }
@@ -128,17 +142,22 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
 
         // condition 1: if we allocate 80% or greater of our max memory usage
         if (memory_get_usage() > self::$max_memory_usage) {
+            $this->sync_manager->getSyncHelper()->log(Logger::INFO, 'MAX MEMORY HIT, PAUSING: '.memory_get_usage());
+
             return true;
         }
 
-        // considtion 2: if we go over x seconds
+        // condition 2: if we go over x seconds
         if (time() > self::$max_time) {
+            $this->sync_manager->getSyncHelper()->log(Logger::INFO, 'MAX TIME ELAPSED, PAUSING: current time is at ('.time().') but max is ('.self::$max_time.')');
+
             return true;
         }
 
         // every 100 iterations check to see if the admin cancelled the job or not
         if ($cursor->getLocation() % 100 === 0) {
             if ($this->sync_manager->isStopSignalPresent()) {
+                $this->sync_manager->getSyncHelper()->log(Logger::INFO, 'admin aborted job, aborting');
                 static::$aborted = true;
                 $this->sync_manager->clearStopSignal();
 
@@ -167,6 +186,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                 // already dealt with this usersource, moving on to one that was paused
                 continue;
             }
+            $this->sync_manager->getSyncHelper()->log(Logger::INFO, 'processing phase 1, usersource='.$usersource->getId());
 
             // stop skipping now
             $skip_to_usersource_id        = false;
@@ -200,17 +220,27 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                             'sync_cursor_phase'        => $cursor->getPhase(),
                             'current_usersource_id'    => $last_processed_usersource_id,
                         ),
-                        new \DateTime('now + 20 seconds')
+                        new \DateTime('now + 10 seconds')
                     );
 
                     // update the log before pausing job
-                    $log->setRecordCount($cursor->getCounter());
+                    $log_count = $cursor->getCounter();
+                    if (!$log_count && $cursor->getLocation() > 0) {
+                        // counter could be 0 for a long time until "location" is done
+                        // this is because phase 1 does not "count"
+                        // so if we don't have a count, but we do have a location
+                        // we should report that
+                        // it will count up until location is maxed, and then
+                        // start again at 0 as we "import"
+                        $log_count = $cursor->getLocation();
+                    }
+                    $log->setRecordCount($log_count);
                     $this->sync_manager->saveLog($log);
 
                     return true;
                 }
             } catch (\Exception $e) {
-
+                $this->sync_manager->getSyncHelper()->log(Logger::ERR, 'SYNC ERROR, marking sync as error ('.get_class($e).' '.$e->getMessage().')');
                 // log the errors but continue on to the next usersource
                 KernelErrorHandler::handleException($e, false);
                 $log->markErrorStatus();
@@ -234,7 +264,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
         // schedule phase 2 for immediate
         $this->scheduleNextSync(
             array('original_start_timestamp' => $start_timestamp, 'phase' => 2),
-            new \DateTime('now + 20 seconds')
+            new \DateTime('now + 10 seconds')
         );
 
         return true;
@@ -250,6 +280,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
             if ($start_at_usersource_id && $usersource->getId() != $start_at_usersource_id) {
                 continue;
             }
+            $this->sync_manager->getSyncHelper()->log(Logger::INFO, 'processing phase 2, usersource='.$usersource->getId());
             // stop skip
             $start_at_usersource_id       = null;
             $last_processed_usersource_id = $usersource->getId();
@@ -266,17 +297,28 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                 $log->startPhaseTwo();
             }
 
-            $had_to_break = false;
+            $had_to_break                 = false;
+            $count_processed_associations = 0;
+            $count_total_associations     = count($associations);
             foreach ($associations as $association) {
-                $identity = $association->getIdentity();
-
+                /* @var \Application\DeskPRO\Entity\PersonUsersourceAssoc $association */
+                    $identity = $association->getIdentity();
+                ++$count_processed_associations;
                 try {
                     if ($this->sync_manager->refreshIdentity($association->getUsersource(), $identity)) {
                         ++$count;
                         $log->incrementRecordCount();
+                    } else {
+                        ++$count;
+                            // there was a problem, but if we don't update the association it will
+                            // loop the sync forever
+                            $this->sync_manager->getSyncHelper()->log(Logger::INFO, 'failed to find "'.$identity.'" on remote usersource, updating association updatedAt time anyway so we do not loop the sync, usersource='.$usersource->getId());
+                        $association->setDateUpdated(new \DateTime());
+                        $this->sync_manager->getSyncHelper()->persistAndFlushEntity($association);
                     }
                 } catch (\Exception $e) {
-                    // log the error, but continue processing
+                    $this->sync_manager->getSyncHelper()->log(Logger::ERR, 'an exception was thrown when refresh "'.$identity.'" from remote usersource, usersource='.$usersource->getId());
+                        // log the error, but continue processing
                         ++$this_usersource_errors;
                     KernelErrorHandler::handleException($e, false);
                     if ($this_usersource_errors > 10) {
@@ -286,11 +328,13 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                     }
                 }
 
-                if (static::pauseJobCondition(new SyncCursor())) {
+                if ($this->pauseJobCondition(new SyncCursor())) {
                     $had_to_break = true;
                     break;
                 }
             }
+
+            $this->sync_manager->getSyncHelper()->log(Logger::INFO, 'processed '.$count_processed_associations.' of '.$count_total_associations.' associations for usersource='.$usersource->getId());
 
             if ($had_to_break) {
                 // phase 2 needs another
@@ -310,7 +354,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                         'phase_2_usersource'       => $last_processed_usersource_id,
                         'original_start_timestamp' => $data['original_start_timestamp'],
                     ),
-                    new \DateTime('now + 20 seconds')
+                    new \DateTime('now + 10 seconds')
                 );
 
                 return true;

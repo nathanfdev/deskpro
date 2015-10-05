@@ -159,7 +159,6 @@ class TicketSplit implements PersonContextInterface
         foreach ($messages as $m) {
             /* @var $m TicketMessage */
             $message_ids[] = $m->id;
-            $this->ticket->messages->removeElement($m);
             $new_ticket->addMessage($m);
 
             if (!$first) {

@@ -2,6 +2,7 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewTicket';
 pageMeta.title = '{{ phrase('agent.general.new_ticket') }}';
 pageMeta.ticket_id = 0;
+pageMeta.agentMap = {{ agent_map|json_encode|raw }};
 
 pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete', {'label_type': 'ticket'}) }}';
 pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
@@ -171,6 +172,37 @@ pageMeta.baseId = '{{ baseId }}';
 					</td>
 				</tbody>
 
+				{% if app.getSetting('core.problems.enabled') and app.user.hasPerm('agent_problems.view') and app.user.PermissionsManager.get('TicketChecker').canAssociateProblem(ticket) %}
+					<tbody>
+					<th>
+						{{ phrase('agent.problems.problem') }}
+					</th>
+					<td>
+
+						{% if app.user.hasPerm('agent_problems.create') %}
+							{% set open_problems = [{id: -1, title: phrase('agent.problems.create_problem')}]|merge(open_problems) %}
+						{% endif %}
+
+						<div>
+							{% include 'AgentBundle:Common:select-standard.html.twig' with {
+							'name': 'problem_id',
+							'add_classname': 'problem_id',
+							'add_attr': '',
+							'with_blank': 1,
+							'blank_title': 'None',
+							'categories': open_problems,
+							'id': baseId ~ '_select_problem'
+							} %}
+
+							{% if app.user.hasPerm('agent_problems.create') %}
+								<input id="{{ baseId }}_problem_title" type="text" name="problem_title"
+									   style="display: none;" placeholder="{{ phrase('agent.problems.problem') }}"/>
+							{% endif %}
+						</div>
+					</td>
+					</tbody>
+				{% endif %}
+
 				{% if app.getSetting('core.use_ticket_category') %}
 					<tbody class="col fieldprop ticket-field item-on category inline-field" style="display: none;">
 						<th>{{ phrase('agent.general.category') }}</th>
@@ -240,10 +272,12 @@ pageMeta.baseId = '{{ baseId }}';
 				{% if custom_fields %}
 					{% for f in custom_fields if f.field_def.getTypeName() != 'hidden' %}
 						<tbody class="col fieldprop ticket-field item-on ticket-field-{{f.field_def.id}} item-on-{{f.field_def.id}} inline-field" style="clear:both;display: none;">
-							<th>{{f.title}}</th>
+						<tr>
+							<th>{{ f.title }}</th>
 							<td>
 								{{ render_custom_field_form(f) }}
 							</td>
+						</tr>
 						</tbody>
 					{% endfor %}
 				{% endif %}
@@ -313,7 +347,7 @@ pageMeta.baseId = '{{ baseId }}';
 										<label><input type="radio" name="{{ baseId }}_billing_type" value="time" checked="checked" />{{ phrase('agent.tickets.billing_time') }}:</label>
 									{% endif %}
 									<span id="{{ baseId }}_billing_inputs" class="billing-form-time">
-						<input type="text" id="{{ baseId }}_billing_hours" name="hours" size="2" placeholder="H" />:<input type="text" id="{{ baseId }}_billing_minutes" name="{{ phrase('agent.general.minutes') }}" size="2" placeholder="M" maxlength="2" />:<input type="text" id="{{ baseId }}_billing_seconds" name="{{ phrase('agent.general.seconds') }}" size="2" placeholder="S" maxlength="2" />
+						<input type="text" id="{{ baseId }}_billing_hours" name="hours" size="2" placeholder="H" />:<input type="text" id="{{ baseId }}_billing_minutes" name="{{ phrase('agent.general.minutes') }}" size="2" placeholder="M" maxlength="2" /><span class="billing-seconds-input">:<input type="text" id="{{ baseId }}_billing_seconds" name="{{ phrase('agent.general.seconds') }}" size="2" placeholder="S" maxlength="2" /></span>
 					</span>
 					<span class="billing-form-buttons">
 						<button class="clean-white" id="{{ baseId }}_billing_start">{{ phrase('agent.general.start') }}</button>
@@ -327,10 +361,16 @@ pageMeta.baseId = '{{ baseId }}';
 						<input type="hidden" id="{{ baseId }}_billing_id_hidden" name="billing_id" value="" />
 					</td>
 				</tr>
+				{% for f in billing_fields %}
 				<tr>
-					<th>{{ phrase('agent.general.comment') }}</th>
-					<td><input type="text" id="{{ baseId }}_billing_comment" name="billing_comment" style="width: 98%" maxlength="255" /></td>
+					<th>
+						{{ f.title }}
+					</th>
+					<td>
+						{{ render_custom_field_form(f) }}
+					</td>
 				</tr>
+				{% endfor %}
 			</table>
 		</article>
 	</section>

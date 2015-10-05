@@ -66,6 +66,8 @@ class News extends ContentAbstract implements HighlightableModelInterface
     protected $revisions;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     *
      * SWG\Property(name="labels", type="array", SWG\Items("string")).
      */
     protected $labels;
@@ -171,10 +173,42 @@ class News extends ContentAbstract implements HighlightableModelInterface
         return $path;
     }
 
+    /**
+     * Reset labels.
+     *
+     * @return $this
+     */
+    public function resetLabels()
+    {
+        foreach ($this->labels as $data) {
+            $this->labels->removeElement($data);
+        }
+
+        $this->_onPropertyChanged('labels', null, $this->labels);
+
+        return $this;
+    }
+
+    /**
+     * @param LabelNews $label
+     *
+     * @return $this
+     */
     public function addLabel(LabelNews $label)
     {
         $label['news'] = $this;
         $this->labels->add($label);
+        $this->_onPropertyChanged('labels', null, $this->labels);
+
+        return $this;
+    }
+
+    /**
+     * @return \Application\DeskPRO\Entity\LabelNews[]
+     */
+    public function getLabels()
+    {
+        return $this->labels;
     }
 
     public function _invalidatePageCache()
@@ -183,6 +217,9 @@ class News extends ContentAbstract implements HighlightableModelInterface
         $cache->invalidateRegex('/_news(-|_view_'.intval($this->getId()).'-|_\d+)/');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data = parent::toApiData($primary, $deep, $visited);

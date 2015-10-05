@@ -6,7 +6,11 @@
 			</div>
 			<div class="col-lg-9">
 				<input type="text" class="form-control" name="title" ng-model="EditCtrl.form.title"
-					   style="width: 50%;" required autofocus>
+					   style="width: 50%;"
+                       ng-readonly="'everyone' === EditCtrl.group.sys_name || 'registered' === EditCtrl.group.sys_name"
+                       required
+                       autofocus
+                        >
 			</div>
 		</div>
 
@@ -28,6 +32,8 @@
 				<input
 					dp-slider-switch
 					ng-model="EditCtrl.form.is_enabled"
+					is-locked="'registered' === EditCtrl.group.sys_name"
+					locked-tip="You cannot disable the Registered group."
 				/>
 			</div>
 		</div>

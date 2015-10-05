@@ -31,6 +31,7 @@
  */
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketPurger;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Orb\Util\Arrays;
@@ -59,9 +60,9 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     ####################################################################################################################
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/ticket_statuses/stats",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Overall ticket statistic",
      * 		notes="Tickets grouped by their status and counted",
@@ -100,9 +101,9 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     ####################################################################################################################
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/ticket_statuses/archived",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Return archivation settings",
      * 		notes="",
@@ -130,22 +131,22 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     /**
      * @return Response
      *
-     * SWG\Api(
+     * @SWG\Api(
      *  path="/ticket_statuses/archived/settings",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Save archivator settings",
      * 		notes="",
      *		type="array",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
      *				name="enabled",
      *				description="Should be tickets be archived?",
      *				paramType="query",
      *				required=true,
      *				type="boolean"
      *			),
-     *      SWG\Parameter(
+     *      @SWG\Parameter(
      *				name="auto_archive_time",
      *				description="When tickets have to be archived?",
      *				paramType="query",
@@ -158,16 +159,23 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      */
     public function saveArchivedSettingsAction()
     {
-        $this->settings->setSetting('core_tickets.use_archive', $this->in->getBoolInt('enabled'));
+        $enabled = $this->in->getBoolInt('enabled');
+        $this->settings->setSetting('core_tickets.use_archive', $enabled);
         $this->settings->setSetting('core_tickets.auto_archive_time', $this->in->getUint('auto_archive_time'));
+
+        if (!$enabled) {
+            $this->em->getConnection()->executeQuery('
+                update tickets set status = :newstatus where status = :oldstatus
+            ', Ticket::STATUS_RESOLVED, Ticket::STATUS_ARCHIVED);
+        }
 
         return $this->createSuccessResponse();
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/ticket_statuses/archived/reset-search-tables",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Clean search status",
      * 		notes="",
@@ -188,9 +196,9 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     ####################################################################################################################
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/ticket_statuses/deleted",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Return deleted tickets autopurge settings",
      * 		notes="",
@@ -215,9 +223,9 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      *
      * @return Response
      *
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/ticket_statuses/deleted/purge",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="DELETE",
      * 		summary="Purge deleted tickets manually",
      * 		notes="Will return count for purged tickets",
@@ -241,14 +249,14 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     /**
      * @return Response
      *
-     * SWG\Api(
+     * @SWG\Api(
      *  path="/ticket_statuses/deleted/settings",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Save deleted tickets autopurge settings",
      * 		notes="",
      *		type="array",
-     *      SWG\Parameter(
+     *      @SWG\Parameter(
      *				name="auto_archive_time",
      *				description="When tickets have to be pruged automatically?",
      *				paramType="query",
@@ -271,9 +279,9 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     ####################################################################################################################
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/ticket_statuses/spam",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Return spam autodelete settings",
      * 		notes="",
@@ -298,9 +306,9 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      *
      * @return Response
      *
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/ticket_statuses/spam/purge",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="DELETE",
      * 		summary="Purge spam tickets manually",
      * 		notes="Will return count for purged tickets",
@@ -324,14 +332,14 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     /**
      * @return Response
      *
-     * SWG\Api(
+     * @SWG\Api(
      *  path="/ticket_statuses/spam/settings",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Save spam autopurge settings",
      * 		notes="",
      *		type="array",
-     *      SWG\Parameter(
+     *      @SWG\Parameter(
      *				name="auto_archive_time",
      *				description="When spam tickets have to be pruged automatically?",
      *				paramType="query",

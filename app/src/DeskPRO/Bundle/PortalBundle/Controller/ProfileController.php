@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonEmailValidating;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
@@ -59,11 +60,14 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('portal_home');
         }
 
+        //
         // Registration "intercept": to implement a registration intercept, don't use this
         // method of creating a person. Instead, make the form work with a PersonGuest,
         // and after the form is valid, use the PersonFactory to turn the guest into a
         // person. Please see NewTicketController to see how it does this exact process
         // to "intercept" new tickets.
+        //
+
         $person = $this->getPersonFactory()->createNewPerson();
 
         // FORM
@@ -167,96 +171,6 @@ class ProfileController extends AbstractController
         }
 
         //
-        // EMAILS (person must be considered "email validated" to even attempt email manipulation)
-        //
-
-        // find emails awaiting validation
-        $validating = $this->getEmailDataService()->getValidatingEmails($person);
-
-        $emails_form = null;
-        $verify_url  = null;
-        if ($person->isEmailValidated()) {
-            if ($email_id = $request->query->get('new_primary')) {
-                $proposed_new_primary_email = $this->getRepo('DeskPRO:PersonEmail')->find($email_id);
-                if ($proposed_new_primary_email->getPerson()->getId() == $person->getId()) {
-                    $person->setPrimaryEmail($proposed_new_primary_email);
-                    $this->getEm()->flush();
-                    $this->addFlash('success', $this->phrase('portal.flashes.user_changed_primary_email'));
-
-                    return $this->redirectToRoute('portal_user_profile');
-                }
-            }
-
-            if ($email_id = $request->query->get('remove_email')) {
-                $proposed_email_removal = $this->getRepo('DeskPRO:PersonEmail')->find($email_id);
-                if ($proposed_email_removal->getPerson()->getId() == $person->getId()) {
-                    if (!$proposed_email_removal->isPrimary()) { // cannot remove primary email
-                        $person->removeEmail($proposed_email_removal);
-                        $this->getEm()->remove($proposed_email_removal);
-                        $this->getEm()->flush();
-                        $this->addFlash(
-                            'success',
-                            $this->phrase(
-                                'portal.flashes.user_removed_an_email',
-                                array('email' => $proposed_email_removal->email)
-                            )
-                        );
-
-                        return $this->redirectToRoute('portal_user_profile');
-                    }
-                }
-            }
-
-            $emails_form = $this->createForm(
-                'person_manage_emails',
-                $person,
-                array(
-                    'settings' => $this->getBrandContainer()->getSettings(),
-                )
-            );
-            $emails_form->handleRequest($request);
-
-            // quick and dirty custom validation to make sure a new email is not already validating
-            // on another account
-            foreach ($person->getEmails() as $email) {
-                if (!$email->getId()) {
-                    if ($this->getRepo('DeskPRO:PersonEmailValidating')->getEmail($email->getEmail())) {
-                        // this email validating already exists!
-                        $emails_form->addError(
-                            new FormError(
-                                'The email "'.$email->getEmail().' is already awaiting validation.'
-                            )
-                        );
-                    }
-                }
-            }
-
-            if ($emails_form->isValid()) {
-
-                // filter out any NEW emails and change them to PersonEmailValidating
-                foreach ($person->getEmails() as $email) {
-                    // if new
-                    if (!$email->getId()) {
-                        $person->removeEmail($email);
-                        $this->getEm()->remove($email);
-                        $validating_email = new PersonEmailValidating();
-                        $validating_email->setEmail($email->getEmail());
-                        $validating_email->setPerson($email->getPerson());
-                        $validating[] = $validating_email; // add to the UI
-                        $this->getEm()->persist($validating_email);
-                    }
-                }
-
-                $this->getEm()->flush();
-                $this->addFlash('success', $this->phrase('portal.flashes.user_updated_emails'));
-
-                return $this->redirectToRoute('portal_user_profile');
-            }
-        } else {
-            $verify_url = $this->get('person.portal_validator')->getResendLink(PersonValidator::TYPE_EMAIL_PRIMARY, $person->getPrimaryEmail());
-        }
-
-        //
         // PASSWORD
         //
         $password_form = $this->createForm('person_change_password', $person, array(
@@ -275,6 +189,113 @@ class ProfileController extends AbstractController
         //
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildProfile();
 
+        return $this->renderThemeView(
+            'Theme:Portal:User/profile.html.twig', array(
+                'person'        => $person,
+                'profile_form'  => $profile_form->createView(),
+                'password_form' => $password_form->createView(),
+                'breadcrumbs'   => $breadcrumbs,
+                'page_title'    => $this->createPageTitle()->profile(),
+            )
+        );
+    }
+    /**
+     * @Route("/profile/emails", name="portal_user_profile_emails")
+     * @Security("is_granted('EDIT_PROFILE', user)")
+     */
+    public function editEmailsAction(Request $request)
+    {
+        $person = $this->getUser();
+
+        // find emails awaiting validation
+        $validating = $this->getEmailDataService()->getValidatingEmails($person);
+
+        $add_email_form = null;
+        $verify_url     = null;
+        if ($person->isEmailValidated()) {
+
+            //////////////////////////////////////////////////////////////////////////////////////////////
+            // CHANGE PRIMARY EMAIL
+            //////////////////////////////////////////////////////////////////////////////////////////////
+            if ($email_id = $request->query->get('new_primary')) {
+                $proposed_new_primary_email = $this->getRepo('DeskPRO:PersonEmail')->find($email_id);
+                if ($proposed_new_primary_email->getPerson()->getId() == $person->getId()) {
+                    $person->setPrimaryEmail($proposed_new_primary_email);
+                    $this->getEm()->flush();
+                    $this->addFlash('success', $this->phrase('portal.flashes.user_changed_primary_email'));
+
+                    return $this->redirectToRoute('portal_user_profile_emails');
+                }
+            }
+
+            //////////////////////////////////////////////////////////////////////////////////////////////
+            // REMOVE EMAIL
+            //////////////////////////////////////////////////////////////////////////////////////////////
+            if ($email_id = $request->query->get('remove_email')) {
+                $proposed_email_removal = $this->getRepo('DeskPRO:PersonEmail')->find($email_id);
+                if ($proposed_email_removal->getPerson()->getId() == $person->getId()) {
+                    if (!$proposed_email_removal->isPrimary()) { // cannot remove primary email
+                        $person->removeEmail($proposed_email_removal);
+                        $this->getEm()->remove($proposed_email_removal);
+                        $this->getEm()->flush();
+                        $this->addFlash(
+                            'success',
+                            $this->phrase(
+                                'portal.flashes.user_removed_an_email',
+                                array('email' => $proposed_email_removal->email)
+                            )
+                        );
+
+                        return $this->redirectToRoute('portal_user_profile_emails');
+                    }
+                }
+            }
+
+            //////////////////////////////////////////////////////////////////////////////////////////////
+            // NEW EMAIL
+            //////////////////////////////////////////////////////////////////////////////////////////////
+            $new_email      = new PersonEmail();
+            $add_email_form = $this->createForm(
+                'deskpro_person_email',
+                $new_email
+            );
+            $add_email_form->handleRequest($request);
+
+            // quick and dirty custom validation to make sure a new email is not already validating
+            // on another account
+            if ($add_email_form->isSubmitted()) {
+                if ($this->getRepo('DeskPRO:PersonEmailValidating')->getEmail($new_email->getEmail())) {
+                    // this email validating already exists!
+                    $add_email_form->addError(
+                        new FormError(
+                            'The email "'.$new_email->getEmail().' is already awaiting validation.'
+                        )
+                    );
+                }
+            }
+
+            if ($add_email_form->isValid()) {
+                $validating_email = new PersonEmailValidating();
+                $validating_email->setEmail($new_email->getEmail());
+                $validating_email->setPerson($person);
+                $validating[] = $validating_email;
+                $this->getEm()->persist($validating_email);
+                $this->getEm()->flush();
+                // TODO: validation
+                //$this->get('portal_email_sender')->sendEmailConfirmationEmail($new_email);
+                $this->addFlash('success', $this->phrase('portal.flashes.user_updated_emails'));
+
+                return $this->redirectToRoute('portal_user_profile_emails');
+            }
+        } else {
+            $verify_url = $this->get('person.portal_validator')->getResendLink(PersonValidator::TYPE_EMAIL_PRIMARY, $person->getPrimaryEmail());
+        }
+
+        //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildProfileEmails();
+
         // make links for validating emails
         $validating_ui = array();
         if ($validating) {
@@ -290,14 +311,12 @@ class ProfileController extends AbstractController
         }
 
         return $this->renderThemeView(
-            'Theme:Portal:User/profile.html.twig', array(
+            'Theme:Portal:User/profile-emails.html.twig', array(
                 'person'            => $person,
                 'verify_url'        => $verify_url,
-                'profile_form'      => $profile_form->createView(),
-                'password_form'     => $password_form->createView(),
-                'emails_form'       => $emails_form ? $emails_form->createView() : null,
+                'add_email_form'    => $add_email_form ? $add_email_form->createView() : null,
                 'breadcrumbs'       => $breadcrumbs,
-                'page_title'        => $this->createPageTitle()->profile(),
+                'page_title'        => $this->createPageTitle()->profileEmails(),
                 'validating_emails' => $validating_ui,
             )
         );

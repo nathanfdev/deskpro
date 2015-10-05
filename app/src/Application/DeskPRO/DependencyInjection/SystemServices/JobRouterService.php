@@ -114,8 +114,6 @@ class JobRouterService
 
         $router->addProcessor(new UsersImportProcessor($container));
 
-        $router->addProcessor(new ImportProcessor($container));
-
         return $router;
     }
 }

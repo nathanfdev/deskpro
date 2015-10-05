@@ -59,6 +59,7 @@ return array(
     'agent.tickets.assignments'                         => 'Назначения',
     'agent.tickets.attachment'                          => 'Вложение',
     'agent.tickets.attachment_deleted'                  => 'Удаленные вложения',
+    'agent.tickets.attachments'                         => 'Вложения',
     'agent.tickets.billing'                             => 'Оплата',
     'agent.tickets.billing_add_charge'                  => 'Добавить поручение',
     'agent.tickets.billing_amount'                      => 'Количество',

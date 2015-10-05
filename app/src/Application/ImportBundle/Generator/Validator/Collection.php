@@ -57,14 +57,14 @@ final class Collection extends AbstractCollection
      *
      * @param string $type
      *
-     * @return Collection
+     * @return ValidatorInterface[]|Collection
      */
-    public function getByRecordType($type)
+    public function getByEntityType($type)
     {
         $collection = new self();
         foreach ($this->collection as $validator) {
-            /* @var ValidatorInterface $validator */
-            if ($validator->getRecordType() === $type) {
+            /** @var ValidatorInterface $validator */
+            if ($validator->getEntityType() === $type) {
                 $collection->attach($validator);
             }
         }

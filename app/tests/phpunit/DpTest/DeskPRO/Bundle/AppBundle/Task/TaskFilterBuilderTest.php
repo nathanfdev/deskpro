@@ -72,8 +72,8 @@ class TaskFilterBuilderTest extends PortalTestCase
         $person = $this->getUser(self::ADMIN_USER);
 
         // Create the filter and apply it
-        $filter  = new TaskFilterBuilder($this->em, $person);
-        $query = $filter->filterRequest($request);
+        $filter = new TaskFilterBuilder($this->em, $person);
+        $query  = $filter->filterRequest($request);
 
         // Validate that we get a query back
         $this->assertInstanceOf('Doctrine\ORM\Query', $query);

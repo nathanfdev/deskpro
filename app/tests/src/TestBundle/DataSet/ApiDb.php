@@ -268,18 +268,21 @@ class ApiDb extends AbstractDbSet
         $ticket1->setPersonId(3);
         $ticket1->agent = $agent1;
         $ticket1->setDepartmentId(1);
+        $ticket1->setSubject('');
         $em->persist($ticket1);
         $ticket2 = new Ticket();
         $ticket2->disableAutoTicketProcess();
         $ticket2->setPersonId(3);
         $ticket2->agent = $agent2;
         $ticket2->setDepartmentId(1);
+        $ticket2->setSubject('');
         $em->persist($ticket2);
         $ticket3 = new Ticket();
         $ticket3->disableAutoTicketProcess();
         $ticket3->setPersonId(3);
         $ticket3->agent = $agent1;
         $ticket3->setDepartmentId(2);
+        $ticket3->setSubject('');
         $em->persist($ticket3);
         $em->flush();
 

@@ -64,6 +64,20 @@ class CustomDefFeedback extends CustomDefAbstract
     protected $sys_name = null;
 
     /**
+     * Set parent.
+     *
+     * @param CustomDefFeedback $parent
+     *
+     * @return $this
+     */
+    public function setParent(CustomDefFeedback $parent = null)
+    {
+        $this->setModelField('parent', $parent);
+
+        return $this;
+    }
+
+    /**
      * @return CustomDefFeedback
      */
     public static function createFeedbackCategory()
@@ -249,11 +263,12 @@ class CustomDefFeedback extends CustomDefAbstract
         );
         $metadata->mapOneToMany(
             array(
-                 'fieldName'    => 'children',
-                 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefFeedback',
-                 'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
-                 'mappedBy'     => 'parent',
-                 'orderBy'      => array('display_order' => 'ASC'),
+                 'fieldName'     => 'children',
+                 'targetEntity'  => 'Application\\DeskPRO\\Entity\\CustomDefFeedback',
+                 'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                 'mappedBy'      => 'parent',
+                 'orderBy'       => array('display_order' => 'ASC'),
+                 'orphanRemoval' => true,
             )
         );
         $metadata->mapManyToOne(

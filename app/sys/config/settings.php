@@ -570,6 +570,16 @@ return array(
      */
     'core_tickets.fwd_use_agent_address' => false,
 
+    /*
+     * True to add email replies as notes instead of ticket replies.
+     */
+    'core_tickets.email_reply_as_note' => true,
+
+    /*
+     * True to add replies in fwd as notes instaed of replies
+     */
+    'core_tickets.email_fwd_reply_as_note' => true,
+
     ####################################################################################################################
     # portal
     ####################################################################################################################
@@ -592,7 +602,7 @@ return array(
     /*
      * When creating a new feedback in portal, this status category is set automatically
      */
-    'portal.default_feedback_status_category_id' => 2,
+    'portal.default_feedback_status_category_id' => 1,
 
     /*
      * The default "per page" number of results in content lists

@@ -32,6 +32,7 @@
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
 use DeskPRO\Kernel\KernelErrorHandler;
 
 /**
@@ -94,10 +95,12 @@ class Pop3 extends AbstractFetcher
     {
         $options = array();
 
-        switch ($this->account->incoming_account->getType()) {
+        $incoming_account = EmailAccountUtil::decryptIncomingAccount($this->account->incoming_account, App::$container->get('dp_enc'));
+
+        switch ($incoming_account->getType()) {
             case 'pop3':
                 /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config $pop3_config */
-                $pop3_config = $this->account->incoming_account;
+                $pop3_config = $incoming_account;
 
                 $options['host']     = $pop3_config->host;
                 $options['port']     = $pop3_config->port;
@@ -117,7 +120,7 @@ class Pop3 extends AbstractFetcher
 
             case 'gmail':
                 /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig $gmail_config */
-                $gmail_config = $this->account->incoming_account;
+                $gmail_config = $incoming_account;
 
                 $options['host']     = 'pop.gmail.com';
                 $options['port']     = 995;
@@ -132,7 +135,7 @@ class Pop3 extends AbstractFetcher
 
             case 'office365':
                 /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Office365Config $config */
-                $config = $this->account->incoming_account;
+                $config = $incoming_account;
 
                 $options['host']     = 'outlook.office365.com';
                 $options['port']     = 995;
@@ -146,7 +149,7 @@ class Pop3 extends AbstractFetcher
                 break;
 
             default:
-                throw new \InvalidArgumentException('Unknown account type: '.$this->account->incoming_account->getType());
+                throw new \InvalidArgumentException('Unknown account type: '.$incoming_account->getType());
         }
 
         $options['logger'] = $this->logger;

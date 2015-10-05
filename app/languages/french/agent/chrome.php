@@ -27,6 +27,7 @@
  */
 
 return array(
+    'agent.chrome.btn_add'                        => 'Ajouter',
     'agent.chrome.btn_create'                     => 'Créer',
     'agent.chrome.btn_recent'                     => 'Récent',
     'agent.chrome.chat_list_agents-online'        => '<span class="userchat-online-agents-count">0</span> agents en ligne :',
@@ -50,6 +51,7 @@ return array(
     'agent.chrome.create_new-person'              => 'Nouvelle personne',
     'agent.chrome.create_new-task'                => 'Nouvelle tâche',
     'agent.chrome.create_new-ticket'              => 'Nouveau ticket',
+    'agent.chrome.create_new-tweet'               => 'Nouveau tweet',
     'agent.chrome.hello-user'                     => 'Bonjour, {{name}}',
     'agent.chrome.help-contact-us'                => 'Contactez-nous',
     'agent.chrome.help-contact-us-explain'        => 'Contactez notre service d\'assistance à <a href="https://support.deskpro.com/" target="_blank">support.deskpro.com</a> ou directement par email à <a href="mailto:support@deskpro.com">support@deskpro.com</a>.',

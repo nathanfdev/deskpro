@@ -50,6 +50,13 @@ class Html2Text
     private $bq_level = 0;
 
     /**
+     * Array of tag => function.
+     *
+     * @var array
+     */
+    private $element_procs = array();
+
+    /**
      * @param string $html
      *
      * @return string
@@ -59,6 +66,15 @@ class Html2Text
         $h2t = new self();
 
         return $h2t->convert($html);
+    }
+
+    /**
+     * @param string   $tagname The tagname.
+     * @param callable $fn      Function to call. Return null and the default convertNode routine is run.
+     */
+    public function addElementProcessor($tagname, $fn)
+    {
+        $this->element_procs[$tagname] = $fn;
     }
 
     /**
@@ -114,6 +130,13 @@ class Html2Text
         $nextName = $this->getNextChildName($node);
 
         $name = strtolower($node->nodeName);
+
+        if (isset($this->element_procs[$name])) {
+            $output = call_user_func($this->element_procs[$name], $node, $nextName, $this);
+            if ($output !== null && $output !== false) {
+                return $output;
+            }
+        }
 
         $output = '';
         switch ($name) {

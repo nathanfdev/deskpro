@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
 
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
+use Doctrine\Common\Collections\Criteria;
 
 /**
  * Language record mapper.
@@ -80,6 +81,19 @@ final class Language implements MapperInterface, MapperByTitleInterface
      */
     public function findOneByTitle($title, $throw_exception = true)
     {
-        return $this->findOneBy(array('title' => $title), $throw_exception);
+        $criteria = new Criteria();
+        $criteria
+            ->orWhere(Criteria::expr()->eq('title', $title))
+            ->orWhere(Criteria::expr()->eq('lang_code', $title))
+            ->orWhere(Criteria::expr()->eq('locale', $title))
+        ;
+
+        /* @var Entity\Language $record */
+        $records = $this->repository->matching($criteria);
+        if ($records->isEmpty() && $throw_exception) {
+            throw new MapperException('Language not found', array('title' => $title));
+        }
+
+        return $records->first();
     }
 }

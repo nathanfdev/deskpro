@@ -250,6 +250,11 @@ $container->loadFromExtension(
     )
 );
 
+$container->register(
+    'dp.entity_listener.person_changelog',
+    'Application\DeskPRO\Entity\EventListener\PersonChangeLogListener'
+)->addArgument(new Reference('service_container'))->addTag('doctrine.entity_listener');
+
 ############################################################################
 # Cache services
 ############################################################################
@@ -721,3 +726,31 @@ $container->loadFromExtension(
         ),
     )
 );
+
+############################################################################
+# dp_enc
+############################################################################
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\Encryption\\DpEnc');
+$definition->setFactoryClass('Application\\DeskPRO\\Encryption\\StandardEncFactory');
+$definition->setFactoryMethod('create');
+$definition->setArguments(array(new Reference('service_container')));
+$container->setDefinition('dp_enc', $definition);
+
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\Encryption\\Form\\Type\\DpEncTextType');
+$definition->setArguments(array(new Reference('dp_enc')));
+$definition->addTag('form.type', array('alias' => 'dp_enc_text'));
+$container->setDefinition('dp_enc.form.type.dp_enc_text', $definition);
+
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\Encryption\\Form\\Type\\DpEncPasswordType');
+$definition->setArguments(array(new Reference('dp_enc')));
+$definition->addTag('form.type', array('alias' => 'dp_enc_password'));
+$container->setDefinition('dp_enc.form.type.dp_enc_password', $definition);
+
+############################################################################
+# DeskPRO Configuration
+############################################################################
+
+$container->loadFromExtension('deskpro_search', array());

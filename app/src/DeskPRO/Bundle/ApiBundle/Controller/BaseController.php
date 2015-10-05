@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use DeskPRO\Bundle\ApiBundle\View\Representation\ErrorRepresentation;
 use DeskPRO\Bundle\ApiBundle\View\Representation\StandardRepresentation;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\Form\FormInterface;

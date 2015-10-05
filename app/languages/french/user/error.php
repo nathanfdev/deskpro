@@ -40,6 +40,8 @@ return array(
     'user.error.form_choice_max'         => 'Vous ne devez pas sélectionner plus de 1 option|Vous ne devez pas sélectionner plus de {{count}} options.',
     'user.error.form_choice_min'         => 'Merci de sélectionner au moins 1 option|Merci de sélectionner au moins {{count}} options.',
     'user.error.form_date_invalid'       => 'Merci d\'entrer une date valide',
+    'user.error.form_date_invalid_dow'   => 'Le jour de la semaine sélectionné n\'est pas autorisé',
+    'user.error.form_date_invalid_range' => 'La date sélectionnée n\'est pas comprise dans la période autorisée',
     'user.error.form_required'           => 'Vous devez remplir ce champ',
     'user.error.form_text_max'           => 'Vous ne devez pas entrer plus d\'1 caractère|Vous ne devez pas entrer plus de {{count}} caractères',
     'user.error.form_text_min'           => 'Merci d\'entrer au moins 1 caractère|Merci d\'entrer au moins {{count}} caractères',

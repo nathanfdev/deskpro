@@ -184,12 +184,34 @@ class BreadcrumbBuilder
     # Profile / Registration
     #####################################################################################################################
 
+    public function addYourAccount()
+    {
+        $this->b->add(
+            $this->url_generator->generate('portal_user_profile'),
+            Breadcrumbs::PROFILE,
+            array('phrase' => 'portal.general.nav-your-account')
+        );
+
+        return $this;
+    }
+
     public function addProfile()
     {
         $this->b->add(
             $this->url_generator->generate('portal_user_profile'),
             Breadcrumbs::PROFILE,
             array('phrase' => 'portal.general.nav-profile')
+        );
+
+        return $this;
+    }
+
+    public function addEditEmails()
+    {
+        $this->b->add(
+            $this->url_generator->generate('portal_user_profile_emails'),
+            Breadcrumbs::PROFILE_EMAILS,
+            array('phrase' => 'portal.general.nav-emails')
         );
 
         return $this;
@@ -240,6 +262,47 @@ class BreadcrumbBuilder
     }
 
     #####################################################################################################################
+    # Search
+    #####################################################################################################################
+
+    public function addSearch($query)
+    {
+        $this->b->add(
+            $this->url_generator->generate('portal_search', array('q' => $query)),
+            Breadcrumbs::SEARCH,
+            array('phrase' => 'portal.general.search-section-title')
+        );
+
+        $this->b->add(
+            $this->url_generator->generate('portal_search', array('q' => $query)),
+            Breadcrumbs::SEARCH,
+            array('name' => sprintf('"%s"', $query))
+        );
+
+        return $this;
+    }
+
+    public function addLabelSearch($type, $label)
+    {
+        $this->b->add(
+            $this->url_generator->generate('portal_search_labels', array('type' => $type, 'label' => $label)),
+            Breadcrumbs::SEARCH,
+            array('phrase' => 'portal.general.search-labels-section-title')
+        );
+
+        if ($label) {
+            $this->b->add(
+                $this->url_generator->generate('portal_search_labels', array('type' => $type, 'label' => $label)),
+                Breadcrumbs::SEARCH,
+                array('name' => sprintf('"%s"', $label))
+            )
+            ;
+        }
+
+        return $this;
+    }
+
+    #####################################################################################################################
     # Feedback
     #####################################################################################################################
 
@@ -253,6 +316,7 @@ class BreadcrumbBuilder
 
         return $this;
     }
+
     public function addFeedbackView(Feedback $a)
     {
         $this->b->add(

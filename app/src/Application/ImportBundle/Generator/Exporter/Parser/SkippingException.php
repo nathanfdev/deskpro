@@ -33,4 +33,30 @@ namespace Application\ImportBundle\Generator\Exporter\Parser;
  */
 final class SkippingException extends \RuntimeException
 {
+    /**
+     * @var array
+     */
+    private $data;
+
+    /**
+     * Constructor.
+     *
+     * @param string $message
+     * @param array  $data
+     */
+    public function __construct($message, array $data)
+    {
+        parent::__construct($message);
+        $this->data = $data;
+    }
+
+    /**
+     * Related data.
+     *
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
 }

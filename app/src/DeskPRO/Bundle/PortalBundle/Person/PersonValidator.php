@@ -236,13 +236,13 @@ class PersonValidator
 
         switch ($type) {
             case self::TYPE_EMAIL:
-                $this->portal_email_sender->sendEmailConfirmationEmail($person_email);
-
+                // TODO: validation
+                //$this->portal_email_sender->sendEmailConfirmationEmail($person_email);
                 return true;
 
             case self::TYPE_EMAIL_PRIMARY:
-                $this->portal_email_sender->sendEmailConfirmationEmail($person_email, true);
-
+                // TODO: validation
+                //$this->portal_email_sender->sendEmailConfirmationEmail($person_email, true);
                 return true;
 
             case self::TYPE_FEEDBACK:

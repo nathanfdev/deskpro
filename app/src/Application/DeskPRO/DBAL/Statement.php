@@ -49,10 +49,10 @@ class Statement extends \Doctrine\DBAL\Statement
         try {
             return parent::execute($params);
         } catch (\Exception $e) {
-            if ($e instanceof DBALException || $e instanceof \PDOException) {
                 if ($is_ignore) {
                     return false;
                 }
+            if ($e instanceof DBALException || $e instanceof \PDOException) {
                 $e->_dp_query        = $this->sql;
                 $e->_dp_query_params = $params;
                 throw $e;

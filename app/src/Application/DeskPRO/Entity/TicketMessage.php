@@ -120,6 +120,11 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var string
      */
+    protected $visitor_id;
+
+    /**
+     * @var string
+     */
     protected $hostname = '';
 
     /**
@@ -319,9 +324,10 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
         $message = Strings::standardEol($message);
         $message = str_replace(array('<br/>', '<br>', '<br />', '<p>', '</p>'), "\n", $message);
-        $message = strip_tags($message);
+        $message = Strings::stripTags($message);
         $message = Strings::decodeHtmlEntities($message);
-        $message = preg_replace('#\s+#', ' ', $message);
+        $message = Strings::decodeWhitespaceHtmlEntities($message);
+        $message = preg_replace('#\s+#u', ' ', $message);
         $message = trim($message);
 
         if ($max_length && isset($message[$max_length])) {
@@ -556,8 +562,10 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         if (!$this->attachments->contains($attach)) {
             $this->attachments->add($attach);
         }
-        $attach['ticket']  = $this->ticket;
-        $attach['message'] = $this;
+
+        $attach['ticket']                = $this->ticket;
+        $attach['message']               = $this;
+        $this->ticket['has_attachments'] = true;
     }
 
     /**
@@ -676,6 +684,70 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
+    /**
+     * Are there any CCed users?
+     *
+     * @return bool
+     */
+    public function numCcedParticipants()
+    {
+        return count($this->ticket->getUserParticipants());
+    }
+
+    /**
+     * A nice and easy way to retrieve all participants in the ticket. Mainly for display.
+     *
+     * @return array the list of participants as an array of strings.
+     */
+    public function getCcedParticipants()
+    {
+        if (!$this->ticket) {
+            return array();
+        }
+
+        if ($this->numCcedParticipants() > 0) {
+            return array_map(function ($p) {
+                    return $p->getDisplayContact();
+                },
+                $this->ticket->getUserParticipants()
+            );
+        } else {
+            return array();
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getVisitorId()
+    {
+        return $this->visitor_id;
+    }
+
+    /**
+     * @param string $visitor_id
+     */
+    public function setVisitorId($visitor_id)
+    {
+        $this->setModelField('visitor_id', $visitor_id);
+    }
+
+    /**
+     * @return string
+     */
+    public function getIpAddress()
+    {
+        return $this->ip_address;
+    }
+
+    /**
+     * @param string $ip_address
+     */
+    public function setIpAddress($ip_address)
+    {
+        $this->setModelField('ip_address', $ip_address);
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -708,7 +780,18 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array('fieldName' => 'message_raw', 'type' => 'text', 'nullable' => true, 'columnName' => 'message_raw'));
         $metadata->mapField(array('fieldName' => 'lang_code', 'type' => 'string', 'length' => 80, 'nullable' => true, 'columnName' => 'lang_code'));
         $metadata->mapField(array('fieldName' => 'show_full_hint', 'type' => 'boolean', 'columnName' => 'show_full_hint'));
-
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'visitor_id',
+                'type'       => 'string',
+                'length'     => 120,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'visitor_id',
+            )
+        )
+        ;
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(array('fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
         $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true));

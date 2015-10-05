@@ -135,6 +135,7 @@ class TicketLogGenerator
                     if (!empty($log_metadata['trigger'])) {
                         $log->trigger_id = $log_metadata['trigger']->id;
                         $log->setDetailItem('trigger_title', $log_metadata['trigger']->title);
+                        $log->setDetailItem('trigger_event', $log_metadata['trigger']->event_trigger);
                     }
                     if (!empty($log_metadata['escalation'])) {
                         $log->escalation_id = $log_metadata['escalation']->id;
@@ -259,13 +260,18 @@ class TicketLogGenerator
                 break;
 
             case 'custom_field':
+            case 'custom_data':
+                if (empty($old['value']) && empty($new['value'])) {
+                    return array();
+                }
+
                 return array(
                     'action_type'  => 'changed_custom_field',
-                    'value_before' => $old ? $old['value'] : null,
-                    'value_after'  => $new ? $new['value'] : null,
+                    'value_before' => !empty($old['value']) ? $old['value'] : null,
+                    'value_after'  => !empty($new['value']) ? $new['value'] : null,
 
-                    'field_id'   => $old ? $old['field_def']->id : null,
-                    'field_name' => $old ? $old['field_def']->title : null,
+                    'field_id'   => !empty($old['field_def']) ? $old['field_def']->id : null,
+                    'field_name' => !empty($old['field_def']) ? $old['field_def']->title : null,
                 );
                 break;
 
@@ -490,6 +496,19 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
                 );
                 break;
 
+            case 'ticket_slas_status':
+                if (!empty($new['sla'])) {
+                    return array(
+                        'action_type' => 'changed_sla_status',
+                        'sla_id'      => $new['sla']->id,
+                        'sla_title'   => $new['sla']->title,
+                        'old_status'  => $new['old_status'],
+                        'new_status'  => $new['new_status'],
+                    );
+                }
+
+                return;
+
             case 'urgency':
                 return array(
                     'action_type' => 'changed_urgency',
@@ -643,6 +662,15 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
 
                 return $log_data;
 
+            case 'message_note_status':
+                $log_data                   = array();
+                $log_data['action_type']    = 'message_note_status';
+                $log_data['message_id']     = $new['message_id'];
+                $log_data['was_agent_note'] = !$new['is_agent_note'];
+                $log_data['is_agent_note']  = $new['is_agent_note'];
+
+                return $log_data;
+
             case 'webhook':
                 $data                = $change instanceof ChangeData ? $change->getData() : array();
                 $data['action_type'] = 'webhook';
@@ -696,6 +724,14 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
                 $log_data['is_choice']    = $is_choice;
 
                 return $log_data;
+
+            case 'email_account':
+                return array(
+                    'action_type' => 'email_account',
+                    'old'         => $old ? $old->address : null,
+                    'new'         => $new ? $new->address : null,
+                );
+                break;
 
             default:
                 return array();

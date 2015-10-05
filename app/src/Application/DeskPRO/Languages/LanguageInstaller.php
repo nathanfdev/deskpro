@@ -71,7 +71,7 @@ class LanguageInstaller
      *
      * @param string $pack_path
      */
-    public function insatllFromPackFilePath($pack_path)
+    public function installFromPackFilePath($pack_path)
     {
         $pack_file = LanguagePackFile::newFromFile($pack_path);
 

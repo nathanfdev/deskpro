@@ -1,4 +1,5 @@
 <?php
+
 /*
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
@@ -24,6 +25,7 @@
  *
  * ~ Thanks, Everyone at Team DeskPRO
  */
+
 /**
  * DeskPRO.
  */
@@ -48,6 +50,7 @@ class FeedbackStatusController extends BaseController
      * @Get("/feedback_statuses", name="api_feedback_statuses")
      *
      * @param Request $request
+     *
      * @return View
      */
     public function cgetAction(Request $request)
@@ -72,5 +75,4 @@ class FeedbackStatusController extends BaseController
             Response::HTTP_OK
         );
     }
-
 }

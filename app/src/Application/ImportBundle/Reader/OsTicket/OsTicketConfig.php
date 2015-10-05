@@ -28,21 +28,51 @@
 
 namespace Application\ImportBundle\Reader\OsTicket;
 
-use Application\ImportBundle\Reader\BaseConfig;
+use Application\ImportBundle\Reader\ReaderConfigInterface;
 
-class OsTicketConfig extends BaseConfig
+/**
+ * Class OsTicketConfig.
+ */
+class OsTicketConfig implements ReaderConfigInterface
 {
+    /**
+     * @var string
+     */
     protected $host;
 
+    /**
+     * @var string
+     */
+    protected $port;
+
+    /**
+     * @var string
+     */
     protected $database;
 
+    /**
+     * @var string
+     */
     protected $user;
 
+    /**
+     * @var string
+     */
     protected $password;
 
-    public function __construct($host, $db, $user, $password)
+    /**
+     * Constructor.
+     *
+     * @param string $host
+     * @param string $port
+     * @param string $db
+     * @param string $user
+     * @param string $password
+     */
+    public function __construct($host, $port, $db, $user, $password)
     {
         $this->host     = $host;
+        $this->port     = $port;
         $this->database = $db;
         $this->user     = $user;
         $this->password = $password;
@@ -54,6 +84,14 @@ class OsTicketConfig extends BaseConfig
     public function getHost()
     {
         return $this->host;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPort()
+    {
+        return $this->port;
     }
 
     /**
@@ -80,10 +118,14 @@ class OsTicketConfig extends BaseConfig
         return $this->password;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function fromArray(array $data)
     {
         return new self(
             $data['host'],
+            $data['port'],
             $data['db'],
             $data['user'],
             $data['password']

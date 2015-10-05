@@ -6,7 +6,7 @@ services:
 
   session.handler.dbal:
     class: DeskPRO\Bundle\PortalBundle\Session\DbalSessionHandler
-    arguments: [@doctrine.dbal.default_connection, %portal.session.name%]
+    arguments: [@doctrine.dbal.default_connection, %portal.session.name%, @visitor_identification_provider, @security.token_storage]
 
   visitor_identification_provider:
     class: DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider

@@ -100,6 +100,16 @@ class HierarchyNode implements \IteratorAggregate, \Countable
         });
     }
 
+    public function isLeaf()
+    {
+        return count($this->children) === 0;
+    }
+
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
     /**
      * @param Hierarchy $hierarchy
      */

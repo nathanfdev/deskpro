@@ -154,7 +154,7 @@
 {# LOGIN FORM #}
 {##############################################################################################################}
 
-<div id="normal_view">
+<div id="normal_view"{% if render_forgot_pw %} style="display: none;"{% endif %}>
 	<div class="title">
 		{{ phrase('agent.general.log_in') }}
 	</div>
@@ -287,7 +287,7 @@
 	{# LOST PASSWORD #}
 	{##############################################################################################################}
 
-	<div id="lost_fields" style="display: none">
+	<div id="lost_fields" {% if not render_forgot_pw %} style="display: none"{% endif %}>
 		<div class="title">
 			{{ phrase('agent.general.lost_password') }}
 		</div>
@@ -298,7 +298,7 @@
 					<p id="lost_form">
 						<i class="icon-envelope-alt"></i>
 						{{ form_token('user_login') }}
-						<input type="text" class="text" value="{{ failed_login_name }}" name="email" id="lost_email" size="40" placeholder="{{ phrase('agent.general.email') }}" tabindex="1" />
+						<input type="text" class="text" value="{{ render_forgot_pw ?: failed_login_name }}" name="email" id="lost_email" size="40" placeholder="{{ phrase('agent.general.email') }}" tabindex="1" />
 					</p>
 				</fieldset>
 				<div id="lost_fields_submit">

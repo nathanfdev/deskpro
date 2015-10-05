@@ -153,9 +153,7 @@ class TicketType extends AbstractType
         // if there is only one department we want to make sure to set it now...
         $person    = $context->getForm()->getConfig()->getOption('person');
         $hierarchy = $this->hierarchy_generator->generateTicketDepartmentsHierarchy($person);
-        if ($hierarchy->countSelectable() === 1) {
             $ticket->department = $hierarchy->getFirstSelectable();
-        }
 
         $this->manipulateForm(new Layout(), $context->getActiveLayout(), $context);
     }
@@ -665,7 +663,6 @@ class TicketType extends AbstractType
 
         if ($ignore_validation) {
             $options                      = $this->markNoValidation($form_context, $options);
-            $options['ignore_validation'] = true;
         }
 
         $form_context->getForm()->add(

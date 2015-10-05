@@ -35,6 +35,7 @@ use Application\AgentBundle\Controller\JsonRenderer\TicketListRenderer;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\ClientMessage;
+use Application\DeskPRO\EntityRepository\Problem;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
@@ -70,7 +71,11 @@ class TicketSearchController extends AbstractController
 
         // Summary of terms for all filters
         $filters_summary = array();
+        $problem_filters = array();
         foreach ($all_filters as $filter) {
+            if (Entity\Problem::FILTER_PREFIX === substr($filter->sys_name, 0, 8)) {
+                $problem_filters[substr($filter->sys_name, 8)] = $filter;
+            }
             $searcher                       = $filter->getSearcher();
             $filters_summary[$filter['id']] = $searcher->getSummary();
         }
@@ -81,6 +86,22 @@ class TicketSearchController extends AbstractController
             FROM people_prefs
             WHERE person_id = ? AND (name LIKE 'agent.ui.filter-visibility.%' OR name LIKE 'agent.ui.sla.filter-visibility.%')
         ", array($this->person->id));
+
+        /*
+         * @var Problem $rep
+         */
+        $open_problems   = array();
+        $closed_problems = array();
+        if ($this->settings->get('core.problems.enabled') && $this->person->hasPerm('agent_problems.view')) {
+            $rep      = $this->em->getRepository('DeskPRO:Problem');
+            $problems = $rep->findBy(array(), array('title' => 'asc'));
+
+            foreach ($problems as $problem) {
+                $problem->is_open
+                    ? $open_problems[]   = $problem->toApiData()
+                    : $closed_problems[] = $problem->toApiData();
+            }
+        }
 
         #------------------------------
         # SLAs
@@ -116,6 +137,7 @@ class TicketSearchController extends AbstractController
             'sys_filters'            => $sys_filters,
             'sys_filters_hold'       => $sys_filters_hold,
             'archive_filters'        => $archive_filters,
+            'problem_filters'        => $problem_filters,
             'archive_filter_counts'  => $archive_filter_counts,
             'filter_id_matches'      => $filter_id_matches,
             'filters_summary'        => $filters_summary,
@@ -126,6 +148,9 @@ class TicketSearchController extends AbstractController
             'labels_index'           => $index,
             'labels_cloud'           => $cloud,
             'initial_inbox_grouping' => $initial_inbox_grouping,
+
+            'open_problems'   => $open_problems,
+            'closed_problems' => $closed_problems,
 
             'slas'       => $slas,
             'sla_counts' => $sla_counts,
@@ -1479,6 +1504,8 @@ class TicketSearchController extends AbstractController
         } else {
             $tickets = $results_helper->getTicketsForPage($page++, $chunk_size);
         }
+        $vars['ticket_display'] = new \Application\DeskPRO\Tickets\TicketResultsDisplay($tickets);
+        $vars['ticket_display']->setPersonContext($this->person);
 
         while (!empty($tickets)) {
             $ticket           = array_shift($tickets);
@@ -1891,7 +1918,7 @@ class TicketSearchController extends AbstractController
                 foreach ($actions as $name => $opt) {
                     // Cleanup RTE markup
                     if ($name == 'reply') {
-                        $new_message       = $this->cleaner->clean(@$opt['reply_text'] ?: '', 'html_core');
+                        $new_message       = $this->cleaner->clean(@$opt['reply_text'] ?: '', 'html');
                         $new_message       = Strings::trimHtml($new_message);
                         $new_message       = Strings::prepareWysiwygHtml($new_message);
                         $opt['reply_text'] = $new_message;

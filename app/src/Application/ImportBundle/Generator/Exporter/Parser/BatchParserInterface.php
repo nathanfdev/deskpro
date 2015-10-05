@@ -50,22 +50,11 @@ interface BatchParserInterface
     public function getDefaultBatchConfig();
 
     /**
-     * Check if config has all required columns.
-     *
-     * @param array $config
-     *
-     * @throws \Application\ImportBundle\Generator\Exporter\Parser\NoColumnException
-     *
-     * @return bool
-     */
-    public function validate(array $config);
-
-    /**
      * Parse array config to specific object.
      *
-     * @param array $config
-     *
+     * @param array $data
+     * 
      * @return BatchConfigInterface
      */
-    public function parse(array $config);
+    public function parse(array $data);
 }

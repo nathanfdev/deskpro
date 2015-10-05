@@ -69,7 +69,8 @@ export class LevelSelectActionStore extends FormActionStore {
 //######################################################################################################################
 
 export class LevelSelect extends React.Component {
-  init() {
+  constructor(props) {
+    super(props);
     this.actionStore = this.props.actionStore;
     this.updateOptions();
 
@@ -134,7 +135,7 @@ export class LevelSelect extends React.Component {
     }
 
     return (
-      <div className="level">
+      <div className="level deskpro-choice-widget">
         <span className="level-indent"><i></i></span>
         <div className="select-wrap">
           <select data-parent={parentId} defaultValue={subGroup ? subGroup.id : null} onChange={this.handleSelectChange.bind(this)}>

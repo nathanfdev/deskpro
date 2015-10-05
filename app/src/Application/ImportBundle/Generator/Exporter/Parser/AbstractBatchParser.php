@@ -28,7 +28,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser;
 
-use DateTime;
+use Application\ImportBundle\Generator\Exporter\Formatter\FormatterInterface;
+use Application\ImportBundle\Generator\Exporter\Formatter\Transformer\TransformerInterface;
 
 /**
  * Abstract batch exporter parser.
@@ -38,61 +39,41 @@ use DateTime;
 abstract class AbstractBatchParser implements BatchParserInterface
 {
     /**
-     * {@inheritdoc}
+     * @var FormatterInterface
      */
-    public function validate(array $config)
-    {
-        $columns = array(
-            'id',
-            'type',
-            'date_created',
-            'date_modified',
-        );
+    protected $formatter;
 
-        return $this->hasRequiredColumns($config, $columns);
+    /**
+     * Constructor.
+     *
+     * @param FormatterInterface $formatter
+     */
+    public function __construct(FormatterInterface $formatter)
+    {
+        $this->formatter = $formatter;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function parse(array $config)
+    public function parse(array $data)
     {
-        $batch_config = $this->getDefaultBatchConfig();
-        $batch_config->setId($config['id']);
+        $formatted = $this->formatter->format($data, array(
+            'id'            => TransformerInterface::TYPE_STRING,
+            'type'          => TransformerInterface::TYPE_STRING,
+            'date_created'  => TransformerInterface::TYPE_DATE,
+            'date_modified' => TransformerInterface::TYPE_DATE,
+            'has_remaining' => TransformerInterface::TYPE_BOOLEAN,
+        ));
 
-        if ($config['date_created']) {
-            $batch_config->setDateCreated(new DateTime($config['date_created']));
-        }
-        if ($config['date_modified']) {
-            $batch_config->setDateModified(new DateTime($config['date_modified']));
-        }
+        $config = $this->getDefaultBatchConfig();
+        $config
+            ->setId($formatted['id'])
+            ->setHasRemaining($formatted['has_remaining'])
+            ->setDateCreated($formatted['date_created'])
+            ->setDateModified($formatted['date_modified'])
+        ;
 
-        return $batch_config;
-    }
-
-    /**
-     * Check if a config has all required columns.
-     *
-     * @param array $config
-     * @param array $columns
-     * @param bool  $throw_exception
-     *
-     * @throws NoColumnException
-     *
-     * @return bool
-     */
-    protected function hasRequiredColumns(array $config, array $columns, $throw_exception = true)
-    {
-        foreach ($columns as $column) {
-            if (array_key_exists($column, $config) === false) {
-                if ($throw_exception) {
-                    throw new NoColumnException(sprintf('Column `%s` not found', $column));
-                }
-
-                return false;
-            }
-        }
-
-        return true;
+        return $config;
     }
 }

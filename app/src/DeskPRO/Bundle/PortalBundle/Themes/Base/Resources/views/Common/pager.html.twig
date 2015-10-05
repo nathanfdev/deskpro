@@ -1,3 +1,5 @@
 {% if pager.haveToPaginate %}
-    {{ pagerfanta(pager, null, { routeParams: {tag_options: null} }) }}
+    <div class="deskpro-pager">
+        {{ pagerfanta(pager, null, { routeParams: {tag_options: null} }) }}
+    </div>
 {% endif %}

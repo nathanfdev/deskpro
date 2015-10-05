@@ -56,7 +56,7 @@ class DocsController extends AbstractController
 
     public function aboutAction()
     {
-        return $this->render('LegacyApiBundle:SwaggerUi:about.html.twig');
+        return $this->render('ApiBundle:SwaggerUi:about.html.twig');
     }
 
     ####################################################################################################################
@@ -65,7 +65,7 @@ class DocsController extends AbstractController
 
     public function apiAction()
     {
-        return $this->render('LegacyApiBundle:SwaggerUi:api.html.twig');
+        return $this->render('ApiBundle:SwaggerUi:api.html.twig');
     }
 
     ####################################################################################################################
@@ -116,7 +116,7 @@ class DocsController extends AbstractController
 
     private function getResourcePath($res)
     {
-        return DP_ROOT.'/src/Application/LegacyApiBundle/Resources/views/SwaggerDocs/'.ltrim($res, '/').'.json';
+        return DP_ROOT.'/src/Application/ApiBundle/Resources/views/SwaggerDocs/'.ltrim($res, '/').'.json';
     }
 
     private function serveResource($res)

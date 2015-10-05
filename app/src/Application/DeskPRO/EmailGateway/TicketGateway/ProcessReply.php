@@ -83,7 +83,7 @@ class ProcessReply extends ProcessAbstract
      */
     public function run($context = 'user')
     {
-        $this->logMessage("doNewRelpy context $context");
+        $this->logMessage("doNewReply context $context");
 
         $this->processBlobs();
 
@@ -214,9 +214,16 @@ class ProcessReply extends ProcessAbstract
             $message['show_full_hint'] = true;
         }
 
-        if (isset($this->ticket_email->reply_actions['is_note'])) {
-            $message['is_agent_note']          = true;
-            $this->ticket->email_reader_action = 'agent_note';
+        if ($this->person->is_agent && $context === 'agent') {
+            if (!$email_info->agent_reply_as_note || isset($this->ticket_email->reply_actions['is_reply'])) {
+                $this->logMessage('Reply mode: reply');
+                $message['is_agent_note']          = false;
+                $this->ticket->email_reader_action = 'agent_reply';
+            } else {
+                $this->logMessage('Reply mode: note');
+                $message['is_agent_note']          = true;
+                $this->ticket->email_reader_action = 'agent_note';
+            }
         }
 
         $ticket_attach = array();

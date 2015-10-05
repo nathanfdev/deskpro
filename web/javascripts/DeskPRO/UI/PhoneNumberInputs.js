@@ -24,6 +24,14 @@ DeskPRO.UI.PhoneNumberInputs = new Orb.Class({
 		$(this.options.input_selector).each(function () {
 			var input = $(this);
 			var id = input.attr('id');
+			var ext_input = input.parent().find('.dp_phone_ext_hidden');
+			var dialCodes = $.fn.intlTelInput.getCountryData().reduce(
+				function(a, cdata) {
+					a[cdata.dialCode] = cdata.iso2;
+					return a;
+				},
+				{}
+			);
 
 			if (input.next() && input.next().hasClass('intl-tel-input')) {
 				return;
@@ -39,17 +47,49 @@ DeskPRO.UI.PhoneNumberInputs = new Orb.Class({
 				defaultCountry: 'auto',
 				autoPlaceholder: true,
 				autoFormat: true,
+				allowExtensions: true,
 				nationalMode: true,
 				utilsScript: window.DP_ASSET_URL + '/bower_components/intl-tel-input/lib/libphonenumber/build/utils.js',
 				geoIpLookup: that.lookupGeoIp
 			});
 
-			if (input.val()) {
+			if (input.val() && ext_input.val()) {
+				phone_input.intlTelInput('setNumber', input.val() + ' ext. ' + ext_input.val());
+			} else if (input.val()) {
 				phone_input.intlTelInput('setNumber', input.val());
 			}
 
-			phone_input.on('input', function () {
-				input.val(phone_input.intlTelInput('getNumber'));
+			phone_input.width('300px');
+
+			phone_input.on('input change', function () {
+				// we have to check if the string " ext. " is in the actual input with
+				// no extension present. if so, strip it out or we have bugs.
+				var phone_input_val = phone_input.val();
+				var raw_input = phone_input_val.split(" ext. ");
+				var dial_code;
+				for (var dcode in dialCodes) {
+					if (!dialCodes.hasOwnProperty(dcode)) {
+						return;
+					}
+					dial_code = '+' + dcode;
+					var shouldRemoveDialCode = phone_input_val.indexOf(dial_code) == 0 && phone_input_val.length > (dial_code.length + 1);
+					if (shouldRemoveDialCode) {
+						phone_input.val(phone_input_val.substr(dial_code.length).trim());
+						phone_input.intlTelInput('selectCountry', dialCodes[dcode]);
+					}
+				}
+				if (raw_input.length > 1 && raw_input[1].length == 0) {
+					phone_input.val(raw_input[0]);
+				}
+
+				ext_input.val(phone_input.intlTelInput('getExtension'));
+				input.val(phone_input.intlTelInput('getNumber').split(" ext. ")[0] || phone_input.intlTelInput('getNumber'));
+				if (!phone_input.intlTelInput('isValidNumber')) {
+					var str = phone_input.val();
+					if (str.indexOf('398', str.length - 3) !== -1) {
+						phone_input.intlTelInput('setNumber', str.substring(0, str.length - 3));
+					}
+				}
 			});
 
 			phone_input.on('blur', function () {

@@ -56,7 +56,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     const END_ACTION_ARCHIVE = 'archive';
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var \Doctrine\Common\Collections\ArrayCollection|ArticleCategory[]
      */
     protected $categories;
 
@@ -96,6 +96,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     protected $end_action = null;
 
     /**
+     * \Doctrine\Common\Collections\ArrayCollection.
      */
     protected $custom_data;
 
@@ -143,6 +144,26 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
+     * @return DateTime
+     */
+    public function getDateUpdated()
+    {
+        return $this->date_updated;
+    }
+
+    /**
+     * @param DateTime $date_updated
+     *
+     * @return $this
+     */
+    public function setDateUpdated(DateTime $date_updated = null)
+    {
+        $this->setModelField('date_updated', $date_updated);
+
+        return $this;
+    }
+
+    /**
      * @param $end_action
      *
      * @return $this
@@ -154,18 +175,44 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         return $this;
     }
 
+    /**
+     * Set entity status.
+     *
+     * @param string $status
+     *
+     * @return $this
+     */
     public function setStatus($status)
     {
         if ($status == 'approve') {
             $status = self::STATUS_PUBLISHED;
         }
 
-        if ($status == self::STATUS_PUBLISHED) {
-            $this->setModelField('status', self::STATUS_PUBLISHED);
-            $this->setModelField('hidden_status', null);
-        } else {
-            $this->setModelField('status', $status);
+        parent::setStatus($status);
+
+        return $this;
         }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLabels()
+    {
+        return $this->labels;
+    }
+
+    /**
+     * Reset labels.
+     *
+     * @return $this
+     */
+    public function resetLabels()
+    {
+        foreach ($this->labels as $data) {
+            $this->labels->removeElement($data);
+        }
+
+        $this->_onPropertyChanged('labels', null, $this->labels);
 
         return $this;
     }
@@ -181,6 +228,19 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         $label['article'] = $this;
     }
 
+    /**
+     * @return ArrayCollection
+     */
+    public function getCustomData()
+    {
+        return $this->custom_data;
+    }
+
+    /**
+     * Add custom data.
+     *
+     * @param CustomDataArticle $data
+     */
     public function addCustomData(CustomDataArticle $data)
     {
         $this->custom_data->add($data);
@@ -188,9 +248,29 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
     }
 
-    public function isInCategory(ArticleCategory $cat)
+    /**
+     * Reset custom data.
+     *
+     * @return $this
+     */
+    public function resetCustomData()
     {
-        return $this->categories->contains($cat);
+        $this->custom_data->clear();
+
+        return $this;
+    }
+
+    /**
+     * Reset custom data.
+     *
+     * @return $this
+     */
+    public function resetCategories()
+    {
+        $this->categories->clear();
+        $this->_onPropertyChanged('categories', null, $this->categories);
+
+        return $this;
     }
 
     public function addComment($comment)
@@ -285,6 +365,19 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         return $this->categories;
     }
 
+    /**
+     * Reset attachments.
+     *
+     * @return $this
+     */
+    public function resetAttachments()
+    {
+        $this->attachments->clear();
+        $this->_onPropertyChanged('attachments', null, $this->attachments);
+
+        return $this;
+    }
+
     public function addAttachment(ArticleAttachment $attach)
     {
         $this->attachments->add($attach);
@@ -340,14 +433,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface
                 return;
             }
         }
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateUpdated()
-    {
-        return $this->date_updated;
     }
 
     protected function addSlugHistory($old_slug)

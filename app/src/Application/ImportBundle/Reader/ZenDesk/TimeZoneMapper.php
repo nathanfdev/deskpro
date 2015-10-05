@@ -28,8 +28,6 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
-use Exception;
-
 /**
  * ZenDesk timezone mapper.
  *
@@ -42,7 +40,7 @@ class TimeZoneMapper
      *
      * @param string $friendly_name
      *
-     * @throws Exception
+     * @throws \RuntimeException
      *
      * @return string
      */
@@ -53,7 +51,7 @@ class TimeZoneMapper
             return $mapping[$friendly_name];
         }
 
-        throw new Exception(sprintf('Timezone name not found by friendly name `%s`', $friendly_name));
+        throw new \RuntimeException(sprintf('Timezone name not found by friendly name `%s`', $friendly_name));
     }
 
     /**

@@ -192,6 +192,19 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
+     * Reset custom data
+     * todo add onPropertyChanged() if change tracking is needed.
+     *
+     * @return $this
+     */
+    public function resetCustomData()
+    {
+        $this->custom_data->clear();
+
+        return $this;
+    }
+
+    /**
      * @param $rating
      */
     public function addRating($rating)
@@ -277,6 +290,11 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $this->_onPropertyChanged('status', $this->status, $status);
         $this->status = $status;
 
+        // there is no STATUS_NEW anymore
+        //if ($status == 'approve') {
+        //    $status = self::STATUS_NEW;
+        //}
+
         switch ($status) {
             case self::STATUS_ACTIVE:
             case self::STATUS_CLOSED:
@@ -358,10 +376,20 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         return $path;
     }
 
-    public function addLabel($label)
+    /**
+     * Reset labels.
+     *
+     * @return $this
+     */
+    public function resetLabels()
     {
-        $label['feedback'] = $this;
-        $this->labels->add($label);
+        foreach ($this->labels as $data) {
+            $this->labels->removeElement($data);
+        }
+
+        $this->_onPropertyChanged('labels', null, $this->labels);
+
+        return $this;
     }
 
     /**
@@ -400,6 +428,27 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         }
 
         return;
+    }
+
+    /**
+     * @param LabelFeedback $label
+     *
+     * @return $this
+     */
+    public function addLabel(LabelFeedback $label)
+    {
+        $label['feedback'] = $this;
+        $this->labels->add($label);
+
+        return $this;
+    }
+
+    /**
+     * @return \Application\DeskPRO\Entity\LabelFeedback[]
+     */
+    public function getLabels()
+    {
+        return $this->labels;
     }
 
     /**
@@ -477,6 +526,22 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
+     * @return FeedbackStatusCategory
+     */
+    public function getStatusCategory()
+    {
+        return $this->status_category;
+    }
+
+    /**
+     * @param FeedbackStatusCategory $status_category
+     */
+    public function setStatusCategory(FeedbackStatusCategory $status_category = null)
+    {
+        $this->setModelField('status_category', $status_category);
+    }
+
+    /**
      * @param $field
      */
     public function removeCustomDataForField($field)
@@ -500,26 +565,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                 }
             }
         }
-
-        if ($change) {
-            $this->_onPropertyChanged('custom_data', null, $this->custom_data);
-        }
-    }
-
-    /**
-     * @return FeedbackStatusCategory
-     */
-    public function getStatusCategory()
-    {
-        return $this->status_category;
-    }
-
-    /**
-     * @param FeedbackStatusCategory $status_category
-     */
-    public function setStatusCategory(FeedbackStatusCategory $status_category = null)
-    {
-        $this->setModelField('status_category', $status_category);
     }
 
     public function getCustomDataCollection()

@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\AuthInterfaceSettings;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * The abstract controller sets up some default objects.
@@ -306,7 +307,16 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 
         if ($sso_result = $this->handleAutomaticSso($authInterfaceSettings)) {
             if ($sso_result->isRedirectRequired()) {
-                $return = $this->request->getReturnParam();
+                if (!$return = $this->request->getReturnParam()) {
+                    try {
+                        $return = $this->generateUrl(
+                            $this->request->attributes->get('_route'),
+                            $this->request->attributes->get('_route_params'),
+                            UrlGeneratorInterface::ABSOLUTE_URL);
+                    } catch (\Exception $e) {
+                        $return = null;
+                    }
+                }
                 $this->session->set('auth_return', $return);
                 $this->session->save();
 

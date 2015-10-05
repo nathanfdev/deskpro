@@ -30,10 +30,9 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro download labels importer.
+ * DeskPRO download labels importer.
  *
  * Class DownloadLabel
  */
@@ -49,81 +48,24 @@ final class DownloadLabel extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * @var Entity\Download
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
-        $this->records = new ArrayCollection();
+        if (!$entity instanceof Entity\Download) {
+            Entity\UnexpectedException::throwUnexpectedEntityTypeException($entity);
+        }
 
         $download = $this->getDownloadMapper()->findOneByTitle($entity->getTitle());
-        $labels   = $this->getExistingLabelsNames($download->getId());
+        $download->resetLabels();
 
-        foreach ($entity->getLabels() as $label) {
-            if (in_array($label, $labels, true)) {
-                $this->logDebug(sprintf(
-                    'Found an existing label `%s` for download with oid `%d` (Skipping)',
-                    $label, $download->getId()
-                ));
-            } else {
-                $download->addLabel($this->createDownloadLabel($label));
-                $this->logDebug(sprintf(
-                    'Creating a new label `%s` for download with oid `%d`',
-                    $label, $download->getId()
-                ));
-            }
+        foreach ($entity->getLabels() as $label_name) {
+            $label = new DeskPROEntity\LabelDownload();
+            $label->setLabel($label_name);
+
+            $download->addLabel($label);
+            $this->logDebug(sprintf('Creating a new label `%s` for download with oid `%d`', $label_name, $download->getId()));
         }
 
-        return $this->records;
-    }
-
-    /**
-     * Returns a new download label entity.
-     *
-     * @param string $label
-     *
-     * @return DeskPROEntity\LabelDownload
-     */
-    private function createDownloadLabel($label)
-    {
-        $entity = new DeskPROEntity\LabelDownload();
-        $entity->setLabel($label);
-
-        $this->records->add($entity);
-
-        return $entity;
-    }
-
-    /**
-     * Returns a collection of existing download label names.
-     *
-     * @param int $id
-     *
-     * @throws Mapper\MapperException
-     *
-     * @return array
-     */
-    private function getExistingLabelsNames($id)
-    {
-        $labels = $this->getDownloadLabelMapper()->findByDownloadId($id, false);
-        $names  = array();
-
-        foreach ($labels as $label) {
-            $names[] = $label->getLabel();
-        }
-
-        return $names;
-    }
-
-    /**
-     * Returns the download label mapper.
-     *
-     * @throws \Exception
-     *
-     * @return Mapper\DownloadLabel
-     */
-    private function getDownloadLabelMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_DOWNLOAD_LABEL);
+        $this->records->setPrimaryEntity($download);
     }
 }

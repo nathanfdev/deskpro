@@ -42,7 +42,7 @@ use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketCategory;
 use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
-use DeskPRO\Bundle\AppBundle\DataService\FeedbackDataService;
+use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService;
 use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 use DeskPRO\Component\Hierarchy\Formatter\FlatListFormatter;
 use DeskPRO\Component\Hierarchy\Formatter\ParentListFormatter;

@@ -62,6 +62,9 @@ class Build1413803749 extends AbstractBuild
             $this->execMutateSql('CREATE INDEX IDX_4E3C994CF9C72B85 ON usersources (agent_permission_group_id)', true);
         }
 
+        $this->out('Add usersources.sync_enabled');
+        $this->execMutateSql("ALTER TABLE usersources ADD sync_enabled TINYINT(1) DEFAULT '0' NOT NULL", true);
+
         $this->execMutateSql("UPDATE usersources SET type = '$userType'");
         $this->execMutateSql('ALTER TABLE app_instances ADD perm_type VARCHAR(15) NOT NULL', true);
 

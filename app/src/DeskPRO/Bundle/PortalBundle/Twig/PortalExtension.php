@@ -32,9 +32,11 @@
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Helper\TicketPublicIdResolver;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class PortalExtension extends \Twig_Extension
 {
@@ -64,15 +66,39 @@ class PortalExtension extends \Twig_Extension
     private $ticket_public_id_resolver;
 
     /**
+     * @var TokenStorage
+     */
+    private $token_storage;
+
+    /**
+     * @var \DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager
+     */
+    private $permission_manager;
+
+    /**
+     * @var \DeskPRO\Bundle\PortalBundle\Helper\PortalRatingsHelper
+     */
+    private $ratings_helper;
+
+    /**
+     * @var \DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider
+     */
+    private $visitor_identification_provider;
+
+    /**
      * @param ContainerInterface $continer
      */
     public function __construct(ContainerInterface $continer)
     {
-        $this->container                 = $continer;
-        $this->brand_stack               = $continer->get('brand_stack');
-        $this->settings_resolver         = $continer->get('settings_resolver');
-        $this->avatar_resolver           = $continer->get('avatar_resolver');
-        $this->ticket_public_id_resolver = $continer->get('ticket.public_id_resolver');
+        $this->container                       = $continer;
+        $this->brand_stack                     = $continer->get('brand_stack');
+        $this->settings_resolver               = $continer->get('settings_resolver');
+        $this->avatar_resolver                 = $continer->get('avatar_resolver');
+        $this->ticket_public_id_resolver       = $continer->get('ticket.public_id_resolver');
+        $this->permission_manager              = $continer->get('portal_permissions_manager');
+        $this->token_storage                   = $continer->get('security.token_storage');
+        $this->ratings_helper                  = $continer->get('ratings_helper');
+        $this->visitor_identification_provider = $continer->get('visitor_identification_provider');
     }
 
     /**
@@ -88,7 +114,62 @@ class PortalExtension extends \Twig_Extension
             new \Twig_SimpleFunction('avatar_url', array($this, 'getAvatarUrl')),
             new \Twig_SimpleFunction('render_message', array($this, 'getRenderedObject'), array('is_safe' => array('html'))),
             new \Twig_SimpleFunction('render_news', array($this, 'getRenderedObject'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('get_secure_content_cats', array($this, 'getSecureCats')),
+            new \Twig_SimpleFunction('user_up_voted', array($this, 'didUserUpVote')),
+            new \Twig_SimpleFunction('user_down_voted', array($this, 'didUserDownVote')),
         );
+    }
+
+    /**
+     * @param $object
+     *
+     * @return bool
+     */
+    public function didUserUpVote($object)
+    {
+        if ($rating = $this->getRating($object)) {
+            return $rating->isPositive();
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $object
+     *
+     * @return bool
+     */
+    public function didUserDownVote($object)
+    {
+        if ($rating = $this->getRating($object)) {
+            return $rating->isNegative();
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $object
+     *
+     * @return Entity\Rating|null
+     */
+    public function getRating($object)
+    {
+        $person = $this->getPerson();
+
+        if ($person instanceof Entity\Person && !$person instanceof PersonGuest) {
+            if ($rating = $this->ratings_helper->findPersonRating($object, $person)) {
+                return $rating;
+            }
+        } else {
+            $visitor_id = $this->visitor_identification_provider->getVisitorIdentifier();
+
+            if ($rating = $this->ratings_helper->findVisitorRating($object, $visitor_id)) {
+                return $rating;
+            }
+        }
+
+        return;
     }
 
     public function getPublicTicketId($ticket)
@@ -107,6 +188,46 @@ class PortalExtension extends \Twig_Extension
         }
 
         return $this->ticket_public_id_resolver->findId($ticket);
+    }
+
+    public function getSecureCats(Entity\ContentAbstract $content)
+    {
+        $permission_bag = $this->getPermissionBagForCurrentUser();
+
+        if ($content instanceof Entity\Article) {
+            $cat = $content->getPrimaryCategory();
+            if (!$permission_bag->hasContentCategoryAccess($cat)) {
+                foreach ($content->getCategories() as $cat) {
+                    if ($permission_bag->hasContentCategoryAccess($cat)) {
+                        break;
+                    }
+                }
+            }
+        } elseif ($content instanceof Entity\News) {
+            $cat = $content->getCategory();
+        } elseif ($content instanceof Entity\Download) {
+            $cat = $content->getCategory();
+        } elseif ($content instanceof Entity\Feedback) {
+            $cat = $content->getCategory();
+        } else {
+            throw new \InvalidArgumentException('the get_secure_cats twig function requires one of: Article, Download, News, Feedback, but did not get one');
+        }
+
+        $category_tree = array();
+
+        $permission_bag = $this->getPermissionBagForCurrentUser();
+        foreach ($cat->getTreeParents() as $c) {
+            if ($permission_bag->hasContentCategoryAccess($c)) {
+                $category_tree[] = $c;
+            }
+        }
+
+        // check here, too
+        if ($permission_bag->hasContentCategoryAccess($cat)) {
+            $category_tree[] = $cat;
+        }
+
+        return $category_tree;
     }
 
     /**
@@ -193,6 +314,34 @@ class PortalExtension extends \Twig_Extension
     public function getGlobals()
     {
         return array('global_settings' => $this->settings_resolver->getGlobalSettings());
+    }
+
+    /**
+     * @return PersonGuest|Entity\Person
+     */
+    protected function getPerson()
+    {
+        $person = null;
+        if ($token = $this->token_storage->getToken()) {
+            $person = $token->getUser();
+        }
+
+        if (!$person instanceof Entity\Person) {
+            $person = new PersonGuest();
+        };
+
+        return $person;
+    }
+
+    protected function getPermissionBagForCurrentUser()
+    {
+        $person = $this->getPerson();
+
+        if ($person) {
+            return $this->permission_manager->getPermissionsBagForPerson($person);
+        }
+
+        return $this->permission_manager->getPermissionsBagForGuest();
     }
 
     /**

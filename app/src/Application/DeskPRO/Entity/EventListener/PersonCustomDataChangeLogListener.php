@@ -51,7 +51,7 @@ class PersonCustomDataChangeLogListener extends EntityChangeLogListener
     public function __construct(DeskproContainer $container)
     {
         parent::__construct($container);
-        $this->person_log_listener  = $container->get('dp.entity_lister.person_changelog');
+        $this->person_log_listener  = $container->get('dp.entity_listener.person_changelog');
         $this->custom_field_manager = $container->getPersonFieldManager();
     }
 
@@ -61,6 +61,10 @@ class PersonCustomDataChangeLogListener extends EntityChangeLogListener
      */
     public function onPreUpdate(CustomDataPerson $data, PreUpdateEventArgs $event)
     {
+        if (!$data->person) {
+            return;
+        }
+
         $old = clone $data;
         foreach ($event->getEntityChangeSet() as $field => $change) {
             $old[$field] = $change[0];
@@ -85,6 +89,10 @@ class PersonCustomDataChangeLogListener extends EntityChangeLogListener
      */
     public function onPrePersist(CustomDataPerson $data)
     {
+        if (!$data->person) {
+            return;
+        }
+
         $val                                          = $this->custom_field_manager->renderTextForData($data);
         $change                                       = new ChangeArray('custom_data', null, $val);
         $entry                                        = $this->createLogEntry(new EntityUpdated($data->person, $change), $data->person);

@@ -35,9 +35,11 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
 use Doctrine\ORM\Query\QueryException;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -45,6 +47,22 @@ use Pagerfanta\Pagerfanta;
 
 class FeedbackDataService extends AbstractDataService
 {
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
+
+    /**
+     * @var PortalPermissionsManager
+     */
+    protected $permissions_manager;
+
+    public function __construct(EntityManager $em, PortalPermissionsManager $permissions_manager)
+    {
+        parent::__construct($em);
+        $this->permissions_manager = $permissions_manager;
+    }
+
     /**
      * @return bool
      */
@@ -64,12 +82,14 @@ class FeedbackDataService extends AbstractDataService
      * @param $page
      * @param $max_per_page
      * @param FeedbackFilter $filter
+     * @param Person         $person
      *
      * @return Pagerfanta
      */
-    public function getItemsPager($page, $max_per_page, FeedbackFilter $filter)
+    public function getItemsPager($page, $max_per_page, FeedbackFilter $filter, Person $person)
     {
-        $em = $this->em;
+        $em                  = $this->em;
+        $permissions_manager = $this->permissions_manager;
 
         return $this->generateAndCache(
             array(
@@ -77,10 +97,30 @@ class FeedbackDataService extends AbstractDataService
                 $page,
                 $max_per_page,
                 $filter,
+                $person,
             ),
-            function () use ($em, $page, $max_per_page, $filter) {
+            function () use ($em, $permissions_manager, $page, $max_per_page, $filter, $person) {
                 $qb = $em->createQueryBuilder();
                 $qb->select('f')->from('DeskPRO:Feedback', 'f');
+
+                // we have to filter the user's requested types with what they
+                // are allowed to access.
+                $permissions_bag = $permissions_manager->getPermissionsBagForPerson($person);
+                $allowed_types = $permissions_bag->getAllowedFeedbackCategoryIds();
+                $requested_types = $filter->getTypes();
+                $types = array();
+                if (null === $requested_types) {
+                    $types = $allowed_types;
+                } else {
+                    foreach ($requested_types as $req_type) {
+                        if (in_array($req_type, $allowed_types)) {
+                            $types[] = $req_type;
+                        }
+                    }
+                }
+                $filter->setTypes($types);
+                //
+                // end filter types
 
                 // status
                 // "all","active","closed"
@@ -102,10 +142,7 @@ class FeedbackDataService extends AbstractDataService
                 // status_categories (feedback->status_category)
                 // array(6,1,4)
                 if (count($status_categories = $filter->getStatusCategories())) {
-                    $qb->andWhere('f.status_category IN (:status_categories)')->setParameter(
-                        'status_categories',
-                        $status_categories
-                    );
+                    $qb->andWhere('f.status_category IN (:status_categories)')->setParameter('status_categories', $status_categories);
                 }
 
                 // types
@@ -197,8 +234,13 @@ class FeedbackDataService extends AbstractDataService
      */
     public function getFeedbackCategoriesForPerson(Person $person)
     {
-        // TODO: permissions
-        return $this->getFeedbackCategoryRepo()->findAll();
+        $permissions_bag = $this->permissions_manager->getPermissionsBagForPerson($person);
+
+        return $this->getFeedbackCategoryRepo()->findBy(
+            array(
+                'id' => $permissions_bag->getAllowedFeedbackCategoryIds(),
+            )
+        );
     }
 
     /**

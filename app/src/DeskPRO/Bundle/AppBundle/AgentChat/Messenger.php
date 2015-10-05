@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\AgentChat;
 
 use Application\DeskPRO\Entity\Person;
@@ -84,6 +85,18 @@ class Messenger
         $agentChatRepository = $this->em->getRepository('App:AgentChat');
 
         return $agentChatRepository->find($id);
+    }
+
+    public function findChatWithAgent($agent_id, $my_id)
+    {
+        /** @var AgentChatRepository $agentChatRepository */
+        $agentChatRepository = $this->em->getRepository('App:AgentChat');
+        $chats               = $agentChatRepository->findChatWithAgent($agent_id, $my_id);
+        if ($chats) {
+            return array_shift($chats);
+        }
+
+        return false;
     }
 
     public function isPersonInvolvedInChat(Person $person, AgentChat $chat)

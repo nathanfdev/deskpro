@@ -28,7 +28,7 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
-use Application\ImportBundle\Reader\BaseConfig;
+use Application\ImportBundle\Reader\ReaderConfigInterface;
 use DateTime;
 use Exception;
 
@@ -37,7 +37,7 @@ use Exception;
  *
  * Class ZenDeskConfig
  */
-class ZenDeskConfig extends BaseConfig
+class ZenDeskConfig implements ReaderConfigInterface
 {
     const AUTH_TYPE_PASSWORD = 'password';
     const AUTH_TYPE_TOKEN    = 'token';
@@ -227,9 +227,7 @@ class ZenDeskConfig extends BaseConfig
     }
 
     /**
-     * @param array $data
-     *
-     * @return ZenDeskConfig
+     * {@inheritdoc}
      */
     public static function fromArray(array $data)
     {

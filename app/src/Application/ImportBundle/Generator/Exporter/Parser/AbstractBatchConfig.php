@@ -53,6 +53,11 @@ abstract class AbstractBatchConfig implements BatchConfigInterface
     protected $date_modified;
 
     /**
+     * @var bool
+     */
+    protected $has_remaining = false;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -89,7 +94,7 @@ abstract class AbstractBatchConfig implements BatchConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setDateCreated(DateTime $date_created)
+    public function setDateCreated(DateTime $date_created = null)
     {
         $this->date_created = $date_created;
 
@@ -107,7 +112,7 @@ abstract class AbstractBatchConfig implements BatchConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setDateModified(DateTime $date_modified)
+    public function setDateModified(DateTime $date_modified = null)
     {
         $this->date_modified = $date_modified;
 
@@ -115,11 +120,21 @@ abstract class AbstractBatchConfig implements BatchConfigInterface
     }
 
     /**
-     * @return bool
+     * {@inheritdoc}
+     */
+    public function setHasRemaining($has_remaining)
+    {
+        $this->has_remaining = (bool) $has_remaining;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function getHasRemaining()
     {
-        return false;
+        return $this->has_remaining;
     }
 
     /**
@@ -132,6 +147,7 @@ abstract class AbstractBatchConfig implements BatchConfigInterface
             'type'          => $this->getExporterType(),
             'date_created'  => $this->getDateFormatOrNull($this->date_created),
             'date_modified' => $this->getDateFormatOrNull($this->date_modified),
+            'has_remaining' => $this->has_remaining,
         );
     }
 

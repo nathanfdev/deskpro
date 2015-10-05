@@ -27,7 +27,13 @@
 {% if can_use_news() %}
     <section>
         <article class="news front-page-news">
-            <div class="large-title clearfix"><h1>{{ phrase('portal.news.section-title') }}</h1></div>
+            <div class="large-title clearfix">
+                <h1>
+                    <a href="{{ path('portal_news') }}">
+                        {{ phrase('portal.news.section-title') }}
+                    </a>
+                </h1>
+            </div>
             {% show section news_list_excerpts with { count: 2 } %}
         </article>
     </section>

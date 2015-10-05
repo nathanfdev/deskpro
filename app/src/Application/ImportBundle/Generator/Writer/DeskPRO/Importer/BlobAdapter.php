@@ -71,14 +71,14 @@ class BlobAdapter implements BlobAdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function createByAttachment(Entity\Attachment $attachment)
+    public function createByBlob(Entity\AbstractBlob $blob)
     {
         $blob_data = $this->mapper->findOneByParams(
-            $attachment->getBlobData(),
-            $attachment->getBlobPath(),
-            $attachment->getBlobUrl()
+            $blob->getBlobData(),
+            $blob->getBlobPath(),
+            $blob->getBlobUrl()
         );
 
-        return $this->createBySourceData($blob_data, $attachment->getFileName(), $attachment->getContentType());
+        return $this->createBySourceData($blob_data, $blob->getFileName(), $blob->getContentType());
     }
 }

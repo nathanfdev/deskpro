@@ -31,16 +31,19 @@
  */
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\DeskPRO\Entity\DataStore as DataStoreEntity;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\HttpFoundation\Request;
-use Application\DeskPRO\JobQueue\Processor\ImportProcessor;
-use Application\ImportBundle\Generator\Generator;
+use Application\ImportBundle\Generator;
 use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
+/**
+ * Class ImportersController.
+ */
 class ImportersController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -56,22 +59,28 @@ class ImportersController extends AbstractController implements ProtectedControl
      */
     public function listAction()
     {
-        $importers = $this->em->getRepository('DeskPRO:DataStore')->getByPrefix('importers.');
+        /** @var EntityRepository\DataStore $repository */
+        $repository = $this->em->getRepository('DeskPRO:DataStore');
+        $importers  = $repository->getByPrefix('importers.');
 
-        if (count($importers) !== count(ImportProcessor::$allowed)) {
+        $is = $this->get('deskpro.import');
+
+        if (count($importers) !== count($is::$allowed)) {
             $importers = array();
-            foreach (ImportProcessor::$allowed as $type) {
-                $importers[] = ImportProcessor::getImporter($type, $this->container);
+            foreach ($is::$allowed as $type) {
+                $importers[] = $is->getImporter($type);
             }
         }
 
+        $ret = array();
+
         foreach ($importers as $importer) {
-            /* @var $importer DataStoreEntity */
             $ret[] = array(
                 'id'          => str_replace('importers.', '', $importer['name']),
                 'title'       => $importer->getData('title'),
-                'status'      => $importer->getData('status'),
                 'description' => $importer->getData('description'),
+                'status'      => $importer->getData('status'),
+                'icon'        => $this->getIcon($importer),
             );
         }
 
@@ -79,27 +88,30 @@ class ImportersController extends AbstractController implements ProtectedControl
     }
 
     /**
-     * @param $id
+     * @param string $id
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function getAction($id)
     {
-        $importer = ImportProcessor::getImporter($id, $this->container);
+        $importer     = $this->get('deskpro.import')->getImporter($id);
+        $data         = $importer->getData();
+        $data['icon'] = $this->getIcon($importer);
 
-        return $this->createJsonResponse($importer->getData());
+        return $this->createJsonResponse($data);
     }
 
     /**
-     * @param $id
+     * @param string $id
      *
      * @return BinaryFileResponse|Response
      */
     public function downloadLogAction($id)
     {
-        $importer = ImportProcessor::getImporter($id, $this->container);
+        $importer = $this->get('deskpro.import')->getImporter($id);
+        $logfile  = $importer->getData('logfile');
 
-        if (($logfile = $importer->getData('logfile')) && is_file($logfile) && is_readable($logfile)) {
+        if ($logfile && is_file($logfile) && is_readable($logfile)) {
             $response = new BinaryFileResponse($logfile, 200);
             $response->headers->set('Content-Type', 'text/plain');
             $response->setContentDisposition(
@@ -117,7 +129,8 @@ class ImportersController extends AbstractController implements ProtectedControl
     }
 
     /**
-     * @param $id
+     * @param string  $id
+     * @param Request $request
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -127,20 +140,15 @@ class ImportersController extends AbstractController implements ProtectedControl
             throw new BadRequestHttpException();
         }
 
-        $importer = ImportProcessor::getImporter($id, $this->container);
-
+        $is       = $this->get('deskpro.import');
+        $importer = $is->getImporter($id);
         $importer->setData('config', @$data['config']);
-        $importer->setData('status', @$data['status']);
-
-        if ($request->get('reset')) {
-            $importer->setData('status', null);
-            $importer->setData('log', null);
-            $importer->setData('progress_start', null);
-            $importer->setData('progress_step', null);
-            $importer->setData('progress_max', null);
-        }
-
         $this->em->flush($importer);
+
+        $importer->getData('status');
+        if ($request->get('reset')) {
+            $is->cleanup($importer);
+        }
 
         return $this->getAction($id);
     }
@@ -148,46 +156,52 @@ class ImportersController extends AbstractController implements ProtectedControl
     /**
      * test if import ready to start.
      *
-     * @param $id
-     * @param Request $request
+     * @param string $id
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function testAction($id, Request $request)
+    public function testAction($id)
     {
-        $importer = ImportProcessor::getImporter($id, $this->container);
-        $config   = ImportProcessor::createGeneratorConfig($importer, $this->container);
-        /* @var Generator $generator */
-        $this->container->set('deskpro.import.config', $config);
-        $generator = $this->container->get('deskpro.import.generator');
+        $is       = $this->get('deskpro.import');
+        $importer = $is->getImporter($id);
 
         try {
-            $res = $this->createJsonResponse(array('result' => $generator->isReady()));
+            $config = $is->createGeneratorConfig($importer);
+            $reader = Generator\GeneratorFactory::createReader($this->getContainer(), $config);
+
+            $res = $this->createJsonResponse(array('result' => $reader->checkConfig()));
         } catch (\Exception $e) {
             $res = $this->createJsonResponse(array('error_message' => $e->getMessage()));
         }
 
-        ImportProcessor::cleanup($importer, $this->container);
+        $is->cleanup($importer);
 
         return $res;
     }
 
     /**
-     * @param $id
-     * @param Request $request
+     * @param string $id
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function startAction($id, Request $request)
+    public function startAction($id)
     {
-        $importer = ImportProcessor::getImporter($id, $this->container);
-        $importer->setData('status', 'pending');
-
-        $queue = $this->container->getJobQueue();
-        $queue->add(ImportProcessor::JOB_TYPE, array('id' => $id));
-
-        $this->em->flush();
+        $this->get('deskpro.import')->startImport($id);
 
         return $this->getAction($id);
+    }
+
+    /**
+     * @param Entity\DataStore $importer
+     *
+     * @return string
+     */
+    protected function getIcon(Entity\DataStore $importer)
+    {
+        if (defined('DPC_SITE_DOMAIN')) {
+            return '//'.DPC_SITE_DOMAIN.'/web/images/admin/icons/icon-'.$importer->getData('id').'.png';
+        }
+
+        return (dp_get_config('static_path') ?: '/web').'/images/admin/icons/icon-'.$importer->getData('id').'.png';
     }
 }

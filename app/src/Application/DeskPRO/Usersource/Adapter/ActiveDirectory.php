@@ -62,8 +62,7 @@ class ActiveDirectory extends AbstractAdapter
         $adapter = new \Orb\Auth\Adapter\ActiveDirectory($this->usersource->options);
 
         if (App::getConfig('debug.enable_usersource_log') && $adapter instanceof \Orb\Log\Loggable) {
-            $logger = new \Orb\Log\Logger();
-            $logger->addWriter(new \Orb\Log\Writer\Stream(dp_get_log_dir().'/usersource_log.log'));
+            $logger = App::$container->getUsersourceLogger();
             $adapter->setLogger($logger);
         }
 

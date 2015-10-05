@@ -57,10 +57,21 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        //TODO remove for prod
-        echo "TODO chmod'ing cache dir, remove this in prod\n";
-        passthru('chmod -R 0777 '.escapeshellarg(DP_ROOT.'/sys/cache'));
+        try {
+            //TODO remove for prod
+            echo "TODO chmod'ing cache dir, remove this in prod\n";
+            passthru('chmod -R 0777 '.escapeshellarg(DP_ROOT.'/sys/cache'));
+            $ret = $this->doExecute($input, $output);
+            $this->sendInstallReport();
 
+            return $ret;
+        } catch (\Exception $e) {
+            $this->sendInstallReport($e);
+        }
+    }
+
+    protected function doExecute(InputInterface $input, OutputInterface $output)
+    {
         if (!$this->ensureNotInstalled()) {
             exit;
         }
@@ -335,5 +346,56 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     public function getOrm()
     {
         return App::getOrm();
+    }
+
+    protected function sendInstallReport($exception = null)
+    {
+        if ($exception) {
+            $errinfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($exception);
+            unset($errinfo['exception']);
+        } else {
+            $errinfo = 0;
+        }
+
+        $install_time = 0;
+        try {
+            $install_time = $this->getDb()->fetchColumn("SELECT data FROM install_data WHERE build='default' AND name='install_time'");
+        } catch (\Exception $e) {
+        }
+        if (!$install_time) {
+            $install_time = 0.0;
+        }
+
+        if (!defined('DP_BUILD_TIME')) {
+            if (file_exists(DP_ROOT.'/sys/config/build-time.php')) {
+                require_once DP_ROOT.'/sys/config/build-time.php';
+            }
+        }
+        if (!defined('DP_BUILD_NUM')) {
+            if (file_exists(DP_ROOT.'/sys/config/build-num.php')) {
+                require DP_ROOT.'/sys/config/build-num.php';
+            }
+        }
+
+        $data = array(
+            'source_type'   => 'install.web',
+            'log'           => @file_get_contents($this->getContainer()->getLogDir().'/install.log'),
+            'errinfo'       => $errinfo,
+            'install_token' => isset($GLOBALS['dp_install_token']) ? $GLOBALS['dp_install_token'] : '',
+            'nostats'       => isset($_COOKIE['stats_opt_out']) && $_COOKIE['stats_opt_out'] ? 1 : 0,
+            'total_time'    => $install_time,
+            'build'         => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
+            'build_num'     => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0,
+        );
+
+        if (!isset($_COOKIE['stats_opt_out']) || !$_COOKIE['stats_opt_out']) {
+            try {
+                $stats_fetcher = new \Application\InstallBundle\Data\ServerStats($this->getDb());
+                $data          = array_merge($data, $stats_fetcher->getStats());
+            } catch (\Exception $e) {
+            }
+        }
+
+        \Application\DeskPRO\Service\ErrorReporter::sendInstallReport($data);
     }
 }

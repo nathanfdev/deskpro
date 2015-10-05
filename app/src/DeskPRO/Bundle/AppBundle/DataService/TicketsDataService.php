@@ -124,6 +124,10 @@ class TicketsDataService extends AbstractDataService
                         $qb->orderBy('d.title', $filter->getSortDirection());
                         break;
 
+                    case TicketFilter::SORT_SUBJECT:
+                        $qb->orderBy('t.subject', $filter->getSortDirection());
+                        break;
+
                     case TicketFilter::SORT_CREATED:
                     default:
                         $qb->orderBy('t.date_created', $filter->getSortDirection());

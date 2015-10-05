@@ -183,7 +183,7 @@ class DownloadsController extends AbstractController
      * @Security("is_granted('USE_DOWNLOADS') and is_granted('VIEW_DOWNLOAD', file)")
      * @PageHttpCache(content="file")
      */
-    public function viewAction(Request $request, Download $file)
+    public function viewAction(Request $request, Download $file, $visitor_id)
     {
         // TODO: is there ever an instance that there would NOT be a blob associated with a download entity??
         if (!$file->getBlob()) {
@@ -197,6 +197,8 @@ class DownloadsController extends AbstractController
         if ($this->isGranted(ContentCommentVoter::COMMENT_DOWNLOAD, $file)) {
             $form_handler     = $this->get('form_handler.comment');
             $comment          = new DownloadComment();
+            $comment->setVisitorId($visitor_id);
+            $comment->setIpAddress($request->getClientIp());
             $new_comment_form = $form_handler->createForm($comment);
             if ($form_result = $form_handler->handle($new_comment_form, $request, $file, $comment)) {
                 if ($form_result instanceof Response) {
@@ -215,7 +217,11 @@ class DownloadsController extends AbstractController
         //
         // RATING
         //
-        $rating = $this->getRatingsHelper()->getPersonRating($file, $this->getUser());
+        if (!$rating = $this->getRatingsHelper()->getPersonRating($file, $this->getUser())) {
+            // TODO: flagging this: using $visitor_id is potentially dangerous due to HTTP caching
+            //       we should consider showing this via a client-side JS request instead.
+            $rating = $this->getRatingsHelper()->findVisitorRating($file, $visitor_id);
+        }
 
         //
         // SUBSCRIPTION

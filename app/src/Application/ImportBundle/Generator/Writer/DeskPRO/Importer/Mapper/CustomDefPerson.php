@@ -28,91 +28,18 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
 
-use Application\DeskPRO\Entity;
-use Application\DeskPRO\EntityRepository;
-use Application\ImportBundle\Entity\CustomField;
-
 /**
  * Custom def people record mapper.
  *
  * Class CustomDefPeople
  */
-final class CustomDefPerson implements MapperInterface, MapperByTitleInterface
+final class CustomDefPerson extends AbstractCustomDefMapper
 {
-    /**
-     * @var EntityRepository\CustomDefPerson
-     */
-    private $repository;
-
-    /**
-     * Constructor.
-     *
-     * @param EntityRepository\CustomDefPerson $repository
-     */
-    public function __construct(EntityRepository\CustomDefPerson $repository)
-    {
-        $this->repository = $repository;
-    }
-
     /**
      * {@inheritdoc}
      */
     public function getType()
     {
         return self::TYPE_CUSTOM_DEF_PERSON;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findOneBy(array $criteria, $throw_exception = true)
-    {
-        /** @var Entity\CustomDefPerson $record */
-        $record = $this->repository->findOneBy($criteria);
-        if (!$record && $throw_exception) {
-            throw new MapperException('Custom def people not found', $criteria);
-        }
-        if (!$this->isSupportType($record->getTypeName())) {
-            throw new MapperException(
-                sprintf('Custom field  does not support type `%s`', $record->getTypeName()),
-                $criteria
-            );
-        }
-
-        return $record;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findOneByTitle($title, $throw_exception = true)
-    {
-        return $this->findOneBy(array('title' => $title), $throw_exception);
-    }
-
-    /**
-     * Returns true if a type is supported by the custom field entity.
-     *
-     * @param string $type
-     *
-     * @return bool
-     */
-    public function isSupportType($type)
-    {
-        return in_array($type, self::getSupportedTypes(), true);
-    }
-
-    /**
-     * @return array
-     */
-    public static function getSupportedTypes()
-    {
-        return array(
-            CustomField::FIELD_TYPE_TEXT,
-            CustomField::FIELD_TYPE_TEXTAREA,
-            CustomField::FIELD_TYPE_CHOICE,
-            CustomField::FIELD_TYPE_TOGGLE,
-            CustomField::FIELD_TYPE_DATE,
-        );
     }
 }

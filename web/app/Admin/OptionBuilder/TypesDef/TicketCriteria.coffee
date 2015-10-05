@@ -947,7 +947,14 @@ define [
         last_name: data.person.last_name
         name: data.person.name
       format = (item) ->
-        "#{item['name']} (#{item.email || ''})"
+        if item.name and item.email
+          "#{item['name'] || ''} (#{item.email || ''})"
+        else if item.name
+          "#{item['name'] || ''}"
+        else if item.email
+          "#{item.email || ''}"
+        else
+          ""
       options.inputOptions =
         formatResult: format
         formatSelection: format

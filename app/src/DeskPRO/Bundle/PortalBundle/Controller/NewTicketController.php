@@ -50,12 +50,14 @@ class NewTicketController extends AbstractController
      * @Security("is_granted('USE_TICKETS')")
      * @PageHttpCache()
      */
-    public function newTicketAction(Request $request)
+    public function newTicketAction(Request $request, $visitor_id)
     {
         $person = $this->getUser() ?: new PersonGuest();
 
         $ticket         = $this->getTicketManager()->createTicket();
         $ticket_message = new TicketMessage();
+        $ticket_message->setVisitorId($visitor_id);
+        $ticket_message->setIpAddress($request->getClientIp());
         $ticket->setPerson($person);
         $ticket_message->setPerson($person);
         $ticket->addMessage($ticket_message);
@@ -190,6 +192,8 @@ class NewTicketController extends AbstractController
             $em->persist($ticket);
 
             $ticket_manager = $this->getTicketManager();
+            // we handle this the new way (TicketManager), so disable the doctrine auto ticket process
+            $ticket->disableAutoTicketProcess();
             $context        = $ticket_manager->createUserExecutorContext($person, 'newticket', 'portal');
 
             $ticket_manager->saveTicket($ticket, $context);

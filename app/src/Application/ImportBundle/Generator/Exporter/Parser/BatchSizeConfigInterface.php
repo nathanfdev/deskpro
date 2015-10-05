@@ -35,7 +35,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser;
  */
 interface BatchSizeConfigInterface extends BatchConfigInterface
 {
-    const BATCH_SIZE_DEFAULT = 10;
+    const BATCH_SIZE_DEFAULT = 100;
     const BATCH_SIZE_MAX     = 1000;
 
     /**

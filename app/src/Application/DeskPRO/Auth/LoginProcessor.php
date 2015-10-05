@@ -33,8 +33,8 @@ namespace Application\DeskPRO\Auth;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
+use Application\DeskPRO\Entity\PhoneNumber;
 use Application\DeskPRO\Entity\Usersource;
 use Doctrine\ORM\EntityManager;
 use Orb\Auth\Identity;
@@ -216,6 +216,7 @@ class LoginProcessor
         $this->person['is_user'] = true;
         $this->person->setLastLoginAt();
 
+        self::tryUsergroupPromotion($this->usersource, $this->person);
         if (self::tryAutoAgent($this->usersource, $this->person)) {
             $this->sendAgentWelcomeEmail();
         }
@@ -388,18 +389,12 @@ class LoginProcessor
      */
     private function updatePhone($mapped_fields, $em)
     {
-        // TODO: we need to update this to the person phone_number field when we deprecate the contact data phone number
         if ($mapped_fields->has('phone')) {
-            $contact_data               = new PersonContactData();
-            $contact_data->contact_type = 'phone';
-            $contact_data->applyFormData(array(
-                'number' => $mapped_fields->get('phone'),
-            ));
+            if ($number = PhoneNumber::createEntity($mapped_fields->get('phone'))) {
+                $this->person->setPrimaryPhoneNumber($number);
 
-            $contact_data->person = $this->person;
-
-            $this->persist($em, $contact_data);
-            $this->flush($em);
+                $this->persist($em, $this->person);
+            }
         }
     }
 
@@ -422,14 +417,24 @@ class LoginProcessor
             if ($agentChecker->addAgentSeat($person)) {
                 $person['is_agent']  = true;
                 $person['can_agent'] = true;
-                if ($usersource->agent_permission_group) {
-                    $person->addUsergroup($usersource->agent_permission_group);
-                }
 
                 return true;
             }
         }
 
         return false;
+    }
+
+    public static function tryUsergroupPromotion(Usersource $usersource, Person $person)
+    {
+        if ($usersource->type == Usersource::TYPE_AGENT) {
+            if ($usersource->agent_permission_group) {
+                $person->addUsergroup($usersource->agent_permission_group);
+            }
+        } elseif ($usersource->type == Usersource::TYPE_USER) {
+            if ($usersource->user_permission_group) {
+                $person->addUsergroup($usersource->user_permission_group);
+            }
+        }
     }
 }

@@ -32,6 +32,9 @@
 namespace spec\DeskPRO\Bundle\PortalBundle\Theme;
 
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\Language;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
 use DeskPRO\Bundle\PortalBundle\Theme\Tag;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\HttpFoundation\HeaderBag;
@@ -51,6 +54,9 @@ class TagRequestFactorySpec extends ObjectBehavior
         HeaderBag $headers,
         ParameterBag $attributes,
         SessionInterface $session,
+        LanguageManager $lang_manager,
+        LanguageStack $lang_stack,
+        Language $language,
         Tag $tag
     ) {
         $request->headers    = $headers;
@@ -66,7 +72,11 @@ class TagRequestFactorySpec extends ObjectBehavior
         $tag->getName()->willReturn('tag_name');
         $tag->allowRouteParams()->willReturn(true); //default
 
-        $this->beConstructedWith($request_stack);
+        $lang_manager->getLanguageStack()->willReturn($lang_stack);
+        $lang_stack->getActive()->willReturn($language);
+        $language->getUrlCode()->willReturn('en');
+
+        $this->beConstructedWith($request_stack, $lang_manager);
     }
 
     public function it_returns_a_tag_request_with_an_options_resolver(
@@ -106,7 +116,7 @@ class TagRequestFactorySpec extends ObjectBehavior
         $tag_request->headers->all()->shouldBeLike($current_headers);
     }
 
-    public function it_makes_the_query_a_tag_options_array_which_includes_the_tag_name(
+    public function it_makes_the_query_a_tag_options_array_which_includes_the_tag_name_and_lang(
         Tag $tag
     ) {
         $tag->getName()->willReturn('tag_name');
@@ -126,6 +136,7 @@ class TagRequestFactorySpec extends ObjectBehavior
                 'c'         => 'c',
                 '_tag_name' => 'tag_name',
             ),
+            'lang_url_code' => 'en',
         ));
     }
 
@@ -154,6 +165,7 @@ class TagRequestFactorySpec extends ObjectBehavior
                 'c'         => 'c',
                 '_tag_name' => 'tag_name',
             ),
+            'lang_url_code' => 'en',
         ));
     }
 

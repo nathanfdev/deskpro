@@ -45,7 +45,7 @@ class ArticlesDataService extends AbstractDataService
     /**
      * @var PortalPermissionsManager
      */
-    private $permissions_manager;
+    protected $permissions_manager;
 
     public function __construct(EntityManager $em, PortalPermissionsManager $permissions_manager)
     {
@@ -140,7 +140,8 @@ class ArticlesDataService extends AbstractDataService
      */
     public function getCategoryChildren($category, Person $person)
     {
-        $that = $this;
+        $that                = $this;
+        $permissions_manager = $this->permissions_manager;
 
         return $this->generateAndCache(
             array(
@@ -148,8 +149,8 @@ class ArticlesDataService extends AbstractDataService
                 $category,
                 $person,
             ),
-            function () use ($that, $category, $person) {
-                $allowed_ids = $that->permissions_manager->getPermissionsBagForPerson($person)->getAllowedArticleCategories();
+            function () use ($that, $category, $person, $permissions_manager) {
+                $allowed_ids = $permissions_manager->getPermissionsBagForPerson($person)->getAllowedArticleCategories();
 
                 if (!$category) { // get root categories
                     return $that->getArticleCategoriesRepo()->findBy(array('parent' => null, 'id' => $allowed_ids));

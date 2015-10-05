@@ -48,7 +48,7 @@ return array(
     'agent.people.contact_info'                             => 'Information de contact',
     'agent.people.contact_info_for_x'                       => 'Information de contact pour {{name}}',
     'agent.people.count_members'                            => '{{count}} membre|{{count}} membres',
-    'agent.people.create_person'                            => 'Créer personne',
+    'agent.people.create_person'                            => 'Créer un utilisateur',
     'agent.people.creation_by'                              => 'Création par',
     'agent.people.delete_user'                              => 'Supprimer utilisateur',
     'agent.people.delete_user_and_ban_email'                => 'Supprimer utilisateur et interdire email',

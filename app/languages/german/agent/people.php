@@ -28,10 +28,15 @@
 
 return array(
     'agent.people.address_postal'            => 'PLZ',
+    'agent.people.confirm_remove_email'      => 'Bist du sicher das du die E-Mail  Adresse entfernen möchtest?',
     'agent.people.contact_info'              => 'Kontaktinformationen',
     'agent.people.contact_info_for_x'        => 'Kontaktinformationen für {{name}}',
+    'agent.people.count_members'             => '{{count}} Mitglied|{{count}} Mitglieder',
+    'agent.people.create_person'             => 'Erstelle Person',
     'agent.people.delete_user'               => 'Benutzer löschen',
     'agent.people.disable_account'           => 'Account deaktivieren',
+    'agent.people.download_vcard'            => 'VCard herunterladen',
+    'agent.people.im'                        => 'IM',
     'agent.people.phone_country_placeholder' => 'Land',
     'agent.people.remove_picture'            => 'Bild entfernen',
     'agent.people.since'                     => 'Seit',

@@ -76,6 +76,11 @@ class ezcMailFileParser extends ezcMailPartParser
     private $fileName = null;
 
     /**
+     * @var string
+     */
+    private $displayFileName = null;
+
+    /**
      * Static counter used to generate unique directory names.
      *
      * @var int
@@ -92,6 +97,7 @@ class ezcMailFileParser extends ezcMailPartParser
     private $dataWritten = false;
 
 	public $_dp_parse_failed = false;
+    public $_dp_enc_type;
 
     /**
      * Constructs a new ezcMailFileParser with maintype $mainType subtype $subType
@@ -128,10 +134,18 @@ class ezcMailFileParser extends ezcMailPartParser
             $fileName = "filename";
         }
 
+        // DeskPRO Edit: Same logic as in rfc2231_implementation.php
+        // to fix ezc bug #13038
+        if (preg_match( '@^=\?[^?]+\?[QqBb]\?@', $fileName)) {
+            $fileName = ezcMailTools::mimeDecode($fileName);
+        }
+
 		$fileName = trim($fileName);
 		if (!$fileName) {
 			$fileName = 'filename';
 		}
+
+        $this->displayFileName = $fileName;
 
         // clean file name (replace unsafe characters with underscores)
 		$fileName = preg_replace('#[^a-zA-Z0-9_\-\.]#', '_', $fileName);
@@ -209,7 +223,9 @@ class ezcMailFileParser extends ezcMailPartParser
         switch ( strtolower( $this->headers['Content-Transfer-Encoding'] ) )
         {
             case 'base64':
-                stream_filter_append( $this->fp, 'convert.base64-decode' );
+                // not using a stream filter because it failing on some
+                // strings (not sure why, but manually decoding it in parseBody worked)
+                $this->_dp_enc_type = 'base64';
                 break;
             case 'quoted-printable':
                 // fetch the type of linebreak
@@ -258,9 +274,15 @@ class ezcMailFileParser extends ezcMailPartParser
 
 			// If the attachment is corrupt it'll cause an error in some
 			// cases when we try to decode it if using a stream filter
-            if (!@fwrite( $this->fp, $line )) {
-				$this->_dp_parse_failed = true;
-			}
+            if ($this->_dp_enc_type === 'base64') {
+                if (fwrite( $this->fp, base64_decode($line) ) === false) {
+                    $this->_dp_parse_failed = true;
+                }
+            } else {
+                if (fwrite( $this->fp, $line ) === false) {
+                    $this->_dp_parse_failed = true;
+                }
+            }
         }
     }
 
@@ -318,6 +340,11 @@ class ezcMailFileParser extends ezcMailPartParser
             $filePart->dispositionType = ezcMailFile::DISPLAY_ATTACHMENT;
         }
         $filePart->size = filesize( $this->fileName );
+
+        if (!empty($filePart->contentDisposition)) {
+            $filePart->contentDisposition->displayFileName = $this->displayFileName;
+        }
+
         return $filePart;
     }
 }

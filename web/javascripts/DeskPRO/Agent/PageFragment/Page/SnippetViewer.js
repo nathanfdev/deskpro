@@ -175,12 +175,6 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 							snippets = sortSnippets(snippets);
 
-							var hasMore = false;
-							if (snippets.length > 15) {
-								var hasMore = true;
-								snippets = snippets.slice(0, 15);
-							}
-
 							var newListWrap = $('<div/>');
 							var catTitle = $('<div class="cat-title"/>');
 							catTitle.text(catList.find('.category-' + cid).text());
@@ -200,7 +194,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					self.updateUi();
 				} else {
 					driver.loadSnippets({
-						filterString: filterString || null
+						filterString: filterString || null,
+						languageId: languageId || null
 					}, function(snippets) {
 						if (!snippets.length) {
 							return;
@@ -221,12 +216,6 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 							});
 
 							catSnippets = sortSnippets(catSnippets);
-
-							var hasMore = false;
-							if (catSnippets.length > 15) {
-								var hasMore = true;
-								catSnippets = catSnippets.slice(0, 15);
-							}
 
 							var newListWrap = $('<div/>');
 							var catTitle = $('<div class="cat-title"/>');
@@ -915,18 +904,18 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		if (!snippet) {
 			snippet = {
 				id: 0,
-				category_id: this.getEl('catlist').find('.on').data('category-id') || this.getEl('catlist').find('li').eq(1).data('category-id'),
+        category_id: this.getEl('catlist').find('.on').data('category-id') || this.getEl('catlist').find('li').eq(0).data('category-id'),
 				shortcut_code: '',
 				title: [],
 				snippet: []
 			};
 		}
 
+
 		this.editingSnippet = snippet;
 		var editSnippetEl = this.getEl('edit_snippet');
 		editSnippetEl.find('input, textarea').val('');
 		editSnippetEl.find('input.snippet_id').val(snippet.id);
-		editSnippetEl.find('select.category_id').val(snippet.category_id);
 		editSnippetEl.find('input.shortcut_code').val(snippet.shortcut_code);
 
     // resort categories
@@ -938,6 +927,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
       return _a > _b ? 1 : -1;
     }).remove();
     this.getEl('editsnippet_category_select').append($sorted);
+
+    editSnippetEl.find('select.category_id').val(snippet.category_id);
 
 		if (snippet && snippet.id) {
 			editSnippetEl.find('.is-edit-snippet').show();

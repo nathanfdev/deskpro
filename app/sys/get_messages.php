@@ -42,7 +42,7 @@ if (!defined('DP_ROOT')) {
 
 require_once DP_ROOT.'/sys/serve_abstract.php';
 
-class get_messages extends LoaderAbstract
+class get_messages extends serve_abstract
 {
     protected $_person_id;
     protected $_session_id;
@@ -496,6 +496,7 @@ class get_messages extends LoaderAbstract
         $channels[] = 'agent-notify.tasks';
         $channels[] = 'agent.ticket-updated';
         $channels[] = 'agent.ticket-sla-updated';
+        $channels[] = 'agent.ticket-problems-updated';
         $channels[] = 'agent.ticket-draft-updated';
         $channels[] = 'agent.tweet-added';
         $channels[] = 'agent.tweet-updated';
@@ -509,6 +510,9 @@ class get_messages extends LoaderAbstract
         $channels[] = 'agent.org.added';
 
         $channels[] = 'agent.filter-update';
+
+        $channels[] = 'agent.problems-created';
+        $channels[] = 'agent.problems-updated';
 
         if (isset($_REQUEST['chat_ids']) && is_array($_REQUEST['chat_ids'])) {
             foreach ($_REQUEST['chat_ids'] as $chat_id) {
@@ -842,5 +846,5 @@ class get_messages extends LoaderAbstract
     }
 }
 
-$file_loader = new AgentMessagesLoader();
+$file_loader = new get_messages();
 $file_loader->run();
