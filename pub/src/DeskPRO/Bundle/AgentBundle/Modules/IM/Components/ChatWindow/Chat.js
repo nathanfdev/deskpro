@@ -1,28 +1,90 @@
 import React from 'react';
-import Footer from './Footer';
-import Header from './Header';
-import MessageList from './MessageList';
-import Offline from './Offline';
-import SearchForm from './SearchForm';
+import { Footer } from './Footer';
+import { Header } from './Header';
+import { MessageList } from './MessageList';
+import { Offline } from './Offline';
+import { SearchForm } from './SearchForm';
+import { connect } from 'react-redux';
+import { loadMessages } from '../../Actions/imMessagesActions';
+import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions'
+import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 
-export default class Chat extends React.Component {
-     render () {
-        return (
-            <div className="dropdown active-chat-dropdown" id="active-chat-dropdown">
-                <Header target={this.props.target} handleCloseChat={this.props.handleCloseChat}/>
+@connect(state => ({
+  me: state.user,
+  agents: agentsSelector(state),
+  messages: state.IM.messages
+}))
+export class Chat extends React.Component {
 
-                <SearchForm />
+  constructor(props) {
+    super(props);
+    this.state = {
+      searchQuery: ''
+    };
+  }
 
-                <div className="chat-controls"><a href="#">Load old messages</a></div>
+  componentWillMount() {
+    "use strict";
+    this.props.dispatch(loadAllAgents());
+    this.props.dispatch(loadMessages(this.props.current.id));
+  }
 
-                <MessageList messages={this.props.messages} />
+  handleQuery = (event) => {
+    "use strict";
+    const oldState = this.state;
+    const newState = {...oldState};
+    newState.searchQuery = event.target.value;
+    this.setState(newState);
+  }
 
-                <div className="active-chat-user-typing">Jeniffer is typing a message <span id="typing">...</span></div>
+  handleSearch = () => {
+    "use strict";
+    this.props.dispatch(loadMessages(this.props.current.id, this.state.searchQuery));
+  }
 
-                <Offline />
+  render() {
+    return (
+      <div className="dropdown active-chat-dropdown" id="active-chat-dropdown">
+        { this.head() }
+        { this.searchForm() }
+        <div className="chat-controls"><a href="#">Load old messages</a><a onClick={this.refresh} href="#">Refresh</a></div>
+        <MessageList
+          agents={this.props.agents}
+          me={this.props.me}
+          messages={this.props.messages.get('chatMessages')[this.props.current.id]}/>
+        <Footer />
+      </div>
+    );
+  }
 
-                <Footer />
-            </div>
-        );
+  searchForm() {
+    "use strict";
+    if(this.props.agents.size > 0) {
+      return <SearchForm handleQuery={this.handleQuery} handleSearch={this.handleSearch} />
     }
+  }
+
+  head() {
+    "use strict";
+    if(this.props.agents.size > 0) {
+      return <Header agents={this.props.agents} me={this.props.me} current={this.props.current}
+                     handleCloseChat={this.props.handleCloseChat}/>
+    }
+  }
+
+  refresh = () =>
+  {
+    "use strict";
+    this.props.dispatch(loadMessages(this.props.current.id));
+  }
+
+  static typing() {
+    "use strict";
+    return <div className="active-chat-user-typing">Jeniffer is typing a message <span id="typing">...</span></div>
+  }
+
+  static offline() {
+    "use strict";
+    return <Offline />
+  }
 }

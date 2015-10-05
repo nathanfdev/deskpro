@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
 
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
@@ -189,6 +190,63 @@ class ChatsController extends AbstractController
         $chat      = $messenger->createChat($user, $participants);
         $this->em()->persist($chat);
         $this->em()->flush();
+
+        return View::create(
+            $this->dataSerialize($chat),
+            $status,
+            array(
+                'Location' => $this->generateUrl('agent_chats_view_chat', array('id' => $chat->getId())),
+            )
+        );
+    }
+
+    /**
+     * This is just a stub to make possible start or find tet-a-tet chats.
+     * In current UI implementation there is no way to know about chats id - only agent pictures,
+     * department pictures and teams pictures. So the main point is that you can start chat with agent only.
+     *
+     * @ApiDoc(
+     *      description="create an agent-chat with agent",
+     *      statusCodes={
+     *          201="Created",
+     *          400="Bad Request"
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\Entity\AgentChat"
+     * )
+     * @Annotations\Post("/agent_chats/start", name="agent_chats_add_chat_with_agent")
+     *
+     * @param Request $request
+     *
+     * @throws InvalidFormException
+     * @throws BadRequestHttpException
+     *
+     * @return View
+     */
+    public function postAgentAction(Request $request)
+    {
+        $status = Response::HTTP_CREATED;
+
+        $submitted = $request->request->all();
+        if (!isset($submitted['agent'])) {
+            throw new BadRequestHttpException();
+        }
+
+        $agentId = $submitted['agent'];
+        if (!$agent = $this->em()->getRepository('DeskPRO:Person')->find((int) $agentId)) {
+            throw new BadRequestHttpException();
+        }
+
+        $user = $this->getUser();
+
+        /** @var Messenger $messenger */
+        $messenger = $this->get('deskpro.agentchat.messenger');
+        if ($chat = $messenger->findChatWithAgent((int) $agent->getId(), $user->getId())) {
+            $status = Response::HTTP_FOUND;
+        } else {
+            $chat = $messenger->createChat($user, [$agent]);
+            $this->em()->persist($chat);
+            $this->em()->flush();
+        }
 
         return View::create(
             $this->dataSerialize($chat),
