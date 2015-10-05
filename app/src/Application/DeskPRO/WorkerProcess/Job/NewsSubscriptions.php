@@ -246,9 +246,8 @@ class NewsSubscriptions extends AbstractJob
                 'new_articles'     => $new_articles,
                 'updated_articles' => $updated_articles, )
             );
-            $message->enableQueueHint(1);
 
-            App::getMailer()->sendNow($message);
+            App::getMailer()->send($message);
 
             // Saves mem
             App::getOrm()->detach($person);

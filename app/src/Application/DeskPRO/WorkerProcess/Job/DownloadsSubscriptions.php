@@ -246,9 +246,8 @@ class DownloadsSubscriptions extends AbstractJob
                 'new_downloads'     => $new_downloads,
                 'updated_downloads' => $updated_downloads,
             ));
-            $message->enableQueueHint(1);
 
-            App::getMailer()->sendNow($message);
+            App::getMailer()->send($message);
 
             // Saves mem
             App::getOrm()->detach($person);
