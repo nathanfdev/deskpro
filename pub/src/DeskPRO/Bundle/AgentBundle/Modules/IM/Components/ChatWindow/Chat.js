@@ -10,7 +10,7 @@ import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordSt
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 
 @connect(state => ({
-  me: state.user,
+  me: state.Application.user,
   agents: agentsSelector(state),
   messages: state.IM.messages
 }))
