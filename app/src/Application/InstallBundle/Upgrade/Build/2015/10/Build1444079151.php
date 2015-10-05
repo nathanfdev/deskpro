@@ -26,4 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1444080586);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1444079151 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('feedback subscriptions');
+        $this->execMutateSql('CREATE TABLE feedback_subscriptions (id INT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, article_id INT DEFAULT NULL, INDEX IDX_10EA54AA217BBB47 (person_id), INDEX IDX_10EA54AA7294869C (article_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
+        $this->execMutateSql('ALTER TABLE feedback_subscriptions ADD CONSTRAINT FK_10EA54AA217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE');
+        $this->execMutateSql('ALTER TABLE feedback_subscriptions ADD CONSTRAINT FK_10EA54AA7294869C FOREIGN KEY (article_id) REFERENCES feedback (id) ON DELETE CASCADE');
+    }
+}

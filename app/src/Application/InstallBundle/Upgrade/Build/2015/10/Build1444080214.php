@@ -26,4 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1444080586);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1444080214 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('feedback dates');
+        $this->execMutateSql('ALTER TABLE feedback ADD date_updated DATETIME NOT NULL, ADD date_last_comment DATETIME DEFAULT NULL');
+    }
+}

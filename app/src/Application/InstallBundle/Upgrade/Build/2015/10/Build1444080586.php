@@ -26,4 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1444080586);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1444080586 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('change a col name');
+        $this->execMutateSql('ALTER TABLE feedback_subscriptions DROP FOREIGN KEY FK_10EA54AA7294869C');
+        $this->execMutateSql('DROP INDEX IDX_10EA54AA7294869C ON feedback_subscriptions');
+        $this->execMutateSql('ALTER TABLE feedback_subscriptions CHANGE article_id feedback_id INT DEFAULT NULL');
+        $this->execMutateSql('ALTER TABLE feedback_subscriptions ADD CONSTRAINT FK_10EA54AAD249A887 FOREIGN KEY (feedback_id) REFERENCES feedback (id) ON DELETE CASCADE');
+        $this->execMutateSql('CREATE INDEX IDX_10EA54AAD249A887 ON feedback_subscriptions (feedback_id)');
+    }
+}

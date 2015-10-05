@@ -26,4 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1444080586);
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
+namespace Application\DeskPRO\EntityRepository;
+
+class FeedbackSubscription extends AbstractEntityRepository
+{
+}

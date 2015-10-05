@@ -44,7 +44,8 @@ use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 /**
  * @PortalLinkRoute("portal_feedback_view", route_param_map={"slug":"slug"})
  * @PortalLinkRoute("portal_feedback_view", route_param_map={"slug": "id"}, type="permalink")
- * @PortalLinkRoute("portal_feedback_vote_up", route_param_map={"slug":"slug"}, type="vote_up")
+ * @PortalLinkRoute("portal_feedback_toggle_subscription", route_param_map={"slug":"slug"}, type="toggle_subscription")
+ * @PortalLinkRoute("portal_feedback_vote_up",       route_param_map={"slug":"slug"}, type="vote_up")
  * @PortalLinkRoute("portal_feedback_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
  */
 class Feedback extends ContentAbstract implements HighlightableModelInterface
@@ -130,6 +131,16 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     protected $_search_highlights;
 
     /**
+     * @var \DateTime
+     */
+    protected $date_updated;
+
+    /**
+     * @var \DateTime
+     */
+    protected $date_last_comment;
+
+    /**
      * @var CustomDataCollection
      */
     protected $cdc;
@@ -140,6 +151,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
 
         $this->_is_new = true;
 
+        $this->setModelField('date_updated',  new \DateTime());
         $this->comments    = new ArrayCollection();
         $this->custom_data = new ArrayCollection();
         $this->attachments = new ArrayCollection();
@@ -442,6 +454,11 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $cache->invalidateRegex('/_feedback(-|_)/');
     }
 
+    public function _incrementUpdatedAt()
+    {
+        $this->setModelField('date_updated', new \DateTime());
+    }
+
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data = parent::toApiData($primary, $deep, $visited);
@@ -529,6 +546,22 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         }
     }
 
+    /**
+     * @return \DateTime
+     */
+    public function getDateUpdated()
+    {
+        return $this->date_updated;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateLastComment()
+    {
+        return $this->date_last_comment;
+    }
+
     public function getCustomDataCollection()
     {
         return $this->cdc = $this->cdc ?: new CustomDataCollection($this->custom_data, $this);
@@ -573,6 +606,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
             )
         );
         $metadata->addLifecycleCallback('_invalidatePageCache', 'preFlush');
+        $metadata->addLifecycleCallback('_incrementUpdatedAt', 'preUpdate');
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(
@@ -719,6 +753,27 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'date_published',
+            )
+        )
+        ;
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'date_updated',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'date_updated',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'date_last_comment',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_last_comment',
             )
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

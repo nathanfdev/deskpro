@@ -929,6 +929,7 @@ return array(
     'user.kb_subscriptions'         => true,
     'user.news_subscriptions'       => true,
     'user.downloads_subscriptions'  => true,
+    'user.feedback_subscriptions'   => true,
 
     ####################################################################################################################
     # search

@@ -19,6 +19,15 @@
                 {#</a>#}
             </div>
 
+            <div class="header-button-container">
+                <div class="header-buttons">
+                    {% show feedback_subscription_link %}
+                    {#<a href="#">{{ phrase('portal.general.btn-email') }} <i class="fa fa-envelope"></i></a>#}
+                    {#<a href="#">{{ phrase('portal.general.btn-print') }} <i class="fa fa-print"></i></a>#}
+                    {#<a href="#">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>#}
+                </div>
+            </div>
+
             <div class="feedback-item-content">
                 <span class="feedback-status">
                     {% if item.status_category %}
