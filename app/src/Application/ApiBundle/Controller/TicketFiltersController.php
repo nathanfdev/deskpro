@@ -35,6 +35,7 @@ use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
 use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
+use Orb\Util\CheckedOptionsException;
 
 /**
  * Operations about ticket filters
@@ -239,6 +240,9 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
             try {
                 $crit->addTermFromArray($term_info);
             } catch (\Exception $e) {
+                if ($e instanceof CheckedOptionsException) {
+                    return $this->createApiErrorResponse('validation_error', $e->getMessage());
+                }
             }
         }
 
