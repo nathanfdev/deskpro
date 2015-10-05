@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
+import { ChangeModeButton } from './ChangeModeButton';
 
 export class ColumnMode extends React.Component {
+
   static propTypes = {
     dpWindow: PropTypes.object.isRequired,
     onChangeMode: PropTypes.func.isRequired
@@ -14,8 +16,14 @@ export class ColumnMode extends React.Component {
     this.setColumnDimensions(0);
   }
 
+  changeMode = (mode) => {
+    console.log('New SidebarMode', mode);
+    console.log(mode);
+  }
+
   render() {
     const { dpWindow, onChangeMode } = this.props;
+    const currentMode = dpWindow.get('columnMode');
 
     return (
       <div className="dpw-workspace-type-container">
@@ -26,23 +34,23 @@ export class ColumnMode extends React.Component {
       </div>
 
       <div className="dpw-workspace-state">
-        <div className="workspace-state-a active">
-          <div className="workspace-state-screen">
-            <span className="active-workspace-mark"><i className="fa fa-check"></i></span>
-            <span className="workspace-state-item state-sidebar"></span>
-            <span className="workspace-state-item left-column active"></span>
-            <span className="workspace-state-item right-column active"></span>
-          </div>
-          <span className="workspace-state-title">Column Mode</span>
-        </div>
+        <ChangeModeButton type={'column'}
+                          title={'Column Mode'}
+                          activeType={currentMode}
+                          onChange={this.changeMode}>
+          <span className="active-workspace-mark"><i className="fa fa-check"></i></span>
+          <span className="workspace-state-item state-sidebar"></span>
+          <span className="workspace-state-item left-column active"></span>
+          <span className="workspace-state-item right-column active"></span>
+        </ChangeModeButton>
 
-        <div className="workspace-state-b">
-          <div className="workspace-state-screen">
-            <span className="workspace-state-item state-sidebar"></span>
-            <span className="workspace-state-item full-width-column active"></span>
-          </div>
-          <span className="workspace-state-title">Focus Mode</span>
-        </div>
+        <ChangeModeButton type={'focus'}
+                          title={'Focus Mode'}
+                          activeType={currentMode}
+                          onChange={this.changeMode}>
+          <span className="workspace-state-item state-sidebar"></span>
+          <span className="workspace-state-item full-width-column active"></span>
+        </ChangeModeButton>
       </div>
 
 

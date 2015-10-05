@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
-
 import { ChangeModeButton } from './ChangeModeButton';
 
 export class SidebarMode extends React.Component {
+
   static propTypes = {
     dpWindow: PropTypes.object.isRequired
   };
@@ -14,7 +14,7 @@ export class SidebarMode extends React.Component {
 
   render() {
     const { dpWindow } = this.props;
-    const currentMode = dpWindow.get('columnMode');
+    const currentMode = dpWindow.get('sidebarMode');
 
     return (
       <div className="dpw-workspace-type-container">
