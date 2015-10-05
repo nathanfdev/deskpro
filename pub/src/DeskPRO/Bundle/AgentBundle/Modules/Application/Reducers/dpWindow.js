@@ -1,6 +1,7 @@
 import * as actions from '../Actions/AppActions';
 import { createReducer } from 'Ampliflux';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import jQuery from 'jquery';
 
 const initialState = {
   isLoaded: false,
@@ -10,6 +11,13 @@ const initialState = {
   taskView: constants.VIEW_MODE_LIST
 };
 
+/**
+ * Trigger a custom jquery event to handle List column width recalculation
+ */
+function triggerDpLayoutResize() {
+  setTimeout(() => jQuery(document).trigger('dpLayoutResize'), 100);
+}
+
 export default createReducer(initialState, {
   [actions.setIsLoaded]: state => {
     return state.set('isLoaded', true);
@@ -18,9 +26,11 @@ export default createReducer(initialState, {
     return state.merge({activeAppId: payload, expandedSwitcher: false});
   },
   [actions.collapseNav]: state => {
+    triggerDpLayoutResize();
     return state.set('collapseNav', true);
   },
   [actions.expandNav]: state => {
+    triggerDpLayoutResize();
     return state.set('collapseNav', false);
   },
   [actions.expandSwitcher]: state => {
