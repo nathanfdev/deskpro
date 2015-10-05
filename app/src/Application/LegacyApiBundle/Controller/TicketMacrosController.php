@@ -37,7 +37,7 @@ use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 /**
  * Simple ticket macros CRUD.
  *
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/ticket_macros",
  * 	description="Operations about Ticket macros",
  * 	basePath="/api"
@@ -60,9 +60,9 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
     /**
      * @return Response;
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_triggers",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get list of ticket macroses",
      * 		notes="",
@@ -108,15 +108,15 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      * @return Response
      *
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_layouts/{dep_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get macros by ID",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="id",
      *				description="Layout ID",
      *				paramType="path",
@@ -156,28 +156,28 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      *
      *
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_macros",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="PUT",
      * 		summary="Create new macros",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="title",
      *				description="Macros name",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="is_global",
      *				description="Mark/unmark macros as global",
      *				paramType="query",
      *				required=false,
      *				type="boolean",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="person_id",
      *				description="Set macros owner",
      *				paramType="query",
@@ -239,15 +239,15 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      * @return Response
      *
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_macros/{id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Delete macros by ID",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="id",
      *				description="Macros ID",
      *				paramType="path",

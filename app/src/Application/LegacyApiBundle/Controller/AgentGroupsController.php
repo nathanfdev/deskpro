@@ -44,7 +44,7 @@ use Orb\Util\Arrays;
  * Operations about agent groups
  * Simple CRUD controller.
  *
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/agent_groups",
  * 	description="Operations about agent groups",
  * 	basePath="/api"
@@ -67,9 +67,9 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
     /**
      * @return Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/agent_groups",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get agent groups list",
      * 		notes="",
@@ -121,15 +121,15 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
      * @return Response
      *
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/agent_groups/{id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get group by ID",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="id",
      *				description="Group ID",
      *				paramType="path",
@@ -180,49 +180,49 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
      * @return Response
      *
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/agent_groups/{id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Update existing agent group by ID",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="id",
      *				description="Agent group ID",
      *				paramType="path",
      *				required=true,
      *				type="integer",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="group[title]",
      *				description="Group title",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="group[perms]",
      *				description="Group permissions",
      *				paramType="query",
      *				required=false,
      *				type="string[]",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="group[person_ids]",
      *				description="Agents who belongs to this group",
      *				paramType="query",
      *				required=false,
      *				type="integer[]",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="dep_perms[tickets]",
      *				description="Department tickets belongs to this group",
      *				paramType="query",
      *				required=false,
      *				type="integer[]",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="dep_perms[chat]",
      *				description="",
      *				paramType="query",
@@ -233,42 +233,42 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
      *  )
      * )
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/agent_groups",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="PUT",
      * 		summary="Create new agent group",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="group[title]",
      *				description="Group title",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="group[perms]",
      *				description="Group permissions",
      *				paramType="query",
      *				required=false,
      *				type="string[]",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="group[person_ids]",
      *				description="Agents who belongs to this group",
      *				paramType="query",
      *				required=false,
      *				type="integer[]",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="dep_perms[tickets]",
      *				description="Department tickets belongs to this group",
      *				paramType="query",
      *				required=false,
      *				type="integer[]",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="dep_perms[chat]",
      *				description="",
      *				paramType="query",
@@ -419,15 +419,15 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
      * @return Response
      *
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/agent_groups/{id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Delete agent group by ID",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="id",
      *				description="Agent group ID",
      *				paramType="path",
