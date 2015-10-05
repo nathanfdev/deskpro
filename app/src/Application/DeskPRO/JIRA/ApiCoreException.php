@@ -34,7 +34,6 @@ class ApiCoreException extends \Exception
 
     public function __construct(array $errors)
     {
-        $this->errors = $errors;
-        parent::__construct('API Error', 400);
+        parent::__construct('API Error. '.implode(' ', $errors), 400);
     }
 }
