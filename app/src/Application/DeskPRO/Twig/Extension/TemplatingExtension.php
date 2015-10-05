@@ -1785,7 +1785,7 @@ class TemplatingExtension extends \Twig_Extension
             $params = json_encode($params);
         }
 
-        return '{{ state_path(\''.addslashes($route).'\', '.str_replace(array("'", '"'), array('&apos;', '&quot;'), $params).') }}';
+        return '{{ state_path(\''.addslashes($route).'\','.$params.') }}';
     }
 
     public function ngHrefVar($route_var, $params = '{}')
