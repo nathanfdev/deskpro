@@ -205,6 +205,8 @@ class DownloadsController extends AbstractController
                     return $form_result;
                 }
 
+                $this->addFlash('success', $this->phrase('portal.flashes.comment_thank_you'));
+
                 return $this->redirectToRoute('portal_downloads_view', array('slug' => $file->getSlug()));
             }
         }

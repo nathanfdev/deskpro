@@ -199,6 +199,8 @@ class ArticlesController extends AbstractController
                     return $form_result;
                 }
 
+                $this->addFlash('success', $this->phrase('portal.flashes.comment_thank_you'));
+
                 return $this->redirectToRoute('portal_kb_view', array('slug' => $article->getSlug()));
             }
         }

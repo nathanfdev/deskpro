@@ -201,6 +201,8 @@ class NewsController extends AbstractController
                     return $form_result;
                 }
 
+                $this->addFlash('success', $this->phrase('portal.flashes.comment_thank_you'));
+
                 return $this->redirectToRoute('portal_news_view', array('slug' => $post->getSlug()));
             }
         }
