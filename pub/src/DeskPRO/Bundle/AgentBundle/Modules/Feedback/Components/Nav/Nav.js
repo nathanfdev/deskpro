@@ -9,6 +9,7 @@ import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
 
 @injectIntl
 export class Nav extends Component {
+
   static propTypes = {
     intl: intlShape.isRequired,
     groupChoice: PropTypes.func.isRequired,
@@ -24,7 +25,6 @@ export class Nav extends Component {
 
   render() {
     const { currentGroup, groupChoice, labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dispatch, dp_window, commentsView } = this.props;
-
     return (
       <NavFrame dispatch={dispatch.bind(this)} dp_window={dp_window}>
 
