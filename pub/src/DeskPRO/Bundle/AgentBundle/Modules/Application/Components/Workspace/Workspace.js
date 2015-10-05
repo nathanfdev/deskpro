@@ -85,46 +85,6 @@ export default class Workspace extends React.Component {
           </div>
 
         </div>
-        <div className="dpw-workspace-type-container dpw-workspace-type-container-secondary">
-          <div className="dpw-workspace-type-header">
-            <span className="title">Sticky Apps</span>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p>
-          </div>
-
-          <div className="dpw-workspace-sticky-apps">
-            <ul>
-              <li>
-              <span className="dpwd-button-slide-container">
-                <span className="dpwd-button-slide blue">
-                  <span className="dpwd-button-slide-text">ON</span>
-                  <span className="dpwd-button-slide-status-box"><i className="fa fa-check"></i></span>
-                </span>
-                <span className="dpwd-button-slide-title">JIRA</span>
-              </span>
-              </li>
-
-              <li>
-              <span className="dpwd-button-slide-container">
-                <span className="dpwd-button-slide dpwd-button-slide-off blue">
-                  <span className="dpwd-button-slide-text">OFF</span>
-                  <span className="dpwd-button-slide-status-box"><i className="fa fa-times"></i></span>
-                </span>
-                <span className="dpwd-button-slide-title">Basecamp</span>
-              </span>
-              </li>
-
-              <li>
-              <span className="dpwd-button-slide-container">
-                <span className="dpwd-button-slide dpwd-button-slide-off blue">
-                  <span className="dpwd-button-slide-text">OFF</span>
-                  <span className="dpwd-button-slide-status-box"><i className="fa fa-times"></i></span>
-                </span>
-                <span className="dpwd-button-slide-title">Twillio</span>
-              </span>
-              </li>
-            </ul>
-          </div>
-        </div>
 
         <div className="dpw-top-bar-dropdown-footer">
           <a href="#" className="dpw-top-bar-dropdown-button">Save Workspace</a>
