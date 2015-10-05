@@ -13,7 +13,7 @@ import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordS
  */
 @connect(state => ({
   agents: agentsSelector(state),
-  me: state.user
+  me: state.Application.user
 }))
 export class AgentsList extends Component {
 
@@ -54,7 +54,7 @@ export class AgentsList extends Component {
                 ? this.state.agents.map(
                 (agent, index) => {
                   "use strict";
-                  if (this.props.me.id !== agent.get('id')) {
+                  if (this.props.me.get('id') !== agent.get('id')) {
                     return <AgentsListItem
                       handleClickParticipant={this.props.handleClickParticipant}
                       key={index}
@@ -67,7 +67,7 @@ export class AgentsList extends Component {
                 : this.props.agents.map(
                 (agent, index) => {
                   "use strict";
-                  if (this.props.me.id !== agent.get('id')) {
+                  if (this.props.me.get('id') !== agent.get('id')) {
                     return <AgentsListItem
                       handleClickParticipant={this.props.handleClickParticipant}
                       key={index}

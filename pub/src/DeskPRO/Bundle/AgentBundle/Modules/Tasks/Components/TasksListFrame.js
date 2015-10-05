@@ -42,7 +42,7 @@ import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Compone
   agentList: state.agentList,
   teamList: state.teamList,
   departmentList: state.departmentList,
-  dp_window: state.dp_window
+  dpWindow: state.Application.dpWindow
 }))
 export default
 class TasksListFrame extends React.Component {
@@ -454,7 +454,7 @@ class TasksListFrame extends React.Component {
                         labels={labels}
                         applyFilter={this.applyFilter.bind(this)}
                         taskFilter={taskFilter}
-                        windowProps={this.props.dp_window}
+                        windowProps={this.props.dpWindow}
                         order={this.state.order}
                         direction={this.state.direction}
                         setSortOrder={this.setSortOrder.bind(this)}

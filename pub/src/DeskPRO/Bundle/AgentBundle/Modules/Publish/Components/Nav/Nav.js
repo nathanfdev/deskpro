@@ -6,11 +6,11 @@ import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionHeader, Section
 export class Nav extends React.Component {
 
   render() {
-    const { lists, labels, grouping, onGroupingChange, toggleGroupingVisibility, setMine, onClick, dispatch, dp_window } = this.props;
+    const { lists, labels, grouping, onGroupingChange, toggleGroupingVisibility, setMine, onClick, dispatch, dpWindow } = this.props;
     const mine = lists.todo.articles.mine;
 
     return (
-      <NavFrame dispatch={dispatch.bind(this)} dp_window={dp_window}>
+      <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
         <div part="outer">
 
           <ListGroupingControl

@@ -15,6 +15,13 @@ function compileParams(params) {
   return compiled.join('&');
 }
 
+/**
+ * @return {Promise} promise
+ */
+export function loadMe() {
+  return DpApi.sendGet('DP_API/me');
+}
+
 export function loadPeople(options) {
   if (options.is_me) {
     options.is_me = 1;

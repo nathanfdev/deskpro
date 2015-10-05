@@ -4,12 +4,12 @@ import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionHeader, TabsPan
 
 export class Nav extends React.Component {
   render() {
-    const { labels, users, organizations, agents, groupNames, teamNames, dispatch, dp_window } = this.props;
+    const { labels, users, organizations, agents, groupNames, teamNames, dispatch, dpWindow } = this.props;
 
     let itemKey = 0;
 
     return (
-      <NavFrame dispatch={dispatch.bind(this)} dp_window={dp_window}>
+      <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
         <NavFrameHeader icon="fa-users" dispatch={dispatch.bind(this)}>CRM</NavFrameHeader>
             <SectionHeader>People</SectionHeader>
             <TabsPane>

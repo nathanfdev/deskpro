@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
-import * as AppActions from "../Actions/AppActions";
+import * as AppActions from '../Actions/AppActions';
 import { Link } from 'react-router';
 
-@connect(state => ({
-  user: state.user,
-  dp_window: state.dp_window
-}))
 export class AppSwitcher extends React.Component {
+  static propTypes = {
+    dpWindow: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired
+  };
+
   constructor(props) {
     super(props);
     this.expanded = false;
@@ -23,7 +23,7 @@ export class AppSwitcher extends React.Component {
   }
 
   renderAppIcon(appId, title, iconClass) {
-    const { dp_window, dispatch } = this.props;
+    const { dispatch } = this.props;
     const clickHandler = () => dispatch(AppActions.setActiveApp(appId));
     const className = 'fa ' + iconClass;
 
@@ -37,14 +37,13 @@ export class AppSwitcher extends React.Component {
   }
 
   render() {
-    const { dp_window, dispatch } = this.props;
-
-    const my_classes = "dp-app-switcher" + (dp_window.expandedSwitcher ? ' expanded' : '');
+    const { dpWindow } = this.props;
+    const myClasses = 'dp-app-switcher' + (dpWindow.get('expandedSwitcher') ? ' expanded' : '');
 
     return (
     <nav onMouseEnter={this.hoverSwitcher.bind(this)}
       onMouseLeave={this.cancelSwitcher.bind(this)}
-      className={my_classes}>
+      className={myClasses}>
       <div className="app-bar">
         <ul>
           {this.renderAppIcon('tickets', 'Tickets', 'fa-envelope-o')}

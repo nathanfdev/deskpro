@@ -5,24 +5,24 @@ import * as TicketActions from "../Actions/FiltersActions";
 
 @connect(state => ({
   TicketsList: state.Tickets.TicketsList,
-  dp_window: state.dp_window
+  dpWindow: state.Application.dpWindow
 }))
 export default class TicketsListFrame extends React.Component {
-    getClasses(dp_window) {
-        let classes = ['ticket-list-frame', 'dp-list-frame'];
+  getClasses(dpWindow) {
+    let classes = ['ticket-list-frame', 'dp-list-frame'];
 
-        if(dp_window.collapseNav) {
-            classes.push('expanded');
-        }
-        if(dp_window.expandedSwitcher) {
-            classes.push('shifted');
-        }
-
-        return classes.join(' ');
+    if (dpWindow.get('collapseNav')) {
+      classes.push('expanded');
+    }
+    if (dpWindow.get('expandedSwitcher')) {
+      classes.push('shifted');
     }
 
+    return classes.join(' ');
+  }
+
   render() {
-    const { TicketsList, dp_window } = this.props;
+    const { TicketsList, dpWindow } = this.props;
 
     let tickets = TicketsList.TicketsList.map((ticket) => {
       return (
@@ -58,7 +58,7 @@ export default class TicketsListFrame extends React.Component {
     });
 
     return (
-      <section className={this.getClasses(dp_window)}>
+      <section className={this.getClasses(dpWindow)}>
         <div className="ticket-list">
           <div className="tickets-control-bar">
 

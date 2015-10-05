@@ -21,7 +21,7 @@ import { NavFrame, NavFrameHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/App
   LabelsList: state.Tickets.LabelsList,
   StarsCounts: state.Tickets.StarsCounts,
   Translations: state.Translations,
-  dp_window: state.dp_window,
+  dpWindow: state.Application.dpWindow
 }))
 export default class TicketsNavContent extends React.Component {
   constructor(props) {
@@ -60,17 +60,17 @@ export default class TicketsNavContent extends React.Component {
     );
   }
 
-  getClasses(dp_window) {
-      let classes = ['ticket-nav-frame', 'dp-nav-frame'];
+  getClasses(dpWindow) {
+    let classes = ['ticket-nav-frame', 'dp-nav-frame'];
 
-      if(dp_window.collapseNav) {
-          classes.push('collapsed');
-      }
-      if(dp_window.expandedSwitcher) {
-          classes.push('shifted');
-      }
+    if (dpWindow.get('collapseNav')) {
+      classes.push('collapsed');
+    }
+    if (dpWindow.get('expandedSwitcher')) {
+      classes.push('shifted');
+    }
 
-      return classes.join(' ');
+    return classes.join(' ');
   }
 
   render() {
@@ -81,7 +81,7 @@ export default class TicketsNavContent extends React.Component {
       StarsCounts,
       Translations,
       dispatch,
-      dp_window
+      dpWindow
     } = this.props;
 
     let tab = null;
@@ -103,7 +103,7 @@ export default class TicketsNavContent extends React.Component {
     }
 
     return (
-      <NavFrame dispatch={dispatch.bind(this)} dp_window={dp_window}>
+      <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
         <div part="inner">
           <NavFrameHeader icon="fa-envelope-o" dispatch={dispatch.bind(this)}>
             {getIntlMessage(Translations, "foobar")}
