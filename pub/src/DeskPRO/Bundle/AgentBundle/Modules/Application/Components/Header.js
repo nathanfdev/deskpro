@@ -16,8 +16,12 @@ export class Header extends React.Component {
     };
   }
 
-  toggleWorkspace = () => {
+  toggleWorkspace() {
     this.state.isWorkspaceOpen = !this.state.isWorkspaceOpen;
+  }
+
+  closeWorkspace() {
+    this.state.isWorkspaceOpen = false;
   }
 
   render() {
@@ -28,7 +32,7 @@ export class Header extends React.Component {
       <HeaderWidget/>
 
       <div className="user-options">
-        <a href="#" className="notification-button" onClick={this.toggleWorkspace}>
+        <a href="#" className="notification-button" onClick={this.toggleWorkspace.bind(this)}>
           <span className="title"><i className="fa fa-columns"></i><i className="fa fa-angle-down"></i></span>
         </a>
 
@@ -44,7 +48,7 @@ export class Header extends React.Component {
       </div>
 
       <div style={{display: this.state.isWorkspaceOpen ? '' : 'none'}}>
-        <Workspace dpWindow={dpWindow} />
+        <Workspace dpWindow={dpWindow} closeFn={this.closeWorkspace.bind(this)} />
       </div>
 
     </header>);
