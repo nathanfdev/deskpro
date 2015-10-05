@@ -1,7 +1,22 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 export class ColumnMode extends React.Component {
+  static propTypes = {
+    dpWindow: PropTypes.object.isRequired,
+    onChangeMode: PropTypes.func.isRequired
+  };
+
+  setColumnDimensions(percent) {
+    console.log(percent);
+  }
+
+  resetColumnDimensions() {
+    this.setColumnDimensions(0);
+  }
+
   render() {
+    const { dpWindow, onChangeMode } = this.props;
+
     return (
       <div className="dpw-workspace-type-container">
 
@@ -11,7 +26,6 @@ export class ColumnMode extends React.Component {
       </div>
 
       <div className="dpw-workspace-state">
-
         <div className="workspace-state-a active">
           <div className="workspace-state-screen">
             <span className="active-workspace-mark"><i className="fa fa-check"></i></span>
@@ -34,17 +48,17 @@ export class ColumnMode extends React.Component {
 
       <div className="dpw-workspace-state dpw-workspace-slider-container">
         <div className="">
-          <h2>Column Dimensions <a href="#">Reset</a></h2>
+          <h2>Column Dimensions <a href="#" onClick={this.resetColumnDimensions.bind(this)}>Reset</a></h2>
           <div className="dpw-workspace-slider">
             <div className="dpw-workspace-slider-count-container">
-              <span className="dpw-workspace-slider-count">50%</span>
+              <span className="dpw-workspace-slider-count">{dpWindow.get('columnDimensions')}%</span>
             </div>
 
             <div className="dpw-workspace-slider-slide-container">
                 <span className="dpw-workspace-slider-slide">
                   <span className="slider-blocked-left"></span>
                   <span className="slider-blocked-right"></span>
-                  <span className="slider-button"></span>
+                  <span className="slider-button" style={{left: dpWindow.get('columnDimensions')}}></span>
                 </span>
             </div>
           </div>

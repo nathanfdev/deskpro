@@ -4,11 +4,12 @@ import { SidebarMode } from './SidebarMode';
 
 export class Workspace extends React.Component {
   static propTypes = {
+    dpWindow: PropTypes.object.isRequired,
     closeFn: PropTypes.func.isRequired
   };
 
   render() {
-    const { closeFn } = this.props;
+    const { dpWindow, closeFn } = this.props;
 
     return (
       <div className="dropdown workspace-dropdown">
@@ -21,8 +22,13 @@ export class Workspace extends React.Component {
           </div>
         </header>
 
-        <ColumnMode />
-        <SidebarMode />
+        <ColumnMode dpWindow={dpWindow} />
+        <SidebarMode dpWindow={dpWindow} />
+
+        <div className="dpw-top-bar-dropdown-footer">
+          <a href="#" className="dpw-top-bar-dropdown-button">Save Workspace</a>
+          <a href="#" className="dpw-top-bar-dropdown-button blank">Reset All</a>
+        </div>
 
       </div>
     );
