@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
 import { HeaderWidget } from '../../IM/Components/HeaderWidget';
+import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned';
+import Workspace from './Workspace/Workspace';
 
 export class Header extends React.Component {
   static propTypes = {
@@ -28,6 +30,8 @@ export class Header extends React.Component {
           <span className="title">Settings <i className="fa fa-angle-down"></i></span>
         </a>
       </div>
+
+      <div style={{position: 'absolute', left: '100px', top: '20px'}}><Workspace /></div>
 
     </header>);
   }
