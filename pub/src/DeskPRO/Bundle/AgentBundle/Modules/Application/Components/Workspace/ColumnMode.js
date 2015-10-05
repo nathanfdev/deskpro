@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class ColumnMode extends React.Component {
+export class ColumnMode extends React.Component {
   render() {
     return (
       <div className="dpw-workspace-type-container">

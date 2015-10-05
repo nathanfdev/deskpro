@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import ReactRouterWrapper from './ReactRouterWrapper';
-import DpAppLoading from './DpAppLoading';
+import { ReactRouterWrapper } from './ReactRouterWrapper';
+import { DpAppLoading } from './DpAppLoading';
 import TicketsApp from '../../Tickets/Components/TicketsApp';
 import TasksApp from '../../Tasks/Components/TasksApp';
 import TestApp from '../../Test/Components/TestApp';
@@ -18,7 +18,7 @@ import { Router, Route, Redirect } from 'react-router';
     routing: state.Application.routing
   };
 })
-export default class DpAppContainer extends React.Component {
+export class DpAppContainer extends React.Component {
   static propTypes = {
     dpWindow: PropTypes.object.isRequired,
     routing: PropTypes.object.isRequired,

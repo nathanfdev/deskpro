@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Header } from './Header';
 import { AppSwitcher } from './AppSwitcher';
-import TabFrame from './TabFrame';
+import { TabFrame } from './TabFrame';
 import { routingStarted } from '../Actions/AppActions';
 
 @connect(state => ({
@@ -10,7 +10,7 @@ import { routingStarted } from '../Actions/AppActions';
   user: state.Application.user,
   dpWindow: state.Application.dpWindow
 }))
-export default class DpApp extends React.Component {
+export class DpApp extends React.Component {
   static propTypes = {
     user: PropTypes.object.isRequired,
     children: PropTypes.object.isRequired,
