@@ -7,7 +7,9 @@ const initialState = {
   activeAppId: 'tickets',
   collapseNav: false,
   expandedSwitcher: false,
-  taskView: constants.VIEW_MODE_LIST
+  taskView: constants.VIEW_MODE_LIST,
+  columnMode: false,
+  sidebarMode: false
 };
 
 export default createReducer(initialState, {

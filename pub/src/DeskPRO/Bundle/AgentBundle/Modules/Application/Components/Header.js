@@ -5,18 +5,30 @@ import { Workspace } from './Workspace/Workspace';
 
 export class Header extends React.Component {
   static propTypes = {
-    user: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired,
+    dpWindow: PropTypes.object.isRequired
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      isWorkspaceOpen: false
+    };
+  }
+
+  toggleWorkspace = () => {
+    this.state.isWorkspaceOpen = !this.state.isWorkspaceOpen;
+  }
+
   render() {
-    const { user } = this.props;
+    const { user, dpWindow } = this.props;
 
     return (<header className="dp-window-header top-bar">
       <a href="https://www.deskpro.com/" className="logo"></a>
       <HeaderWidget/>
 
       <div className="user-options">
-        <a href="#" className="notification-button">
+        <a href="#" className="notification-button" onClick={this.toggleWorkspace}>
           <span className="title"><i className="fa fa-columns"></i><i className="fa fa-angle-down"></i></span>
         </a>
 
@@ -31,7 +43,9 @@ export class Header extends React.Component {
         </a>
       </div>
 
-      <div style={{position: 'absolute', left: '100px', top: '20px'}}><Workspace /></div>
+      <div style={{position: 'absolute', left: '100px', top: '20px', display: this.state.isWorkspaceOpen ? '' : 'none'}}>
+        <Workspace dpWindow={dpWindow} />
+      </div>
 
     </header>);
   }
