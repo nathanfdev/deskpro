@@ -2,10 +2,25 @@ import React from 'react';
 import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionHeader, ListGroupingControl }
        from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { ListItemContainer } from './ListItemContainer';
+import { pureRender } from 'Ampliflux';
 
+@pureRender
 export class Nav extends React.Component {
+
+  static groupingOptions = {
+    my: [
+      {value: 'date_period', label: 'Date Created'},
+      {value: 'department', label: 'Department'}
+    ],
+    all: [
+      {value: 'agent', label: 'Agent'},
+      {value: 'department', label: 'Department'},
+      {value: 'date_period', label: 'Date Created'}
+    ]
+  };
+
   render() {
-    const {lists, grouping, changeGrouping, toggleGroupingVisibility, onMyClick, onAllClick} = this.props;
+    const {lists, changeGrouping, toggleGroupingVisibility, onMyClick, onAllClick} = this.props;
 
     return (
       <NavFrame>
@@ -13,15 +28,15 @@ export class Nav extends React.Component {
 
           <ListGroupingControl
             title="My Chats"
-            options={grouping.my.options}
-            visible={grouping.my.visible}
+            options={Nav.groupingOptions.my}
+            visible={lists.getIn(['my', 'isGroupingControlVisible'])}
             onChange={changeGrouping('my')}
           />
 
           <ListGroupingControl
             title="All Chats"
-            options={grouping.all.options}
-            visible={grouping.all.visible}
+            options={Nav.groupingOptions.all}
+            visible={lists.getIn(['all', 'isGroupingControlVisible'])}
             onChange={changeGrouping('all')}
           />
 
@@ -39,14 +54,14 @@ export class Nav extends React.Component {
                     <span>&nbsp;</span>
                     <i className="fa fa-angle-down"></i>
                   </a>
-                  <a className="list-counter active" href="#">{lists.my.total}</a>
+                  <a className="list-counter active" href="#">{lists.getIn(['my', 'total'])}</a>
                 </div>
               </SectionHeader>
 
               <ul>
-                {lists.my.items.map(item =>
+                {lists.getIn(['my', 'items']).map(item =>
                    <ListItemContainer
-                     groupBy={lists.my.groupBy}
+                     groupBy={lists.getIn(['my', 'groupBy'])}
                      group={item.group}
                      count={item.count}
                      key={item.group}
@@ -64,14 +79,14 @@ export class Nav extends React.Component {
                     <span>&nbsp;</span>
                     <i className="fa fa-angle-down"></i>
                   </a>
-                  <a className="list-counter active" href="#">{lists.all.total}</a>
+                  <a className="list-counter active" href="#">{lists.getIn(['all', 'total'])}</a>
                 </div>
               </SectionHeader>
 
               <ul>
-                {lists.all.items.map(item =>
+                {lists.getIn(['all', 'items']).map(item =>
                    <ListItemContainer
-                     groupBy={lists.all.groupBy}
+                     groupBy={lists.getIn(['all', 'groupBy'])}
                      group={item.group}
                      count={item.count}
                      key={item.group}

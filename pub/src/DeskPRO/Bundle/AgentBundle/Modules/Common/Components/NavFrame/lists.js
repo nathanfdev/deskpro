@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
+import { pureRender } from 'Ampliflux';
 
 
 class BaseList extends Component {
@@ -17,8 +18,8 @@ class BaseList extends Component {
   }
 }
 
+@pureRender
 export class ListItem extends BaseList {
-
   static propTypes = {
     count: PropTypes.number.isRequired,
     label: PropTypes.string.isRequired,
@@ -26,9 +27,8 @@ export class ListItem extends BaseList {
   };
 
   render() {
-    const {count, label, active } = this.props;
-    const onClick = this.props.onClick ? this.props.onClick : () => {
-    };
+    const {count, label, active} = this.props;
+    const onClick = this.props.onClick ? this.props.onClick : () => {};
 
     var classes = classNames('item', {'active': active});
 

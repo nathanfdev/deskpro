@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { pureRender } from 'Ampliflux';
 import { DatePeriods } from 'DeskPRO/Bundle/AgentBundle/Services/DatePeriods';
 import { ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { agentNamesSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
@@ -16,6 +17,7 @@ const chatNavDepartmentsSelector = createDepartmentsRequestSelectors('chatNav');
     date_period: DatePeriods.all
   }
 }))
+@pureRender
 export class ListItemContainer extends React.Component {
   render() {
     const {count, group, groupBy, onClick} = this.props;
