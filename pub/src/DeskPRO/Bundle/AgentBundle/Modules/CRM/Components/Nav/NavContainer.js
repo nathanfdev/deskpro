@@ -12,7 +12,8 @@ import { Nav } from './Nav';
 @connect(state => Object.assign({},
   state.CrmNav,
   {teamNames: agentTeamNamesSelector(state)},
-  {groupNames: userGroupNamesSelector(state)}
+  {groupNames: userGroupNamesSelector(state)},
+  {dpWindow: state.Application.dpWindow}
 ))
 export class NavContainer extends React.Component {
 
@@ -30,7 +31,7 @@ export class NavContainer extends React.Component {
   }
 
   render() {
-    const {labels, users, organizations, agents, groupNames, teamNames, dpWindow} = this.props;
+    const {labels, users, organizations, agents, groupNames, teamNames, dpWindow, dispatch} = this.props;
 
     return (
       <Nav
@@ -40,7 +41,7 @@ export class NavContainer extends React.Component {
           agents={agents}
           groupNames={groupNames}
           teamNames={teamNames}
-          dispatch={this.props.dispatch.bind(this)}
+          dispatch={dispatch}
           dpWindow={dpWindow}
       />
     );
