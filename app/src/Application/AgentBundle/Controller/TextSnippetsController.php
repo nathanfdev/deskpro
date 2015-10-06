@@ -226,6 +226,7 @@ class TextSnippetsController extends AbstractController
         }
 
         $snippet->setShortcutCode($this->in->getString('shortcut_code'));
+        $snippet->is_draft = $this->in->getBool('is_draft');
 
         $this->em->persist($snippet);
         $this->em->flush();

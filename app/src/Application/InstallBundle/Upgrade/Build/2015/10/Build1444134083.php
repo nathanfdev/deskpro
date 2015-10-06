@@ -26,4 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1444134083);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1444134083 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('Add text_snippets.is_draft');
+        $this->execMutateSql('ALTER TABLE text_snippets ADD is_draft TINYINT(1) NOT NULL');
+    }
+}

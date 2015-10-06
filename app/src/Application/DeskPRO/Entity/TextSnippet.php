@@ -72,6 +72,11 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $snippet;
 
+    /**
+     * @var bool
+     */
+    protected $is_draft;
+
     public function __construct()
     {
         $this->getObjectTranslatable();
@@ -103,6 +108,7 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
         $data['category_id'] = $this->category ? $this->category->getId() : 0;
         $data['title']       = array();
         $data['snippet']     = array();
+        $data['is_draft']    = $this->is_draft;
 
         foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
             $title   = $this->getObjectTranslatable()->getObjectProp('title', $lang);
@@ -137,6 +143,16 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
         $metadata->mapField(array('fieldName' => 'shortcut_code', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'shortcut_code'));
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'is_draft',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_draft',
+            )
+        );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
         $metadata->mapManyToOne(array('fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TextSnippetCategory', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
