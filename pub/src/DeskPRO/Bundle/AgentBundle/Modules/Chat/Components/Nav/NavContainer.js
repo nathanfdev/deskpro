@@ -5,7 +5,10 @@ import * as listActions from '../../Actions/chatListActions';
 import { Nav } from './Nav';
 import { pureRender } from 'Ampliflux';
 
-@connect(state => ({lists: state.Chat.nav.get('lists')}))
+@connect(state => ({
+  lists: state.Chat.nav.get('lists'),
+  dpWindow: state.Application.dpWindow
+}))
 @pureRender
 export class NavContainer extends React.Component {
 
@@ -16,7 +19,7 @@ export class NavContainer extends React.Component {
   }
 
   render() {
-    const { lists } = this.props;
+    const { lists, dpWindow, dispatch } = this.props;
     const changeGrouping = (listName) => this.changeGrouping(listName).bind(this);
     const toggleGroupingVisibility = (listName) => this.toggleGroupingVisibility(listName).bind(this);
     const onMyClick = (filters) => this.props.dispatch(listActions.load({...filters, agent: 'me'}));
@@ -29,6 +32,8 @@ export class NavContainer extends React.Component {
         onAllClick={onAllClick}
         changeGrouping={changeGrouping}
         toggleGroupingVisibility={toggleGroupingVisibility}
+        dpWindow={dpWindow}
+        dispatch={dispatch}
       />
     );
   }
