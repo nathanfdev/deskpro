@@ -208,6 +208,15 @@ class WorkerJobsData extends AbstractDefaultData
         );
 
         $jobs[] = array(
+            'id'           => 'feedback_subscriptions',
+            'worker_group' => 'feedback_subscriptions',
+            'title'        => 'Feedback Subscriptions',
+            'description'  => 'Sends notifications to users who are subscribed to feedback items',
+            'job_class'    => 'Application\\DeskPRO\\WorkerProcess\\Job\\FeedbackSubscriptions',
+            'run_interval' => Job\FeedbackSubscriptions::DEFAULT_INTERVAL,
+        );
+
+        $jobs[] = array(
             'id'           => 'move_blobs',
             'worker_group' => 'move_blobs',
             'title'        => 'Move Blobs',

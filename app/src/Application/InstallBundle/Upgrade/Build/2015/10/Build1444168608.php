@@ -26,4 +26,21 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1444168608);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1444168608 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('add feedback subscriptions worker job');
+
+        $this->execMutateSql(
+            "
+            INSERT INTO `worker_jobs` (`id`, `worker_group`, `title`, `description`, `job_class`, `data`, `run_interval`, `last_run_date`, `last_start_date`)
+            VALUES ('feedback_subscriptions', 'feedback_subscriptions', 'Feedback Subscriptions', 'Sends notifications to users who are subscribed to feedback items', 'Application\\\\DeskPRO\\\\WorkerProcess\\\\Job\\\\FeedbackSubscriptions', X'613A303A7B7D', '7200', NULL, NULL)
+        "
+        );
+
+        // NOTE TO FUTURE: we had added news/downloads worker jobs in the past (they are in Build1421095053)
+    }
+}

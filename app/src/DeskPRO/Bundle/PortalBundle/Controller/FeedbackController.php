@@ -437,6 +437,23 @@ class FeedbackController extends AbstractController
     }
 
     /**
+     * @Route("/feedback/items/subscriptions/unsubscribe", name="portal_feedback_unsubscribe_all")
+     * NOTE: we don't check if they have access to this content, because we might
+     *       let someone UN-subscribe from all even if they don't have access to some
+     *       of the categories anymore
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_FEEDBACK')")
+     * @AutoPostOnGetRequest()
+     */
+    public function feedbackUnsubscribeAllAction()
+    {
+        $this->getSubscriptionsHelper()->unsubscribeFromAll('feedback', $this->getUser());
+
+        $this->addFlash('success', $this->phrase('portal.flashes.feedback_unsubscribe_everything'));
+
+        return $this->redirectToRoute('portal_home');
+    }
+
+    /**
      * @return \Application\DeskPRO\Entity\FeedbackStatusCategory
      */
     protected function getDefaultStatusCategory()

@@ -46,5 +46,7 @@ class Build1421095053 extends AbstractBuild
             INSERT INTO `worker_jobs` (`id`, `worker_group`, `title`, `description`, `job_class`, `data`, `run_interval`, `last_run_date`, `last_start_date`)
             VALUES ('downloads_subscriptions', 'downloads_subscriptions', 'Downloads Subscriptions', 'Sends notifications to users who are subscribed to downloads or downloads categories', 'Application\\\\DeskPRO\\\\WorkerProcess\\\\Job\\\\DownloadsSubscriptions', X'613A303A7B7D', '7200', NULL, NULL)
         ");
+
+        // NOTE TO FUTURE: there is also a FeedbackSubscriptions worker we added later (it's in Build1444168608)
     }
 }

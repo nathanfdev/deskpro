@@ -37,7 +37,7 @@ use Application\DeskPRO\Entity\Feedback;
 use Orb\Util\Arrays;
 
 /**
- * Sends article and category notifications to users with subscriptions.
+ * Sends feedback notifications to users with subscriptions.
  */
 class FeedbackSubscriptions extends AbstractJob
 {
@@ -63,26 +63,18 @@ class FeedbackSubscriptions extends AbstractJob
         $last_date = new \DateTime("@$last_time");
 
         #------------------------------
-        # Find articles
+        # Find Feedback
         #------------------------------
 
-        $published = App::getOrm()->createQuery('
+        $updated = App::getOrm()->createQuery('
             SELECT f
-            FROM DeskPRO:Feedback a INDEX BY f.id
-            WHERE f.status in (:statuses) AND f.date_published > :date
-            ORDER BY f.date_published DESC
-        ')->setMaxResults(250)->execute(array('date' => $last_date, 'statuses' => array(Feedback::STATUS_ACTIVE,
-            Feedback::STATUS_CLOSED, )));
+            FROM DeskPRO:Feedback f INDEX BY f.id
+            LEFT JOIN f.category cat
+            WHERE f.status IN (:statuses) AND (f.date_updated > :date OR f.date_last_comment > :date)
+            ORDER BY f.date_updated DESC
+        ')->setMaxResults(250)->execute(array('date' => $last_date, 'statuses' => array(Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED)));
 
-        $updated = App::getOrm()->createQuery("
-            SELECT a
-            FROM DeskPRO:Article a INDEX BY a.id
-            LEFT JOIN a.categories cat
-            WHERE a.status = 'published' AND (a.date_updated > :date OR a.date_last_comment > :date)
-            ORDER BY a.date_updated DESC
-        ")->setMaxResults(250)->execute(array('date' => $last_date));
-
-        if (!$published && !$updated) {
+        if (!$updated) {
             return;
         }
 
@@ -91,91 +83,45 @@ class FeedbackSubscriptions extends AbstractJob
         #------------------------------
 
         $structure = App::getContainer()->getSystemService('publish_structure');
-        $helper    = $structure->getArticleCategoryHelper();
+        $helper    = $structure->getFeedbackCategoryHelper();
 
-        $category_ids = array();
-        $article_ids  = array();
+        $feedback_ids = array();
 
-        foreach ($published as $a) {
-            foreach ($a->categories as $c) {
-                $category_ids[] = $c->getId();
-            }
-        }
         foreach ($updated as $a) {
-            $article_ids[] = $a->getId();
+            $feedback_ids[] = $a->getId();
         }
 
-        $category_ids = array_unique($category_ids);
-        $article_ids  = array_unique($article_ids);
+        $feedback_ids  = array_unique($feedback_ids);
+        $feedback_subs = array();
 
-        $cat_subs     = array();
-        $article_subs = array();
-
-        if ($category_ids) {
-            // Users can be subscribed to a category higher-up,
-            // so for each article need to include subs for the whole path
-            $add_ids = array();
-            foreach ($category_ids as $cid) {
-                $parents = $helper->getPath(array('id' => $cid));
-                foreach ($parents as $c) {
-                    $add_ids[] = $c['id'];
-                }
-            }
-
-            $category_ids = array_merge($category_ids, $add_ids);
-            $category_ids = array_unique($category_ids);
-
-            $cat_subs = App::getDb()->fetchAllGrouped('
-                SELECT person_id, category_id
-                FROM kb_subscriptions
-                WHERE category_id IN (?)
-            ', array($category_ids), 'person_id', null, 'category_id', array(Connection::PARAM_INT_ARRAY));
-        }
-
-        if ($article_ids) {
-            $article_subs = App::getDb()->fetchAllGrouped('
-                SELECT person_id, article_id
-                FROM kb_subscriptions
-                WHERE article_id IN (?)
-            ', array($article_ids), 'person_id', null, 'article_id', array(Connection::PARAM_INT_ARRAY));
+        if ($feedback_ids) {
+            $feedback_subs = App::getDb()->fetchAllGrouped('
+                SELECT person_id, feedback_id
+                FROM feedback_subscriptions
+                WHERE feedback_id IN (?)
+            ', array($feedback_ids), 'person_id', null, 'feedback_id', array(Connection::PARAM_INT_ARRAY));
         }
 
         #------------------------------
         # Sort subscriptions into users
         #------------------------------
 
-        $user_to_articles = array();
+        $user_to_feedback = array();
 
-        foreach ($cat_subs as $person_id => $cids) {
-            foreach ($published as $article) {
-                foreach ($article->categories as $cat) {
-                    $path   = $helper->getPathIds($cat);
-                    $path[] = $cat->getId();
-
-                    if (Arrays::isIn($path, $cids)) {
-                        if (!isset($user_to_articles[$person_id])) {
-                            $user_to_articles[$person_id] = array();
-                        }
-                        $user_to_articles[$person_id][$article->getId()] = $article;
-                    }
-                }
-            }
-        }
-
-        foreach ($article_subs as $person_id => $aids) {
+        foreach ($feedback_subs as $person_id => $aids) {
             foreach ($aids as $aid) {
                 if (!isset($updated[$aid])) {
                     continue;
                 }
 
-                if (!isset($user_to_articles[$person_id])) {
-                    $user_to_articles[$person_id] = array();
+                if (!isset($user_to_feedback[$person_id])) {
+                    $user_to_feedback[$person_id] = array();
                 }
-                $user_to_articles[$person_id][$aid] = $updated[$aid];
+                $user_to_feedback[$person_id][$aid] = $updated[$aid];
             }
         }
 
-        if (!$user_to_articles) {
+        if (!$user_to_feedback) {
             return;
         }
 
@@ -187,69 +133,60 @@ class FeedbackSubscriptions extends AbstractJob
             SELECT person_id, usergroup_id
             FROM person2usergroups
             WHERE person_id IN (?)
-        ', array(array_keys($user_to_articles)), 'person_id', null, 'usergroup_id', array(Connection::PARAM_INT_ARRAY));
+        ', array(array_keys($user_to_feedback)), 'person_id', null, 'usergroup_id', array(Connection::PARAM_INT_ARRAY));
 
         $cat_groups = App::getDb()->fetchAllGrouped('
             SELECT category_id, usergroup_id
-            FROM article_category2usergroup
+            FROM feedback_category2usergroup
         ', array(), 'category_id', null, 'usergroup_id');
 
-        $all_user_to_articles = $user_to_articles;
-        $user_to_articles     = array();
+        $all_user_to_feedback = $user_to_feedback;
+        $user_to_feedback     = array();
 
-        foreach ($all_user_to_articles as $person_id => $articles) {
+        foreach ($all_user_to_feedback as $person_id => $feedbacks) {
             $person_ugs   = isset($user_groupmembers[$person_id]) ? $user_groupmembers[$person_id] : array();
             $person_ugs[] = 1; // Everyone
 
-            foreach ($articles as $article) {
-                $add = false;
-                foreach ($article->categories as $cat) {
-                    $cat_ugs = isset($cat_groups[$cat->getId()]) ? $cat_groups[$cat->getId()] : array();
-                    if (Arrays::isIn($person_ugs, $cat_ugs)) {
-                        $add = true;
-                        break;
-                    }
+            foreach ($feedbacks as $fback) {
+                $add     = false;
+                $cat     = $fback->category;
+                $cat_ugs = isset($cat_groups[$cat->getId()]) ? $cat_groups[$cat->getId()] : array();
+                if (Arrays::isIn($person_ugs, $cat_ugs)) {
+                    $add = true;
                 }
 
                 if ($add) {
-                    if (!isset($user_to_articles[$person_id])) {
-                        $user_to_articles[$person_id] = array();
+                    if (!isset($user_to_feedback[$person_id])) {
+                        $user_to_feedback[$person_id] = array();
                     }
-                    $user_to_articles[$person_id][$article->getId()] = $article;
+                    $user_to_feedback[$person_id][$fback->getId()] = $fback;
                 }
             }
         }
 
-        unset($all_user_to_articles);
+        unset($all_user_to_feedback);
 
         #------------------------------
         # Now send the emails (they are queued)
         #------------------------------
 
-        foreach ($user_to_articles as $person_id => $articles) {
+        foreach ($user_to_feedback as $person_id => $feedbacks) {
             $person = App::getOrm()->find('DeskPRO:Person', $person_id);
             if (!$person) {
                 continue;
             }
 
-            $new_articles     = array();
-            $updated_articles = array();
+            $updated_items = array();
 
-            foreach ($articles as $article) {
-                if ($article->date_published > $last_date) {
-                    $new_articles[] = $article;
-                } else {
-                    $updated_articles[] = $article;
-                }
+            foreach ($feedbacks as $ff) {
+                $updated_items[] = $ff;
             }
 
             $message = App::getMailer()->createMessage();
             $message->setToPerson($person);
-            $message->setTemplate('DeskPRO:emails_user:kb-subscription.html.twig', array(
-                'person'           => $person,
-                'new_articles'     => $new_articles,
-                'updated_articles' => $updated_articles,
-                'unsub_auth'       => \Orb\Util\Util::generateStaticSecurityToken(App::getSetting('core.app_secret').$person->getId().$person->secret_string),
+            $message->setTemplate('DeskPRO:emails_user:feedback-subscription.html.twig', array(
+                'person'        => $person,
+                'updated_items' => $updated_items,
             ));
 
             App::getMailer()->send($message);
@@ -258,8 +195,8 @@ class FeedbackSubscriptions extends AbstractJob
             App::getOrm()->detach($person);
         }
 
-        if ($user_to_articles) {
-            $this->logStatus('Send '.count($user_to_articles).' notifications');
+        if ($user_to_feedback) {
+            $this->logStatus('Send '.count($user_to_feedback).' notifications');
         }
     }
 }
