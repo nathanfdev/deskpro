@@ -41,6 +41,16 @@ export class Workspace extends React.Component {
     });
   };
 
+  resetAll = () => {
+    const { dpWindow } = this.props;
+
+    this.setState({
+      columnMode: dpWindow.get('columnMode'),
+      sidebarMode: dpWindow.get('sidebarMode'),
+      columnDimensions: dpWindow.get('columnDimensions')
+    });
+  };
+
   render() {
     const { closeFn } = this.props;
 
@@ -63,7 +73,7 @@ export class Workspace extends React.Component {
 
         <div className="dpw-top-bar-dropdown-footer">
           <a href="#" className="dpw-top-bar-dropdown-button">Save Workspace</a>
-          <a href="#" className="dpw-top-bar-dropdown-button blank">Reset All</a>
+          <a href="#" className="dpw-top-bar-dropdown-button blank" onClick={this.resetAll}>Reset All</a>
         </div>
 
       </div>
