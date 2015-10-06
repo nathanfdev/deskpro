@@ -65,6 +65,13 @@ const initialState = {
     {name: 'popularity', label: 'Popularity', status: constants.FIELD_SHOWN, priority: 17},
     {name: 'content', label: 'Content', status: constants.FIELD_SHOWN, priority: 18},
     {name: 'custom_category', label: 'Category', status: constants.FIELD_HIDDEN, priority: 19}
+  ],
+  commentsTableViewFields: [
+    {name: 'id', label: 'ID', className: 'id-col', status: constants.FIELD_SHOWN, priority: 1},
+    {name: 'status', label: 'Status', status: constants.FIELD_SHOWN, priority: 2},
+    {name: 'date_created', label: 'Created', status: constants.FIELD_SHOWN, priority: 10},
+    {name: 'validating', label: 'Validating', status: constants.FIELD_SHOWN, priority: 16},
+    {name: 'content', label: 'Content', status: constants.FIELD_SHOWN, priority: 18}
   ]
 };
 
@@ -72,8 +79,8 @@ export default createReducer(initialState, {
 
   [actions.getFilterValues]: async({
     success: (state, payload) => {
-      let values = [];
-      payload.data.map(item => values.push(item['title']));
+      const values = [];
+      payload.data.map(item => values.push(item.title));
       return state.setIn(['filterValues'], values);
     }
   }),
@@ -91,7 +98,7 @@ export default createReducer(initialState, {
   }),
 
   [actions.toggleMassAction]: (state) => {
-    let next     = state.set('massAction', !state.get('massAction'));
+    let next = state.set('massAction', !state.get('massAction'));
     let selected = next.get('selected');
 
     if (next.get('massAction')) {
@@ -111,38 +118,38 @@ export default createReducer(initialState, {
   },
   [actions.toggleSelectedAction]: (state, payload) => {
     let selected = state.get('selected');
-    selected     = selected.includes(payload)
+    selected = selected.includes(payload)
       ? selected.delete(selected.indexOf(payload))
       : selected.push(payload);
 
     return state.set('selected', selected);
   },
   [actions.toggleViewMode]: (state, payload) => {
-    let viewModeOptions = [];
+    const viewModeOptions = [];
     state.get('viewModeOptions').toJS().forEach(obj=> {
-      const nextObj   = {...obj};
+      const nextObj = {...obj};
       nextObj.current = obj.field === payload;
       viewModeOptions.push(nextObj);
     });
     return state.set('viewModeOptions', Immutable.fromJS(viewModeOptions));
   },
   [actions.toggleSort]: (state, payload) => {
-    let sortOptions = [];
+    const sortOptions = [];
     state.get('sortOptions').toJS().forEach(obj=> {
-      const nextObj   = {...obj};
+      const nextObj = {...obj};
       nextObj.current = obj.field === payload;
       sortOptions.push(nextObj);
     });
     return state.set('sortOptions', Immutable.fromJS(sortOptions));
   },
   [actions.setTableSort]: (state, payload) => {
-    let tableViewFields = [];
+    const tableViewFields = [];
     state.get('tableViewFields').toJS().forEach(obj=> {
       const nextObj = {...obj};
       nextObj.order = nextObj.name === payload.sort ? payload.order : false;
       tableViewFields.push(nextObj);
     });
-    return state.set('tableViewFields', Immutable.fromJS(tableViewFields))
+    return state.set('tableViewFields', Immutable.fromJS(tableViewFields));
   },
   [actions.toggleOrder]: setFullPayload('order')
 });

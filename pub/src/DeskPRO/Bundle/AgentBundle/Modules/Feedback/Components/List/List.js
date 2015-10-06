@@ -3,11 +3,11 @@ import { ListFrame }  from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Compo
 import { FeedbackListControlBar } from './ControlBar/FeedbackListControlBar';
 import { FeedbackList } from './View/List/FeedbackList';
 import { FeedbackCommentList } from './View/List/FeedbackCommentList';
-import { FeedbackTable } from './View/Table/FeedbackTable';
-import { FeedbackCommentTable } from './View/Table/FeedbackCommentTable';
+import { FeedbackTableContainer } from './View/Table/FeedbackTableContainer';
+import { FeedbackCommentTableContainer } from './View/Table/FeedbackCommentTableContainer';
 import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export class List extends Component {
 
@@ -53,7 +53,7 @@ export class List extends Component {
       );
     }
     return (
-      <FeedbackTable
+      <FeedbackTableContainer
         elements={feedback}
         selected={selected}
         toggleSelected={toggleSelected}
@@ -78,7 +78,7 @@ export class List extends Component {
       );
     }
     return (
-      <FeedbackCommentTable elements={comments}/>
+      <FeedbackCommentTableContainer elements={comments}/>
     );
   }
 
