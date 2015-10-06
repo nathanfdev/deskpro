@@ -28,12 +28,15 @@ export function commentsToReview() {
  * Feedback comments to review list
  * @return Promise
  */
-export function commentsToReviewList() {
-  const query = {
-    awaiting_validation: 1
-  };
-
-  return DpApi.sendGet('DP_API/feedback_comments_list?' + compileParams(query));
+export function commentsToReviewList(params) {
+  const paramsEncoded = [];
+  if (params.sort && params.order) {
+    paramsEncoded.push('sort=' + params.sort);
+    paramsEncoded.push('order=' + params.order);
+  }
+  paramsEncoded.push('awaiting_validation=1');
+  console.log('DP_API/feedback_comments_list?' + paramsEncoded.join('&'));
+  return DpApi.sendGet('DP_API/feedback_comments_list?' + paramsEncoded.join('&'));
 }
 
 /*
@@ -149,7 +152,7 @@ export function getList(params) {
   if (params.filters.value && params.filters.value.length > 0) {
     paramsEncoded.push(params.filters.alias + '=' + params.filters.value.replace(/\s/g, "%20"));
   }
-   console.log(' DP_API/feedback/?' + paramsEncoded.join('&'));
+  console.log(' DP_API/feedback/?' + paramsEncoded.join('&'));
   return DpApi.sendGet('DP_API/feedback/?' + paramsEncoded.join('&'));
 }
 /*

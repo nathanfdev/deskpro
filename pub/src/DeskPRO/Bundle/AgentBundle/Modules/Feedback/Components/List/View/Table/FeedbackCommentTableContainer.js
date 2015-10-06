@@ -3,7 +3,7 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import { TableView, TableHeader, Th, TableBody, Row, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 import { feedbackSelector } from '../../../../Selectors/list';
-import { setTableSort } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
+import { setTableSort } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
 import { peopleSelector } from '../../../../Selectors/list';
 
 import { connect } from 'react-redux';
@@ -88,11 +88,19 @@ export class FeedbackCommentTableContainer extends Component {
             <th colSpan={tableViewFieldsFiltered.length}>Feedback</th>
           </tr>
           <tr>
-            {commentsTableViewFieldsFiltered.map((field, index) =>
-                <Th key={index} field={field} sortTable={this.sortTable.bind(this)}/>
+            {commentsTableViewFieldsFiltered.map((field, index) => {
+                if (field.name === 'date_created') {
+                  return (
+                    <Th key={index} field={field} sortable sortTable={this.sortTable.bind(this)}/>
+                  );
+                }
+                return (
+                  <Th key={index} field={field}/>
+                );
+              }
             )}
             {tableViewFieldsFiltered.map((field, index) =>
-                <Th key={index} field={field} sortTable={this.sortTable.bind(this)}/>
+                <Th key={index} field={field}/>
             )}
           </tr>
         </TableHeader>
@@ -102,10 +110,11 @@ export class FeedbackCommentTableContainer extends Component {
               return (
                 <Row key={index}>
                   {commentsTableViewFieldsFiltered.map(field =>
-                  <Td key={key++} className={field.className}>{this.tdContent(field, element)}</Td>
+                      <Td key={key++} className={field.className}>{this.tdContent(field, element)}</Td>
                   )}
                   {tableViewFieldsFiltered.map(field =>
-                  <Td key={key++} className={field.className}>{this.tdContent(field, feedbackFromStore[element.feedback_id])}</Td>
+                      <Td key={key++}
+                          className={field.className}>{this.tdContent(field, feedbackFromStore[element.feedback_id])}</Td>
                   )}
                 </Row>
               );
