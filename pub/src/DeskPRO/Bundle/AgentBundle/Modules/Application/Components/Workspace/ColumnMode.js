@@ -9,16 +9,8 @@ export class ColumnMode extends React.Component {
     onChangeDimensions: PropTypes.func.isRequired
   };
 
-  setColumnDimensions(percent) {
-    console.log(percent);
-  }
-
-  resetColumnDimensions() {
-    this.setColumnDimensions(0);
-  }
-
   render() {
-    const { state, onChangeMode } = this.props;
+    const { state, onChangeMode, onChangeDimensions } = this.props;
     const currentMode = state.columnMode;
 
     return (
@@ -52,7 +44,7 @@ export class ColumnMode extends React.Component {
 
       <div className="dpw-workspace-state dpw-workspace-slider-container">
         <div className="">
-          <h2>Column Dimensions <a href="#" onClick={this.resetColumnDimensions.bind(this)}>Reset</a></h2>
+          <h2>Column Dimensions <a href="#" onClick={onChangeDimensions.bind(this, 0)}>Reset</a></h2>
           <div className="dpw-workspace-slider">
             <div className="dpw-workspace-slider-count-container">
               <span className="dpw-workspace-slider-count">{state.columnDimensions}%</span>
