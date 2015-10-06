@@ -32,8 +32,8 @@ export class Header extends React.Component {
       <HeaderWidget/>
 
       <div className="user-options">
-        <a href="#" className="notification-button" onClick={this.toggleWorkspace.bind(this)}>
-          <span className="title"><i className="fa fa-columns"></i><i className="fa fa-angle-down"></i></span>
+        <a href="#" className="notification-button" ref="workspace" onClick={this.toggleWorkspace.bind(this)}>
+          <span className="title" ><i className="fa fa-columns"></i><i className="fa fa-angle-down"></i></span>
         </a>
 
         <a href="#" className="notification-button">
@@ -47,9 +47,9 @@ export class Header extends React.Component {
         </a>
       </div>
 
-      <div style={{display: this.state.isWorkspaceOpen ? '' : 'none'}}>
+      <Positioned isOpen={this.state.isWorkspaceOpen} positionTarget={this.refs.workspace}>
         <Workspace dpWindow={dpWindow} closeFn={this.closeWorkspace.bind(this)} />
-      </div>
+      </Positioned>
 
     </header>);
   }

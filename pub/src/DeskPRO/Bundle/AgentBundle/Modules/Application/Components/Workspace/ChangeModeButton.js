@@ -7,7 +7,7 @@ export class ChangeModeButton extends React.Component {
     title: PropTypes.string.isRequired,
     activeType: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
-    children: PropTypes.object.isRequired
+    children: PropTypes.array.isRequired
   };
 
   render() {
