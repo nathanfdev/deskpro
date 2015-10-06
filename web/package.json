@@ -30,6 +30,7 @@
   },
   "scripts": {
     "bower-install": "bower install --config.interactive=false --allow-root",
-    "gulp-prod": "gulp prod"
+    "gulp-prod": "gulp prod",
+    "gulp": "gulp"
   }
 }
