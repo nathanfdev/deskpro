@@ -11,6 +11,7 @@ import { routingStarted } from '../Actions/AppActions';
   dpWindow: state.Application.dpWindow
 }))
 export class DpApp extends React.Component {
+
   static propTypes = {
     user: PropTypes.object.isRequired,
     children: PropTypes.object.isRequired,
