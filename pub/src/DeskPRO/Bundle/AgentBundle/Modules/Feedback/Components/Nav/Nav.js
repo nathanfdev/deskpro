@@ -9,6 +9,7 @@ import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
 
 @injectIntl
 export class Nav extends Component {
+
   static propTypes = {
     intl: intlShape.isRequired,
     groupChoice: PropTypes.func.isRequired,
@@ -19,7 +20,7 @@ export class Nav extends Component {
     types: PropTypes.array.isRequired,
     customCategories: PropTypes.array.isRequired,
     toValidateCount: PropTypes.number.isRequired,
-    commentsToReviewCount: PropTypes.number.isRequired,
+    commentsToReviewCount: PropTypes.number.isRequired
   };
 
   render() {
