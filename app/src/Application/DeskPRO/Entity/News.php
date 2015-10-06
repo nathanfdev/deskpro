@@ -285,8 +285,10 @@ class News extends ContentAbstract implements HighlightableModelInterface
             array(
                 'name'    => 'news',
                 'indexes' => array(
-                    'date_published_idx' => array('columns' => array(0 => 'date_published')),
-                    'status_idx'         => array('columns' => array('status')),
+                    'date_published_idx'    => array('columns' => array(0 => 'date_published')),
+                    'date_updated_idx'      => array('columns' => array('date_updated')),
+                    'date_last_comment_idx' => array('columns' => array('date_last_comment')),
+                    'status_idx'            => array('columns' => array('status')),
                 ),
             )
         );
@@ -410,12 +412,33 @@ class News extends ContentAbstract implements HighlightableModelInterface
         );
         $metadata->mapField(
             array(
+                'fieldName'  => 'date_updated',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_updated',
+            )
+        )
+        ;
+        $metadata->mapField(
+            array(
                 'fieldName'  => 'date_published',
                 'type'       => 'datetime',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'date_published',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'date_last_comment',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_last_comment',
             )
         );
         $metadata->mapField(

@@ -1649,6 +1649,10 @@ return array(
     ),
     1444080586 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/10/Build1444080586.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Users/tickner/src/deskpro/deskpro-portal/app/src/Application/InstallBundle/Upgrade/Build/2015/10/Build1444080586',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1444080586',
+    ),
+    1444146056 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/10/Build1444146056.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1444146056',
     ),
 );

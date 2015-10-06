@@ -26,4 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1444146056);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1444146056 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('add more date fields to content entities');
+        $this->execMutateSql('ALTER TABLE downloads ADD date_last_comment DATETIME DEFAULT NULL, CHANGE date_updated date_updated DATETIME DEFAULT NULL');
+        $this->execMutateSql('CREATE INDEX date_updated_idx ON downloads (date_updated)');
+        $this->execMutateSql('CREATE INDEX date_last_comment_idx ON downloads (date_last_comment)');
+        $this->execMutateSql('CREATE INDEX date_updated_idx ON feedback (date_updated)');
+        $this->execMutateSql('CREATE INDEX date_last_comment_idx ON feedback (date_last_comment)');
+        $this->execMutateSql('ALTER TABLE news ADD date_updated DATETIME DEFAULT NULL, ADD date_last_comment DATETIME DEFAULT NULL');
+        $this->execMutateSql('CREATE INDEX date_updated_idx ON news (date_updated)');
+        $this->execMutateSql('CREATE INDEX date_last_comment_idx ON news (date_last_comment)');
+    }
+}

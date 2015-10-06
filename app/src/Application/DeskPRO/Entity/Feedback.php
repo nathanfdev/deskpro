@@ -88,12 +88,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
-     *                                                   SWG\Property(name="comments",type="array", items="$ref:FeedbackComment")
-     */
-    protected $comments;
-
-    /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
      *                                                   SWG\Property(name="labels",type="array", items="$ref:LabelFeedback")
      */
     protected $labels;
@@ -131,16 +125,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     protected $_search_highlights;
 
     /**
-     * @var \DateTime
-     */
-    protected $date_updated;
-
-    /**
-     * @var \DateTime
-     */
-    protected $date_last_comment;
-
-    /**
      * @var CustomDataCollection
      */
     protected $cdc;
@@ -149,9 +133,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     {
         parent::__construct();
 
-        $this->_is_new = true;
-
-        $this->setModelField('date_updated',  new \DateTime());
+        $this->_is_new     = true;
         $this->comments    = new ArrayCollection();
         $this->custom_data = new ArrayCollection();
         $this->attachments = new ArrayCollection();
@@ -339,8 +321,10 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                 if ($sub_status) {
                     $status_cat = App::findEntity('DeskPRO:FeedbackStatusCategory', $sub_status);
                     $this->setModelField('status_category', $status_cat);
+                    $this->setModelField('date_updated', new \DateTime());
                 } else {
                     $this->setModelField('status_category', null);
+                    $this->setModelField('date_updated', new \DateTime());
                 }
                 break;
 
@@ -454,11 +438,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $cache->invalidateRegex('/_feedback(-|_)/');
     }
 
-    public function _incrementUpdatedAt()
-    {
-        $this->setModelField('date_updated', new \DateTime());
-    }
-
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data = parent::toApiData($primary, $deep, $visited);
@@ -518,6 +497,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     public function setStatusCategory(FeedbackStatusCategory $status_category = null)
     {
         $this->setModelField('status_category', $status_category);
+        $this->setModelField('date_updated', new \DateTime());
     }
 
     /**
@@ -544,22 +524,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                 }
             }
         }
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateUpdated()
-    {
-        return $this->date_updated;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateLastComment()
-    {
-        return $this->date_last_comment;
     }
 
     public function getCustomDataCollection()
@@ -600,13 +564,14 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
             array(
                 'name'    => 'feedback',
                 'indexes' => array(
-                    'date_published_idx' => array('columns' => array(0 => 'date_published')),
-                    'status_idx'         => array('columns' => array('status')),
+                    'date_published_idx'    => array('columns' => array(0 => 'date_published')),
+                    'date_updated_idx'      => array('columns' => array('date_updated')),
+                    'date_last_comment_idx' => array('columns' => array('date_last_comment')),
+                    'status_idx'            => array('columns' => array('status')),
                 ),
             )
         );
         $metadata->addLifecycleCallback('_invalidatePageCache', 'preFlush');
-        $metadata->addLifecycleCallback('_incrementUpdatedAt', 'preUpdate');
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(

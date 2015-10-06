@@ -106,6 +106,11 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     protected $total_rating = 0;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $comments;
+
+    /**
      * Number of user-visible comments: This is a count that must be updated when a comment is added.
      *
      * @var int
@@ -139,6 +144,16 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $date_published;
 
+    /**
+     * @var \DateTime
+     */
+    protected $date_last_comment;
+
+    /**
+     * @var \DateTime
+     */
+    protected $date_updated;
+
     // Implement in children
     ///**
     // * @var \Doctrine\Common\Collections\ArrayCollection
@@ -167,9 +182,11 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function __construct()
     {
         $this['date_created'] = new \DateTime();
-        $this->revisions      = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->labels         = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->slug_history   = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->setModelField('date_updated', new \DateTime());
+        $this->revisions    = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->labels       = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->slug_history = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->comments     = new \Doctrine\Common\Collections\ArrayCollection();
 
         $this['status']        = self::STATUS_HIDDEN;
         $this['hidden_status'] = self::HIDDEN_STATUS_DRAFT;
@@ -181,6 +198,34 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateLastComment()
+    {
+        return $this->date_last_comment;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDateUpdated()
+    {
+        return $this->date_updated;
+    }
+
+    /**
+     * @param DateTime $date_updated
+     *
+     * @return $this
+     */
+    public function setDateUpdated(DateTime $date_updated = null)
+    {
+        $this->setModelField('date_updated', $date_updated);
+
+        return $this;
     }
 
     /**
@@ -321,6 +366,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $this->setModelField('content', $content);
+        $this->setModelField('date_updated', new \DateTime());
 
         return $this;
     }
@@ -545,6 +591,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function addComment($comment)
     {
         $this->setModelField('num_comments', $this->num_comments + 1);
+        $this->setModelField('date_last_comment', new \DateTime());
         $comment->setObject($this);
     }
 
@@ -611,6 +658,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function setRealContent($content)
     {
         $this->setModelField('content', $content);
+        $this->setModelField('date_updated', new \DateTime());
     }
 
     /**
@@ -669,5 +717,10 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         }
 
         return $content;
+    }
+
+    public function _preUpdate()
+    {
+        $this->setModelField('date_updated', new \DateTime());
     }
 }

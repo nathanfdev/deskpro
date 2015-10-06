@@ -79,16 +79,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     /**
      * @var \DateTime
      */
-    protected $date_updated;
-
-    /**
-     * @var \DateTime
-     */
-    protected $date_last_comment;
-
-    /**
-     * @var \DateTime
-     */
     protected $date_end;
 
     /**
@@ -140,26 +130,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     public function setDateEnd(DateTime $date_end = null)
     {
         $this->setModelField('date_end', $date_end);
-
-        return $this;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getDateUpdated()
-    {
-        return $this->date_updated;
-    }
-
-    /**
-     * @param DateTime $date_updated
-     *
-     * @return $this
-     */
-    public function setDateUpdated(DateTime $date_updated = null)
-    {
-        $this->setModelField('date_updated', $date_updated);
 
         return $this;
     }
@@ -272,12 +242,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         $this->_onPropertyChanged('categories', null, $this->categories);
 
         return $this;
-    }
-
-    public function addComment($comment)
-    {
-        parent::addComment($comment);
-        $this->setModelField('date_last_comment', new \DateTime());
     }
 
     public function addToCategory(ArticleCategory $cat)
