@@ -1,1 +1,0 @@
-This file indicates that reducers in this directory are using the legacy Reducer class.

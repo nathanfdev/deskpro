@@ -1,7 +1,5 @@
-/* @ToDo change to Ampliflux */
-import { createAction } from 'redux-actions';
-
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { createAction } from 'Ampliflux';
+import * as PeopleApi from 'DeskPRO/Bundle/AgentBundle/Services/Api/People';
 import ActionTypes from './ActionTypes';
 
 export const setAppUser = createAction(ActionTypes.APP_SET_USER);
@@ -9,13 +7,10 @@ export const setIsLoaded = createAction(ActionTypes.APP_IS_LOADED);
 export const setActiveApp = createAction(ActionTypes.SET_ACTIVE_APP);
 export const routingStarted = createAction(ActionTypes.ROUTING_STARTED);
 export const doTransitionTo = createAction(ActionTypes.TRANSITION_TO);
-
 export const collapseNav = createAction(ActionTypes.COLLAPSE_NAV);
 export const expandNav = createAction(ActionTypes.EXPAND_NAV);
-
 export const expandSwitcher = createAction(ActionTypes.EXPAND_SWITCHER);
 export const collapseSwitcher = createAction(ActionTypes.COLLAPSE_SWITCHER);
-
 export const toggleView = createAction(ActionTypes.TOGGLE_VIEW);
 
 export function transitionTo(pathname, query = null, state = null) {
@@ -24,17 +19,12 @@ export function transitionTo(pathname, query = null, state = null) {
   };
 }
 
-export const loadWindow = () => {
-  return dispatch => {
-    const promises = [];
+export const loadWindow = createAction(
+  'APP_LOAD_WINDOW',
+  () => dispatch => PeopleApi.loadMe().then(promise => {
+    const user = promise.getData().data;
 
-    // can wait on multiple loads here by adding new
-    // promises to the array
-    promises.push(DpApi.sendGet('DP_API/me')); // 0
-
-    Promise.all(promises).then((values) => {
-      dispatch(setAppUser(values[0].getData().data.person));
-      dispatch(setIsLoaded());
-    });
-  };
-};
+    dispatch(setAppUser(user));
+    dispatch(setIsLoaded());
+  }
+));

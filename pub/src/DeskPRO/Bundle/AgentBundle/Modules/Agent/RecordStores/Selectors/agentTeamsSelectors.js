@@ -16,5 +16,5 @@ export const agentTeamsSelector = createSelector(
 
 export const agentTeamNamesSelector = createSelector(
   agentTeamsSelector,
-  teams => reduceMapToProperty('name', teams)
+  teams => reduceMapToProperty('name', teams.toJS())
 );

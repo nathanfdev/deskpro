@@ -1,24 +1,25 @@
-import React from "react";
+import React, { PropTypes } from 'react';
 
 export default class TabFrame extends React.Component {
+  static propTypes = {
+    dpWindow: PropTypes.object.isRequired
+  };
+
   render() {
-      const { dp_window } = this.props;
+    const { dpWindow } = this.props;
+    let classes = ['dp-tab-frame'];
 
-      let classes = ["dp-tab-frame"];
+    if (dpWindow.get('expandedSwitcher')) {
+      classes.push('expanded');
+    }
+    if (dpWindow.get('collapseNav')) {
+      classes.push('collapsed-nav');
+    }
+    if (dpWindow.get('taskView') !== 'list') {
+      classes.push('kanban-shifted');
+    }
 
-      if (dp_window.expandedSwitcher) {
-        classes.push('expanded');
-      }
-
-      if (dp_window.collapseNav) {
-        classes.push('collapsed-nav');
-      }
-
-      if (dp_window.taskView !== 'list') {
-        classes.push('kanban-shifted');
-      }
-
-      classes = classes.join(' ');
+    classes = classes.join(' ');
 
     return (
       <section className={classes}>

@@ -1,29 +1,19 @@
-import ActionTypes from "../Actions/ActionTypes";
-import { Reducer } from "Ampliflux/reducers";
+import * as actions from '../Actions/AppActions';
+import { createReducer } from 'Ampliflux';
 
-export default class routing extends Reducer {
-	getInitialState() {
-		return {
-			router: null,
-		};
-	}
+const initialState = {
+  router: null
+};
 
-	transitionTo(state, action) {
-		if(state.router) {
-	      state.router.transitionTo.apply(null, action.payload);
-	    }
-	    return state;
-	}
+export default createReducer(initialState, {
+  [actions.doTransitionTo]: (state, payload) => {
+    if (state.router) {
+      state.router.transitionTo.apply(null, payload);
+    }
 
-	routingStarted(state, action) {
-		return {
-	  		...state,
-	  		router: action.payload
-	    };
-	}
-
-	registerHandlers() {this
-		.r(ActionTypes.TRANSITION_TO, this.transitionTo)
-		.r(ActionTypes.ROUTING_STARTED, this.routingStarted)
-	}
-}
+    return state;
+  },
+  [actions.routingStarted]: (state, payload) => {
+    return state.merge({router: payload});
+  }
+});

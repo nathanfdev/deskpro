@@ -1,10 +1,6 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
 import { HeaderWidget } from '../../IM/Components/HeaderWidget';
 
-@connect(state => ({
-  user: state.user
-}))
 export class Header extends React.Component {
   static propTypes = {
     user: PropTypes.object.isRequired
@@ -28,7 +24,7 @@ export class Header extends React.Component {
         </a>
 
         <a href="#" className="user-options-button">
-          <span className="user-photo" style={{backgroundImage: 'url(' + user.picture_url + ')'}}></span>
+          <span className="user-photo" style={{backgroundImage: 'url(' + user.get('picture_url') + ')'}}></span>
           <span className="title">Settings <i className="fa fa-angle-down"></i></span>
         </a>
       </div>

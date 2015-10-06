@@ -9,7 +9,7 @@ import { getRecentAgents } from '../Selectors/list';
 @connect(state => ({
   recentAgents: getRecentAgents(state),
   current: state.IM.chats.get('current'),
-  me: state.user,
+  me: state.Application.user
 }))
 export class HeaderWidget extends React.Component {
   static propTypes = {
@@ -39,7 +39,7 @@ export class HeaderWidget extends React.Component {
           ? this.props.recentAgents.map(
           (agent, index) => {
             "use strict";
-            if (agent.id !== this.props.me.id) {
+            if (agent.id !== this.props.me.get('id')) {
               return <Recent handleClickParticipant={this.handleClickParticipant} key={index} agent={agent}/>
             }
           }

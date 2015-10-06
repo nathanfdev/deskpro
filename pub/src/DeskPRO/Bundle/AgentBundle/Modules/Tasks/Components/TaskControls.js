@@ -47,7 +47,7 @@ export default class TaskControls extends React.Component {
   }
 
   render() {
-    const taskView = this.props.windowProps.taskView;
+    const taskView = this.props.windowProps.get('taskView');
     const viewSwitcherPosition = $('.task-list-view-switcher');
 
     const {actionable, toggleAllMassActions, setView} = this.props;
