@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\DownloadComment;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
@@ -201,6 +202,18 @@ class DownloadsController extends AbstractController
             $comment->setIpAddress($request->getClientIp());
             $new_comment_form = $form_handler->createForm($comment);
             if ($form_result = $form_handler->handle($new_comment_form, $request, $file, $comment)) {
+                // auto subscribe a logged in use to this feedback item
+                // because they submitted a comment
+                if ($person = $this->getUser()) {
+                    if ($person instanceof Person) {
+                        $subscriptions_helper = $this->getSubscriptionsHelper();
+                        if (!$subscriptions_helper->isSubscribedContent($file, $person)) {
+                            $subscriptions_helper->subscribeToContent($file, $person);
+                            $this->addFlash('success', $this->phrase('portal.flashes.download_subscribe'));
+                        }
+                    }
+                }
+
                 if ($form_result instanceof Response) {
                     return $form_result;
                 }
