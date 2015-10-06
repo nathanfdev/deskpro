@@ -8,7 +8,7 @@ import { combineReducerHierarchy } from 'Ampliflux';
 import * as ampMiddleware from 'Ampliflux/middleware';
 import BrowserHistory from 'react-router/lib/BrowserHistory';
 import AppReducers from './AgentApp_Reducers.js';
-import { DpAppContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/DpAppContainer';
+import { DpAppContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/DpAppContainer';
 import { batchedUpdatesMiddleware } from 'redux-batched-updates';
 import { IntlProvider, defineMessages } from 'react-intl';
 
