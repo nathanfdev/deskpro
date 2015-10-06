@@ -66,7 +66,7 @@ export class Chat extends React.Component {
 
   handleAddMessage = (message) => {
     "use strict";
-    this.props.dispatch(addMessage(this.props.current.id, message));
+    this.props.dispatch(addMessage(this.props.current.id, message, this.props.me));
   };
 
   searchForm() {

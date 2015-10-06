@@ -4,7 +4,7 @@ export class Message extends React.Component {
   render() {
     const author = this.props.agents.get(this.props.message.person_id);
     const style = {
-      backgroundImage: 'url("' + author.gravatar_url + '")'
+      backgroundImage: 'url("' + author.get('gravatar_url') + '")'
     };
     return (
       <li className="chat-message old">

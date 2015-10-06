@@ -10,6 +10,12 @@ export default createReducer(initialState, {
     return state.set('chatMessages', payload);
   },
   [actions.addMessageOptimistic]: (state, payload) => {
-    return state.mergeDeep({chatMessages: payload});
+    let pay = {};
+    pay[payload.id] = payload.data;
+    console.log(payload);
+    const messages_old = state.getIn(['chatMessages', payload.id]);
+    let messages_new = [payload.message];
+    messages_new = messages_old.mergeDeep(messages_new);
+    return state.set('chatMessages', messages_new);
   }
 });

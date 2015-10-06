@@ -19,20 +19,25 @@ export class Footer extends React.Component {
     this.setState(newState);
   };
 
-  handleChange = (event) => {
+  handleChange (event) {
     const oldState = this.state;
     const newState = {...oldState};
     newState.message = event.target.value;
     this.setState(newState);
   };
 
+  handleSubmit = () => {
+    "use strict";
+    this.props.handleAddMessage(this.state.message);
+  };
+
   render() {
     return (
       <footer>
-        <form onSubmit={this.props.handleAddMessage.bind(this.state.message)}>
-          <input onChange={this.handleChange} type="text" placeholder="Send a message"/>
+        <form onSubmit={this.handleSubmit}>
+          <input onChange={this.handleChange.bind(this)} type="text" placeholder="Send a message"/>
           <a href="#" onClick={this.toggleEmoji} className="insert-emoticon"><span className="emoticon sprite sprite-emoticon-1"></span></a>
-          <input onClick={this.props.handleAddMessage.bind(this.state.message)} type="button" value="&#xf101;"/>
+          <input onClick={this.handleSubmit} type="button" value="&#xf101;"/>
           {this.state.emojiOpened ? this.renderEmojiTable() : null}
         </form>
       </footer>
