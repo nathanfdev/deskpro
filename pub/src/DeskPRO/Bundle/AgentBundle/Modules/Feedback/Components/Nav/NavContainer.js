@@ -69,6 +69,8 @@ export class NavContainer extends Component {
     event.stopPropagation();
     const {dispatch } = this.props;
     dispatch(actions.changeGroupState(group));
+    dispatch(actions.toggleSort('date_created'));
+    dispatch(actions.toggleOrder('desc'));
     dispatch(commentActions.loadCommentsList());
   }
 

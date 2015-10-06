@@ -154,6 +154,7 @@ export default createReducer(initialState, {
     return state.set('tableViewFields', Immutable.fromJS(tableViewFields));
   },
   [actions.toggleOrder]: setFullPayload('order'),
+  [commentsActions.commentsToggleOrder]: setFullPayload('order'),
   [commentsActions.setTableSort]: (state, payload) => {
     const commentsTableViewFields = [];
     state.get('commentsTableViewFields').toJS().forEach(obj=> {

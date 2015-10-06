@@ -34,3 +34,12 @@ export const setTableSort = createAction(
     return {sort, order};
   }
 );
+
+export const commentsToggleOrder = createAction(
+  'FEEDBACK_COMMENTS_TOGGLE_ORDER',
+    order => dispatch => {
+    dispatch(loadCommentsList({sort: 'date_created', order: order}));
+    return order;
+  }
+);
+
