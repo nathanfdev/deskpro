@@ -58,8 +58,9 @@ class FeedbackCommentController extends BaseController
      *
      * @param Request $request
      *
-     * @return View
      * @throws \LogicException
+     *
+     * @return View
      */
     public function cgetAction(Request $request)
     {
@@ -69,8 +70,8 @@ class FeedbackCommentController extends BaseController
             ->select('c')
             ->from('DeskPRO:FeedbackComment', 'c');
         $awaitingValidation = $request->get('awaiting_validation');
-        $sort = $request->get('sort');
-        $order = $request->get('order');
+        $sort               = $request->get('sort');
+        $order              = $request->get('order');
         if ($awaitingValidation) {
             $qb
                 ->andWhere('c.status = :validating')
@@ -99,8 +100,10 @@ class FeedbackCommentController extends BaseController
      * @Get("/feedback_comments_counter", name="api_feedback_comments_counter")
      *
      * @param Request $request
-     * @return View
+     *
      * @throws \LogicException
+     *
+     * @return View
      */
     public function counterAction(Request $request)
     {

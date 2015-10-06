@@ -12,6 +12,9 @@ export const expandNav = createAction(ActionTypes.EXPAND_NAV);
 export const expandSwitcher = createAction(ActionTypes.EXPAND_SWITCHER);
 export const collapseSwitcher = createAction(ActionTypes.COLLAPSE_SWITCHER);
 export const toggleView = createAction(ActionTypes.TOGGLE_VIEW);
+export const setColumnMode = createAction(ActionTypes.APP_SET_COLUMN_MODE);
+export const setColumnDimensions = createAction(ActionTypes.APP_SET_COLUMN_DIMENSIONS);
+export const setSidebarMode = createAction(ActionTypes.APP_SET_SIDEBAR_MODE);
 
 export function transitionTo(pathname, query = null, state = null) {
   return dispatch => {

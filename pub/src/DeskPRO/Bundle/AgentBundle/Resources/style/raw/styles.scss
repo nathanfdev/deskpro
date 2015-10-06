@@ -57,6 +57,7 @@ a { color: $link-color; }
   @import 'top-bar-notifications';// -
   @import 'top-bar-agent-ims';// Ims (avatar styles in the main top-bar.scss)
   @import 'top-bar-switches';// All the switches
+  @import 'top-bar-dropdown';
 
 @import 'content';
 
@@ -69,6 +70,7 @@ a { color: $link-color; }
   @import 'dropdown-chat';// Chat controls
   @import 'help-dropdown';// Help stuff
   @import 'select-dropdown';
+  @import 'dropdown-workspace';
 
   @import 'navigation-dropdowns';
 

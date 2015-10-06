@@ -1,0 +1,47 @@
+import React, { PropTypes } from 'react';
+import { ChangeModeButton } from './ChangeModeButton';
+
+export class SidebarMode extends React.Component {
+
+  static propTypes = {
+    state: PropTypes.object.isRequired,
+    onChangeMode: PropTypes.func.isRequired
+  };
+
+  render() {
+    const { state, onChangeMode } = this.props;
+    const currentMode = state.sidebarMode;
+
+    return (
+      <div className="dpw-workspace-type-container">
+        <div className="dpw-workspace-type-header">
+          <span className="title">Sidebar Mode</span>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p>
+        </div>
+
+        <div className="dpw-workspace-state">
+          <ChangeModeButton type={'static'}
+                            title={'Static Mode'}
+                            activeType={currentMode}
+                            onChange={onChangeMode}>
+
+            <span className="workspace-state-item state-sidebar active"></span>
+            <span className="workspace-state-item left-column"></span>
+            <span className="workspace-state-item right-column"></span>
+          </ChangeModeButton>
+
+          <ChangeModeButton type={'hover'}
+                            title={'Hover Mode'}
+                            activeType={currentMode}
+                            onChange={onChangeMode}>
+
+            <span className="workspace-state-item state-sidebar state-sidebar-hover active">
+              <i className="fa fa-asterisk"></i>
+            </span>
+            <span className="workspace-state-item left-column"></span>
+            <span className="workspace-state-item right-column"></span>
+          </ChangeModeButton>
+        </div>
+      </div>);
+  }
+}

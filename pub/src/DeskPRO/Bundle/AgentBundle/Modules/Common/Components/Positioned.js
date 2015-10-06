@@ -76,7 +76,7 @@ export default class Positioned extends React.Component {
   updatePosition() {
     if (this.props.positionCalc) {
       const positionResult = this.props.positionCalc();
-      jQuery(this.node).css('position', absolute)
+      jQuery(this.node).css('position', 'absolute')
                   .css('top', positionResult.top)
                   .css('left', positionResult.left);
     } else {

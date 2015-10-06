@@ -8,7 +8,10 @@ const initialState = {
   activeAppId: 'tickets',
   collapseNav: false,
   expandedSwitcher: false,
-  taskView: constants.VIEW_MODE_LIST
+  taskView: constants.VIEW_MODE_LIST,
+  columnMode: 'column',
+  columnDimensions: 30,
+  sidebarMode: 'hover'
 };
 
 /**
@@ -41,5 +44,14 @@ export default createReducer(initialState, {
   },
   [actions.toggleView]: (state, payload) => {
     return state.set('taskView', payload);
+  },
+  [actions.setColumnMode]: (state, payload) => {
+    return state.set('columnMode', payload);
+  },
+  [actions.setColumnDimensions]: (state, payload) => {
+    return state.set('columnDimensions', payload || 0);
+  },
+  [actions.setSidebarMode]: (state, payload) => {
+    return state.set('sidebarMode', payload);
   }
 });

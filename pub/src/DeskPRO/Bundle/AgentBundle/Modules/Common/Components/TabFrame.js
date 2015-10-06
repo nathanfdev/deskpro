@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-export default class TabFrame extends React.Component {
+export class TabFrame extends React.Component {
   static propTypes = {
     dpWindow: PropTypes.object.isRequired
   };
