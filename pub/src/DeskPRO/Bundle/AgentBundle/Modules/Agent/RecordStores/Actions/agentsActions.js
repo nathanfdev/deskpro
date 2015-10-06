@@ -6,7 +6,7 @@ import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 export const loadAllAgents = createAction(
   loadPeople.type,
   createRecordsRequest(
-    ['RecordStores', 'people'],
+    ['RecordStores', 'CRM', 'people'],
     'agents',
     () => new Promise((resolve, reject) =>
       DpApi.sendGet('DP_API/agents')

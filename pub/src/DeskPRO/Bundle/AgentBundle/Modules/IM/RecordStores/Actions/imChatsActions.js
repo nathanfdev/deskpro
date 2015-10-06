@@ -7,7 +7,7 @@ import * as Agents from 'DeskPRO/Bundle/AgentBundle/Services/Api/Agents';
 export const loadChats = createAction(
   'IM_LOAD_CHATS',
   requestRecords(
-    ['RecordStores', 'chats'],
+    ['RecordStores', 'IM', 'chats'],
       missingIds => {
         return new Promise(
           (resolve, reject) =>

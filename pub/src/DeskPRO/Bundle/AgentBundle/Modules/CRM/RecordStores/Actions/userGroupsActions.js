@@ -9,7 +9,7 @@ export const setUserGroupsRequest = createAction('SET_USER_GROUPS',             
 export const loadAllUserGroups    = createAction(
   'LOAD_USER_GROUPS',
   recordStoreActions.createRecordsRequest(
-    ['RecordStores', 'userGroups'],
+    ['RecordStores', 'CRM', 'userGroups'],
     'all',
     () => new Promise((resolve, reject) =>
       DpApi.sendGet('DP_API/user_groups')

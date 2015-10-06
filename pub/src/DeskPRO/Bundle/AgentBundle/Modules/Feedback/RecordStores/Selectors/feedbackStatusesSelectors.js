@@ -1,7 +1,7 @@
 import { createStoreSelectors, createRequestSelectorsBuilder } from 'Ampliflux/common/record-store/selectors';
 
 function feedbackStatusesStateSel(state) {
-  return state.RecordStores.feedback.statuses;
+  return state.RecordStores.Feedback.feedback.statuses;
 }
 
 export const feedbackStatusesStateSelector          = createStoreSelectors(feedbackStatusesStateSel);
