@@ -1,10 +1,10 @@
 import React, {Component, PropTypes} from 'react';
 import { List } from './List';
-import { connect } from 'react-redux';
 import { viewDataSelector, peopleSelector, feedbackTypesSelector, feedbackLabelsSelector, feedbackCommentsSelector, feedbackStatusesSelector, feedbackSelector } from '../../Selectors/list';
 import { toggleSelectedAction } from '../../Actions/FeedbackListActions';
 import { groupDataSelector } from '../../Selectors/nav';
 
+import { connect } from 'react-redux';
 @connect(state => {
   return ({
     massAction: state.Feedback.list.get('massAction'),
@@ -34,7 +34,7 @@ export class ListContainer extends Component {
     feedbackTypes: PropTypes.array.isRequired,
     feedbackLabels: PropTypes.array.isRequired,
     feedbackComments: PropTypes.array.isRequired,
-    feedbackStatuses: PropTypes.array.isRequired,
+    feedbackStatuses: PropTypes.object.isRequired,
     feedbackFromStore: PropTypes.array.isRequired,
     massAction: PropTypes.bool.isRequired,
     selected: PropTypes.array.isRequired
