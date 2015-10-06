@@ -53,7 +53,9 @@ export class Workspace extends React.Component {
   saveWorkspace = () => {
     const { closeFn, dispatch } = this.props;
 
-    dispatch(AppActions.updateWorkspace(this.state));
+    dispatch(AppActions.setColumnMode(this.state.columnMode));
+    dispatch(AppActions.setSidebarMode(this.state.sidebarMode));
+
     closeFn();
   };
 
