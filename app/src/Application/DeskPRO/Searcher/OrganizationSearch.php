@@ -398,9 +398,6 @@ class OrganizationSearch extends SearcherAbstract
                                         break;
                                     case self::OP_LTE:
                                     case self::OP_GTE:
-                                        if (!strlen($choice) || 'DP_NO_SELECTION' === $choice) {
-                                            break;
-                                        }
                                         $op = self::OP_LTE === $op ? '<=' : '>=';
                                         if ($isDate) {
                                             if (!empty($choice['date1'])) {
@@ -408,14 +405,11 @@ class OrganizationSearch extends SearcherAbstract
                                             } elseif (!empty($choice['date1_relative'])) {
                                                 $wheres[] = "$field $op ".strtotime('-'.$choice['date1_relative'].' '.$choice['date1_relative_type']);
                                             }
-                                        } else {
+                                        } elseif (!is_array($choice) && strlen($choice) && 'DP_NO_SELECTION' !== $choice) {
                                             $wheres[] = "$field $op ".$this->quoteDbValue('%'.$choice.'%');
                                         }
                                         break;
                                     case self::OP_BETWEEN:
-                                        if (!strlen($choice) || 'DP_NO_SELECTION' === $choice) {
-                                            break;
-                                        }
                                         if ($isDate) {
                                             if (!empty($choice['date1'])) {
                                                 $wheres[] = $field.' BETWEEN '.(int) $choice['date1'].' AND '.(int) @$choice['date2'];
