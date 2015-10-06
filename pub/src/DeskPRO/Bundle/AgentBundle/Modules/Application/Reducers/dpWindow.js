@@ -48,6 +48,9 @@ export default createReducer(initialState, {
   [actions.setColumnMode]: (state, payload) => {
     return state.set('columnMode', payload);
   },
+  [actions.setColumnDimensions]: (state, payload) => {
+    return state.set('columnDimensions', payload || 0);
+  },
   [actions.setSidebarMode]: (state, payload) => {
     return state.set('sidebarMode', payload);
   }

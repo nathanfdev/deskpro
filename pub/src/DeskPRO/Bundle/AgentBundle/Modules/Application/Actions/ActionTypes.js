@@ -5,6 +5,7 @@ export default keyMirror({
   APP_SET_USER: null,
   APP_IS_LOADED: null,
   APP_SET_COLUMN_MODE: null,
+  APP_SET_COLUMN_DIMENSIONS: null,
   APP_SET_SIDEBAR_MODE: null,
   SET_ACTIVE_APP: null,
   ROUTING_STARTED: null,

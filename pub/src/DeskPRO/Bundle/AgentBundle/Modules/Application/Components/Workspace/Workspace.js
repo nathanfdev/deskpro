@@ -29,6 +29,7 @@ export class Workspace extends React.Component {
   };
 
   setColumnDimensions = (percent) => {
+    console.log(percent);
     this.setState({
       columnDimensions: percent
     });
@@ -54,6 +55,7 @@ export class Workspace extends React.Component {
     const { closeFn, dispatch } = this.props;
 
     dispatch(AppActions.setColumnMode(this.state.columnMode));
+    dispatch(AppActions.setColumnDimensions(this.state.columnDimensions));
     dispatch(AppActions.setSidebarMode(this.state.sidebarMode));
 
     closeFn();
