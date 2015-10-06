@@ -8,9 +8,9 @@ const initialState = {
   collapseNav: false,
   expandedSwitcher: false,
   taskView: constants.VIEW_MODE_LIST,
-  columnMode: false,
+  columnMode: 'column',
   columnDimensions: 30,
-  sidebarMode: false
+  sidebarMode: 'hover'
 };
 
 export default createReducer(initialState, {

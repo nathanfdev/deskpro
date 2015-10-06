@@ -37,7 +37,6 @@ export class SidebarMode extends React.Component {
                             title={'Hover Mode'}
                             activeType={currentMode}
                             onChange={this.changeMode}>
-            <span className="active-workspace-mark"><i className="fa fa-check"></i></span>
             <span className="workspace-state-item state-sidebar state-sidebar-hover active"><i className="fa fa-asterisk"></i></span>
             <span className="workspace-state-item left-column"></span>
             <span className="workspace-state-item right-column"></span>

@@ -38,7 +38,6 @@ export class ColumnMode extends React.Component {
                           title={'Column Mode'}
                           activeType={currentMode}
                           onChange={this.changeMode}>
-          <span className="active-workspace-mark"><i className="fa fa-check"></i></span>
           <span className="workspace-state-item state-sidebar"></span>
           <span className="workspace-state-item left-column active"></span>
           <span className="workspace-state-item right-column active"></span>
@@ -52,7 +51,6 @@ export class ColumnMode extends React.Component {
           <span className="workspace-state-item full-width-column active"></span>
         </ChangeModeButton>
       </div>
-
 
       <div className="dpw-workspace-state dpw-workspace-slider-container">
         <div className="">

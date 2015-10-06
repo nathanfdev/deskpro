@@ -12,11 +12,13 @@ export class ChangeModeButton extends React.Component {
 
   render() {
     const {type, title, activeType, onChange, children} = this.props;
-    const classNames = 'workspace-state-a ' + (type === activeType ? 'active' : '');
+    const isActive = type === activeType;
+    const classNames = 'workspace-state-a ' + (isActive ? 'active' : '');
 
     return (
       <div className={classNames} onClick={onChange.bind(this, type)}>
         <div className="workspace-state-screen">
+          {isActive ? (<span className="active-workspace-mark"><i className="fa fa-check"></i></span>) : null}
           {children}
         </div>
         <span className="workspace-state-title">{title}</span>
