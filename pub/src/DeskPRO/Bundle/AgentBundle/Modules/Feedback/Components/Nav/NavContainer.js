@@ -17,7 +17,8 @@ import { loadFeedbackLabels } from '../../RecordStores/Actions/feedbackLabelsAct
     labels: state.Feedback.nav.get('labels'),
     customCategories: state.Feedback.nav.get('customCategories').toJS(),
     currentFilterMode: filterDataSelector(state),
-    currentGroup: groupDataSelector(state)
+    currentGroup: groupDataSelector(state),
+    dpWindow: state.Application.dpWindow
   });
 })
 
@@ -32,7 +33,8 @@ export class NavContainer extends Component {
     labels: PropTypes.array.isRequired,
     types: PropTypes.array.isRequired,
     customCategories: PropTypes.array.isRequired,
-    currentGroup: PropTypes.object.isRequired
+    currentGroup: PropTypes.object.isRequired,
+    dpWindow: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -75,7 +77,7 @@ export class NavContainer extends Component {
   }
 
   render() {
-    const {statuses, toValidateCount, commentsToReviewCount, dispatch, labels, types, customCategories, currentGroup} = this.props;
+    const {statuses, toValidateCount, commentsToReviewCount, dispatch, labels, types, customCategories, currentGroup, dpWindow} = this.props;
 
     return (
       <Nav
@@ -89,6 +91,7 @@ export class NavContainer extends Component {
         currentGroup={currentGroup}
         groupChoice={this.groupChoice.bind(this)}
         commentsView={this.commentsView.bind(this)}
+        dpWindow={dpWindow}
         />
     );
   }
