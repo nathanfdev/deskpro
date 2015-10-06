@@ -17,7 +17,7 @@ import Moment from "moment";
 import TaskGrouping from "../../../Services/TaskGrouping";
 import * as AppActions from "../../Application/Actions/AppActions";
 import * as constants from "../../../Constants/Constants";
-import ReactPaginate from "../../Application/Components/Pagination/deskpro-react-paginate";
+import ReactPaginate from "../../Common/Components/Pagination/deskpro-react-paginate";
 import ComponentRootWrapper from "DeskPRO/Component/ComponentRootWrapper";
 import AssignHover from "../Components/AssignHover";
 import TaskControlsViewSwitcher from '../Components/TaskControlsViewSwitcher';
@@ -32,7 +32,7 @@ import MenuFooterOptions from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Compone
 import MenuFooterLink from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterLink';
 import TaskMassActions from '../Components/TaskMassActions';
 import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
-import { ListFrame } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
+import { ListFrame } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
 @connect(state => ({
   taskFrameList: state.taskFrameList,

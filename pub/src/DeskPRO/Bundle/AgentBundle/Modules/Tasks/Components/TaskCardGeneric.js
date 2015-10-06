@@ -1,6 +1,6 @@
 import React from 'react';
 import Moment from 'moment';
-import Card from '../../Application/Components/ListFrame/Card';
+import Card from '../../Common/Components/ListFrame/Card';
 
 export default class TaskCardGeneric extends React.Component {
 

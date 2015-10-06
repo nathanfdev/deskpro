@@ -3,7 +3,7 @@ import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { peopleSelector } from '../../../../Selectors/list';
 import { setTableSort } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
-import { TableView, TableHeader, Th, TableBody, Row, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
+import { TableView, TableHeader, Th, TableBody, Row, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
 import { connect } from 'react-redux';
 @connect(state => ({

@@ -13,7 +13,7 @@ import * as AppActions from "../../Application/Actions/AppActions";
 
 import getIntlMessage from "DeskPRO/Bundle/AgentBundle/Services/Intl";
 
-import { NavFrame, NavFrameHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
+import { NavFrame, NavFrameHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 
 @connect(state => ({
   FilterSetsList: state.Tickets.FilterSetsList,

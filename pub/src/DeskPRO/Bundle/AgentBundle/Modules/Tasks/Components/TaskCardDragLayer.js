@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { DragLayer } from 'react-dnd';
 import Moment from 'moment';
 import { FormattedDate } from 'react-intl';
-import { Card } from '../../Application/Components/ListFrame/Card';
+import { Card } from '../../Common/Components/ListFrame/Card';
 
 const layerStyles = {
   position: 'fixed',

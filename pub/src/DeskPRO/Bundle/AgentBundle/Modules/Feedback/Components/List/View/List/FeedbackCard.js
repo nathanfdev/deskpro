@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { Card, CardLine, CardLineLeft, CardLineRight, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardUser }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/Card';
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 
 export class FeedbackCard extends Component {
 

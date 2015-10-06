@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
-import { Option, DropdownMenuFooter } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/GlobalWidgets/DropdownMenu';
-import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/GlobalWidgets/Menu';
+import { Option, DropdownMenuFooter } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/GlobalWidgets/DropdownMenu';
+import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/GlobalWidgets/Menu';
 import { filterDataSelector } from '../../../Selectors/list';
 
 @connect(state => ({

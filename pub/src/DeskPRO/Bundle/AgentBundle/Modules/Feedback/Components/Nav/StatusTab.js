@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { ListItem }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { NestedList } from './NestedList';
 
 export class StatusTab extends Component {

@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import { ControlButton } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/ControlBar';
+import { ControlButton } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar';
 
 export class FilterBy extends Component {
 
