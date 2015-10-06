@@ -376,19 +376,6 @@ class PublishController extends AbstractController
             ));
             $this->container->getMailer()->send($message);
         }
-
-        // For feedback we also notify everyone involved
-        if ($comment instanceof \Application\DeskPRO\Entity\FeedbackComment) {
-            $commenting = new \Application\DeskPRO\Feedback\FeedbackCommenting($this->container, $this->person);
-            $commenting->newCommentNotify($comment);
-        }
-
-        // For articles need to update last comment time
-        if ($comment instanceof \Application\DeskPRO\Entity\ArticleComment) {
-            $comment->article->date_last_comment = new \DateTime();
-            App::getOrm()->persist($comment->article);
-            App::getOrm()->flush();
-        }
     }
 
     public function _sendCommentDeletedNotification($comment)
