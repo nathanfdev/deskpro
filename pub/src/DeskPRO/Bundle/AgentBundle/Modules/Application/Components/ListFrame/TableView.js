@@ -1,13 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import classNames from 'classnames';
-import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 
 export class TableView extends Component {
-
-  static propTypes = {
-    children: PropTypes.array.isRequired
-  };
 
   render() {
     return (
@@ -21,7 +16,7 @@ export class TableView extends Component {
 }
 
 
-export class TableHeader extends React.Component {
+export class TableHeader extends Component {
 
   static propTypes = {
     children: PropTypes.array.isRequired
@@ -37,7 +32,7 @@ export class TableHeader extends React.Component {
 
 }
 
-export class Th extends React.Component {
+export class Th extends Component {
 
   static propTypes = {
     field: PropTypes.object.isRequired,
@@ -78,7 +73,7 @@ export class Th extends React.Component {
   }
 }
 
-export class TableBody extends React.Component {
+export class TableBody extends Component {
 
   static propTypes = {
     children: PropTypes.array.isRequired
@@ -93,7 +88,7 @@ export class TableBody extends React.Component {
   }
 }
 
-export class Row extends React.Component {
+export class Row extends Component {
 
   static propTypes = {
     children: PropTypes.array.isRequired
@@ -107,56 +102,51 @@ export class Row extends React.Component {
   }
 }
 
-@injectIntl
-export class Td extends React.Component {
+export class Td extends Component {
 
   static propTypes = {
-    intl: intlShape.isRequired,
-    element: PropTypes.object.isRequired,
-    field: PropTypes.object.isRequired
+    className: PropTypes.string
   };
 
-  renderTdContent(element, field) {
-    if (field.name === 'id') {
-      return (
-        <span className="dpw--item-id">#{element.id}</span>
-      );
-    } else if (field.name === 'author_name') {
-      return (
-        <div className="user">
-          <span className="dpw--avatar-face" style={{backgroundImage: 'url(../img/avatars/avatar1.png)'}}></span>
-          <span className="agent-name">{element.author_name}</span>
-        </div>
-      );
-    } else if (field.name === 'title') {
-      return (
-        <a href="#">{element.title}</a>
-      );
-    } else if (field.name === 'content') {
-      return (
-        element.content.substr(0, 100)
-      );
-    } else if (field.name === 'date_created') {
-      return (
-        <FormattedRelative value={element.date_created}/>
-      );
-    } else if (field.name === 'date_published') {
-      return (
-        <FormattedRelative value={element.date_published}/>
-      );
-    }
-
-    return (element[field.name]);
-  }
-
   render() {
-    const { element, field } = this.props;
+    const { className } = this.props;
 
     return (
-      <td className={field.className}>
-        {this.renderTdContent(element, field)}
+      <td className={className}>
+        {this.props.children}
       </td>
     );
   }
 
+}
+
+export class PersonInTable extends Component {
+
+  static propTypes = {
+    person: PropTypes.object.isRequired
+  };
+
+  render() {
+    const { person } = this.props;
+    return (
+      <div className="user">
+        <span className="dpw--avatar-face" style={{backgroundImage: 'url(../img/avatars/avatar1.png)'}}></span>
+        <span className="agent-name">{person.name}</span>
+      </div>
+    );
+  }
+}
+
+export class IdContainer extends Component {
+
+  static propTypes = {
+    id: PropTypes.string.isRequired
+  };
+
+  render() {
+    const { id } = this.props;
+    return (
+      <span className="dpw--item-id">#{id}</span>
+    );
+  }
 }

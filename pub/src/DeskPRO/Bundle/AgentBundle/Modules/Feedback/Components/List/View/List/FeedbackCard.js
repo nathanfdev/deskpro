@@ -28,11 +28,9 @@ export class FeedbackCard extends Component {
     var realStatus = '';
     if (status.title) {
       realStatus = status.title;
-    }
-    else if (status.status === 'new') {
+    } else if (status.status === 'new') {
       realStatus = 'New';
-    }
-    else {
+    } else {
       realStatus = status.hidden_status;
     }
     return <CardLineItem>{realStatus}</CardLineItem>;
@@ -40,8 +38,8 @@ export class FeedbackCard extends Component {
 
   render() {
     const { feedback, author, type, selected, toggleSelected, feedbackLabels, feedbackComments, feedbackStatus }
-            = this.props;
-    const labels   = feedbackLabels ? feedbackLabels.labels : false;
+      = this.props;
+    const labels = feedbackLabels ? feedbackLabels.labels : false;
     const comments = feedbackComments ? feedbackComments.counter : 0;
 
     return (
