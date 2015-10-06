@@ -3,25 +3,46 @@ import { ColumnMode } from './ColumnMode';
 import { SidebarMode } from './SidebarMode';
 
 export class Workspace extends React.Component {
+
   static propTypes = {
     dpWindow: PropTypes.object.isRequired,
     closeFn: PropTypes.func.isRequired
   };
 
+  constructor(props) {
+    super(props);
+    const { dpWindow } = props;
+
+    this.state = {
+      columnMode: dpWindow.get('columnMode'),
+      sidebarMode: dpWindow.get('sidebarMode'),
+      columnDimensions: dpWindow.get('columnDimensions')
+    };
+  }
+
   setColumnMode = (mode) => {
     console.log('New ColumnMode', mode);
-  }
+    this.setState({
+      columnMode: mode
+    });
+  };
 
   setColumnDimensions = (percent) => {
     console.log('New ColumnDimensions', percent);
-  }
+    this.setState({
+      columnDimensions: percent
+    });
+  };
 
   setSidebarMode = (mode) => {
     console.log('New SidebarMode', mode);
-  }
+    this.setState({
+      sidebarMode: mode
+    });
+  };
 
   render() {
-    const { dpWindow, closeFn } = this.props;
+    const { closeFn } = this.props;
 
     return (
       <div className="dropdown workspace-dropdown">
@@ -34,10 +55,10 @@ export class Workspace extends React.Component {
           </div>
         </header>
 
-        <ColumnMode dpWindow={dpWindow}
+        <ColumnMode state={this.state}
                     onChangeMode={this.setColumnMode}
                     onChangeDimensions={this.setColumnDimensions} />
-        <SidebarMode dpWindow={dpWindow}
+        <SidebarMode state={this.state}
                      onChangeMode={this.setSidebarMode} />
 
         <div className="dpw-top-bar-dropdown-footer">

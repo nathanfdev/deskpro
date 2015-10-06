@@ -4,6 +4,7 @@ import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Pos
 import { Workspace } from './Workspace/Workspace';
 
 export class Header extends React.Component {
+
   static propTypes = {
     user: PropTypes.object.isRequired,
     dpWindow: PropTypes.object.isRequired
