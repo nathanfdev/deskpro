@@ -19,15 +19,15 @@ export class NavContainer extends React.Component {
 
   constructor(props) {
     super(props);
-      this.props.dispatch(actions.loadUsersTotalCount());
-      this.props.dispatch(actions.loadGroupsCounts());
-      this.props.dispatch(actions.loadOrganizationsTotalCount());
-      this.props.dispatch(actions.loadAgentsTotalCount());
-      this.props.dispatch(actions.loadTeamsCounts());
-      this.props.dispatch(actions.loadPersonLabels());
-      this.props.dispatch(actions.loadOrganizationLabels());
-      this.props.dispatch(loadAllUserGroups());
-      this.props.dispatch(loadAllAgentTeams());
+    this.props.dispatch(actions.loadUsersTotalCount());
+    this.props.dispatch(actions.loadGroupsCounts());
+    this.props.dispatch(actions.loadOrganizationsTotalCount());
+    this.props.dispatch(actions.loadAgentsTotalCount());
+    this.props.dispatch(actions.loadTeamsCounts());
+    this.props.dispatch(actions.loadPersonLabels());
+    this.props.dispatch(actions.loadOrganizationLabels());
+    this.props.dispatch(loadAllUserGroups());
+    this.props.dispatch(loadAllAgentTeams());
   }
 
   render() {
