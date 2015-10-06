@@ -44,5 +44,12 @@ export default createReducer(initialState, {
   },
   [actions.toggleView]: (state, payload) => {
     return state.set('taskView', payload);
+  },
+  [actions.updateWorkspace]: (state, payload) => {
+    return state.merge({
+      columnMode: payload.columnMode,
+      columnDimensions: payload.columnDimensions,
+      sidebarMode: payload.sidebarMode
+    });
   }
 });

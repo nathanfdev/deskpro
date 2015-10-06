@@ -4,6 +4,7 @@ export default keyMirror({
   APP_LOAD_WINDOW: null,
   APP_SET_USER: null,
   APP_IS_LOADED: null,
+  APP_UPDATE_WORKSPACE: null,
   SET_ACTIVE_APP: null,
   ROUTING_STARTED: null,
   TRANSITION_TO: null,

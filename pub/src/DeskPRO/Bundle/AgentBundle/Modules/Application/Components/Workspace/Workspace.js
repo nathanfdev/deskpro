@@ -1,12 +1,14 @@
 import React, { PropTypes } from 'react';
 import { ColumnMode } from './ColumnMode';
 import { SidebarMode } from './SidebarMode';
+import * as AppActions from '../../Actions/AppActions';
 
 export class Workspace extends React.Component {
 
   static propTypes = {
     dpWindow: PropTypes.object.isRequired,
-    closeFn: PropTypes.func.isRequired
+    closeFn: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -48,6 +50,10 @@ export class Workspace extends React.Component {
     });
   };
 
+  saveWorkspace = () => {
+    this.props.dispatch(AppActions.updateWorkspace(this.state));
+  };
+
   render() {
     const { closeFn } = this.props;
 
@@ -69,7 +75,7 @@ export class Workspace extends React.Component {
                      onChangeMode={this.setSidebarMode} />
 
         <div className="dpw-top-bar-dropdown-footer">
-          <a href="#" className="dpw-top-bar-dropdown-button">Save Workspace</a>
+          <a href="#" className="dpw-top-bar-dropdown-button" onClick={this.saveWorkspace}>Save Workspace</a>
           <a href="#" className="dpw-top-bar-dropdown-button blank" onClick={this.resetAll}>Reset All</a>
         </div>
 

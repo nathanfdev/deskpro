@@ -7,13 +7,14 @@ export class Header extends React.Component {
 
   static propTypes = {
     user: PropTypes.object.isRequired,
-    dpWindow: PropTypes.object.isRequired
+    dpWindow: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      isWorkspaceOpen: false,
+      isWorkspaceOpen: false
     };
   }
 
@@ -30,7 +31,7 @@ export class Header extends React.Component {
   }
 
   render() {
-    const { user, dpWindow } = this.props;
+    const { user, dpWindow, dispatch } = this.props;
 
     return (<header className="dp-window-header top-bar">
       <a href="https://www.deskpro.com/" className="logo"></a>
@@ -53,7 +54,7 @@ export class Header extends React.Component {
       </div>
 
       <Positioned isOpen={this.state.isWorkspaceOpen} positionTarget={this.refs.workspace}>
-        <Workspace dpWindow={dpWindow} closeFn={this.closeWorkspace.bind(this)} />
+        <Workspace dpWindow={dpWindow} dispatch={dispatch} closeFn={this.closeWorkspace.bind(this)} />
       </Positioned>
 
     </header>);
