@@ -21,21 +21,18 @@ export class Workspace extends React.Component {
   }
 
   setColumnMode = (mode) => {
-    console.log('New ColumnMode', mode);
     this.setState({
       columnMode: mode
     });
   };
 
   setColumnDimensions = (percent) => {
-    console.log('New ColumnDimensions', percent);
     this.setState({
       columnDimensions: percent
     });
   };
 
   setSidebarMode = (mode) => {
-    console.log('New SidebarMode', mode);
     this.setState({
       sidebarMode: mode
     });
