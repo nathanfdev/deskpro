@@ -362,5 +362,33 @@
     "display_order": "150",
     "query": "DISPLAY TABLE\nSELECT COUNT() AS 'Total Tickets'\nFROM tickets\nWHERE tickets.status IN ('awaiting_user', 'awaiting_agent')\nGROUP BY tickets.person\nORDER BY COUNT() DESC\nLIMIT 100",
     "title": "Users with most unresolved tickets"
+  },
+  "snippets-used-split-category": {
+    "category": "ticket",
+    "description": "",
+    "display_order": "500",
+    "query": "DISPLAY TABLE\nSELECT OBJ_LANG(ticket_object_use_logs.snippet.category.id, 'text_snippet_categories') AS 'Snippet Category', OBJ_LANG(ticket_object_use_logs.snippet.id, 'text_snippets') AS 'Snippet', COUNT() AS 'Uses'\nFROM ticket_object_use_logs\nWHERE ticket_object_use_logs.snippet.id <> NULL AND ticket_object_use_logs.date_created = %1:DATE_GROUP%\nSPLIT BY OBJ_LANG(ticket_object_use_logs.snippet.category.id, 'text_snippet_categories')\nGROUP BY ticket_object_use_logs.snippet.id\nORDER BY COUNT() DESC",
+    "title": "Snippets used <1:date group, default: this_month> split by category"
+  },
+  "snippets-used": {
+    "category": "ticket",
+    "description": "",
+    "display_order": "500",
+    "query": "DISPLAY TABLE\nSELECT OBJ_LANG(ticket_object_use_logs.snippet.category.id, 'text_snippet_categories') AS 'Snippet Category', OBJ_LANG(ticket_object_use_logs.snippet.id, 'text_snippets') AS 'Snippet', COUNT() AS 'Uses'\nFROM ticket_object_use_logs\nWHERE ticket_object_use_logs.snippet.id <> NULL AND ticket_object_use_logs.date_created = %1:DATE_GROUP%\nGROUP BY ticket_object_use_logs.snippet.id\nORDER BY COUNT() DESC",
+    "title": "Snippets used <1:date group, default: this_month>"
+  },
+  "snippet-cats-used": {
+    "category": "ticket",
+    "description": "",
+    "display_order": "500",
+    "query": "DISPLAY TABLE\nSELECT OBJ_LANG(ticket_object_use_logs.snippet.category.id, 'text_snippet_categories') AS 'Snippet Category', COUNT() AS 'Uses'\nFROM ticket_object_use_logs\nWHERE ticket_object_use_logs.snippet.id <> NULL AND ticket_object_use_logs.date_created = %1:DATE_GROUP%\nGROUP BY ticket_object_use_logs.snippet.category.id\nORDER BY COUNT() DESC",
+    "title": "Snippet categories used <1:date group, default: this_month>"
+  },
+  "macros-used": {
+    "category": "ticket",
+    "description": "",
+    "display_order": "500",
+    "query": "DISPLAY TABLE\nSELECT ticket_object_use_logs.macro.title, COUNT() AS 'Uses'\nFROM ticket_object_use_logs\nWHERE ticket_object_use_logs.macro.id <> NULL AND ticket_object_use_logs.date_created = %1:DATE_GROUP%\nGROUP BY ticket_object_use_logs.macro.id\nORDER BY COUNT() DESC",
+    "title": "Macros used <1:date group, default: this_month>"
   }
 }
