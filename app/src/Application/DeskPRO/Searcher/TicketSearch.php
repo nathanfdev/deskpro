@@ -2088,8 +2088,10 @@ class TicketSearch extends SearcherAbstract
                                         break;
                                     case self::OP_LTE:
                                     case self::OP_GTE:
+                                        if (!strlen($choice) || 'DP_NO_SELECTION' === $choice) {
+                                            break;
+                                        }
                                         $op = self::OP_LTE === $op ? '<=' : '>=';
-
                                         if ($isDate) {
                                             if (!empty($choice['date1'])) {
                                                 $wheres[] = "$field $op ".(int) $choice['date1'];
@@ -2101,6 +2103,9 @@ class TicketSearch extends SearcherAbstract
                                         }
                                         break;
                                     case self::OP_BETWEEN:
+                                        if (!strlen($choice) || 'DP_NO_SELECTION' === $choice) {
+                                            break;
+                                        }
                                         if ($isDate) {
                                             if (!empty($choice['date1'])) {
                                                 $wheres[] = $field.' BETWEEN '.(int) $choice['date1'].' AND '.(int) @$choice['date2'];
