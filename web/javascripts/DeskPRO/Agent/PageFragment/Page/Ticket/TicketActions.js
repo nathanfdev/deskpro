@@ -273,11 +273,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 				}
 			},
 			onItemSelected: function(info) {
-				var item = $(info.itemEl);
+				var item = info.item;
 				if (item.hasClass('open-settings-trigger')) {
 					$('#settingswin').trigger('dp_open', 'macros');
 				} else if (item.data('macro-id')) {
-					this.confirmMacro($(info.itemEl).data('macro-id'));
+					self.confirmMacro(item.data('macro-id'));
 				}
 			}
 		});
