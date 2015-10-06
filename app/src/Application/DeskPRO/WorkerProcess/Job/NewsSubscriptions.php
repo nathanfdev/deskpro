@@ -75,13 +75,13 @@ class NewsSubscriptions extends AbstractJob
 
         // news does not update
         $updated = array();
-        //$updated = App::getOrm()->createQuery("
-        //    SELECT n
-        //    FROM DeskPRO:News n INDEX BY n.id
-        //    JOIN n.category c
-        //    WHERE n.status = 'published' AND (n.date_updated > :date OR n.date_last_comment > :date)
-        //    ORDER BY n.date_updated DESC
-        //")->setMaxResults(250)->execute(array('date' => $last_date));
+        $updated = App::getOrm()->createQuery("
+            SELECT n
+            FROM DeskPRO:News n INDEX BY n.id
+            JOIN n.category c
+            WHERE n.status = 'published' AND (n.date_last_comment > :date)
+            ORDER BY n.date_updated DESC
+        ")->setMaxResults(250)->execute(array('date' => $last_date));
 
         if (!$published && !$updated) {
             return;

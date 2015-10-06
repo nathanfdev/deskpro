@@ -48,6 +48,7 @@ return array(
     'portal.flashes.news_cat_subscribe'                => 'You have successfully subscribed to this category. You will be notified when new news articles are posted.',
     'portal.flashes.news_cat_unsubscribe'              => 'Successfully unsubscribed from this category.',
     'portal.flashes.news_unsubscribe_everything'       => 'Unsubscribed from all news article subscriptions',
+    'portal.flashes.feedback_unsubscribe_everything'   => 'Unsubscribed from all feedback subscriptions',
     'portal.flashes.user_changed_primary_email'        => 'Your primary email has been changed.',
     'portal.flashes.user_removed_an_email'             => 'Your email {{email}} was removed.',
     'portal.flashes.user_updated_profile'              => 'Your profile has been updated.',

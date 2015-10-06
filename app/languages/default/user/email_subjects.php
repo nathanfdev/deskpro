@@ -49,6 +49,7 @@ return array(
     'user.email_subjects.news_sub_new'                 => 'New News',
     'user.email_subjects.news_sub_new_and_updated'     => 'New and Updated News',
     'user.email_subjects.news_sub_updated'             => 'Updated News',
+    'user.email_subjects.feedback_sub_updated'         => 'Updated Feedback',
     'user.email_subjects.password_agent-reset'         => 'An agent has reset your password',
     'user.email_subjects.password_reset'               => 'Reset Password',
     'user.email_subjects.password_set'                 => 'Set Your Password',
