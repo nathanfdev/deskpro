@@ -404,7 +404,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
     }
 
     /**
-     * @return array
+     * @return \Application\DeskPRO\Entity\TicketMacro[]
      */
     public function getMacros()
     {
@@ -415,6 +415,61 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
         $this->_macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
 
         return $this->_macros;
+    }
+
+    /**
+     * Returns a structured array of macros for use in a menu.
+     *
+     * Example: TOP.
+     *
+     * @return array
+     */
+    public function getMacrosStructured()
+    {
+        $macros = $this->getMacros();
+
+        $struct = array(
+            'TOP' => array(
+                'items'     => array(),
+                'sub_menus' => array(),
+            ),
+        );
+
+        foreach ($macros as $m) {
+            $parts = $m->getTitleParts();
+            array_pop($parts);
+
+            $last = &$struct;
+            foreach ($parts as $p) {
+                if (!isset($last['sub_menus'][$p])) {
+                    $last['sub_menus'][$p] = array('items' => array(), 'sub_menus' => array());
+                }
+                $last = &$last['sub_menus'][$p];
+            }
+
+            $last['items'][] = $m;
+        }
+
+        $fn = function ($col) use (&$fn) {
+            $items = array();
+
+            foreach ($col['items'] as $itm) {
+                $p       = $itm->getTitleParts();
+                $items[] = array('type' => 'item', 'title' => array_pop($p), 'item' => $itm);
+            }
+            foreach ($col['sub_menus'] as $title => $sub) {
+                $sub_items = $fn($sub);
+                $items[]   = array('type' => 'collection', 'title' => $title, 'items' => $sub_items);
+            }
+
+            usort($items, function ($a, $b) {
+                return strcmp($a['title'], $b['title']);
+            });
+
+            return $items;
+        };
+
+        return $fn($struct);
     }
 
     /**
