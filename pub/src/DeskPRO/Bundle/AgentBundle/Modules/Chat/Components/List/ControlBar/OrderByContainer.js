@@ -1,5 +1,5 @@
 import React from 'react';
-import { OrderBy } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
+import { OrderBy } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { currentSortOptionSelector } from '../../../Selectors/list';
 
 import { connect } from 'react-redux';

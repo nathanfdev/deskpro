@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { ListFrame, ControlBar }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { CrmListControlBar } from './ControlBar/CrmListControlBar';
 import { CrmList } from './View/List/CrmList';
 import { CrmTable } from './View/Table/CrmTable';

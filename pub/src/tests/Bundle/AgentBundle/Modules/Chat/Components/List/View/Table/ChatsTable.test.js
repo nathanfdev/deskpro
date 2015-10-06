@@ -1,4 +1,4 @@
-// #define ~ListFrame DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame
+// #define ~ListFrame DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame
 // #define ~List DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List
 
 jest.dontMock('~ListFrame/TableView');

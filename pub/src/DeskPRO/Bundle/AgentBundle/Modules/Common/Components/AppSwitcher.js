@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import * as AppActions from '../Actions/AppActions';
+import * as AppActions from '../../Application/Actions/AppActions';
 import { Link } from 'react-router';
 
 export class AppSwitcher extends React.Component {

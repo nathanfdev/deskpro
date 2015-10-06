@@ -1,7 +1,7 @@
 import { createAction } from 'Ampliflux';
 import { loadCounts as loadChatCounts } from 'DeskPRO/Bundle/AgentBundle/Services/Api/Chat';
 import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
-import { loadDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Actions/departmentsActions';
+import { loadDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
 
 /**
  * Used to identify requests within record stores

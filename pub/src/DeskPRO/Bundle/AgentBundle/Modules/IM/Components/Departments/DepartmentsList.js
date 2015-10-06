@@ -3,8 +3,10 @@ import { DepartmentsListItem } from './DepartmentsListItem';
 
 import { connect } from 'react-redux';
 
-import { loadDepartments, loadAllDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Actions/departmentsActions';
-import { departmentsSelector, allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Selectors/departmentsSelectors';
+import { loadDepartments, loadAllDepartments }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
+import { departmentsSelector, allDepartmentsSelector }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
 
 @connect(state => ({
   departments: allDepartmentsSelector(state),

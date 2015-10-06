@@ -1,5 +1,5 @@
 import React from 'react';
-import { TableView, TableBody } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
+import { TableView, TableBody } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { TableHeader } from './TableHeader';
 import { Row } from './Row';
 

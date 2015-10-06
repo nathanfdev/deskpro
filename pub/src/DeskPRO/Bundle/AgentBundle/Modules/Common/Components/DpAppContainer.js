@@ -9,7 +9,7 @@ import { FeedbackApp } from '../../Feedback/Components/FeedbackApp';
 import { CrmApp } from '../../CRM/Components/CrmApp';
 import { ChatApp } from '../../Chat/Components/ChatApp';
 import { PublishApp } from '../../Publish/Components/PublishApp';
-import * as AppActions from '../Actions/AppActions';
+import * as AppActions from '../../Application/Actions/AppActions';
 import { Router, Route, Redirect } from 'react-router';
 
 @connect((state) => {

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Section, SectionHeader, ListItem }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 
 export class Pending extends Component {
 

@@ -2,7 +2,7 @@ import { createStoreSelectors, createRequestSelectorsBuilder } from 'Ampliflux/c
 import { createSelector } from 'reselect';
 
 function departmentsStateSel(state) {
-  return state.Common.departments;
+  return state.RecordStores.Agent.departments;
 }
 
 export const departmentsStateSelector = createStoreSelectors(departmentsStateSel);
