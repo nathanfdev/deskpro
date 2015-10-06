@@ -1,9 +1,13 @@
-import React from 'react';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
+import React, {Component, PropTypes} from 'react';
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import classNames from 'classnames';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 
-export class TableView extends React.Component {
+export class TableView extends Component {
+
+  static propTypes = {
+    children: PropTypes.array.isRequired
+  };
 
   render() {
     return (
@@ -19,21 +23,14 @@ export class TableView extends React.Component {
 
 export class TableHeader extends React.Component {
 
+  static propTypes = {
+    children: PropTypes.array.isRequired
+  };
+
   render() {
-    const {tableViewFields, sortTable} = this.props;
-    let filtered = tableViewFields.filter(function (field) {
-      return field.status !== constants.FIELD_HIDDEN
-    });
-    filtered.sort(function (a, b) {
-      return a.priority - b.priority
-    });
     return (
       <thead>
-      <tr>
-        {filtered.map((field, index) =>
-            <Th key={index} field={field} sortTable={sortTable}/>
-        )}
-      </tr>
+      {this.props.children}
       </thead>
     );
   }
@@ -42,16 +39,18 @@ export class TableHeader extends React.Component {
 
 export class Th extends React.Component {
 
-  render() {
-    const { field } = this.props;
-    var classes = classNames('sortable', field.className);
-    return (
-      <th className={classes}
-          onClick={this.handleClick.bind(this, field.name)}>
-        {field.label}
-        {this.renderCaret(field)}
-      </th>
-    );
+  static propTypes = {
+    field: PropTypes.object.isRequired,
+    sortTable: PropTypes.func.isRequired
+  };
+
+  handleClick(param, event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const {sortTable, field} = this.props;
+    const order = field.order === constants.ORDER_ASC ? constants.ORDER_DESC : constants.ORDER_ASC;
+    sortTable(param, order);
+    this.setState({'order': order});
   }
 
   renderCaret(field) {
@@ -66,21 +65,26 @@ export class Th extends React.Component {
     }
   }
 
-  handleClick(param, event) {
-    event.preventDefault();
-    event.stopPropagation();
-    const {sortTable, field} = this.props;
-    let order = field.order === constants.ORDER_ASC ? constants.ORDER_DESC : constants.ORDER_ASC;
-    sortTable(param, order);
-    this.setState({'order': order});
+  render() {
+    const { field } = this.props;
+    var classes = classNames('sortable', field.className);
+    return (
+      <th className={classes}
+          onClick={this.handleClick.bind(this, field.name)}>
+        {field.label}
+        {this.renderCaret(field)}
+      </th>
+    );
   }
-
 }
 
 export class TableBody extends React.Component {
 
-  render() {
+  static propTypes = {
+    children: PropTypes.array.isRequired
+  };
 
+  render() {
     return (
       <tbody>
       {this.props.children}
@@ -91,20 +95,14 @@ export class TableBody extends React.Component {
 
 export class Row extends React.Component {
 
-  render() {
-    const { element, tableViewFields } = this.props;
-    let filteredFields = tableViewFields.filter(function (field) {
-      return field.status !== constants.FIELD_HIDDEN
-    });
-    filteredFields.sort(function (a, b) {
-      return a.priority - b.priority
-    });
+  static propTypes = {
+    children: PropTypes.array.isRequired
+  };
 
+  render() {
     return (
       <tr className="single-row">
-        {filteredFields.map((field, index) =>
-            <Td key={index} field={field} element={element}/>
-        )}
+        {this.props.children}
       </tr>);
   }
 }
@@ -114,10 +112,45 @@ export class Td extends React.Component {
 
   static propTypes = {
     intl: intlShape.isRequired,
+    element: PropTypes.object.isRequired,
+    field: PropTypes.object.isRequired
   };
 
+  renderTdContent(element, field) {
+    if (field.name === 'id') {
+      return (
+        <span className="dpw--item-id">#{element.id}</span>
+      );
+    } else if (field.name === 'author_name') {
+      return (
+        <div className="user">
+          <span className="dpw--avatar-face" style={{backgroundImage: 'url(../img/avatars/avatar1.png)'}}></span>
+          <span className="agent-name">{element.author_name}</span>
+        </div>
+      );
+    } else if (field.name === 'title') {
+      return (
+        <a href="#">{element.title}</a>
+      );
+    } else if (field.name === 'content') {
+      return (
+        element.content.substr(0, 100)
+      );
+    } else if (field.name === 'date_created') {
+      return (
+        <FormattedRelative value={element.date_created}/>
+      );
+    } else if (field.name === 'date_published') {
+      return (
+        <FormattedRelative value={element.date_published}/>
+      );
+    }
+
+    return (element[field.name]);
+  }
+
   render() {
-    const { element,field } = this.props;
+    const { element, field } = this.props;
 
     return (
       <td className={field.className}>
@@ -126,39 +159,4 @@ export class Td extends React.Component {
     );
   }
 
-  renderTdContent(element, field) {
-    if (field.name === 'id') {
-      return (
-        <span className="dpw--item-id">#{element.id}</span>
-      )
-    }
-    else if (field.name === 'author_name') {
-      return (
-        <div className="user">
-          <span className="dpw--avatar-face" style={{backgroundImage: "url(../img/avatars/avatar1.png)"}}></span>
-          <span className="agent-name">{element.author_name}</span>
-        </div>
-      )
-    }
-    else if (field.name === 'title') {
-      return (
-        <a href="#">{element.title}</a>
-      )
-    }
-    else if (field.name === 'content') {
-      return (
-        element.content.substr(0, 100)
-      )
-    } else if (field.name === 'date_created') {
-      return (
-        <FormattedRelative value={element.date_created} />
-      );
-    } else if (field.name === 'date_published') {
-      return (
-        <FormattedRelative value={element.date_published} />
-      );
-    }
-
-    return (element[field.name]);
-  }
 }

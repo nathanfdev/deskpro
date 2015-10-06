@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 import { List } from './List';
 import { connect } from 'react-redux';
 import { viewDataSelector, peopleSelector, feedbackTypesSelector, feedbackLabelsSelector, feedbackCommentsSelector, feedbackStatusesSelector, feedbackSelector } from '../../Selectors/list';
@@ -21,7 +21,25 @@ import { groupDataSelector } from '../../Selectors/nav';
     currentGroup: groupDataSelector(state)
   });
 })
-export class ListContainer extends React.Component {
+export class ListContainer extends Component {
+
+
+  static propTypes = {
+    currentGroup: PropTypes.object.isRequired,
+    currentViewMode: PropTypes.object.isRequired,
+    comments: PropTypes.array.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    people: PropTypes.array.isRequired,
+    feedback: PropTypes.array.isRequired,
+    feedbackTypes: PropTypes.array.isRequired,
+    feedbackLabels: PropTypes.array.isRequired,
+    feedbackComments: PropTypes.array.isRequired,
+    feedbackStatuses: PropTypes.array.isRequired,
+    feedbackFromStore: PropTypes.array.isRequired,
+    massAction: PropTypes.bool.isRequired,
+    selected: PropTypes.array.isRequired
+  };
+
   render() {
     const { currentGroup, massAction, feedback, selected, comments, currentViewMode, people, feedbackTypes,
             feedbackLabels, feedbackComments, feedbackStatuses, feedbackFromStore } = this.props;

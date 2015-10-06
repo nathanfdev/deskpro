@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import { Card, CardLine, CardLineLeft, CardLineRight, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardDate, CardUser }
+import { Card, CardLine, CardLineLeft, CardLineRight, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardUser }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/Card';
 
 export class FeedbackCard extends Component {
@@ -25,28 +25,29 @@ export class FeedbackCard extends Component {
   }
 
   renderStatus(status = {}) {
+    var realStatus = '';
     if (status.title) {
-      status = status.title;
+      realStatus = status.title;
     }
     else if (status.status === 'new') {
-      status = 'New';
+      realStatus = 'New';
     }
     else {
-      status = status.hidden_status;
+      realStatus = status.hidden_status;
     }
-    return <CardLineItem>{status}</CardLineItem>;
+    return <CardLineItem>{realStatus}</CardLineItem>;
   }
 
   render() {
     const { feedback, author, type, selected, toggleSelected, feedbackLabels, feedbackComments, feedbackStatus }
-      = this.props;
+            = this.props;
     const labels   = feedbackLabels ? feedbackLabels.labels : false;
     const comments = feedbackComments ? feedbackComments.counter : 0;
 
     return (
       <Card type="feedback">
 
-        <CardCheckbox selected={selected} onClick={toggleSelected(feedback.id)} />
+        <CardCheckbox selected={selected} onClick={toggleSelected(feedback.id)}/>
 
         <CardLine>
           <CardLineLeft>
