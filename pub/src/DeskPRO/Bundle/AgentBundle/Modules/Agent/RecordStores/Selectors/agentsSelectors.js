@@ -10,5 +10,5 @@ export const agentsSelector = createSelector(
 
 export const agentNamesSelector = createSelector(
   agentsSelector,
-  agents => reduceMapToProperty('name', agents)
+  agents => reduceMapToProperty('name', agents.toJS())
 );
