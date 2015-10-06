@@ -77,7 +77,7 @@ export class FeedbackTableContainer extends Component {
         <TableHeader>
           <tr>
             {filteredFields.map((field, index) =>
-                <Th key={index} field={field} sortTable={this.sortTable.bind(this)}/>
+                <Th key={index} field={field} sortable sortTable={this.sortTable.bind(this)}/>
             )}
           </tr>
         </TableHeader>

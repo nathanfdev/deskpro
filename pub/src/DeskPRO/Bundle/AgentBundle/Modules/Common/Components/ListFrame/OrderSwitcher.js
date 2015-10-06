@@ -23,8 +23,25 @@ export class OrderSwitcher extends Component {
 }
 
 export class Radio extends Component {
+
+  static propTypes = {
+    order: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    toggleOrder: PropTypes.func.isRequired,
+    toggleDropdown: PropTypes.func.isRequired
+  };
+
+  /* Change sort order (ASC, DESC)*/
+  handleClick(type, event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const {toggleOrder, toggleDropdown} = this.props;
+    toggleOrder(type);
+    toggleDropdown();
+  }
+
   render() {
-    const {type, order}=this.props;
+    const {type, order} = this.props;
     var classes = classNames('dpwd-radio-button', {
       'active': type === order
     });
@@ -36,12 +53,4 @@ export class Radio extends Component {
     );
   }
 
-  /** Change sort order (ASC, DESC)*/
-  handleClick(type, event) {
-    event.preventDefault();
-    event.stopPropagation();
-    const {toggleOrder, toggleDropdown} = this.props;
-    toggleOrder(type);
-    toggleDropdown();
-  }
 }

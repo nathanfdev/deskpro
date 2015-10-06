@@ -1,15 +1,15 @@
-/**
+/*
  * Compile parameters into a URL string
  * @param params
  * @returns {string}
  */
 export function compileParams(params = {}) {
-  let compiled = [];
+  const compiled = [];
 
-  for (let key of Object.keys(params)) {
+  for (const key of Object.keys(params)) {
     var str = String(params[key]);
-    if ('null' !== str) {
-      compiled.push(key + '=' + str.replace(/\s/g, "%20"));
+    if (str !== 'null') {
+      compiled.push(key + '=' + str.replace(/\s/g, '%20'));
     }
   }
 

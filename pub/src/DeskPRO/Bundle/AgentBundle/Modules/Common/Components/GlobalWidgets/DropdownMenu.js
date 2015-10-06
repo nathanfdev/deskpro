@@ -6,14 +6,17 @@ export class Option extends Component {
   static propTypes = {
     option: PropTypes.object.isRequired,
     active: PropTypes.bool.isRequired,
-    callback: PropTypes.func.isRequired
+    toggleDropdown: PropTypes.func.isRequired,
+    callback: PropTypes.func
   };
 
   handleClick(option, event) {
     event.preventDefault();
     const {callback, toggleDropdown} = this.props;
     toggleDropdown();
-    callback(option);
+    if (callback) {
+      callback(option);
+    }
   }
 
   render() {
@@ -21,9 +24,9 @@ export class Option extends Component {
     var classes = classNames('dpw-navigation-dropdown-item', {
       'active': active
     });
-    var icons   = classNames('fa', option.icon);
-    var click   = active ?
-                  (e)=> e.preventDefault()
+    var icons = classNames('fa', option.icon);
+    var click = active ?
+      (event)=> event.preventDefault()
       : this.handleClick.bind(this, option);
     return (
       <li>
@@ -35,7 +38,7 @@ export class Option extends Component {
               </span>
           <span className="dpw-navigation-dropdown-item-title">{option.label}</span>
           {active ?
-           <span className="dpw-navigation-dropdown-item-status"><i className="fa fa-check"></i></span>
+            <span className="dpw-navigation-dropdown-item-status"><i className="fa fa-check"></i></span>
             : ''
           }
         </a>

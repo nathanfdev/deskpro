@@ -36,6 +36,7 @@ export class Th extends Component {
 
   static propTypes = {
     field: PropTypes.object.isRequired,
+    sortable: PropTypes.bool.isRequired,
     sortTable: PropTypes.func.isRequired
   };
 
@@ -61,11 +62,12 @@ export class Th extends Component {
   }
 
   render() {
-    const { field } = this.props;
-    var classes = classNames('sortable', field.className);
+    const { field, sortable } = this.props;
+    const classes = classNames(field.className, {'sortable': sortable});
+    const callback = sortable ? this.handleClick.bind(this, field.name) : ()=> {
+    };
     return (
-      <th className={classes}
-          onClick={this.handleClick.bind(this, field.name)}>
+      <th className={classes} onClick={callback}>
         {field.label}
         {this.renderCaret(field)}
       </th>

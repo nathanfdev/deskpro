@@ -69,12 +69,17 @@ class FeedbackCommentController extends BaseController
             ->select('c')
             ->from('DeskPRO:FeedbackComment', 'c');
         $awaitingValidation = $request->get('awaiting_validation');
+        $sort = $request->get('sort');
+        $order = $request->get('order');
         if ($awaitingValidation) {
             $qb
                 ->andWhere('c.status = :validating')
                 ->setParameter('validating', FeedbackComment::STATUS_VALIDATING)
                 ->orWhere('c.status = :visible AND c.is_reviewed = 0')
                 ->setParameter('visible', FeedbackComment::STATUS_VISIBLE);
+        }
+        if ($sort && $order) {
+            $qb->orderBy("c.$sort", $order);
         }
         $comments = $qb->getQuery()->getResult();
 

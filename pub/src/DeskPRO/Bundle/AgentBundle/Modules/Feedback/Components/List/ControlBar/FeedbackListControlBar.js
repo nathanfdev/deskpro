@@ -1,5 +1,4 @@
 import React from 'react';
-import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar';
 import ListFrameMenu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameMenu';
 import { OrderByContainer } from './OrderByContainer';
 import { FilterContainer } from './FilterContainer';

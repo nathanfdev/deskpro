@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../Actions/FeedbackListActions';
+import * as commentActions from '../../Actions/FeedbackCommentsActions';
 import { Nav } from './Nav';
 import { filterDataSelector } from '../../Selectors/list';
 import { groupDataSelector } from '../../Selectors/nav';
@@ -68,7 +69,9 @@ export class NavContainer extends Component {
     event.stopPropagation();
     const {dispatch } = this.props;
     dispatch(actions.changeGroupState(group));
-    dispatch(actions.loadCommentsList());
+    dispatch(actions.toggleSort('date_created'));
+    dispatch(actions.toggleOrder('desc'));
+    dispatch(commentActions.loadCommentsList());
   }
 
   render() {
