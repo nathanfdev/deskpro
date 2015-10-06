@@ -8,6 +8,18 @@ export class Workspace extends React.Component {
     closeFn: PropTypes.func.isRequired
   };
 
+  setColumnMode = (mode) => {
+    console.log('New ColumnMode', mode);
+  }
+
+  setColumnDimensions = (percent) => {
+    console.log('New ColumnDimensions', percent);
+  }
+
+  setSidebarMode = (mode) => {
+    console.log('New SidebarMode', mode);
+  }
+
   render() {
     const { dpWindow, closeFn } = this.props;
 
@@ -22,8 +34,11 @@ export class Workspace extends React.Component {
           </div>
         </header>
 
-        <ColumnMode dpWindow={dpWindow} />
-        <SidebarMode dpWindow={dpWindow} />
+        <ColumnMode dpWindow={dpWindow}
+                    onChangeMode={this.setColumnMode}
+                    onChangeDimensions={this.setColumnDimensions} />
+        <SidebarMode dpWindow={dpWindow}
+                     onChangeMode={this.setSidebarMode} />
 
         <div className="dpw-top-bar-dropdown-footer">
           <a href="#" className="dpw-top-bar-dropdown-button">Save Workspace</a>

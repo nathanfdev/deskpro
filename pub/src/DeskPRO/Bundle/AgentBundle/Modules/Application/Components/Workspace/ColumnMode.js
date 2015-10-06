@@ -5,7 +5,8 @@ export class ColumnMode extends React.Component {
 
   static propTypes = {
     dpWindow: PropTypes.object.isRequired,
-    onChangeMode: PropTypes.func.isRequired
+    onChangeMode: PropTypes.func.isRequired,
+    onChangeDimensions: PropTypes.func.isRequired
   };
 
   setColumnDimensions(percent) {
@@ -14,11 +15,6 @@ export class ColumnMode extends React.Component {
 
   resetColumnDimensions() {
     this.setColumnDimensions(0);
-  }
-
-  changeMode = (mode) => {
-    console.log('New SidebarMode', mode);
-    console.log(mode);
   }
 
   render() {
@@ -37,7 +33,8 @@ export class ColumnMode extends React.Component {
         <ChangeModeButton type={'column'}
                           title={'Column Mode'}
                           activeType={currentMode}
-                          onChange={this.changeMode}>
+                          onChange={onChangeMode}>
+
           <span className="workspace-state-item state-sidebar"></span>
           <span className="workspace-state-item left-column active"></span>
           <span className="workspace-state-item right-column active"></span>
@@ -46,7 +43,8 @@ export class ColumnMode extends React.Component {
         <ChangeModeButton type={'focus'}
                           title={'Focus Mode'}
                           activeType={currentMode}
-                          onChange={this.changeMode}>
+                          onChange={onChangeMode}>
+
           <span className="workspace-state-item state-sidebar"></span>
           <span className="workspace-state-item full-width-column active"></span>
         </ChangeModeButton>
