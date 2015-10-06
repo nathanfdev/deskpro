@@ -5,8 +5,8 @@ export class NavFrame extends React.Component {
 
   static propTypes = {
     children: PropTypes.object.isRequired,
-    dpWindow: PropTypes.object,
-    dispatch: PropTypes.func
+    dpWindow: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired
   };
 
   render() {
@@ -23,15 +23,10 @@ export class NavFrame extends React.Component {
       });
     }
 
+    const expandNav = () => dispatch(AppActions.expandNav());
     const className = ['sidebar-wrapper'];
-    if (dpWindow && dpWindow.get('collapseNav')) {
+    if (dpWindow.get('collapseNav')) {
       className.push('sidebar-collapsed');
-    }
-
-    // Do nothing if we haven't passed in dispatch as a prop
-    let expandNav = () => {};
-    if (dispatch) {
-      expandNav = () => dispatch(AppActions.expandNav());
     }
 
     return (
