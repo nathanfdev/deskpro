@@ -9,7 +9,7 @@ import Picker from 'anytime';
 import Moment from 'moment';
 import { getEmptyImage } from 'react-dnd/modules/backends/HTML5';
 
-import { Card } from '../../Application/Components/ListFrame/Card';
+import { Card } from '../../Common/Components/ListFrame/Card';
 
 const cardTarget = {
   drop(props, monitor) {

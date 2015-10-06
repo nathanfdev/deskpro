@@ -5,7 +5,7 @@ import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 export const loadFeedbackStatuses = createAction(
   'LOAD_FEEDBACK_STATUSES',
   requestRecords(
-    ['RecordStores', 'feedback', 'statuses'],
+    ['RecordStores', 'Feedback', 'feedback', 'statuses'],
       missingIds => new Promise(
       (resolve, reject) =>
         DpApi.sendGet('DP_API/feedback_statuses?ids=' + missingIds.toArray().join(','))

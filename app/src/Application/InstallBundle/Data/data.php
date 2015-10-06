@@ -213,13 +213,11 @@ $em->getConnection()->executeUpdate(
     "
 INSERT INTO `feedback_comments` (`id`, `feedback_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `validating`, `is_reviewed`, `date_created`, `visitor_id`) VALUES
 (1, 1, 1, '', NULL, NULL, NULL, 'Some comment for the first feedback', 'validating', NULL, 0, '2015-08-17 00:00:00', ''),
-(2, 1, 1, '', NULL, NULL, NULL, 'One more comment for the first feedback', 'validating', '0', 0, '2015-08-17 00:00:00', ''),
-(3, 2, 1, '', NULL, NULL, NULL, 'Some comment for the first feedback', 'validating', NULL, 0, '2015-08-17 00:00:00', ''),
-(4, 3, 1, '', NULL, NULL, NULL, 'One more comment for the first feedback', 'validating', '0', 0, '2015-08-17 00:00:00', '');
+(2, 1, 1, '', NULL, NULL, NULL, 'One more comment for the first feedback', 'validating', '0', 0, '2015-08-24 00:00:00', ''),
+(3, 2, 1, '', NULL, NULL, NULL, 'Some comment for the first feedback', 'validating', NULL, 0, '2015-09-17 00:00:00', ''),
+(4, 3, 1, '', NULL, NULL, NULL, 'One more comment for the first feedback', 'validating', '0', 0, '2015-10-05 00:00:00', '');
 "
 );
-
-
 
 ################################################################################
 # Portal Blocks

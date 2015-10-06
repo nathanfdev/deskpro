@@ -1,6 +1,7 @@
 import { createReducer } from 'Ampliflux';
 import { async, setFullPayload } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/FeedbackListActions';
+import * as commentsActions from '../Actions/FeedbackCommentsActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 const initialState = {
@@ -91,8 +92,9 @@ export default createReducer(initialState, {
     }
   }),
 
-  [actions.loadCommentsList]: async({
+  [commentsActions.loadCommentsList]: async({
     success: (state, payload) => {
+      console.log('comments', payload.data);
       return state.set('comments', payload.data);
     }
   }),
@@ -151,5 +153,15 @@ export default createReducer(initialState, {
     });
     return state.set('tableViewFields', Immutable.fromJS(tableViewFields));
   },
-  [actions.toggleOrder]: setFullPayload('order')
+  [actions.toggleOrder]: setFullPayload('order'),
+  [commentsActions.commentsToggleOrder]: setFullPayload('order'),
+  [commentsActions.setTableSort]: (state, payload) => {
+    const commentsTableViewFields = [];
+    state.get('commentsTableViewFields').toJS().forEach(obj=> {
+      const nextObj = {...obj};
+      nextObj.order = nextObj.name === payload.sort ? payload.order : false;
+      commentsTableViewFields.push(nextObj);
+    });
+    return state.set('commentsTableViewFields', Immutable.fromJS(commentsTableViewFields));
+  }
 });

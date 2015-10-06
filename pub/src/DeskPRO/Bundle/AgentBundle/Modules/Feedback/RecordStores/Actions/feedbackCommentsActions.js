@@ -5,7 +5,7 @@ import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 export const loadFeedbackCommentsCounter = createAction(
   'LOAD_FEEDBACK_COMMENTS_COUNTER',
   requestRecords(
-    ['RecordStores', 'feedback', 'comments'],
+    ['RecordStores', 'Feedback', 'feedback', 'comments'],
     missingIds => new Promise(
       (resolve, reject) =>
         DpApi.sendGet('DP_API/feedback_comments_counter?ids=' + missingIds.toArray().join(','))

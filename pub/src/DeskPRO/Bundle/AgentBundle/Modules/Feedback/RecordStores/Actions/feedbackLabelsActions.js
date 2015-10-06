@@ -5,7 +5,7 @@ import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 export const loadFeedbackLabels = createAction(
   'LOAD_FEEDBACK_LABELS',
   createRecordsRequest(
-    ['RecordStores', 'feedbackLabels'], 'all',
+    ['RecordStores', 'Feedback', 'feedbackLabels'], 'all',
     () => new Promise(
       (resolve, reject) =>
         DpApi.sendGet('DP_API/feedback_labels_list')

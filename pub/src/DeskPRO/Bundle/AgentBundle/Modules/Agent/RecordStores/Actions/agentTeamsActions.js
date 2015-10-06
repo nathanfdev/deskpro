@@ -9,7 +9,7 @@ export const setAgentTeamsRequest = createAction('SET_AGENT_TEAMS',             
 export const loadAllAgentTeams    = createAction(
   'LOAD_AGENT_TEAMS',
   recordStoreActions.createRecordsRequest(
-    ['RecordStores', 'agentTeams'],
+    ['RecordStores', 'Agent', 'agentTeams'],
     'all',
     () => new Promise((resolve, reject) =>
       DpApi.sendGet('DP_API/agent_teams')

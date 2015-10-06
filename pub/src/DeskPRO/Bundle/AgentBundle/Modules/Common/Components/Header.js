@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { HeaderWidget } from '../../IM/Components/HeaderWidget';
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned';
-import { Workspace } from './Workspace/Workspace';
+import { Workspace } from '../../Application/Components/Workspace/Workspace';
 
 export class Header extends React.Component {
 

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Header } from './Header';
 import { AppSwitcher } from './AppSwitcher';
 import { TabFrame } from './TabFrame';
-import { routingStarted } from '../Actions/AppActions';
+import { routingStarted } from '../../Application/Actions/AppActions';
 
 @connect(state => ({
   ...state,

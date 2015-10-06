@@ -67,7 +67,6 @@ export class CardLineItem extends Component {
   };
 
   render() {
-
     const {icon} = this.props;
     if (icon) {
       var classes = classNames('fa', icon);
@@ -111,9 +110,13 @@ export class CardTitle extends Component {
 
   render() {
     const {content} = this.props;
+    let substr = content.substr(0, 40);
+    if (content.length > 40) {
+      substr += '...';
+    }
     return (
       <div className="dpwd--card-title">
-        <h1>{content}</h1>
+        <h1>{substr}</h1>
       </div>
     );
   }

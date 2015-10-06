@@ -3,7 +3,7 @@ import { createStoreSelectors, createRequestSelectorsBuilder } from 'Ampliflux/c
 import { reduceMapToProperty } from 'DeskPRO/Component/Util/Map';
 
 function peopleStateSel(state) {
-  return state.RecordStores.people;
+  return state.RecordStores.CRM.people;
 }
 
 export const peopleStateSelector = createStoreSelectors(peopleStateSel);

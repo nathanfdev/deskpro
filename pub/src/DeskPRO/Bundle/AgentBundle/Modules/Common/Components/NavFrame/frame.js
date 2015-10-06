@@ -1,5 +1,5 @@
 import React from 'react';
-import * as AppActions from '../../Actions/AppActions';
+import * as AppActions from '../../../Application/Actions/AppActions';
 
 export class NavFrame extends React.Component {
   render() {

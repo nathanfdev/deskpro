@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import { ListFrame }  from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
+import { ListFrame } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { FeedbackListControlBar } from './ControlBar/FeedbackListControlBar';
 import { FeedbackList } from './View/List/FeedbackList';
 import { FeedbackCommentList } from './View/List/FeedbackCommentList';
@@ -16,6 +16,10 @@ export class List extends Component {
     people: PropTypes.array.isRequired,
     selected: PropTypes.array.isRequired,
     feedbackFromStore: PropTypes.array.isRequired,
+    feedbackStatuses: PropTypes.object.isRequired,
+    feedbackTypes: PropTypes.array.isRequired,
+    feedbackComments: PropTypes.array.isRequired,
+    feedbackLabels: PropTypes.array.isRequired,
     toggleSelected: PropTypes.func.isRequired,
     comments: PropTypes.array.isRequired,
     massAction: PropTypes.bool.isRequired,
@@ -57,13 +61,14 @@ export class List extends Component {
         elements={feedback}
         selected={selected}
         toggleSelected={toggleSelected}
+        feedbackStatuses={feedbackStatuses}
         people={people}
         />
     );
   }
 
   renderComments() {
-    const {feedbackFromStore, currentViewMode, comments, selected, toggleSelected, massAction, people} = this.props;
+    const {feedbackFromStore, currentViewMode, comments, selected, toggleSelected, massAction, people, feedbackStatuses} = this.props;
     var viewMode = currentViewMode.field;
     if (viewMode === constants.VIEW_MODE_LIST) {
       return (
@@ -78,7 +83,10 @@ export class List extends Component {
       );
     }
     return (
-      <FeedbackCommentTableContainer elements={comments}/>
+      <FeedbackCommentTableContainer
+        elements={comments}
+        feedbackStatuses={feedbackStatuses}
+        />
     );
   }
 

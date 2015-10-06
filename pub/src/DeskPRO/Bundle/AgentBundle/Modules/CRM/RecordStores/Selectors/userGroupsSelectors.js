@@ -3,16 +3,13 @@ import { createStoreSelectors, createRequestSelectorsBuilder } from 'Ampliflux/c
 import { reduceMapToProperty } from 'DeskPRO/Component/Util/Map';
 
 function userGroupsStateSel(state) {
-  return state.RecordStores.userGroups;
+  return state.RecordStores.CRM.userGroups;
 }
 
 export const userGroupsStateSelector = createStoreSelectors(userGroupsStateSel);
 export const createUserGroupsRequestSelectors = createRequestSelectorsBuilder(userGroupsStateSelector);
-export const userGroupsSelector = createSelector(
-  createUserGroupsRequestSelectors('all').recordsSel,
-  groups => groups.toJS()
-);
+export const userGroupsSelector = createUserGroupsRequestSelectors('all').recordsSel;
 export const userGroupNamesSelector = createSelector(
   userGroupsSelector,
-  groups => reduceMapToProperty('title', groups)
+  groups => reduceMapToProperty('title', groups.toJS())
 );

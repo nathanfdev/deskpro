@@ -1,8 +1,8 @@
 import React from 'react';
 import { SectionsPane, Section, SectionHeader }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/NavFrame/index';
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { ListFrame }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
 export class List extends React.Component {
   render() {

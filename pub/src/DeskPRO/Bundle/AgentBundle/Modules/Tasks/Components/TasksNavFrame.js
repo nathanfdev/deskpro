@@ -7,7 +7,7 @@ import TaskNavGroups from "../Components/TaskNavGroups";
 import TaskNavProjects from "../Components/TaskNavProjects";
 import TaskNavPeople from "../Components/TaskNavPeople";
 import TaskNavLabels from "../Components/TaskNavLabels";
-import { NavFrameHeader, NavFrame } from "../../Application/Components/NavFrame/index";
+import { NavFrameHeader, NavFrame } from "../../Common/Components/NavFrame/index";
 import $ from "jquery";
 
 @connect(state => ({

@@ -9,7 +9,7 @@ export const setPeopleRequest = createAction('SET_PEOPLE',             recordSto
 export const loadPeople       = createAction(
   'LOAD_PEOPLE',
   recordStoreActions.requestRecords(
-    ['RecordStores', 'people'],
+    ['RecordStores', 'CRM', 'people'],
     missingIds => new Promise(
       (resolve, reject) =>
         DpApi.sendGet('DP_API/people?ids=' + missingIds.toArray().join(','))
