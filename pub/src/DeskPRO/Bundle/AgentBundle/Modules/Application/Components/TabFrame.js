@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 
 export class TabFrame extends React.Component {
+
   static propTypes = {
     dpWindow: PropTypes.object.isRequired
   };

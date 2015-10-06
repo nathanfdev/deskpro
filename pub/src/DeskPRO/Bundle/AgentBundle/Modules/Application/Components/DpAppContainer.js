@@ -19,6 +19,7 @@ import { Router, Route, Redirect } from 'react-router';
   };
 })
 export class DpAppContainer extends React.Component {
+
   static propTypes = {
     dpWindow: PropTypes.object.isRequired,
     routing: PropTypes.object.isRequired,

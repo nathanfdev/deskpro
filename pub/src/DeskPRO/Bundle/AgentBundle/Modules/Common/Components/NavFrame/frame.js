@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import * as AppActions from '../../../Application/Actions/AppActions';
 
 export class NavFrame extends React.Component {
+
+  static propTypes = {
+    children: PropTypes.object.isRequired,
+    dpWindow: PropTypes.object,
+    dispatch: PropTypes.func
+  };
+
   render() {
-    let outer, inner = this.props.children;
-    if ((this.props.children instanceof Array) && this.props.children.length) {
-      this.props.children.forEach((child) => {
+    const { children, dpWindow, dispatch } = this.props;
+    let outer, inner = children;
+
+    if (children instanceof Array && children.length) {
+      children.forEach((child) => {
         if (child.props.part === 'outer') {
           outer = child;
         } else if (child.props.part === 'inner') {
@@ -14,21 +23,22 @@ export class NavFrame extends React.Component {
       });
     }
 
-    const className = this.props.dpWindow && this.props.dpWindow.get('collapseNav')
-                    ? 'sidebar-wrapper sidebar-collapsed'
-                    : 'sidebar-wrapper';
+    const className = ['sidebar-wrapper'];
+    if (dpWindow && dpWindow.get('collapseNav')) {
+      className.push('sidebar-collapsed');
+    }
 
     // Do nothing if we haven't passed in dispatch as a prop
     let expandNav = () => {};
-    if (this.props.dispatch) {
-      expandNav = () => this.props.dispatch(AppActions.expandNav());
+    if (dispatch) {
+      expandNav = () => dispatch(AppActions.expandNav());
     }
 
     return (
       <div>
         {outer}
         <section className="task-nav-frame dp-nav-frame">
-          <div className={className} id="sidebar-wrapper">
+          <div className={className.join(' ')} id="sidebar-wrapper">
             <a className="collapse-button" href="#" onClick={expandNav}>
               <i className="fa fa-angle-right"/>
             </a>
@@ -50,9 +60,17 @@ export class NavFrame extends React.Component {
 }
 
 export class NavFrameHeader extends React.Component {
+
+  static propTypes = {
+    children: PropTypes.object.isRequired,
+    icon: PropTypes.string.isRequired,
+    dispatch: PropTypes.func.isRequired
+  };
+
   render() {
-    const iconClass = 'fa ' + this.props.icon;
-    const collapse = () => this.props.dispatch(AppActions.collapseNav());
+    const { children, icon, dispatch } = this.props;
+    const iconClass = 'fa ' + icon;
+    const collapse = () => dispatch(AppActions.collapseNav());
 
     return (
       <div className="sidebar-title">
@@ -63,7 +81,7 @@ export class NavFrameHeader extends React.Component {
           </span>
         </span>
 
-        <h1>{this.props.children}</h1>
+        <h1>{children}</h1>
         <hr />
         <a href="#" className="slider-control" onClick={collapse}/>
       </div>
