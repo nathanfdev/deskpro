@@ -20,18 +20,28 @@ export const loadMessages = createAction(
 
 export const addMessage = createAction(
   'IM_CHAT_ADD_MESSAGE',
-  (chat_id, message) => {
-    return {
-      author: {
-        gravatar_url: 'http://www.gravatar.com/avatar/85c81137eeb71564a77a337bc44d5173?&d=mm'
-      },
-      text: 'test'
-    };
+  (chat_id, message) => (dispatch) => {
+    dispatch(addMessageOptimistic(chat_id, message));
+    IM.addMessage(chat_id, message).then(response => {
+      "use strict";
+      const message = response.data.data;
+      return new Promise((resolve) => {
+        let chatMessages = {};
+        chatMessages[chat_id] = [message];
+        resolve(chatMessages);
+      });
+    });
   }
 );
 
-export const searchInChat = createAction(
-  'IM_CHAT_SEARCH_IN_CHAT',
-  () => {
+
+export const addMessageOptimistic = createAction(
+  'IM_CHAT_ADD_MESSAGE_OPTIMISTIC',
+  (chat_id, message) => {
+    return new Promise((resolve) => {
+      let chatMessages = {};
+      chatMessages[chat_id] = [message];
+      resolve(chatMessages);
+    });
   }
 );

@@ -8,5 +8,8 @@ const initialState = {
 export default createReducer(initialState, {
   [actions.loadMessages]: (state, payload) => {
     return state.set('chatMessages', payload);
+  },
+  [actions.addMessageOptimistic]: (state, payload) => {
+    return state.mergeDeep({chatMessages: payload});
   }
 });

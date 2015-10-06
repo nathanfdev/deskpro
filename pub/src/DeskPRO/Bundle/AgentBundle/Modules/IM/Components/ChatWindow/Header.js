@@ -19,7 +19,7 @@ export class Header extends React.Component {
     "use strict";
     const { agents, current, me } = this.props;
     const filteredAgents = current.agents.filter(agent => agent != me.get('id') );
-    let text = agents.toJS()[filteredAgents[0]].name;
+    let text = agents.getIn([filteredAgents[0], 'name']);
     if(filteredAgents.length > 1) {
       text = ' and ' + (filteredAgents.length - 1) + ' more';
     }
