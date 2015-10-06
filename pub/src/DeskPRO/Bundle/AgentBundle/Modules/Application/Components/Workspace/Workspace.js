@@ -51,7 +51,10 @@ export class Workspace extends React.Component {
   };
 
   saveWorkspace = () => {
-    this.props.dispatch(AppActions.updateWorkspace(this.state));
+    const { closeFn, dispatch } = this.props;
+
+    dispatch(AppActions.updateWorkspace(this.state));
+    closeFn();
   };
 
   render() {
