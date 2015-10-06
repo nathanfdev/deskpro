@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { TableView, TableHeader, Th, TableBody, Row, Td } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/ListFrame/index';
 import { feedbackSelector } from '../../../../Selectors/list';
+import { setTableSort } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 
 import { connect } from 'react-redux';
 @connect(state => ({
@@ -29,9 +30,9 @@ export class FeedbackCommentTableContainer extends Component {
   render() {
     const { comments, tableViewFields, commentsTableViewFields, feedbackFromStore } = this.props;
     const tableViewFieldsFiltered = tableViewFields.filter(field => field.status !== constants.FIELD_HIDDEN);
-    tableViewFieldsFiltered.sort((a, b) => a.priority - b.priority);
+    tableViewFieldsFiltered.sort((prev, next) => prev.priority - next.priority);
     const commentsTableViewFieldsFiltered = commentsTableViewFields.filter(field => field.status !== constants.FIELD_HIDDEN);
-    commentsTableViewFieldsFiltered.sort((a, b) => a.priority - b.priority);
+    commentsTableViewFieldsFiltered.sort((prev, next) => prev.priority - next.priority);
 
     return (
       <TableView>
@@ -50,19 +51,22 @@ export class FeedbackCommentTableContainer extends Component {
           </tr>
         </TableHeader>
         <TableBody>
-          {comments.map((element, index) =>
-              <Row key={index}>
-                {commentsTableViewFieldsFiltered.map((field, ind1) =>
-                    <Td key={ind1} field={field} element={element}/>
-                )}
-                {tableViewFieldsFiltered.map((field, ind2) =>
-                    <Td key={ind2} field={field} element={feedbackFromStore[element.feedback_id]}/>
-                )}
-              </Row>
+          {comments.map((element, index) => {
+              let key = 0;
+              return (
+                <Row key={index}>
+                  {commentsTableViewFieldsFiltered.map(field =>
+                      <Td key={key++} field={field} element={element}/>
+                  )}
+                  {tableViewFieldsFiltered.map(field =>
+                      <Td key={key++} field={field} element={feedbackFromStore[element.feedback_id]}/>
+                  )}
+                </Row>
+              );
+            }
           )}
         </TableBody>
       </TableView>
     );
   }
-
 }
