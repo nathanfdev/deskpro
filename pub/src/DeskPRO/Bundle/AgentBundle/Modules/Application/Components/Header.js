@@ -12,16 +12,20 @@ export class Header extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isWorkspaceOpen: false
+      isWorkspaceOpen: false,
     };
   }
 
   toggleWorkspace() {
-    this.state.isWorkspaceOpen = !this.state.isWorkspaceOpen;
+    this.setState({
+      isWorkspaceOpen: !this.state.isWorkspaceOpen
+    });
   }
 
   closeWorkspace() {
-    this.state.isWorkspaceOpen = false;
+    this.setState({
+      isWorkspaceOpen: false
+    });
   }
 
   render() {
