@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../Actions/crmNavActions';
 import { loadAllAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions';
@@ -17,17 +17,24 @@ import { Nav } from './Nav';
 ))
 export class NavContainer extends React.Component {
 
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    dpWindow: PropTypes.object.isRequired
+  };
+
   constructor(props) {
     super(props);
-    this.props.dispatch(actions.loadUsersTotalCount());
-    this.props.dispatch(actions.loadGroupsCounts());
-    this.props.dispatch(actions.loadOrganizationsTotalCount());
-    this.props.dispatch(actions.loadAgentsTotalCount());
-    this.props.dispatch(actions.loadTeamsCounts());
-    this.props.dispatch(actions.loadPersonLabels());
-    this.props.dispatch(actions.loadOrganizationLabels());
-    this.props.dispatch(loadAllUserGroups());
-    this.props.dispatch(loadAllAgentTeams());
+    const { dispatch } = this.props;
+
+    dispatch(actions.loadUsersTotalCount());
+    dispatch(actions.loadGroupsCounts());
+    dispatch(actions.loadOrganizationsTotalCount());
+    dispatch(actions.loadAgentsTotalCount());
+    dispatch(actions.loadTeamsCounts());
+    dispatch(actions.loadPersonLabels());
+    dispatch(actions.loadOrganizationLabels());
+    dispatch(loadAllUserGroups());
+    dispatch(loadAllAgentTeams());
   }
 
   render() {
