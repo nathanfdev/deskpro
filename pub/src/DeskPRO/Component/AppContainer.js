@@ -12,7 +12,7 @@ export class AppContainer extends React.Component {
     const { dpWindow,/* thisAppId,*/ children } = this.props;
     const classes = ['app-frame-container', 'app-active'];
 
-    if (dpWindow.get('collapseNav')) {
+    if (dpWindow.get('sidebarMode') === 'hover') {
       classes.push('collapsed-nav');
     }
     // if(dpWindow.activeAppId == thisAppId) {

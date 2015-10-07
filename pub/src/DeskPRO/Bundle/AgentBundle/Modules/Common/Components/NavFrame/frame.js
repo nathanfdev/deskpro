@@ -23,7 +23,7 @@ export class NavFrame extends React.Component {
     }
 
     const className = ['sidebar-wrapper'];
-    if (dpWindow.get('collapseNav')) {
+    if (dpWindow.get('sidebarMode') === 'hover') {
       className.push('sidebar-collapsed');
     }
 

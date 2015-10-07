@@ -13,7 +13,7 @@ export class TabFrame extends React.Component {
     if (dpWindow.get('expandedSwitcher')) {
       classes.push('expanded');
     }
-    if (dpWindow.get('collapseNav')) {
+    if (dpWindow.get('sidebarMode') === 'hover') {
       classes.push('collapsed-nav');
     }
     if (dpWindow.get('taskView') !== 'list') {
