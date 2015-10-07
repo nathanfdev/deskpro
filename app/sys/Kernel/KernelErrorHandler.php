@@ -204,7 +204,11 @@ class KernelErrorHandler
             if ($code == 0) {
                 $code = 1;
             }
-            exit($code);
+
+            // This exit happens before symfony exception handler so that no debug info is displayed
+            // commenting this out fixes exception handling in HTTP contex
+            // @todo Check if everything is OK in CLI (non-HTTP) environments
+            // exit($code);
         }
 
         self::$is_handling_exception = false;
