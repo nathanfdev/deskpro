@@ -1,22 +1,29 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
-export default class AppContainer extends React.Component {
+export class AppContainer extends React.Component {
+
+  static propTypes = {
+    dpWindow: PropTypes.object.isRequired,
+    thisAppId: PropTypes.func.isRequired,
+    children: PropTypes.array.isRequired
+  };
+
   render() {
-    const { dpWindow, thisAppId } = this.props;
-    let classes = ['app-frame-container', 'app-active'];
+    const { dpWindow,/* thisAppId,*/ children } = this.props;
+    const classes = ['app-frame-container', 'app-active'];
 
     if (typeof dpWindow !== 'undefined' && dpWindow.get('collapseNav')) {
       classes.push('collapsed-nav');
     }
-
     // if(dpWindow.activeAppId == thisAppId) {
     //   classes.push('app-active');
     // } else {
     //   classes.push('app-inactive');
     // }
+
     return (
       <div className={classes.join(' ')}>
-        {this.props.children}
+        {children}
       </div>
     );
   }

@@ -3,6 +3,7 @@ import * as AppActions from '../../Application/Actions/AppActions';
 import { Link } from 'react-router';
 
 export class AppSwitcher extends React.Component {
+
   static propTypes = {
     dpWindow: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
