@@ -32,7 +32,7 @@ export class ListFrame extends React.Component {
   };
 
   render() {
-    const className = this.props.className || 'feedback-list-frame dp-list-frame';
+    const className = this.props.className || 'dp-list-frame';
     return (
       <section className={className}>
         <div className="feedback-list">
