@@ -6,15 +6,6 @@ export const MODE_APPEND = 'append';
 export const MODE_SET = 'set';
 
 /**
- * (Action creator builder) Triggers a record gc.
- *
- * @return {Function} action creator
- */
-export function gcRecords() {
-  return () => ({});
-}
-
-/**
  * (Action creator builder) Releases records for a request.
  *
  * @return {Function} action creator

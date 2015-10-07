@@ -2,7 +2,6 @@ import { createAction } from 'Ampliflux';
 import * as recordStoreActions from 'Ampliflux/common/record-store/actions';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 
-export const gcPeople             = createAction('GC_PEOPLE',              recordStoreActions.gcRecords());
 export const releasePeople        = createAction('RELEASE_PEOPLE',         recordStoreActions.releaseRecords());
 export const releasePeopleRequest = createAction('RELEASE_PEOPLE_REQUEST', recordStoreActions.releaseRequest());
 export const setPeopleRequest     = createAction('SET_PEOPLE',             recordStoreActions.setRequestRecords());

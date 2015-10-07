@@ -5,7 +5,6 @@ import { createEmptyRecordStoreState, buildRecordStoreHandlers } from 'Ampliflux
 export default createReducer(
   createEmptyRecordStoreState(),
   buildRecordStoreHandlers({
-    gcAction: agentTeamsActions.gcAgentTeams,
     releaseRecordsAction: agentTeamsActions.releaseAgentTeams,
     releaseRequestAction: agentTeamsActions.releaseRequest,
     setRequestRecordAction: agentTeamsActions.setAgentTeamsRequest,

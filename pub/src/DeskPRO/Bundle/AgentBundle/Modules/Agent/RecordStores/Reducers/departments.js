@@ -5,7 +5,6 @@ import * as departmentsActions from '../Actions/departmentsActions';
 export default createReducer(
   createEmptyRecordStoreState(),
   buildRecordStoreHandlers({
-    gcAction:               departmentsActions.gcDepartments,
     releaseRecordsAction:   departmentsActions.releaseDepartments,
     releaseRequestAction:   departmentsActions.releaseDepartmentsRequest,
     setRequestRecordAction: departmentsActions.setDepartmentsRequest,
