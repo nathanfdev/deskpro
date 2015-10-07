@@ -1,23 +1,16 @@
-import * as TaskListActions from "../Actions/TaskListActions";
-import { Reducer } from "Ampliflux/reducers";
+import { createReducer } from 'Ampliflux';
+import * as TaskListActions from '../Actions/TaskListActions';
 
-export default class DepartmentList extends Reducer {
-  getInitialState() {
-    return {
-      departmentList: null,
-      departmentCount: 0
-    };
+const initialState = {
+  departmentCount: 0,
+  departmentList: []
+};
+
+export default createReducer(initialState, {
+  [TaskListActions.loadDepartments]: (state, payload) => {
+    const departmentCount = payload.meta ? payload.meta.total_count : 0;
+
+    const withCount = state.set('departmentCount', departmentCount);
+    return withCount.set('departmentList', payload.data);
   }
-  
-  departmentsLoaded(state, action) {
-    return {
-      ...state,
-      departmentList: action.payload.data,
-      departmentCount: action.payload.meta.total_count
-    };
-  }
-  
-  registerHandlers() {this
-    .r(TaskListActions.loadDepartments, this.departmentsLoaded)
-  }
-}
+});

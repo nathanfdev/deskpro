@@ -1,68 +1,38 @@
-import * as TaskListActions from "../Actions/TaskListActions";
-import { Reducer } from "Ampliflux/reducers";
+import { createReducer } from 'Ampliflux';
+import * as TaskListActions from '../Actions/TaskListActions';
 
-export default class TaskList extends Reducer {
-  getInitialState() {
-    return {
-    	taskList: null,
-      taskCount: 0,
-      myTaskCount: 0,
-      teamTaskCount: 0,
-      deptTaskCount: 0,
-      delegatedTaskCount: 0,
-      unassignedTaskCount: 0
-    };
-  }
+const initialState = {
+  taskCount: 0,
+  myTaskCount: 0,
+  teamTaskCount: 0,
+  deptTaskCount: 0,
+  delegatedTaskCount: 0,
+  unassignedTaskCount: 0
+};
 
-  registerHandlers() {this
-    .r(TaskListActions.loadTasks, this.tasksLoaded)
-    .r(TaskListActions.loadMyTasks, this.myTasksLoaded)
-    .r(TaskListActions.loadTeamTasks, this.teamTasksLoaded)
-    .r(TaskListActions.loadDepartmentTasks, this.departmentTasksLoaded)
-    .r(TaskListActions.loadDelegatedTasks, this.delegatedTasksLoaded)
-    .r(TaskListActions.loadUnassignedTasks, this.unassignedTasksLoaded)
+export default createReducer(initialState, {
+  [TaskListActions.loadTasks]: (state, payload) => {
+    const taskCount = payload.meta ? payload.meta.total_count : 0;
+    return state.set('taskCount', taskCount);
+  },
+  [TaskListActions.loadMyTasks]: (state, payload) => {
+    const taskCount = payload.meta ? payload.meta.total_count : 0;
+    return state.set('myTaskCount', taskCount);
+  },
+  [TaskListActions.loadTeamTasks]: (state, payload) => {
+    const taskCount = payload.meta ? payload.meta.total_count : 0;
+    return state.set('teamTaskCount', taskCount);
+  },
+  [TaskListActions.loadDepartmentTasks]: (state, payload) => {
+    const taskCount = payload.meta ? payload.meta.total_count : 0;
+    return state.set('deptTaskCount', taskCount);
+  },
+  [TaskListActions.loadDelegatedTasks]: (state, payload) => {
+    const taskCount = payload.meta ? payload.meta.total_count : 0;
+    return state.set('delegatedTaskCount', taskCount);
+  },
+  [TaskListActions.loadUnassignedTasks]: (state, payload) => {
+    const taskCount = payload.meta ? payload.meta.total_count : 0;
+    return state.set('unassignedTaskCount', taskCount);
   }
-
-  tasksLoaded(state, action) {
-    return {
-        ...state,
-        taskList: action.payload.data,
-        taskCount: action.payload.meta.total_count
-    };
-  }
-
-  myTasksLoaded(state, action) {
-    return {
-      ...state,
-      myTaskCount: action.payload.meta.total_count
-    };
-  }
-
-  teamTasksLoaded(state, action) {
-    return {
-      ...state,
-      teamTaskCount: action.payload.meta.total_count
-    };
-  }
-
-  departmentTasksLoaded(state, action) {
-    return {
-      ...state,
-      deptTaskCount: action.payload.meta.total_count
-    };
-  }
-
-  delegatedTasksLoaded(state, action) {
-    return {
-      ...state,
-      delegatedTaskCount: action.payload.meta.total_count
-    };
-  }
-
-  unassignedTasksLoaded(state, action) {
-    return {
-      ...state,
-      unassignedTaskCount: action.payload.meta.total_count
-    };
-  }
-}
+});

@@ -1,35 +1,23 @@
-import React from "react";
-import { DragSource } from "react-dnd";
+import React from 'react';
 import { connect } from 'react-redux';
 import $ from 'jquery';
-import * as TaskActions from "../Actions/TaskListActions";
-import { IntlMixin, FormattedDate } from "react-intl";
-import Formsy from "formsy-react";
-import FRC from "../../../../../Component/FormComponents/main.js";
-import TaskCard from "../Components/TaskCard";
-import TaskControls from "../Components/TaskControls";
-import TaskCardGroup from "../Components/TaskCardGroup";
-import TaskCalendar from "../Components/TaskCalendar";
-import TaskCardCondensedGroup from "../Components/TaskCardCondensedGroup";
-import TaskOrderHover from "../Components/TaskOrderHover";
-import KanbanColumn from "../Components/KanbanColumn";
-import Moment from "moment";
-import TaskGrouping from "../../../Services/TaskGrouping";
-import * as AppActions from "../../Application/Actions/AppActions";
-import * as constants from "../../../Constants/Constants";
-import ReactPaginate from "../../Common/Components/Pagination/deskpro-react-paginate";
-import ComponentRootWrapper from "DeskPRO/Component/ComponentRootWrapper";
-import AssignHover from "../Components/AssignHover";
-import TaskControlsViewSwitcher from '../Components/TaskControlsViewSwitcher';
+import * as TaskActions from '../Actions/TaskListActions';
+import { IntlMixin } from 'react-intl';
+import Formsy from 'formsy-react';
+import FRC from '../../../../../Component/FormComponents/main.js';
+import TaskControls from '../Components/TaskControls';
+import TaskCardGroup from '../Components/TaskCardGroup';
+import TaskCalendar from '../Components/TaskCalendar';
+import TaskCardCondensedGroup from '../Components/TaskCardCondensedGroup';
+import KanbanColumn from '../Components/KanbanColumn';
+import Moment from 'moment';
+import TaskGrouping from '../../../Services/TaskGrouping';
+import * as AppActions from '../../Application/Actions/AppActions';
+import * as constants from '../../../Constants/Constants';
+import ReactPaginate from '../../Common/Components/Pagination/deskpro-react-paginate';
+import ComponentRootWrapper from 'DeskPRO/Component/ComponentRootWrapper';
+import AssignHover from '../Components/AssignHover';
 
-import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned';
-import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
-import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
-import ItemGroup from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemGroup';
-import ItemList from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemList';
-import MenuFooter from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooter';
-import MenuFooterOptions from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterOptions';
-import MenuFooterLink from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterLink';
 import TaskMassActions from '../Components/TaskMassActions';
 import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 import { ListFrame } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
@@ -47,6 +35,19 @@ import { ListFrame } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/
 }))
 export default
 class TasksListFrame extends React.Component {
+  static propTypes = {
+    dispatch: React.PropTypes.func,
+    taskFrameList: React.PropTypes.object,
+    taskListList: React.PropTypes.object,
+    projectList: React.PropTypes.object,
+    taskFilter: React.PropTypes.object,
+    labelList: React.PropTypes.object,
+    agentList: React.PropTypes.object,
+    teamList: React.PropTypes.object,
+    departmentList: React.PropTypes.object,
+    dpWindow: React.PropTypes.object
+  }
+
   constructor(props) {
     super(props);
 
@@ -74,142 +75,13 @@ class TasksListFrame extends React.Component {
     props.dispatch(TaskActions.loadLists(1));
   }
 
-  toggleDone(object, reload) {
-    object.is_done = !object.is_done;
-
-    let newValues = {
-      taskId: object.id,
-      is_done: object.is_done
-    };
-
-    if (newValues.is_done === true) {
-      newValues['percent_complete'] = 100;
-    }
-
-    this.forceUpdate();
-
-    this.props.dispatch(TaskActions.editTask(newValues, reload));
-  }
-
-  editTask(source, model) {
-    this.props.dispatch(TaskActions.editTask(model, source));
-  }
-
-  createTask(source, model) {
-    this.props.dispatch(TaskActions.createTask({
-      title: model.title
-    }, source));
-  }
-
-  toggleAllMassActions() {
-    if (this.state.actionable.length === this.props.taskFrameList.taskFrameList.length) {
-      this.hideMassActionControls();
-    } else {
-      let actionable = [];
-
-      this.props.taskFrameList.taskFrameList.map((object) => {
-        actionable.push(object.id);
-      });
-
-      this.setState({
-        actionable: actionable
-      });
-      this.showMassActionControls();
-    }
-  }
-
-  viewSwitcherPosition() {
-    if (this.state.actionable.length === this.props.taskFrameList.taskFrameList.length) {
-      this.hideMassActionControls();
-    } else {
-      let actionable = [];
-
-      this.props.taskFrameList.taskFrameList.map((object) => {
-        actionable.push(object.id);
-      });
-
-      this.setState({
-        actionable: actionable
-      });
-      this.showMassActionControls();
-    }
-  }
-
-  updateMassActions(taskId) {
-    let actionable        = this.state.actionable;
-    const actionableIndex = actionable.indexOf(taskId);
-    if (actionableIndex === -1) {
-      actionable.push(taskId);
-    } else {
-      actionable.splice(actionableIndex, 1);
-    }
+  setYear(year) {
+    const moment = this.state.moment;
+    moment.year(year);
 
     this.setState({
-      actionable: actionable
+      moment: moment
     });
-
-    if (actionable.length > 0) {
-      this.showMassActionControls();
-    } else {
-      this.hideMassActionControls();
-    }
-  }
-
-  showMassActionControls() {
-    $('.ticket-controls-bulk-editing').animate({'left': '22px'});
-  }
-
-  hideMassActionControls() {
-    this.setState({
-      actionable: []
-    });
-    $('.ticket-controls-bulk-editing').animate({'left': '100%'});
-  }
-
-  toggleView() {
-    this.setState({
-      changeView: !this.state.changeView
-    });
-  }
-
-  applyFilter(filter) {
-    this.setState({
-      filter: filter
-    });
-
-    let query = filter;
-
-    query.order_by = this.state.order;
-    query.sort     = this.state.direction;
-
-    this.props.dispatch(TaskActions.setFilter(query));
-  }
-
-  setView(view) {
-    this.props.dispatch(AppActions.toggleView(view));
-
-    this.setState({
-      view: view,
-      changeView: false
-    });
-
-    // force a reload so we get the correct data
-    this.props.dispatch(TaskActions.setFilter(this.state.filter));
-  }
-
-  toggleOrder(field) {
-    let direction = 'asc';
-
-    if (field === this.state.order) {
-      direction = this.state.direction === 'asc' ? 'desc' : 'asc';
-    }
-
-    const model = {
-      order: field,
-      direction: direction
-    };
-
-    this.setSortOrder(model);
   }
 
   setSortOrder(modifier) {
@@ -228,10 +100,50 @@ class TasksListFrame extends React.Component {
     this.props.dispatch(TaskActions.setFilter(query));
   }
 
+  setView(view) {
+    this.props.dispatch(AppActions.toggleView(view));
+
+    this.setState({
+      view: view,
+      changeView: false
+    });
+
+    // force a reload so we get the correct data
+    this.props.dispatch(TaskActions.setFilter(this.state.filter));
+  }
+
+  applyFilter(filter) {
+    this.setState({
+      filter: filter
+    });
+
+    const query = filter;
+
+    query.order_by = this.state.order;
+    query.sort     = this.state.direction;
+
+    this.props.dispatch(TaskActions.setFilter(query));
+  }
+
+  toggleOrder(field) {
+    let direction = 'asc';
+
+    if (field === this.state.order) {
+      direction = this.state.direction === 'asc' ? 'desc' : 'asc';
+    }
+
+    const model = {
+      order: field,
+      direction: direction
+    };
+
+    this.setSortOrder(model);
+  }
+
   handlePageClick(data) {
     const page = data.selected + 1;
 
-    let filter = this.state.filter;
+    const filter = this.state.filter;
 
     filter.page = page;
 
@@ -239,7 +151,7 @@ class TasksListFrame extends React.Component {
   }
 
   nextMonth() {
-    let moment = this.state.moment.add(1, 'months');
+    const moment = this.state.moment.add(1, 'months');
 
     this.setState({
       moment: moment
@@ -247,31 +159,126 @@ class TasksListFrame extends React.Component {
   }
 
   prevMonth() {
-    let moment = this.state.moment.subtract(1, 'months');
+    const moment = this.state.moment.subtract(1, 'months');
 
     this.setState({
       moment: moment
     });
   }
 
-  setYear(year) {
-    let moment = this.state.moment;
-    moment.year(year);
+  toggleView() {
+    this.setState({
+      changeView: !this.state.changeView
+    });
+  }
+
+  toggleAllMassActions() {
+    const taskFrameList = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameList', []) : [];
+
+    if (this.state.actionable.length === taskFrameList.length) {
+      this.hideMassActionControls();
+    } else {
+      const actionable = [];
+
+      taskFrameList.map((object) => {
+        actionable.push(object.id);
+      });
+
+      this.setState({
+        actionable: actionable
+      });
+      this.showMassActionControls();
+    }
+  }
+
+  viewSwitcherPosition() {
+    const taskFrameList = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameList', []) : [];
+
+    if (this.state.actionable.length === taskFrameList.length) {
+      this.hideMassActionControls();
+    } else {
+      const actionable = [];
+
+      taskFrameList.map((object) => {
+        actionable.push(object.id);
+      });
+
+      this.setState({
+        actionable: actionable
+      });
+      this.showMassActionControls();
+    }
+  }
+
+  updateMassActions(taskId) {
+    const actionable      = this.state.actionable;
+    const actionableIndex = actionable.indexOf(taskId);
+    if (actionableIndex === -1) {
+      actionable.push(taskId);
+    } else {
+      actionable.splice(actionableIndex, 1);
+    }
 
     this.setState({
-      moment: moment
+      actionable: actionable
     });
+
+    if (actionable.length > 0) {
+      this.showMassActionControls();
+    } else {
+      this.hideMassActionControls();
+    }
+  }
+
+  toggleDone(object, reload) {
+    object.is_done = !object.is_done;
+
+    const newValues = {
+      taskId: object.id,
+      is_done: object.is_done
+    };
+
+    if (newValues.is_done === true) {
+      newValues.percent_complete = 100;
+    }
+
+    this.forceUpdate();
+
+    this.props.dispatch(TaskActions.editTask(newValues, reload));
+  }
+
+  showMassActionControls() {
+    $('.ticket-controls-bulk-editing').animate({'left': '22px'});
+  }
+
+  hideMassActionControls() {
+    this.setState({
+      actionable: []
+    });
+    $('.ticket-controls-bulk-editing').animate({'left': '100%'});
+  }
+
+  editTask(source, model) {
+    this.props.dispatch(TaskActions.editTask(model, source));
+  }
+
+  createTask(source, model) {
+    this.props.dispatch(TaskActions.createTask({
+      title: model.title
+    }, source));
   }
 
   massEdit(data) {
+    const source = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameSource') : null;
+
     this.props.dispatch(TaskActions.massEditTasks(
       data,
-      this.props.taskFrameList.taskFrameSource
+      source
     ));
   }
 
   handleAssigneeChange(assignee) {
-    let task         = {};
+    const task       = {};
     const assignment = assignee.value;
 
     task.agents      = [];
@@ -279,7 +286,7 @@ class TasksListFrame extends React.Component {
     task.departments = [];
 
     if (assignment !== 'unassigned') {
-      let assignmentParts      = assignment.split('-');
+      const assignmentParts    = assignment.split('-');
       task[assignmentParts[0]] = [assignmentParts[1]];
     }
 
@@ -287,7 +294,9 @@ class TasksListFrame extends React.Component {
       task.taskId = assignee.id;
       this.closeAssignWindow();
 
-      this.editTask(this.props.taskFrameList.taskFrameSource, task);
+      const source = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameSource') : null;
+
+      this.editTask(source, task);
     }
   }
 
@@ -315,7 +324,7 @@ class TasksListFrame extends React.Component {
     const id      = item.id;
     const afterId = targetItem.id;
 
-    let oldOrder = [];
+    const oldOrder = [];
     tasks.forEach((card) => {
       oldOrder.push(card.display_order);
     });
@@ -331,8 +340,10 @@ class TasksListFrame extends React.Component {
     // Used to set the state of the column
     callback(cards);
 
+    const source = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameSource', []) : [];
+
     this.editTask(
-      this.props.taskFrameList.taskFrameSource,
+      source,
       {
         taskId: card.id,
         display_order: targetItem.display_order
@@ -348,61 +359,77 @@ class TasksListFrame extends React.Component {
   }
 
   render() {
-    const {taskFrameList, projectList, taskFilter, labelList, agentList, teamList, departmentList} = this.props;
+    const {taskFilter} = this.props;
 
-    const _this     = this;
-    let linkedItems = {};
-    let lists       = [];
-    let labels      = [];
-    let tickets     = {};
+    const _this       = this;
+    const linkedItems = {};
+    const lists       = [];
+    const labels      = [];
+    const tickets     = {};
+
+    const projects = this.props.projectList ? this.props.projectList.get('projectList', []) : [];
+    const source = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameSource', []) : [];
 
     // Attach IDs to the projects
-    if (projectList.projectList && typeof projectList.projectList.forEach === 'function') {
-      projectList.projectList.forEach((project) => {
+    if (projects && typeof projects.forEach === 'function') {
+      projects.forEach((project) => {
         this.projects[project.id.toString()] = project;
       });
     }
 
+    const taskFrameLinks = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameLinks', []) : [];
+
     // Attach IDs to the linked item
-    if (taskFrameList.taskFrameLinks && typeof taskFrameList.taskFrameLinks.forEach === 'function') {
-      taskFrameList.taskFrameLinks.forEach((link) => {
+    if (taskFrameLinks && typeof taskFrameLinks.forEach === 'function') {
+      taskFrameLinks.forEach((link) => {
         linkedItems[link.id.toString()] = link;
       });
     }
 
+    const agentList = this.props.agentList ? this.props.agentList.get('agentList', []) : [];
+    const teamList = this.props.teamList ? this.props.teamList.get('teamList', []) : [];
+    const departmentList = this.props.departmentList ? this.props.departmentList.get('departmentList', []) : [];
+
     // Attach assignments
-    if (agentList.agentList && typeof agentList.agentList.forEach === 'function') {
-      agentList.agentList.forEach((agent) => {
+    if (agentList && typeof agentList.forEach === 'function') {
+      agentList.forEach((agent) => {
         this.agents[agent.id.toString()] = agent;
       });
     }
-    if (teamList.teamList && typeof teamList.teamList.forEach === 'function') {
-      teamList.teamList.forEach((team) => {
+    if (teamList && typeof teamList.forEach === 'function') {
+      teamList.forEach((team) => {
         this.teams[team.id.toString()] = team;
       });
     }
-    if (departmentList.departmentList && typeof departmentList.departmentList.forEach === 'function') {
-      departmentList.departmentList.forEach((department) => {
+    if (departmentList && typeof departmentList.forEach === 'function') {
+      departmentList.forEach((department) => {
         this.departments[department.id.toString()] = department;
       });
     }
 
+    const taskFrameTickets = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameTickets', []) : [];
+
     // Attach tickets
-    if (taskFrameList.taskFrameTickets && typeof taskFrameList.taskFrameTickets.forEach === 'function') {
-      taskFrameList.taskFrameTickets.forEach((ticket) => {
+    if (taskFrameTickets && typeof taskFrameTickets.forEach === 'function') {
+      taskFrameTickets.forEach((ticket) => {
         tickets[ticket.id.toString()] = ticket;
       });
     }
 
-    if (this.props.taskListList.taskList && typeof this.props.taskListList.taskList.forEach === 'function') {
-      this.props.taskListList.taskList.forEach((listObject) => {
+    const taskList = this.props.taskListList ? this.props.taskListList.get('taskList', []) : [];
+
+    if (taskList && typeof taskList.forEach === 'function') {
+      taskList.forEach((listObject) => {
         lists[listObject.id.toString()] = listObject;
       });
     }
 
-    if (labelList.labelList && typeof labelList.labelCharacters.forEach === 'function') {
-      labelList.labelCharacters.forEach((character) => {
-        labelList.labelList[character].forEach((label) => {
+    const labelList = this.props.labelList ? this.props.labelList.get('labelList', []) : [];
+    const labelCharacters = this.props.labelList ? this.props.labelList.get('labelCharacters', []) : [];
+
+    if (labelList && typeof labelCharacters.forEach === 'function') {
+      labelCharacters.forEach((character) => {
+        labelList[character].forEach((label) => {
           labels[label.id.toString()] = label;
         });
       });
@@ -411,14 +438,16 @@ class TasksListFrame extends React.Component {
     const grouping     = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, lists, linkedItems, tickets);
     const columnField  = this.state.order;
     const rawGroupings = grouping.getRawGroupings(columnField, this.state.direction);
-    const sectionClass = this.state.view !== 'list' ? "task-list-frame dp-list-frame kanban" : "task-list-frame dp-list-frame";
+    const sectionClass = this.state.view !== 'list' ? 'task-list-frame dp-list-frame kanban' : 'task-list-frame dp-list-frame';
 
-    let tasks = [];
+    const tasks = [];
+
+    const taskFrameList = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameList', []) : [];
 
     // Split tasks up into the appropriate kanban columns
-    if (taskFrameList && taskFrameList.taskFrameList && taskFrameList.taskFrameList.length > 0) {
-      taskFrameList.taskFrameList.forEach((object) => {
-        let columnId = grouping.getGroup(object, columnField);
+    if (taskFrameList && taskFrameList.length > 0) {
+      taskFrameList.forEach((object) => {
+        const columnId = grouping.getGroup(object, columnField);
 
         if (typeof tasks[columnId] === 'undefined') {
           tasks[columnId] = [];
@@ -430,10 +459,11 @@ class TasksListFrame extends React.Component {
 
     let totalPages = 1;
 
-    if (taskFrameList.taskFrameMeta && taskFrameList.taskFrameMeta.pagination) {
-      totalPages = taskFrameList.taskFrameMeta.pagination.total_pages;
-    }
+    const taskMeta = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameMeta', []) : [];
 
+    if (taskMeta && taskMeta.pagination) {
+      totalPages = taskMeta.pagination.total_pages;
+    }
 
     return (
       <ListFrame className={sectionClass}>
@@ -478,7 +508,7 @@ class TasksListFrame extends React.Component {
                                      columnField={columnField}
                                      updateField={group.updateField}
                                      updateValue={group.updateValue}
-                                     source={taskFrameList.taskFrameSource}
+                                     source={source}
                                      updateMassActions={_this.updateMassActions.bind(_this)}
                                      moveCard={this.moveCard.bind(this)}
                                      massEdit={this.massEdit.bind(this)}
@@ -514,7 +544,7 @@ class TasksListFrame extends React.Component {
                     if (tasks[group.key]) {
                       return (<TaskCardCondensedGroup tasks={tasks[group.key]} key={group.id}
                                                       columnField={columnField}
-                                                      source={taskFrameList.taskFrameSource}
+                                                      source={source}
                                                       dispatch={_this.props.dispatch.bind(_this)}
                                                       updateField={group.updateField}
                                                       updateValue={group.updateValue}
@@ -532,14 +562,14 @@ class TasksListFrame extends React.Component {
                     }
                   }) : '' }
                 </table>
-                <Formsy.Form onSubmit={_this.createTask.bind(_this, taskFrameList.taskFrameSource)}>
+                <Formsy.Form onSubmit={_this.createTask.bind(_this, source)}>
                   <FRC.Input name="title" type="text"/>
                   <button type="submit" value="Save" className="button">Add</button>
                 </Formsy.Form>
               </div>
              : (this.state.view === 'calendar') ?
                <div>
-                 <TaskCalendar tasks={taskFrameList.taskFrameList}
+                 <TaskCalendar tasks={taskFrameList}
                                moment={this.state.moment}
                                nextMonth={this.nextMonth.bind(this)}
                                prevMonth={this.prevMonth.bind(this)}
@@ -554,7 +584,7 @@ class TasksListFrame extends React.Component {
                </div>
                 :
                <div>
-                 <Formsy.Form onSubmit={_this.createTask.bind(_this, taskFrameList.taskFrameSource)}>
+                 <Formsy.Form onSubmit={_this.createTask.bind(_this, source)}>
                    <FRC.Input name="title" type="text"/>
                    <button type="submit" value="Save" className="button">Add</button>
                  </Formsy.Form>
@@ -562,7 +592,7 @@ class TasksListFrame extends React.Component {
                  {rawGroupings ? rawGroupings.map((group) => {
                    return (<TaskCardGroup tasks={tasks[group.key]} key={group.id}
                                           columnField={columnField}
-                                          source={taskFrameList.taskFrameSource}
+                                          source={source}
                                           dispatch={_this.props.dispatch.bind(_this)}
                                           updateField={group.updateField}
                                           updateValue={group.updateValue}

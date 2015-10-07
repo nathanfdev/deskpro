@@ -1,68 +1,37 @@
-import * as TaskListActions from "../Actions/TaskListActions";
-import { Reducer } from "Ampliflux/reducers";
+import { createReducer } from 'Ampliflux';
+import * as TaskListActions from '../Actions/TaskListActions';
 
-export default class TaskFrameList extends Reducer {
-  getInitialState() {
-    return {
-      taskFrameList: null,
-      taskFrameSource: null,
-      taskFrameProjects: null,
-      taskFrameLinks: null,
-      taskFrameAgents: null,
-      taskFrameTeams: null,
-      taskFrameDepartments: null,
-      taskFrameTickets: null,
-      taskFrameMeta: null
-    };
-  }
+const initialState = {
+  taskFrameList: null,
+  taskFrameSource: null,
+  taskFrameProjects: null,
+  taskFrameLinks: null,
+  taskFrameAgents: null,
+  taskFrameTeams: null,
+  taskFrameDepartments: null,
+  taskFrameTickets: null,
+  taskFrameMeta: null
+};
 
-  tasksLoaded(state, action) {
-    let projects = [];
-    let links = [];
-    let agents = [];
-    let teams = [];
-    let departments = [];
-    let tickets = [];
+export default createReducer(initialState, {
+  [TaskListActions.loadTaskList]: (state, payload) => {
+    const projects = (typeof payload.projects !== 'undefined' && typeof payload.projects !== 'undefined') ? payload.projects : [];
+    const links = (typeof payload.linked_items !== 'undefined') ? payload.linked_items : [];
+    const agents = (typeof payload.people !== 'undefined') ? payload.people : [];
+    const teams = (typeof payload.teams !== 'undefined') ? payload.teams : [];
+    const departments = (typeof payload.departments !== 'undefined') ? payload.departments : [];
+    const tickets = (typeof payload.tickets !== 'undefined') ? payload.tickets : [];
 
-    if (typeof action.payload.projects !== 'undefined' && typeof action.payload.projects !== 'undefined') {
-      projects = action.payload.projects;
-    }
-
-    if (typeof action.payload.linked_items !== 'undefined') {
-      links = action.payload['linked_items'];
-    }
-
-    if (typeof action.payload.people !== 'undefined') {
-      agents = action.payload['people'];
-    }
-
-    if (typeof action.payload.teams !== 'undefined') {
-      teams = action.payload['teams'];
-    }
-
-    if (typeof action.payload.departments !== 'undefined') {
-      departments = action.payload['departments'];
-    }
-
-    if (typeof action.payload.tickets !== 'undefined') {
-      tickets = action.payload['tickets'];
-    }
-
-    return {
-      ...state,
-      taskFrameList: action.payload.data,
-      taskFrameSource: action.payload.source,
+    return state.merge({
+      taskFrameList: payload.data,
+      taskFrameSource: payload.source,
       taskFrameProjects: projects,
       taskFrameLinks: links,
       taskFrameAgents: agents,
       taskFrameTeams: teams,
       taskFrameDepartments: departments,
       taskFrameTickets: tickets,
-      taskFrameMeta: action.payload.meta
-    };
+      taskFrameMeta: payload.meta
+    });
   }
-
-  registerHandlers() {this
-    .r(TaskListActions.loadTaskList, this.tasksLoaded)
-  }
-}
+});

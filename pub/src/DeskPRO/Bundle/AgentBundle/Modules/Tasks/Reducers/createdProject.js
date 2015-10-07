@@ -1,24 +1,16 @@
-import * as TaskListActions from "../Actions/TaskListActions";
-import { Reducer } from "Ampliflux/reducers";
+import { createReducer } from 'Ampliflux';
+import * as TaskListActions from '../Actions/TaskListActions';
 
-export default class CreatedProject extends Reducer {
-  getInitialState() {
-    return {
-      createdProject: null,
-      failedProject: null
-    };
+const initialState = {
+  createdProject: null,
+  failedProject: null
+};
+
+export default createReducer(initialState, {
+  [TaskListActions.createProject]: (state, payload) => {
+    return state.set('createdProject', payload.data);
+  },
+  [TaskListActions.failedProject]: (state, payload) => {
+    return state.set('failedProject', payload.data);
   }
-  
-  registerHandlers() {this
-    .r(TaskListActions.createProject, this.setPayload('createdProject'))
-    .r(TaskListActions.failedProject, this.saveProjectFailed)
-  }
-  
-  saveProjectFailed(state, action) {
-    console.log('failed');
-    return {
-      ...state,
-      failedProject: action.payload
-    };
-  }
-}
+});

@@ -4,7 +4,7 @@ import * as AppActions from '../../../Application/Actions/AppActions';
 export class NavFrame extends React.Component {
 
   static propTypes = {
-    children: PropTypes.object.isRequired,
+    children: PropTypes.any.isRequired,
     dpWindow: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
   };
@@ -57,7 +57,7 @@ export class NavFrame extends React.Component {
 export class NavFrameHeader extends React.Component {
 
   static propTypes = {
-    children: PropTypes.object.isRequired,
+    children: PropTypes.any.isRequired,
     icon: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired
   };

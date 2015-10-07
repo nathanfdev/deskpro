@@ -1,21 +1,12 @@
-import * as TaskListActions from "../Actions/TaskListActions";
-import { Reducer } from "Ampliflux/reducers";
+import { createReducer } from 'Ampliflux';
+import * as TaskListActions from '../Actions/TaskListActions';
 
-export default class TaskListList extends Reducer {
-  getInitialState() {
-    return {
-      taskList: null
-    };
+const initialState = {
+  taskList: []
+};
+
+export default createReducer(initialState, {
+  [TaskListActions.loadLists]: (state, payload) => {
+    return state.set('taskList', payload.data);
   }
-  
-  registerHandlers() {this
-    .r(TaskListActions.loadLists, this.listsLoaded)
-  }
-  
-  listsLoaded(state, action) {
-    return {
-      ...state,
-      taskList: action.payload.data
-    };
-  }
-}
+});

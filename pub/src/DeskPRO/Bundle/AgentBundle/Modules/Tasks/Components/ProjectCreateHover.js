@@ -1,19 +1,22 @@
-import React from "react";
-import Formsy from "formsy-react";
-import FRC from "../../../../../Component/FormComponents/main.js";
-import $ from "jquery";
-
-import * as TaskActions from "../Actions/TaskListActions";
+import React from 'react';
+import Formsy from 'formsy-react';
+import FRC from '../../../../../Component/FormComponents/main.js';
+import $ from 'jquery';
 
 const ProjectCreateHover = React.createClass({
+
+  propTypes: {
+    projectData: React.PropTypes.object,
+    agentList: React.PropTypes.object,
+    createdProject: React.PropTypes.object,
+    user: React.PropTypes.object,
+    position: React.PropTypes.object,
+    closeWindow: React.PropTypes.func
+  },
 
   mixins: [
     require('react-onclickoutside')
   ],
-
-  handleClickOutside: function(evt) {
-    this.props.closeWindow();
-  },
 
   getInitialState: function() {
     return {
@@ -28,6 +31,26 @@ const ProjectCreateHover = React.createClass({
     };
   },
 
+  componentWillReceiveProps: function() {
+    const state = {};
+
+    if (this.state.selected === null && Object.keys(this.props.projectData).length > 0) {
+      state.selected = {
+        departments: this.props.projectData.departments,
+        teams: this.props.projectData.teams,
+        agents: this.props.projectData.agents
+      };
+    }
+
+    if (Object.keys(state).length > 0) {
+      this.setState(state);
+    }
+  },
+
+  handleClickOutside: function() {
+    this.props.closeWindow();
+  },
+
   enableButton: function() {
     this.setState({
       canSubmit: true
@@ -37,13 +60,13 @@ const ProjectCreateHover = React.createClass({
   disableButton: function() {
     this.setState({
       canSubmit: false
-    })
+    });
   },
 
   updateValues: function(event) {
     this.setState({
       projectTitle: event.target.value
-    })
+    });
   },
 
   clearFilter: function() {
@@ -63,14 +86,14 @@ const ProjectCreateHover = React.createClass({
   assignSelf: function() {
     const userId = this.props.user.id;
     if (this.props.agentList.indexOf(userId) < 0) {
-      let selected = this.state.selected;
+      const selected = this.state.selected;
       selected.agents.push(userId);
 
       this.setState({
         selected: selected
       });
 
-      this.refs['agentSelect'].setValue(selected.agents);
+      this.refs.agentSelect.setValue(selected.agents);
     }
   },
 
@@ -82,24 +105,28 @@ const ProjectCreateHover = React.createClass({
         departments: []
       }
     });
-    this.refs['agentSelect'].setValue([]);
-    this.refs['teamSelect'].setValue([]);
-    this.refs['departmentSelect'].setValue([]);
+    this.refs.agentSelect.setValue([]);
+    this.refs.teamSelect.setValue([]);
+    this.refs.departmentSelect.setValue([]);
   },
 
   serverValidation: function(field) {
-    if (this.props.createdProject.failedProject === null
-      || typeof this.props.createdProject.failedProject.errors === 'undefined'
-      || this.props.createdProject.failedProject.errors === null
-      || typeof this.props.createdProject.failedProject.errors.fields[field] === 'undefined') {
-      return '';
+    if (this.props.createdProject && typeof this.props.createdProject.has === 'function') {
+      if (!this.props.createdProject.has('failedProject')
+        || typeof this.props.createdProject.get('failedProject').errors === 'undefined'
+        || this.props.createdProject.get('failedProject').errors === null
+        || typeof this.props.createdProject.get('failedProject').errors.fields[field] === 'undefined') {
+        return '';
+      }
+
+      const errors = this.props.createdProject.get('failedProject').errors.fields[field].errors;
+
+      return errors.map(function(error) {
+        return (<span className="form-error-description" key={error.code}>{error.message}</span>);
+      });
     }
 
-    let errors = this.props.createdProject.failedProject.errors.fields[field].errors;
-
-    return errors.map(function(error) {
-      return <span className="form-error-description" key={error.code}>{error.message}</span>
-    });
+    return '';
   },
 
   toggleFilterSelected: function() {
@@ -109,39 +136,25 @@ const ProjectCreateHover = React.createClass({
   },
 
   filterAssignees: function(items, type, filter = null, onlySelected = false) {
+    let filteredItems = items;
+
     if (filter && filter.length > 0) {
-      items = items.filter((item) => {
+      filteredItems = items.filter((item) => {
         return item.name.toLowerCase().indexOf(filter.toLowerCase()) > -1;
       });
     }
 
     if (onlySelected) {
-      items = items.filter((item) => {
+      filteredItems = items.filter((item) => {
         return this.state.selected[type].indexOf(item.value) > -1;
       });
     }
 
-    return items;
-  },
-
-  componentWillReceiveProps: function() {
-    let state = {};
-
-    if (this.state.selected === null && Object.keys(this.props.projectData).length > 0) {
-      state.selected = {
-        departments: this.props.projectData.departments,
-        teams: this.props.projectData.teams,
-        agents: this.props.projectData.agents
-      }
-    }
-    
-    if (Object.keys(state).length > 0) {
-      this.setState(state);    
-    }
+    return filteredItems;
   },
 
   parseMembers: function(members) {
-    let result = {
+    const result = {
       department: [],
       team: [],
       person: []
@@ -149,7 +162,7 @@ const ProjectCreateHover = React.createClass({
 
     members.forEach(function(object) {
       let linkType = null;
-      switch(true) {
+      switch (true) {
         case object.department !== null:
           linkType = 'department';
           break;
@@ -167,7 +180,7 @@ const ProjectCreateHover = React.createClass({
   },
 
   updateAssignment: function(field, value) {
-    let selected = this.state.selected;
+    const selected = this.state.selected;
     selected[field] = value;
     this.setState({
       selected: selected
@@ -175,10 +188,7 @@ const ProjectCreateHover = React.createClass({
   },
 
   render: function() {
-    const {agentList, teamList, departmentList} = this.props;
-
     const project = this.props.projectData ? this.props.projectData : {};
-    const currentMembers = project.members && project.members.length > 0 ? this.parseMembers(project.members) : {};
     const positionY = (this.props.position.y - 20);
     const maxY = window.innerHeight - 400;
     let overshotY = false;
@@ -190,7 +200,7 @@ const ProjectCreateHover = React.createClass({
       top = maxY + 'px';
     }
 
-    return (<div style={{top: top}} className={overshotY ? "sidebar-hover hide-indicator" : "sidebar-hover"}>
+    return (<div style={{top: top}} className={overshotY ? 'sidebar-hover hide-indicator' : 'sidebar-hover'}>
         <div className="dpmw--popup-main">
           <div className="dpmw--popup-header">
             <i className="fa fa-tags"/> Project - {project.id ? 'Edit' : 'Create New'}
@@ -202,7 +212,7 @@ const ProjectCreateHover = React.createClass({
                   <FRC.Input name="projectId" type="hidden" value={project.id} />
                   <h2 className="dpw--popup-item-section-title">Title</h2>
                   <div className="dpw--popup-form-container">
-                    <FRC.Input name="title" type="text" placeholder="Title" validations="minLength:1" validationErrors={{minLength: "The title field is required"}} value={project.title} />
+                    <FRC.Input name="title" type="text" placeholder="Title" validations="minLength:1" validationErrors={{minLength: 'The title field is required'}} value={project.title} />
                     {this.serverValidation('title')}
                   </div>
                 </div>
@@ -221,7 +231,7 @@ const ProjectCreateHover = React.createClass({
                 <div className="dpmw--popup-content-right">
                   <div className="dpw-popup-content-item">
                     <div className="dpw-popup-content-item-show-only-selected">
-                      <a href="#" className={this.state.filterSelected === true ? "checkbox-link checked" : "checkbox-link"} onClick={this.toggleFilterSelected}>
+                      <a href="#" className={this.state.filterSelected === true ? 'checkbox-link checked' : 'checkbox-link'} onClick={this.toggleFilterSelected}>
                         <span>Show only Selected</span>
                         <span className="dpw--checkbox-boxy"><i className="fa fa-check" /></span>
                        </a>

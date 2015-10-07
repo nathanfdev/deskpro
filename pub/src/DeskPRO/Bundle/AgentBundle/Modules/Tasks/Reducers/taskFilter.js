@@ -1,21 +1,12 @@
-import * as TaskListActions from "../Actions/TaskListActions";
-import { Reducer } from "Ampliflux/reducers";
+import { createReducer } from 'Ampliflux';
+import * as TaskListActions from '../Actions/TaskListActions';
 
-export default class taskFilter extends Reducer {
-  getInitialState() {
-    return {
-      taskFilter: null
-    };
-  }
+const initialState = {
+  taskFilter: null
+};
 
-  setFilter(state, action) {
-    return {
-      ...state,
-      taskFilter: action.payload
-    };
+export default createReducer(initialState, {
+  [TaskListActions.setFilter]: (state, payload) => {
+    return state.set('taskFilter', payload);
   }
-
-  registerHandlers() {this
-    .r(TaskListActions.setFilter, this.setFilter)
-  }
-}
+});
