@@ -34,9 +34,11 @@ namespace Application\AgentBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Chat\UserChat\GroupingCounter;
 use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerator;
+use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Entity\ChatBlock;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ClientMessage;
+use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Searcher\ChatConversationSearch;
 use Application\DeskPRO\Searcher\SearcherAbstract;
 use Orb\Util\Dates;
@@ -248,13 +250,48 @@ class UserChatController extends AbstractController
 
         /** @var $field_manager \Application\DeskPRO\CustomFields\ChatFieldManager */
         $field_manager = $this->container->getSystemService('chat_fields_manager');
+        $data          = $this->in->getCleanValueArray('custom_fields', 'raw', 'raw');
+        $trans         = $this->container->getTranslator();
+        $errors        = array();
 
-        $field_manager->saveFormToObject($this->in->getCleanValueArray('custom_fields', 'raw', 'raw'), $convo);
+        foreach ($field_manager->getFields() as $field) {
+            /* @var CustomDefChat $field */
+            $handler_errors = $field->getHandler()->validateFormData(
+                $data,
+                HandlerAbstract::CONTEXT_AGENT
+            );
+            foreach ($handler_errors as $code) {
+                $code = preg_replace('#.*?\.(.*?)$#', '$1', $code);
+                switch ($code) {
+                    case 'min_length':
+                        $code = 'text_min';
+                        $msg  = $trans->getPhraseText('user.error.form_'.$code);
+                        break;
+                    case 'max_length':
+                        $code = 'text_max';
+                        $msg  = $trans->getPhraseText('user.error.form_'.$code);
+                        break;
+                    case 'regex_fail':
+                        $code = 'text_regex';
+                        $msg  = $trans->getPhraseText('user.error.form_'.$code);
+                        break;
+                    default:
+                        $msg = $trans->getPhraseText('user.error.form_'.$code);
+                }
+                $errors[] = $field['title'].': '.$msg;
+            }
+        }
+
+        if (!$errors) {
+            $field_manager->saveFormToObject($data, $convo);
+        }
+
         $custom_fields = $field_manager->getDisplayArrayForObject($convo);
 
         return $this->render('AgentBundle:UserChat:view-page-display-holders.html.twig', array(
             'convo'         => $convo,
             'custom_fields' => $custom_fields,
+            'errors'        => $errors,
         ));
     }
 
