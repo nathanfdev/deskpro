@@ -53,9 +53,18 @@ DeskPRO.UI.Menu2 = new Orb.Class({
 
 			var pos = positionBy.offset();
 			if (options.isSubMenu) {
+				var l = pos.left + positionBy.outerWidth();
+				var t = pos.top + positionBy.height() - 18;
+				var sw = statusMenu.width();
+				if (l + sw > $(window).width()) {
+					l = pos.left - sw - 3;
+				}
+				if (t + statusMenuH > $(window).height()) {
+					t = pos.top - statusMenuH;
+				}
 				statusMenu.css({
-					left: pos.left + positionBy.outerWidth(),
-					top: pos.top + positionBy.height() - 18
+					left: l,
+					top: t
 				});
 			} else {
 				if (options.openBelow) {
