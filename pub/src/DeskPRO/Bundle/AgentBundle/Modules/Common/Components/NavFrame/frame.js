@@ -53,8 +53,8 @@ export class NavFrame extends React.Component {
 
         <section className="task-nav-frame dp-nav-frame"
                  onMouseEnter={this.onMouseEnter}
-                 onMouseLeave={this.onMouseLeave}
-        >
+                 onMouseLeave={this.onMouseLeave}>
+
           <div className={className.join(' ')} id="sidebar-wrapper">
             <a className="collapse-button" href="#">
               <i className="fa fa-angle-right"/>

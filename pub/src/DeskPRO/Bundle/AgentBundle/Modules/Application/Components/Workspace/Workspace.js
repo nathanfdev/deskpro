@@ -73,10 +73,11 @@ export class Workspace extends React.Component {
           </div>
         </header>
 
-        <ColumnMode dpWindow={dpWindow}
+        <ColumnMode currentMode={dpWindow.get('columnMode')}
+                    columnDimensions={dpWindow.get('columnDimensions')}
                     onChangeMode={this.setColumnMode}
                     onChangeDimensions={this.setColumnDimensions} />
-        <SidebarMode dpWindow={dpWindow}
+        <SidebarMode currentMode={dpWindow.get('sidebarMode')}
                      onChangeMode={this.setSidebarMode} />
 
         <div className="dpw-top-bar-dropdown-footer">
