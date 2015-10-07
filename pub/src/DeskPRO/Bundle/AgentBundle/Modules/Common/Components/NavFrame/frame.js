@@ -5,12 +5,11 @@ export class NavFrame extends React.Component {
 
   static propTypes = {
     children: PropTypes.object.isRequired,
-    dpWindow: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired
+    dpWindow: PropTypes.object.isRequired
   };
 
   render() {
-    const { children, dpWindow, dispatch } = this.props;
+    const { children, dpWindow } = this.props;
     let outer, inner = children;
 
     if (children instanceof Array && children.length) {
@@ -23,7 +22,6 @@ export class NavFrame extends React.Component {
       });
     }
 
-    const expandNav = () => dispatch(AppActions.expandNav());
     const className = ['sidebar-wrapper'];
     if (dpWindow.get('collapseNav')) {
       className.push('sidebar-collapsed');
@@ -34,10 +32,10 @@ export class NavFrame extends React.Component {
         {outer}
         <section className="task-nav-frame dp-nav-frame">
           <div className={className.join(' ')} id="sidebar-wrapper">
-            <a className="collapse-button" href="#" onClick={expandNav}>
+            <a className="collapse-button" href="#">
               <i className="fa fa-angle-right"/>
             </a>
-            <span className="collapse-controls" onClick={expandNav}>
+            <span className="collapse-controls">
               <span className="disc"/>
               <span className="disc"/>
               <i className="fa fa-caret-right"/>
@@ -63,9 +61,8 @@ export class NavFrameHeader extends React.Component {
   };
 
   render() {
-    const { children, icon, dispatch } = this.props;
+    const { children, icon } = this.props;
     const iconClass = 'fa ' + icon;
-    const collapse = () => dispatch(AppActions.collapseNav());
 
     return (
       <div className="sidebar-title">
@@ -78,7 +75,7 @@ export class NavFrameHeader extends React.Component {
 
         <h1>{children}</h1>
         <hr />
-        <a href="#" className="slider-control" onClick={collapse}/>
+        <a href="#" className="slider-control"/>
       </div>
     );
   }

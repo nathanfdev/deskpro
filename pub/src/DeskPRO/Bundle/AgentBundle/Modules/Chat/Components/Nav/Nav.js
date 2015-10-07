@@ -23,7 +23,7 @@ export class Nav extends React.Component {
     const {lists, changeGrouping, toggleGroupingVisibility, onMyClick, onAllClick, dpWindow, dispatch} = this.props;
 
     return (
-      <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
+      <NavFrame dpWindow={dpWindow}>
         <div part="outer">
 
           <ListGroupingControl
@@ -43,7 +43,7 @@ export class Nav extends React.Component {
         </div>
 
         <div part="inner">
-          <NavFrameHeader icon="fa-comments-o" dispatch={dispatch.bind(this)}>
+          <NavFrameHeader icon="fa-comments-o">
             Chat
           </NavFrameHeader>
 
