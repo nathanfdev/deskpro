@@ -1,6 +1,6 @@
-import {createAction} from "Ampliflux";
-import * as FilterSets from "DeskPRO/Bundle/AgentBundle/Services/Api/FilterSets";
-import * as Filters from "DeskPRO/Bundle/AgentBundle/Services/Api/Filters";
+import { createAction } from 'Ampliflux/actions';
+import * as FilterSets from 'DeskPRO/Bundle/AgentBundle/Services/Api/FilterSets';
+import * as Filters from 'DeskPRO/Bundle/AgentBundle/Services/Api/Filters';
 
 export const changeTab = createAction("TICKETS_CHANGE_TAB");
 export const selectTicketFilter = createAction("TICKETS_SELECT_FILTER");
