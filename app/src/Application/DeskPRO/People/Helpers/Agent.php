@@ -429,10 +429,8 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
         $macros = $this->getMacros();
 
         $struct = array(
-            'TOP' => array(
-                'items'     => array(),
-                'sub_menus' => array(),
-            ),
+            'items'     => array(),
+            'sub_menus' => array(),
         );
 
         foreach ($macros as $m) {
