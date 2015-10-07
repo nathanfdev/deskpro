@@ -1,13 +1,11 @@
-import { createAction } from "Ampliflux/actions";
-import DpApi from "DeskPRO/Bundle/AgentBundle/Services/DpApi";
-import * as Tasks from "DeskPRO/Bundle/AgentBundle/Services/Api/Tasks";
-import * as People from "DeskPRO/Bundle/AgentBundle/Services/Api/People";
-import * as Departments from "DeskPRO/Bundle/AgentBundle/Services/Api/Departments";
-import * as AgentTeams from "DeskPRO/Bundle/AgentBundle/Services/Api/AgentTeams";
+import { createAction } from 'Ampliflux/actions';
+import * as Tasks from 'DeskPRO/Bundle/AgentBundle/Services/Api/Tasks';
+import * as People from 'DeskPRO/Bundle/AgentBundle/Services/Api/People';
+import * as AgentTeams from 'DeskPRO/Bundle/AgentBundle/Services/Api/AgentTeams';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export const loadTasks = createAction(
-  "TASKS_LOAD_TASKS",
+  'TASKS_LOAD_TASKS',
   (trigger) => {
     Tasks.loadTasksRemainingCount().then(
       (value) => trigger(value.getData())
@@ -16,7 +14,7 @@ export const loadTasks = createAction(
 );
 
 export const loadProjects = createAction(
-  "TASKS_LOAD_PROJECTS",
+  'TASKS_LOAD_PROJECTS',
   (trigger) => {
     Tasks.loadProjects({is_done: false}).then(
       (value) => trigger(value.getData())
@@ -25,7 +23,7 @@ export const loadProjects = createAction(
 );
 
 export const loadMyTasks = createAction(
-  "TASKS_LOAD_MY_TASKS",
+  'TASKS_LOAD_MY_TASKS',
   (trigger) => {
     Tasks.loadTasksRemainingCount({assigned: 'me'}).then(
       (value) => trigger(value.getData())
@@ -34,7 +32,7 @@ export const loadMyTasks = createAction(
 );
 
 export const loadTeamTasks = createAction(
-  "TASKS_LOAD_TEAM_TASKS",
+  'TASKS_LOAD_TEAM_TASKS',
   (trigger) => {
     Tasks.loadTasksRemainingCount({assigned_team: 'me'}).then(
       (value) => trigger(value.getData())
@@ -43,7 +41,7 @@ export const loadTeamTasks = createAction(
 );
 
 export const loadDepartmentTasks = createAction(
-  "TASKS_LOAD_DEPARTMENT_TASKS",
+  'TASKS_LOAD_DEPARTMENT_TASKS',
   (trigger) => {
     Tasks.loadTasksRemainingCount({assigned_department: 'me'}).then(
       (value) => trigger(value.getData())
@@ -52,7 +50,7 @@ export const loadDepartmentTasks = createAction(
 );
 
 export const loadDelegatedTasks = createAction(
-  "TASKS_LOAD_DELEGATED_TASKS",
+  'TASKS_LOAD_DELEGATED_TASKS',
   (trigger) => {
     Tasks.loadTasksRemainingCount({assigned: 'not_me', creator: 'me'}).then(
     (value) => trigger(value.getData())
@@ -61,7 +59,7 @@ export const loadDelegatedTasks = createAction(
 );
 
 export const loadUnassignedTasks = createAction(
-  "TASKS_LOAD_UNASSIGNED_TASKS",
+  'TASKS_LOAD_UNASSIGNED_TASKS',
   (trigger) => {
     Tasks.loadTasksRemainingCount({assigned: null, assigned_team: null, assigned_department: null}).then(
       (value) => trigger(value.getData())
@@ -70,7 +68,7 @@ export const loadUnassignedTasks = createAction(
 );
 
 export const loadAgents = createAction(
-  "TASKS_LOAD_AGENTS",
+  'TASKS_LOAD_AGENTS',
   (trigger) => {
     Tasks.loadAgents().then(
       (value) => trigger(value.getData())
@@ -79,7 +77,7 @@ export const loadAgents = createAction(
 );
 
 export const loadLabels = createAction(
-  "TASKS_LOAD_LABELS",
+  'TASKS_LOAD_LABELS',
   (trigger) => {
     Tasks.loadLabels().then(
       (value) => trigger(value.getData())
@@ -88,7 +86,7 @@ export const loadLabels = createAction(
 );
 
 export const loadTeams = createAction(
-  "TASKS_LOAD_TEAMS",
+  'TASKS_LOAD_TEAMS',
   (trigger) => {
     Tasks.loadTeams().then(
       (value) => trigger(value.getData())
@@ -97,7 +95,7 @@ export const loadTeams = createAction(
 );
 
 export const loadDepartments = createAction(
-  "TASKS_LOAD_DEPARTMENTS",
+  'TASKS_LOAD_DEPARTMENTS',
   (trigger) => {
     Tasks.loadDepartments().then(
       (value) => trigger(value.getData())
@@ -106,7 +104,7 @@ export const loadDepartments = createAction(
 );
 
 export const loadLists = createAction(
-  "TASKS_LOAD_LISTS",
+  'TASKS_LOAD_LISTS',
   (trigger, data) => {
     Tasks.loadLists(data).then(
       (value) => trigger(value.getData())
@@ -114,17 +112,9 @@ export const loadLists = createAction(
   }
 );
 
-export const setFilter = createAction(
-  "TASKS_SET_FILTER",
-  (trigger, data) => {
-    trigger(null, loadFilter(data));
-    trigger(data);
-  }
-);
-
-export const failedProject = createAction("TASKS_POST_PROJECT_FAIL");
+export const failedProject = createAction('TASKS_POST_PROJECT_FAIL');
 export const createProject = createAction(
-  "TASKS_POST_PROJECT",
+  'TASKS_POST_PROJECT',
   (trigger, data) => {
     Tasks.createProject(data).then(
       (value) => {
@@ -137,9 +127,9 @@ export const createProject = createAction(
 );
 
 export const editProject = createAction(
-  "TASKS_EDIT_PROJECT",
+  'TASKS_EDIT_PROJECT',
   (trigger, data) => {
-    let projectId = data.projectId;
+    const projectId = data.projectId;
     delete data.projectId;
     Tasks.editProject(projectId, data).then(
       (value) => {
@@ -153,12 +143,93 @@ export const editProject = createAction(
   }
 );
 
+export const loadTaskList = createAction(
+  'TASKS_LOAD_TASK_LIST',
+  (trigger, data) => {
+    Tasks.loadAddress(data).then(
+      (value) => {
+        const result = value.getData();
+        const output = result;
+
+        const projects = [];
+        const linkedItems = [];
+        const people = [];
+        const departments = [];
+        const teams = [];
+
+        result.data.forEach((task) => {
+          if (task.project !== null && projects.indexOf(task.project) === -1) {
+            projects.push(task.project);
+          }
+
+          if (task.linked_items !== null && linkedItems.indexOf(task.linked_items.id) === -1) {
+            linkedItems.push(task.linked_items.id);
+          }
+
+          if (task.agents !== null && typeof task.agents.forEach === 'function') {
+            task.agents.forEach((agent) => {
+              if (people.indexOf(agent) === -1) {
+                people.push(agent);
+              }
+            });
+          }
+
+          if (task.departments !== null && typeof task.departments.forEach === 'function') {
+            task.departments.forEach((department) => {
+              if (departments.indexOf(department) === -1) {
+                departments.push(department);
+              }
+            });
+          }
+
+          if (task.teams !== null && typeof task.teams.forEach === 'function') {
+            task.teams.forEach((team) => {
+              if (teams.indexOf(team) === -1) {
+                teams.push(team);
+              }
+            });
+          }
+        });
+
+        // Load all the relevant data, and when it's done fire the trigger
+        Promise.all([
+          Tasks.loadProjects({ids: projects.join(',')}),
+          Tasks.loadLinks({ids: linkedItems.join(',')}),
+          People.loadPeople({ids: people.join(',')}),
+          Tasks.loadDepartments({ids: departments.join(',')}),
+          AgentTeams.loadAgentTeams({ids: teams.join(',')})
+        ]).then((ps) => {
+          output.projects = ps[0].getData().data;
+          output.linked_items = ps[1].getData().data;
+          output.people = ps[2].getData().data;
+          output.departments = ps[3].getData().data;
+          output.teams = ps[4].getData().data;
+
+          output.source = data;
+        }).then(() => {
+          const linkedTickets = [];
+          output.linked_items.forEach((item) => {
+            if (item.ticket) {
+              linkedTickets.push(item.ticket);
+            }
+          });
+
+          Tasks.loadLinkedTickets({ids: linkedTickets.join(',')}).then((ticket) => {
+            output.tickets = ticket.getData().data;
+            trigger(output);
+          });
+        });
+      }
+    );
+  }
+);
+
 export const loadFilter = createAction(
-  "TASKS_LOAD_FILTER",
+  'TASKS_LOAD_FILTER',
   (trigger, data)=> {
     // Make sure we don't accidentally break the filter details
     const filter = data;
-    let filterElements = {};
+    const filterElements = {};
 
     if (filter.done && filter.done !== 'all') {
       filterElements.is_done = (filter.done === 'done');
@@ -242,91 +313,17 @@ export const loadFilter = createAction(
   }
 );
 
-export const loadTaskList = createAction(
-  "TASKS_LOAD_TASK_LIST",
+export const setFilter = createAction(
+  'TASKS_SET_FILTER',
   (trigger, data) => {
-    Tasks.loadAddress(data).then(
-      (value) => {
-        const result = value.getData();
-        let output = result;
-
-        let projects = [];
-        let linked_items = [];
-        let people = [];
-        let departments = [];
-        let teams = [];
-
-        result.data.forEach(function(task) {
-          if (task.project !== null && projects.indexOf(task.project) === -1) {
-            projects.push(task.project);
-          }
-
-          if (task.linked_items !== null && linked_items.indexOf(task.linked_items.id) === -1) {
-            linked_items.push(task.linked_items.id);
-          }
-
-          if (task.agents !== null && typeof task.agents.forEach === 'function') {
-            task.agents.forEach((agent) => {
-              if (people.indexOf(agent) === -1) {
-                people.push(agent);
-              }
-            });
-          }
-
-          if (task.departments !== null && typeof task.departments.forEach === 'function') {
-            task.departments.forEach((department) => {
-              if (departments.indexOf(department) === -1) {
-                departments.push(department);
-              }
-            });
-          }
-
-          if (task.teams !== null && typeof task.teams.forEach === 'function') {
-            task.teams.forEach((team) => {
-              if (teams.indexOf(team) === -1) {
-                teams.push(team);
-              }
-            });
-          }
-        });
-
-        // Load all the relevant data, and when it's done fire the trigger
-        Promise.all([
-          Tasks.loadProjects({ids: projects.join(',')}),
-          Tasks.loadLinks({ids: linked_items.join(',')}),
-          People.loadPeople({ids: people.join(',')}),
-          Tasks.loadDepartments({ids: departments.join(',')}),
-          AgentTeams.loadAgentTeams({ids: teams.join(',')})
-        ]).then((ps) => {
-          output['projects'] = ps[0].getData().data;
-          output['linked_items'] = ps[1].getData().data;
-          output['people'] = ps[2].getData().data;
-          output['departments'] = ps[3].getData().data;
-          output['teams'] = ps[4].getData().data;
-
-          output['source'] = data;
-
-        }).then(() => {
-          let linked_tickets = [];
-          output['linked_items'].forEach((value) => {
-            if (value.ticket) {
-              linked_tickets.push(value.ticket);
-            }
-          });
-
-          Tasks.loadLinkedTickets({ids: linked_tickets.join(',')}).then((data) => {
-            output['tickets'] = data.getData().data;
-            trigger(output);
-          });
-        });
-      }
-    );
+    trigger(null, loadFilter(data));
+    trigger(data);
   }
 );
 
-export const failedTask = createAction("TASKS_POST_TASK_FAIL");
+export const failedTask = createAction('TASKS_POST_TASK_FAIL');
 export const createTask = createAction(
-  "TASKS_POST_TASK",
+  'TASKS_POST_TASK',
   (trigger, data, source = 'tasks') => {
     Tasks.createTask(data).then(
       (value) => {
@@ -339,9 +336,9 @@ export const createTask = createAction(
 );
 
 export const editTask = createAction(
-  "TASKS_EDIT_TASK",
+  'TASKS_EDIT_TASK',
   (trigger, data, source = 'nowhere') => {
-    let taskId = data.taskId;
+    const taskId = data.taskId;
     delete data.taskId;
     Tasks.editTask(taskId, data).then(
       (value) => {
@@ -351,12 +348,12 @@ export const editTask = createAction(
       (value) => {
         trigger(value.xhr.responseJSON, failedTask);
       }
-    )
+    );
   }
 );
 
 export const massEditTasks = createAction(
-  "TASKS_MASS_EDIT_TASKS",
+  'TASKS_MASS_EDIT_TASKS',
   (trigger, data, source = 'nowhere') => {
     Tasks.massEditTasks(data).then(
       (value) => {
@@ -366,6 +363,6 @@ export const massEditTasks = createAction(
       (value) => {
         trigger(value.xhr.responseJSON, failedTask);
       }
-    )
+    );
   }
 );
