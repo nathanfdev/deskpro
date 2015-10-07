@@ -43,7 +43,7 @@ export class FeedbackCommentCard extends Component {
               <CardDate date={comment.date_created}/>
             </CardLineItem>
           <CardDisc/>
-            <CardLineItem>{feedback.title}</CardLineItem>
+            <CardLineItem>{feedback.get('title')}</CardLineItem>
           </CardLineLeft>
         </CardLine>
       </Card>

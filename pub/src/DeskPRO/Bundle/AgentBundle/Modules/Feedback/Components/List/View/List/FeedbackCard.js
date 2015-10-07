@@ -26,12 +26,12 @@ export class FeedbackCard extends Component {
 
   renderStatus(status = {}) {
     var realStatus = '';
-    if (status.title) {
-      realStatus = status.title;
-    } else if (status.status === 'new') {
+    if (status.get('title')) {
+      realStatus = status.get('title');
+    } else if (status.get('status') === 'new') {
       realStatus = 'New';
     } else {
-      realStatus = status.hidden_status;
+      realStatus = status.get('hidden_status');
     }
     return <CardLineItem>{realStatus}</CardLineItem>;
   }
@@ -39,8 +39,9 @@ export class FeedbackCard extends Component {
   render() {
     const { feedback, author, type, selected, toggleSelected, feedbackLabels, feedbackComments, feedbackStatus }
       = this.props;
-    const labels = feedbackLabels ? feedbackLabels.labels : false;
-    const comments = feedbackComments ? feedbackComments.counter : 0;
+    console.log('Labels: ', feedbackLabels);
+    const labels = feedbackLabels ? feedbackLabels.get('labels') : false;
+    const comments = feedbackComments ? feedbackComments.get('counter') : 0;
 
     return (
       <Card type="feedback">
@@ -63,7 +64,7 @@ export class FeedbackCard extends Component {
 
         <CardLine>
           <CardLineLeft>
-            <CardLineItem icon="fa-book">{type.title}</CardLineItem>
+            <CardLineItem icon="fa-book">{type.get('title')}</CardLineItem>
             <CardDisc/>
           </CardLineLeft>
           { this.renderLabels(labels) }

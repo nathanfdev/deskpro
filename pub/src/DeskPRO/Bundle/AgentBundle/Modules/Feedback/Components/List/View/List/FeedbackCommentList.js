@@ -20,12 +20,12 @@ export class FeedbackCommentList extends Component {
       <div>
         {comments.map((element, index) =>
           <FeedbackCommentCard
-            feedback={feedback[element.feedback_id]}
+            feedback={feedback.get(element.feedback_id)}
             selected={selected.includes(element.id)}
             toggleSelected={toggleSelected}
             massAction={massAction}
-            author={people[element.person_id]}
-            email={emails[element.person_id].email}
+            author={people.get(element.person_id)}
+            email={emails.get(element.person_id).get('email')}
             comment={element}
             key={index}>
             {element.content}

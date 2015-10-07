@@ -28,35 +28,35 @@ export const filterDataSelector = createSelector(
 
 export const peopleSelector = createSelector(
   createPeopleRequestSelectors('feedback').recordsSel,
-    people => people.toJS()
+    people => people
 );
 
 export const emailsSelector = createSelector(
   createEmailsRequestSelectors('feedback').recordsSel,
-    email => email.toJS()
+    email => email
 );
 
 export const feedbackTypesSelector = createSelector(
   createFeedbackTypesRequestSelectors('all').recordsSel,
-    types => types.toJS()
+    types => types
 );
 
 export const feedbackLabelsSelector = createSelector(
   createFeedbackLabelsRequestSelectors('all').recordsSel,
-    labels => labels.toJS()
+    labels => labels
 );
 
 export const feedbackCommentsSelector = createSelector(
   createFeedbackCommentsRequestSelectors('feedback').recordsSel,
-    comments => comments.toJS()
+    comments => comments
 );
 
 export const feedbackStatusesSelector = createSelector(
   createFeedbackStatusesRequestSelectors('feedback').recordsSel,
-    statuses => statuses.toJS()
+    statuses => statuses
 );
 
 export const feedbackSelector = createSelector(
   createFeedbackRequestSelectors('feedback').recordsSel,
-    statuses => statuses.toJS()
+    feedback => feedback
 );

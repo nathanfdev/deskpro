@@ -33,7 +33,6 @@ export class FeedbackTableContainer extends Component {
 
   tdContent(field, element) {
     const {people, emails, feedbackStatuses} = this.props;
-    console.log('Emails: ', emails);
     let content = element[field.name];
     if (field.name === 'id') {
       return (
@@ -41,7 +40,7 @@ export class FeedbackTableContainer extends Component {
       );
     } else if (field.name === 'author_name') {
       return (
-        <PersonInTable person={people[element.person_id]} email={emails[element.person_id].email}/>
+        <PersonInTable person={people.get(element.person_id)} email={emails.get(element.person_id).get('email')}/>
       );
     } else if (field.name === 'title') {
       content = element.title.substr(0, 40);
@@ -64,8 +63,8 @@ export class FeedbackTableContainer extends Component {
       return (
         <FormattedRelative value={element.date_published}/>
       );
-    } else if (field.name === 'status_category') {
-      content = feedbackStatuses[element.id].title;
+    } else if (field.name === 'status_category' && feedbackStatuses) {
+      content = feedbackStatuses.get(element.id).get('title');
     }
     return content;
   }

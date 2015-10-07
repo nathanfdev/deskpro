@@ -134,7 +134,7 @@ export class PersonInTable extends Component {
     return (
       <div className="user">
         <span className="dpw--avatar-face" style={{backgroundImage: 'url(../img/avatars/avatar1.png)'}}></span>
-        <span className="agent-name">{person.name} {email}</span>
+        <span className="agent-name">{person.get('name')} {email}</span>
       </div>
     );
   }

@@ -45,7 +45,7 @@ export class FeedbackCommentTableContainer extends Component {
       );
     } else if (field.name === 'author_name') {
       return (
-      <PersonInTable person={people[element.person_id]} email={emails[element.person_id].email}/>
+      <PersonInTable person={people.get(element.person_id)} email={emails.get(element.person_id).get('email')}/>
       );
     } else if (field.name === 'title') {
       content = element.title.substr(0, 40);
@@ -116,7 +116,7 @@ export class FeedbackCommentTableContainer extends Component {
                   )}
                   {tableViewFieldsFiltered.map(field =>
                       <Td key={key++}
-                          className={field.className}>{this.tdContent(field, feedbackFromStore[element.feedback_id])}</Td>
+                          className={field.className}>{this.tdContent(field, feedbackFromStore.get(element.feedback_id).toJS())}</Td>
                   )}
                 </Row>
               );

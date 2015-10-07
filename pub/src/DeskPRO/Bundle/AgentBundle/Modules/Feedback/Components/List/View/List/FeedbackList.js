@@ -10,7 +10,7 @@ export class FeedbackList extends Component {
   };
 
   render() {
-    const {elements, selected, toggleSelected, people,feedbackTypes,  massAction, feedbackLabels, feedbackComments,
+    const {elements, selected, toggleSelected, people, feedbackTypes,  massAction, feedbackLabels, feedbackComments,
       feedbackStatuses} = this.props;
 
     return (
@@ -20,11 +20,11 @@ export class FeedbackList extends Component {
                                                         selected={selected.includes(element.id)}
                                                         toggleSelected={toggleSelected}
                                                         massAction={massAction}
-                                                        author={people[element.person_id]}
-                                                        feedbackStatus={feedbackStatuses[element.id]}
-                                                        feedbackComments={feedbackComments[element.id]}
-                                                        feedbackLabels={feedbackLabels[element.id]}
-                                                        type={feedbackTypes[element.category_id]}/>
+                                                        author={people.get(element.person_id)}
+                                                        feedbackStatus={feedbackStatuses.get(element.id)}
+                                                        feedbackComments={feedbackComments.get(element.id)}
+                                                        feedbackLabels={feedbackLabels.get(element.id)}
+                                                        type={feedbackTypes.get(element.category_id)}/>
         )}
       </div>
     );
