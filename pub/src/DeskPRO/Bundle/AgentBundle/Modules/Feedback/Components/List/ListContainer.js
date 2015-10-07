@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { List } from './List';
-import { viewDataSelector, peopleSelector, feedbackTypesSelector, feedbackLabelsSelector, feedbackCommentsSelector, feedbackStatusesSelector, feedbackSelector } from '../../Selectors/list';
+import { viewDataSelector, peopleSelector, emailsSelector, feedbackTypesSelector, feedbackLabelsSelector, feedbackCommentsSelector, feedbackStatusesSelector, feedbackSelector } from '../../Selectors/list';
 import { toggleSelectedAction } from '../../Actions/FeedbackListActions';
 import { groupDataSelector } from '../../Selectors/nav';
 
@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
     comments: state.Feedback.list.get('comments'),
     currentViewMode: viewDataSelector(state),
     people: peopleSelector(state),
+    emails: emailsSelector(state),
     feedbackTypes: feedbackTypesSelector(state),
     feedbackLabels: feedbackLabelsSelector(state),
     feedbackComments: feedbackCommentsSelector(state),
@@ -30,6 +31,7 @@ export class ListContainer extends Component {
     comments: PropTypes.array.isRequired,
     dispatch: PropTypes.func.isRequired,
     people: PropTypes.array.isRequired,
+    emails: PropTypes.array.isRequired,
     feedback: PropTypes.array.isRequired,
     feedbackTypes: PropTypes.array.isRequired,
     feedbackLabels: PropTypes.array.isRequired,
@@ -41,8 +43,9 @@ export class ListContainer extends Component {
   };
 
   render() {
-    const { currentGroup, massAction, feedback, selected, comments, currentViewMode, people, feedbackTypes,
-            feedbackLabels, feedbackComments, feedbackStatuses, feedbackFromStore } = this.props;
+    const { currentGroup, massAction, feedback, selected, comments, currentViewMode, people, emails, feedbackTypes,
+      feedbackLabels, feedbackComments, feedbackStatuses, feedbackFromStore } = this.props;
+    console.log(feedbackComments);
 
     const toggleSelected = (id) => () => this.props.dispatch(toggleSelectedAction(id));
 
@@ -56,6 +59,7 @@ export class ListContainer extends Component {
         comments={comments}
         currentViewMode={currentViewMode}
         people={people}
+        emails={emails}
         feedbackTypes={feedbackTypes}
         feedbackLabels={feedbackLabels}
         feedbackComments={feedbackComments}

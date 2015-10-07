@@ -60,6 +60,28 @@ export class CardLineRight extends Component {
   }
 }
 
+export class CardLineFull extends Component {
+
+  render() {
+    return (
+      <div className="dpw--card-line-full">
+        {this.props.children}
+      </div>
+    );
+  }
+}
+
+export class CardContentText extends Component {
+
+  render() {
+    return (
+      <div className="dpwd--card-content-text">
+        {this.props.children}
+      </div>
+    );
+  }
+}
+
 export class CardLineItem extends Component {
 
   static propTypes = {
@@ -78,6 +100,7 @@ export class CardLineItem extends Component {
     );
   }
 }
+
 
 export class CardCheckbox extends Component {
 
@@ -142,14 +165,51 @@ export class CardDate extends Component {
 }
 
 export class CardUser extends Component {
+
+  static propTypes = {
+    email: PropTypes.string.isRequired,
+    user: PropTypes.object
+  };
+
   render() {
     const user = this.props.user || {};
+    const {email} = this.props;
+
     return (
-      <div className="dpwd--card-assigned">
-              <span className="dpw--avatar-face"
-                    style={{backgroundImage: 'url(../img/avatars/avatar6.png)'}}>{user.first_name} {user.last_name}</span>
+      <div className="dpwd--card-line-item">
+        <i className="fa fa-user"></i> {user.get('first_name')} {user.get('last_name')}
+        <CardDisc/>
+        {email ? <span>{email}</span> : ''}
       </div>
     );
   }
 }
 
+export class CardLabel extends Component {
+
+  static propTypes = {
+    label: PropTypes.string.isRequired
+  };
+
+  render() {
+    const {label} = this.props;
+
+    return (
+      <span><a href="#">{label}</a>, </span>
+    );
+  }
+}
+export class CardComments extends Component {
+
+  static propTypes = {
+    commentsCounter: PropTypes.string.isRequired
+  };
+
+  render() {
+    const {commentsCounter} = this.props;
+
+    return (
+      <CardLineItem>{commentsCounter} <i className="fa fa-comments-o"></i></CardLineItem>
+    );
+  }
+}

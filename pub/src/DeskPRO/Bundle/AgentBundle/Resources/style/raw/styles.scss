@@ -29,10 +29,12 @@ body {
 
 * { @include box-sizing(border-box); }
 
+/*
 p {
   font-weight: 400;
   color: $text-color;
 }
+*/
 
 a { color: $link-color; }
 

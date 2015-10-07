@@ -4,7 +4,7 @@ import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import { TableView, TableHeader, Th, TableBody, Row, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { feedbackSelector } from '../../../../Selectors/list';
 import { setTableSort } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
-import { peopleSelector } from '../../../../Selectors/list';
+import { peopleSelector, emailsSelector } from '../../../../Selectors/list';
 
 import { connect } from 'react-redux';
 @connect(state => ({
@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
   tableViewFields: state.Feedback.list.get('tableViewFields').toJS(),
   feedbackFromStore: feedbackSelector(state),
   people: peopleSelector(state),
+  emails: emailsSelector(state),
   commentsTableViewFields: state.Feedback.list.get('commentsTableViewFields').toJS()
 }))
 
@@ -23,6 +24,7 @@ export class FeedbackCommentTableContainer extends Component {
     comments: PropTypes.array.isRequired,
     tableViewFields: PropTypes.array.isRequired,
     people: PropTypes.array.isRequired,
+    emails: PropTypes.array.isRequired,
     feedbackFromStore: PropTypes.array.isRequired,
     feedbackStatuses: PropTypes.object.isRequired,
     commentsTableViewFields: PropTypes.array.isRequired,
@@ -35,7 +37,7 @@ export class FeedbackCommentTableContainer extends Component {
   }
 
   tdContent(field, element) {
-    const {people, feedbackStatuses} = this.props;
+    const {people, emails, feedbackStatuses} = this.props;
     let content = element[field.name];
     if (field.name === 'id') {
       return (
@@ -43,7 +45,7 @@ export class FeedbackCommentTableContainer extends Component {
       );
     } else if (field.name === 'author_name') {
       return (
-        <PersonInTable person={people[element.person_id]}/>
+      <PersonInTable person={people.get(element.person_id)} email={emails.get(element.person_id).get('email')}/>
       );
     } else if (field.name === 'title') {
       content = element.title.substr(0, 40);
@@ -114,7 +116,7 @@ export class FeedbackCommentTableContainer extends Component {
                   )}
                   {tableViewFieldsFiltered.map(field =>
                       <Td key={key++}
-                          className={field.className}>{this.tdContent(field, feedbackFromStore[element.feedback_id])}</Td>
+                          className={field.className}>{this.tdContent(field, feedbackFromStore.get(element.feedback_id).toJS())}</Td>
                   )}
                 </Row>
               );
