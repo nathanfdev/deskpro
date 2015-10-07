@@ -586,7 +586,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 							closeCatEditor();
 
 							if (data.error) {
-								alert("You cannot delete this category because it still has snippets in it. Delete the snippets first then try again.");
+								alert("You cannot delete this category because it still has snippets in it. Delete the snippets first then try again.\n\n-------------\n\nNumber of snippets: " + data.count + "\nNumber of drafts: " + data.count_drafts);
 								return;
 							}
 
