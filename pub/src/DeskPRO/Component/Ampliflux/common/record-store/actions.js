@@ -20,9 +20,7 @@ export function gcRecords() {
  * @return {Function} action creator
  */
 export function releaseRecords() {
-  return (requestId, ids) => {
-    return { requestId, ids: Immutable.Set(ids)};
-  };
+  return (requestId, ids) => ({ requestId, ids });
 }
 
 /**
@@ -31,9 +29,7 @@ export function releaseRecords() {
  * @return {Function} action creator
  */
 export function releaseRequest() {
-  return (requestId) => {
-    return { requestId };
-  };
+  return (requestId) => ({ requestId });
 }
 
 /**

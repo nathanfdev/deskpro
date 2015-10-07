@@ -29,7 +29,14 @@ function gc(state) {
  * @return {Function} reducer
  */
 export function releaseRecords() {
-  return state => state;
+  return (state, payload) => {
+    const next = state.setIn(
+      ['requests', payload.requestId],
+      state.getIn(['requests', payload.requestId]).filter(recordId => payload.ids.indexOf(recordId) === -1)
+    );
+
+    return gc(next);
+  };
 }
 
 
