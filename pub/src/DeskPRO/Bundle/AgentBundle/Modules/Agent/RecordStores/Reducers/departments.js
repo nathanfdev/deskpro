@@ -10,6 +10,5 @@ export default createReducer(
     releaseRequestAction:   departmentsActions.releaseDepartmentsRequest,
     setRequestRecordAction: departmentsActions.setDepartmentsRequest,
     requestRecordsAction:   departmentsActions.loadDepartments
-  }
-  )
+  })
 );
