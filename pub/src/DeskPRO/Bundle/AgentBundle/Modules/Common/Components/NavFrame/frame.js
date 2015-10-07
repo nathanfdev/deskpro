@@ -11,7 +11,7 @@ export class NavFrame extends React.Component {
 
   onMouseEnter = () => {
     const { dpWindow, dispatch } = this.props;
-    if (dpWindow.get('static')) {
+    if (dpWindow.get('sidebarMode') === 'static') {
       return;
     }
 
@@ -20,7 +20,7 @@ export class NavFrame extends React.Component {
 
   onMouseLeave = () => {
     const { dpWindow, dispatch } = this.props;
-    if (dpWindow.get('static')) {
+    if (dpWindow.get('sidebarMode') === 'static') {
       return;
     }
 
