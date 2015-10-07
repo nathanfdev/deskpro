@@ -99,7 +99,6 @@ export class NavFrameHeader extends React.Component {
 
         <h1>{children}</h1>
         <hr />
-        <a href="#" className="slider-control"/>
       </div>
     );
   }
