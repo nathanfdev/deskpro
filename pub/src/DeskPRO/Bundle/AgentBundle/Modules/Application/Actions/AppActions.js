@@ -1,22 +1,21 @@
 import { createAction } from 'Ampliflux';
 import * as PeopleApi from 'DeskPRO/Bundle/AgentBundle/Services/Api/People';
-import ActionTypes from './ActionTypes';
 
-export const setAppUser = createAction(ActionTypes.APP_SET_USER);
-export const setIsLoaded = createAction(ActionTypes.APP_IS_LOADED);
-export const setActiveApp = createAction(ActionTypes.SET_ACTIVE_APP);
-export const routingStarted = createAction(ActionTypes.ROUTING_STARTED);
-export const doTransitionTo = createAction(ActionTypes.TRANSITION_TO);
-export const collapseNav = createAction(ActionTypes.COLLAPSE_NAV);
-export const expandNav = createAction(ActionTypes.EXPAND_NAV);
-export const expandSwitcher = createAction(ActionTypes.EXPAND_SWITCHER);
-export const collapseSwitcher = createAction(ActionTypes.COLLAPSE_SWITCHER);
-export const toggleView = createAction(ActionTypes.TOGGLE_VIEW);
-export const setColumnMode = createAction(ActionTypes.APP_SET_COLUMN_MODE);
-export const setColumnDimensions = createAction(ActionTypes.APP_SET_COLUMN_DIMENSIONS);
+export const setAppUser = createAction('APP_SET_USER');
+export const setIsLoaded = createAction('APP_IS_LOADED');
+export const setActiveApp = createAction('APP_SET_ACTIVE_APP');
+export const routingStarted = createAction('APP_ROUTING_STARTED');
+export const doTransitionTo = createAction('APP_TRANSITION_TO');
+export const collapseNav = createAction('APP_COLLAPSE_NAV');
+export const expandNav = createAction('APP_EXPAND_NAV');
+export const expandSwitcher = createAction('APP_EXPAND_SWITCHER');
+export const collapseSwitcher = createAction('APP_COLLAPSE_SWITCHER');
+export const toggleView = createAction('APP_TOGGLE_VIEW');
+export const setColumnMode = createAction('APP_SET_COLUMN_MODE');
+export const setColumnDimensions = createAction('APP_SET_COLUMN_DIMENSIONS');
 
 export const setSidebarMode = createAction(
-  ActionTypes.APP_SET_SIDEBAR_MODE,
+  'APP_SET_SIDEBAR_MODE',
   mode => dispatch => {
     if (mode === 'static') {
       dispatch(expandNav());
