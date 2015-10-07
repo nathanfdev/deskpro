@@ -18,12 +18,14 @@ export class Header extends React.Component {
   renderHeader() {
     "use strict";
     const { agents, current, me } = this.props;
-    const filteredAgents = current.agents.filter(agent => agent != me.get('id') );
-    let text = agents.toJS()[filteredAgents[0]].name;
-    if(filteredAgents.length > 1) {
-      text = ' and ' + (filteredAgents.length - 1) + ' more';
+    if(agents && agents.size > 0) {
+      const filteredAgents = current.agents.filter(agent => agent != me.get('id') );
+      let text = agents.getIn([filteredAgents[0], 'name']);
+      if(filteredAgents.length > 1) {
+        text = ' and ' + (filteredAgents.length - 1) + ' more';
+      }
+      return <h1>Your IM with <span>{text}</span><b className="user-status online"></b></h1>
     }
-    return <h1>Your IM with <span>{text}</span><b className="user-status online"></b></h1>
   }
 
 }

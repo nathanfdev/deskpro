@@ -141,20 +141,7 @@ export default class Calendar {
   }
 
   daysInMonth(year, month) {
-    // @TODO: Optimise this using MomentJS, which contains a daysInMonth() function
-    if (month == -1 || month === 0 || month == 2 || month == 4 || month == 6 || month == 7 || month == 9 || month == 11) {
-  		return 31;
-  	}
-  	else if (month == 3 || month == 5 || month == 8 || month == 10) {
-  		return 30;
-  	}
-  	else if (month == 1) {
-  		return 28 + this.isLeapYear(year);
-  	}
-  }
-
-  isLeapYear(year) {
-    const moment = new Moment([year]);
-    return moment.isLeapYear();
+    const moment = new Moment([year, month]);
+    return moment.daysInMonth();
   }
 }

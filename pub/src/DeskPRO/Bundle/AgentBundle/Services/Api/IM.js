@@ -16,3 +16,8 @@ export function startChat(entity_id, type) {
   "use strict";
   return DpApi.sendPost('DP_API/agent_chats/start', {agent: entity_id})
 }
+
+export function addMessage(chat_id, message) {
+  "use strict";
+  return DpApi.sendPost('DP_API/agent_chats/'+chat_id+'/messages', {message: message})
+}

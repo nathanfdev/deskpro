@@ -5,7 +5,7 @@ import { MessageList } from './MessageList';
 import { Offline } from './Offline';
 import { SearchForm } from './SearchForm';
 import { connect } from 'react-redux';
-import { loadMessages } from '../../Actions/imMessagesActions';
+import { loadMessages, addMessage } from '../../Actions/imMessagesActions';
 import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions'
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 
@@ -52,10 +52,22 @@ export class Chat extends React.Component {
           agents={this.props.agents}
           me={this.props.me}
           messages={this.props.messages.get('chatMessages')[this.props.current.id]}/>
-        <Footer />
+        <Footer handleAddMessage={this.handleAddMessage}/>
       </div>
     );
   }
+
+
+  refresh = () =>
+  {
+    "use strict";
+    this.props.dispatch(loadMessages(this.props.current.id));
+  };
+
+  handleAddMessage = (message) => {
+    "use strict";
+    this.props.dispatch(addMessage(this.props.current.id, message, this.props.me));
+  };
 
   searchForm() {
     "use strict";
@@ -72,11 +84,7 @@ export class Chat extends React.Component {
     }
   }
 
-  refresh = () =>
-  {
-    "use strict";
-    this.props.dispatch(loadMessages(this.props.current.id));
-  }
+
 
   static typing() {
     "use strict";

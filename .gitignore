@@ -91,6 +91,7 @@ data/encryption-key.bin.*
 /data/manuals
 /data/emailstore
 /data/import/csv/export/*
+/data/http_cache/
 
 /web/build
 /web/app/build/*/build.js

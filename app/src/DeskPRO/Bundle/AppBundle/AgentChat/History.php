@@ -88,7 +88,7 @@ class History
         $messages = array();
         if ($ids) {
             $messageRepo = $this->em->getRepository('App:AgentChatMessage');
-            $messages    = $messageRepo->findBy(array('id' => $ids), array($orderBy => 'ASC'));
+            $messages    = $messageRepo->findBy(array('id' => $ids), array($orderBy => 'DESC'));
         }
 
         return $messages;
