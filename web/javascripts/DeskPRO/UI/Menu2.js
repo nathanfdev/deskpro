@@ -240,12 +240,12 @@ DeskPRO.UI.Menu2 = new Orb.Class({
 					var val = $.trim($(this).val());
 
 					if (!val) {
-						statusMacroList.find('li').show().removeClass('off');
+						statusListItems.show().removeClass('off');
 						updateStatusPos();
 					} else {
 						val = val.toLowerCase();
 
-						statusMacroList.find('li').each(function() {
+						statusListItems.each(function() {
 							if ($(this).text().toLowerCase().indexOf(val) !== -1) {
 								$(this).show().removeClass('off');
 							} else {
