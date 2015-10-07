@@ -5,7 +5,27 @@ export class NavFrame extends React.Component {
 
   static propTypes = {
     children: PropTypes.object.isRequired,
-    dpWindow: PropTypes.object.isRequired
+    dpWindow: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired
+  };
+
+  onMouseEnter = () => {
+    const { dpWindow, dispatch } = this.props;
+    if (dpWindow.get('static')) {
+      return;
+    }
+
+    this.hoverTimeout = setTimeout(() => dispatch(AppActions.expandNav()), 250);
+  };
+
+  onMouseLeave = () => {
+    const { dpWindow, dispatch } = this.props;
+    if (dpWindow.get('static')) {
+      return;
+    }
+
+    clearTimeout(this.hoverTimeout);
+    this.hoverTimeout = setTimeout(() => dispatch(AppActions.collapseNav()), 500);
   };
 
   render() {
@@ -23,14 +43,18 @@ export class NavFrame extends React.Component {
     }
 
     const className = ['sidebar-wrapper'];
-    if (dpWindow.get('sidebarMode') === 'hover') {
+    if (dpWindow.get('collapseNav')) {
       className.push('sidebar-collapsed');
     }
 
     return (
       <div>
         {outer}
-        <section className="task-nav-frame dp-nav-frame">
+
+        <section className="task-nav-frame dp-nav-frame"
+                 onMouseEnter={this.onMouseEnter}
+                 onMouseLeave={this.onMouseLeave}
+        >
           <div className={className.join(' ')} id="sidebar-wrapper">
             <a className="collapse-button" href="#">
               <i className="fa fa-angle-right"/>

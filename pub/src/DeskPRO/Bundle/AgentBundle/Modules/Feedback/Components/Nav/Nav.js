@@ -13,6 +13,7 @@ export class Nav extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     groupChoice: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
     currentGroup: PropTypes.object.isRequired,
     statuses: PropTypes.object.isRequired,
     labels: PropTypes.array.isRequired,
@@ -23,12 +24,12 @@ export class Nav extends Component {
   };
 
   render() {
-    const { currentGroup, groupChoice, labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dpWindow, commentsView } = this.props;
+    const { currentGroup, groupChoice, labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dispatch, dpWindow, commentsView } = this.props;
 
     return (
-      <NavFrame dpWindow={dpWindow}>
+      <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
 
-        <NavFrameHeader icon="fa-thumbs-up">
+        <NavFrameHeader icon="fa-thumbs-up" dispatch={dispatch.bind(this)}>
           <FormattedMessage id="feedback.nav.title"/>
         </NavFrameHeader>
 

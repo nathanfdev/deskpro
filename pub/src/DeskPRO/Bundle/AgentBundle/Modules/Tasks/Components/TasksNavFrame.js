@@ -50,7 +50,7 @@ export default class TasksNavFrame extends React.Component {
     const { taskList, projectList, agentList, labelList, departmentList,
             teamList, createdProject, dpWindow, dispatch } = this.props;
 
-    const className = dpWindow.get('sidebarMode') === 'hover' ? 'sidebar-wrapper sidebar-collapsed' : 'sidebar-wrapper';
+    const className = dpWindow.get('collapseNav') ? 'sidebar-wrapper sidebar-collapsed' : 'sidebar-wrapper';
     const expandNav = () => dispatch(AppActions.expandNav());
 
     return (

@@ -9,8 +9,8 @@ export class Nav extends React.Component {
     let itemKey = 0;
 
     return (
-      <NavFrame dpWindow={dpWindow}>
-        <NavFrameHeader icon="fa-users">
+      <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
+        <NavFrameHeader icon="fa-users" dispatch={dispatch.bind(this)}>
           CRM
         </NavFrameHeader>
         <SectionHeader>People</SectionHeader>
