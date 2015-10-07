@@ -6,7 +6,6 @@ import jQuery from 'jquery';
 const initialState = {
   isLoaded: false,
   activeAppId: 'tickets',
-  collapseNav: false,
   expandedSwitcher: false,
   taskView: constants.VIEW_MODE_LIST,
   columnMode: 'column',
@@ -27,14 +26,6 @@ export default createReducer(initialState, {
   },
   [actions.setActiveApp]: (state, payload) => {
     return state.merge({activeAppId: payload, expandedSwitcher: false});
-  },
-  [actions.collapseNav]: state => {
-    triggerDpLayoutResize();
-    return state.set('collapseNav', true);
-  },
-  [actions.expandNav]: state => {
-    triggerDpLayoutResize();
-    return state.set('collapseNav', false);
   },
   [actions.expandSwitcher]: state => {
     return state.set('expandedSwitcher', true);
