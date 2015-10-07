@@ -75,7 +75,7 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var bool
      */
-    protected $is_draft;
+    protected $is_draft = false;
 
     public function __construct()
     {
