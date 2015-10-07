@@ -36,7 +36,7 @@ export class Th extends Component {
 
   static propTypes = {
     field: PropTypes.object.isRequired,
-    sortable: PropTypes.bool.isRequired,
+    sortable: PropTypes.bool,
     sortTable: PropTypes.func.isRequired
   };
 
@@ -125,15 +125,16 @@ export class Td extends Component {
 export class PersonInTable extends Component {
 
   static propTypes = {
-    person: PropTypes.object.isRequired
+    person: PropTypes.object.isRequired,
+    email: PropTypes.string
   };
 
   render() {
-    const { person } = this.props;
+    const { person, email } = this.props;
     return (
       <div className="user">
         <span className="dpw--avatar-face" style={{backgroundImage: 'url(../img/avatars/avatar1.png)'}}></span>
-        <span className="agent-name">{person.name}</span>
+        <span className="agent-name">{person.name} {email}</span>
       </div>
     );
   }

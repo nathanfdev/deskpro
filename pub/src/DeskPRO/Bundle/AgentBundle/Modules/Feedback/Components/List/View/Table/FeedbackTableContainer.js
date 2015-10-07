@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import { peopleSelector } from '../../../../Selectors/list';
+import { peopleSelector, emailsSelector } from '../../../../Selectors/list';
 import { setTableSort } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { TableView, TableHeader, Th, TableBody, Row, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
@@ -9,7 +9,8 @@ import { connect } from 'react-redux';
 @connect(state => ({
   feedback: state.Feedback.list.get('feedback'),
   tableViewFields: state.Feedback.list.get('tableViewFields').toJS(),
-  people: peopleSelector(state)
+  people: peopleSelector(state),
+  emails: emailsSelector(state)
 }))
 
 @injectIntl
@@ -18,6 +19,7 @@ export class FeedbackTableContainer extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     people: PropTypes.array.isRequired,
+    emails: PropTypes.array.isRequired,
     feedback: PropTypes.array.isRequired,
     feedbackStatuses: PropTypes.object.isRequired,
     tableViewFields: PropTypes.array.isRequired,
@@ -30,7 +32,8 @@ export class FeedbackTableContainer extends Component {
   }
 
   tdContent(field, element) {
-    const {people, feedbackStatuses} = this.props;
+    const {people, emails, feedbackStatuses} = this.props;
+    console.log('Emails: ', emails);
     let content = element[field.name];
     if (field.name === 'id') {
       return (
@@ -38,7 +41,7 @@ export class FeedbackTableContainer extends Component {
       );
     } else if (field.name === 'author_name') {
       return (
-        <PersonInTable person={people[element.person_id]}/>
+        <PersonInTable person={people[element.person_id]} email={emails[element.person_id].email}/>
       );
     } else if (field.name === 'title') {
       content = element.title.substr(0, 40);

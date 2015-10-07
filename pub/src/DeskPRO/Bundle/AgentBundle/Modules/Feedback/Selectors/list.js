@@ -1,6 +1,8 @@
 import { createSelector } from 'reselect';
 import { createPeopleRequestSelectors }
   from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Selectors/peopleSelectors';
+import { createEmailsRequestSelectors }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Selectors/emailsSelectors';
 import{createFeedbackTypesRequestSelectors} from '../RecordStores/Selectors/feedbackTypesSelectors';
 import{createFeedbackLabelsRequestSelectors} from '../RecordStores/Selectors/feedbackLabelsSelectors';
 import{createFeedbackCommentsRequestSelectors} from '../RecordStores/Selectors/feedbackCommentsSelectors';
@@ -27,6 +29,11 @@ export const filterDataSelector = createSelector(
 export const peopleSelector = createSelector(
   createPeopleRequestSelectors('feedback').recordsSel,
     people => people.toJS()
+);
+
+export const emailsSelector = createSelector(
+  createEmailsRequestSelectors('feedback').recordsSel,
+    email => email.toJS()
 );
 
 export const feedbackTypesSelector = createSelector(

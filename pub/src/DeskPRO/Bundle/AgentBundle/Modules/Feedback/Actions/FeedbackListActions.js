@@ -15,7 +15,7 @@ const recordStoresId = 'feedback';
 export const getAuthors = createAction(
   'FEEDBACK_GET_AUTHORS',
     feedback => dispatch => {
-    let ids = [],
+    const ids = [],
       unique = {};
     for (var i in feedback.data) {
       if (typeof(unique[feedback.data[i].person_id]) === 'undefined') {

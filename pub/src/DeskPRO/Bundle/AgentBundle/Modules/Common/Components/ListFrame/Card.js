@@ -142,12 +142,22 @@ export class CardDate extends Component {
 }
 
 export class CardUser extends Component {
+
+  static propTypes = {
+    email: PropTypes.string.isRequired,
+    user: PropTypes.object
+  };
+
   render() {
     const user = this.props.user || {};
+    const {email} = this.props;
     return (
       <div className="dpwd--card-assigned">
-              <span className="dpw--avatar-face"
-                    style={{backgroundImage: 'url(../img/avatars/avatar6.png)'}}>{user.first_name} {user.last_name}</span>
+              <span className="dpw--avatar-face" style={{backgroundImage: 'url(../img/avatars/avatar6.png)'}}>
+                {user.first_name} {user.last_name}
+              </span>
+        <CardDisc/>
+        {email ? <span>{email}</span> : ''}
       </div>
     );
   }
