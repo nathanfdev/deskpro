@@ -92,7 +92,7 @@ DeskPRO.UI.Menu2 = new Orb.Class({
 					parentMenu: self,
 					openBelow: false
 				});
-				var menuInst = new DeskPRO.UI.Menu2(item.find('.sub-menu'), opts);
+				var menuInst = new DeskPRO.UI.Menu2(item.find('> .sub-menu'), opts);
 				menuInst.addEvent('menuClose', function() {
 					statusMacroFilter.focus();
 				});
