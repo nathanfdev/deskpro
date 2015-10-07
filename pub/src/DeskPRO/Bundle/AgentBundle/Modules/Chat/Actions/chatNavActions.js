@@ -1,7 +1,8 @@
 import { createAction } from 'Ampliflux';
 import { loadCounts as loadChatCounts } from 'DeskPRO/Bundle/AgentBundle/Services/Api/Chat';
 import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
-import { loadDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
+import { loadDepartments, releaseDepartmentsRequest }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
 
 /**
  * Used to identify requests within record stores
@@ -27,8 +28,7 @@ export const loadCounts = createAction(
 );
 
 export const toggleListGroupingVisibility = createAction(
-  'CHAT_NAV_TOGGLE_LIST_GROUPING_VISIBILITY',
-  list => list
+  'CHAT_NAV_TOGGLE_LIST_GROUPING_VISIBILITY'
 );
 
 export const changeListGrouping = createAction(
@@ -38,5 +38,12 @@ export const changeListGrouping = createAction(
     dispatch(toggleListGroupingVisibility(list));
 
     return {list, groupBy};
+  }
+);
+
+export const unmount = createAction(
+  'CHAT_NAV_UNMOUNT',
+  () => dispatch => {
+    dispatch(releaseDepartmentsRequest(recordStoresId));
   }
 );

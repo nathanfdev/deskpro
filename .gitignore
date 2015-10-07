@@ -1,7 +1,6 @@
 # IDE project files
 .DS_Store
 /.idea/*
-!/.idea/codeStyleSettings.xml
 /web/app/.idea/
 /nbproject/
 /catalog.xml

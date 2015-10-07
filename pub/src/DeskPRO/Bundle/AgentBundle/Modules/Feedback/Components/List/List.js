@@ -14,6 +14,7 @@ export class List extends Component {
   static propTypes = {
     feedback: PropTypes.array.isRequired,
     people: PropTypes.array.isRequired,
+    emails: PropTypes.array.isRequired,
     selected: PropTypes.array.isRequired,
     feedbackFromStore: PropTypes.array.isRequired,
     feedbackStatuses: PropTypes.object.isRequired,
@@ -68,7 +69,7 @@ export class List extends Component {
   }
 
   renderComments() {
-    const {feedbackFromStore, currentViewMode, comments, selected, toggleSelected, massAction, people, feedbackStatuses} = this.props;
+    const {feedbackFromStore, currentViewMode, comments, selected, toggleSelected, massAction, people, emails, feedbackStatuses} = this.props;
     var viewMode = currentViewMode.field;
     if (viewMode === constants.VIEW_MODE_LIST) {
       return (
@@ -77,6 +78,7 @@ export class List extends Component {
           selected={selected}
           toggleSelected={toggleSelected}
           people={people}
+          emails={emails}
           massAction={massAction}
           feedback={feedbackFromStore}
           />

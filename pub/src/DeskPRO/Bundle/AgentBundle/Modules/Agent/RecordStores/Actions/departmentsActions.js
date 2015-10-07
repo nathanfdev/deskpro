@@ -5,7 +5,6 @@ import { load as apiLoad, loadDepartments as apiLoadDepartments } from 'DeskPRO/
 const statePath   = ['RecordStores', 'Agent', 'departments'];
 const loadMissing = (ids) => apiLoad(ids).then(response => response.getData().data);
 
-export const gcDepartments             = createAction('GC_DEPARTMENTS',              rsa.gcRecords());
 export const releaseDepartments        = createAction('RELEASE_DEPARTMENTS',         rsa.releaseRecords());
 export const releaseDepartmentsRequest = createAction('RELEASE_DEPARTMENTS_REQUEST', rsa.releaseRequest());
 export const setDepartmentsRequest     = createAction('SET_DEPARTMENTS',             rsa.setRequestRecords());

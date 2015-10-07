@@ -1,6 +1,8 @@
 import { createAction } from 'Ampliflux';
 import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
 import { loadFeedback } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackActions';
+import { loadPeople } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
+import { loadEmails } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/emailsActions';
 
 /**
  * Used to identify requests within record stores
@@ -14,6 +16,22 @@ export const getFeedbackForComments = createAction(
 );
 
 
+export const getAuthors = createAction(
+  'FEEDBACK_COMMENTS_GET_AUTHORS',
+    comments => dispatch => {
+    const ids = [],
+      unique = {};
+    for (var key in comments.data) {
+      if (typeof(unique[comments.data[key].person_id]) === 'undefined') {
+        ids.push(comments.data[key].person_id);
+      }
+      unique[comments.data[key].person_id] = 0;
+    }
+    dispatch(loadEmails(recordStoresId, ids));
+    return dispatch(loadPeople(recordStoresId, ids));
+  }
+);
+
 export const loadCommentsList = createAction(
   'FEEDBACK_COMMENTS_LIST',
   (params = {}) => dispatch => Feedback.commentsToReviewList(params).then(promise => {
@@ -23,6 +41,7 @@ export const loadCommentsList = createAction(
       ids.push(comments.data[ind].feedback_id);
     }
     dispatch(getFeedbackForComments(ids));
+    dispatch(getAuthors(comments));
     return comments;
   })
 );

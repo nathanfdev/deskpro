@@ -6,8 +6,18 @@ import { MODE_SET } from './actions';
  *
  * @return {Function} reducer
  */
-export function gc() {
-  return state => state;
+function gc(state) {
+  const valid = [];
+  state.get('requests').map(records => valid.push(...records));
+
+  let next = state;
+  state.get('records').forEach((record, recordId) => {
+    if (valid.indexOf(recordId) === -1) {
+      next = next.deleteIn(['records', recordId]);
+    }
+  });
+
+  return next;
 }
 
 
@@ -19,7 +29,14 @@ export function gc() {
  * @return {Function} reducer
  */
 export function releaseRecords() {
-  return state => state;
+  return (state, payload) => {
+    const next = state.setIn(
+      ['requests', payload.requestId],
+      state.getIn(['requests', payload.requestId]).filter(recordId => payload.ids.indexOf(recordId) === -1)
+    );
+
+    return gc(next);
+  };
 }
 
 
@@ -29,7 +46,7 @@ export function releaseRecords() {
  * @return {Function} reducer
  */
 export function releaseRequest() {
-  return state => state;
+  return (state, payload) => gc(state.deleteIn(['requests', payload.requestId]));
 }
 
 
@@ -122,9 +139,8 @@ export function createEmptyRecordStoreState() {
  * @param {Object} actionTypes A map of type => action type constant
  * @return {Object} Handlers map
  */
-export function buildRecordStoreHandlers({ gcAction, releaseRecordsAction, releaseRequestAction, setRequestRecordAction, requestRecordsAction }) {
+export function buildRecordStoreHandlers({ releaseRecordsAction, releaseRequestAction, setRequestRecordAction, requestRecordsAction }) {
   return {
-    [gcAction]: gc(),
     [releaseRecordsAction]: releaseRecords(),
     [releaseRequestAction]: releaseRequest(),
     [setRequestRecordAction]: setRequestRecords(),

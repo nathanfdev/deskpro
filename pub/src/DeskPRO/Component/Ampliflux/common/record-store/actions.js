@@ -6,23 +6,12 @@ export const MODE_APPEND = 'append';
 export const MODE_SET = 'set';
 
 /**
- * (Action creator builder) Triggers a record gc.
- *
- * @return {Function} action creator
- */
-export function gcRecords() {
-  return () => ({});
-}
-
-/**
  * (Action creator builder) Releases records for a request.
  *
  * @return {Function} action creator
  */
 export function releaseRecords() {
-  return (requestId, ids) => {
-    return { requestId, ids: Immutable.Set(ids)};
-  };
+  return (requestId, ids) => ({ requestId, ids });
 }
 
 /**
@@ -31,9 +20,7 @@ export function releaseRecords() {
  * @return {Function} action creator
  */
 export function releaseRequest() {
-  return (requestId) => {
-    return { requestId };
-  };
+  return (requestId) => ({ requestId });
 }
 
 /**

@@ -1,6 +1,7 @@
 import { createAction } from 'Ampliflux';
 import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
 import { loadPeople } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
+import { loadEmails } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/emailsActions';
 import { loadFeedbackCommentsCounter } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCommentsActions';
 import { loadFeedbackStatuses } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackStatusesActions';
 import { sortingDataSelector, filterDataSelector } from '../Selectors/list';
@@ -15,7 +16,7 @@ const recordStoresId = 'feedback';
 export const getAuthors = createAction(
   'FEEDBACK_GET_AUTHORS',
     feedback => dispatch => {
-    let ids = [],
+    const ids = [],
       unique = {};
     for (var i in feedback.data) {
       if (typeof(unique[feedback.data[i].person_id]) === 'undefined') {
@@ -23,7 +24,8 @@ export const getAuthors = createAction(
       }
       unique[feedback.data[i].person_id] = 0;
     }
-    return dispatch(loadPeople(recordStoresId, ids));
+      dispatch(loadEmails(recordStoresId, ids));
+      return dispatch(loadPeople(recordStoresId, ids));
   }
 );
 

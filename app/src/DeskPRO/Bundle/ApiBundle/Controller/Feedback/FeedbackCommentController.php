@@ -70,8 +70,8 @@ class FeedbackCommentController extends BaseController
             ->select('c')
             ->from('DeskPRO:FeedbackComment', 'c');
         $awaitingValidation = $request->get('awaiting_validation');
-        $sort               = $request->get('sort');
-        $order              = $request->get('order');
+        $sort = $request->get('sort');
+        $order = $request->get('order');
         if ($awaitingValidation) {
             $qb
                 ->andWhere('c.status = :validating')
@@ -112,7 +112,8 @@ class FeedbackCommentController extends BaseController
         $qb
             ->select('f.id', 'count(c.id) as counter')
             ->from('DeskPRO:FeedbackComment', 'c')
-            ->innerJoin('c.feedback', 'f');
+            ->innerJoin('c.feedback', 'f')
+            ->groupBy('f.id');
         $ids = $request->get('ids');
         if ($ids) {
             $qb
