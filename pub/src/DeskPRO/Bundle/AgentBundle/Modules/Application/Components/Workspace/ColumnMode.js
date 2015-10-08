@@ -12,7 +12,6 @@ export class ColumnMode extends React.Component {
 
   render() {
     const { currentMode, columnDimensions, onChangeMode, onChangeDimensions } = this.props;
-    const dimensionsEnabled = false;
 
     return (
       <div className="dpw-workspace-type-container">
@@ -43,7 +42,7 @@ export class ColumnMode extends React.Component {
           </ChangeModeButton>
         </div>
 
-        {dimensionsEnabled ? (<div className="dpw-workspace-state dpw-workspace-slider-container">
+        {currentMode === 'column' ? (<div className="dpw-workspace-state dpw-workspace-slider-container">
           <div className="">
             <h2>Column Dimensions <a href="#" onClick={onChangeDimensions.bind(this, 0)}>Reset</a></h2>
             <div className="dpw-workspace-slider">
