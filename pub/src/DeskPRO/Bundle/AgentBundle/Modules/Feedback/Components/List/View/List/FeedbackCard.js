@@ -20,6 +20,7 @@ export class FeedbackCard extends Component {
     if (labels) {
       return (
         <CardLineItem>
+          <CardDisc/>
           <i className="fa fa-tags"></i> {labels.map((label, index)=> <CardLabel key={index} label={label}/>)}
           <CardDisc/>
         </CardLineItem>
@@ -47,7 +48,6 @@ export class FeedbackCard extends Component {
     const containerWidth = $('.dp-list-frame-contents').innerWidth();
     const feedbackMarkWidth = $('.dpw--feedback-card-mark').innerWidth();
     const cardWidth = containerWidth - feedbackMarkWidth - 20;
-    console.log('Width: ', cardWidth);
     return (
       <Card type="feedback" width={cardWidth}>
 
@@ -79,8 +79,8 @@ export class FeedbackCard extends Component {
         <CardLine>
           <CardLineLeft>
             <CardUser user={author}/>
-            <CardLineItem icon="fa-book">{type.get('title')}</CardLineItem>
             <CardDisc/>
+            <CardLineItem icon="fa-book">{type.get('title')}</CardLineItem>
           </CardLineLeft>
           { this.renderLabels(labels) }
           <CardLineRight>

@@ -8,12 +8,13 @@ export class Card extends Component {
     type: PropTypes.string.isRequired,
     moving: PropTypes.bool,
     minimized: PropTypes.bool,
+    additionalClasses: PropTypes.string,
     width: PropTypes.number
   };
 
   render() {
-    const {type, moving, minimized, width} = this.props;
-    var classes = classNames('dpmw--single-card', {
+    const {type, moving, minimized, width, additionalClasses} = this.props;
+    var classes = classNames('dpmw--single-card', additionalClasses, {
       'dpmw--single-task-card': type === 'task',
       'floating': type === 'float',
       'minimized': minimized,
@@ -201,7 +202,7 @@ export class CardUser extends Component {
     return (
       <div className="dpwd--card-line-item">
         <i className="fa fa-user"></i> {user.get('first_name')} {user.get('last_name')}
-        <CardDisc/>
+        {email ? <CardDisc/> : ''}
         {email ? <span>{email}</span> : ''}
       </div>
     );
