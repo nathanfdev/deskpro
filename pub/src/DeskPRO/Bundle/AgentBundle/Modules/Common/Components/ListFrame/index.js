@@ -1,4 +1,4 @@
-import { ListFrame } from './frame';
+import { ListFrame, ListFrameContainer } from './frame';
 import { ControlBar, ControlButton, ControlButtonsRow } from './ControlBar';
 import { ViewModeSwitcher } from './ViewModeSwitcher';
 import { ViewOptionsSubmenu } from './ViewOptionsSubmenu';
@@ -10,7 +10,7 @@ import { Card } from './Card';
 import { Pagination } from './Pagination';
 
 export default {
-  ListFrame,
+  ListFrame, ListFrameContainer,
   ControlBar, ControlButton, ControlButtonsRow,
   ViewModeSwitcher,
   TableView, TableBody, TableHeader, Th, Row, Td, IdContainer, PersonInTable,
