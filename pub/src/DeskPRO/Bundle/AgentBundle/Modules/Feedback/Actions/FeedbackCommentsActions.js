@@ -69,3 +69,12 @@ export const deleteComment = createAction(
     return id;
   }
 );
+
+export const editComment = createAction(
+  'FEEDBACK_COMMENTS_EDIT',
+    data => dispatch => {
+    const commentId = data.commentId;
+    delete data.commentId;
+    Feedback.editComment(commentId, data).then(()=>dispatch(loadCommentsList()));
+  }
+);

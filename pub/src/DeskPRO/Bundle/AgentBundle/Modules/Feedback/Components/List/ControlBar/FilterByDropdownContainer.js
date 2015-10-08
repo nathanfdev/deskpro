@@ -34,7 +34,7 @@ export class FilterByDropdownContainer extends Component {
     );
   }
 
-  changeFilter(e) {
+  changeFilter(event) {
     console.log('We must implement some functionality');
   }
 }

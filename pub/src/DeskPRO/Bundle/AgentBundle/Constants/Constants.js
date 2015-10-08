@@ -8,5 +8,9 @@ export default {
   ORDER_BY_VOTES: 'votes',
   FIELD_REQUIRED: 'required',
   FIELD_HIDDEN: 'hidden',
-  FIELD_SHOWN: 'shown'
+  FIELD_SHOWN: 'shown',
+  STATUS_NEW: 'new',
+  STATUS_VISIBLE: 'visible',
+  STATUS_ACTIVE: 'active',
+  STATUS_CLOSED: 'closed',
 };
