@@ -466,16 +466,6 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 'columnName' => 'end_action',
             )
         );
-        $metadata->mapField(
-            array(
-                'fieldName'  => 'date_updated',
-                'type'       => 'datetime',
-                'precision'  => 0,
-                'scale'      => 0,
-                'nullable'   => true,
-                'columnName' => 'date_updated',
-            )
-        );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(
             array(
