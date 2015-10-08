@@ -52,6 +52,7 @@ export default createReducer(initialState, {
     return state.set('columnMode', payload);
   },
   [actions.setColumnDimensions]: (state, payload) => {
+    triggerDpLayoutResize();
     localStorage.setItem('dpWindow.columnDimensions', payload);
     return state.set('columnDimensions', payload || 0);
   },
