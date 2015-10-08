@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
 import { ChangeModeButton } from './ChangeModeButton';
+import jQuery from 'jquery';
+import slider from 'jquery-ui/slider';
 
 export class ColumnMode extends React.Component {
 
@@ -12,6 +14,10 @@ export class ColumnMode extends React.Component {
 
   render() {
     const { currentMode, columnDimensions, onChangeMode, onChangeDimensions } = this.props;
+
+    jQuery('#workspace-column-slider').slider({
+      value: columnDimensions
+    });
 
     return (
       <div className="dpw-workspace-type-container">
@@ -51,10 +57,10 @@ export class ColumnMode extends React.Component {
               </div>
 
               <div className="dpw-workspace-slider-slide-container">
-                  <span className="dpw-workspace-slider-slide" ref="slider">
+                  <span className="dpw-workspace-slider-slide" id="workspace-column-slider">
                     <span className="slider-blocked-left"></span>
                     <span className="slider-blocked-right"></span>
-                    <span className="slider-button" style={{left: columnDimensions}}></span>
+                    <span className="slider-button ui-slider-handle"></span>
                   </span>
               </div>
             </div>
