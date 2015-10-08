@@ -26,4 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1444335702);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1444335702 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('Upgrade agent_chats');
+        $this->execMutateSql("ALTER TABLE agent_chat ADD type ENUM('agent', 'team', 'department', 'group')");
+    }
+}

@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -65,6 +66,12 @@ class AgentChat extends DomainObject implements PersonList
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", columnDefinition="ENUM('agent', 'team', 'department', 'group')")
+     */
+    protected $type;
 
     /**
      * @var bool
