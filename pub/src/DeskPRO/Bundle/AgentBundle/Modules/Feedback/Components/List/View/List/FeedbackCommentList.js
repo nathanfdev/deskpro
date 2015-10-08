@@ -4,6 +4,7 @@ import { FeedbackCommentCard } from './FeedbackCommentCard';
 export class FeedbackCommentList extends Component {
 
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     comments: PropTypes.array.isRequired,
     toggleSelected: PropTypes.func.isRequired,
     people: PropTypes.array.isRequired,
@@ -14,12 +15,13 @@ export class FeedbackCommentList extends Component {
   };
 
   render() {
-    const {comments, selected, toggleSelected, massAction, people, emails, feedback} = this.props;
+    const {dispatch, comments, selected, toggleSelected, massAction, people, emails, feedback} = this.props;
 
     return (
       <div>
         {comments.map((element, index) =>
           <FeedbackCommentCard
+            dispatch={dispatch}
             feedback={feedback.get(element.feedback_id)}
             selected={selected.includes(element.id)}
             toggleSelected={toggleSelected}

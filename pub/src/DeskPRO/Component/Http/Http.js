@@ -1,17 +1,17 @@
-import _ from "lodash";
-import HttpResponse from "./HttpResponse";
+import _ from 'lodash';
+import HttpResponse from './HttpResponse';
 
 export default class Http {
   constructor(ajaxFn) {
     this.ajaxFn = ajaxFn;
 
     this.defaults = {
-      "ALL":    {},
-      "GET":    {},
-      "POST":   {},
-      "PATCH":  {},
-      "PUT":    {},
-      "DELETE": {}
+      'ALL': {},
+      'GET': {},
+      'POST': {},
+      'PATCH': {},
+      'PUT': {},
+      'DELETE': {}
     };
 
     this.interceptors = [];
@@ -19,21 +19,21 @@ export default class Http {
     this.init();
   }
 
-  /**
+  /*
    * Called during constructor. Meant as a hook point for sub-classes.
    */
   init() {
     // add stuff
   }
 
-  /**
+  /*
    * Set a default header on all request.
    *
    * @param {String} headerName
    * @param {String} headerValue
    * @param {String} type
    */
-  setDefaultHeader(headerName, headerValue, type = "ALL") {
+  setDefaultHeader(headerName, headerValue, type = 'ALL') {
     type = type.toUpperCase();
     if (!this.defaults[type].headers) {
       this.defaults[type].headers = {};
@@ -41,29 +41,29 @@ export default class Http {
     this.defaults[type].headers[headerName] = headerValue;
   }
 
-  /**
+  /*
    * Set default config
    *
    * @param {String} configName
    * @param {*}      configValue
    * @param {String} type
    */
-  setDefaultConfig(configName, configValue, type = "ALL") {
+  setDefaultConfig(configName, configValue, type = 'ALL') {
     type = type.toUpperCase();
     this.defaults[type][configName] = configValue;
   }
 
-  /**
+  /*
    * An interceptor is any HttpInterceptor object. Note that you can just pass
    * any object, it doesn't need to be an actual instance of HttpInterceptor (that exists just to define the type).
    *
    * @param {HttpInterceptor} interceptor
    */
   addInterceptor(interceptor) {
-    this.interceptors.push(interceptor)
+    this.interceptors.push(interceptor);
   }
 
-  /**
+  /*
    * A result resolver is run after interceptors. This allows you to re-define the actual result passed
    * back from making a result. E.g., usually this would be an HttpResponse, but maybe you want to change this.
    *
@@ -76,7 +76,7 @@ export default class Http {
     this.resultResolvers.push(resultResolver);
   }
 
-  /**
+  /*
    * For request types that submit data (POST, PUT, PATCH), submit a JSON-encoded
    * payload instead of encoding it as a form.
    *
@@ -86,7 +86,7 @@ export default class Http {
     this.setDefaultConfig('jsonPayload', !!on);
   }
 
-  /**
+  /*
    * Applies defaults to config
    *
    * @param {Object} config
@@ -94,7 +94,6 @@ export default class Http {
    * @private
    */
   _applyDefaultConfig(config) {
-
     if (!config.method) {
       config.method = 'GET';
     }
@@ -102,11 +101,11 @@ export default class Http {
     config.method = config.method.toUpperCase();
     config.rawData = config.data || null;
 
-    ["ALL", config.method].forEach(t => {
+    ['ALL', config.method].forEach(t => {
       _.forEach(this.defaults[t], (configValue, configName) => {
-        if (configName == 'headers') {
+        if (configName === 'headers') {
           Object.keys(configValue).forEach((headerName) => {
-            let headerValue = configValue[headerName];
+            const headerValue = configValue[headerName];
             if (!config.headers) {
               config.headers = {};
             }
@@ -125,17 +124,17 @@ export default class Http {
     return config;
   }
 
-  /**
+  /*
    * Send a request.
    *
    * @param {Object} config
    * @returns {Promise}
    */
   send(config) {
-    let sendReq = (config) => {
+    const sendReq = (config) => {
       config = this._applyDefaultConfig(config);
 
-      if (config.method == 'POST' || config.method == 'PUT' || config.method == 'PATCH') {
+      if (config.method === 'POST' || config.method === 'PUT' || config.method === 'PATCH') {
         if (config.jsonPayload) {
           config.contentType = 'application/json';
           config.processData = false;
@@ -166,7 +165,7 @@ export default class Http {
       });
     };
 
-    let chain = [sendReq, null];
+    const chain = [sendReq, null];
     let promise = new Promise((resolve) => resolve(config));
 
     this.interceptors.forEach(i => {
@@ -212,9 +211,8 @@ export default class Http {
       return null;
     } else if (_.isPlainObject(s)) {
       return i;
-    } else {
-      return _.bind(i, s);
     }
+    return _.bind(i, s);
   }
 
   sendGet(url, config = {}) {

@@ -2,10 +2,12 @@ import React, {Component, PropTypes} from 'react';
 import { Card, CardLine, CardLineLeft, CardLineFull, CardLineItem, CardCheckbox, CardDisc, CardContentText, CardDate, CardUser, CardStatusBar }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 import $ from 'jquery';
+import { deleteComment } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
 
 export class FeedbackCommentCard extends Component {
 
   static propTypes = {
+    dispatch: PropTypes.object.isRequired,
     comment: PropTypes.object.isRequired,
     feedback: PropTypes.object.isRequired,
     toggleSelected: PropTypes.func.isRequired,
@@ -13,6 +15,12 @@ export class FeedbackCommentCard extends Component {
     email: PropTypes.string.isRequired,
     selected: PropTypes.array.isRequired
   };
+
+  deleteComment(id, event) {
+    event.preventDefault();
+    const {dispatch} = this.props;
+    dispatch(deleteComment(id));
+  }
 
   render() {
     const { comment, author, feedback, selected, toggleSelected } = this.props;
@@ -27,8 +35,12 @@ export class FeedbackCommentCard extends Component {
               className="validation-line-title">Approve</span></a></li>
             <li><a href="#"><span className="validation-line-icon edit"><i className="fa fa-edit"></i></span> <span
               className="validation-line-title">Edit</span></a></li>
-            <li><a href="#"><span className="validation-line-icon trash"><i className="fa fa-trash"></i></span> <span
-              className="validation-line-title">Delete</span></a></li>
+            <li>
+              <a href="#" onClick={this.deleteComment.bind(this, comment.id)}>
+                <span className="validation-line-icon trash"><i className="fa fa-trash"></i></span> <span
+                className="validation-line-title">Delete</span>
+              </a>
+            </li>
           </ul>
         </div>
         <CardStatusBar align="left" level="5"/>
@@ -54,7 +66,7 @@ export class FeedbackCommentCard extends Component {
         <CardLine>
           <CardLineLeft>
             <CardLineItem icon="fa-comments-o">
-              <CardDate date={comment.date_created} label="Posted" />
+              <CardDate date={comment.date_created} label="Posted"/>
             </CardLineItem>
             <CardDisc/>
             <CardLineItem>

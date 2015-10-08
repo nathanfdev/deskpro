@@ -25,6 +25,13 @@ export function commentsToReview() {
 }
 
 /*
+ * @return Promise
+ */
+export function deleteFeedbackComment(id) {
+  return DpApi.sendDelete('DP_API/feedback_comments/' + id);
+}
+
+/*
  * Feedback comments to review list
  * @return Promise
  */

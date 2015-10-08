@@ -43,14 +43,15 @@ export class ListContainer extends Component {
   };
 
   render() {
-    const { currentGroup, massAction, feedback, selected, comments, currentViewMode, people, emails, feedbackTypes,
+    const { dispatch, currentGroup, massAction, feedback, selected, comments, currentViewMode, people, emails, feedbackTypes,
       feedbackLabels, feedbackComments, feedbackStatuses, feedbackFromStore } = this.props;
     console.log(feedbackComments);
 
-    const toggleSelected = (id) => () => this.props.dispatch(toggleSelectedAction(id));
+    const toggleSelected = (id) => () => dispatch(toggleSelectedAction(id));
 
     return (
       <List
+        dispatch={dispatch}
         currentGroup={currentGroup}
         massAction={massAction}
         feedback={feedback}
