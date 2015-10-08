@@ -20,11 +20,11 @@ export default class Positioned extends React.Component {
     onOpen: React.PropTypes.func,
     onClose: React.PropTypes.func,
     children: React.PropTypes.any
-  }
+  };
 
   /**
    * Constructor
-   * @param  {Object} props The props for the objject
+   * @param  {Object} props The props for the object
    * @return {void}
    */
   constructor(props) {

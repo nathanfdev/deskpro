@@ -1,9 +1,13 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { ColumnMode } from './ColumnMode';
 import { SidebarMode } from './SidebarMode';
 import * as AppActions from '../../Actions/AppActions';
 
-export class Workspace extends React.Component {
+@connect(state => ({
+  dpWindow: state.Application.dpWindow
+}))
+export class WorkspaceContainer extends React.Component {
 
   static propTypes = {
     dpWindow: PropTypes.object.isRequired,
