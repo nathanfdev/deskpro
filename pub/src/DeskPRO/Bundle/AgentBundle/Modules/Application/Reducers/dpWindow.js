@@ -10,7 +10,7 @@ const initialState = {
   expandedSwitcher: false,
   taskView: constants.VIEW_MODE_LIST,
   columnMode: 'column',
-  columnDimensions: 30,
+  columnDimensions: 40,
   sidebarMode: 'static'
 };
 
