@@ -641,11 +641,12 @@ class Runner
      * limit will be exceeded (e.g., time limit of 10, message starts processing at 9 seconds so it continues).
      *
      * @param \Application\DeskPRO\Entity\EmailAccount $account
-     * @param int                                      $time_limit The max time spent processing email before we break.
+     * @param int                                      $time_limit   The max time spent processing email before we break.
+     * @param bool                                     $only_collect Only collect and save the emails, don't process them now.
      *
      * @throws \Exception
      */
-    public function executeAccount(EmailAccount $account, $time_limit = 0)
+    public function executeAccount(EmailAccount $account, $time_limit = 0, $only_collect = false)
     {
         gc_enable();
 
@@ -676,14 +677,18 @@ class Runner
         $created_obj = null;
         $reader      = null;
 
-        $inserted_source_ids = App::getDb()->fetchAllCol("
-            SELECT id FROM
-            email_sources
-            WHERE status IN ('inserted', 'retry') AND email_account_id = ?
-            ORDER BY id ASC
-        ", array($account->getId()));
+        $inserted_source_ids = array();
 
-        $this->logger->logDebug(sprintf('%d inserted messages being processed first', count($inserted_source_ids)));
+        if ($only_collect) {
+            $inserted_source_ids = App::getDb()->fetchAllCol("
+                SELECT id FROM
+                email_sources
+                WHERE status IN ('inserted', 'retry') AND email_account_id = ?
+                ORDER BY id ASC
+            ", array($account->getId()));
+
+            $this->logger->logDebug(sprintf('%d inserted messages being processed first', count($inserted_source_ids)));
+        }
 
         $processed_source_ids = array();
 
@@ -784,44 +789,46 @@ class Runner
                 continue;
             }
 
-            $this->logger->logDebug('START: executeSource('.$source->getId().')');
-            $t            = microtime(true);
-            $is_mem_limit = false;
-            try {
-                $this->executeSource($source);
-            } catch (ProcessingException $e) {
-                if ($e->getCode() == ProcessingException::MEMORY_LIMIT) {
-                    $is_mem_limit = true;
-                } else {
-                    $this->logger->logError('Exception: '.$e->getMessage());
+            if (!$only_collect) {
+                $this->logger->logDebug('START: executeSource('.$source->getId().')');
+                $t            = microtime(true);
+                $is_mem_limit = false;
+                try {
+                    $this->executeSource($source);
+                } catch (ProcessingException $e) {
+                    if ($e->getCode() == ProcessingException::MEMORY_LIMIT) {
+                        $is_mem_limit = true;
+                    } else {
+                        $this->logger->logError('Exception: '.$e->getMessage());
+                    }
                 }
-            }
 
-            $this->logger->logDebug(sprintf('FINISH: executeSource('.$source->getId().') - %.4fs', microtime(true) - $t));
+                $this->logger->logDebug(sprintf('FINISH: executeSource('.$source->getId().') - %.4fs', microtime(true) - $t));
 
-            $m_end  = memory_get_usage();
-            $m_diff = $m_end - $m;
+                $m_end  = memory_get_usage();
+                $m_diff = $m_end - $m;
 
-            $this->logger->log(sprintf('Memory usage: %.2f MB (total: %.2f MB)', $m_diff / 1024 / 1024, $m_end / 1024 / 1024), 'debug');
+                $this->logger->log(sprintf('Memory usage: %.2f MB (total: %.2f MB)', $m_diff / 1024 / 1024, $m_end / 1024 / 1024), 'debug');
 
-            $time_so_far = time() - $exec_start;
-            if ($time_limit && $time_so_far >= $time_limit) {
-                $this->logger->logInfo('Hit time limit, breaking');
-                break;
-            }
-
-            if ($is_mem_limit) {
-                $this->logger->logInfo('Hit memory limit, breaking');
-                break;
-            }
-
-            ++$this->message_count;
-
-            if ($this->soft_time_limit) {
-                $t = microtime(true) - DP_START_TIME;
-                if ($t > $this->soft_time_limit) {
-                    $this->logger->logWarn(sprintf('Hit soft time limit, breaking :: Running for %.3fs', $t));
+                $time_so_far = time() - $exec_start;
+                if ($time_limit && $time_so_far >= $time_limit) {
+                    $this->logger->logInfo('Hit time limit, breaking');
                     break;
+                }
+
+                if ($is_mem_limit) {
+                    $this->logger->logInfo('Hit memory limit, breaking');
+                    break;
+                }
+
+                ++$this->message_count;
+
+                if ($this->soft_time_limit) {
+                    $t = microtime(true) - DP_START_TIME;
+                    if ($t > $this->soft_time_limit) {
+                        $this->logger->logWarn(sprintf('Hit soft time limit, breaking :: Running for %.3fs', $t));
+                        break;
+                    }
                 }
             }
         }
