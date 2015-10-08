@@ -16,6 +16,8 @@ const initialState = {
 
 /**
  * Trigger a custom jquery event to handle List column width recalculation
+ *
+ * @return {void}
  */
 function triggerDpLayoutResize() {
   setTimeout(() => jQuery(document).trigger('dpLayoutResize'), 100);
