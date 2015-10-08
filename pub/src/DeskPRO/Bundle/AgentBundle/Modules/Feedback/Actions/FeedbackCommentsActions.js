@@ -62,3 +62,10 @@ export const commentsToggleOrder = createAction(
   }
 );
 
+export const deleteComment = createAction(
+  'FEEDBACK_COMMENTS_DELETE',
+    id => dispatch => {
+    Feedback.deleteFeedbackComment(id).then(()=>dispatch(loadCommentsList()));
+    return id;
+  }
+);

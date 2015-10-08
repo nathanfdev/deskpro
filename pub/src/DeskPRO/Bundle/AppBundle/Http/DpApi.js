@@ -1,5 +1,5 @@
-import uuid from "node-uuid";
-import Http from "DeskPRO/Component/Http/Http";
+import uuid from 'node-uuid';
+import Http from 'DeskPRO/Component/Http/Http';
 
 /*
 class BatchRequest extends Http {
@@ -58,9 +58,6 @@ export default class DpApi extends Http {
     return new BatchRequest(this);
   }
 
-  /**
-   *
-   */
   begin() {
     if (!this.activeBatchRequest) {
       this.activeBatchRequest = this.newBatch();
