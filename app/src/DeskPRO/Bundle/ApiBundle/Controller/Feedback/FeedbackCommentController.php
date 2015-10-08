@@ -29,11 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use Application\DeskPRO\Entity\FeedbackComment;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
+use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -70,8 +72,8 @@ class FeedbackCommentController extends BaseController
             ->select('c')
             ->from('DeskPRO:FeedbackComment', 'c');
         $awaitingValidation = $request->get('awaiting_validation');
-        $sort = $request->get('sort');
-        $order = $request->get('order');
+        $sort               = $request->get('sort');
+        $order              = $request->get('order');
         if ($awaitingValidation) {
             $qb
                 ->andWhere('c.status = :validating')
@@ -125,6 +127,47 @@ class FeedbackCommentController extends BaseController
 
         return View::create(
             $this->createRepresentation($comments),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @APIDoc(
+     *      description="delete a feedback comment",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the task",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          404="Not Found"
+     *      }
+     * )
+     * @Delete("/feedback_comments/{id}", name="api_feedback_comments_delete")
+     *
+     * @param $id
+     *
+     * @throws \LogicException
+     *
+     * @return View
+     */
+    public function deleteAction($id)
+    {
+        $em      = $this->getDoctrine()->getManager();
+        $comment = $em->getRepository('DeskPRO:FeedbackComment')->find($id);
+
+        if (!$comment) {
+            throw $this->createNotFoundException();
+        }
+        $em->remove($comment);
+        $em->flush();
+
+        return View::create(
+            array(),
             Response::HTTP_OK
         );
     }

@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardContentText, CardDate, CardUser, CardStatusBar }
+import { Card, CardLine, CardLineLeft, CardLineFull, CardLineItem, CardCheckbox, CardDisc, CardContentText, CardDate, CardUser, CardStatusBar }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 import $ from 'jquery';
 
@@ -15,7 +15,7 @@ export class FeedbackCommentCard extends Component {
   };
 
   render() {
-    const { comment, author, email, feedback, selected, toggleSelected } = this.props;
+    const { comment, author, feedback, selected, toggleSelected } = this.props;
     const containerWidth = $('.dp-list-frame-contents').innerWidth();
     const cardWidth = containerWidth - 15;
     return (

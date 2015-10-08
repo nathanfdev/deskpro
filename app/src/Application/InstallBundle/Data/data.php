@@ -212,10 +212,10 @@ INSERT INTO `custom_data_feedback` (`id`, `feedback_id`, `field_id`, `root_field
 $em->getConnection()->executeUpdate(
     "
 INSERT INTO `feedback_comments` (`id`, `feedback_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `validating`, `is_reviewed`, `date_created`, `visitor_id`) VALUES
-(1, 1, 1, '', NULL, NULL, NULL, 'Some comment for the first feedback', 'validating', NULL, 0, '2015-08-17 00:00:00', ''),
-(2, 1, 1, '', NULL, NULL, NULL, 'One more comment for the first feedback', 'validating', '0', 0, '2015-08-24 00:00:00', ''),
-(3, 2, 1, '', NULL, NULL, NULL, 'Some comment for the first feedback', 'validating', NULL, 0, '2015-09-17 00:00:00', ''),
-(4, 3, 1, '', NULL, NULL, NULL, 'One more comment for the first feedback', 'validating', '0', 0, '2015-10-05 00:00:00', '');
+(1, 1, 1, '', NULL, NULL, NULL, 'Some comment for the first feedback. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ultrices sem ac risus efficitur, vitae.', 'validating', NULL, 0, '2015-08-17 00:00:00', ''),
+(2, 1, 1, '', NULL, NULL, NULL, 'One more comment for the first feedback', 'validating', '0', 0, '2015-09-08 00:00:00', ''),
+(3, 2, 1, '', NULL, NULL, NULL, 'Some comment for the second feedback. Quisque id malesuada urna. Aliquam erat volutpat. Duis risus odio, faucibus ac lacus nec, dapibus.', 'validating', NULL, 0, '2015-09-23 00:00:00', ''),
+(4, 3, 2, '', NULL, NULL, NULL, 'Some comment for the third feedback. Proin enim mauris, faucibus sit amet pretium non, sagittis ut eros. Praesent non sem ut.', 'validating', '0', 0, '2015-10-01 00:00:00', '');
 "
 );
 
