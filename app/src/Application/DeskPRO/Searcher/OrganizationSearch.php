@@ -274,13 +274,13 @@ class OrganizationSearch extends SearcherAbstract
                             "LEFT JOIN organizations_contact_data AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.contact_type = 'address')",
                         );
                         $_wheres = array();
-                        for ($i = 1; $i <= 5; $i++) {
+                        for ($i = 1; $i <= 5; ++$i) {
                             $_wheres[] = $this->_stringMatch("$join_name.field_$i", $op, $choice, false, true);
                         }
                         $_op = $op === self::OP_IS || $op === self::OP_CONTAINS
                             ? ' OR '
                             : ' AND ';
-                        $wheres[] = '(' . implode($_op, $_wheres) . ')';
+                        $wheres[] = '('.implode($_op, $_wheres).')';
 
                         break;
 
