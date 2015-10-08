@@ -134,7 +134,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
         if ($input->getOption('setbuild')) {
             $num = time();
-            $logger->info('Setting deskpro_build = '.$num);
+            $logger->info('(Via --setbuild) Setting deskpro_build = '.$num);
             App::getDb()->replace('settings', array('value' => $num, 'name' => 'core.deskpro_build'));
             $output->writeln('<info>Done</info>');
 

@@ -1531,12 +1531,12 @@ return array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/09/Build1443607597.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1443607597',
     ),
-    1443785221 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/10/Build1443785221.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1443785221',
-    ),
     1444134083 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/10/Build1444134083.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1444134083',
+    ),
+    1444325594 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/10/Build1444325594.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1444325594',
     ),
 );
