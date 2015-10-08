@@ -7,20 +7,25 @@ export class Card extends Component {
   static propTypes = {
     type: PropTypes.string.isRequired,
     moving: PropTypes.bool,
-    minimized: PropTypes.bool
+    minimized: PropTypes.bool,
+    additionalClasses: PropTypes.string,
+    width: PropTypes.number
   };
 
   render() {
-    const {type, moving, minimized} = this.props;
-    var classes = classNames('dpmw--single-card', {
+    const {type, moving, minimized, width, additionalClasses} = this.props;
+    var classes = classNames('dpmw--single-card', additionalClasses, {
       'dpmw--single-task-card': type === 'task',
       'floating': type === 'float',
       'minimized': minimized,
       'moving': moving
     });
-
+    const styles = {};
+    if (width) {
+      styles.width = width + 'px';
+    }
     return (
-      <div className={classes}>
+      <div className={classes} style={styles}>
         {this.props.children}
       </div>
     );
@@ -125,6 +130,25 @@ export class CardDisc extends Component {
   }
 }
 
+export class CardStatusBar extends Component {
+
+  static propTypes = {
+    align: PropTypes.string.isRequired,
+    level: PropTypes.string.isRequired
+  };
+
+  render() {
+    const {align, level} = this.props;
+    var classes = classNames('dpw--card-status-bar', `level-${level}`,
+      {'dpw--status-bar-left': align === 'left', 'dpw--status-bar-right': align === 'right'}
+    );
+
+    return (
+      <div className={classes}/>
+    );
+  }
+}
+
 export class CardTitle extends Component {
 
   static propTypes = {
@@ -178,7 +202,7 @@ export class CardUser extends Component {
     return (
       <div className="dpwd--card-line-item">
         <i className="fa fa-user"></i> {user.get('first_name')} {user.get('last_name')}
-        <CardDisc/>
+        {email ? <CardDisc/> : ''}
         {email ? <span>{email}</span> : ''}
       </div>
     );
