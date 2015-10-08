@@ -843,6 +843,10 @@ $em->getConnection()->executeUpdate(
 "
 );
 
+################################################################################
+# TEMPORARY TEST DATA: Tickets
+################################################################################
+
 $em->getConnection()->executeUpdate("
 SET FOREIGN_KEY_CHECKS=0;
 
@@ -1099,6 +1103,8 @@ VALUES
 (265, NULL, 1, 3, NULL, NULL, NULL, NULL, 1, 4, NULL, 3, 2, 1, 4, NULL, NULL, '0.22146803626927364', '', '', '', '', '', '', 'hidden', NULL, '1', 1, 1, 1, 7, 1, '2015-09-01 10:31:24', '2014-10-02 10:31:24', '2015-02-02 10:31:24', '2015-06-06 10:31:24', '2014-09-23 10:31:24', '2015-09-11 10:31:24', '2014-05-31 10:31:24', '2014-09-10 10:31:24', '2014-06-13 10:31:24', '2015-02-20 10:31:24', '2015-03-17 10:31:24', 3, 1, NULL, 3, 'Test ticket #265', 'Test ticket #265', NULL, NULL, NULL),
 (266, NULL, 1, 3, NULL, NULL, NULL, NULL, 1, 2, NULL, 4, 2, 1, 3, NULL, NULL, '0.2617164182120156', '', '', '', '', '', '', 'awaiting_agent', 'spam', '0', 1, 1, 8, 5, 1, '2015-04-18 10:31:24', '2015-05-06 10:31:24', '2015-01-23 10:31:24', '2014-11-15 10:31:24', NULL, '2014-11-24 10:31:24', '2015-09-27 10:31:24', '2015-06-27 10:31:24', '2014-06-15 10:31:24', '2015-07-06 10:31:24', '2015-09-08 10:31:24', 3, 3, NULL, 2, 'Test ticket #266', 'Test ticket #266', NULL, NULL, NULL);
 
+SET FOREIGN_KEY_CHECKS=1;
+
 INSERT INTO `tickets_participants`
 (`id`, `ticket_id`, `person_id`, `access_code_id`, `person_email_id`, `default_on`)
 
@@ -1302,5 +1308,16 @@ VALUES
 (197, 66, 3, NULL, NULL, 1),
 (198, 127, 1, NULL, NULL, 0);
 
-SET FOREIGN_KEY_CHECKS=1;
+INSERT INTO `agent_team_members`
+(`team_id`, `person_id`)
+
+VALUES
+(1, 1),
+(1, 2),
+(1, 5),
+(2, 2),
+(2, 4),
+(2, 5),
+(3, 4);
+
 ");
