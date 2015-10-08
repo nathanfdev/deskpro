@@ -10,7 +10,6 @@ export class Message extends React.Component {
       <li className="chat-message old">
         <a href="#" title={this.props.message.person_name} className="chat-avatar" style={style}></a>
         <span className="time">4.13pm <i className="fa fa-clock-o"></i></span>
-
         <p>{this.props.message.message}</p>
       </li>
     );
