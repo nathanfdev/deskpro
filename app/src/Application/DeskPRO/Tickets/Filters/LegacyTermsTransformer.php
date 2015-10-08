@@ -439,11 +439,7 @@ class LegacyTermsTransformer
                 return array(
                     'type'    => "person_field[{$fid}]",
                     'op'      => $term->getTermOperator(),
-                    'options' => array(
-                        'custom_fields' => array(
-                            "field_{$fid}" => @$t['value'] ?: null,
-                        ),
-                    ),
+                    'options' => $t->all(),
                 );
 
             case 'FilterOrgField':
@@ -453,11 +449,7 @@ class LegacyTermsTransformer
                 return array(
                     'type'    => "org_field[{$fid}]",
                     'op'      => $term->getTermOperator(),
-                    'options' => array(
-                        'custom_fields' => array(
-                            "field_{$fid}" => @$t['value'] ?: null,
-                        ),
-                    ),
+                    'options' => $t->all(),
                 );
         }
 
@@ -827,14 +819,12 @@ class LegacyTermsTransformer
             case 'person_field':
                 $new_opts             = array();
                 $new_opts['field_id'] = $type_id;
-                $new_opts['value']    = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
 
                 return new Terms\FilterUserField($op, $new_opts);
 
             case 'org_field':
                 $new_opts             = array();
                 $new_opts['field_id'] = $type_id;
-                $new_opts['value']    = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
 
                 return new Terms\FilterOrgField($op, $new_opts);
 

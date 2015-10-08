@@ -57,6 +57,7 @@ DeskPRO.Agent.PageHelper.ChatFields = new Orb.Class({
 		this.page.getEl('field_edit_cancel').show();
 		this.page.getEl('field_edit_save').show();
 		this.page.getEl('field_edit_controls').removeClass('loading');
+		this.page.getEl('field_holders').find('.errors-section').show();
 
 		this.display.find('select[multiple]').each(function() {
 			var min = $(this).width() + 30;
@@ -110,6 +111,7 @@ DeskPRO.Agent.PageHelper.ChatFields = new Orb.Class({
 		this.page.getEl('field_edit_cancel').hide();
 		this.page.getEl('field_edit_start').show();
 		this.page.getEl('field_edit_controls').removeClass('loading');
+		this.page.getEl('field_holders').find('.errors-section').hide();
 		this.updateDisplay();
 	},
 
@@ -258,9 +260,11 @@ DeskPRO.Agent.PageHelper.ChatFields = new Orb.Class({
 			data: data,
 			context: this,
 			complete: function() {
-				this.page.getEl('field_edit_cancel').hide();
-				this.page.getEl('field_edit_save').hide();
-				this.page.getEl('field_edit_start').show();
+				if (!this.display.hasClass('error')) {
+					this.page.getEl('field_edit_cancel').hide();
+					this.page.getEl('field_edit_save').hide();
+					this.page.getEl('field_edit_start').show();
+				}
 				this.page.getEl('field_edit_controls').removeClass('loading');
 			},
 			success: function(new_holders) {
@@ -274,6 +278,11 @@ DeskPRO.Agent.PageHelper.ChatFields = new Orb.Class({
 		this.display = this.page.getEl('field_holders').find('.field-holders-table');
 		this.currentDisplay = [];
 		this.currentDisplayModify = [];
-		this.updateDisplay();
+
+		if (this.display.hasClass('error')) {
+			this.openEditMode();
+		} else {
+			this.updateDisplay();
+		}
 	}
 });

@@ -23,7 +23,7 @@ define ["jquery", "intl-tel-input", "intl-tel-input-utils"] , ($, intlTelInput, 
 		#			 start-phone-number="{{ ng_var('EditCtrl.form.primary_phone.number') }} ext. {{ ng_var('EditCtrl.form.primary_phone.ext') }}">
 		#		</div>
   ###
-  Admin_Main_Directive_DpPhoneNumber = [ '$rootScope', '$timeout', ($rootScope, $timeout) ->
+  Admin_Main_Directive_DpPhoneNumber = [ '$rootScope', '$timeout', '$q', ($rootScope, $timeout, $q) ->
     return {
       restrict: 'A',
       scope: {
@@ -44,47 +44,63 @@ define ["jquery", "intl-tel-input", "intl-tel-input-utils"] , ($, intlTelInput, 
           return a
         , {})
 
+        defer1 = $q.defer()
+        defer2 = $q.defer()
+
         didNotRun = true
         $attrs.$observe 'defaultRegion', (region) =>
           if didNotRun && region
             didNotRun = false
-            $main.intlTelInput({
-                defaultCountry: region.toLowerCase(),
-                autoPlaceholder: true,
-                autoFormat: true,
-                allowExtensions: true,
-                nationalMode: true
-              })
-            $main.intlTelInput('utilsLoaded')
-            $main.bind('change input', () ->
-              main_val = $main.val();
-              for dcode, isocode of dialCodes
-                dial_code = '+' + dcode;
-                shouldRemoveDialCode = main_val.indexOf(dial_code) == 0 && main_val.length > dial_code.length + 1
-                if shouldRemoveDialCode
-                  $main.intlTelInput('setNumber', $main.val().substr(dial_code.length).trim())
-                  $main.intlTelInput('selectCountry', isocode);
-
-              raw_input = $main.val().split("ext.");
-              if ((raw_input.length > 1 && raw_input[1].trim().length == 0) or raw_input.length == 1)
-                $main.intlTelInput('setNumber', raw_input[0].replace(/\s/g, ''))
-
-              $scope.phone = {number: $main.intlTelInput('getNumber'), ext: $main.intlTelInput('getExtension')}
-
-              if not $main.intlTelInput('getExtension').trim()
-                $main.intlTelInput('setNumber', raw_input[0].trim())
-                $main.intlTelInput('setExtension', null)
-            )
+            defer1.resolve(region)
 
         didNotRun2 = true
         $attrs.$observe 'startPhoneNumber', (startPhoneNumber) =>
           raw_input = startPhoneNumber.split("ext.")
-          if didNotRun2 && raw_input.length > 0 && raw_input[0].trim().length > 0
+          $timeout(() =>
+            # we need to resolve this after a timeout, for cases where there is no start phone number coming
+            defer2.resolve([''])
+          , 3300)
+          if didNotRun2 && raw_input.length > 0 && $.trim(raw_input[0]).length > 0
             didNotRun2 = false
-            num = raw_input[0].trim()
-            if raw_input.length > 1 && raw_input[1].trim().length > 0
-              num += ' ext. ' + raw_input[1].trim()
-            $main.intlTelInput("setNumber", num)
+            defer2.resolve(raw_input)
+
+        $q.all([defer1.promise, defer2.promise]).then((theResolved) =>
+          region = theResolved[0]
+          raw_input = theResolved[1]
+          $main.intlTelInput({
+              defaultCountry: region.toLowerCase(),
+              autoPlaceholder: true,
+              autoFormat: true,
+              allowExtensions: true,
+              nationalMode: true
+            })
+          $main.intlTelInput('utilsLoaded')
+          $main.bind('change keyup', () ->
+            main_val = $main.val();
+            for dcode, isocode of dialCodes
+              dial_code = '+' + dcode;
+              shouldRemoveDialCode = main_val.indexOf(dial_code) == 0 && main_val.length > dial_code.length + 1
+              if shouldRemoveDialCode
+                $main.intlTelInput('setNumber', $.trim($main.val().substr(dial_code.length)))
+                $main.intlTelInput('selectCountry', isocode);
+
+            raw_input = $main.val().split("ext.");
+            if ((raw_input.length > 1 && $.trim(raw_input[1]).length == 0) or raw_input.length == 1)
+              $main.intlTelInput('setNumber', raw_input[0].replace(/\s/g, ''))
+
+            $scope.phone = {number: $main.intlTelInput('getNumber'), ext: $main.intlTelInput('getExtension')}
+
+            if not $.trim($main.intlTelInput('getExtension'))
+              $main.intlTelInput('setNumber', $.trim(raw_input[0]))
+              $main.intlTelInput('setExtension', null)
+          )
+
+          num = $.trim(raw_input[0])
+          if raw_input.length > 1 && $.trim(raw_input[1]).length > 0
+            num += ' ext. ' + $.trim(raw_input[1])
+          $main.intlTelInput('setNumber', num)
+        )
+
     }
   ]
 

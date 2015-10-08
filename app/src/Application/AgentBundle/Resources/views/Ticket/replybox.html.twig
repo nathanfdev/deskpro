@@ -23,8 +23,7 @@
 >
 
 <input type="hidden" id="{{replyBaseId}}_is_note" name="options[is_note]" value="0" />
-<input type="hidden" id="{{baseId}}_is_snippet" name="options[is_snippet]" value="0" />
-<input type="hidden" id="{{baseId}}_snippet_id" name="options[snippet_id]" value="0" />
+<input type="hidden" id="{{baseId}}_snippet_ids" name="options[snippet_ids]" value="0" />
 
 <input type="hidden" id="{{replyBaseId}}_exist_agent_id" value="{{ ticket.agent.id|default(0) }}" />
 <input type="hidden" id="{{replyBaseId}}_exist_agent_team_id" value="{{ ticket.agent_team.id|default(0) }}" />
@@ -33,13 +32,37 @@
 <div class="dp-menu replybox" id="{{ replyBaseId }}_status_menu" style="min-width: 225px;">
 	<section>
 		<div class="dp-menu-area small">
-			<input type="text" class="label-input macro-filter" placeholder="{{ phrase('agent.tickets.reply_and_apply_macro') }}" />
+			<input type="text" class="label-input macro-filter" placeholder="Filter" />
 			<ul class="macro-list">
-				{% for macro in app.user.getHelper('Agent').getMacros() %}
-					<li class="res-ticketmacro-{{ macro.id }}" data-type="macro:{{ macro.id }}" id="{{replyBaseId}}_res_ticketmacro_{{ macro.id }}" data-macro-title="{{ macro.title }}" data-macro-id="{{ macro.id }}" data-label="{{ phrase('agent.tickets.send_reply_and_apply_x', {name: macro.title}) }}" data-get-macro-url="{{ path('agent_ticket_ajax_get_macro', {ticket_id: ticket.id, macro_id: macro.id, macro_reply_context: 1 }) }}">
-						<div class="on-icon"><i class="icon-ok"></i></div>
-						<span class="macro-title">{{ macro.title }}</span>
-					</li>
+				{% import _self as metpl %}
+				{% macro macroRow(item) %}
+					{% import _self as metpl %}
+					{% if item.type == 'item' %}
+						{% set macro = item.item %}
+						<li class="res-ticketmacro-{{ macro.id }}" data-type="macro:{{ macro.id }}" data-label="{{ phrase('agent.tickets.send_newticket_and_apply_x', {name: macro.title}) }}" data-get-macro-url="{{ path('agent_ticket_ajax_get_macro', {ticket_id: '0', macro_id: macro.id, macro_reply_context: 1 }) }}">
+							<div class="on-icon"><i class="icon-ok"></i></div>
+							<span class="macro-title">{{ item.title }}</span>
+						</li>
+					{% else %}
+						<li class="coll">
+							<span class="macro-title"><i class="fa fa-caret-right" style="float:right; position:relative;top:4px;"></i>{{ item.title }}</span>
+							<div class="dp-menu replybox sub-menu" style="min-width: 225px;">
+								<section>
+									<div class="dp-menu-area small">
+										<input type="text" class="label-input macro-filter" placeholder="{{ phrase('agent.tickets.reply_and_apply_macro') }}" />
+										<ul class="macro-list">
+											{% for sub_item in item.items %}
+												{{ metpl.macroRow(sub_item) }}
+											{% endfor %}
+										</ul>
+									</div>
+								</section>
+							</div>
+						</li>
+					{% endif %}
+				{% endmacro %}
+				{% for item in app.user.getHelper('Agent').getMacrosStructured() %}
+					{{ metpl.macroRow(item) }}
 				{% endfor %}
 			</ul>
 		</div>

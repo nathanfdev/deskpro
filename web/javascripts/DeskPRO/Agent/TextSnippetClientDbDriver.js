@@ -198,6 +198,7 @@ DeskPRO.Agent.TextSnippetClientDbDriver = new Orb.Class({
 		}
 
 		postData.push({name: 'shortcut_code', value: snippet.shortcut_code});
+		postData.push({name: 'is_draft', value: snippet.is_draft ? 1 : 0});
 
 		var snippetsDb = this.snippetsDb;
 

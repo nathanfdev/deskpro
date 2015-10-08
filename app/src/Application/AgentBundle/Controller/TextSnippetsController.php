@@ -226,6 +226,7 @@ class TextSnippetsController extends AbstractController
         }
 
         $snippet->setShortcutCode($this->in->getString('shortcut_code'));
+        $snippet->is_draft = $this->in->getBool('is_draft');
 
         $this->em->persist($snippet);
         $this->em->flush();
@@ -327,13 +328,21 @@ class TextSnippetsController extends AbstractController
         $has_snippets = $this->db->fetchColumn('
             SELECT COUNT(*)
             FROM text_snippets
-            WHERE category_id = ?
+            WHERE category_id = ? AND is_draft = 0
         ', array($cat->getId()));
 
-        if ($has_snippets) {
+        $has_draft_snippets = $this->db->fetchColumn('
+            SELECT COUNT(*)
+            FROM text_snippets
+            WHERE category_id = ? AND is_draft = 1
+        ', array($cat->getId()));
+
+        if ($has_snippets || $has_draft_snippets) {
             return $this->createJsonResponse(array(
-                'error'      => true,
-                'error_code' => 'not_empty',
+                'error'        => true,
+                'error_code'   => 'not_empty',
+                'count'        => $has_snippets,
+                'count_drafts' => $has_draft_snippets,
             ));
         }
 

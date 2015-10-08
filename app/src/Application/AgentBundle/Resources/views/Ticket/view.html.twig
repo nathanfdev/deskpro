@@ -578,7 +578,7 @@ pageMeta.lang = {{ {
 				<span class="dp-caret"></span>
 			</li>
 		{% endif %}
-		<li id="{{baseId}}_macros_menu_trigger" data-btn-id="macros-menu">
+		<li id="{{baseId}}_macros_menu_trigger">
 			<i class="icon-tasks"></i>
 			{{ phrase('agent.general.macros') }}
 			<span class="dp-caret"></span>
@@ -901,12 +901,45 @@ pageMeta.lang = {{ {
 	{% if app.user.can_admin %}<li data-option-id="debug" data-url="{{ path('agent_ticket_download_debug_report', {ticket_id: '00000', _rt: security_token('request_token', 10800)}) }}">{{ phrase('agent.tickets.debug_file_download') }}</li>{% endif %}
 	{#<li data-option-id="split">{{ phrase('agent.tickets.split_from_here') }}</li>#}
 </ul>
-<ul class="ticket-macros-menu" style="display:none" {% if baseId %}id="{{baseId}}_macros_menu"{% endif %}>
-	{% for macro in macros %}
-		<li class="res-ticketmacro-{{ macro.id }}" data-macro-id="{{macro.id}}"><span class="macro-title">{{macro.title}}</span></li>
-	{% endfor %}
-	<li class="open-settings-trigger" style="background-color: #E4E4E4; border-top: 1px solid #C1C1C1;"><i class="icon-cog"></i> {{ phrase('agent.general.manage_macros') }}</li>
-</ul>
+<div class="dp-menu replybox" id="{{ baseId }}_macros_menu" style="min-width: 225px;">
+	<section>
+		<div class="dp-menu-area small">
+			<input type="text" class="label-input macro-filter" placeholder="Filter" />
+			<ul class="macro-list">
+				{% import _self as metpl %}
+				{% macro macroRow(item) %}
+					{% import _self as metpl %}
+					{% if item.type == 'item' %}
+						{% set macro = item.item %}
+						<li class="res-ticketmacro-{{ macro.id }}" data-type="macro:{{ macro.id }}" data-macro-id="{{ macro.id }}" data-label="{{ phrase('agent.tickets.send_newticket_and_apply_x', {name: macro.title}) }}" data-get-macro-url="{{ path('agent_ticket_ajax_get_macro', {ticket_id: '0', macro_id: macro.id, macro_reply_context: 1 }) }}">
+							<div class="on-icon"><i class="icon-ok"></i></div>
+							<span class="macro-title">{{ item.title }}</span>
+						</li>
+					{% else %}
+						<li class="coll">
+							<span class="macro-title"><i class="fa fa-caret-right" style="float:right; position:relative;top:4px;"></i>{{ item.title }}</span>
+							<div class="dp-menu replybox sub-menu" style="min-width: 225px;">
+								<section>
+									<div class="dp-menu-area small">
+										<input type="text" class="label-input macro-filter" placeholder="{{ phrase('agent.tickets.reply_and_apply_macro') }}" />
+										<ul class="macro-list">
+											{% for sub_item in item.items %}
+												{{ metpl.macroRow(sub_item) }}
+											{% endfor %}
+										</ul>
+									</div>
+								</section>
+							</div>
+						</li>
+					{% endif %}
+				{% endmacro %}
+				{% for item in app.user.getHelper('Agent').getMacrosStructured() %}
+					{{ metpl.macroRow(item) }}
+				{% endfor %}
+			</ul>
+		</div>
+	</section>
+</div>
 
 <div class="delete-ticket-overlay overlay" style="display:none">
 	<div class="overlay-title">

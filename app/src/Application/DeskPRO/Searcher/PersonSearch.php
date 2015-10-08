@@ -650,8 +650,9 @@ class PersonSearch extends SearcherAbstract
 
                         $search_type = $field->getHandler()->getSearchType();
 
-                        if (isset($choice['custom_fields']['field_'.$term_id])) {
-                            $choice = $choice['custom_fields']['field_'.$term_id];
+                        $isDate = isset($choice['date1']) || isset($choice['date1_relative']);
+                        if (is_array($choice) && isset($choice['value']) && !$isDate) {
+                            $choice = $choice['value'];
                         }
 
                         switch ($search_type) {
@@ -664,7 +665,7 @@ class PersonSearch extends SearcherAbstract
                                     "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.field_id = $term_id)",
                                 );
 
-                                if (is_array($choice)) {
+                                if (is_array($choice) && !isset($choice['date1'])) {
                                     $choice = array_pop($choice);
                                 }
 
@@ -700,6 +701,30 @@ class PersonSearch extends SearcherAbstract
                                         }
 
                                         $wheres[] = $w;
+                                        break;
+                                    case self::OP_LTE:
+                                    case self::OP_GTE:
+                                        $op = self::OP_LTE === $op ? '<=' : '>=';
+                                        if ($isDate) {
+                                            if (!empty($choice['date1'])) {
+                                                $wheres[] = "$field $op ".(int) $choice['date1'];
+                                            } elseif (!empty($choice['date1_relative'])) {
+                                                $wheres[] = "$field $op ".strtotime('-'.$choice['date1_relative'].' '.$choice['date1_relative_type']);
+                                            }
+                                        } elseif (!is_array($choice) && strlen($choice) && 'DP_NO_SELECTION' !== $choice) {
+                                            $wheres[] = "$field $op ".$this->quoteDbValue('%'.$choice.'%');
+                                        }
+                                        break;
+                                    case self::OP_BETWEEN:
+                                        if ($isDate) {
+                                            if (!empty($choice['date1'])) {
+                                                $wheres[] = $field.' BETWEEN '.(int) $choice['date1'].' AND '.(int) @$choice['date2'];
+                                            } elseif (!empty($choice['date1_relative'])) {
+                                                $d1       = strtotime('-'.$choice['date1_relative'].' '.$choice['date1_relative_type']);
+                                                $d2       = strtotime('-'.@$choice['date2_relative'].' '.@$choice['date2_relative_type']);
+                                                $wheres[] = "$field BETWEEN $d1 AND $d2";
+                                            }
+                                        }
                                         break;
                                 }
                                 break;

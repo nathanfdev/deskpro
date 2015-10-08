@@ -2025,6 +2025,13 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 		// Reply Box
 		//------------------------------
 
+		var recordSnippetUse = function(snippetId) {
+			var el = $("#" + self.baseId + "_snippet_ids");
+			var current = el.val() || '';
+			var newval = current.length ? current + ',' + snippetId : snippetId+'';
+			el.val(newval);
+		};
+
 		var textarea = this.getElById('replybox_txt'), isWysiwyg = false;
 		this.textarea = textarea;
 
@@ -2106,6 +2113,8 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 				} else if (defaultText) {
 					useText = defaultText;
 				}
+
+				recordSnippetUse(snippetId);
 
 				result = useText || '';
 
@@ -2225,7 +2234,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 			return appendArray;
 		}
 
-		$('input, select, textarea', this.wrapper).filter('[name^="actions["], [name^="actions_set["]').each(function() {
+		$('input, select, textarea', this.wrapper).filter('[name^="actions["], [name^="actions_set["], .do-send-data').each(function() {
 
 			var val = $(this).val(), name = $(this).attr('name');
 

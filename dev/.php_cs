@@ -43,6 +43,7 @@ $finder = Symfony\CS\Finder\DefaultFinder::create()
 
 return Symfony\CS\Config\Config::create()
     ->addCustomFixer(new Symfony\CS\Fixer\Contrib\HeaderCommentFixer())
+    ->setUsingCache(true)
     ->fixers(array(
         'align_double_arrow',
         'align_equals',

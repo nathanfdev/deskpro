@@ -15,15 +15,51 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 	initPage: function(el) {
 		var self = this;
+		var driver;
 		this.snippet_typename = this.meta.snippet_typename;
 
 		if (this.snippet_typename == 'tickets') {
-			var driver = DeskPRO_Window.ticketSnippetDriver;
+			driver = DeskPRO_Window.ticketSnippetDriver;
 		} else {
-			var driver = DeskPRO_Window.chatSnippetDriver;
+			driver = DeskPRO_Window.chatSnippetDriver;
 		}
 
 		this.snippetDriver = driver;
+
+		//----------------------------------------
+		// Adv options
+		//----------------------------------------
+
+		this.refreshFilter = function() {
+			var categoryId = parseInt(catList.find('.on').data('category-id') || 0) || 0;
+			var filterString = $.trim(filterInput.val());
+			var languageId   = parseInt(langSelect.val()) || 0;
+			updateCatList(categoryId, filterString, languageId);
+		};
+
+		this.getEl('filters_adv_toggle').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+			$(this).hide();
+			self.getEl('filters_adv').show();
+		});
+
+		this.getEl('draft_filter').on('change', function() {
+			self.refreshFilter();
+		});
+
+		var applyClientFilter = function(snippets) {
+			var draftOption = self.getEl('draft_filter').val();
+			return snippets.filter(function(s) {
+				switch (draftOption) {
+					case 'off':
+						return s.is_draft !== true;
+					case 'on':
+						return true;
+					case 'only':
+						return s.is_draft === true;
+				}
+			});
+		};
 
 		//----------------------------------------
 		// Browsing snippets
@@ -118,6 +154,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					var thisRequestTime = lastUpdateRequest;
 					var newList = $('<ul></ul>');
 
+					snippets = applyClientFilter(snippets);
+
 					Array.each(snippets, function(s) {
 						s.title_use   = pickLangText(s.title, myLangId, showLangId);
 						s.snippet_use = pickLangText(s.snippet, myLangId, showLangId);
@@ -168,6 +206,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 								return;
 							}
 
+							snippets = applyClientFilter(snippets);
+
 							Array.each(snippets, function(s) {
 								s.title_use   = pickLangText(s.title, myLangId, showLangId);
 								s.snippet_use = pickLangText(s.snippet, myLangId, showLangId);
@@ -209,6 +249,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 							if (!catSnippets.length) {
 								return;
 							}
+
+							catSnippets = applyClientFilter(catSnippets);
 
 							Array.each(catSnippets, function(s) {
 								s.title_use   = pickLangText(s.title, myLangId, showLangId);
@@ -544,7 +586,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 							closeCatEditor();
 
 							if (data.error) {
-								alert("You cannot delete this category because it still has snippets in it. Delete the snippets first then try again.");
+								alert("You cannot delete this category because it still has snippets in it. Delete the snippets first then try again.\n\n-------------\n\nNumber of snippets: " + data.count + "\nNumber of drafts: " + data.count_drafts);
 								return;
 							}
 
@@ -728,6 +770,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			var oldShortcutCode = snippet.shortcut_code;
 
 			snippet.category_id = editSnippetEl.find('select.category_id').val();
+			snippet.is_draft = editSnippetEl.find('.is_draft_check').prop('checked');
 
 			editSnippetEl.find('.lang-bound-title').each(function() {
 				var langId = $(this).data('language-id');
@@ -835,6 +878,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 						}
 					}
 				}
+
+				self.refreshFilter();
 			}, function() {
 				editSnippetEl.find('.overlay-footer').removeClass('loading');
 			});
@@ -917,6 +962,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		editSnippetEl.find('input, textarea').val('');
 		editSnippetEl.find('input.snippet_id').val(snippet.id);
 		editSnippetEl.find('input.shortcut_code').val(snippet.shortcut_code);
+		editSnippetEl.find('.is_draft_check').prop('checked', snippet.is_draft);
 
     // resort categories
     var $sorted = this.getEl('editsnippet_category_select').children().sort(function(a, b){

@@ -246,30 +246,45 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		//------------------------------
 
 		var macroMenu = this.getEl('macros_menu');
-		this.macrosMenu = new DeskPRO.UI.Menu({
-			triggerElement: this.getEl('macros_menu_trigger'),
-			menuElement: macroMenu,
-			onItemClicked: (function(info) {
-				var item = $(info.itemEl);
+		var statusMenuMenu = new DeskPRO.UI.Menu2(macroMenu, {
+			positionBy: this.getEl('macros_menu_trigger'),
+			openBelow: true,
+			onFilterUpdated: function(info) {
+				var isCtrl = info.isCtrl;
+				var ev = info.event;
+
+				if (isCtrl && (ev.which == 85)) {
+					closeStatusMenu();
+					self.page.shortcutReplySetAwaitingUser();
+					info.cancel = true;
+					return;
+				}
+				if (isCtrl && (ev.which == 65)) {
+					closeStatusMenu();
+					self.page.shortcutReplySetAwaitingAgent();
+					info.cancel = true;
+					return;
+				}
+				if (isCtrl && (ev.which == 68)) {
+					closeStatusMenu();
+					self.page.shortcutReplySetResolved();
+					info.cancel = true;
+					return;
+				}
+			},
+			onItemSelected: function(info) {
+				var item = info.item;
 				if (item.hasClass('open-settings-trigger')) {
 					$('#settingswin').trigger('dp_open', 'macros');
-				} else {
-					this.confirmMacro($(info.itemEl).data('macro-id'));
+				} else if (item.data('macro-id')) {
+					self.confirmMacro(item.data('macro-id'));
 				}
-			}).bind(this)
+			}
 		});
 
-		$('#settingswin').on('dp_macros_updated', function(ev) {
-			macroMenu.find('li').not('.open-settings-trigger').remove();
-			Array.each(ev.macroItems, function(x) {
-				var li = $('<li />');
-				li.data('macro-id', x.id);
-				li.text(x.title);
-
-				li.appendTo(macroMenu);
-			});
+		this.getEl('macros_menu_trigger').on('click', function(ev) {
+			statusMenuMenu.open();
 		});
-
 
 		DP.select(this.page.getEl('flag'));
 		DP.select(this.page.getEl('department_id'));

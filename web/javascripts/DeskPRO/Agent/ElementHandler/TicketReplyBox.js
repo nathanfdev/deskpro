@@ -522,6 +522,13 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		// Snippets Viewer
 		//------------------------------
 
+		var recordSnippetUse = function(snippetId) {
+			var el = $("#" + self.page.meta.baseId + "_snippet_ids");
+			var current = el.val() || '';
+			var newval = current.length ? current + ',' + snippetId : snippetId+'';
+			el.val(newval);
+		}
+
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
 			driver: DeskPRO_Window.ticketSnippetDriver,
 			triggerElement: snippetBtn,
@@ -622,8 +629,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					self.page.insertTextInReply(result);
 				}
 
-                                $("#" + self.page.meta.baseId + "_is_snippet").val(1);
-                                $("#" + self.page.meta.baseId + "_snippet_id").val(snippetId);
+				recordSnippetUse(snippetId);
 
 				self.snippetsViewer.close();
 			}
@@ -700,6 +706,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
                 var ticketLangId = self.page ? self.page.getEl('value_form').find('.language_id').val() : 0;
                 var snippetId = snippet.id;
                 var snippetCode = snippet.snippet;
+
+								recordSnippetUse(snippetId);
 
                 var agentText;
                 var defaultText;
@@ -910,192 +918,58 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var statusListItems = null;
 		var replyAsType = this.getElById('reply_as_type');
 
-		var closeStatusMenu = function() {
-			statusBackdrop.hide();
-			statusMenu.hide();
-		};
+		var statusMenuMenu = new DeskPRO.UI.Menu2(statusMenu, {
+			positionBy: self.getElById('reply_btn_group'),
+			onBeforeMenuOpen: function(info) {
+				var statusMenu = info.statusMenu;
+				var type = replyAsType.data('type');
+				statusMenu.find('li').removeClass('cursor')
+					.filter('[data-type]').removeClass('on')
+					.filter('[data-type="' + type + '"]').addClass('on');
 
-		var updateStatusPos = function() {
-			statusMenuH = statusMenu.height();
-			if (statusMenu > 500) {
-				statusMenu.find('macro-list').css('max-height', 500).css('overflow', 'auto');
-				statusMenuH = 500;
+				var w = self.getElById('reply_btn_group').width() - 3;
+				if (w < 200) {
+					w = 200;
+				}
+				statusMenu.width(w);
+			},
+			onFilterUpdated: function(info) {
+				var isCtrl = info.isCtrl;
+				var ev = info.event;
+
+				if (isCtrl && (ev.which == 85)) {
+					closeStatusMenu();
+					self.page.shortcutReplySetAwaitingUser();
+					info.cancel = true;
+					return;
+				}
+				if (isCtrl && (ev.which == 65)) {
+					closeStatusMenu();
+					self.page.shortcutReplySetAwaitingAgent();
+					info.cancel = true;
+					return;
+				}
+				if (isCtrl && (ev.which == 68)) {
+					closeStatusMenu();
+					self.page.shortcutReplySetResolved();
+					info.cancel = true;
+					return;
+				}
+			},
+			onItemSelected: function(info) {
+				var item = info.item;
+				if (item.data('type')) {
+					self.setReplyAsOption(item);
+				}
 			}
+		});
 
-			var pos = footerEl.offset();
-			statusMenu.css({
-				left: pos.left + 6,
-				top: pos.top - statusMenuH + 3
-			});
+		var closeStatusMenu = function() {
+			statusMenuMenu.close();
 		};
 
 		var openStatusMenu = function() {
-			statusListItems = statusMenu.find('li[data-type]').not('.off');
-
-			// Means we're opening fo rhte first time
-			if (!statusBackdrop) {
-				statusBackdrop = $('<div class="backdrop"></div>');
-				statusBackdrop.appendTo('body');
-				statusBackdrop.on('click', function(ev) {
-					ev.stopPropagation();
-					closeStatusMenu();
-				});
-				statusMenu.detach().appendTo('body');
-
-				// Handle macro filtering
-				statusMacroFilter = statusMenu.find('.macro-filter');
-
-				statusMenu.on('click', 'li[data-type]', function(ev) {
-					ev.stopPropagation();
-					self.setReplyAsOption($(this));
-					closeStatusMenu();
-				});
-
-				statusMacroFilter.on('keyup', function(ev) {
-
-					var isCtrl = false;
-					if (ev.ctrlKey && DeskPRO_Window.keyboardShortcuts.isMac) {
-						isCtrl = true;
-					} else if (ev.altKey) {
-						isCtrl = true;
-					}
-					if (isCtrl) {
-						if (isCtrl && (ev.which == 85)) {
-							closeStatusMenu();
-							self.page.shortcutReplySetAwaitingUser();
-							return;
-						}
-						if (isCtrl && (ev.which == 65)) {
-							closeStatusMenu();
-							self.page.shortcutReplySetAwaitingAgent();
-							return;
-						}
-						if (isCtrl && (ev.which == 68)) {
-							closeStatusMenu();
-							self.page.shortcutReplySetResolved();
-							return;
-						}
-					}
-
-					if (ev.keyCode == 13 /* enter key */) {
-						ev.preventDefault();
-						var current = statusListItems.filter('.cursor');
-						if (current[0]) {
-							self.setReplyAsOption(current);
-							closeStatusMenu();
-						}
-					} else if (ev.keyCode == 27 /* escape key */) {
-						ev.preventDefault();
-						closeStatusMenu();
-					} else if (ev.keyCode == 40 /* down key */ || ev.keyCode == 38 /* up key */) {
-						ev.preventDefault();
-						var dir = ev.keyCode == 40 ? 'down' : 'up';
-
-						var current = statusListItems.filter('.cursor');
-						if (!current.length) {
-							if (dir == 'down') {
-								statusListItems.first().addClass('cursor');
-							} else {
-								statusListItems.last().addClass('cursor');
-							}
-						} else {
-							var nextIndex = statusListItems.index(current);
-							if (dir == 'down') {
-								nextIndex++;
-							} else {
-								nextIndex--;
-							}
-
-							if (nextIndex < 0) {
-								nextIndex = statusListItems.length-1;
-							} else if (nextIndex > (statusListItems.length-1)) {
-								nextIndex = 0;
-							}
-
-							current.removeClass('cursor');
-							statusListItems.eq(nextIndex).addClass('cursor');
-						}
-					}
-				});
-
-				statusMacroFilter.on('keyup', function() {
-					var val = $.trim($(this).val());
-
-					if (!val) {
-						statusMacroList.find('li').show().removeClass('off');
-						updateStatusPos();
-					} else {
-						var lis = statusMacroList.find('li');
-						var lis_show = [];
-
-						val = val.toLowerCase();
-
-						if (window.DESKPRO_MACRO_LABELS) {
-
-							if (!statusMacroListMap) {
-								statusMacroListMap = {};
-								// Generate map of macro_id => li element
-								for (var i = 0; i < window.DESKPRO_MACRO_LABELS.length; i++) {
-									statusMacroListMap[window.DESKPRO_MACRO_LABELS[i][0]] = document.getElementById(self.baseId + '_res_ticketmacro_' + window.DESKPRO_MACRO_LABELS[i][0]);
-								}
-							}
-
-							for (var i = 0; i < window.DESKPRO_MACRO_LABELS.length; i++) {
-								if (window.DESKPRO_MACRO_LABELS[i][1].indexOf(val) !== -1) {
-									if (statusMacroListMap[window.DESKPRO_MACRO_LABELS[i][0]]) {
-										lis_show.push(statusMacroListMap[window.DESKPRO_MACRO_LABELS[i][0]]);
-									} else {
-										lis_show.push(document.getElementById(self.baseId + '_res_ticketmacro_' + window.DESKPRO_MACRO_LABELS[i][0]));
-									}
-								}
-							}
-
-							if (lis_show.length) {
-								if (lis_show.length < lis.length) {
-									lis.not(lis_show).addClass('off').hide();
-								}
-								$(lis_show).removeClass('off').show();
-							} else {
-								lis.addClass('off').hide();
-							}
-
-						} else {
-							statusMacroList.find('li').each(function() {
-								if ($(this).text().toLowerCase().indexOf(val) !== -1) {
-									$(this).show().removeClass('off');
-								} else {
-									$(this).hide().addClass('off');
-								}
-							});
-						}
-						updateStatusPos();
-					}
-
-					statusListItems = statusMenu.find('li[data-type]').not('.off');
-					if (!statusListItems.filter('.cursor')[0]) {
-						statusMenu.find('li.cursor').removeClass('cursor');
-						statusListItems.first().addClass('cursor');
-					}
-				});
-			}
-
-			// Pre-select proper value
-			var type = replyAsType.data('type');
-			statusMenu.find('li').removeClass('cursor')
-				.filter('[data-type]').removeClass('on')
-				.filter('[data-type="' + type + '"]').addClass('on');
-
-			var w = self.getElById('reply_btn_group').width() - 3;
-			if (w < 200) {
-				w = 200;
-			}
-			statusMenu.width(w);
-
-			statusBackdrop.show();
-			updateStatusPos();
-			statusMenu.show();
-
-			statusMacroFilter.focus();
+			statusMenuMenu.open();
 		};
 
 		this.openStatusMenu = openStatusMenu;

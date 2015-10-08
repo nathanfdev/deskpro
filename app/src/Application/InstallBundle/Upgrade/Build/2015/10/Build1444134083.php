@@ -26,49 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-namespace Application\DeskPRO\Tickets\Filters\Terms;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Exception\NotImplementedException;
-use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Orb\Util\CheckedOptionsArray;
-
-/**
- * @option int date1
- * @option int date2
- * @option string date1_relative
- * @option string date2_relative
- */
-class FilterUserDateCreated extends AbstractFilterTerm
+class Build1444134083 extends AbstractBuild
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function getOptionsDef()
+    public function run()
     {
-        $options = new CheckedOptionsArray();
-        $options->addValidNames(
-            'date1',
-            'date2',
-            'date1_relative',
-            'date2_relative',
-            'date1_relative_type',
-            'date2_relative_type',
-            'value'
-        );
-
-        return $options;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getFilterQuery(ExecutorContextInterface $context = null)
-    {
-        throw new NotImplementedException();
+        $this->out('Add text_snippets.is_draft');
+        $this->execMutateSql('ALTER TABLE text_snippets ADD is_draft TINYINT(1) NOT NULL');
     }
 }

@@ -340,6 +340,9 @@ define [
           if @options_data?.user_fields
             for f in @options_data.user_fields
               @initFieldGetter 'FilterUserField', f, true
+          if @options_data?.org_fields
+            for f in @options_data.org_fields
+              @initFieldGetter 'FilterOrgField', f, true
         )
 
       @loadDataPromise
