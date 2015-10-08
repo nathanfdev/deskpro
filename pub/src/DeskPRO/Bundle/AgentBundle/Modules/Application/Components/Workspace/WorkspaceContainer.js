@@ -78,8 +78,8 @@ export class WorkspaceContainer extends React.Component {
         </header>
 
         <ColumnMode currentMode={dpWindow.get('columnMode')}
-                    columnDimensions={dpWindow.get('columnDimensions')}
                     onChangeMode={this.setColumnMode}
+                    columnDimensions={dpWindow.get('columnDimensions')}
                     onChangeDimensions={this.setColumnDimensions} />
         <SidebarMode currentMode={dpWindow.get('sidebarMode')}
                      onChangeMode={this.setSidebarMode} />
