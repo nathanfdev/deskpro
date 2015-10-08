@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
-import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardUser, CardLabel, CardComments }
+import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardUser, CardLabel, CardComments, CardStatusBar }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
+import $ from 'jquery';
 
 export class FeedbackCard extends Component {
 
@@ -10,7 +11,9 @@ export class FeedbackCard extends Component {
     toggleSelected: PropTypes.func.isRequired,
     author: PropTypes.object.isRequired,
     type: PropTypes.object.isRequired,
-    feedbackLabels: PropTypes.object.isRequired
+    feedbackLabels: PropTypes.object.isRequired,
+    feedbackStatus: PropTypes.string.isRequired,
+    feedbackComments: PropTypes.object.isRequired
   };
 
   renderLabels(labels) {
@@ -39,24 +42,20 @@ export class FeedbackCard extends Component {
   render() {
     const { feedback, author, type, selected, toggleSelected, feedbackLabels, feedbackComments, feedbackStatus }
       = this.props;
-    console.log('Labels: ', feedbackLabels);
     const labels = feedbackLabels ? feedbackLabels.get('labels') : false;
     const comments = feedbackComments ? feedbackComments.get('counter') : 0;
-
+    const containerWidth = $('.dp-list-frame-contents').innerWidth();
+    const feedbackMarkWidth = $('.dpw--feedback-card-mark').innerWidth();
+    const cardWidth = containerWidth - feedbackMarkWidth - 20;
+    console.log('Width: ', cardWidth);
     return (
-      <Card type="feedback">
-        <div className="dpw--feedback-card-mark">
-          <div className="dpw--feedback-card-mark-counter dpw--feedback-card-mark-thumbs">
-            <i className="fa fa-thumbs-up"></i> <span className="feedback-card-mark-count">{feedback.num_ratings}</span>
-          </div>
+      <Card type="feedback" width={cardWidth}>
 
-          <hr/>
+        <FeedbackCardMark numRatings={feedback.num_ratings}/>
 
-          <div className="dpw--feedback-card-mark-counter dpw--feedback-card-mark-stars">
-            <i className="fa fa-star"></i> <span className="feedback-card-mark-count">0</span>
-          </div>
+        <CardStatusBar align="left" level="5"/>
+        <CardStatusBar align="right" level="5"/>
 
-        </div>
         <CardCheckbox selected={selected} onClick={toggleSelected(feedback.id)}/>
 
         <CardLine>
@@ -92,4 +91,27 @@ export class FeedbackCard extends Component {
     );
   }
 
+}
+
+export class FeedbackCardMark extends Component {
+
+  static propTypes = {
+    numRatings: PropTypes.number.isRequired
+  };
+
+  render() {
+    const {numRatings} = this.props;
+
+    return (
+      <div className="dpw--feedback-card-mark">
+        <div className="dpw--feedback-card-mark-counter dpw--feedback-card-mark-thumbs">
+          <i className="fa fa-thumbs-up"></i> <span className="feedback-card-mark-count">{numRatings}</span>
+        </div>
+        <hr/>
+        <div className="dpw--feedback-card-mark-counter dpw--feedback-card-mark-stars">
+          <i className="fa fa-star"></i> <span className="feedback-card-mark-count">0</span>
+        </div>
+      </div>
+    );
+  }
 }

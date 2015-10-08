@@ -7,20 +7,24 @@ export class Card extends Component {
   static propTypes = {
     type: PropTypes.string.isRequired,
     moving: PropTypes.bool,
-    minimized: PropTypes.bool
+    minimized: PropTypes.bool,
+    width: PropTypes.number
   };
 
   render() {
-    const {type, moving, minimized} = this.props;
+    const {type, moving, minimized, width} = this.props;
     var classes = classNames('dpmw--single-card', {
       'dpmw--single-task-card': type === 'task',
       'floating': type === 'float',
       'minimized': minimized,
       'moving': moving
     });
-
+    const styles = {};
+    if (width) {
+      styles.width = width + 'px';
+    }
     return (
-      <div className={classes}>
+      <div className={classes} style={styles}>
         {this.props.children}
       </div>
     );
@@ -121,6 +125,25 @@ export class CardDisc extends Component {
   render() {
     return (
       <span className="dpw--card-disc"/>
+    );
+  }
+}
+
+export class CardStatusBar extends Component {
+
+  static propTypes = {
+    align: PropTypes.string.isRequired,
+    level: PropTypes.string.isRequired
+  };
+
+  render() {
+    const {align, level} = this.props;
+    var classes = classNames('dpw--card-status-bar', `level-${level}`,
+      {'dpw--status-bar-left': align === 'left', 'dpw--status-bar-right': align === 'right'}
+    );
+
+    return (
+      <div className={classes}/>
     );
   }
 }
