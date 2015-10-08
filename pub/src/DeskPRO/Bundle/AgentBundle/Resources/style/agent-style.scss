@@ -194,6 +194,9 @@ $kanban-frame-width: 800px;
     &.collapsed-nav {
       left: $app-switcher-width + $nav-collapsed-width + $list-frame-width;
     }
+    &.collapsed-list {
+      left: 0;
+    }
 
     &.kanban-shifted {
       left: $app-switcher-width + $nav-frame-width + $kanban-frame-width;
@@ -215,6 +218,11 @@ $kanban-frame-width: 800px;
       left: $app-switcher-width + $nav-collapsed-width;
     }
 
+  }
+  &.collapsed-list {
+    .dp-list-frame {
+      display:none;
+    }
   }
 }
 

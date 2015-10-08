@@ -8,7 +8,7 @@ export class TabFrame extends React.Component {
 
   render() {
     const { dpWindow } = this.props;
-    let classes = ['dp-tab-frame'];
+    const classes = ['dp-tab-frame'];
 
     if (dpWindow.get('expandedSwitcher')) {
       classes.push('expanded');
@@ -16,14 +16,15 @@ export class TabFrame extends React.Component {
     if (dpWindow.get('collapseNav')) {
       classes.push('collapsed-nav');
     }
+    if (dpWindow.get('columnMode') === 'focus') {
+      classes.push('collapsed-list');
+    }
     if (dpWindow.get('taskView') !== 'list') {
       classes.push('kanban-shifted');
     }
 
-    classes = classes.join(' ');
-
     return (
-      <section className={classes}>
+      <section className={classes.join(' ')}>
         <div className="blank-text">
           <p className="hero-icon">
             <i className="fa fa-file-o"></i>

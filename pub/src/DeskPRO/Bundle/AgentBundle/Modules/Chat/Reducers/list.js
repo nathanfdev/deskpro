@@ -1,7 +1,6 @@
 import { createReducer } from 'Ampliflux';
 import { async, setFullPayload } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/chatListActions';
-import * as AppActions from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/ActionTypes';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 const initialState = {

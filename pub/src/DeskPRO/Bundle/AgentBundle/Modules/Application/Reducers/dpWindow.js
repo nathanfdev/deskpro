@@ -11,7 +11,7 @@ const initialState = {
   taskView: constants.VIEW_MODE_LIST,
   columnMode: 'column',
   columnDimensions: 30,
-  sidebarMode: 'hover'
+  sidebarMode: 'static'
 };
 
 /**

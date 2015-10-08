@@ -31,7 +31,7 @@ export class DpApp extends React.Component {
 
     return (
       <div className="dp-window">
-        <Header user={user} dpWindow={dpWindow} dispatch={dispatch} />
+        <Header user={user} />
         <AppSwitcher dpWindow={dpWindow} dispatch={dispatch} />
 
         {children}

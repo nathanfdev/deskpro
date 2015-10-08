@@ -1,18 +1,17 @@
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import { ChangeModeButton } from './ChangeModeButton';
 
 export class ColumnMode extends React.Component {
 
   static propTypes = {
-    state: PropTypes.object.isRequired,
+    currentMode: PropTypes.string.isRequired,
+    columnDimensions: PropTypes.number.isRequired,
     onChangeMode: PropTypes.func.isRequired,
     onChangeDimensions: PropTypes.func.isRequired
   };
 
   render() {
-    const { state, onChangeMode, onChangeDimensions } = this.props;
-    const currentMode = state.columnMode;
+    const { currentMode, columnDimensions, onChangeMode, onChangeDimensions } = this.props;
     const dimensionsEnabled = false;
 
     return (
@@ -49,14 +48,14 @@ export class ColumnMode extends React.Component {
             <h2>Column Dimensions <a href="#" onClick={onChangeDimensions.bind(this, 0)}>Reset</a></h2>
             <div className="dpw-workspace-slider">
               <div className="dpw-workspace-slider-count-container">
-                <span className="dpw-workspace-slider-count">{state.columnDimensions}%</span>
+                <span className="dpw-workspace-slider-count">{columnDimensions}%</span>
               </div>
 
               <div className="dpw-workspace-slider-slide-container">
                   <span className="dpw-workspace-slider-slide" ref="slider">
                     <span className="slider-blocked-left"></span>
                     <span className="slider-blocked-right"></span>
-                    <span className="slider-button" style={{left: state.columnDimensions}}></span>
+                    <span className="slider-button" style={{left: columnDimensions}}></span>
                   </span>
               </div>
             </div>

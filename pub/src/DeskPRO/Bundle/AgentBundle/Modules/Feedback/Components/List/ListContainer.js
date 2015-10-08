@@ -24,7 +24,6 @@ import { connect } from 'react-redux';
 })
 export class ListContainer extends Component {
 
-
   static propTypes = {
     currentGroup: PropTypes.object.isRequired,
     currentViewMode: PropTypes.object.isRequired,

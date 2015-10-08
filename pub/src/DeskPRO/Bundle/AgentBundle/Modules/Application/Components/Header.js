@@ -1,14 +1,11 @@
 import React, { PropTypes } from 'react';
 import { HeaderWidget } from '../../IM/Components/HeaderWidget';
-import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned';
-import { Workspace } from '../../Application/Components/Workspace/Workspace';
+import { WorkspaceContainer } from './Workspace/WorkspaceContainer';
 
 export class Header extends React.Component {
 
   static propTypes = {
-    user: PropTypes.object.isRequired,
-    dpWindow: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired
+    user: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -31,7 +28,7 @@ export class Header extends React.Component {
   };
 
   render() {
-    const { user, dpWindow, dispatch } = this.props;
+    const { user } = this.props;
 
     return (<header className="dp-window-header top-bar">
       <a href="https://www.deskpro.com/" className="logo"></a>
@@ -53,9 +50,9 @@ export class Header extends React.Component {
         </a>
       </div>
 
-      <Positioned isOpen={this.state.isWorkspaceOpen} positionTarget={this.refs.workspace}>
-        <Workspace dpWindow={dpWindow} dispatch={dispatch} closeFn={this.closeWorkspace} />
-      </Positioned>
+      <div style={{display: this.state.isWorkspaceOpen ? '' : 'none'}}>
+        <WorkspaceContainer closeFn={this.closeWorkspace} />
+      </div>
 
     </header>);
   }

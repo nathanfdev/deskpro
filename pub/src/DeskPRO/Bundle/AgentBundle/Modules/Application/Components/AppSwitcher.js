@@ -3,6 +3,7 @@ import * as AppActions from '../../Application/Actions/AppActions';
 import { Link } from 'react-router';
 
 export class AppSwitcher extends React.Component {
+
   static propTypes = {
     dpWindow: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
@@ -38,12 +39,16 @@ export class AppSwitcher extends React.Component {
 
   render() {
     const { dpWindow } = this.props;
-    const myClasses = 'dp-app-switcher' + (dpWindow.get('expandedSwitcher') ? ' expanded' : '');
+    const classesNames = ['dp-app-switcher'];
+
+    if (dpWindow.get('expandedSwitcher')) {
+      classesNames.push('expanded');
+    }
 
     return (
     <nav onMouseEnter={this.hoverSwitcher.bind(this)}
       onMouseLeave={this.cancelSwitcher.bind(this)}
-      className={myClasses}>
+      className={classesNames.join(' ')}>
       <div className="app-bar">
         <ul>
           {this.renderAppIcon('tickets', 'Tickets', 'fa-envelope-o')}

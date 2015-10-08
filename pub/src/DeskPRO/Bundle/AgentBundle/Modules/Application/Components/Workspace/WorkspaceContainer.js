@@ -1,9 +1,13 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { ColumnMode } from './ColumnMode';
 import { SidebarMode } from './SidebarMode';
 import * as AppActions from '../../Actions/AppActions';
 
-export class Workspace extends React.Component {
+@connect(state => ({
+  dpWindow: state.Application.dpWindow
+}))
+export class WorkspaceContainer extends React.Component {
 
   static propTypes = {
     dpWindow: PropTypes.object.isRequired,
@@ -23,46 +27,44 @@ export class Workspace extends React.Component {
   }
 
   setColumnMode = (mode) => {
-    this.setState({
-      columnMode: mode
-    });
+    this.props.dispatch(AppActions.setColumnMode(mode));
   };
 
   setColumnDimensions = (percent) => {
-    console.log(percent);
-    this.setState({
-      columnDimensions: percent
-    });
+    this.props.dispatch(AppActions.setColumnDimensions(percent));
   };
 
   setSidebarMode = (mode) => {
-    this.setState({
-      sidebarMode: mode
-    });
+    this.props.dispatch(AppActions.setSidebarMode(mode));
   };
 
   resetAll = () => {
-    const { dpWindow } = this.props;
+    const { dispatch } = this.props;
+
+    dispatch(AppActions.setColumnMode(this.state.columnMode));
+    dispatch(AppActions.setColumnDimensions(this.state.columnDimensions));
+    dispatch(AppActions.setSidebarMode(this.state.sidebarMode));
+  };
+
+  saveWorkspace = () => {
+    const { closeFn, dpWindow } = this.props;
 
     this.setState({
       columnMode: dpWindow.get('columnMode'),
       sidebarMode: dpWindow.get('sidebarMode'),
       columnDimensions: dpWindow.get('columnDimensions')
     });
-  };
-
-  saveWorkspace = () => {
-    const { closeFn, dispatch } = this.props;
-
-    dispatch(AppActions.setColumnMode(this.state.columnMode));
-    dispatch(AppActions.setColumnDimensions(this.state.columnDimensions));
-    dispatch(AppActions.setSidebarMode(this.state.sidebarMode));
 
     closeFn();
   };
 
+  close = () => {
+    this.resetAll();
+    this.props.closeFn();
+  };
+
   render() {
-    const { closeFn } = this.props;
+    const { dpWindow } = this.props;
 
     return (
       <div className="dropdown workspace-dropdown">
@@ -70,15 +72,16 @@ export class Workspace extends React.Component {
           <div className="header-controls">
             Your Workspace
             <span className="close">
-              <a href="#"><i className="fa fa-times" onClick={closeFn}></i></a>
+              <a href="#"><i className="fa fa-times" onClick={this.close}></i></a>
             </span>
           </div>
         </header>
 
-        <ColumnMode state={this.state}
+        <ColumnMode currentMode={dpWindow.get('columnMode')}
+                    columnDimensions={dpWindow.get('columnDimensions')}
                     onChangeMode={this.setColumnMode}
                     onChangeDimensions={this.setColumnDimensions} />
-        <SidebarMode state={this.state}
+        <SidebarMode currentMode={dpWindow.get('sidebarMode')}
                      onChangeMode={this.setSidebarMode} />
 
         <div className="dpw-top-bar-dropdown-footer">
