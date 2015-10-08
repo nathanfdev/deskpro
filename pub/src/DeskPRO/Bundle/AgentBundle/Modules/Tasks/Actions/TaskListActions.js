@@ -117,11 +117,11 @@ export const createProject = createAction(
   'TASKS_POST_PROJECT',
   (data) => {
     return Tasks.createProject(data).then(
-      (value) => {
+      value => dispatch => {
         value.getData();
-        loadProjects();
+        dispatch(loadProjects());
       },
-      (value) => value.xhr.responseJSON
+      value => value.xhr.responseJSON
     );
   }
 );
@@ -132,11 +132,11 @@ export const editProject = createAction(
     const projectId = data.projectId;
     delete data.projectId;
     return Tasks.editProject(projectId, data).then(
-      (value) => {
+      value => dispatch => {
         value.getData();
-        loadProjects();
+        dispatch(loadProjects());
       },
-      (value) => value.xhr.responseJSON
+      value => value.xhr.responseJSON
     );
   }
 );
@@ -190,7 +190,7 @@ export const loadTaskList = createAction(
         });
 
         // Load all the relevant data, and when it's done fire the trigger
-        Promise.all([
+        return Promise.all([
           Tasks.loadProjects({ids: projects.join(',')}),
           Tasks.loadLinks({ids: linkedItems.join(',')}),
           People.loadPeople({ids: people.join(',')}),
@@ -225,7 +225,7 @@ export const loadTaskList = createAction(
 
 export const loadFilter = createAction(
   'TASKS_LOAD_FILTER',
-  (data)=> {
+  data => dispatch => {
     // Make sure we don't accidentally break the filter details
     const filter = data;
     const filterElements = {};
@@ -308,14 +308,16 @@ export const loadFilter = createAction(
 
     const compiled = 'tasks?' + Tasks.compileParams(filterElements);
 
-    return loadTaskList(compiled);
+    dispatch(loadTaskList(compiled));
+
+    return compiled;
   }
 );
 
 export const setFilter = createAction(
   'TASKS_SET_FILTER',
-  (data) => {
-    loadFilter(data);
+  data => dispatch => {
+    dispatch(loadFilter(data));
     return data;
   }
 );
@@ -325,12 +327,12 @@ export const createTask = createAction(
   'TASKS_POST_TASK',
   (data, source = 'tasks') => {
     return Tasks.createTask(data).then(
-      (value) => {
+      value => dispatch => {
         const output = value.getData();
-        loadTaskList(source);
+        dispatch(loadTaskList(source));
         return output;
       },
-      (value) => value.xhr.responseJSON
+      value => value.xhr.responseJSON
     );
   }
 );
@@ -341,12 +343,12 @@ export const editTask = createAction(
     const taskId = data.taskId;
     delete data.taskId;
     return Tasks.editTask(taskId, data).then(
-      (value) => {
+      value => dispatch => {
         const output = value.getData();
-        loadTaskList(source);
+        dispatch(loadTaskList(source));
         return output;
       },
-      (value) => value.xhr.responseJSON
+      value => value.xhr.responseJSON
     );
   }
 );
@@ -355,12 +357,12 @@ export const massEditTasks = createAction(
   'TASKS_MASS_EDIT_TASKS',
   (data, source = 'nowhere') => {
     return Tasks.massEditTasks(data).then(
-      (value) => {
+      value => dispatch => {
         const output = value.getData();
-        loadTaskList(source);
+        dispatch(loadTaskList(source));
         return output;
       },
-      (value) => value.xhr.responseJSON
+      value => value.xhr.responseJSON
     );
   }
 );

@@ -10,7 +10,7 @@ const cardSource = {
     const width = $(ReactDOM.findDOMNode(component)).width();
 
     return {
-      id: props.task.id,
+      id: props.task.get('id'),
       details: props.task,
       width: width,
       subtype: 'calendar'
@@ -33,12 +33,12 @@ const TaskCalendarCard = React.createClass({
 
   render: function() {
     const {task, connectDragSource} = this.props;
-    const dueDate = new Moment(task.date_due);
+    const dueDate = new Moment(task.get('date_due'));
     const overdueClass = dueDate.isBefore() ? 'urgent' : '';
     return connectDragSource(<li className={overdueClass}
       onMouseEnter={this.openHover.bind(this, task)}
       onMouseLeave={this.props.closeHover.bind(this)}>
-      <a href="#">{task.title}</a>
+      <a href="#">{task.get('title')}</a>
     </li>);
   }
 });

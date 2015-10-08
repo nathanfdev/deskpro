@@ -1,20 +1,13 @@
 import { createReducer } from 'Ampliflux';
 import * as TaskListActions from '../Actions/TaskListActions';
+import Immutable from 'immutable';
 
 const initialState = {
-  projects: {
-    projectCount: 0,
-    projectList: [],
-  }
+  projectList: {},
 };
 
 export default createReducer(initialState, {
   [TaskListActions.loadProjects]: (state, payload) => {
-    const result = {
-      projectList: payload.data,
-      projectCount: payload.data ? payload.data.length : 0
-    };
-
-    return state.setIn(['projects'], result);
+    return state.set('projectList', payload.data);
   }
 });

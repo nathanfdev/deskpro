@@ -23,14 +23,14 @@ import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Compone
 import { ListFrame } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
 @connect(state => ({
-  taskFrameList: state.taskFrameList,
-  taskListList: state.taskListList,
-  projectList: state.projectList,
-  taskFilter: state.taskFilter,
-  labelList: state.labelList,
-  agentList: state.agentList,
-  teamList: state.teamList,
-  departmentList: state.departmentList,
+  taskFrameList: state.Tasks.taskFrameList,
+  taskListList: state.Tasks.taskListList,
+  projectList: state.Tasks.projectList,
+  taskFilter: state.Tasks.taskFilter,
+  labelList: state.Tasks.labelList,
+  agentList: state.Tasks.agentList,
+  teamList: state.Tasks.teamList,
+  departmentList: state.Tasks.departmentList,
   dpWindow: state.Application.dpWindow
 }))
 export default
@@ -51,7 +51,7 @@ class TasksListFrame extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state        = {
+    this.state = {
       actionable: [],
       view: constants.VIEW_MODE_LIST,
       changeView: false,
@@ -64,12 +64,12 @@ class TasksListFrame extends React.Component {
       taskData: {},
       massActionable: {}
     };
-    this.intl         = IntlMixin;
+    this.intl = IntlMixin;
     this.lastGrouping = '';
-    this.agents       = [];
-    this.teams        = [];
-    this.departments  = [];
-    this.projects     = [];
+    this.agents = [];
+    this.teams = [];
+    this.departments = [];
+    this.projects = [];
 
     // Temp project ID
     props.dispatch(TaskActions.loadLists(1));
@@ -120,7 +120,7 @@ class TasksListFrame extends React.Component {
     const query = filter;
 
     query.order_by = this.state.order;
-    query.sort     = this.state.direction;
+    query.sort = this.state.direction;
 
     this.props.dispatch(TaskActions.setFilter(query));
   }
@@ -211,7 +211,7 @@ class TasksListFrame extends React.Component {
   }
 
   updateMassActions(taskId) {
-    const actionable      = this.state.actionable;
+    const actionable = this.state.actionable;
     const actionableIndex = actionable.indexOf(taskId);
     if (actionableIndex === -1) {
       actionable.push(taskId);
@@ -231,12 +231,12 @@ class TasksListFrame extends React.Component {
   }
 
   toggleDone(object, reload) {
-    object.is_done = !object.is_done;
-
     const newValues = {
-      taskId: object.id,
-      is_done: object.is_done
+      taskId: object.get('id'),
+      is_done: !object.get('is_done')
     };
+
+    object.set('is_done', newValues.is_done);
 
     if (newValues.is_done === true) {
       newValues.percent_complete = 100;
@@ -278,15 +278,15 @@ class TasksListFrame extends React.Component {
   }
 
   handleAssigneeChange(assignee) {
-    const task       = {};
+    const task = {};
     const assignment = assignee.value;
 
-    task.agents      = [];
-    task.teams       = [];
+    task.agents = [];
+    task.teams = [];
     task.departments = [];
 
     if (assignment !== 'unassigned') {
-      const assignmentParts    = assignment.split('-');
+      const assignmentParts = assignment.split('-');
       task[assignmentParts[0]] = [assignmentParts[1]];
     }
 
@@ -300,12 +300,12 @@ class TasksListFrame extends React.Component {
     }
   }
 
-  toggleAssignWindow(task = {}) {
-    let target   = $(event.target).closest('div.top-right-box');
+  toggleAssignWindow(task, event) {
+    let target = $(event.target).closest('div.top-right-box');
     let modifier = 12;
 
     if (typeof target[0] === 'undefined') {
-      target   = $(event.target).closest('.list-sidebar-title');
+      target = $(event.target).closest('.list-sidebar-title');
       modifier = 13;
     }
 
@@ -320,18 +320,19 @@ class TasksListFrame extends React.Component {
   }
 
   moveCard(item, targetItem, tasks, callback) {
-    const cards   = tasks;
-    const id      = item.id;
-    const afterId = targetItem.id;
+    console.log('move card');
+    const cards = tasks;
+    const id = item.get('id');
+    const afterId = targetItem.get('id');
 
-    const oldOrder = [];
+    const oldOrder = {};
     tasks.forEach((card) => {
       oldOrder.push(card.display_order);
     });
 
-    const card       = cards.filter(c => c.id === id)[0];
-    const afterCard  = cards.filter(c => c.id === afterId)[0];
-    const cardIndex  = cards.indexOf(card);
+    const card = cards.filter(filteredCard => filteredCard.get('id') === id)[0];
+    const afterCard = cards.filter(filteredCard => filteredCard.get('id') === afterId)[0];
+    const cardIndex = cards.indexOf(card);
     const afterIndex = cards.indexOf(afterCard);
 
     cards.splice(cardIndex, 1);
@@ -340,13 +341,16 @@ class TasksListFrame extends React.Component {
     // Used to set the state of the column
     callback(cards);
 
-    const source = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameSource', []) : [];
+    const source = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameSource', {}) : {};
+
+    console.log(card);
+    console.log(targetItem);
 
     this.editTask(
       source,
       {
-        taskId: card.id,
-        display_order: targetItem.display_order
+        taskId: card.get('id'),
+        display_order: targetItem.get('display_order')
       }
     );
   }
@@ -361,14 +365,14 @@ class TasksListFrame extends React.Component {
   render() {
     const {taskFilter} = this.props;
 
-    const _this       = this;
+    const _this = this;
     const linkedItems = {};
-    const lists       = [];
-    const labels      = [];
-    const tickets     = {};
+    const lists = {};
+    const labels = [];
+    const tickets = {};
 
     const projects = this.props.projectList ? this.props.projectList.get('projectList', []) : [];
-    const source = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameSource', []) : [];
+    const source = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameSource', '') : '';
 
     // Attach IDs to the projects
     if (projects && typeof projects.forEach === 'function') {
@@ -377,7 +381,7 @@ class TasksListFrame extends React.Component {
       });
     }
 
-    const taskFrameLinks = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameLinks', []) : [];
+    const taskFrameLinks = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameLinks', {}) : {};
 
     // Attach IDs to the linked item
     if (taskFrameLinks && typeof taskFrameLinks.forEach === 'function') {
@@ -386,9 +390,9 @@ class TasksListFrame extends React.Component {
       });
     }
 
-    const agentList = this.props.agentList ? this.props.agentList.get('agentList', []) : [];
-    const teamList = this.props.teamList ? this.props.teamList.get('teamList', []) : [];
-    const departmentList = this.props.departmentList ? this.props.departmentList.get('departmentList', []) : [];
+    const agentList = this.props.agentList ? this.props.agentList.get('agentList', {}) : {};
+    const teamList = this.props.teamList ? this.props.teamList.get('teamList', {}) : {};
+    const departmentList = this.props.departmentList ? this.props.departmentList.get('departmentList', {}) : {};
 
     // Attach assignments
     if (agentList && typeof agentList.forEach === 'function') {
@@ -435,8 +439,8 @@ class TasksListFrame extends React.Component {
       });
     }
 
-    const grouping     = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, lists, linkedItems, tickets);
-    const columnField  = this.state.order;
+    const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, lists, linkedItems, tickets);
+    const columnField = this.state.order;
     const rawGroupings = grouping.getRawGroupings(columnField, this.state.direction);
     const sectionClass = this.state.view !== 'list' ? 'task-list-frame dp-list-frame kanban' : 'task-list-frame dp-list-frame';
 
@@ -445,7 +449,7 @@ class TasksListFrame extends React.Component {
     const taskFrameList = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameList', []) : [];
 
     // Split tasks up into the appropriate kanban columns
-    if (taskFrameList && taskFrameList.length > 0) {
+    if (taskFrameList && taskFrameList.size > 0) {
       taskFrameList.forEach((object) => {
         const columnId = grouping.getGroup(object, columnField);
 

@@ -1,10 +1,10 @@
-import React from "react";
+import React from 'react';
 import ReactDOM from 'react-dom';
-import Moment from "moment";
-import { DragSource, DropTarget } from "react-dnd";
-import { IntlMixin, FormattedDate } from "react-intl";
-import DragTypes from "../../../Services/DragTypes.js";
-import $ from "jquery";
+import Moment from 'moment';
+import { DragSource, DropTarget } from 'react-dnd';
+import { IntlMixin, FormattedDate } from 'react-intl';
+import DragTypes from '../../../Services/DragTypes.js';
+import $ from 'jquery';
 import { getEmptyImage } from 'react-dnd/modules/backends/HTML5';
 
 const cardTarget = {
@@ -37,6 +37,19 @@ const listCardSource = {
 };
 
 const TaskKanbanCard = React.createClass({
+  propTypes: {
+    updateMassActions: React.PropTypes.func,
+    task: React.PropTypes.object,
+    agents: React.PropTypes.array,
+    teams: React.PropTypes.array,
+    departments: React.PropTypes.array,
+    connectDragPreview: React.PropTypes.func,
+    connectDragSource: React.PropTypes.func,
+    connectDropTarget: React.PropTypes.func,
+    isOver: React.PropTypes.bool,
+    selected: React.PropTypes.bool,
+    order: React.PropTypes.string
+  },
 
   componentDidMount: function() {
     this.props.connectDragPreview(getEmptyImage(), {
@@ -46,64 +59,64 @@ const TaskKanbanCard = React.createClass({
     });
   },
 
-  toggleMassAction: function(event) {
-    this.props.updateMassActions(this.props.task.id);
+  toggleMassAction: function() {
+    this.props.updateMassActions(this.props.task.get('id'));
   },
 
   render: function() {
     let assigneeName = '';
 
-    if (this.props.task.agents && this.props.task.agents.length > 0) {
-      assigneeName = this.props.agents[this.props.task.agents[0]].name;
-    } else if (this.props.task.teams && this.props.task.teams.length > 0) {
-      assigneeName = this.props.teams[this.props.task.teams[0]].name;
-    } else if (this.props.task.departments && this.props.task.departments.length > 0) {
-      assigneeName = this.props.departments[this.props.task.departments[0]].title;
+    if (this.props.task.get('agents') && this.props.task.get('agents').length > 0) {
+      assigneeName = this.props.agents[this.props.task.get('agents')[0]].name;
+    } else if (this.props.task.get('teams') && this.props.task.get('teams').length > 0) {
+      assigneeName = this.props.teams[this.props.task.get('teams')[0]].name;
+    } else if (this.props.task.get('departments') && this.props.task.get('departments').length > 0) {
+      assigneeName = this.props.departments[this.props.task.get('departments')[0]].title;
     }
 
     const placeHolder = this.props.isOver ? 'placeholder is-over' : 'placeholder';
 
     const selected = this.props.selected;
 
-    const result = <div>
-      <div className="card task-card">
-        <div className="card-status-bar status-bar-left" />
-        <div className="card-status-bar status-bar-right" />
+    const result = (<div>
+          <div className="card task-card">
+            <div className="card-status-bar status-bar-left" />
+            <div className="card-status-bar status-bar-right" />
 
-        <div className="card-checkbox">
-          <span className="checkbox" onClick={this.toggleMassAction}>
-            {selected ? <i className="fa fa-check" /> : '' }
-          </span>
-        </div>
-
-        <div className="content">
-          <h1 className={this.props.task.is_done ? 'complete' : ''}>{this.props.task.title}</h1>
-          <div className="card-line task-details">
-            <div className="top-right-box">
-              <span className="assignment">
-                {assigneeName}
+            <div className="card-checkbox">
+              <span className="checkbox" onClick={this.toggleMassAction}>
+                {selected ? <i className="fa fa-check" /> : '' }
               </span>
             </div>
-            <div>
-              <i className="fa fa-calendar-o" /> Due: {this.props.task.date_due ? Moment(this.props.task.date_due).local().format('MMMM D, YYYY')
-              : 'N/A' }
+
+            <div className="content">
+              <h1 className={this.props.task.get('is_done') ? 'complete' : ''}>{this.props.task.get('title')}</h1>
+              <div className="card-line task-details">
+                <div className="top-right-box">
+                  <span className="assignment">
+                    {assigneeName}
+                  </span>
+                </div>
+                <div>
+                  <i className="fa fa-calendar-o" /> Due: {this.props.task.get('date_due') ? Moment(this.props.task.get('date_due')).local().format('MMMM D, YYYY')
+                  : 'N/A' }
+                </div>
+              </div>
+              <hr/>
+              <div className="card-line task-properties">
+                <span>{this.props.task.get('comment_count', 0)} <i className="fa fa-comment"/></span>
+
+                {this.props.task.get('subtasks_total', 0) > 0 ?
+                  <span>
+                    <span className="disc"/>
+                    <div className="subtask-count">{this.props.task.get('subtasks_done')}/{this.props.task.get('subtasks_total')} <i className="fa fa-folder-open"/></div>
+                  </span>
+                : ''}
+              </div>
             </div>
           </div>
-          <hr/>
-          <div className="card-line task-properties">
-            <span>{this.props.task.comment_count} <i className="fa fa-comment"/></span>
-
-            {this.props.task.subtasks_total > 0 ?
-              <span>
-                <span className="disc"/>
-                <div className="subtask-count">{this.props.task.subtasks_done}/{this.props.task.subtasks_total} <i className="fa fa-folder-open"/></div>
-              </span>
-            : ''}
-          </div>
-        </div>
-      </div>
-      <div className={placeHolder} />
-    </div>;
+          <div className={placeHolder} />
+        </div>);
 
     if (this.props.order === 'list') {
       return this.props.connectDragSource(this.props.connectDropTarget(result));

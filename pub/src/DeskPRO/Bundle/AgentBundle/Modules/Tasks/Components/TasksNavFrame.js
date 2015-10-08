@@ -10,14 +10,14 @@ import { NavFrameHeader, NavFrame } from '../../Common/Components/NavFrame/index
 import $ from 'jquery';
 
 @connect(state => ({
-  taskList: state.taskList,
-  projectList: state.projectList,
-  agentList: state.agentList,
-  labelList: state.labelList,
-  teamList: state.teamList,
-  departmentList: state.departmentList,
+  taskList: state.Tasks.taskList,
+  projectList: state.Tasks.projectList,
+  agentList: state.Tasks.agentList,
+  labelList: state.Tasks.labelList,
+  teamList: state.Tasks.teamList,
+  departmentList: state.Tasks.departmentList,
   user: state.Application.user,
-  createdProject: state.createdProject,
+  createdProject: state.Tasks.createdProject,
   dpWindow: state.Application.dpWindow
 }))
 export default class TasksNavFrame extends React.Component {

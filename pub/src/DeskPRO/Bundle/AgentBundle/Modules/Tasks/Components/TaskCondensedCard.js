@@ -1,21 +1,16 @@
-import React from "react";
+import React from 'react';
 import ReactDOM from 'react-dom';
-import { DragSource, DropTarget } from "react-dnd";
-import { connect } from 'react-redux';
+import { DragSource, DropTarget } from 'react-dnd';
 import $ from 'jquery';
-import * as TaskActions from "../Actions/TaskListActions";
-import { IntlMixin, FormattedDate } from "react-intl";
-import Formsy from "formsy-react";
-import FRC from "../../../../../Component/FormComponents/main.js";
-import DragTypes from "../../../Services/DragTypes.js";
-import Picker from "anytime";
-import Moment from "moment";
+import DragTypes from '../../../Services/DragTypes.js';
+import Picker from 'anytime';
+import Moment from 'moment';
 import { getEmptyImage } from 'react-dnd/modules/backends/HTML5';
 
 const cardTarget = {
   drop(props, monitor) {
     const item = monitor.getItem();
-    if (item.id !== props.task.id) {
+    if (item.details.get('id') !== props.task.get('id')) {
       props.moveCard(item, props.task);
     }
   }
@@ -26,7 +21,7 @@ const cardSource = {
     const width = $(ReactDOM.findDOMNode(component)).width();
 
     return {
-      id: props.task.id,
+      id: props.task.get('id'),
       details: props.task,
       dispatch: props.dispatch,
       source: props.source,
@@ -59,8 +54,8 @@ const TaskCondensedCard = React.createClass({
         editing: false
       });
 
-      let task = this.state.task;
-      task.taskId = this.props.task.id;
+      const task = this.state.task;
+      task.taskId = this.props.task.get('id');
 
       this.props.editTask(this.props.source, task);
     }
@@ -87,7 +82,7 @@ const TaskCondensedCard = React.createClass({
   },
 
   handleTitleChange: function (name, value) {
-    let task = this.state.task;
+    const task = this.state.task;
     task.title = value;
     this.setState({
       task: task
@@ -95,7 +90,7 @@ const TaskCondensedCard = React.createClass({
   },
 
   handleAssigneeChange: function(value) {
-    let task = this.state.task;
+    const task = this.state.task;
     const assignment = value.target.value;
 
     task.agents = [];
@@ -103,7 +98,7 @@ const TaskCondensedCard = React.createClass({
     task.departments = [];
 
     if (assignment !== 'unassigned') {
-      let assignmentParts = assignment.split('-');
+      const assignmentParts = assignment.split('-');
       task[assignmentParts[0]] = [assignmentParts[1]];
     }
 
@@ -111,44 +106,44 @@ const TaskCondensedCard = React.createClass({
       task: task
     });
 
-    task.taskId = this.props.task.id;
+    task.taskId = this.props.task.get('id');
 
     this.props.editTask(this.props.source, task);
   },
 
   toggleMassAction: function(event) {
-    this.props.updateMassActions(this.props.task.id);
+    this.props.updateMassActions(this.props.task.get('id'));
   },
 
   componentDidMount: function() {
-    const dueField = "due-" + this.props.task.id;
+    const dueField = 'due-' + this.props.task.get('id');
 
     // Check if the due field actually exists before we try and add a date picker (e.g. on done tasks)
     if (typeof (this.refs[dueField]) !== 'undefined') {
-      const dueButton = "due-button-" + this.props.task.id;
+      const dueButton = 'due-button-' + this.props.task.get('id');
 
       // Get the date for the task, and format it nicely
-      const initial = this.props.task.date_due ? Moment(this.props.task.date_due).format() : null;
+      const initial = this.props.task.get('date_due') ? Moment(this.props.task.get('date_due')).format() : null;
 
       // Create the picker
-      let picker = new Picker({
+      const picker = new Picker({
         input: ReactDOM.findDOMNode(this.refs[dueField]),
         button: ReactDOM.findDOMNode(this.refs[dueButton]),
         initialValue: initial,
-        format: "hh:mm, MMMM D, YYYY"
+        format: 'hh:mm, MMMM D, YYYY'
       });
       picker.render();
 
       // Change the component state and submit the edit when the date is changed
       picker.on('change', (newDate) => {
-        let task = this.state.task;
+        const task = this.state.task;
         task.date_due = newDate ? Moment(newDate).format() : null;
         this.setState({
           task: task
         });
 
         picker.updateInput();
-        task.taskId = this.props.task.id;
+        task.taskId = this.props.task.get('id');
 
         this.props.editTask(this.props.source, task);
       });
@@ -187,51 +182,30 @@ const TaskCondensedCard = React.createClass({
 
     const selected = this.props.selected;
 
-    let detailsButtonText = this.state.expanded ? "Collapse" : "Expand";
-
-    let doneButton = task.is_done ? <span>Done <i className="fa fa-check" /></span> : "Mark Done";
-
-    let ticket_link = undefined;
-    let ticket_title = 'Linked ticket';
-
-    if (task.linked_items.length > 0) {
-      task.linked_items.forEach((item) => {
-        if (typeof linked_items[item].ticket !== 'undefined' && linked_items[item].ticket !== null) {
-          ticket_link = '#' + linked_items[item].ticket;
-          ticket_title = this.props.tickets[linked_items[item].ticket].subject;
-        }
-      });
-    }
-
     let assignee = null;
 
-    if (task.agents && task.agents.length > 0) {
-      assignee = this.props.agents[task.agents[0]].name;
-    } else if (task.teams && task.teams.length > 0) {
-      assignee = this.props.teams[task.teams[0]].name;
-    } else if (task.departments && task.departments.length > 0) {
-      assignee = this.props.departments[task.departments[0]].title;
+    if (task.has('agents') && task.get('agents').length > 0) {
+      assignee = this.props.agents[task.get('agents')[0]].name;
+    } else if (task.has('teams') && task.get('teams').length > 0) {
+      assignee = this.props.teams[task.get('teams')[0]].name;
+    } else if (task.has('departments') && task.get('departments').length > 0) {
+      assignee = this.props.departments[task.get('departments')[0]].title;
     }
 
-    let taskClass = task.is_done ? "ticket done" : "ticket";
-        taskClass = this.props.isOver ? taskClass + " is-over" : taskClass;
+    let taskClass = task.get('is_done') ? 'ticket done' : 'ticket';
+    taskClass = this.props.isOver ? taskClass + ' is-over' : taskClass;
 
-    const dueField = "due-" + task.id;
-    const dueButton = "due-button-" + task.id;
-
-    const overdue = Moment(task.date_due).isBefore();
-
-    const result = <tr key={task.id} className={taskClass}>
-      <td>
-        <span className="checkbox" onClick={this.toggleMassAction}>
-          <i className={selected ? "fa fa-check selected" : "fa fa-check"} />
-        </span>
-        <a href="#">{task.title}</a>
-      </td>
-      <td>{task.project && projects[task.project] ? projects[task.project].title : ''}</td>
-      <td>{task.date_due ? Moment(task.date_due).format('DD/MM/YY') : '' }</td>
-      <td>{assignee}</td>
-    </tr>;
+    const result = (<tr key={task.get('id')} className={taskClass}>
+          <td>
+            <span className="checkbox" onClick={this.toggleMassAction}>
+              <i className={selected ? 'fa fa-check selected' : 'fa fa-check'} />
+            </span>
+            <a href="#">{task.get('title')}</a>
+          </td>
+          <td>{task.get('project') && projects[task.get('project')] ? projects[task.get('project')].title : ''}</td>
+          <td>{task.get('date_due') ? Moment(task.get('date_due')).format('DD/MM/YY') : '' }</td>
+          <td>{assignee}</td>
+        </tr>);
 
     if (this.props.order === 'list') {
       return connectDragSource(connectDropTarget(result));

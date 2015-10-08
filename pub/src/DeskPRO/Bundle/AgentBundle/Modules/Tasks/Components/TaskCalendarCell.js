@@ -20,7 +20,7 @@ const listTarget = {
     const dateDue = moment.format();
 
     const update = {
-      taskId: item.id,
+      taskId: item.details.get('id'),
       date_due: dateDue
     };
 
@@ -69,7 +69,7 @@ export default class TaskCalendarCell extends React.Component {
               i++;
 
               if (i < 3) {
-                return (<TaskCalendarCard key={task.id} task={task}
+                return (<TaskCalendarCard key={task.get('id')} task={task}
                             dispatch={_this.props.dispatch.bind(_this)}
                             openHover={_this.props.openHover.bind(_this)}
                             closeHover={_this.props.closeHover.bind(_this)} />);

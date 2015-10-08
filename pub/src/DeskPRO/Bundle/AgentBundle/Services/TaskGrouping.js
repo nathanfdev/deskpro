@@ -1,4 +1,4 @@
-import Moment from "moment";
+import Moment from 'moment';
 
 export default class TaskGrouping {
   constructor(projects = [], departments = [], teams = [], agents = [], lists = [], links = [], tickets = []) {
@@ -42,11 +42,10 @@ export default class TaskGrouping {
    * @param grouping string
    * @return string
    */
-  getDivider(object, grouping = false)
-  {
+  getDivider(object, grouping = false) {
     let results = false;
 
-    switch(grouping) {
+    switch (grouping) {
       case 'due':
         results = this.getDueDivider(object);
         break;
@@ -87,11 +86,10 @@ export default class TaskGrouping {
    * @param grouping
    * @returns string
    */
-  getGroup(object, grouping)
-  {
+  getGroup(object, grouping) {
     let result = false;
 
-    switch(grouping) {
+    switch (grouping) {
       case 'due':
         result = this.getDueDivider(object);
         break;
@@ -102,13 +100,13 @@ export default class TaskGrouping {
         result = this.getAssigneeDivider(object);
         break;
       case 'project':
-        result = object.project ? 'project_' + object.project : 'none';
+        result = object.get('project') ? 'project_' + object.get('project') : 'none';
         break;
       case 'list':
-        result = object.list ? 'list_' + object.list : 'none';
+        result = object.get('list') ? 'list_' + object.get('list') : 'none';
         break;
       case 'creator':
-        result = 'creator_' + object.creator;
+        result = 'creator_' + object.get('creator');
         break;
       case 'done':
         result = this.getDoneDateDivider(object);
@@ -133,10 +131,9 @@ export default class TaskGrouping {
    * @param direction
    * @returns {Array}
    */
-  getRawGroupings(type, direction)
-  {
-    let returnGroups = [];
-    let reverse = 'desc';
+  getRawGroupings(type, direction) {
+    const returnGroups = [];
+    const reverse = 'desc';
     switch (type) {
       case 'list':
         this.lists.forEach((listObject) => {
@@ -257,36 +254,37 @@ export default class TaskGrouping {
    * @param object
    * @return string
    */
-  getDueDivider(object)
-  {
+  getDueDivider(object) {
     let objectDivider = false;
 
-    switch(true) {
-      case (Moment(object.date_due).utc().isBefore()):
+    const dueDate = object.get('date_due');
+
+    switch (true) {
+      case (Moment(dueDate).utc().isBefore()):
         objectDivider = 'overdue';
         break;
-      case (Moment(object.date_due).local().isBefore(Moment().endOf('hour').local())):
+      case (Moment(dueDate).local().isBefore(Moment().endOf('hour').local())):
         objectDivider = 'hour';
         break;
-      case (Moment(object.date_due).local().isBefore(Moment().endOf('day').local())):
+      case (Moment(dueDate).local().isBefore(Moment().endOf('day').local())):
         objectDivider = 'day';
         break;
-      case (Moment(object.date_due).local().isBefore(Moment().endOf('day').add(1, 'd').local())):
+      case (Moment(dueDate).local().isBefore(Moment().endOf('day').add(1, 'd').local())):
         objectDivider = 'tomorrow';
         break;
-      case (Moment(object.date_due).local().isBefore(Moment().endOf('week').local())):
+      case (Moment(dueDate).local().isBefore(Moment().endOf('week').local())):
         objectDivider = 'week';
         break;
-      case (Moment(object.date_due).local().isBefore(Moment().endOf('week').add(7, 'd').local())):
+      case (Moment(dueDate).local().isBefore(Moment().endOf('week').add(7, 'd').local())):
         objectDivider = 'nextweek';
         break;
-      case (Moment(object.date_due).local().isBefore(Moment().endOf('month').local())):
+      case (Moment(dueDate).local().isBefore(Moment().endOf('month').local())):
         objectDivider = 'month';
         break;
-      case (Moment(object.date_due).local().isBefore(Moment().endOf('month').add(1, 'M').local())):
+      case (Moment(dueDate).local().isBefore(Moment().endOf('month').add(1, 'M').local())):
         objectDivider = 'nextmonth';
         break;
-      case (Moment(object.date_due).local().isBefore(Moment().endOf('year').local())):
+      case (Moment(dueDate).local().isBefore(Moment().endOf('year').local())):
         objectDivider = 'year';
         break;
       default:
@@ -302,33 +300,33 @@ export default class TaskGrouping {
    * @param object
    * @return string
    */
-  getCreatedDivider(object)
-  {
+  getCreatedDivider(object) {
     let objectDivider = false;
+    const createdDate = object.get('date_created');
 
-    switch(true) {
-      case (Moment(object.date_created).utc().isAfter(Moment().startOf('hour').local())):
+    switch (true) {
+      case (Moment(createdDate).utc().isAfter(Moment().startOf('hour').local())):
         objectDivider = 'hour';
         break;
-      case (Moment(object.date_created).local().isAfter(Moment().startOf('day').local())):
+      case (Moment(createdDate).local().isAfter(Moment().startOf('day').local())):
         objectDivider = 'day';
         break;
-      case (Moment(object.date_created).local().isAfter(Moment().startOf('day').subtract(1, 'd').local())):
+      case (Moment(createdDate).local().isAfter(Moment().startOf('day').subtract(1, 'd').local())):
         objectDivider = 'tomorrow';
         break;
-      case (Moment(object.date_created).local().isAfter(Moment().startOf('week').local())):
+      case (Moment(createdDate).local().isAfter(Moment().startOf('week').local())):
         objectDivider = 'week';
         break;
-      case (Moment(object.date_created).local().isAfter(Moment().startOf('week').subtract(7, 'd').local())):
+      case (Moment(createdDate).local().isAfter(Moment().startOf('week').subtract(7, 'd').local())):
         objectDivider = 'lastweek';
         break;
-      case (Moment(object.date_created).local().isAfter(Moment().startOf('month').local())):
+      case (Moment(createdDate).local().isAfter(Moment().startOf('month').local())):
         objectDivider = 'month';
         break;
-      case (Moment(object.date_created).local().isAfter(Moment().startOf('month').subtract(1, 'M').local())):
+      case (Moment(createdDate).local().isAfter(Moment().startOf('month').subtract(1, 'M').local())):
         objectDivider = 'lastmonth';
         break;
-      case (Moment(object.date_created).local().isAfter(Moment().startOf('year').local())):
+      case (Moment(createdDate).local().isAfter(Moment().startOf('year').local())):
         objectDivider = 'year';
         break;
       default:
@@ -344,15 +342,14 @@ export default class TaskGrouping {
    * @param object
    * @return string
    */
-  getAssigneeDivider(object)
-  {
+  getAssigneeDivider(object) {
     let assignee = false;
-    if (object.agents.length > 0) {
-      assignee = 'agent_' + object.agents[0].toString();
-    } else if (object.teams.length > 0) {
-      assignee = 'team_' + object.teams[0].toString();
-    } else if (object.departments.length > 0) {
-      assignee = 'department_' + object.departments[0].toString();
+    if (object.get('agents').length > 0) {
+      assignee = 'agent_' + object.get('agents')[0].toString();
+    } else if (object.get('teams').length > 0) {
+      assignee = 'team_' + object.get('teams')[0].toString();
+    } else if (object.get('departments').length > 0) {
+      assignee = 'department_' + object.get('departments')[0].toString();
     }
 
     if (assignee === false) {
@@ -367,11 +364,10 @@ export default class TaskGrouping {
    * @param object
    * @return string
    */
-  getProjectDivider(object)
-  {
+  getProjectDivider(object) {
     let project = false;
-    if (object.project) {
-      project = this.projects[object.project].title;
+    if (object.get('project')) {
+      project = this.projects[object.get('project')].title;
     }
 
     if (project === false) {
@@ -386,12 +382,11 @@ export default class TaskGrouping {
    * @param object
    * @return string
    */
-  getListDivider(object)
-  {
+  getListDivider(object) {
     let listTitle = false;
 
-    if (object.list && this.lists[object.list]) {
-      listTitle = this.lists[object.list].title;
+    if (object.get('list') && this.lists[object.get('list')]) {
+      listTitle = this.lists[object.get('list')].title;
     }
 
     if (listTitle === false) {
@@ -406,12 +401,11 @@ export default class TaskGrouping {
    * @param object
    * @return string
    */
-  getCreatorDivider(object)
-  {
+  getCreatorDivider(object) {
     let creator = false;
 
-    if (object.creator && this.agents[object.creator]) {
-      creator = this.agents[object.creator].name;
+    if (object.get('creator') && this.agents[object.get('creator')]) {
+      creator = this.agents[object.get('creator')].name;
     }
 
     if (creator === false) {
@@ -429,30 +423,32 @@ export default class TaskGrouping {
   getDoneDateDivider(object) {
     let objectDivider = false;
 
+    const doneDate = object.get('date_done');
+
     if (object.date_done) {
       switch (true) {
-        case (Moment(object.date_done).utc().isAfter(Moment().startOf('hour').local())):
+        case (Moment(doneDate).utc().isAfter(Moment().startOf('hour').local())):
           objectDivider = 'hour';
           break;
-        case (Moment(object.date_done).local().isAfter(Moment().startOf('day').local())):
+        case (Moment(doneDate).local().isAfter(Moment().startOf('day').local())):
           objectDivider = 'day';
           break;
-        case (Moment(object.date_done).local().isAfter(Moment().startOf('day').subtract(1, 'd').local())):
+        case (Moment(doneDate).local().isAfter(Moment().startOf('day').subtract(1, 'd').local())):
           objectDivider = 'tomorrow';
           break;
-        case (Moment(object.date_done).local().isAfter(Moment().startOf('week').local())):
+        case (Moment(doneDate).local().isAfter(Moment().startOf('week').local())):
           objectDivider = 'week';
           break;
-        case (Moment(object.date_done).local().isAfter(Moment().startOf('week').subtract(7, 'd').local())):
+        case (Moment(doneDate).local().isAfter(Moment().startOf('week').subtract(7, 'd').local())):
           objectDivider = 'lastweek';
           break;
-        case (Moment(object.date_done).local().isAfter(Moment().startOf('month').local())):
+        case (Moment(doneDate).local().isAfter(Moment().startOf('month').local())):
           objectDivider = 'month';
           break;
-        case (Moment(object.date_done).local().isAfter(Moment().startOf('month').subtract(1, 'M').local())):
+        case (Moment(doneDate).local().isAfter(Moment().startOf('month').subtract(1, 'M').local())):
           objectDivider = 'lastmonth';
           break;
-        case (Moment(object.date_done).local().isAfter(Moment().startOf('year').local())):
+        case (Moment(doneDate).local().isAfter(Moment().startOf('year').local())):
           objectDivider = 'year';
           break;
         default:
@@ -469,14 +465,13 @@ export default class TaskGrouping {
    * @param object
    * @return string
    */
-  getLabelDivider(object)
-  {
+  getLabelDivider(object) {
     let labelsDivider = false;
 
-    if (object.labels && object.labels.length > 0) {
-      let labels = object.labels;
-      labels.sort((a, b) => {
-        return a.toLowerCase().localeCompare(b.toLowerCase());
+    if (object.get('labels') && object.get('labels').length > 0) {
+      const labels = object.get('labels');
+      labels.sort((first, second) => {
+        return first.toLowerCase().localeCompare(second.toLowerCase());
       });
       labelsDivider = labels.join(', ');
     }
@@ -493,11 +488,10 @@ export default class TaskGrouping {
    * @param object
    * @return string
    */
-  getTicketDivider(object)
-  {
+  getTicketDivider(object) {
     let ticketDivider = false;
-    if (object.linked_items && object.linked_items.length > 0) {
-      object.linked_items.forEach((item) => {
+    if (object.get('linked_items') && object.get('linked_items').length > 0) {
+      object.get('linked_items').forEach((item) => {
         if (this.links[item] && this.links[item].ticket && ticketDivider === false) {
           ticketDivider = this.tickets[this.links[item].ticket].subject;
         }

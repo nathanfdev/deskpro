@@ -55,33 +55,33 @@ class TaskCardDragLayer {
         let ticketLink = undefined;
         let ticketTitle = 'Linked ticket';
 
-        if (item.details.tickets && item.details.tickets.length > 0) {
-          ticketTitle = item.details.tickets[0].subject;
+        if (item.details.get('tickets') && item.details.get('tickets').length > 0) {
+          ticketTitle = item.details.get('tickets')[0].subject;
           ticketLink = '#';
         }
 
-        const titleClass = item.details.is_done ? 'dpwd--card-title strikethrough' : 'dpwd--card-title';
+        const titleClass = item.details.get('is_done') ? 'dpwd--card-title strikethrough' : 'dpwd--card-title';
 
         let assignee = null;
 
-        if (item.details.agents && item.details.agents.length > 0) {
+        if (item.details.get('agents') && item.details.get('agents').size > 0) {
           // We assume one assignment for now, though we will need to support more later
-          const agentId = item.details.agents[0];
+          const agentId = item.details.get('agents')[0];
 
           assignee = item.agents[agentId];
-        } else if (item.details.teams && item.details.teams.length > 0) {
-          const teamId = item.details.teams[0];
+        } else if (item.details.get('teams') && item.details.get('teams').size > 0) {
+          const teamId = item.details.get('teams')[0];
           assignee = item.teams[teamId];
-        } else if (item.details.departments && item.details.departments.length > 0) {
-          const departmentId = item.details.departments[0];
+        } else if (item.details.get('departments') && item.details.get('departments').size > 0) {
+          const departmentId = item.details.get('departments')[0];
           assignee = item.departments[departmentId];
         }
 
-        const overdue = Moment(item.details.date_due).isBefore();
+        const overdue = Moment(item.details.get('date_due')).isBefore();
 
-        return (<Card minimized={item.details.is_done} moving type="task">
+        return (<Card minimized={item.details.get('is_done')} moving type="task">
         {
-          item.details.is_done ?
+          item.details.get('is_done') ?
           <div className="dpw--single-card-mark-done dpw--single-card-mark-done-minimized">
             <span>Done</span>
             <i className="fa fa-check"/>
@@ -104,13 +104,13 @@ class TaskCardDragLayer {
         <div className="dpw--card-line">
           <div className="dpw--card-line-left card-title">
             <div className={titleClass}>
-              <h1>{item.details.title}</h1>
+              <h1>{item.details.get('title')}</h1>
             </div>
           </div>
 
           <div className="dpw--card-line-right">
 
-            {item.details.is_done ?
+            {item.details.get('is_done') ?
              <div className="dpw--card-expand">
                <a href="#">Expand <i className="fa fa-navicon"/></a>
              </div>
@@ -123,17 +123,17 @@ class TaskCardDragLayer {
           </div>
         </div>
 
-        {!item.details.is_done ?
+        {!item.details.get('is_done') ?
          <div className="dpw--card-line">
            <div className="dpw--card-line-left">
               <span className={overdue ? 'overdue dpwd--card-line-item' : 'dpwd--card-line-item'}>
-                <i className="fa fa-calendar-o"/> Due: {item.details.date_due ? this.dueIndicator(item.details.date_due) : 'N/A'}
+                <i className="fa fa-calendar-o"/> Due: {item.details.get('date_due') ? this.dueIndicator(item.details.get('date_due')) : 'N/A'}
               </span>
 
-             {item.details.project && item.projects[item.details.project] ? <span>
+             {item.details.get('project') && item.projects[item.details.get('project')] ? <span>
                 <span className="dpw--card-disc"/>
                 <span className="dpwd--card-line-item">
-                  <i className="fa fa-book"/> {item.projects[item.details.project].title}
+                  <i className="fa fa-book"/> {item.projects[item.details.get('project')].title}
                 </span>
               </span>
                : ''}
@@ -149,12 +149,12 @@ class TaskCardDragLayer {
 
            <div className="dpw--card-line-right">
               <span className="dpwd--card-line-item">
-                {item.details.comment_count} <i className="fa fa-comment"/>
+                {item.details.get('comment_count')} <i className="fa fa-comment"/>
               </span>
 
-             {item.details.subtasks_total > 0 ?
+             {item.details.get('subtasks_total') > 0 ?
               <span className="dpwd--card-line-item">
-                  <div><span className="dpw--card-disc"/> {item.details.subtasks_done}/{item.details.subtasks_total} <i
+                  <div><span className="dpw--card-disc"/> {item.details.get('subtasks_done')}/{item.details.get('subtasks_total')} <i
                     className="fa fa-folder-open"/></div>
                 </span>
                : ''}
@@ -166,12 +166,12 @@ class TaskCardDragLayer {
       case 'kanban':
         let assigneeName = '';
 
-        if (item.details.agents && item.details.agents.length > 0) {
-          assigneeName = item.agents[item.details.agents[0]].name;
-        } else if (item.details.teams && item.details.teams.length > 0) {
-          assigneeName = item.teams[item.details.teams[0]].name;
-        } else if (item.details.departments && item.details.departments.length > 0) {
-          assigneeName = item.departments[item.details.departments[0]].title;
+        if (item.details.get('agents') && item.details.get('agents').length > 0) {
+          assigneeName = item.agents[item.details.get('agents')[0]].name;
+        } else if (item.details.get('teams') && item.details.get('teams').length > 0) {
+          assigneeName = item.teams[item.details.get('teams')[0]].name;
+        } else if (item.details.get('departments') && item.details.get('departments').length > 0) {
+          assigneeName = item.departments[item.details.get('departments')[0]].title;
         }
 
         return (<div className="kanban">
@@ -185,7 +185,7 @@ class TaskCardDragLayer {
               </div>
 
               <div className="content">
-                <h1 className={item.details.is_done ? 'complete' : ''}>{item.details.title}</h1>
+                <h1 className={item.details.get('is_done') ? 'complete' : ''}>{item.details.get('title')}</h1>
 
                 <div className="card-line task-details">
                   <div className="top-right-box">
@@ -194,8 +194,8 @@ class TaskCardDragLayer {
                 </span>
                   </div>
                   <div>
-                    <i className="fa fa-calendar-o" /> Due: {item.details.date_due ? <FormattedDate
-                    value={Date.parse(item.details.date_due)}
+                    <i className="fa fa-calendar-o" /> Due: {item.details.get('date_due') ? <FormattedDate
+                    value={Date.parse(item.details.get('date_due'))}
                     day="numeric"
                     month="long"
                     year="numeric"
@@ -205,12 +205,12 @@ class TaskCardDragLayer {
                 </div>
                 <hr/>
                 <div className="card-line task-properties">
-                  <span>{item.details.comment_count} <i className="fa fa-comment"/></span>
+                  <span>{item.details.get('comment_count')} <i className="fa fa-comment"/></span>
 
-                  {item.details.subtasks_total > 0 ?
+                  {item.details.get('subtasks_total') > 0 ?
                     <span>
                   <span className="disc"/>
-                    <div className="subtask-count">{item.details.subtasks_done}/{item.details.subtasks_total} <i className="fa fa-folder-open"/></div>
+                    <div className="subtask-count">{item.details.get('subtasks_done')}/{item.details.get('subtasks_total')} <i className="fa fa-folder-open"/></div>
                   </span>
                       : ''}
                   </div>

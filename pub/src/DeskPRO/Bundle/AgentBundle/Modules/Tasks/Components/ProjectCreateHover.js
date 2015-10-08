@@ -113,6 +113,7 @@ const ProjectCreateHover = React.createClass({
   serverValidation: function(field) {
     if (this.props.createdProject && typeof this.props.createdProject.has === 'function') {
       if (!this.props.createdProject.has('failedProject')
+        || this.props.createdProject.get('failedProject', null) === null
         || typeof this.props.createdProject.get('failedProject').errors === 'undefined'
         || this.props.createdProject.get('failedProject').errors === null
         || typeof this.props.createdProject.get('failedProject').errors.fields[field] === 'undefined') {

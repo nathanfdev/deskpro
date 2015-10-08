@@ -8,7 +8,7 @@ import $ from 'jquery';
 import * as TaskActions from '../Actions/TaskListActions';
 
 @connect(state => ({
-  failedProject: state.failedProject
+  failedProject: state.Tasks.failedProject
 }))
 export default class TasksNavProjects extends React.Component {
   static propTypes = {
@@ -34,7 +34,7 @@ export default class TasksNavProjects extends React.Component {
     };
   }
 
-  toggleWindow(project = {}) {
+  toggleWindow(project = {}, event) {
     this.setState({
       projectData: {}
     });
@@ -96,9 +96,9 @@ export default class TasksNavProjects extends React.Component {
     const teams = [];
     const departments = [];
 
-    const departmentList = (this.props.departmentList && typeof this.props.departmentList.get === 'function') ? this.props.departmentList.get('departmentList', []) : [];
-    const teamList = (this.props.teamList && typeof this.props.teamList.get === 'function') ? this.props.teamList.get('teamList', []) : [];
-    const agentList = (this.props.agentList && typeof this.props.agentList.get === 'function') ? this.props.agentList.get('agentList', []) : [];
+    const departmentList = (this.props.departmentList && typeof this.props.departmentList.get === 'function') ? this.props.departmentList.get('departmentList', {}) : {};
+    const teamList = (this.props.teamList && typeof this.props.teamList.get === 'function') ? this.props.teamList.get('teamList', {}) : {};
+    const agentList = (this.props.agentList && typeof this.props.agentList.get === 'function') ? this.props.agentList.get('agentList', {}) : {};
 
     if (typeof departmentList !== 'undefined' && departmentList !== null) {
       departmentList.forEach((object) => {
@@ -123,7 +123,7 @@ export default class TasksNavProjects extends React.Component {
       });
     }
 
-    const projects = projectList.getIn(['projects'], false);
+    const projects = projectList.get('projectList', []);
 
     return (<section className="sidebar-list tasks-nav-projects">
         <div>
@@ -141,8 +141,8 @@ export default class TasksNavProjects extends React.Component {
             />
           </ComponentRootWrapper>
         </div>
-        <div className="list-sidebar-title">Projects <a href="#" onClick={this.toggleWindow.bind(this)}><i className="fa fa-plus"/></a></div>
-        <ul>{projects.projectList ? projects.projectList.map((object) => {
+        <div className="list-sidebar-title">Projects <a href="#" onClick={this.toggleWindow.bind(this, {})}><i className="fa fa-plus"/></a></div>
+        <ul>{projects ? projects.map((object) => {
           return (<TaskNavItemProject key={object.id}
                                       project={object}
                                       filterTasks={_this.props.filterTasks.bind(this)}
