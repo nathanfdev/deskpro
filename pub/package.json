@@ -40,9 +40,9 @@
     "node-neat": "1.7.2",
     "node-sass": "3.3.3",
     "node-uuid": "1.4.3",
-    "react": "0.14.0-rc1",
-    "react-addons-create-fragment": "0.14.0-rc1",
-    "react-addons-shallow-compare": "^0.14.0-rc1",
+    "react": "0.14.0",
+    "react-addons-create-fragment": "0.14.0",
+    "react-addons-shallow-compare": "^0.14.0",
     "react-dnd": "1.1.5",
     "react-dom": "0.14.0-rc1",
     "react-hot-loader": "1.2.8",
@@ -75,15 +75,14 @@
     "eslint-config-airbnb": "0.1.0",
     "eslint-plugin-react": "3.5.1",
     "jest-cli": "0.5.8",
-    "react-addons-test-utils": "0.14.0-rc1",
+    "react-addons-test-utils": "0.14.0",
     "react-tools": "0.13.3"
   },
   "scripts": {
     "test": "jest",
     "eslint": "eslint src || true",
     "gulp": "gulp",
-    "gulp-prod": "gulp",
-    "postinstall": "node node_modules_patch/react-0.14-rc1-apply-45f85a6cc5707cd798aba350ae4f6dbe99ede6dc.js"
+    "gulp-prod": "gulp"
   },
   "jest": {
     "testDirectoryName": "tests",
