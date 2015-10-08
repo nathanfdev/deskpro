@@ -47,6 +47,17 @@ export function commentsToReviewList(params) {
 }
 
 /*
+ * Update a feedbackComment
+ * @param commentId
+ * @param data
+ * @return Promise
+ */
+export function editComment(commentId, data) {
+  return DpApi.sendPut('DP_API/feedback_comments/' + commentId, data);
+}
+
+
+/*
  * Feedback labels
  * @return Promise
  */

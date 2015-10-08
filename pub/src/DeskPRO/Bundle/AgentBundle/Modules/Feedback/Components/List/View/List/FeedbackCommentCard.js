@@ -2,7 +2,8 @@ import React, {Component, PropTypes} from 'react';
 import { Card, CardLine, CardLineLeft, CardLineFull, CardLineItem, CardCheckbox, CardDisc, CardContentText, CardDate, CardUser, CardStatusBar }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 import $ from 'jquery';
-import { deleteComment } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
+import { deleteComment, editComment } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export class FeedbackCommentCard extends Component {
 
@@ -35,6 +36,16 @@ export class FeedbackCommentCard extends Component {
     this.setState({isEditingNow: !this.state.isEditingNow});
   }
 
+  approveComment(commentId) {
+    const newValues = {
+      commentId: commentId,
+      status: constants.STATUS_VISIBLE,
+      is_reviewed: true
+    };
+    const {dispatch} = this.props;
+    dispatch(editComment(newValues));
+  }
+
   renderContent() {
     const { comment } = this.props;
     if (this.state.isEditingNow) {
@@ -58,8 +69,12 @@ export class FeedbackCommentCard extends Component {
         <div className="dpmw--single-card-requires-validation-line">
           <ul>
             <li><span className="validation-mark">Waiting for approval:</span></li>
-            <li><a href="#"><span className="validation-line-icon"><i className="fa fa-check-circle"></i></span> <span
-              className="validation-line-title">Approve</span></a></li>
+            <li>
+              <a href="#" onClick={this.approveComment.bind(this, comment.id)}>
+                <span className="validation-line-icon"><i className="fa fa-check-circle"></i></span> <span
+                className="validation-line-title">Approve</span>
+              </a>
+            </li>
             <li>
               <a href="#" onClick={this.toggleEditMode.bind(this)}>
                 <span className="validation-line-icon edit"><i className="fa fa-edit"></i></span> <span
