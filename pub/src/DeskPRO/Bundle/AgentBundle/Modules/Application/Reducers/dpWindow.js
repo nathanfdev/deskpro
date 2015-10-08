@@ -6,12 +6,12 @@ import jQuery from 'jquery';
 const initialState = {
   isLoaded: false,
   activeAppId: 'tickets',
-  collapseNav: false,
+  collapseNav: localStorage.getItem('dpWindow.sidebarMode') === 'hover',
   expandedSwitcher: false,
   taskView: constants.VIEW_MODE_LIST,
-  columnMode: 'column',
-  columnDimensions: 40,
-  sidebarMode: 'static'
+  columnMode: localStorage.getItem('dpWindow.columnMode') || 'column',
+  columnDimensions: parseInt(localStorage.getItem('dpWindow.columnDimensions'), 10) || 40,
+  sidebarMode: localStorage.getItem('dpWindow.sidebarMode') || 'static'
 };
 
 /**
@@ -46,12 +46,15 @@ export default createReducer(initialState, {
     return state.set('taskView', payload);
   },
   [actions.setColumnMode]: (state, payload) => {
+    localStorage.setItem('dpWindow.columnMode', payload);
     return state.set('columnMode', payload);
   },
   [actions.setColumnDimensions]: (state, payload) => {
+    localStorage.setItem('dpWindow.columnDimensions', payload);
     return state.set('columnDimensions', payload || 0);
   },
   [actions.setSidebarMode]: (state, payload) => {
+    localStorage.setItem('dpWindow.sidebarMode', payload);
     return state.set('sidebarMode', payload);
   }
 });
