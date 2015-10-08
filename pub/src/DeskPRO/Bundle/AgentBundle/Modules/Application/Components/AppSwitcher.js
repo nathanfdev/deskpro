@@ -46,19 +46,20 @@ export class AppSwitcher extends React.Component {
     }
 
     return (
-    <nav onMouseEnter={this.hoverSwitcher.bind(this)}
-      onMouseLeave={this.cancelSwitcher.bind(this)}
-      className={classesNames.join(' ')}>
-      <div className="app-bar">
-        <ul>
-          {this.renderAppIcon('tickets', 'Tickets', 'fa-envelope-o')}
-          {this.renderAppIcon('crm', 'CRM', 'fa-users')}
-          {this.renderAppIcon('chat', 'Chat', 'fa-comments-o')}
-          {this.renderAppIcon('feedback', 'Feedback', 'fa-thumbs-up')}
-          {this.renderAppIcon('publish', 'Publish', 'fa-edit')}
-          {this.renderAppIcon('tasks', 'Tasks', 'fa-check-square-o')}
-        </ul>
-      </div>
-    </nav>);
+      <nav onMouseEnter={this.hoverSwitcher.bind(this)}
+        onMouseLeave={this.cancelSwitcher.bind(this)}
+        className={classesNames.join(' ')}>
+        <div className="app-bar">
+          <ul>
+            {this.renderAppIcon('tickets', 'Tickets', 'fa-envelope-o')}
+            {this.renderAppIcon('crm', 'CRM', 'fa-users')}
+            {this.renderAppIcon('chat', 'Chat', 'fa-comments-o')}
+            {this.renderAppIcon('feedback', 'Feedback', 'fa-thumbs-up')}
+            {this.renderAppIcon('publish', 'Publish', 'fa-edit')}
+            {this.renderAppIcon('tasks', 'Tasks', 'fa-check-square-o')}
+          </ul>
+        </div>
+      </nav>
+    );
   }
 }
