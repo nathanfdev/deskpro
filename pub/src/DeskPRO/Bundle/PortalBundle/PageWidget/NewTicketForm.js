@@ -1,5 +1,6 @@
 import _ from "lodash";
 import React from "react";
+import ReactDOM from "react-dom"
 import PageWidget from "DeskPRO/Component/PageWidget/PageWidget";
 import DpLevelSelect from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpLevelSelect";
 import DpDropzone from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpDropzone";
@@ -88,7 +89,7 @@ export default class NewTicketForm extends PageWidget {
 
         let $subject = $('#ticket_subject');
         let $rElement = $('<div class="dp-react-widget"></div>').insertAfter($subject);
-        React.render(React.createElement(NewTicketSuggestions, {input: $subject}), $rElement.get(0));
+        ReactDOM.render(React.createElement(NewTicketSuggestions, {input: $subject}), $rElement.get(0));
       },
       fieldFilter: (fields, currentFields, dynForm) => {
         if (!window.DESKPRO_TICKET_DISPLAY) {

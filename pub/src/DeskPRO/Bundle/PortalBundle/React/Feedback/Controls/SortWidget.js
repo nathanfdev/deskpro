@@ -25,7 +25,7 @@ export default class SortWidget extends React.Component {
     return (
       <select style={{float:"right"}} value={selected_sort} onChange={this.changeSort.bind(this)}>
         {_.map(sorts, (title, key) => {
-          return (<option key={key} value={key} dangerouslySetInnerHTML={{__html:title}}></option>);
+          return (<option key={key} value={key} dangerouslySetInnerHTML={{__html:title}} />);
         })}
       </select>
     );
