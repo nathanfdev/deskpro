@@ -16,10 +16,37 @@ export class FeedbackCommentCard extends Component {
     selected: PropTypes.array.isRequired
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      isEditingNow: false
+    };
+  }
+
   deleteComment(id, event) {
     event.preventDefault();
     const {dispatch} = this.props;
     dispatch(deleteComment(id));
+  }
+
+
+  toggleEditMode(event) {
+    event.preventDefault();
+    this.setState({isEditingNow: !this.state.isEditingNow});
+  }
+
+  renderContent() {
+    const { comment } = this.props;
+    if (this.state.isEditingNow) {
+      return (
+        <textarea value={comment.content} style={{width: '100%'}}/>
+      );
+    }
+    return (
+      <CardContentText>
+        <p>{comment.content}</p>
+      </CardContentText>
+    );
   }
 
   render() {
@@ -33,8 +60,12 @@ export class FeedbackCommentCard extends Component {
             <li><span className="validation-mark">Waiting for approval:</span></li>
             <li><a href="#"><span className="validation-line-icon"><i className="fa fa-check-circle"></i></span> <span
               className="validation-line-title">Approve</span></a></li>
-            <li><a href="#"><span className="validation-line-icon edit"><i className="fa fa-edit"></i></span> <span
-              className="validation-line-title">Edit</span></a></li>
+            <li>
+              <a href="#" onClick={this.toggleEditMode.bind(this)}>
+                <span className="validation-line-icon edit"><i className="fa fa-edit"></i></span> <span
+                className="validation-line-title">{this.state.isEditingNow ? 'Save' : 'Edit'}</span>
+              </a>
+            </li>
             <li>
               <a href="#" onClick={this.deleteComment.bind(this, comment.id)}>
                 <span className="validation-line-icon trash"><i className="fa fa-trash"></i></span> <span
@@ -57,9 +88,7 @@ export class FeedbackCommentCard extends Component {
 
         <CardLine>
           <CardLineFull>
-            <CardContentText>
-              <p>{comment.content}</p>
-            </CardContentText>
+            {this.renderContent(comment)}
           </CardLineFull>
         </CardLine>
 
