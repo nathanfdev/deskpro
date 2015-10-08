@@ -488,7 +488,7 @@ HTML;
         }
 
         $browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
-        if (!$person->browser && $browser) {
+        if ($browser) {
             $person->browser = $browser;
         }
 
