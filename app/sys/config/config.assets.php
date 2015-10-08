@@ -325,6 +325,7 @@ $CONFIG['agent_deskpro_ui'] = array(
         'javascripts/DeskPRO/UI/OptionBoxRevertable.js',
         'javascripts/DeskPRO/UI/OptionBoxBuilder.js',
         'javascripts/DeskPRO/UI/Menu.js',
+        'javascripts/DeskPRO/UI/Menu2.js',
         'javascripts/DeskPRO/UI/SimpleTabs.js',
         'javascripts/DeskPRO/UI/DateChooser.js',
         'javascripts/DeskPRO/UI/CatListEditor.js',

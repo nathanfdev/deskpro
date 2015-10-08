@@ -146,8 +146,6 @@ class Importer
             return $importer;
         }
 
-        file_put_contents('/tmp/importers', @file_get_contents('/tmp/importers')."\n no importer found $name");
-
         $importer         = new DataStore();
         $importer['name'] = $name;
         $importer->setData('id', $id);

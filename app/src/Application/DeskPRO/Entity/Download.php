@@ -109,25 +109,6 @@ class Download extends ContentAbstract implements HighlightableModelInterface
      */
     protected $_search_highlights;
 
-    /**
-     * @var \DateTime
-     */
-    protected $date_updated;
-
-    /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->setModelField('date_updated', new \DateTime());
-    }
-
-    public function _preUpdate()
-    {
-        $this->setModelField('date_updated', new \DateTime());
-    }
-
     public function incrementDownloadCount()
     {
         $new = (int) $this->num_downloads + 1;
@@ -420,14 +401,6 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         }
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getDateUpdated()
-    {
-        return $this->date_updated;
-    }
-
     public function getCategory()
     {
         return $this->category;
@@ -466,8 +439,10 @@ class Download extends ContentAbstract implements HighlightableModelInterface
             array(
                 'name'    => 'downloads',
                 'indexes' => array(
-                    'date_published_idx' => array('columns' => array(0 => 'date_published')),
-                    'status_idx'         => array('columns' => array('status')),
+                    'date_published_idx'    => array('columns' => array(0 => 'date_published')),
+                    'date_updated_idx'      => array('columns' => array('date_updated')),
+                    'date_last_comment_idx' => array('columns' => array('date_last_comment')),
+                    'status_idx'            => array('columns' => array('status')),
                 ),
             )
         );
@@ -630,7 +605,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
                 'type'       => 'datetime',
                 'precision'  => 0,
                 'scale'      => 0,
-                'nullable'   => false,
+                'nullable'   => true,
                 'columnName' => 'date_updated',
             )
         );
@@ -644,6 +619,17 @@ class Download extends ContentAbstract implements HighlightableModelInterface
                 'columnName' => 'date_published',
             )
         );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'date_last_comment',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_last_comment',
+            )
+        )
+        ;
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(
             array(

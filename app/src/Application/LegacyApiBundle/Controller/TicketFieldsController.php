@@ -45,7 +45,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * Operations about Ticket fields.
  *
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/ticket_fields",
  * 	description="Operations about Ticket fields",
  * 	basePath="/api"
@@ -72,9 +72,9 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
     /**
      * @return Response;
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_fields",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get list of ticket fields, including custom fields",
      * 		notes="",
@@ -112,27 +112,6 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return Response
-     *
-     *
-     * @SWG\Api(
-     * 	path="/ticket_fields/{id}",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Get custom ticket field by Id",
-     * 		notes="",
-     *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
-     *				name="id",
-     *				description="Custom field id",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *      )
-     *  )
-     * )
-     *
      * @return Response
      */
     public function getCustomFieldAction($id)
@@ -161,37 +140,6 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      * @throws \Exception
      *
      * @return Response
-     *
-     *
-     * @SWG\Api(
-     * 	path="/ticket_fields/{id}",
-     * 	@SWG\Operation(
-     * 		method="POST",
-     * 		summary="Save custom ticket field by ID",
-     * 		notes="All you will pass in this query will be saved",
-     *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
-     *				name="id",
-     *				description="Custom field id",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *      )
-     *  )
-     * )
-     
-     * @SWG\Api(
-     * 	path="/ticket_fields",
-     * 	@SWG\Operation(
-     * 		method="PUT",
-     * 		summary="Create custom ticket field",
-     * 		notes="All you will pass in this query will be saved",
-     *		type="array",
-     *  )
-     * )
-     *
      * @return Response
      */
     public function saveCustomFieldAction($id)
@@ -235,27 +183,6 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return Response
-     *
-     *
-     * @SWG\Api(
-     * 	path="/ticket_fields/{id}",
-     * 	@SWG\Operation(
-     * 		method="DELETE",
-     * 		summary="Delete custom field by ID",
-     * 		notes="",
-     *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
-     *				name="id",
-     *				description="Custom field ID",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *      )
-     *  )
-     * )
-     *
      * @return Response
      */
     public function deleteCustomFieldAction($id)
@@ -281,22 +208,22 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      *
      * @return Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_fields/set-enabled/{field_id}/{is_enabled}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Set custom field enabled/disabled",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="id",
      *				description="Custom field ID",
      *				paramType="path",
      *				required=true,
      *				type="integer",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="is_enabled",
      *				description="Enabled marker",
      *				paramType="path",
@@ -335,7 +262,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         }
 
         $data['categories']     = $this->getApiData($cats, false);
-        $data['default_id']     = $ticket_cats->count() ? $ticket_cats->getDefaultCategory()->getId() : 0;
+        $data['default_id']     = $ticket_cats->getDefaultCategory() ? $ticket_cats->getDefaultCategory()->getId() : 0;
         $data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_cat_user_required') ? true : false;
         $data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_cat_agent_required') ? true : false;
         $data['enabled']        = $field_manager->isCategoryEnabled();
@@ -483,7 +410,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         $ticket_works = $this->container->getSystemService('ticket_workflows');
 
         $data['workflows']      = $this->getApiData($ticket_works->getAll(), false);
-        $data['default_id']     = $ticket_works->count() ? $ticket_works->getDefaultWorkflow()->getId() : 0;
+        $data['default_id']     = $ticket_works->getDefaultWorkflow() ? $ticket_works->getDefaultWorkflow()->getId() : 0;
         $data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_work_user_required') ? true : false;
         $data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_work_agent_required') ? true : false;
         $data['enabled']        = $field_manager->isWorkflowEnabled();
@@ -556,7 +483,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         $ticket_pris = $this->container->getSystemService('ticket_priorities');
 
         $data['priorities']     = $this->getApiData($ticket_pris->getAll(), false);
-        $data['default_id']     = $ticket_pris->count() ? $ticket_pris->getDefaultPriority()->getId() : 0;
+        $data['default_id']     = $ticket_pris->getDefaultPriority() ? $ticket_pris->getDefaultPriority()->getId() : 0;
         $data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_pri_user_required') ? true : false;
         $data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_pri_agent_required') ? true : false;
         $data['enabled']        = $field_manager->isPriorityEnabled();

@@ -10,7 +10,7 @@
         <div class="clearfix">
             <div class="input">
                 <p>
-                    Fill in this form and we will create the requried <code>/config.php</code> file for you.
+                    Fill in this form and we will create the required <code>/config.php</code> file for you.
                 </p>
             </div>
         </div>

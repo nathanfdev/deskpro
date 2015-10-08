@@ -189,6 +189,15 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
       }
     };
 
+		var recordSnippetUse = function(snippetId) {
+			var el = $("#" + self.meta.baseId + "_snippet_ids");
+			var current = el.val() || '';
+			var newval = current.length ? current + ',' + snippetId : snippetId+'';
+			el.val(newval);
+		};
+
+		this.recordSnippetUse = recordSnippetUse;
+
 		var fieldDisplayFetch = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(ticketReader, 'create');
 		self._updateFields = function() {
 			$('.ticket-field', self.getEl('fields_container')).removeClass('item-on').hide();
@@ -1352,6 +1361,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 										useText = defaultText;
 									}
 
+									self.recordSnippetUse(snippetId);
+
 									try {
 										var tpl = twig({
 											data: useText,
@@ -1504,6 +1515,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						useText = info.value;
 					}
 				});
+
+				self.recordSnippetUse(snippetId);
 
 				if (wantText) {
 					useText = wantText;

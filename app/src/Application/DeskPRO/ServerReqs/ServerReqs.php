@@ -182,8 +182,8 @@ class ServerReqs
                 'readMore'    => App::get('deskpro.service_urls')->get('dp.kb.install.error_iconv_ext'),
             ),
             'json_ext' => array(
-                'description' => 'Check that the <a href="http://php.net/manual/en/json.installation.php">json_encode extension</a> is installed',
-                'error'       => 'DeskPRO requires the json_encode extension.',
+                'description' => 'Check that the <a href="http://php.net/manual/en/json.installation.php">JSON extension</a> is installed',
+                'error'       => 'DeskPRO requires the JSON extension.',
                 'readMore'    => App::get('deskpro.service_urls')->get('dp.kb.install.error_json_ext'),
             ),
             'session_start' => array(

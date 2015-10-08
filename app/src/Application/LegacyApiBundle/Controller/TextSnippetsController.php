@@ -46,6 +46,7 @@ class TextSnippetsController extends AbstractController
         $category_id   = $this->in->getUint('category_id') ?: null;
         $filter_string = $this->in->getString('filter_string');
         $language_id   = $this->in->getUint('language_id');
+        $draft_filter  = $this->in->getString('draft_filter') ?: 'off';
 
         $lang_repos = $this->container->getObjectLangRepository();
 
@@ -63,6 +64,7 @@ class TextSnippetsController extends AbstractController
             foreach ($snippets_all as $snippet) {
                 $match_lang   = false;
                 $match_filter = false;
+                $match_draft  = false;
 
                 if ($language_id) {
                     foreach ($this->container->getLanguageData()->getAll() as $lang) {
@@ -101,7 +103,19 @@ class TextSnippetsController extends AbstractController
                     $match_filter = true;
                 }
 
-                if ($match_lang && $match_filter) {
+                switch ($draft_filter) {
+                    case 'off':
+                        $match_draft = $snippet->is_draft === false;
+                        break;
+                    case 'on':
+                        $match_draft = true;
+                        break;
+                    case 'only':
+                        $match_draft = $snippet->is_draft === false;
+                        break;
+                }
+
+                if ($match_lang && $match_filter && $match_draft) {
                     $snippets[] = $snippet;
                 }
             }
@@ -156,6 +170,10 @@ class TextSnippetsController extends AbstractController
 
         $this->em->persist($snippet);
         $this->em->flush();
+
+        if ($this->in->checkIsset('is_draft')) {
+            $snippet->is_draft = $this->in->getBool('is_draft');
+        }
 
         foreach ($this->container->getLanguageData()->getAll() as $lang) {
             $this->container->getObjectLangRepository()->preloadObject($lang, $snippet);

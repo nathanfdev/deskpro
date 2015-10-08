@@ -37,7 +37,7 @@ use Application\DeskPRO\Searcher\TaskSearch;
 use Orb\Util\Numbers;
 
 /**
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/tasks",
  * 	description="Operations about Tasks",
  * 	basePath="/api"
@@ -46,113 +46,113 @@ use Orb\Util\Numbers;
 class TaskController extends AbstractController
 {
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tasks",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Search for tasks matching criteria",
      * 		notes="Returns list of tasks that matched.",
      *		type="array",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="assigned_agent_id[]",
      *				description="Comma seperated IDs of the agent assigned to the task.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="assigned_agent_team_id[]",
      *				description="Comma seperated IDs of the agent assigned to the task.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="date_completed_end",
      *				description="Maximum Unix timestamp for when the task was completed.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="date_completed_start",
      *				description="Minimum Unix timestamp for when the task was completed.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="date_created_end",
      *				description="Maximum Unix timestamp for when the task was created.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="date_created_start",
      *				description="Minimum Unix timestamp for when the task was created.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="date_due_end",
      *				description="Maximum Unix timestamp for when the task is due.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="date_due_start",
      *				description="Minimum Unix timestamp for when the task is due.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="is_completed",
      *				description="1 to get completed tasks only, 0 to get incomplete tasks only.",
      *				paramType="query",
      *				required=false,
      *				type="boolean"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="person_id[]",
      *				description="Comma seperated IDs of the person that created the task.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="title[]",
      *				description="Text that must be contained in the task title.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="visibility",
      *				description="1 to get public tasks only, 0 to get private tasks only.",
      *				paramType="query",
      *				required=false,
      *				type="boolean"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="order",
      *				description="Order of the results. Defaults to task.name:asc",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="cache_id",
      *				description="If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="page",
      *				description="The page number of the results to fetch.",
      *				paramType="query",
@@ -257,55 +257,55 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tasks",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Creates a new task.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="assigned_agent_id",
      *				description="ID of agent assigned to the task.",
      *				paramType="query",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="assigned_agent_team_id",
      *				description="ID of agent team assigned to the task.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="date_due",
      *				description="Unix timestamp of when the task is due.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label[]",
      *				description="Comma seperated list of Labels to apply to the task.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="If specified, the ID of the ticket this task should be associated with.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="title",
      *				description="Title of the task.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="visibility",
      *				description="0 for private, 1 for public.",
      *				paramType="query",
@@ -398,15 +398,15 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tasks/{task_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets a task by task ID.",
      * 		notes="Information about the task by task ID.",
      *		type="Task",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="task_id",
      *				description="ID of the task that needs to be searched.",
      *				paramType="path",
@@ -414,7 +414,7 @@ class TaskController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Task not found")
+     *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
      * ).
      */
@@ -426,34 +426,34 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tasks/{task_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Updates a Task.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="task_id",
      *				description="ID of the task that needs to be updated",
      *				paramType="path",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="assigned_agent_id",
      *				description="Updated ID of agent assigned to the task.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="assigned_agent_team_id",
      *				description="Updated ID of agent team assigned to the task.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="completed",
      *				description="Sets the completed state for the task.",
      *				paramType="query",
@@ -461,7 +461,7 @@ class TaskController extends AbstractController
      *				type="boolean"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Task definition not found")
+     *		SWG\ResponseMessage(code=404, message="Task definition not found")
      * 	)
      * ).
      */
@@ -530,13 +530,13 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tasks/{task_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Deletes a task by ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="task_id",
      *				description="ID of the task that needs to be deleted.",
      *				paramType="path",
@@ -544,7 +544,7 @@ class TaskController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Task not found")
+     *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
      * ).
      */
@@ -563,14 +563,14 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tasks/{task_id}/associations",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets Task associations.",
      * 		notes="Information about the task associations by task ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="task_id",
      *				description="ID of the task that needs to be searched.",
      *				paramType="path",
@@ -578,7 +578,7 @@ class TaskController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Task not found")
+     *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
      * ).
      */
@@ -590,21 +590,21 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tasks/{task_id}/associations",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Creates a task association.",
      * 		notes="Creates a task association by task ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="task_id",
      *				description="ID of the task that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="ticket_id",
      *				description="ID of ticket to create association with.",
      *				paramType="query",
@@ -612,8 +612,8 @@ class TaskController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Task not found"),
-     *		@SWG\ResponseMessage(code=500, message="ticket_id is not valid")
+     *		SWG\ResponseMessage(code=404, message="Task not found"),
+     *		SWG\ResponseMessage(code=500, message="ticket_id is not valid")
      * 	)
      * ).
      */
@@ -648,20 +648,20 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tasks/{task_id}/associations/{association_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Determines if a task association exists.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="task_id",
      *				description="ID of the task that needs to be checked.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="association_id",
      *				description="ID of the association that needs to be checked.",
      *				paramType="path",
@@ -669,7 +669,7 @@ class TaskController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Task not found")
+     *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
      * ).
      */
@@ -689,20 +689,20 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tasks/{task_id}/associations/{association_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Deletes a task association.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="task_id",
      *				description="ID of the task that needs to be checked.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="association_id",
      *				description="ID of the association that needs to be deleted.",
      *				paramType="path",
@@ -710,7 +710,7 @@ class TaskController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Task not found")
+     *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
      * ).
      */
@@ -732,13 +732,13 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tasks/{task_id}/comments",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets task comments by task ID",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="task_id",
      *				description="ID of the task that needs to be checked.",
      *				paramType="path",
@@ -746,7 +746,7 @@ class TaskController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Task not found")
+     *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
      * ).
      */
@@ -758,20 +758,20 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tasks/{task_id}/comments",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Creates a task comment by task ID",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="task_id",
      *				description="ID of the task that needs to be checked.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="comment",
      *				description="Text of the comment.",
      *				paramType="path",
@@ -779,7 +779,7 @@ class TaskController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Task not found")
+     *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
      * ).
      */
@@ -807,20 +807,20 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tasks/{task_id}/comments/{comment_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Determines if a task comment exists",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="task_id",
      *				description="ID of the task that needs to be checked.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="comment_id",
      *				description="ID of the task comment that needs to be checked.",
      *				paramType="path",
@@ -828,7 +828,7 @@ class TaskController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Task not found")
+     *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
      * ).
      */
@@ -848,20 +848,20 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tasks/{task_id}/comments/{comment_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Deletes a task comment by Task and Comment IDs",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="task_id",
      *				description="ID of the task that needs to be checked.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="comment_id",
      *				description="ID of the task comment that needs to be deleted.",
      *				paramType="path",
@@ -869,7 +869,7 @@ class TaskController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Task not found")
+     *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
      * ).
      */
@@ -895,13 +895,13 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tasks/{task_id}/labels",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets task labels by task ID",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="task_id",
      *				description="ID of the task that needs to be checked.",
      *				paramType="path",
@@ -909,7 +909,7 @@ class TaskController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Task not found")
+     *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
      * ).
      */
@@ -921,20 +921,20 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tasks/{task_id}/labels",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Creates a task label by task ID",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="task_id",
      *				description="ID of the task that needs to be checked.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label",
      *				description="Text of the label.",
      *				paramType="query",
@@ -942,7 +942,7 @@ class TaskController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Task not found")
+     *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
      * ).
      */
@@ -966,20 +966,20 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tasks/{task_id}/labels/{label}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Determines if a task label exists by task ID",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="task_id",
      *				description="ID of the task that needs to be checked.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label",
      *				description="Text of the label.",
      *				paramType="path",
@@ -987,7 +987,7 @@ class TaskController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Task not found")
+     *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
      * ).
      */
@@ -1003,20 +1003,20 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tasks/{task_id}/labels/{label}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Deletes a task label by task ID",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="task_id",
      *				description="ID of the task that needs to be checked.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label",
      *				description="Text of the label that needs to be deleted.",
      *				paramType="path",
@@ -1024,7 +1024,7 @@ class TaskController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Task not found")
+     *		SWG\ResponseMessage(code=404, message="Task not found")
      * 	)
      * ).
      */

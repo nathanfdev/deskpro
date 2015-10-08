@@ -367,6 +367,13 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		// Snippets Viewer
 		//------------------------------
 
+		var recordSnippetUse = function(snippetId) {
+			var el = $("#" + self.baseId + "_snippet_ids");
+			var current = el.val() || '';
+			var newval = current.length ? current + ',' + snippetId : snippetId+'';
+			el.val(newval);
+		};
+
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
 			driver: DeskPRO_Window.ticketSnippetDriver,
 			onBeforeOpen: function() {
@@ -385,6 +392,8 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 				var defaultText;
 				var useText;
 				var result;
+
+				recordSnippetUse(snippetId);
 
 				Array.each(snippetCode, function(info) {
 					if (info.value) {

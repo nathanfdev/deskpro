@@ -203,8 +203,7 @@ define ['angular', 'moment'], (angular, moment) ->
         date = dt
         if modes.day == $scope.minMode
           $scope.$parent.isOpen = false
-        else
-          render($scope.mode)
+        render($scope.mode)
 
       $scope.selectDay = (day) ->
         return if day.disabled

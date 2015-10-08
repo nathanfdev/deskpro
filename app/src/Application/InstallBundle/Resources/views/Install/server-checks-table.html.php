@@ -185,11 +185,11 @@
         <?php else: $failed = true; $failed_phpini = true; ?>
         <span class="label important" style="float:right">FAIL</span>
         <?php endif ?>
-        Check that the <a href="http://php.net/manual/en/json.installation.php">json_encode extension</a> is installed
+        Check that the <a href="http://php.net/manual/en/json.installation.php">JSON extension</a> is installed
         <?php if ($failed): ?>
         <div class="alert-message block-message error">
             <a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_json_ext') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
-            DeskPRO requires the json_encode extension.
+            DeskPRO requires the JSON extension.
         </div>
         <?php endif ?>
     </td>

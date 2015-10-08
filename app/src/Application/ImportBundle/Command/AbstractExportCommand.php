@@ -54,9 +54,11 @@ use Symfony\Bridge\Monolog\Formatter\ConsoleFormatter;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Filesystem\Exception\IOException;
@@ -186,6 +188,13 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             @fclose($fh);
         } else {
             $exit_code = $this->executeUnattendedRun($input, $output);
+        }
+
+        if ($this->getContainer()->getSetting('elastica.enabled')) {
+            $command = $this->getApplication()->find('fos:elastica:populate');
+            $input   = new ArrayInput(array(''));
+            $output  = new NullOutput();
+            $command->run($input, $output);
         }
 
         unset($GLOBALS['DP_IS_IMPORTING']);

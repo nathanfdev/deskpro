@@ -46,6 +46,7 @@ class ContentSubscriptionsVoter extends AbstractVoter
     const SUBSCRIBE_NEWS_CATEGORY     = 'SUBSCRIBE_NEWS_CATEGORY';
     const SUBSCRIBE_DOWNLOAD          = 'SUBSCRIBE_DOWNLOAD';
     const SUBSCRIBE_DOWNLOAD_CATEGORY = 'SUBSCRIBE_DOWNLOAD_CATEGORY';
+    const SUBSCRIBE_FEEDBACK          = 'SUBSCRIBE_FEEDBACK';
 
     protected function getSupportedAttributes()
     {
@@ -56,6 +57,7 @@ class ContentSubscriptionsVoter extends AbstractVoter
             self::SUBSCRIBE_NEWS_CATEGORY,
             self::SUBSCRIBE_DOWNLOAD,
             self::SUBSCRIBE_DOWNLOAD_CATEGORY,
+            self::SUBSCRIBE_FEEDBACK,
         );
     }
 
@@ -79,6 +81,8 @@ class ContentSubscriptionsVoter extends AbstractVoter
             case static::SUBSCRIBE_DOWNLOAD:
             case static::SUBSCRIBE_DOWNLOAD_CATEGORY:
                 return $this->getActiveBrandSetting('user.downloads_subscriptions') && $permitted;
+            case static::SUBSCRIBE_FEEDBACK:
+                return $this->getActiveBrandSetting('user.feedback_subscriptions') && $permitted;
         }
 
         return false;

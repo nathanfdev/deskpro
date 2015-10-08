@@ -39,7 +39,7 @@ use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/feedback",
  * 	description="Operations about Feedbacks",
  * 	basePath="/api"
@@ -48,57 +48,57 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 class FeedbackController extends AbstractController
 {
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedback",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Search for feedbacks matching criteria",
      * 		notes="Returns list of feedbacks that matched.",
      *		type="array",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="category_id[]",
      *				description="Comma seperated IDs of categories to search in",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="category_id_specific[]",
      *				description="Comma seperated IDs of categories to search in",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="date_created_end",
      *				description="Requires the feedback to have been created before this date. Must be specified as a Unix timestamp.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="date_created_start",
      *				description="Requires the feedback to have been created after this date. Must be specified as a Unix timestamp.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label[]",
      *				description="Requires the feedback to have this label.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="status[]",
      *				description="Requires the feedback to be in this status. Possible values: new, active, closed, hidden.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="status_category_id[]",
      *				description="Requires the feedback to be in this status category.",
      *				paramType="query",
@@ -175,55 +175,55 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedbacks",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Creates a new feedback.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="title",
      *				description="Title of the feedback. ",
      *				paramType="query",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="content",
      *				description="Content of the feedback. Marked up using HTML.",
      *				paramType="query",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="category_id",
      *				description="Category of the feedback.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label[]",
      *				description="Comma seperated list of Labels to apply to the feedback.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="status",
      *				description="Status of the feedback. Defaults to new if not overridden by this or status_category_id.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="status_category_id",
      *				description="Status category of the feedback.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="user_category_id",
      *				description="User category of the feedback.",
      *				paramType="query",
@@ -301,15 +301,15 @@ class FeedbackController extends AbstractController
 
     //Gets information about specific feedback
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedback/{feedback_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets a feedback by feedback ID.",
      * 		notes="Information about the feedback by feedback ID.",
      *		type="Feedback",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="feedback_id",
      *				description="ID of the feedback that needs to be searched.",
      *				paramType="path",
@@ -317,7 +317,7 @@ class FeedbackController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Feedback not found")
+     *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
      * ).
      */
@@ -329,62 +329,62 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedbacks/{feedback_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Updates a Feedback by feedback ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="feedback_id",
      *				description="ID of the feedback the needs to be updated.",
      *				paramType="query",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="title",
      *				description="Title of the feedback. ",
      *				paramType="query",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="content",
      *				description="Content of the feedback. Marked up using HTML.",
      *				paramType="query",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="category_id",
      *				description="Category of the feedback.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label[]",
      *				description="Comma seperated list of Labels to apply to the feedback.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="status",
      *				description="Status of the feedback. Defaults to new if not overridden by this or status_category_id.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="status_category_id",
      *				description="Status category of the feedback.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="user_category_id",
      *				description="User category of the feedback.",
      *				paramType="query",
@@ -461,13 +461,13 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedback/{feedback_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Deletes a Feedback by ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="feedback_id",
      *				description="ID of the Feedback that needs to be deleted.",
      *				paramType="path",
@@ -475,7 +475,7 @@ class FeedbackController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Feedback not found")
+     *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
      * ).
      */
@@ -491,14 +491,14 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedback/{feedback_id}/votes",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets the votes for feedback",
      * 		notes="Information about the votes by Feedback ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="feedback_id",
      *				description="ID of the Feedback that needs to be searched.",
      *				paramType="path",
@@ -506,7 +506,7 @@ class FeedbackController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Feedback not found")
+     *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
      * ).
      */
@@ -519,14 +519,14 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedback/{feedback_id}/comments",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets the comments for feedback",
      * 		notes="Information about the comments by Feedback ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="feedback_id",
      *				description="ID of the Feedback that needs to be searched.",
      *				paramType="path",
@@ -534,7 +534,7 @@ class FeedbackController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Feedback not found")
+     *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
      * ).
      */
@@ -547,35 +547,35 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedback/{feedback_id}/comments",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Add a comment for a feedback entry.",
      * 		notes="Creates a feedback comment by feedback ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="feedback_id",
      *				description="ID of the feedback that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="content",
      *				description="Text of the comment.",
      *				paramType="query",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="person_id",
      *				description=" ID of the person that owns the comment. If not provided, defaults to the agent making the request.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="status",
      *				description="Status of the comment. Defaults to visible.",
      *				paramType="query",
@@ -583,7 +583,7 @@ class FeedbackController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Feedback not found")
+     *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
      * ).
      */
@@ -622,21 +622,21 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedback/{feedback_id}/comments/{comment_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets info about a specific feedback comment",
      * 		notes="Information about a specific feedback comment by Feedback ID and Comment ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="feedback_id",
      *				description="ID of the Feedback that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="comment_id",
      *				description="ID of the Feedback Comment that needs to be searched.",
      *				paramType="path",
@@ -644,7 +644,7 @@ class FeedbackController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Feedback not found")
+     *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
      * ).
      */
@@ -660,34 +660,34 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedback/{feedback_id}/comments/{comment_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Updates a feedback comment",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="feedback_id",
      *				description="ID of the Feedback that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="comment_id",
      *				description="ID of the Feedback Comment that needs to be updated.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="content",
      *				description="New Text of the Comment.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="status",
      *				description="Status of the comment.",
      *				paramType="query",
@@ -695,7 +695,7 @@ class FeedbackController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Feedback not found")
+     *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
      * ).
      */
@@ -730,21 +730,21 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedback/{feedback_id}/comments/{comment_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="DELETE a specific feedback comment",
      * 		notes="DELETE a specific feedback comment by Feedback ID and Comment ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="feedback_id",
      *				description="ID of the Feedback that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="comment_id",
      *				description="ID of the Feedback Comment that needs to be deleted.",
      *				paramType="path",
@@ -752,7 +752,7 @@ class FeedbackController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Feedback not found")
+     *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
      * ).
      */
@@ -773,20 +773,20 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedback/{feedback_id}/merge/{other_feedback_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Merges the two feedback records",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="feedback_id",
      *				description="ID of the first Feedback",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="other_feedback_id",
      *				description="ID of the second Feedback",
      *				paramType="path",
@@ -794,7 +794,7 @@ class FeedbackController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Feedback not found")
+     *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
      * ).
      */
@@ -825,14 +825,14 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedback/{feedback_id}/attachments",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets information about a feedback record's attachments",
      * 		notes="Information about a feedback record's attachments by Feedback ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="feedback_id",
      *				description="ID of the Feedback that needs to be searched.",
      *				paramType="path",
@@ -840,7 +840,7 @@ class FeedbackController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Feedback not found")
+     *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
      * ).
      */
@@ -852,28 +852,28 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedback/{feedback_id}/attachments",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Adds an attachment to a feedback record.",
      * 		notes="Adds an attachment to a feedback record by feedback ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="feedback_id",
      *				description="ID of the feedback that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="file",
      *				description="Attached file to include with the feedback. See the API Basics for more information on sending files to the API. Required if no attach_id is provided.",
      *				paramType="body",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="attach_id",
      *				description="The ID of an already uploaded file to include with the feedback. Required if no attach value is provided.",
      *				paramType="query",
@@ -881,7 +881,7 @@ class FeedbackController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Feedback not found")
+     *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
      * ).
      */
@@ -925,20 +925,20 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedback/{feedback_id}/attachments/{attachment_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Determines if a feedback record has an attachment",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="feedback_id",
      *				description="ID of the Feedback that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="attachment_id",
      *				description="ID of the Feedback Comment that needs to be searched.",
      *				paramType="path",
@@ -946,7 +946,7 @@ class FeedbackController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Feedback not found")
+     *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
      * ).
      */
@@ -965,21 +965,21 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedback/{feedback_id}/attachments/{attachment_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Removes a feedback attachment",
      * 		notes="Removes a feedback attachment by Feedback ID and Attachment ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="feedback_id",
      *				description="ID of the Feedback that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="attachment_id",
      *				description="ID of the Feedback Comment that needs to be deleted.",
      *				paramType="path",
@@ -987,7 +987,7 @@ class FeedbackController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Feedback not found")
+     *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
      * ).
      */
@@ -1009,14 +1009,14 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedback/{feedback_id}/labels",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets the labels for feedback",
      * 		notes="Information about a feedback record's labels by Feedback ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="feedback_id",
      *				description="ID of the Feedback that needs to be searched.",
      *				paramType="path",
@@ -1024,7 +1024,7 @@ class FeedbackController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Feedback not found")
+     *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
      * ).
      */
@@ -1036,21 +1036,21 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedback/{feedback_id}/labels",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Add a label for a feedback entry.",
      * 		notes="Creates a feedback label by feedback ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="feedback_id",
      *				description="ID of the feedback that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label",
      *				description="Label to add.",
      *				paramType="query",
@@ -1058,7 +1058,7 @@ class FeedbackController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Feedback not found")
+     *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
      * ).
      */
@@ -1082,20 +1082,20 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedback/{feedback_id}/labels/{label}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Determines if feedback has a label.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="feedback_id",
      *				description="ID of the feedback that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label",
      *				description="Label to search for",
      *				paramType="path",
@@ -1103,7 +1103,7 @@ class FeedbackController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Feedback not found")
+     *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
      * ).
      */
@@ -1119,20 +1119,20 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedback/{feedback_id}/labels/{label}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Removes a label from feedback",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="feedback_id",
      *				description="ID of the feedback that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label",
      *				description="Label that needs to be deleted",
      *				paramType="path",
@@ -1140,7 +1140,7 @@ class FeedbackController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Feedback not found")
+     *		SWG\ResponseMessage(code=404, message="Feedback not found")
      * 	)
      * ).
      */
@@ -1156,9 +1156,9 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedback/validating-comments",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets feedback comments that are awaiting validation."
      * 	)
@@ -1180,9 +1180,9 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedback/categories",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets available feedback categories."
      * 	)
@@ -1196,9 +1196,9 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedback/status-categories",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets available feedback status categories."
      * 	)
@@ -1212,9 +1212,9 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/feedback/user-categories",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets available feedback user categories."
      * 	)

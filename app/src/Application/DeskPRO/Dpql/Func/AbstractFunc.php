@@ -65,6 +65,7 @@ abstract class AbstractFunc
         'MONTH'             => 'Month',
         'MONTHNAME'         => 'MonthName',
         'NOW'               => 'Now',
+        'OBJ_LANG'          => 'ObjLang',
         'PERCENT'           => 'Percent',
         'PRINT'             => 'Printable',
         'TIME_LENGTH'       => 'TimeLength',
