@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
 
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\AgentChat\History;
+use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
 use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use FOS\RestBundle\Controller\Annotations;
@@ -79,7 +80,7 @@ class ChatsController extends AbstractController
         $chats = $searchService->searchAllChats($user, $searchString);
 
         return View::create(
-            $this->DataSerialize($chats),
+            $this->dataSerialize($chats),
             Response::HTTP_OK
         );
     }
@@ -113,7 +114,7 @@ class ChatsController extends AbstractController
     public function getAction($id)
     {
         return View::create(
-            $this->DataSerialize($this->getChat($id)),
+            $this->dataSerialize($this->getChat($id)),
             Response::HTTP_OK
         );
     }
@@ -127,7 +128,7 @@ class ChatsController extends AbstractController
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\AgentChat"
      * )
-     * @Annotations\Post("/agent_chats", name="agent_chats_add_chat")
+     * @ Annotations\Post("/agent_chats", name="agent_chats_add_chat")
      *
      * @param Request $request
      *
@@ -135,6 +136,8 @@ class ChatsController extends AbstractController
      * @throws BadRequestHttpException
      *
      * @return View
+     *
+     * @deprecated
      *
      * @todo looks like we have to implement some custom logic here, cause we have to handle agents/teams/departments
      * @todo manually, and just do it with form is too complicated, maybe we can auto generate form for every AgentChat
@@ -173,7 +176,7 @@ class ChatsController extends AbstractController
         if (isset($submitted['departments'])) {
             foreach ($submitted['departments'] as $departmentId) {
                 $participant = $this->em()
-                    ->getRepository('DeskPRO:AgentTeam')
+                    ->getRepository('DeskPRO:Department')
                     ->find((int) $departmentId);
                 if ($participant) {
                     $participants[] = $participant;
@@ -187,7 +190,7 @@ class ChatsController extends AbstractController
         /** @var Messenger $messenger */
         $messenger = $this->get('deskpro.agentchat.messenger');
         $user      = $this->getUser();
-        $chat      = $messenger->createChat($user, $participants);
+        $chat      = $messenger->createChat(array_merge($user, $participants), Chatable::PARTICIPANT_TYPE_GROUP);
         $this->em()->persist($chat);
         $this->em()->flush();
 
@@ -222,30 +225,32 @@ class ChatsController extends AbstractController
      *
      * @return View
      */
-    public function postAgentAction(Request $request)
+    public function startAction(Request $request)
     {
         $status = Response::HTTP_CREATED;
 
         $submitted = $request->request->all();
-        if (!isset($submitted['agent'])) {
+        if (!isset($submitted['type']) || !isset($submitted['id'])) {
             throw new BadRequestHttpException();
         }
 
-        $agentId = $submitted['agent'];
-        if (!$agent = $this->em()->getRepository('DeskPRO:Person')->find((int) $agentId)) {
+        /** @var Messenger $messenger */
+        $messenger = $this->get('deskpro.agentchat.messenger');
+
+        if (!$entity = $messenger->findParticipant($submitted['type'], $submitted['id'])) {
             throw new BadRequestHttpException();
         }
 
         $user = $this->getUser();
 
-        /** @var Messenger $messenger */
-        $messenger = $this->get('deskpro.agentchat.messenger');
-        if ($chat = $messenger->findChatWithAgent((int) $agent->getId(), $user->getId())) {
+        if ($chat = $messenger->findChat($user, $entity)) {
             $status = Response::HTTP_FOUND;
         } else {
-            $chat = $messenger->createChat($user, [$agent]);
+            $chat = $messenger->startChat($user, $entity);
             $this->em()->persist($chat);
             $this->em()->flush();
+            $this->em()->clear();
+            $chat = $messenger->getChat($chat->getId());
         }
 
         return View::create(

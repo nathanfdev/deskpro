@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\AgentChat\Interfaces;
 
 /**
@@ -36,11 +37,16 @@ namespace DeskPRO\Bundle\AppBundle\AgentChat\Interfaces;
  */
 interface Chatable
 {
-    const PARTICIPANT_TYPE_PERSON     = 1;
-    const PARTICIPANT_TYPE_TEAM       = 2;
-    const PARTICIPANT_TYPE_DEPARTMENT = 3;
+    const PARTICIPANT_TYPE_PERSON     = 'agent';
+    const PARTICIPANT_TYPE_TEAM       = 'team';
+    const PARTICIPANT_TYPE_DEPARTMENT = 'department';
+
+    const PARTICIPANT_TYPE_GROUP = 'group';
+
     /**
      * @return int
      */
     public function getChatableType();
+
+    public function getId();
 }
