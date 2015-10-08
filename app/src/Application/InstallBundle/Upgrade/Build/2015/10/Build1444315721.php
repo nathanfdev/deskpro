@@ -26,4 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1444315721);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1444315721 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('My Upgrade Class');
+        $this->execMutateSql('ALTER TABLE email_accounts ADD is_read_active TINYINT(1) NOT NULL');
+    }
+}

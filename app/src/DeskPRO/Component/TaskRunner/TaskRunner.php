@@ -62,22 +62,7 @@ class TaskRunner
     /**
      * @var int
      */
-    private $task_timeout;
-
-    /**
-     * @var int
-     */
-    private $max_tasks;
-
-    /**
-     * @var int
-     */
     private $peak_tasks = 0;
-
-    /**
-     * @var bool
-     */
-    private $stop_on_done;
 
     /**
      * @var TaskHandle[]
@@ -99,11 +84,6 @@ class TaskRunner
      */
     private $processor;
 
-    /**
-     * @var float
-     */
-    private $tick_time = 1.00;
-
     public function __construct(array $options = array())
     {
         $resolver = new OptionsResolver();
@@ -112,14 +92,10 @@ class TaskRunner
 
         $this->start_time = microtime(true);
 
-        $this->task_timeout = $this->options['task_timeout'];
-        $this->max_tasks    = $this->options['max_tasks'];
-        $this->stop_on_done = $this->options['stop_on_done'];
-        $this->tick_time    = $this->options['tick_time'];
-        $this->logger       = $this->options['logger'];
-        $this->reader       = $this->options['reader'];
-        $this->processor    = $this->options['processor'];
-        $this->loop         = $this->options['loop'];
+        $this->logger    = $this->options['logger'];
+        $this->reader    = $this->options['reader'];
+        $this->processor = $this->options['processor'];
+        $this->loop      = $this->options['loop'];
     }
 
     /**
@@ -128,10 +104,11 @@ class TaskRunner
     protected function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'task_timeout' => 0,
-            'max_tasks'    => 4,
-            'stop_on_done' => false,
-            'tick_time'    => 1.00,
+            'task_timeout'    => 0,
+            'max_tasks'       => 4,
+            'stop_on_done'    => false,
+            'stop_after_time' => 0,
+            'tick_time'       => 1.00,
         ));
         $resolver->setRequired(array(
             'reader',
@@ -141,13 +118,14 @@ class TaskRunner
         ));
 
         $resolver->setAllowedTypes(array(
-            'task_timeout' => 'integer',
-            'max_tasks'    => 'integer',
-            'tick_time'    => 'float',
-            'reader'       => 'DeskPRO\Component\TaskRunner\Reader\ReaderInterface',
-            'processor'    => 'DeskPRO\Component\TaskRunner\Processor\ProcessorInterface',
-            'logger'       => 'Monolog\Logger',
-            'loop'         => 'React\EventLoop\LoopInterface',
+            'task_timeout'    => 'integer',
+            'max_tasks'       => 'integer',
+            'stop_after_time' => 'integer',
+            'tick_time'       => 'float',
+            'reader'          => 'DeskPRO\Component\TaskRunner\Reader\ReaderInterface',
+            'processor'       => 'DeskPRO\Component\TaskRunner\Processor\ProcessorInterface',
+            'logger'          => 'Monolog\Logger',
+            'loop'            => 'React\EventLoop\LoopInterface',
         ));
 
         $resolver->setDefaults(array('loop' => function (Options $options) {
@@ -160,8 +138,28 @@ class TaskRunner
      */
     public function start()
     {
-        $this->loop->addPeriodicTimer($this->tick_time, array($this, '_runLoop'));
+        $this->loop->addPeriodicTimer($this->options['tick_time'], array($this, '_runLoop'));
+
+        $this->start_time = microtime(true);
+
         $this->loop->run();
+    }
+
+    /**
+     * Are we over our time limit?
+     *
+     * @return bool
+     */
+    private function isOverTime()
+    {
+        if ($this->options['stop_after_time']) {
+            $t = microtime(true) - $this->start_time;
+            if ($t > $this->options['stop_after_time]']) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -171,18 +169,26 @@ class TaskRunner
     {
         $this->housekeeping();
 
+        if ($this->isOverTime() && empty($this->running_tasks)) {
+            $this->loop->stop();
+
+            return;
+        }
+
         // Only start this many tasks per loop
         // So housekeeping has a chance to run even if max_tasks if high
         $max_per_tick = 50;
 
-        while (count($this->running_tasks) < $this->max_tasks && ($task = $this->getNext()) && $max_per_tick-- > 0) {
-            $handle                              = $this->processor->start($task);
-            $this->running_tasks[$task->getId()] = $handle;
+        if (!$this->isOverTime()) {
+            while (count($this->running_tasks) < $this->options['max_tasks'] && ($task = $this->getNext()) && $max_per_tick-- > 0) {
+                $handle                              = $this->processor->start($task, $this->loop);
+                $this->running_tasks[$task->getId()] = $handle;
 
-            $this->logger->info(
-                sprintf('[Task %s] Task started', $task->getId()),
-                array('task' => $task, 'log_event' => self::LOG_EV_TASK_START)
-            );
+                $this->logger->info(
+                    sprintf('[Task %s] Task started', $task->getId()),
+                    array('task' => $task, 'log_event' => self::LOG_EV_TASK_START)
+                );
+            }
         }
 
         $num = count($this->running_tasks);
@@ -190,7 +196,7 @@ class TaskRunner
             $this->peak_tasks = $num;
         }
 
-        if ($this->stop_on_done && empty($this->running_tasks)) {
+        if ($this->options['stop_on_done'] && empty($this->running_tasks)) {
             $this->loop->stop();
         }
     }
@@ -202,9 +208,9 @@ class TaskRunner
     {
         foreach ($this->running_tasks as $c) {
             // Check for timeout and terminate any that are too old
-            if ($this->task_timeout && (microtime() - $c->getStartTime()) > $this->task_timeout) {
+            if ($this->options['task_timeout'] && (microtime() - $c->getStartTime()) > $this->options['task_timeout']) {
                 $this->logger->alert(
-                    sprintf('[Task %s] Timed out after %s seconds; terminating', $c->getTask()->getId(), $this->task_timeout),
+                    sprintf('[Task %s] Timed out after %s seconds; terminating', $c->getTask()->getId(), $this->options['task_timeout']),
                     array('task' => $c->getTask(), 'log_event' => self::LOG_EV_TASK_TIMEOUT)
                 );
 

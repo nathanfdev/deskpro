@@ -30,6 +30,7 @@ namespace DeskPRO\Component\TaskRunner\Processor;
 
 use DeskPRO\Component\TaskRunner\Task\TaskInterface;
 use DeskPRO\Component\TaskRunner\TaskHandle;
+use React\EventLoop\LoopInterface;
 
 interface ProcessorInterface
 {
@@ -38,10 +39,11 @@ interface ProcessorInterface
 
     /**
      * @param TaskInterface $task
+     * @param LoopInterface $loop
      *
-     * @return
+     * @return mixed
      */
-    public function start(TaskInterface $task);
+    public function start(TaskInterface $task, LoopInterface $loop);
 
     /**
      * @param TaskHandle $taskHandle

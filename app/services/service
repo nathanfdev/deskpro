@@ -1,0 +1,9 @@
+<?php
+require('./lib/env.php');
+
+use Symfony\Component\Console\Application;
+use DeskPRO\Services\EmailCollection\Command\EmailCollectionCommand;
+
+$application = new Application();
+$application->add(new EmailCollectionCommand());
+$application->run();

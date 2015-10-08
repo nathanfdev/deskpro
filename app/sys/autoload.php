@@ -46,11 +46,12 @@ require_once DP_ROOT.'/src/Orb/Util/ClassLoader.php';
 $loader = new \Orb\Util\ClassLoader();
 
 $loader->registerNamespaces(array(
-    'DeskPRO'     => DP_ROOT.'/src',
-    'Application' => DP_ROOT.'/src',
-    'Cloud'       => DP_ROOT.'/src',
-    'Bundle'      => DP_ROOT.'/src',
-    'Orb'         => DP_ROOT.'/src',
+    'DeskPRO\\Services' => DP_ROOT.'/services/src',
+    'DeskPRO'           => DP_ROOT.'/src',
+    'Application'       => DP_ROOT.'/src',
+    'Cloud'             => DP_ROOT.'/src',
+    'Bundle'            => DP_ROOT.'/src',
+    'Orb'               => DP_ROOT.'/src',
 
     'DpUnitTests'        => DP_ROOT.'/testing/tests/unit',
     'DpIntegrationTests' => DP_ROOT.'/testing/tests/integration',

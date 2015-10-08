@@ -48,7 +48,7 @@ class CollectEmailCommand extends ContainerAwareCommand
     {
         $this->setName('dp:collect-email');
         $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Use the account even if its disabled');
-        $this->addOption('time', 't', InputOption::VALUE_REQUIRED, 'Time limit to spend before quitting early (seconds). Defaults to 30 seconds.');
+        $this->addOption('time', 't', InputOption::VALUE_REQUIRED, 'Time limit to spend before quitting early (seconds). Defaults to 60 seconds.');
         $this->addArgument('accounts', InputArgument::REQUIRED, 'IDs or email addresses of the accounts to process. Separate multiple accounts by commas. Use the special "all" to collect from all accounts.');
     }
 
@@ -118,7 +118,7 @@ class CollectEmailCommand extends ContainerAwareCommand
 
             $time = intval($input->getOption('time') || 0);
             if (!$time || $time < 1) {
-                $time = 30;
+                $time = 60;
             }
 
             #----------------------------------------

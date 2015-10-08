@@ -26,4 +26,46 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1444315721);
+/**
+ * @throws \Doctrine\DBAL\DBALException
+ * @return \Application\DeskPRO\DBAL\Connection
+ *
+ */
+function get_db()
+{
+    global $DP_CONFIG;
+
+    $connectionParams = array(
+        'driver'       => 'pdo_mysql',
+        'host'         => $DP_CONFIG['db']['host'],
+        'user'         => $DP_CONFIG['db']['user'],
+        'password'     => $DP_CONFIG['db']['password'],
+        'dbname'       => $DP_CONFIG['db']['dbname'],
+        'wrapperClass' => 'Application\\DeskPRO\\DBAL\\Connection',
+    );
+    $conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams);
+
+    return $conn;
+}
+
+/**
+ * @param \Application\DeskPRO\DBAL\Connection|null $conn
+ *
+ * @return \Application\DeskPRO\DBAL\Connection|\Doctrine\DBAL\Connection
+ */
+function get_db_if_closed(\Application\DeskPRO\DBAL\Connection $conn = null)
+{
+    if (!$conn || !$conn->isConnected()) {
+        return get_db();
+    }
+
+    try {
+        $v = $conn->fetchColumn('SELECT 1');
+        if ($v == 1) {
+            return $conn;
+        }
+    } catch (\Exception $e) {
+    }
+
+    return get_db();
+}

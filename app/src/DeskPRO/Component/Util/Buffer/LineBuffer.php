@@ -26,4 +26,52 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1444315721);
+namespace DeskPRO\Component\Util\Buffer;
+
+/**
+ * Buffers streams of data and will call a callback when a full line is made.
+ */
+class LineBuffer
+{
+    /**
+     * @var
+     */
+    private $buf = '';
+
+    /**
+     * @var callable
+     */
+    private $fn;
+
+    /**
+     * @param callable $fn Called after each line is recieved
+     */
+    public function __construct($fn)
+    {
+        $this->fn = $fn;
+    }
+
+    public function append($str)
+    {
+        $this->buf .= $str;
+        do {
+            $pos = strpos($this->buf, "\n");
+            if ($pos !== false) {
+                $line = substr($this->buf, 0, $pos);
+                call_user_func($this->fn, $line);
+                $this->buf = substr($this->buf, $pos + 1);
+            }
+        } while ($pos !== false);
+    }
+
+    /**
+     * Flushes the buffer.
+     */
+    public function flush()
+    {
+        if ($this->buf) {
+            call_user_func($this->fn, $this->buf);
+            $this->buf = '';
+        }
+    }
+}

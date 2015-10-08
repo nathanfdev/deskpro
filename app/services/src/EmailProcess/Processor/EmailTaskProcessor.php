@@ -26,4 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1444315721);
+namespace DeskPRO\Services\EmailProcess\TaskRunner\Processor;
+
+use DeskPRO\Component\TaskRunner\Processor\AbstractCommandProcessor;
+use DeskPRO\Component\TaskRunner\Task\Task;
+
+class EmailTaskProcessor extends AbstractCommandProcessor
+{
+    /**
+     * @param Task $task
+     *
+     * @return string
+     */
+    protected function getCmdString(Task $task)
+    {
+        $email_id = $task->get('email_id');
+
+        $cmd_path = realpath(DP_ROOT.'/../cmd.php');
+        $cmd      = dp_get_php_command($cmd_path, 'dp:process-email --enable-retries '.$email_id);
+
+        $this->logger->info("[EmailTaskProcessor] <EmailSource::{$email_id}> process command: $cmd", array(
+            'task' => $task,
+        ));
+
+        return $cmd;
+    }
+}

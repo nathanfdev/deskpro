@@ -31,6 +31,7 @@ namespace DeskPRO\Component\TaskRunner\Processor;
 use DeskPRO\Component\TaskRunner\Task\Task;
 use DeskPRO\Component\TaskRunner\Task\TaskInterface;
 use DeskPRO\Component\TaskRunner\TaskHandle;
+use React\EventLoop\LoopInterface;
 use React\Promise\Promise;
 
 /**
@@ -57,10 +58,11 @@ class TaskCallbackProcessor implements ProcessorInterface
 
     /**
      * @param TaskInterface $task
+     * @param LoopInterface $loop
      *
      * @return TaskHandle
      */
-    public function start(TaskInterface $task)
+    public function start(TaskInterface $task, LoopInterface $loop)
     {
         if ($task instanceof Task && $task->has('callback')) {
             $fn = $task->get('callback');
