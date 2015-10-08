@@ -14,7 +14,14 @@ export class ColumnSlider extends React.Component {
 
     jQuery('#workspace-column-slider').slider({
       value: columnDimensions,
+      min: 0,
+      max: 100,
+      step: 5,
       slide: function(event, ui) {
+        if (ui.value < 20 || ui.value > 80) {
+          return false;
+        }
+
         onChangeDimensions(ui.value);
       }
     });
