@@ -381,6 +381,7 @@ class NewTicket
 
         // Message
         $message         = new TicketMessage();
+        $message->ticket = $ticket;
         $message->person = $this->_person_context;
         $message->setVisitorFromRequest();
 
