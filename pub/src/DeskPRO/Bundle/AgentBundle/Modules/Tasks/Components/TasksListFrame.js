@@ -32,7 +32,7 @@ import MenuFooterOptions from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Compone
 import MenuFooterLink from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterLink';
 import TaskMassActions from '../Components/TaskMassActions';
 import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
-import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { ListFrame } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
 @connect(state => ({
   taskFrameList: state.taskFrameList,
@@ -436,7 +436,7 @@ class TasksListFrame extends React.Component {
 
 
     return (
-      <ListFrameContainer className={sectionClass}>
+      <ListFrame className={sectionClass}>
         <ComponentRootWrapper open={this.state.showAssignWindow}>
           <AssignHover position={this.state.position}
                        assignTask={this.handleAssigneeChange.bind(this)}
@@ -603,7 +603,7 @@ class TasksListFrame extends React.Component {
                            subContainerClassName={"pages-list sublist"}
                            activeClassName={"active"}/>
           </div> : '' }
-      </ListFrameContainer>
+      </ListFrame>
     );
   }
 }

@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { ListFrame } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { FeedbackListControlBar } from './ControlBar/FeedbackListControlBar';
 import { FeedbackList } from './View/List/FeedbackList';
 import { FeedbackCommentList } from './View/List/FeedbackCommentList';
@@ -94,12 +94,12 @@ export class List extends Component {
 
   render() {
     return (
-      <ListFrameContainer>
+      <ListFrame>
         <FeedbackListControlBar count={this.props.feedback ? this.props.feedback.size : 0}/>
         <ListFrameContents>
           {this.contentChoice()}
         </ListFrameContents>
-      </ListFrameContainer>
+      </ListFrame>
     );
   }
 

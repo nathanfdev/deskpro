@@ -1,7 +1,7 @@
 import React from 'react';
 import { SectionsPane, Section, SectionHeader }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
-import { ListFrameContainer }
+import { ListFrame }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
 export class List extends React.Component {
@@ -9,7 +9,7 @@ export class List extends React.Component {
     const { elements, view, toggleView } = this.props;
 
     return (
-      <ListFrameContainer>
+      <ListFrame>
         <SectionsPane>
           <Section>
             <div className="tickets-control-bar">
@@ -32,7 +32,7 @@ export class List extends React.Component {
             {this.renderElements(view, elements)}
           </Section>
         </SectionsPane>
-      </ListFrameContainer>
+      </ListFrame>
     );
   }
 

@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import { ListFrameContainer, ControlBar }
+import { ListFrame, ControlBar }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { CrmListControlBar } from './ControlBar/CrmListControlBar';
 import { CrmList } from './View/List/CrmList';
@@ -24,10 +24,10 @@ export class List extends Component {
     const { elements, viewModeOptions } = this.props;
 
     return (
-      <ListFrameContainer>
+      <ListFrame>
         <CrmListControlBar />
         {viewModeOptions.find((option)=>option.current === true).field === constants.VIEW_MODE_LIST ? <CrmList elements={elements}/> : <CrmTable elements={elements}/>}
-      </ListFrameContainer>
+      </ListFrame>
     );
   }
 

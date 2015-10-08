@@ -15,6 +15,10 @@ export class AppContainer extends React.Component {
     if (dpWindow.get('collapseNav')) {
       classes.push('collapsed-nav');
     }
+    if (dpWindow.get('columnMode') === 'focus') {
+      classes.push('collapsed-list');
+    }
+
     // if(dpWindow.activeAppId == thisAppId) {
     //   classes.push('app-active');
     // } else {

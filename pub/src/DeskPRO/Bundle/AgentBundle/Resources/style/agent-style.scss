@@ -216,6 +216,11 @@ $kanban-frame-width: 800px;
     }
 
   }
+  &.collapsed-list {
+    .dp-list-frame {
+      display:none;
+    }
+  }
 }
 
 .positioned-element {

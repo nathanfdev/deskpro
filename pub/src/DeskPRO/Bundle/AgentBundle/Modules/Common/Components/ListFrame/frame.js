@@ -4,32 +4,9 @@ import ReactDOM from 'react-dom';
 import jQuery from 'jquery';
 import { debounce } from 'lodash';
 
-@connect(state => ({
-  dpWindow: state.Application.dpWindow
-}))
-export class ListFrameContainer extends React.Component {
-
-  static propTypes = {
-    dpWindow: PropTypes.object.required,
-    children: PropTypes.node,
-    className: PropTypes.string
-  };
-
-  render() {
-    const { dpWindow, className, children } = this.props;
-
-    return (
-      <ListFrame className={className} dpWindow={dpWindow}>
-        {children}
-      </ListFrame>
-    );
-  }
-}
-
 export class ListFrame extends React.Component {
 
   static propTypes:{
-    dpWindow: PropTypes.object.required,
     children: PropTypes.node,
     className: PropTypes.string
   };
@@ -57,12 +34,11 @@ export class ListFrame extends React.Component {
   };
 
   render() {
-    const { dpWindow, children } = this.props;
     const className = this.props.className || 'dp-list-frame';
     return (
-      <section className={className} style={{display: dpWindow.get('columnMode') === 'focus' ? 'none' : ''}}>
+      <section className={className}>
         <div className="feedback-list">
-          {children}
+          {this.props.children}
         </div>
       </section>
     );
