@@ -16,7 +16,10 @@ export class ColumnMode extends React.Component {
     const { currentMode, columnDimensions, onChangeMode, onChangeDimensions } = this.props;
 
     jQuery('#workspace-column-slider').slider({
-      value: columnDimensions
+      value: columnDimensions,
+      slide: function(event, ui) {
+        onChangeDimensions(ui.value);
+      }
     });
 
     return (
