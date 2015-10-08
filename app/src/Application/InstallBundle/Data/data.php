@@ -844,6 +844,8 @@ $em->getConnection()->executeUpdate(
 );
 
 $em->getConnection()->executeUpdate("
+SET FOREIGN_KEY_CHECKS=0;
+
 INSERT INTO `tickets`
 (`id`, `parent_ticket_id`, `language_id`, `department_id`, `category_id`, `priority_id`, `workflow_id`, `product_id`, `person_id`, `person_email_id`, `person_email_validating_id`, `agent_id`, `agent_team_id`, `organization_id`, `linked_chat_id`, `email_account_id`, `locked_by_agent`, `ref`, `auth`, `sent_to_address`, `email_account_address`, `creation_system`, `creation_system_option`, `ticket_hash`, `status`, `hidden_status`, `validating`, `is_hold`, `urgency`, `count_agent_replies`, `count_user_replies`, `feedback_rating`, `date_feedback_rating`, `date_created`, `date_resolved`, `date_archived`, `date_first_agent_assign`, `date_first_agent_reply`, `date_last_agent_reply`, `date_last_user_reply`, `date_agent_waiting`, `date_user_waiting`, `date_status`, `total_user_waiting`, `total_to_first_reply`, `date_locked`, `has_attachments`, `subject`, `original_subject`, `properties`, `worst_sla_status`, `waiting_times`)
 
@@ -1299,4 +1301,6 @@ VALUES
 (196, 144, 3, NULL, NULL, 1),
 (197, 66, 3, NULL, NULL, 1),
 (198, 127, 1, NULL, NULL, 0);
+
+SET FOREIGN_KEY_CHECKS=1;
 ");
