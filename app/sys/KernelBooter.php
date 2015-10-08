@@ -225,8 +225,13 @@ class KernelBooter
             exit;
         }
 
+        $agent_env    = null;
         $kernel_class = 'DeskPRO\\Kernel\\DpKernel';
-        if (preg_match('#^/agent(/|\?|$)#', $path)) {
+        if (preg_match('#^/old-agent(/|\?|$)#', $path)) {
+            define('DP_INTERFACE', 'agent');
+            define('OLD_AGENT', true);
+            $agent_env = 'dev_old_agent';
+        } elseif (preg_match('#^/agent(/|\?|$)#', $path)) {
             define('DP_INTERFACE', 'agent');
         } elseif (preg_match('#^/adm(in)?(/|\?|$)#', $path)) {
             define('DP_INTERFACE', 'admin');
@@ -399,9 +404,9 @@ class KernelBooter
         try {
             if (!$kernel) {
                 if ($kernel == 'DeskPRO\\Kernel\\InstallKernel') {
-                    $kernel = new $kernel_class($env, $debug);
+                    $kernel = new $kernel_class($agent_env ?: $env, $debug);
                 } else {
-                    $kernel = new $kernel_class($env, $debug, DP_INTERFACE);
+                    $kernel = new $kernel_class($agent_env ?: $env, $debug, DP_INTERFACE);
                 }
             }
             $response = $kernel->handle($request);
