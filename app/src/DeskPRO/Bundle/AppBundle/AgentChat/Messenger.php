@@ -86,7 +86,7 @@ class Messenger
     public function createChat(array $participants, $type)
     {
         $chat = new AgentChat();
-
+        $chat->setType($type);
         foreach ($participants as $participant) {
             $chat->addParticipant($participant);
         }
@@ -99,8 +99,8 @@ class Messenger
      * @param Chatable $target
      *
      * @throws WrongChatableTypeException
-     * @return AgentChat
      *
+     * @return AgentChat
      */
     public function startChat(Person $user, Chatable $target)
     {
@@ -172,8 +172,8 @@ class Messenger
      * @param $id
      *
      * @throws WrongChatableTypeException
-     * @return null|Chatable
      *
+     * @return null|Chatable
      */
     public function findParticipant($type, $id)
     {
@@ -201,8 +201,8 @@ class Messenger
      * @param Chatable $target
      *
      * @throws WrongChatableTypeException
-     * @return bool|AgentChat
      *
+     * @return bool|AgentChat
      */
     public function findChat(Person $user, Chatable $target)
     {
