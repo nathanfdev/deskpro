@@ -55,14 +55,15 @@ class FeedbackCommentType extends AbstractType
             ->add(
                 'status',
                 'text',
-                [
-                    'description' => 'status',
-                    'required'    => false,
-                ]
+                ['description' => 'status', 'required' => false]
             )
             ->add(
                 'is_reviewed',
                 'api_boolean',
+                ['required' => false]
+            )->add(
+                'content',
+                'text',
                 ['required' => false]
             );
     }
