@@ -29,7 +29,7 @@ export class Nav extends Component {
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
 
-        <NavFrameHeader icon="fa-thumbs-up" dispatch={dispatch.bind(this)}>
+        <NavFrameHeader icon="fa-thumbs-up">
           <FormattedMessage id="feedback.nav.title"/>
         </NavFrameHeader>
 

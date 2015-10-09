@@ -105,7 +105,7 @@ export default class TicketsNavContent extends React.Component {
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
         <div part="inner">
-          <NavFrameHeader icon="icon-dp-streamline-mail-2" dispatch={dispatch.bind(this)}>
+          <NavFrameHeader icon="icon-dp-streamline-mail-2">
             {getIntlMessage(Translations, "foobar")}
           </NavFrameHeader>
 

@@ -10,7 +10,7 @@ export class Nav extends React.Component {
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
-        <NavFrameHeader icon="fa-users" dispatch={dispatch.bind(this)}>
+        <NavFrameHeader icon="fa-users">
           CRM
         </NavFrameHeader>
         <SectionHeader>People</SectionHeader>
