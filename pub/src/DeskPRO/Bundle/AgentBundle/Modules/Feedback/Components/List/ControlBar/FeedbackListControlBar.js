@@ -17,12 +17,11 @@ export class FeedbackListControlBar extends React.Component {
     };
   }
 
-  toggleOrderByDropdown = (offset) => {
+  toggleOrderByDropdown = () => {
     this.setState({
       orderByDropdownIsExpanded: !this.state.orderByDropdownIsExpanded,
       viewModeDropdownIsExpanded: false,
-      filterByDropdownIsExpanded: false,
-      dropdownOffset: offset
+      filterByDropdownIsExpanded: false
     });
   };
 
@@ -35,12 +34,11 @@ export class FeedbackListControlBar extends React.Component {
     });
   };
 
-  toggleViewModeDropdown = (offset) => {
+  toggleViewModeDropdown = () => {
     this.setState({
       viewModeDropdownIsExpanded: !this.state.viewModeDropdownIsExpanded,
       orderByDropdownIsExpanded: false,
-      filterByDropdownIsExpanded: false,
-      dropdownOffset: offset
+      filterByDropdownIsExpanded: false
     });
   };
 
@@ -51,7 +49,6 @@ export class FeedbackListControlBar extends React.Component {
         <OrderByContainer
           expanded={this.state.orderByDropdownIsExpanded}
           toggleDropdown={this.toggleOrderByDropdown}
-          offset={this.state.dropdownOffset}
           />
         <li>
           <hr/>
@@ -67,7 +64,6 @@ export class FeedbackListControlBar extends React.Component {
         <ViewSwitcherContainer
           expanded={this.state.viewModeDropdownIsExpanded}
           toggleDropdown={this.toggleViewModeDropdown}
-          offset={this.state.dropdownOffset}
           />
       </ListFrameMenu>
     );

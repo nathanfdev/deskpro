@@ -1,12 +1,16 @@
 import React, {Component, PropTypes} from 'react';
-import { connect } from 'react-redux';
 import { OrderBy } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
-import { OrderByDropdown } from './OrderByDropdown';
 import { toggleSort, toggleOrder } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { commentsToggleOrder } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
 import { sortingDataSelector } from '../../../Selectors/list';
 import { groupDataSelector } from '../../../Selectors/nav';
+import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned';
+import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
+import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
+import MenuFooter from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooter';
+import MenuFooterOptions from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterOptions';
 
+import { connect } from 'react-redux';
 @connect(state => ({
   sortOptions: state.Feedback.list.get('sortOptions').toJS(),
   order: state.Feedback.list.get('order'),
@@ -19,7 +23,6 @@ export class OrderByContainer extends Component {
   static propTypes = {
     order: PropTypes.string.isRequired,
     expanded: PropTypes.bool.isRequired,
-    offset: PropTypes.object.isRequired,
     currentSortMode: PropTypes.object.isRequired,
     sortOptions: PropTypes.object.isRequired,
     currentGroup: PropTypes.object.isRequired,
@@ -44,34 +47,55 @@ export class OrderByContainer extends Component {
     }
   }
 
-  renderDropdown() {
-    const {expanded, offset, toggleDropdown, order, currentSortMode, sortOptions, currentGroup} = this.props;
-    if (expanded) {
+  renderOptions() {
+    const {currentGroup, toggleDropdown, currentSortMode, sortOptions} = this.props;
+    if (currentGroup.name === 'feedback_comments') {
       return (
-        <OrderByDropdown
-          offset={offset}
-          order={order}
-          toggleListSort={this.toggleListSort.bind(this)}
-          toggleListOrder={this.toggleListOrder.bind(this)}
-          currentSortMode={currentSortMode}
+        <Item
+          active
           toggleDropdown={toggleDropdown}
-          sortOptions={sortOptions}
-          currentGroup={currentGroup}
+          option={currentSortMode}
           />
       );
     }
+    return (
+      sortOptions.map((option, index)=>
+          <Item
+            key={index}
+            isActive={currentSortMode.field === option.field}
+            onClick={this.toggleListSort.bind(this, option)}
+            icon={option.icon}
+            >
+            {option.label}
+          </Item>
+      )
+    );
   }
 
   render() {
-    const { sortOptions, order, currentSortMode, toggleDropdown } = this.props;
+    const { expanded, sortOptions, order, currentSortMode, toggleDropdown } = this.props;
     return (
       <OrderBy
         sortOptions={sortOptions}
         currentSortMode={currentSortMode}
         order={order}
         toggleDropdown={toggleDropdown}
+        ref="orderButton"
         >
-        {this.renderDropdown()}
+        <Positioned isOpen={expanded}
+                    positionAt="left bottom"
+                    positionTarget={this.refs.orderButton}>
+          <Menu>
+            {this.renderOptions()}
+            <MenuFooter>
+              <MenuFooterOptions options={[{id: 'asc', onClick: this.toggleListOrder.bind(this, 'asc'), label: 'Asc'},
+                                             {id: 'desc', onClick: this.toggleListOrder.bind(this, 'desc'), label: 'Desc'}
+                                            ]} active={order}>
+                Sort
+              </MenuFooterOptions>
+            </MenuFooter>
+          </Menu>
+        </Positioned>
       </OrderBy>
     );
   }

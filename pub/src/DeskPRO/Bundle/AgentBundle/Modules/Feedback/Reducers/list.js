@@ -11,14 +11,14 @@ const initialState = {
   selected: [], // array of IDs
   comments: [],
   viewModeOptions: [
-    {field: constants.VIEW_MODE_TABLE, label: 'Table view', icon: 'fa-table', current: false},
-    {field: constants.VIEW_MODE_LIST, label: 'Card view', icon: 'fa-list', current: true}
+    {field: constants.VIEW_MODE_TABLE, label: 'Table view', icon: 'table', current: false},
+    {field: constants.VIEW_MODE_LIST, label: 'Card view', icon: 'list', current: true}
   ],
   order: constants.ORDER_DESC, /* Asc, Desc */
   sortOptions: [
-    {field: 'date_created', label: 'Date', icon: 'fa-calendar-o', current: true},
-    {field: 'total_rating', label: 'Rating', icon: 'fa-calendar-o', current: false},
-    {field: 'num_ratings', label: 'Votes', icon: 'fa-calendar-o', current: false}
+    {field: 'date_created', label: 'Date', icon: 'calendar', current: true},
+    {field: 'total_rating', label: 'Rating', icon: 'calendar-o', current: false},
+    {field: 'num_ratings', label: 'Votes', icon: 'calendar', current: false}
   ],
   filterOptions: [
     {field: 'category', label: 'Type', icon: 'fa-calendar-o', value: '', current: true},
