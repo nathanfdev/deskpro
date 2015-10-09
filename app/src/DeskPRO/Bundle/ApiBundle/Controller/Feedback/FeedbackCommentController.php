@@ -78,10 +78,9 @@ class FeedbackCommentController extends BaseController
         $order              = $request->get('order');
         if ($awaitingValidation) {
             $qb
-                ->andWhere('c.status = :validating')
-                ->setParameter('validating', FeedbackComment::STATUS_VALIDATING)
-                ->orWhere('c.status = :visible AND c.is_reviewed = 0')
-                ->setParameter('visible', FeedbackComment::STATUS_VISIBLE);
+                ->andWhere('c.status IN (:validating)')
+                ->setParameter('validating', [FeedbackComment::STATUS_VALIDATING, FeedbackComment::STATUS_USER_VALIDATING])
+                ->orWhere('c.is_reviewed = 0');
         }
         if ($sort && $order) {
             $qb->orderBy("c.$sort", $order);

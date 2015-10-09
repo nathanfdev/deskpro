@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
 use Application\DeskPRO\Entity\FeedbackComment;
@@ -46,10 +47,9 @@ class FeedbackCommentsDataService extends AbstractDataService
         $qb = $this->em->createQueryBuilder();
         $qb->select('count(c)')
             ->from('DeskPRO:FeedbackComment', 'c')
-            ->andWhere('c.status = :validating')
-            ->setParameter('validating', FeedbackComment::STATUS_VALIDATING)
-            ->orWhere('c.status = :visible AND c.is_reviewed = 0')
-            ->setParameter('visible', FeedbackComment::STATUS_VISIBLE);
+            ->andWhere('c.status IN (:validating)')
+            ->setParameter('validating', [FeedbackComment::STATUS_VALIDATING, FeedbackComment::STATUS_USER_VALIDATING])
+            ->orWhere('c.is_reviewed = 0');
         try {
             $count = $qb->getQuery()->getSingleScalarResult();
         } catch (QueryException $e) {

@@ -51,6 +51,20 @@ class FeedbackCommentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventSubscriber(new ReplaceNotSubmittedValuesWithDefaultsListener());
+        $builder
+            ->add(
+                'status',
+                'text',
+                [
+                    'description' => 'status',
+                    'required'    => false,
+                ]
+            )
+            ->add(
+                'is_reviewed',
+                'api_boolean',
+                ['required' => false]
+            );
     }
 
     /**
