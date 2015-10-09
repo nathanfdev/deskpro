@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardUser, CardLabel, CardComments, CardStatusBar }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
-import $ from 'jquery';
+import jQuery from 'jquery';
 
 export class FeedbackCard extends Component {
 
@@ -45,8 +45,8 @@ export class FeedbackCard extends Component {
       = this.props;
     const labels = feedbackLabels ? feedbackLabels.get('labels') : false;
     const comments = feedbackComments ? feedbackComments.get('counter') : 0;
-    const containerWidth = $('.dp-list-frame-contents').innerWidth();
-    const feedbackMarkWidth = $('.dpw--feedback-card-mark').innerWidth();
+    const containerWidth = jQuery('.dp-list-frame-contents').innerWidth();
+    const feedbackMarkWidth = jQuery('.dpw--feedback-card-mark').innerWidth();
     const cardWidth = containerWidth - feedbackMarkWidth - 20;
     return (
       <Card type="feedback" width={cardWidth}>

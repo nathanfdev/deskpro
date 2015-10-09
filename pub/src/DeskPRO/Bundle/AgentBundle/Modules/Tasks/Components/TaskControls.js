@@ -67,10 +67,10 @@ export default class TaskControls extends React.Component {
         </div>
 
         <li>
-          <a href="#" className="dpwd-navigation-dropdown-top-row-button" onClick={this.toggleShowOrder.bind(this)}>
+          <a href="#" ref="orderButton" className="dpwd-navigation-dropdown-top-row-button"
+             onClick={this.toggleShowOrder.bind(this)}>
             <span className="title">Order by:</span>
-            <span className="focus"
-                  ref="orderButton">{ this.props.order.charAt(0).toUpperCase() + this.props.order.slice(1) }</span>
+            <span className="focus">{ this.props.order.charAt(0).toUpperCase() + this.props.order.slice(1) }</span>
             <span className="down">{ this.props.direction.charAt(0).toUpperCase() + this.props.direction.slice(1) } <i
               className="fa fa-caret-down"/></span>
           </a>

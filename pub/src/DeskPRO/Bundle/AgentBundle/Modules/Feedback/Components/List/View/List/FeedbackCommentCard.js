@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { Card, CardLine, CardLineLeft, CardLineFull, CardLineItem, CardCheckbox, CardDisc, CardContentText, CardDate, CardUser, CardStatusBar }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
-import $ from 'jquery';
+import jQuery from 'jquery';
 import { deleteComment, editComment } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
@@ -53,8 +53,8 @@ export class FeedbackCommentCard extends Component {
 
   render() {
     const { dispatch, comment, author, feedback, selected, toggleSelected } = this.props;
-    const containerWidth = $('.dp-list-frame-contents').innerWidth();
-    const cardWidth      = containerWidth - 15;
+    const containerWidth = jQuery('.dp-list-frame-contents').innerWidth();
+    const cardWidth = containerWidth - 15;
     return (
       <Card type="feedback" width={cardWidth} additionalClasses="dpmw--single-card-requires-validation">
 
@@ -89,10 +89,8 @@ export class FeedbackCommentCard extends Component {
               <CardDate date={comment.date_created} label="Posted"/>
             </CardLineItem>
             <CardDisc/>
-            <CardLineItem>
-              <span className="dpwd--card-line-item">
-                <i className="fa fa-link"></i> <a href="#">{feedback.get('title')}</a>
-              </span>
+            <CardLineItem icon="fa-link">
+              <a href="#">{feedback.get('title')}</a>
             </CardLineItem>
           </CardLineLeft>
         </CardLine>
@@ -143,9 +141,9 @@ export class ValidationLine extends Component {
           <li>
             <a href="#" onClick={toggleEditMode.bind(this)}>
               <span className="validation-line-icon edit"><i className="fa fa-edit"></i></span> <span
-              className="validation-line-title">{isEditingNow
-              ? 'Save'
-              : 'Edit'}</span>
+              className="validation-line-title">
+              {isEditingNow ? 'Save' : 'Edit'}
+            </span>
             </a>
           </li>
           <li>
@@ -156,7 +154,6 @@ export class ValidationLine extends Component {
           </li>
         </ul>
       </div>
-
     );
   }
 }
