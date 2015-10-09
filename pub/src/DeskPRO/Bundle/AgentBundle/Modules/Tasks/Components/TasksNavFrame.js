@@ -9,7 +9,17 @@ import TaskNavLabels from '../Components/TaskNavLabels';
 import { NavFrameHeader, NavFrame } from '../../Common/Components/NavFrame/index';
 import $ from 'jquery';
 
-@connect(state => ({
+import { loadProjects } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Actions/taskActions';
+import { createProjectRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/projectSelectors';
+
+const projectRequestId = 'projectNavView';
+const projectSel = createProjectRequestSelectors(projectRequestId);
+
+@connect(state => {
+  console.log('state');
+  console.log(state);
+  console.log(state.RecordStores.Tasks.projects.toJS());
+  return ({
   taskList: state.Tasks.taskList,
   projectList: state.Tasks.projectList,
   agentList: state.Tasks.agentList,
@@ -18,8 +28,10 @@ import $ from 'jquery';
   departmentList: state.Tasks.departmentList,
   user: state.Application.user,
   createdProject: state.Tasks.createdProject,
-  dpWindow: state.Application.dpWindow
-}))
+  dpWindow: state.Application.dpWindow,
+  projects: projectSel.recordsSel(state),
+  status: projectSel.statusSel(state)
+});})
 export default class TasksNavFrame extends React.Component {
   static propTypes = {
     taskList: React.PropTypes.object,
@@ -38,7 +50,9 @@ export default class TasksNavFrame extends React.Component {
   constructor(props) {
     super(props);
 
-    const { dispatch } = this.props;
+    const { status, dispatch } = this.props;
+
+    dispatch(loadProjects());
 
     dispatch(TaskActions.loadTasks());
     dispatch(TaskActions.loadMyTasks());
@@ -61,7 +75,12 @@ export default class TasksNavFrame extends React.Component {
 
   render() {
     const { taskList, projectList, agentList, labelList, departmentList,
-            teamList, createdProject, dpWindow, dispatch } = this.props;
+            teamList, createdProject, dpWindow, dispatch, projects, status } = this.props;
+
+    // if (!status.get('isLoading')) {
+      console.log('Projects');
+      console.log(projects.toJS());
+    // }
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
