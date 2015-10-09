@@ -8,7 +8,7 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 export class FeedbackCommentCard extends Component {
 
   static propTypes = {
-    dispatch: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired,
     comment: PropTypes.object.isRequired,
     feedback: PropTypes.object.isRequired,
     toggleSelected: PropTypes.func.isRequired,
@@ -24,26 +24,9 @@ export class FeedbackCommentCard extends Component {
     };
   }
 
-  deleteComment(id, event) {
-    event.preventDefault();
-    const {dispatch} = this.props;
-    dispatch(deleteComment(id));
-  }
-
-
   toggleEditMode(event) {
     event.preventDefault();
     this.setState({isEditingNow: !this.state.isEditingNow});
-  }
-
-  approveComment(commentId) {
-    const newValues = {
-      commentId: commentId,
-      status: constants.STATUS_VISIBLE,
-      is_reviewed: true
-    };
-    const {dispatch} = this.props;
-    dispatch(editComment(newValues));
   }
 
   renderContent() {
@@ -61,34 +44,19 @@ export class FeedbackCommentCard extends Component {
   }
 
   render() {
-    const { comment, author, feedback, selected, toggleSelected } = this.props;
+    const { dispatch, comment, author, feedback, selected, toggleSelected } = this.props;
     const containerWidth = $('.dp-list-frame-contents').innerWidth();
     const cardWidth = containerWidth - 15;
     return (
       <Card type="feedback" width={cardWidth} additionalClasses="dpmw--single-card-requires-validation">
-        <div className="dpmw--single-card-requires-validation-line">
-          <ul>
-            <li><span className="validation-mark">Waiting for approval:</span></li>
-            <li>
-              <a href="#" onClick={this.approveComment.bind(this, comment.id)}>
-                <span className="validation-line-icon"><i className="fa fa-check-circle"></i></span> <span
-                className="validation-line-title">Approve</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" onClick={this.toggleEditMode.bind(this)}>
-                <span className="validation-line-icon edit"><i className="fa fa-edit"></i></span> <span
-                className="validation-line-title">{this.state.isEditingNow ? 'Save' : 'Edit'}</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" onClick={this.deleteComment.bind(this, comment.id)}>
-                <span className="validation-line-icon trash"><i className="fa fa-trash"></i></span> <span
-                className="validation-line-title">Delete</span>
-              </a>
-            </li>
-          </ul>
-        </div>
+
+        <ValidationLine
+          comment={comment}
+          isEditingNow={this.state.isEditingNow}
+          dispatch={dispatch}
+          toggleEditMode={this.toggleEditMode.bind(this)}
+          />
+
         <CardStatusBar align="left" level="5"/>
         <CardStatusBar align="right" level="5"/>
         <CardCheckbox selected={selected} onClick={toggleSelected(comment.id)}/>
@@ -121,6 +89,64 @@ export class FeedbackCommentCard extends Component {
           </CardLineLeft>
         </CardLine>
       </Card>
+    );
+  }
+}
+
+export class ValidationLine extends Component {
+
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    toggleEditMode: PropTypes.func.isRequired,
+    comment: PropTypes.object.isRequired,
+    isEditingNow: PropTypes.bool.isRequired
+  };
+
+  approveComment(commentId, event) {
+    event.preventDefault();
+    const newValues = {
+      commentId: commentId,
+      status: constants.STATUS_VISIBLE,
+      is_reviewed: true
+    };
+    const {dispatch} = this.props;
+    dispatch(editComment(newValues));
+  }
+
+  deleteComment(id, event) {
+    event.preventDefault();
+    const {dispatch} = this.props;
+    dispatch(deleteComment(id));
+  }
+
+  render() {
+    const { comment, isEditingNow, toggleEditMode } = this.props;
+
+    return (
+      <div className="dpmw--single-card-requires-validation-line">
+        <ul>
+          <li><span className="validation-mark">Waiting for approval:</span></li>
+          <li>
+            <a href="#" onClick={this.approveComment.bind(this, comment.id)}>
+              <span className="validation-line-icon"><i className="fa fa-check-circle"></i></span> <span
+              className="validation-line-title">Approve</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" onClick={toggleEditMode.bind(this)}>
+              <span className="validation-line-icon edit"><i className="fa fa-edit"></i></span> <span
+              className="validation-line-title">{isEditingNow ? 'Save' : 'Edit'}</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" onClick={this.deleteComment.bind(this, comment.id)}>
+              <span className="validation-line-icon trash"><i className="fa fa-trash"></i></span> <span
+              className="validation-line-title">Delete</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
     );
   }
 }

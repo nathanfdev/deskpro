@@ -134,3 +134,8 @@ services:
       class: DeskPRO\Bundle\AppBundle\Form\Type\FilterSetType
       tags:
           - { name: form.type, alias: filter_set }
+
+  form.feedback_comment:
+      class: DeskPRO\Bundle\AppBundle\Form\Type\FeedbackCommentType
+      tags:
+          - { name: form.type, alias: feedback_comment }
