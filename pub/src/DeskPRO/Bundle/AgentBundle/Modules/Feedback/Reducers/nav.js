@@ -1,6 +1,7 @@
 import { createReducer } from 'Ampliflux';
-import { async, setFullPayload } from 'Ampliflux/reducers/handlers';
+import { async } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/FeedbackListActions';
+import Immutable from 'immutable';
 
 const initialState = {
   groups: [
@@ -75,9 +76,9 @@ export default createReducer(initialState, {
         .setIn(['statuses', 'hidden'], payload.data)
   }),
   [actions.changeGroupState]: (state, payload) => {
-    let groups = [];
+    const groups = [];
     state.get('groups').toJS().forEach(obj=> {
-      const nextObj   = {...obj};
+      const nextObj = {...obj};
       nextObj.current = obj.name === payload.name;
       if (obj.name === payload.name) {
         nextObj.value = payload.value;

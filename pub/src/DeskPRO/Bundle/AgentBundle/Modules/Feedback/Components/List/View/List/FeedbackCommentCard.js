@@ -26,14 +26,22 @@ export class FeedbackCommentCard extends Component {
 
   toggleEditMode(event) {
     event.preventDefault();
+    const { comment, dispatch } = this.props;
     this.setState({isEditingNow: !this.state.isEditingNow});
+    if (this.state.isEditingNow) {
+      const newValues = {
+        commentId: comment.id,
+        content: this.refs.commentContent.value.trim()
+      };
+      dispatch(editComment(newValues));
+    }
   }
 
   renderContent() {
     const { comment } = this.props;
     if (this.state.isEditingNow) {
       return (
-        <textarea defaultValue={comment.content} style={{width: '100%'}}/>
+        <textarea defaultValue={comment.content} style={{width: '100%'}} ref="commentContent"/>
       );
     }
     return (
@@ -46,7 +54,7 @@ export class FeedbackCommentCard extends Component {
   render() {
     const { dispatch, comment, author, feedback, selected, toggleSelected } = this.props;
     const containerWidth = $('.dp-list-frame-contents').innerWidth();
-    const cardWidth = containerWidth - 15;
+    const cardWidth      = containerWidth - 15;
     return (
       <Card type="feedback" width={cardWidth} additionalClasses="dpmw--single-card-requires-validation">
 
@@ -135,7 +143,9 @@ export class ValidationLine extends Component {
           <li>
             <a href="#" onClick={toggleEditMode.bind(this)}>
               <span className="validation-line-icon edit"><i className="fa fa-edit"></i></span> <span
-              className="validation-line-title">{isEditingNow ? 'Save' : 'Edit'}</span>
+              className="validation-line-title">{isEditingNow
+              ? 'Save'
+              : 'Edit'}</span>
             </a>
           </li>
           <li>
