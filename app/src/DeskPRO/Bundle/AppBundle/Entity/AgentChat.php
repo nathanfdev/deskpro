@@ -67,6 +67,12 @@ class AgentChat extends DomainObject implements PersonList
     protected $id;
 
     /**
+     * @var string
+     * @ORM\Column(type="string", columnDefinition="ENUM('agent', 'team', 'department', 'group')")
+     */
+    protected $type;
+
+    /**
      * @var bool
      * @ORM\Column(type="boolean", options={"default" = 0}, nullable=false)
      * @Assert\NotNull()
@@ -122,6 +128,22 @@ class AgentChat extends DomainObject implements PersonList
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
     }
 
     /**

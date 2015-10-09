@@ -44,13 +44,14 @@ class AgentChatParticipant extends EntityRepository
         /** @var AgentTeamRepository $teamRepo */
         $teamRepo = $this->getEntityManager()->getRepository('DeskPRO:AgentTeam');
         $teamIds  = $teamRepo->getTeamIdsForAgents([$person]);
-        $result   = $this->createQueryBuilder('acp')
+        $qb       = $this->createQueryBuilder('acp')
             ->select('acp.agent_chat_id')
             ->andWhere('acp.person_id = :person')
             ->orWhere('acp.agent_team_id IN (:agent_team_id)')
-            ->setParameters(['person' => $person->getId(), 'agent_team_id' => $teamIds])
-            ->getQuery()->getScalarResult();
-        $ids = array_map('current', $result);
+            ->setParameters(['person' => $person->getId(), 'agent_team_id' => $teamIds]);
+
+        $result = $qb->getQuery()->getScalarResult();
+        $ids    = array_map('current', $result);
 
         return array_unique($ids);
     }

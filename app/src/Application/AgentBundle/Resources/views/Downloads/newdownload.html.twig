@@ -117,7 +117,7 @@ pageMeta.baseId = '{{ baseId }}';
 						<dt class="prop">{{ phrase('agent.general.labels') }}</dt>
 						<dd class="prop">
 							<div class="tags-wrap article-tags">
-								<input type="text" value="{% for label in state.newdownload.labels %}{{label.label}},{% endfor %}" />
+								<input type="text" value="{% for label in state.newdownload.labels %}{{label.label}},{% endfor %}" data-allow-new="{{ app.user.hasPerm('agent_publish.articles_create_labels') ? 1 : 0 }}" />
 							</div>
 						</dd>
 					</dl>

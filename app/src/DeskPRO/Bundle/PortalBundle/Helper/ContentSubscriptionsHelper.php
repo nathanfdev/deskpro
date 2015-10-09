@@ -205,6 +205,13 @@ class ContentSubscriptionsHelper
             return 'download_subscriptions';
         }
 
+        if (
+            'feedback' === $input
+            || is_object($input) && 'Application\DeskPRO\Entity\Feedback' === get_class($input)
+        ) {
+            return 'feedback_subscriptions';
+        }
+
         throw new \InvalidArgumentException(sprintf('could not find subscriptions table name for input "%s"', $input));
     }
 
@@ -232,6 +239,13 @@ class ContentSubscriptionsHelper
             || is_object($input) && 'Application\DeskPRO\Entity\DownloadCategory' === get_class($input)
         ) {
             return 'download_id';
+        }
+
+        if (
+            'feedback' === $input
+            || is_object($input) && 'Application\DeskPRO\Entity\Feedback' === get_class($input)
+        ) {
+            return 'feedback_id';
         }
 
         throw new \InvalidArgumentException(sprintf('could not find subscriptions table name for input "%s"', $input));

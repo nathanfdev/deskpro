@@ -33,9 +33,11 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\Helper\FeedbackFilterUriHelper;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
@@ -324,9 +326,23 @@ class FeedbackController extends AbstractController
             $comment->setIpAddress($request->getClientIp());
             $new_comment_form = $form_handler->createForm($comment);
             if ($form_result = $form_handler->handle($new_comment_form, $request, $item, $comment)) {
+                // auto subscribe a logged in use to this feedback item
+                // because they submitted a comment
+                if ($person = $this->getUser()) {
+                    if ($person instanceof Person) {
+                        $subscriptions_helper = $this->getSubscriptionsHelper();
+                        if (!$subscriptions_helper->isSubscribedContent($item, $person)) {
+                            $subscriptions_helper->subscribeToContent($item, $person);
+                            $this->addFlash('success', $this->phrase('portal.flashes.feedback_subscribe'));
+                        }
+                    }
+                }
+
                 if ($form_result instanceof Response) {
                     return $form_result;
                 }
+
+                $this->addFlash('success', $this->phrase('portal.flashes.comment_thank_you'));
 
                 return $this->redirectToRoute('portal_feedback_view', array('slug' => $item->getSlug()));
             }
@@ -347,12 +363,25 @@ class FeedbackController extends AbstractController
         }
 
         //
+        // SUBSCRIPTION
+        //
+        $is_subscribed = false;
+        if (
+            $this->getBrandSetting('user.feedback_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_FEEDBACK, $item)
+        ) {
+            // waiting on info on the kb subs
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($item, $this->getUser());
+        }
+
+        //
         // RENDER THEME
         //
         return $this->renderThemeView(
             'Theme:Feedback:view.html.twig',
             array(
                 'item'             => $item,
+                'is_subscribed'    => $is_subscribed,
                 'content_id'       => $item->getId(),
                 'content_type'     => Feedback::CONTENT_TYPE,
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
@@ -383,6 +412,45 @@ class FeedbackController extends AbstractController
         $this->addFlash('success', $this->phrase('portal.flashes.rating_thanks'));
 
         return $this->redirectToRoute('portal_feedback_view', array('slug' => $item->getSlug()));
+    }
+
+    /**
+     * @Route("/feedback/view/{slug}/toggle-subscription", name="portal_feedback_toggle_subscription")
+     * @ParamConverter(name="item", converter="deskpro_slug")
+     * @Security("is_granted('USE_FEEDBACK') and is_granted('SUBSCRIBE_FEEDBACK', item)")
+     * @AutoPostOnGetRequest()
+     */
+    public function articleSubscriptionAction(Feedback $item)
+    {
+        $person               = $this->getUser();
+        $subscriptions_helper = $this->getSubscriptionsHelper();
+
+        if ($subscriptions_helper->isSubscribedContent($item, $person)) {
+            $subscriptions_helper->unsubscribeFromContent($item, $person);
+            $this->addFlash('success', $this->phrase('portal.flashes.feedback_unsubscribe'));
+        } else {
+            $subscriptions_helper->subscribeToContent($item, $person);
+            $this->addFlash('success', $this->phrase('portal.flashes.feedback_subscribe'));
+        }
+
+        return $this->redirectToRoute('portal_feedback_view', array('slug' => $item->getSlug()));
+    }
+
+    /**
+     * @Route("/feedback/items/subscriptions/unsubscribe", name="portal_feedback_unsubscribe_all")
+     * NOTE: we don't check if they have access to this content, because we might
+     *       let someone UN-subscribe from all even if they don't have access to some
+     *       of the categories anymore
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_FEEDBACK')")
+     * @AutoPostOnGetRequest()
+     */
+    public function feedbackUnsubscribeAllAction()
+    {
+        $this->getSubscriptionsHelper()->unsubscribeFromAll('feedback', $this->getUser());
+
+        $this->addFlash('success', $this->phrase('portal.flashes.feedback_unsubscribe_everything'));
+
+        return $this->redirectToRoute('portal_home');
     }
 
     /**

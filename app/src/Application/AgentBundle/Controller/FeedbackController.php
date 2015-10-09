@@ -316,6 +316,7 @@ class FeedbackController extends AbstractController
 
     public function ajaxSaveCommentAction($feedback_id)
     {
+        /** @var \Application\DeskPRO\Entity\Feedback $feedback */
         $feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
 
         if (!$feedback || !$this->in->getString('content')) {
@@ -323,7 +324,6 @@ class FeedbackController extends AbstractController
         }
 
         $comment              = new FeedbackComment();
-        $comment->feedback    = $feedback;
         $comment->is_reviewed = true;
         $comment['content']   = $this->in->getString('content');
 
@@ -333,9 +333,27 @@ class FeedbackController extends AbstractController
             $comment['status'] = 'visible';
         }
 
-        $commenting = new \Application\DeskPRO\Feedback\FeedbackCommenting($this->container, $this->person);
-        $commenting->saveComment($feedback, $comment);
-        $commenting->newCommentNotify($comment);
+        $feedback->addComment($comment);
+
+        if (!$comment->getPerson()) {
+            $comment->setPerson($this->person);
+        }
+
+        if ($this->person->is_agent) {
+            $comment->is_reviewed = true;
+        }
+
+        $feedback->addComment($comment);
+
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $this->em->persist($comment);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            throw $e;
+        }
 
         return $this->render('AgentBundle:Feedback:view-comment.html.twig', array(
             'comment' => $comment,

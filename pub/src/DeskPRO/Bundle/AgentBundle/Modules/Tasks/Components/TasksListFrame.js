@@ -20,7 +20,7 @@ import AssignHover from '../Components/AssignHover';
 
 import TaskMassActions from '../Components/TaskMassActions';
 import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
-import { ListFrame } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
 @connect(state => ({
   taskFrameList: state.Tasks.taskFrameList,
@@ -466,7 +466,7 @@ class TasksListFrame extends React.Component {
     }
 
     return (
-      <ListFrame className={sectionClass}>
+      <ListFrameContainer className={sectionClass}>
         <ComponentRootWrapper open={this.state.showAssignWindow}>
           <AssignHover position={this.state.position}
                        assignTask={this.handleAssigneeChange.bind(this)}
@@ -634,7 +634,7 @@ class TasksListFrame extends React.Component {
                            subContainerClassName={"pages-list sublist"}
                            activeClassName={"active"}/>
           </div> : '' }
-      </ListFrame>
+      </ListFrameContainer>
     );
   }
 }

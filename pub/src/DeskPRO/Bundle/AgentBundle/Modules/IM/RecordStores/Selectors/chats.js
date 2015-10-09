@@ -1,0 +1,15 @@
+import { createSelector } from 'reselect';
+import { createStoreSelectors, createRequestSelectorsBuilder } from 'Ampliflux/common/record-store/selectors';
+import { reduceMapToProperty } from 'DeskPRO/Component/Util/Map';
+
+function chatsStateSel(state) {
+  return state.RecordStores.IM.chats;
+}
+
+export const chatsStateSelector = createStoreSelectors(chatsStateSel);
+export const createChatsRequestSelectors = createRequestSelectorsBuilder(chatsStateSelector);
+
+export const chatsSelector = createSelector(
+  createChatsRequestSelectors('all').recordsSel,
+    chats => chats
+);

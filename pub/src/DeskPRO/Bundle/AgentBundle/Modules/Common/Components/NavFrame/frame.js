@@ -9,8 +9,27 @@ export class NavFrame extends React.Component {
     dispatch: PropTypes.func.isRequired
   };
 
+  onMouseEnter = () => {
+    const { dpWindow, dispatch } = this.props;
+    if (dpWindow.get('sidebarMode') === 'static') {
+      return;
+    }
+
+    this.hoverTimeout = setTimeout(() => dispatch(AppActions.expandNav()), 250);
+  };
+
+  onMouseLeave = () => {
+    const { dpWindow, dispatch } = this.props;
+    if (dpWindow.get('sidebarMode') === 'static') {
+      return;
+    }
+
+    clearTimeout(this.hoverTimeout);
+    this.hoverTimeout = setTimeout(() => dispatch(AppActions.collapseNav()), 500);
+  };
+
   render() {
-    const { children, dpWindow, dispatch } = this.props;
+    const { children, dpWindow } = this.props;
     let outer, inner = children;
 
     if (children instanceof Array && children.length) {
@@ -23,7 +42,6 @@ export class NavFrame extends React.Component {
       });
     }
 
-    const expandNav = () => dispatch(AppActions.expandNav());
     const className = ['sidebar-wrapper'];
     if (dpWindow.get('collapseNav')) {
       className.push('sidebar-collapsed');
@@ -32,12 +50,16 @@ export class NavFrame extends React.Component {
     return (
       <div>
         {outer}
-        <section className="task-nav-frame dp-nav-frame">
+
+        <section className="task-nav-frame dp-nav-frame"
+                 onMouseEnter={this.onMouseEnter}
+                 onMouseLeave={this.onMouseLeave}>
+
           <div className={className.join(' ')} id="sidebar-wrapper">
-            <a className="collapse-button" href="#" onClick={expandNav}>
+            <a className="collapse-button" href="#">
               <i className="fa fa-angle-right"/>
             </a>
-            <span className="collapse-controls" onClick={expandNav}>
+            <span className="collapse-controls">
               <span className="disc"/>
               <span className="disc"/>
               <i className="fa fa-caret-right"/>
@@ -63,22 +85,19 @@ export class NavFrameHeader extends React.Component {
   };
 
   render() {
-    const { children, icon, dispatch } = this.props;
-    const iconClass = 'fa ' + icon;
-    const collapse = () => dispatch(AppActions.collapseNav());
+    const { children, icon } = this.props;
+    const iconClass = 'icon ' + icon;
 
     return (
-      <div className="sidebar-title">
-        <span className="sidebar-type-icon">
-          <i className={iconClass}></i>
-          <span className="help">
-            <i className="fa fa-question"></i>
-          </span>
-        </span>
+      <div>
+        <div className="dpw-sidebar-main-title">
+          <h1 className="dpw-sidebar-main-title-active-section-1">{children}</h1>
 
-        <h1>{children}</h1>
-        <hr />
-        <a href="#" className="slider-control" onClick={collapse}/>
+          <div className="dpw-sidebar-main-title-active-app-icon">
+            <div className={iconClass}></div>
+          </div>
+        </div>
+        <span className="dpw-sidebar-main-title-footer"></span>
       </div>
     );
   }

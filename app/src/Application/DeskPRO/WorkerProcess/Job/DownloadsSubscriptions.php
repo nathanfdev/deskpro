@@ -77,7 +77,7 @@ class DownloadsSubscriptions extends AbstractJob
             SELECT n
             FROM DeskPRO:Download n INDEX BY n.id
             JOIN n.category c
-            WHERE n.status = 'published' AND (n.date_updated > :date)
+            WHERE n.status = 'published' AND (n.date_updated > :date OR n.date_last_comment > :date)
             ORDER BY n.date_updated DESC
         ")->setMaxResults(250)->execute(array('date' => $last_date));
 
@@ -178,49 +178,48 @@ class DownloadsSubscriptions extends AbstractJob
         # Verify permissions
         #------------------------------
 
-        // TODO: should this be the case? Commented out because download's dont have usergroups.
+        $user_groupmembers = App::getDb()->fetchAllGrouped('
+            SELECT person_id, usergroup_id
+            FROM person2usergroups
+            WHERE person_id IN (?)
+        ', array(array_keys($user_to_downloads)), 'person_id', null, 'usergroup_id', array(Connection::PARAM_INT_ARRAY));
 
-        //$user_groupmembers = App::getDb()->fetchAllGrouped("
-        //    SELECT person_id, usergroup_id
-        //    FROM person2usergroups
-        //    WHERE person_id IN (?)
-        //", array(array_keys($user_to_downloads)), 'person_id', null, 'usergroup_id', array(Connection::PARAM_INT_ARRAY));
-        //
-        //$cat_groups = App::getDb()->fetchAllGrouped("
-        //    SELECT category_id, usergroup_id
-        //    FROM downloads_category2usergroup
-        //", array(), 'category_id', null, 'usergroup_id');
-        //
-        //$all_user_to_articles = $user_to_downloads;
-        //$user_to_downloads = array();
-        //
-        //foreach ($all_user_to_articles as $person_id => $articles) {
-        //
-        //    $person_ugs = isset($user_groupmembers[$person_id]) ? $user_groupmembers[$person_id] : array();
-        //    $person_ugs[] = 1; // Everyone
-        //
-        //    foreach ($articles as $downloads) {
-        //        $add = false;
-        //        $cat = $downloads->category;
-        //        $cat_ugs = isset($cat_groups[$cat->getId()]) ? $cat_groups[$cat->getId()] : array();
-        //        if (Arrays::isIn($person_ugs, $cat_ugs)) {
-        //            $add = true;
-        //        }
-        //
-        //        if ($add) {
-        //            if (!isset($user_to_downloads[$person_id])) $user_to_downloads[$person_id] = array();
-        //            $user_to_downloads[$person_id][$downloads->getId()] = $downloads;
-        //        }
-        //    }
-        //}
+        $cat_groups = App::getDb()->fetchAllGrouped('
+            SELECT category_id, usergroup_id
+            FROM download_category2usergroup
+        ', array(), 'category_id', null, 'usergroup_id');
 
-        unset($all_user_to_articles);
+        $all_user_to_downloads = $user_to_downloads;
+        $user_to_downloads     = array();
+
+        foreach ($all_user_to_downloads as $person_id => $downloads) {
+            $person_ugs   = isset($user_groupmembers[$person_id]) ? $user_groupmembers[$person_id] : array();
+            $person_ugs[] = 1; // Everyone
+
+            foreach ($downloads as $download) {
+                $add     = false;
+                $cat     = $download->category;
+                $cat_ugs = isset($cat_groups[$cat->getId()]) ? $cat_groups[$cat->getId()] : array();
+                if (Arrays::isIn($person_ugs, $cat_ugs)) {
+                    $add = true;
+                }
+
+                if ($add) {
+                    if (!isset($user_to_downloads[$person_id])) {
+                        $user_to_downloads[$person_id] = array();
+                    }
+                    $user_to_downloads[$person_id][$download->getId()] = $download;
+                }
+            }
+        }
+
+        unset($all_user_to_downloads);
 
         #------------------------------
         # Now send the emails (they are queued)
         #------------------------------
 
-        foreach ($user_to_downloads as $person_id => $articles) {
+        foreach ($user_to_downloads as $person_id => $downloads) {
             //var_dump($person_id, $articles);exit;
 
             $person = App::getOrm()->find('DeskPRO:Person', $person_id);
@@ -231,7 +230,7 @@ class DownloadsSubscriptions extends AbstractJob
             $new_downloads     = array();
             $updated_downloads = array();
 
-            foreach ($articles as $downloads) {
+            foreach ($downloads as $downloads) {
                 if ($downloads->date_published > $last_date) {
                     $new_downloads[] = $downloads;
                 } else {
@@ -246,9 +245,8 @@ class DownloadsSubscriptions extends AbstractJob
                 'new_downloads'     => $new_downloads,
                 'updated_downloads' => $updated_downloads,
             ));
-            $message->enableQueueHint(1);
 
-            App::getMailer()->sendNow($message);
+            App::getMailer()->send($message);
 
             // Saves mem
             App::getOrm()->detach($person);

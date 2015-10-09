@@ -37,39 +37,13 @@ use Application\DeskPRO\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 
-// All hail the new UI! Add your other URLs in here.
-$collection->create('agent', array(
-    'path'       => '/',
-    'controller' => 'AgentBundle:AgentChrome:agentChrome',
-));
-$collection->create('react_agent_tickets', array(
-    'path'       => '/tickets',
-    'controller' => 'AgentBundle:AgentChrome:agentChrome',
-));
-$collection->create('react_agent_tasks', array(
-    'path'       => '/tasks',
-    'controller' => 'AgentBundle:AgentChrome:agentChrome',
-));
-$collection->create('react_agent_test', array(
-    'path'       => '/test',
-    'controller' => 'AgentBundle:AgentChrome:agentChrome',
-));
-$collection->create('react_agent_crm', array(
-    'path'       => '/crm',
-    'controller' => 'AgentBundle:AgentChrome:agentChrome',
-));
-$collection->create('react_agent_chat', array(
-    'path'       => '/chat',
-    'controller' => 'AgentBundle:AgentChrome:agentChrome',
-));
-$collection->create('react_agent_feedback', array(
-    'path'       => '/feedback',
-    'controller' => 'AgentBundle:AgentChrome:agentChrome',
-));
-$collection->create('react_agent_publish', array(
-    'path'       => '/publish',
-    'controller' => 'AgentBundle:AgentChrome:agentChrome',
-));
+$collection->create(
+    'agent',
+    array(
+        'path'       => '/',
+        'controller' => 'AgentBundle:Main:index',
+    )
+);
 
 $collection->create('geoip', array(
     'path'       => '/geoip',

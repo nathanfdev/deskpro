@@ -1,19 +1,20 @@
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import { ChangeModeButton } from './ChangeModeButton';
+import { ColumnSlider } from './ColumnSlider';
+import jQuery from 'jquery';
+import slider from 'jquery-ui/slider';
 
 export class ColumnMode extends React.Component {
 
   static propTypes = {
-    state: PropTypes.object.isRequired,
+    currentMode: PropTypes.string.isRequired,
+    columnDimensions: PropTypes.number.isRequired,
     onChangeMode: PropTypes.func.isRequired,
     onChangeDimensions: PropTypes.func.isRequired
   };
 
   render() {
-    const { state, onChangeMode, onChangeDimensions } = this.props;
-    const currentMode = state.columnMode;
-    const dimensionsEnabled = false;
+    const { currentMode, columnDimensions, onChangeMode, onChangeDimensions } = this.props;
 
     return (
       <div className="dpw-workspace-type-container">
@@ -44,24 +45,7 @@ export class ColumnMode extends React.Component {
           </ChangeModeButton>
         </div>
 
-        {dimensionsEnabled ? (<div className="dpw-workspace-state dpw-workspace-slider-container">
-          <div className="">
-            <h2>Column Dimensions <a href="#" onClick={onChangeDimensions.bind(this, 0)}>Reset</a></h2>
-            <div className="dpw-workspace-slider">
-              <div className="dpw-workspace-slider-count-container">
-                <span className="dpw-workspace-slider-count">{state.columnDimensions}%</span>
-              </div>
-
-              <div className="dpw-workspace-slider-slide-container">
-                  <span className="dpw-workspace-slider-slide" ref="slider">
-                    <span className="slider-blocked-left"></span>
-                    <span className="slider-blocked-right"></span>
-                    <span className="slider-button" style={{left: state.columnDimensions}}></span>
-                  </span>
-              </div>
-            </div>
-          </div>
-        </div>) : null}
+        {currentMode === 'column' ? (<ColumnSlider columnDimensions={columnDimensions} onChangeDimensions={onChangeDimensions} />) : null}
 
     </div>);
   }

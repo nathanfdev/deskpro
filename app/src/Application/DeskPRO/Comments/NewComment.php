@@ -230,11 +230,6 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
 
             App::getOrm()->commit();
 
-            if ($obj instanceof \Application\DeskPRO\Entity\FeedbackComment && $obj->status == \Application\DeskPRO\Entity\FeedbackComment::STATUS_VISIBLE) {
-                $commenting = new \Application\DeskPRO\Feedback\FeedbackCommenting(App::getContainer(), $person);
-                $commenting->newCommentNotify($obj);
-            }
-
             if (isset($this->assignments['article']) && $obj->status == 'visible') {
                 $this->assignments['article']->date_last_comment = new \DateTime();
                 App::getOrm()->persist($this->assignments['article']);

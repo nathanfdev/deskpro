@@ -347,30 +347,32 @@ class CleanupHourly extends AbstractJob
                 }
             }
 
-            // delete all files that were last modified more than 7 days ago
-            $file_finder = new Finder();
-            $file_finder->files()->in($environment_dirs)->date('before 7 days ago');
-            foreach ($file_finder as $deletable_file) {
-                unlink($deletable_file);
-            }
-
-            // delete all empty directories
-            // do this 3 times because the depth of empty directories can be up to 3, and many won't be empty on first pass
-            for ($i = 0; $i < 3; ++$i) {
-                $dir_finder = new Finder();
-                $dir_finder->directories()->in($environment_dirs);
-
-                /* @var \Symfony\Component\Finder\SplFileInfo $dir_name */
-                $maybe_delete_dirs = array();
-                foreach ($dir_finder as $dir_name) {
-                    // cannot delete here, as it might mess up the $finder iterator
-                    $maybe_delete_dirs[] = $dir_name->getRealPath();
+            if (count($environment_dirs) > 0) {
+                // delete all files that were last modified more than 7 days ago
+                $file_finder = new Finder();
+                $file_finder->files()->in($environment_dirs)->date('before 7 days ago');
+                foreach ($file_finder as $deletable_file) {
+                    unlink($deletable_file);
                 }
 
-                foreach ($maybe_delete_dirs as $dir) {
-                    $iterator = new \FilesystemIterator($dir);
-                    if (!$iterator->valid()) {
-                        rmdir($dir);
+                // delete all empty directories
+                // do this 3 times because the depth of empty directories can be up to 3, and many won't be empty on first pass
+                for ($i = 0; $i < 3; ++$i) {
+                    $dir_finder = new Finder();
+                    $dir_finder->directories()->in($environment_dirs);
+
+                    /* @var \Symfony\Component\Finder\SplFileInfo $dir_name */
+                    $maybe_delete_dirs = array();
+                    foreach ($dir_finder as $dir_name) {
+                        // cannot delete here, as it might mess up the $finder iterator
+                        $maybe_delete_dirs[] = $dir_name->getRealPath();
+                    }
+
+                    foreach ($maybe_delete_dirs as $dir) {
+                        $iterator = new \FilesystemIterator($dir);
+                        if (!$iterator->valid()) {
+                            rmdir($dir);
+                        }
                     }
                 }
             }

@@ -34,7 +34,10 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
+use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\Exception\AlreadySubmittedException;
@@ -70,14 +73,13 @@ class FeedbackCommentController extends BaseController
             ->select('c')
             ->from('DeskPRO:FeedbackComment', 'c');
         $awaitingValidation = $request->get('awaiting_validation');
-        $sort = $request->get('sort');
-        $order = $request->get('order');
+        $sort               = $request->get('sort');
+        $order              = $request->get('order');
         if ($awaitingValidation) {
             $qb
-                ->andWhere('c.status = :validating')
-                ->setParameter('validating', FeedbackComment::STATUS_VALIDATING)
-                ->orWhere('c.status = :visible AND c.is_reviewed = 0')
-                ->setParameter('visible', FeedbackComment::STATUS_VISIBLE);
+                ->andWhere('c.status IN (:validating)')
+                ->setParameter('validating', [FeedbackComment::STATUS_VALIDATING, FeedbackComment::STATUS_USER_VALIDATING])
+                ->orWhere('c.is_reviewed = 0');
         }
         if ($sort && $order) {
             $qb->orderBy("c.$sort", $order);
@@ -131,6 +133,113 @@ class FeedbackCommentController extends BaseController
 
     /**
      * @ApiDoc(
+     *      description="get a comment",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the comment",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          404="Not Found"
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\Entity\FeedbackComment"
+     * )
+     * @Get("/feedback_comments/{id}", name="api_feedback_comments_get", requirements={"id": "\d+"})
+     *
+     * @param int $id
+     *
+     * @return View
+     */
+    public function getAction($id)
+    {
+        $comment = $this->getFeedbackComment($id);
+
+        return View::create(
+            $this->dataSerialize($comment),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @APIDoc(
+     *      description="update a comment",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the task",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      input={"class"="comment", "name"=""},
+     *      statusCodes={
+     *          204="Updated",
+     *          400="Bad Request",
+     *          404="Not Found"
+     *      }
+     * )
+     * @Put("/feedback_comments/{id}", name="api_feedback_comments_put", requirements={"id": "\d+"})
+     *
+     * @param Request $request
+     * @param         $id
+     *
+     * @throws WrappedApiErrorException
+     * @throws \InvalidArgumentException
+     * @throws \LogicException
+     *
+     * @return View
+     */
+    public function putAction(Request $request, $id)
+    {
+        $comment = $this->getFeedbackComment($id);
+
+        return $this->handleFormSubmission($request, $comment);
+    }
+
+    /**
+     * @APIDoc(
+     *      description="delete a feedback comment",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the task",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          404="Not Found"
+     *      }
+     * )
+     * @Delete("/feedback_comments/{id}", name="api_feedback_comments_delete", requirements={"id": "\d+"})
+     *
+     * @param $id
+     *
+     * @throws \LogicException
+     *
+     * @return View
+     */
+    public function deleteAction($id)
+    {
+        $comment = $this->getFeedbackComment($id);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($comment);
+        $em->flush();
+
+        return View::create(
+            array(),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @ApiDoc(
      *      description="get count of feedback comment awaiting validation",
      *      parameters={
      *          {
@@ -165,11 +274,13 @@ class FeedbackCommentController extends BaseController
     /**
      * Will be abstracted for use by other controllers.
      *
-     * @param Request $request
+     * @param Request         $request
+     * @param FeedbackComment $comment
      *
      * @throws AlreadySubmittedException
      * @throws \InvalidArgumentException
      * @throws \LogicException
+     * @throws InvalidFormException
      *
      * @return View
      */
@@ -184,22 +295,38 @@ class FeedbackCommentController extends BaseController
 
         $form->submit($submitted, $request->getMethod() !== 'PUT');
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($comment);
-            $em->flush();
-
-            $location = $this->generateUrl('api_feedback_comments_get', array('id' => $comment->getId()));
-
-            return View::create(
-                $this->dataSerialize($comment),
-                $status,
-                array(
-                    'Location' => $location,
-                )
-            );
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
         }
 
-        throw new InvalidFormException($form);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($comment);
+        $em->flush();
+
+        $location = $this->generateUrl('api_feedback_comments_get', array('id' => $comment->getId()));
+
+        return View::create(
+            $this->dataSerialize($comment),
+            $status,
+            array(
+                'Location' => $location,
+            )
+        );
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return FeedbackComment
+     */
+    private function getFeedbackComment($id)
+    {
+        $comment = $this->getDoctrine()->getManager()->getRepository('DeskPRO:FeedbackComment')->find($id);
+
+        if (!$comment) {
+            throw $this->createNotFoundException();
+        }
+
+        return $comment;
     }
 }

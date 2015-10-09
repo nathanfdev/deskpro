@@ -46,6 +46,7 @@ class AgentChatTransformer extends AbstractDataSerializerTransformer
             'id',
             'date_created',
             'date_last_message',
+            'type',
         ];
     }
 

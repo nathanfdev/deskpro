@@ -57,7 +57,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 /**
  * Operations about agents.
  *
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/agents",
  * 	description="Operations about agents",
  * 	basePath="/api"
@@ -80,29 +80,29 @@ class AgentsController extends AbstractController implements ProtectedController
     /**
      * @return Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/agents",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get agents list",
      * 		notes="You can use full or basic query param for display settings. Default is 'normal'",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="full",
      *				description="Display full agents information right in list",
      *				paramType="query",
      *				required=false,
      *				type="boolean",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="basic",
      *				description="Display full agents information right in list",
      *				paramType="query",
      *				required=false,
      *				type="boolean",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="with_perms",
      *				description="Display agent permissions",
      *				paramType="query",
@@ -164,9 +164,9 @@ class AgentsController extends AbstractController implements ProtectedController
      *
      * @todo we have deprecated method here
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/agents/deleted",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get deleted agents list",
      * 		notes="",
@@ -236,15 +236,15 @@ class AgentsController extends AbstractController implements ProtectedController
      *
      * @return Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/agents/{id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get agent by ID",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="id",
      *				description="Agent ID",
      *				paramType="path",
@@ -270,27 +270,6 @@ class AgentsController extends AbstractController implements ProtectedController
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return Response
-     *
-     *
-     * @SWG\Api(
-     * 	path="/agents/deleted/{id}",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Get deleted agent by ID",
-     * 		notes="",
-     *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
-     *				name="id",
-     *				description="Agent ID",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *      )
-     *  )
-     * )
-     *
      * @return Response
      */
     public function getDeletedAgentAction($id)
@@ -326,84 +305,84 @@ class AgentsController extends AbstractController implements ProtectedController
      *
      * @return Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/agents/{id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Update existing agent by ID",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="id",
      *				description="Agent ID",
      *				paramType="path",
      *				required=true,
      *				type="integer",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="quick_add",
      *				description="Add 'all perms' group",
      *				paramType="query",
      *				required=true,
      *				type="boolean",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="perm_overrides",
      *				description="Save permission overrides",
      *				paramType="query",
      *				required=true,
      *				type="boolean",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="dep_perm_overrides",
      *				description="Save department permission overrides",
      *				paramType="query",
      *				required=true,
      *				type="boolean",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="agent[emails]",
      *				description="Agent data - emails",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="agent[primary_phone_number_text]",
      *				description="Agent data - phone number",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="agent[email]",
      *				description="Agent data - email",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="profile[signature_html]",
      *				description="Agent signature",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="profile[timezone]",
      *				description="Agent timezone",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="profile[unset_picture]",
      *				description="Delete agent picture",
      *				paramType="query",
      *				required=false,
      *				type="boolean",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="profile[set_picture_blob]",
      *				description="Picture blob",
      *				paramType="query",
@@ -414,84 +393,84 @@ class AgentsController extends AbstractController implements ProtectedController
      *  )
      * )
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/agents",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="PUT",
      * 		summary="Create new agent",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="skip_email",
      *				description="Do not send email to new user",
      *				paramType="query",
      *				required=true,
      *				type="boolean",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="quick_add",
      *				description="Add 'all perms' group",
      *				paramType="query",
      *				required=true,
      *				type="boolean",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="perm_overrides",
      *				description="Save permission overrides",
      *				paramType="query",
      *				required=true,
      *				type="boolean",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="dep_perm_overrides",
      *				description="Save department permission overrides",
      *				paramType="query",
      *				required=true,
      *				type="boolean",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="agent[emails]",
      *				description="Agent data - emails",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="agent[primary_phone_number_text]",
      *				description="Agent data - phone number",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="agent[email]",
      *				description="Agent data - email",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="profile[signature_html]",
      *				description="Agent signature",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="profile[timezone]",
      *				description="Agent timezone",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="profile[unset_picture]",
      *				description="Delete agent picture",
      *				paramType="query",
      *				required=false,
      *				type="boolean",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="profile[set_picture_blob]",
      *				description="Picture blob",
      *				paramType="query",
@@ -834,42 +813,42 @@ class AgentsController extends AbstractController implements ProtectedController
      *
      * @return Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/agents/{id}/profile",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Update existing agent profile by ID",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="id",
      *				description="Agent ID",
      *				paramType="path",
      *				required=true,
      *				type="integer",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="profile[signature_html]",
      *				description="Agent signature",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="profile[timezone]",
      *				description="Agent timezone",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="profile[unset_picture]",
      *				description="Delete agent picture",
      *				paramType="query",
      *				required=false,
      *				type="boolean",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="profile[set_picture_blob]",
      *				description="Picture blob",
      *				paramType="query",
@@ -1052,15 +1031,15 @@ class AgentsController extends AbstractController implements ProtectedController
      *
      * @return Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/agents/{id}/delete",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Delete agent and move it to deleted list",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="id",
      *				description="Agent ID",
      *				paramType="path",
@@ -1071,15 +1050,15 @@ class AgentsController extends AbstractController implements ProtectedController
      *  )
      * )
      
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/agents/{id}/delete/to-user",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Delete agent and move it to users list",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="id",
      *				description="Agent ID",
      *				paramType="path",
@@ -1089,7 +1068,6 @@ class AgentsController extends AbstractController implements ProtectedController
      *      )
      *  )
      * )
-     *
      * @return Response
      */
     public function deleteAgentAction($id, $mode)
@@ -1134,26 +1112,6 @@ class AgentsController extends AbstractController implements ProtectedController
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return Response
-     *
-     *
-     * @SWG\Api(
-     * 	path="/agents/deleted/{id}/undelete",
-     * 	@SWG\Operation(
-     * 		method="POST",
-     * 		summary="Undelete existing agent by ID",
-     *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
-     *				name="id",
-     *				description="Agent ID",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *      )
-     *  )
-     * )
-     *
      * @return Response
      */
     public function undeleteAgentAction($id)
@@ -1195,14 +1153,14 @@ class AgentsController extends AbstractController implements ProtectedController
      *
      * @return Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/agents/{id}/login-token",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Generate login token to agent with ID = id",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="id",
      *				description="Agent ID",
      *				paramType="path",
@@ -1241,26 +1199,6 @@ class AgentsController extends AbstractController implements ProtectedController
      * @throws \Exception
      *
      * @return Response
-     *
-     *
-     * @SWG\Api(
-     * 	path="/agents/{id}/notify-prefs/get-tables",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Get agent notification preferences",
-     *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
-     *				name="id",
-     *				description="Agent ID",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *      )
-     *  )
-     * )
-     *
      * @return Response
      */
     public function getNotifyPrefsAction($id)

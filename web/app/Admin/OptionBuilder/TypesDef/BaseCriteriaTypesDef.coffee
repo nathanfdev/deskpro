@@ -362,7 +362,6 @@ define [
 
               # compatibility with Custom Ticket Field
               value.options.value = 'date'
-              console.info value
               return value
           }
       }

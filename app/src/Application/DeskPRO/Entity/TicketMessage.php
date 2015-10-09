@@ -559,13 +559,8 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
     public function addAttachment(TicketAttachment $attach)
     {
-        if (!$this->attachments->contains($attach)) {
-            $this->attachments->add($attach);
-        }
-
-        $attach['ticket']                = $this->ticket;
-        $attach['message']               = $this;
-        $this->ticket['has_attachments'] = true;
+        $this->attachments->add($attach);
+        $attach['message'] = $this;
     }
 
     /**

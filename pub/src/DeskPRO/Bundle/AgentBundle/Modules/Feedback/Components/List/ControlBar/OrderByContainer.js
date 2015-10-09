@@ -37,7 +37,6 @@ export class OrderByContainer extends Component {
 
   toggleListOrder(order) {
     const {dispatch, currentGroup} = this.props;
-    console.log('Order: ', order);
     if (currentGroup.name !== 'feedback_comments') {
       dispatch(toggleOrder(order));
     } else {

@@ -81,12 +81,13 @@ class GenBuildManifest
 
         if ($this->add) {
             foreach ($this->add as $filepath) {
-                $filename = Strings::extractRegexMatch('#/(.*?)$#', $filepath, 1);
-                $build_id = Strings::extractRegexMatch('/Build(\\d+)\.php$/', $filename);
-                if ($build_id) {
-                    $trim_path = str_replace(DP_ROOT, '', $filepath);
-                    $classname = 'Application\\InstallBundle\\Upgrade\\Build\\'.str_replace('.php', '', $filename);
+                $file = new \SplFileInfo($filepath);
 
+                $build_id  = Strings::extractRegexMatch('/^Build(\\d+)\.php$/', $file->getFilename());
+                $trim_path = str_replace(DP_ROOT, '', $file->getRealPath());
+                $classname = 'Application\\InstallBundle\\Upgrade\\Build\\'.str_replace('.php', '', $file->getBasename());
+
+                if ($build_id) {
                     $builds[$build_id] = array(
                         'file'      => $trim_path,
                         'classname' => $classname,

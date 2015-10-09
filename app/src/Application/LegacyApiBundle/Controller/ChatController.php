@@ -37,7 +37,7 @@ use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/chats",
  * 	description="Operations about Chats",
  * 	basePath="/api"
@@ -48,64 +48,64 @@ class ChatController extends AbstractController
     // todo: better search - ordering, more criteria
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Search for chats matching criteria",
      * 		notes="Returns list of chats that matched.",
      *		type="array",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="agent_id[]",
      *				description="Requires chat to be assigned to the specified agent ID.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="department_id[]",
      *				description="Requires chat to be in the specified department ID.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label[]",
      *				description="Requires chat to be have the specified label.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="person_id[]",
      *				description="Requires chat to be created by the specified person ID.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="status[]",
      *				description="Requires chat to be in the specified status. Possible values are ended and open.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="order",
      *				description="Order of the results. Defaults to newest chats. This parameter is not used used yet.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="cache_id",
      *				description="If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="page",
      *				description="The page number of the results to fetch.",
      *				paramType="query",
@@ -185,15 +185,15 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets a chat by chat ID.",
      * 		notes="Information about the chat by chat ID.",
      *		type="Chat",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="chat_id",
      *				description="ID of the chat that needs to be searched.",
      *				paramType="path",
@@ -201,7 +201,7 @@ class ChatController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Chat not found")
+     *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
      * ).
      */
@@ -213,21 +213,21 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Updates a chat by chat ID.",
      *		type="Chat",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="chat_id",
      *				description="ID of the chat that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="department_id",
      *				description="Department the chat is in.",
      *				paramType="query",
@@ -235,7 +235,7 @@ class ChatController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Chat not found")
+     *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
      * ).
      */
@@ -270,21 +270,21 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/leave",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Leaves a chat by chat ID.",
      *		type="Chat",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="chat_id",
      *				description="ID of the chat that needs to be left.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="action",
      *				description="If the chat is open, an additional action to take. Options are unassign or end.",
      *				paramType="query",
@@ -292,7 +292,7 @@ class ChatController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Chat not found")
+     *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
      * ).
      */
@@ -322,14 +322,14 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/end",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Ends a chat by chat ID.",
      *		type="Chat",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="chat_id",
      *				description="ID of the chat that needs to be ended.",
      *				paramType="path",
@@ -337,7 +337,7 @@ class ChatController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Chat not found")
+     *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
      * ).
      */
@@ -352,13 +352,13 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/messages",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets all messages in a chat by chat ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="chat_id",
      *				description="ID of the chat that needs to be ended.",
      *				paramType="path",
@@ -366,7 +366,7 @@ class ChatController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Chat not found")
+     *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
      * ).
      */
@@ -378,20 +378,20 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/messages",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Replies to a chat as the API user",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="chat_id",
      *				description="ID of the chat that needs to be ended.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="message",
      *				description="Message reply text.",
      *				paramType="query",
@@ -399,7 +399,7 @@ class ChatController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Chat not found")
+     *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
      * ).
      */
@@ -423,13 +423,13 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/participants",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets all participants in a chat by chat ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="chat_id",
      *				description="ID of the chat that needs to be ended.",
      *				paramType="path",
@@ -437,7 +437,7 @@ class ChatController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Chat not found")
+     *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
      * ).
      */
@@ -449,20 +449,20 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/participants",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Adds a participants in a chat by chat ID and person ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="chat_id",
      *				description="ID of the chat.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be added to the Chat.",
      *				paramType="query",
@@ -470,7 +470,7 @@ class ChatController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Chat not found")
+     *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
      * ).
      */
@@ -496,20 +496,20 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/participants/{person_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Determines if a person is participating in a chat.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="chat_id",
      *				description="ID of the chat that needs to be checked.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be added to be checked.",
      *				paramType="query",
@@ -517,7 +517,7 @@ class ChatController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Chat not found")
+     *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
      * ).
      */
@@ -534,20 +534,20 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/participants/{person_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Removes a participant from a chat",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="chat_id",
      *				description="ID of the chat that needs to be checked.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be added to be removed.",
      *				paramType="query",
@@ -555,7 +555,7 @@ class ChatController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Chat not found")
+     *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
      * ).
      */
@@ -576,13 +576,13 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/labels",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets the labels for a chat",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="chat_id",
      *				description="ID of the chat that needs to be checked.",
      *				paramType="path",
@@ -590,7 +590,7 @@ class ChatController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Chat not found")
+     *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
      * ).
      */
@@ -602,20 +602,20 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/labels",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Adds a label to a chat.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="chat_id",
      *				description="ID of the chat that needs to be checked.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label",
      *				description="Label to add.",
      *				paramType="query",
@@ -623,7 +623,7 @@ class ChatController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Chat not found")
+     *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
      * ).
      */
@@ -647,20 +647,20 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/labels/{label}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Determines if the chat has the label.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="chat_id",
      *				description="ID of the chat that needs to be checked.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label",
      *				description="Label to check.",
      *				paramType="path",
@@ -668,7 +668,7 @@ class ChatController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Chat not found")
+     *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
      * ).
      */
@@ -684,20 +684,20 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/labels/{label}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Removes a label from a chat.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="chat_id",
      *				description="ID of the chat that needs to be checked.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label",
      *				description="Label that needs to be removed.",
      *				paramType="path",
@@ -705,7 +705,7 @@ class ChatController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Chat not found")
+     *		SWG\ResponseMessage(code=404, message="Chat not found")
      * 	)
      * ).
      */

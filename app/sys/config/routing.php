@@ -48,7 +48,7 @@ $col = $loader->import(DP_ROOT.'/src/DeskPRO/Bundle/PortalBundle/Resources/confi
 $collection->addCollection($col);
 
 //
-// to be removed shortly
+// to be removed shortly (old routes)
 //
 $col = $loader->import(DP_ROOT.'/src/Application/UserBundle/Resources/config/user-routing.php');
 $collection->addCollection($col);

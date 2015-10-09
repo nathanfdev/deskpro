@@ -1,5 +1,5 @@
 import 'babel/polyfill';
-import $ from 'jquery';
+import jQuery from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware, compose } from 'redux';
@@ -10,7 +10,7 @@ import BrowserHistory from 'react-router/lib/BrowserHistory';
 import AppReducers from './AgentApp_Reducers.js';
 import { DpAppContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/DpAppContainer';
 import { batchedUpdatesMiddleware } from 'redux-batched-updates';
-import { IntlProvider, defineMessages } from 'react-intl';
+import { IntlProvider } from 'react-intl';
 
 import Immutable from 'immutable';
 window.Immutable = Immutable;
@@ -28,7 +28,7 @@ window.DP_LANG = {
 
 export default class AgentApp {
   run() {
-    $(document).on('ready', () => this.start());
+    jQuery(document).on('ready', () => this.start());
   }
 
   start() {
@@ -37,16 +37,16 @@ export default class AgentApp {
 
     // This builder calls compile on old-style reducers
     // created via the Reducer class
-    const legacyReducerBuilder = function(r) {
-      if (r.isAmplifluxReducer) {
-        const rInst = new r();
+    const legacyReducerBuilder = function(reducer) {
+      if (reducer.isAmplifluxReducer) {
+        const rInst = new reducer();
         return rInst.compile();
-      } else {
-        return r;
       }
+
+      return reducer;
     };
 
-    const reducer    = combineReducerHierarchy(AppReducers, legacyReducerBuilder);
+    const reducer = combineReducerHierarchy(AppReducers, legacyReducerBuilder);
     const middleware = applyMiddleware(
       ampMiddleware.timerMiddleware('startTime'),
       ampMiddleware.intervalMiddleware,
@@ -58,10 +58,8 @@ export default class AgentApp {
       ampMiddleware.loggerMiddleware,
       batchedUpdatesMiddleware
     );
-    const makeStore  = compose(
-        middleware
-    )(createStore);
-    const store      = makeStore(reducer);
+    const makeStore = compose(middleware)(createStore);
+    const store = makeStore(reducer);
 
     const intlData = {
       'locales': 'en-US',

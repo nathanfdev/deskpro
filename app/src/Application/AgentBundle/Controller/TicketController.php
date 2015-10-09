@@ -65,6 +65,7 @@ use Application\DeskPRO\Tickets\TicketSplit;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\Common\Collections\ArrayCollection;
+use Orb\Util\Arrays;
 use Orb\Util\Dates;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
@@ -559,14 +560,14 @@ class TicketController extends AbstractController
     protected function _getTicketLogsBlockInfo(\Application\DeskPRO\Entity\Ticket $ticket, $page = 1, $filter = null, $up_to_page = false, $per_page = null)
     {
         if (!$per_page) {
-        if ($filter) {
-            // 50 when filtered because entries are "loose"
+            if ($filter) {
+                // 50 when filtered because entries are "loose"
             $per_page = 50;
-        } else {
-            // Only 10 when not filtered because entries are grouped,
+            } else {
+                // Only 10 when not filtered because entries are grouped,
             // so 10 is typically more like 50
             $per_page = 10;
-        }
+            }
         }
 
         $options         = array();
@@ -1259,19 +1260,26 @@ class TicketController extends AbstractController
 
         $message->convertEmbeddedImagesToInlineAttach();
 
-        if ($this->in->getBool('options.is_snippet')) {
-            $snippet = $this->em->find('DeskPRO:TextSnippet', (int) $this->in->getString('options.snippet_id'));
+        if ($snippet_ids = $this->in->getString('options.snippet_ids')) {
+            $snippet_ids = explode(',', $snippet_ids);
+            $snippet_ids = array_map(function ($x) { return (int) trim($x); }, $snippet_ids);
+            $snippet_ids = Arrays::removeFalsey($snippet_ids);
+            $snippet_ids = array_unique($snippet_ids, SORT_NUMERIC);
 
-            if ($snippet) {
-                $snippetLog = new Entity\TextSnippetLog();
+            foreach ($snippet_ids as $snip_id) {
+                $snippet = $this->em->find('DeskPRO:TextSnippet', $snip_id);
 
-                $snippetLog['ticket']  = $ticket;
-                $snippetLog['person']  = $this->getPerson();
-                $snippetLog['snippet'] = $snippet;
-
-                $this->em->persist($snippetLog);
-                $this->em->flush();
+                if ($snippet) {
+                    $snippetLog = Entity\TicketObjectUseLog::createSnippetLog($ticket, $this->getPerson(), $snippet);
+                    $this->em->persist($snippetLog);
+                    $this->em->flush();
+                }
             }
+        }
+
+        if ($macro) {
+            $macroLog = Entity\TicketObjectUseLog::createMacroLog($ticket, $this->getPerson(), $macro);
+            $this->em->persist($macroLog);
         }
 
         if ($dupe_message = $this->em->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket)) {
@@ -1728,8 +1736,8 @@ class TicketController extends AbstractController
         // When converting to a reply, we act as though this is a new
         // agent reply and pass it through newreply triggers
         if ($message->is_agent_note != $old_val) {
-        $this->em->persist($message);
-        $this->em->flush();
+            $this->em->persist($message);
+            $this->em->flush();
 
             $ticket->getStateChangeRecorder()->recordData('message_note_status', array(
                 'message_id'    => $message->id,
@@ -2139,7 +2147,7 @@ class TicketController extends AbstractController
         $is_rtl                 = ($ticket->language && $ticket->language->is_rtl);
         $data['data']['reload'] = (($was_rtl && !$is_rtl) || (!$was_rtl && $is_rtl));
 
-        $ticket_options  = App::getApi('tickets')->getTicketOptions($this->person);
+        $ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
         $open_problems = array();
         $incidents     = 0;
@@ -2449,6 +2457,12 @@ class TicketController extends AbstractController
             }
         }
 
+        if ($macro) {
+            $macroLog = Entity\TicketObjectUseLog::createMacroLog($ticket, $this->getPerson(), $macro);
+            $this->em->persist($macroLog);
+            $this->em->flush();
+        }
+
         if ($permission_errors) {
             return $this->createJsonResponse(array(
                 'ticket_id' => $ticket->getId(),
@@ -2713,8 +2727,8 @@ class TicketController extends AbstractController
             ));
         }
 
-        $old_amount  = $charge->amount;
-        $old_time    = $charge->charge_time;
+        $old_amount = $charge->amount;
+        $old_time   = $charge->charge_time;
 
         $amount = $this->in->getFloat('amount');
 
@@ -2782,17 +2796,17 @@ class TicketController extends AbstractController
         if ($details) {
             $details['charge_id'] = $charge->id;
             $ticket_log->details  = $details;
-        $this->em->persist($ticket_log);
+            $this->em->persist($ticket_log);
         }
 
         $this->em->flush();
         $billing_fields[$charge['id']] = $field_manager->getDisplayArrayForObject($charge);
 
         return $this->createJsonResponse(array(
-            'updated'    => true,
-            'html'       => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
-                'ticket' => $ticket,
-                'charge' => $charge,
+            'updated'            => true,
+            'html'               => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
+                'ticket'         => $ticket,
+                'charge'         => $charge,
                 'billing_fields' => $billing_fields,
                 'ticket_perms'   => $this->_getTicketPerms($ticket),
             )),
@@ -3793,11 +3807,11 @@ class TicketController extends AbstractController
         $page    = $layouts->getLayout($ticket->department ? $ticket->department['id'] : 0);
         $layout  = LayoutDisplay::createFromLayout($page, LayoutDisplay::NEW_TICKET);
 
-        $manager              = $this->container->getCustomFieldManager();
-        $new_custom_fields    = $manager->createFormForOwner($ticket, $ticket->person, $layout);
+        $manager           = $this->container->getCustomFieldManager();
+        $new_custom_fields = $manager->createFormForOwner($ticket, $ticket->person, $layout);
         if ($ticket->person && ($org = $ticket->person->organization)) {
-                $manager->merge($new_custom_fields, $manager->createFormForOwner($ticket, $org, $layout));
-            }
+            $manager->merge($new_custom_fields, $manager->createFormForOwner($ticket, $org, $layout));
+        }
 
         $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
             array('is_open' => true),
@@ -3970,8 +3984,8 @@ class TicketController extends AbstractController
             }
 
             // Validate based on department...
-            $validator                = new \Application\AgentBundle\Validator\NewTicketValidator();
-            $layout                   = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
+            $validator = new \Application\AgentBundle\Validator\NewTicketValidator();
+            $layout    = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
 
             // agent newticket form has a quick create-user form
             // which doesnt include custom fields at the moment so
@@ -3980,10 +3994,10 @@ class TicketController extends AbstractController
                 return $f->getFieldType() != 'user_field';
             });
 
-            $layout                   = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newticket->getMockTicket());
-            $newticket->ticket_fields = $this->request->request->get('custom_fields', array());
+            $layout                    = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newticket->getMockTicket());
+            $newticket->ticket_fields  = $this->request->request->get('custom_fields', array());
             $newticket->billing_fields = $this->request->request->get('billing_fields', array());
-            $newticket->status        = $set_status;
+            $newticket->status         = $set_status;
             $validator->setLayout($layout);
             $newticket->setLayout($layout);
 
@@ -4242,6 +4256,28 @@ class TicketController extends AbstractController
                             $ticket->associateProblem($problem);
                         }
                     }
+                }
+
+                if ($snippet_ids = $this->in->getString('options.snippet_ids')) {
+                    $snippet_ids = explode(',', $snippet_ids);
+                    $snippet_ids = array_map(function ($x) { return (int) trim($x); }, $snippet_ids);
+                    $snippet_ids = Arrays::removeFalsey($snippet_ids);
+                    $snippet_ids = array_unique($snippet_ids, SORT_NUMERIC);
+
+                    foreach ($snippet_ids as $snip_id) {
+                        $snippet = $this->em->find('DeskPRO:TextSnippet', $snip_id);
+
+                        if ($snippet) {
+                            $snippetLog = Entity\TicketObjectUseLog::createSnippetLog($ticket, $this->getPerson(), $snippet);
+                            $this->em->persist($snippetLog);
+                            $this->em->flush();
+                        }
+                    }
+                }
+
+                if ($macro) {
+                    $macroLog = Entity\TicketObjectUseLog::createMacroLog($ticket, $this->getPerson(), $macro);
+                    $this->em->persist($macroLog);
                 }
 
                 $ticket->recomputeHash();

@@ -4,6 +4,7 @@ import PortalWindow from "DeskPRO/Bundle/PortalBundle/PortalWindow"
 import PortalUrlGenerator from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator"
 import $ from "jquery"
 import React from "react"
+import ReactDOM from "react-dom"
 
 export default class LanguageChangerWidget extends PageWidget {
   clickLanguage(lang_code) {
@@ -17,6 +18,6 @@ export default class LanguageChangerWidget extends PageWidget {
   renderWidget() {
     this.$element.hide();
     this.$rElement = $('<div class="dp-react-widget"></div>').insertAfter(this.$element);
-    React.render(React.createElement(LanguageChanger, {active_lang_code: PortalWindow.lang, enabled_langs: PortalWindow.enabled_langs, clickLanguage: this.clickLanguage.bind(this) }), this.$rElement.get(0));
+    ReactDOM.render(React.createElement(LanguageChanger, {active_lang_code: PortalWindow.lang, enabled_langs: PortalWindow.enabled_langs, clickLanguage: this.clickLanguage.bind(this) }), this.$rElement.get(0));
   }
 }

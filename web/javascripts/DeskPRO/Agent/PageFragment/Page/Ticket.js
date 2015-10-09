@@ -2507,11 +2507,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					e.preventDefault();
 
 					form.addClass('loading');
+					var postData = form.serializeArray();
 
 					$.ajax({
 						url: form.attr('action'),
 						type: 'POST',
-						data: form.serializeArray(),
+						data: postData,
 						dataType: 'json'
 					}).always(function() {
 						form.removeClass('loading');
@@ -2525,6 +2526,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 							}
 							return;
 						}
+
+						postData.forEach(function(el){
+							if('message_ids[]' != el.name) return;
+							self.getEl('messages_wrap').find('article.message-' + el.value + ':first').remove();
+						});
 
 						overlay.close();
 

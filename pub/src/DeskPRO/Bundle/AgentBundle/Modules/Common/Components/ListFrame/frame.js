@@ -1,10 +1,18 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import jQuery from 'jquery';
 import { debounce } from 'lodash';
 
-export class ListFrame extends React.Component {
-  static propTypes:{
+@connect((state) => {
+  return {
+    dpWindow: state.Application.dpWindow
+  };
+})
+export class ListFrameContainer extends React.Component {
+
+  static propTypes = {
+    dpWindow: PropTypes.object.isRequired,
     children: PropTypes.node,
     className: PropTypes.string
   };
@@ -27,12 +35,12 @@ export class ListFrame extends React.Component {
 
   fixWidth = () => {
     const totalWidth = jQuery(document).width() - jQuery('section.dp-nav-frame:first').width();
-    const navWidth = Math.ceil(totalWidth * 0.4);
+    const navWidth = Math.ceil(totalWidth * this.props.dpWindow.get('columnDimensions') / 100);
     jQuery(ReactDOM.findDOMNode(this)).width(navWidth);
   };
 
   render() {
-    const className = this.props.className || 'feedback-list-frame dp-list-frame';
+    const className = this.props.className || 'dp-list-frame';
     return (
       <section className={className}>
         <div className="feedback-list">

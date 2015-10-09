@@ -38,12 +38,15 @@ use Application\DeskPRO\Entity\TicketDeleted;
 use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
 use Application\DeskPRO\People\PrefNoticeSet;
 use DeskPRO\Kernel\KernelErrorHandler;
+use Doctrine\DBAL\Connection;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MainController extends AbstractController
 {
+    protected $deleted_tickets = array();
+
     public function requireRequestToken($action, $arguments = null)
     {
         if ($action == 'indexAction') {
@@ -439,19 +442,31 @@ class MainController extends AbstractController
             'results' => array(),
         );
 
-        if (!$query = preg_replace('/[^\d]/', '', $query)) {
-            return $res;
+        if ($sub = preg_replace('/[^\d]/', '', $query)) {
+            /** @var $deleted TicketDeleted */
+            if ($deleted = $this->em->find('DeskPRO:TicketDeleted', $sub)) {
+                if (isset($this->deleted_tickets[$deleted['ticket_id']])) {
+                    $res['results'][] = array(
+                        'id'     => $deleted->ticket_id,
+                        'reason' => $this->deleted_tickets[$deleted->ticket_id]->title,
+                    );
+                    unset($this->deleted_tickets[$deleted['ticket_id']]);
+                } else {
+                    $res['results'][] = array(
+                        'id'     => $deleted->ticket_id,
+                        'reason' => $deleted->reason,
+                    );
+                }
+            }
         }
 
-        /** @var $deleted TicketDeleted */
-        if (!$deleted = $this->em->find('DeskPRO:TicketDeleted', $query)) {
-            return $res;
+        foreach ($this->deleted_tickets as $deleted) {
+            $res['results'][] = array(
+                'id'     => $deleted->id,
+                'reason' => $deleted->title,
+            );
         }
-
-        $res['results'][] = array(
-            'id'     => $deleted['ticket_id'],
-            'reason' => $deleted['reason'],
-        );
+        $this->deleted_tickets = array();
 
         return $res;
     }
@@ -521,7 +536,11 @@ class MainController extends AbstractController
                         $ticket_info['person'] = $render_person($person);
                     }
 
-                    $rows[] = $ticket_info;
+                    if ('deleted' === $r->hidden_status) {
+                        $this->deleted_tickets[$r->id] = $r;
+                    } else {
+                        $rows[] = $ticket_info;
+                    }
                 }
                 break;
 
@@ -574,9 +593,6 @@ class MainController extends AbstractController
                         'title' => $r->title,
                     );
                 }
-            break;
-            case 'deleted_tickets':
-
         }
 
         return $rows;

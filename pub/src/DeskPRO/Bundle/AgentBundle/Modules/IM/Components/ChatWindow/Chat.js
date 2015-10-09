@@ -51,7 +51,7 @@ export class Chat extends React.Component {
         <MessageList
           agents={this.props.agents}
           me={this.props.me}
-          messages={this.props.messages.get('chatMessages')[this.props.current.id]}/>
+          messages={this.props.messages.getIn(['chatMessages',this.props.current.id])}/>
         <Footer handleAddMessage={this.handleAddMessage}/>
       </div>
     );

@@ -25,6 +25,13 @@ export function commentsToReview() {
 }
 
 /*
+ * @return Promise
+ */
+export function deleteFeedbackComment(id) {
+  return DpApi.sendDelete('DP_API/feedback_comments/' + id);
+}
+
+/*
  * Feedback comments to review list
  * @return Promise
  */
@@ -38,6 +45,17 @@ export function commentsToReviewList(params) {
   console.log('DP_API/feedback_comments_list?' + paramsEncoded.join('&'));
   return DpApi.sendGet('DP_API/feedback_comments_list?' + paramsEncoded.join('&'));
 }
+
+/*
+ * Update a feedbackComment
+ * @param commentId
+ * @param data
+ * @return Promise
+ */
+export function editComment(commentId, data) {
+  return DpApi.sendPut('DP_API/feedback_comments/' + commentId, data);
+}
+
 
 /*
  * Feedback labels

@@ -16,8 +16,7 @@ export default class ResultsPartial extends React.Component {
       );
     }
     return (
-      <div className="paged-results" ref="results" dangerouslySetInnerHTML={{ __html: html }}>
-      </div>
+      <div className="paged-results" ref="results" dangerouslySetInnerHTML={{ __html: html }} />
     );
   }
 

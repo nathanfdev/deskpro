@@ -1,6 +1,6 @@
 @import "normalize.css";
 @import "raw/styles";
-@import "global-widgets/table-view", "global-widgets/id-container", "global-widgets/pagination", "global-widgets/control-bar", "global-widgets/radio", "global-widgets/cards";
+@import "global-widgets/table-view", "global-widgets/id-container", "global-widgets/pagination", "global-widgets/control-bar", "global-widgets/radio", "global-widgets/cards", "global-widgets/fonts";
 @import "global-widgets/navigation-dropdown/navigation-dropdowns";
 @import "feedback/cards";
 
@@ -195,6 +195,9 @@ $kanban-frame-width: 800px;
     &.collapsed-nav {
       left: $app-switcher-width + $nav-collapsed-width + $list-frame-width;
     }
+    &.collapsed-list {
+      left: 0;
+    }
 
     &.kanban-shifted {
       left: $app-switcher-width + $nav-frame-width + $kanban-frame-width;
@@ -216,6 +219,11 @@ $kanban-frame-width: 800px;
       left: $app-switcher-width + $nav-collapsed-width;
     }
 
+  }
+  &.collapsed-list {
+    .dp-list-frame {
+      display:none;
+    }
   }
 }
 

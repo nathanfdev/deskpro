@@ -1,21 +1,21 @@
 import DpApi from '../DpApi';
 
-/**
+/*
  * Compile parameters into a URL string
  * @param params
  * @returns {string}
  */
 export function compileParams(params) {
-  let compiled = [];
+  const compiled = [];
 
-  for (let key of Object.keys(params)) {
+  for (const key of Object.keys(params)) {
     compiled.push(key + '=' + String(params[key]));
   }
 
   return compiled.join('&');
 }
 
-/**
+/*
  * Load a generic API endpoint. Only use when you need to get the address from the action
  * @param address
  * @param params
@@ -37,13 +37,13 @@ export function loadAddress(address, params = {}) {
   return DpApi.sendGet('DP_API/' + url);
 }
 
-/**
+/*
  * Load the number of remaining tasks
  * @param params
  * @return Promise
  */
 export function loadTasksRemainingCount(params = {}) {
-  let query = {
+  const query = {
     count_only: true,
     is_done: false,
     ...params
@@ -52,13 +52,13 @@ export function loadTasksRemainingCount(params = {}) {
   return DpApi.sendGet('DP_API/tasks?' + compileParams(query));
 }
 
-/**
+/*
  * Load agents
  * @param params
  * @return Promise
  */
 export function loadAgents(params = {}) {
-  let query = {
+  const query = {
     is_agent: 1,
     ...params
   };
@@ -66,7 +66,7 @@ export function loadAgents(params = {}) {
   return DpApi.sendGet('DP_API/people?' + compileParams(query));
 }
 
-/**
+/*
  * Load all projects
  * @param params
  * @return Promise
@@ -75,13 +75,13 @@ export function loadProjects(params = {}) {
   return DpApi.sendGet('DP_API/projects?' + compileParams(params));
 }
 
-/**
+/*
  * Load all labels
  * @param params
  * @return Promise
  */
 export function loadLabels(params = {}) {
-  let query = {
+  const query = {
     group: true,
     ...params
   };
@@ -89,7 +89,7 @@ export function loadLabels(params = {}) {
   return DpApi.sendGet('DP_API/task_labels?' + compileParams(query));
 }
 
-/**
+/*
  * Load all teams
  * @param params
  * @return Promise
@@ -98,7 +98,7 @@ export function loadTeams(params = {}) {
   return DpApi.sendGet('DP_API/agent_teams?' + compileParams(params));
 }
 
-/**
+/*
  * Load all departments
  * @param params
  * @return Promise
@@ -107,7 +107,7 @@ export function loadDepartments(params = {}) {
   return DpApi.sendGet('DP_API/departments?' + compileParams(params));
 }
 
-/**
+/*
  * Create a project
  * @param data
  * @return Promise
@@ -116,7 +116,7 @@ export function createProject(data) {
   return DpApi.sendPost('DP_API/projects', data);
 }
 
-/**
+/*
  * Update a project
  * @param projectId
  * @param data
@@ -126,7 +126,7 @@ export function editProject(projectId, data) {
   return DpApi.sendPut('DP_API/projects/' + projectId, data);
 }
 
-/**
+/*
  * Create a task
  * @param data
  * @return Promise
@@ -135,7 +135,7 @@ export function createTask(data) {
   return DpApi.sendPost('DP_API/tasks', data);
 }
 
-/**
+/*
  * Update a task
  * @param taskId
  * @param data
@@ -158,7 +158,7 @@ export function editTask(taskId, data) {
   return DpApi.sendPut('DP_API/tasks/' + taskId, data);
 }
 
-/**
+/*
  * Update multiple tasks
  * @param data
  * @return Promise
@@ -180,7 +180,7 @@ export function massEditTasks(data) {
   return DpApi.sendPut('DP_API/tasks/mass', data);
 }
 
-/**
+/*
  * Load links for related items for a task
  * @param params
  * @return Promise
@@ -193,11 +193,10 @@ export function loadLinkedTickets(params = {}) {
   return DpApi.sendGet('DP_API/tickets?' + compileParams(params));
 }
 
-/**
+/*
  * List all lists for a project
  * @param projectId
  */
 export function loadLists(projectId) {
   return DpApi.sendGet('DP_API/projects/' + projectId + '/lists');
 }
-

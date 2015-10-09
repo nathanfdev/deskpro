@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
@@ -191,15 +192,29 @@ class NewsController extends AbstractController
         //
         $new_comment_form = null;
         if ($this->isGranted(ContentCommentVoter::COMMENT_NEWS, $post)) {
-            $form_handler     = $this->get('form_handler.comment');
-            $comment          = new NewsComment();
+            $form_handler = $this->get('form_handler.comment');
+            $comment      = new NewsComment();
             $comment->setVisitorId($visitor_id);
             $comment->setIpAddress($request->getClientIp());
             $new_comment_form = $form_handler->createForm($comment);
             if ($form_result = $form_handler->handle($new_comment_form, $request, $post, $comment)) {
+                // auto subscribe a logged in use to this feedback item
+                // because they submitted a comment
+                if ($person = $this->getUser()) {
+                    if ($person instanceof Person) {
+                        $subscriptions_helper = $this->getSubscriptionsHelper();
+                        if (!$subscriptions_helper->isSubscribedContent($post, $person)) {
+                            $subscriptions_helper->subscribeToContent($post, $person);
+                            $this->addFlash('success', $this->phrase('portal.flashes.news_subscribe'));
+                        }
+                    }
+                }
+
                 if ($form_result instanceof Response) {
                     return $form_result;
                 }
+
+                $this->addFlash('success', $this->phrase('portal.flashes.comment_thank_you'));
 
                 return $this->redirectToRoute('portal_news_view', array('slug' => $post->getSlug()));
             }

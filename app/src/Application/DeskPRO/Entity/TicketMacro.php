@@ -39,6 +39,7 @@ use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\Arrays;
 
 /**
  * Ticket macros.
@@ -225,6 +226,18 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
         }
 
         return $did_change;
+    }
+
+    /**
+     * Gets parts of the title using the "->" as a separtor.
+     *
+     * "Sales -> FooBar" returns ["Sales", "FooBar"]
+     *
+     * @return array
+     */
+    public function getTitleParts()
+    {
+        return Arrays::removeEmptyString(array_map('trim', explode('->', $this->title)));
     }
 
     ############################################################################

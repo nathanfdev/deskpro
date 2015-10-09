@@ -1,6 +1,5 @@
 import { Reducer } from 'Ampliflux/reducers';
 import * as actions from '../Actions/crmNavActions';
-import * as AppActions from "DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/ActionTypes";
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export default class CrmNav extends Reducer {
@@ -42,8 +41,8 @@ export default class CrmNav extends Reducer {
 
   registerHandlers() {
     this
-      .r(AppActions.TOGGLE_VIEW_MODE, this.viewModeChanged)
-      .r(AppActions.TOGGLE_ORDER, this.orderChanged)
+      .r('APP_TOGGLE_VIEW_MODE', this.viewModeChanged)
+      .r('APP_TOGGLE_ORDER', this.orderChanged)
       .r(actions.loadUsersTotalCount, this.usersTotalCountLoaded)
       .r(actions.loadGroupsCounts, this.groupsCountsLoaded)
       .r(actions.loadOrganizationsTotalCount, this.organizationsTotalCountLoaded)

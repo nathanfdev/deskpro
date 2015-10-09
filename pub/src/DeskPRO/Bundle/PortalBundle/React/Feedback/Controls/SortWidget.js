@@ -8,16 +8,16 @@ export default class SortWidget extends React.Component {
 
   render() {
     let sorts = {
-      'date-desc': 'Date &darr;',
-      'date-asc': 'Date &uarr;',
-      'most-views-desc': 'Views &darr;',
-      'most-views-asc': 'Views &uarr;',
-      'highest-rating-desc': 'Rating &darr;',
-      'highest-rating-asc': 'Rating &uarr;',
-      'most-popular-desc': 'Popularity &darr;',
-      'most-popular-asc': 'Popularity &uarr;',
-      'most-discussed-desc': 'Comments &darr;',
-      'most-discussed-asc': 'Comments &uarr;'
+      'date-desc': 'Date ' + String.fromCharCode(8595),
+      'date-asc': 'Date ' + String.fromCharCode(8593),
+      'most-views-desc': 'Views ' + String.fromCharCode(8595),
+      'most-views-asc': 'Views ' + String.fromCharCode(8593),
+      'highest-rating-desc': 'Rating ' + String.fromCharCode(8595),
+      'highest-rating-asc': 'Rating ' + String.fromCharCode(8593),
+      'most-popular-desc': 'Popularity ' + String.fromCharCode(8595),
+      'most-popular-asc': 'Popularity ' + String.fromCharCode(8593),
+      'most-discussed-desc': 'Comments ' + String.fromCharCode(8595),
+      'most-discussed-asc': 'Comments ' + String.fromCharCode(8593)
     };
 
     let selected_sort = this.props.filter.sort + '-' + this.props.filter.sort_direction;
@@ -25,7 +25,7 @@ export default class SortWidget extends React.Component {
     return (
       <select style={{float:"right"}} value={selected_sort} onChange={this.changeSort.bind(this)}>
         {_.map(sorts, (title, key) => {
-          return (<option key={key} value={key} dangerouslySetInnerHTML={{__html:title}}></option>);
+          return (<option key={key} value={key}>{title}</option>);
         })}
       </select>
     );

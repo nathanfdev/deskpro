@@ -89,7 +89,9 @@ class DeskproContainer extends Container
      */
     public function isDebug()
     {
-        return $this->kernel ? $this->kernel->getEnvironment() == 'dev' : true;
+        //return $this->kernel ? $this->kernel->getEnvironment() == 'dev' : true;
+        // TODO: after we remove old-agent interface, use the commented line instead
+        return $this->kernel ? in_array($this->kernel->getEnvironment(), ['dev_old_agent', 'dev']) : true;
     }
 
     /**

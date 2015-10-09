@@ -2095,7 +2095,7 @@ class TicketSearch extends SearcherAbstract
                                             } elseif (!empty($choice['date1_relative'])) {
                                                 $wheres[] = "$field $op ".strtotime('-'.$choice['date1_relative'].' '.$choice['date1_relative_type']);
                                             }
-                                        } else {
+                                        } elseif (!is_array($choice) && strlen($choice) && 'DP_NO_SELECTION' !== $choice) {
                                             $wheres[] = "$field $op ".$this->quoteDbValue('%'.$choice.'%');
                                         }
                                         break;

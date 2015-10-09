@@ -44,7 +44,8 @@ use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 /**
  * @PortalLinkRoute("portal_feedback_view", route_param_map={"slug":"slug"})
  * @PortalLinkRoute("portal_feedback_view", route_param_map={"slug": "id"}, type="permalink")
- * @PortalLinkRoute("portal_feedback_vote_up", route_param_map={"slug":"slug"}, type="vote_up")
+ * @PortalLinkRoute("portal_feedback_toggle_subscription", route_param_map={"slug":"slug"}, type="toggle_subscription")
+ * @PortalLinkRoute("portal_feedback_vote_up",       route_param_map={"slug":"slug"}, type="vote_up")
  * @PortalLinkRoute("portal_feedback_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
  */
 class Feedback extends ContentAbstract implements HighlightableModelInterface
@@ -84,12 +85,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
      *                                                   SWG\Property(name="revisions",type="array", items="$ref:FeedbackRevision")
      */
     protected $revisions;
-
-    /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     *                                                   SWG\Property(name="comments",type="array", items="$ref:FeedbackComment")
-     */
-    protected $comments;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
@@ -138,8 +133,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     {
         parent::__construct();
 
-        $this->_is_new = true;
-
+        $this->_is_new     = true;
         $this->comments    = new ArrayCollection();
         $this->custom_data = new ArrayCollection();
         $this->attachments = new ArrayCollection();
@@ -327,8 +321,10 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                 if ($sub_status) {
                     $status_cat = App::findEntity('DeskPRO:FeedbackStatusCategory', $sub_status);
                     $this->setModelField('status_category', $status_cat);
+                    $this->setModelField('date_updated', new \DateTime());
                 } else {
                     $this->setModelField('status_category', null);
+                    $this->setModelField('date_updated', new \DateTime());
                 }
                 break;
 
@@ -539,6 +535,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     public function setStatusCategory(FeedbackStatusCategory $status_category = null)
     {
         $this->setModelField('status_category', $status_category);
+        $this->setModelField('date_updated', new \DateTime());
     }
 
     /**
@@ -617,8 +614,10 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
             array(
                 'name'    => 'feedback',
                 'indexes' => array(
-                    'date_published_idx' => array('columns' => array(0 => 'date_published')),
-                    'status_idx'         => array('columns' => array('status')),
+                    'date_published_idx'    => array('columns' => array(0 => 'date_published')),
+                    'date_updated_idx'      => array('columns' => array('date_updated')),
+                    'date_last_comment_idx' => array('columns' => array('date_last_comment')),
+                    'status_idx'            => array('columns' => array('status')),
                 ),
             )
         );
@@ -769,6 +768,27 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'date_published',
+            )
+        )
+        ;
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'date_updated',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'date_updated',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'date_last_comment',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_last_comment',
             )
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

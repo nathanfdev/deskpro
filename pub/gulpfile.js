@@ -40,6 +40,7 @@ gulp.task('dev', function (cb) {
   console.log("Use:");
   console.log("\tdev:agent    -  For the agent interface");
   console.log("\tdev:portal   -  For the portal");
+  console.log("\tdev:all      -  For both");
   cb();
 });
 
@@ -49,6 +50,10 @@ gulp.task('dev:agent', function (cb) {
 
 gulp.task('dev:portal', function (cb) {
   runSeq(['bundle:dev-server:portal'], cb);
+});
+
+gulp.task('dev:all', function (cb) {
+  runSeq(['bundle:dev-server'], cb);
 });
 
 //######################################################################################################################

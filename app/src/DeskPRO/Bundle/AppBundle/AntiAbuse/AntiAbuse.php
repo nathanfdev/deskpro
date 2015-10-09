@@ -1,0 +1,107 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
+ */
+namespace DeskPRO\Bundle\AppBundle\AntiAbuse;
+
+use Application\DeskPRO\Entity\Person;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+
+/**
+ * A service, used by controllers, that helps prevent abuse to the system.
+ */
+class AntiAbuse
+{
+    const SETTING_IS_DISABLED  = 'core.rate_limit_disabled';
+    const SETTING_IP_WHITELIST = 'core.rate_limit_ips';
+
+    const ACTION_LOGIN           = 'login';
+    const ACTION_REGISTER        = 'registration';
+    const ACTION_RESET_PASSWORD  = 'reset_password';
+    const ACTION_TOKEN_EXCHANGE  = 'token_exchange';
+    const ACTION_SUBMIT_COMMENT  = 'submit_comment';
+    const ACTION_SUBMIT_FEEDBACK = 'submit_feedback';
+    const ACTION_SUBMIT_TICKET   = 'submit_ticket';
+
+    // the EVENT_ consts are needed, because the ACTION_ are legacy and
+    // cannot be used by themselves as event names for this sytem.
+    const EVENT_NAME = 'anti_abuse.event';
+
+    /**
+     * @var EventDispatcher
+     */
+    private $dispatcher;
+
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    public function __construct(EventDispatcher $dispatcher, EntityManager $em)
+    {
+        $this->dispatcher = $dispatcher;
+        $this->em         = $em;
+    }
+
+    /**
+     * Run a user event through the anti-abuse system.
+     *
+     * @param AntiAbuseEvent $event
+     *
+     * @return AntiAbuseEvent
+     */
+    public function check(AntiAbuseEvent $event)
+    {
+        $this->ensureEventHasAPersonObject($event);
+
+        $this->dispatcher->dispatch(self::EVENT_NAME, $event);
+
+        if ($event->isResponseRequired()) {
+            // a listener has signaled a response is required to be returned
+            // to the user immediately. throw an exception so it is caught
+            // by kernel.exception listeners and rendered.
+            throw $event->generateException();
+        }
+
+        return $event;
+    }
+
+    private function ensureEventHasAPersonObject(AntiAbuseEvent $event)
+    {
+        if (!$event->getPerson() instanceof Person) {
+            /** @var \Application\DeskPRO\EntityRepository\Person $person_repo */
+            $person_repo = $this->em->getRepository('DeskPRO:Person');
+            if ($person = $person_repo->findOneByEmail($event->getEmail())) {
+                $event->setPerson($person);
+            }
+        }
+    }
+}

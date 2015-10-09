@@ -36,6 +36,7 @@ use Application\AgentBundle\Controller\JsonRenderer\OrganizationListRenderer;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Organizations\OrgResultsDisplay;
+use Application\DeskPRO\Searcher\OrganizationSearch;
 use Application\DeskPRO\UI\RuleBuilder;
 use Orb\Util\Arrays;
 
@@ -177,24 +178,27 @@ class OrganizationSearchController extends AbstractController
                 }
             }
 
-            $searcher = new \Application\DeskPRO\Searcher\OrganizationSearch();
+            $searcher = new OrganizationSearch();
             foreach ($terms as $term) {
                 $searcher->addTerm($term['type'], $term['op'], $term['options']);
             }
 
-            if ($search_val = $this->in->getString('org_name')) {
-                $searcher->addTerm('org_name', 'contains', $search_val);
+            if ($search_val = $this->in->getString(OrganizationSearch::TERM_NAME)) {
+                $searcher->addTerm(OrganizationSearch::TERM_NAME, 'contains', $search_val);
             }
-            if ($search_val = $this->in->getString('org_email_domain')) {
-                $searcher->addTerm('org_email_domain', 'contains', $search_val);
+            if ($search_val = $this->in->getString(OrganizationSearch::TERM_EMAIL_DOMAIN)) {
+                $searcher->addTerm(OrganizationSearch::TERM_EMAIL_DOMAIN, 'contains', $search_val);
             }
-            if ($search_val = $this->in->getString('org_label')) {
+            if ($search_val = $this->in->getString(OrganizationSearch::TERM_CONTACT_ADDRESS)) {
+                $searcher->addTerm(OrganizationSearch::TERM_CONTACT_ADDRESS, 'contains', $search_val);
+            }
+            if ($search_val = $this->in->getString(OrganizationSearch::TERM_LABEL)) {
                 $search_val = explode(',', $search_val);
                 $search_val = Arrays::func($search_val, 'trim');
                 $search_val = Arrays::removeFalsey($search_val);
 
                 if ($search_val) {
-                    $searcher->addTerm('org_label', 'contains', $search_val);
+                    $searcher->addTerm(OrganizationSearch::TERM_LABEL, 'contains', $search_val);
                 }
             }
 
