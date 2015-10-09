@@ -19,10 +19,7 @@ export const loadProjects = createAction(
         {id: 2, title: 'Another test'}
       ];
 
-      console.log('here');
-
-      const recordMap = mapKeyedFromArray(recs, 'id');
-      resolve(recordMap);
+      resolve(recs);
     });
 
   // return Tasks.loadProjects({is_done: false}).then(
@@ -49,7 +46,7 @@ export const loadProjects = createAction(
 // export const releaseWidgets       = createAction('RELEASE_WIDGETS',        recordStoreActions.releaseRecords());
 // export const releaseWidgetRequest = createAction('RELEASE_WIDGET_REQUEST', recordStoreActions.releaseRequest());
 // export const setWidgetRequest     = createAction('SET_WIDGETS_REQUEST',    recordStoreActions.setRequestRecords());
- 
+
 // export const loadWidgets = createAction('LOAD_WIDGETS', recordStoreActions.requestRecords(['Widgets', 'widgets'], (missingIds) => {
 //   return new Promise((resolve, reject) => {
 //     // Normally youd load records here (e.g., via api)
@@ -58,11 +55,11 @@ export const loadProjects = createAction(
 //       {id: 1, title: "Foo" },
 //       {id: 2, title: "Bar" }
 //     ]
- 
+
 //     // record-store expects a map. Keys are IDs.
 //     // Use the helper function mapKeyedFromArray to make this easy
 //     const recordMap = mapKeyedFromArray(recs, 'id');
- 
+
 //     resolve(recordMap);
 //   });
 // }));

@@ -1,5 +1,6 @@
 import objGet from 'lodash/object/get';
-import isArray from 'lodash/lang/isArray';
+import isObject from 'lodash/lang/isArray';
+import isArray from 'lodash/lang/isObject';
 import Immutable from 'immutable';
 
 /**
@@ -12,14 +13,40 @@ import Immutable from 'immutable';
  */
 export function mapKeyedFromArray(arrayVal, keyProp) {
   const isDeepKey = isArray(keyProp);
-  return Immutable.Map().withMutations(map => {
-    arrayVal.forEach(v => {
-      const k = isDeepKey ? objGet(v, keyProp) : v[keyProp];
-      if (k !== null && typeof k !== 'undefined') {
-        map.set(k, Immutable.fromJS(v));
-      }
+  // Already a Map
+  if (Immutable.Map.isMap(arrayVal)) {
+    return Immutable.Map().withMutations(map => {
+      arrayVal.forEach(v => {
+        const k = isDeepKey ? v.getIn(keyProp) : v.get(keyProp);
+        if (k !== null && typeof k !== 'undefined') {
+          map.set(k, Immutable.fromJS(v));
+        }
+      });
     });
-  });
+
+  // A POJO
+  } else if (isObject(arrayVal)) {
+    return Immutable.Map().withMutations(map => {
+      Object.keys(arrayVal).forEach(key => {
+        const v = arrayVal[key];
+        const k = isDeepKey ? objGet(v, keyProp) : v[keyProp];
+        if (k !== null && typeof k !== 'undefined') {
+          map.set(k, Immutable.fromJS(v));
+        }
+      });
+    });
+
+  // An array
+  } else {
+    return Immutable.Map().withMutations(map => {
+      arrayVal.forEach(v => {
+        const k = isDeepKey ? objGet(v, keyProp) : v[keyProp];
+        if (k !== null && typeof k !== 'undefined') {
+          map.set(k, Immutable.fromJS(v));
+        }
+      });
+    });
+  }
 }
 
 /**

@@ -15,11 +15,7 @@ import { createProjectRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Module
 const projectRequestId = 'projectNavView';
 const projectSel = createProjectRequestSelectors(projectRequestId);
 
-@connect(state => {
-  console.log('state');
-  console.log(state);
-  console.log(state.RecordStores.Tasks.projects.toJS());
-  return ({
+@connect(state => ({
   taskList: state.Tasks.taskList,
   projectList: state.Tasks.projectList,
   agentList: state.Tasks.agentList,
@@ -31,7 +27,7 @@ const projectSel = createProjectRequestSelectors(projectRequestId);
   dpWindow: state.Application.dpWindow,
   projects: projectSel.recordsSel(state),
   status: projectSel.statusSel(state)
-});})
+}))
 export default class TasksNavFrame extends React.Component {
   static propTypes = {
     taskList: React.PropTypes.object,
@@ -52,7 +48,7 @@ export default class TasksNavFrame extends React.Component {
 
     const { status, dispatch } = this.props;
 
-    dispatch(loadProjects());
+    dispatch(loadProjects(projectRequestId, [1,2,3]));
 
     dispatch(TaskActions.loadTasks());
     dispatch(TaskActions.loadMyTasks());
