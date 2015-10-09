@@ -43,7 +43,7 @@ export class Nav extends React.Component {
         </div>
 
         <div part="inner">
-          <NavFrameHeader icon="icon-dp-streamline-connection-2">
+          <NavFrameHeader icon="icon-dp-streamline-bubble-conversation-4">
             Chat
           </NavFrameHeader>
 

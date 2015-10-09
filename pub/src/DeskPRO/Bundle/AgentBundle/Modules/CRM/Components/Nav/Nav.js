@@ -10,7 +10,7 @@ export class Nav extends React.Component {
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
-        <NavFrameHeader icon="icon-dp-streamline-bubble-conversation-4">
+        <NavFrameHeader icon="icon-dp-streamline-connection-2">
           CRM
         </NavFrameHeader>
         <SectionHeader>People</SectionHeader>
