@@ -23,86 +23,40 @@ export class AppSwitcher extends React.Component {
     this.props.dispatch(AppActions.collapseSwitcher());
   }
 
-  renderAppIcon(appId, title, iconClass) {
-    const { dispatch } = this.props;
+  renderAppIcon(appId, title, linkClass, iconClass) {
+    const { dispatch, dpWindow } = this.props;
     const clickHandler = () => dispatch(AppActions.setActiveApp(appId));
-    const className = 'fa ' + iconClass;
+    const iconClassNames = 'icon ' + iconClass;
 
     return (
       <li>
-        <Link activeClassName="active" to={`${DP_BASE_URL_RELATIVE}/agent/${appId}`} onClick={clickHandler}>
-          <i className={className}></i> <span className="title">{title}</span>
+        <Link className={linkClass} activeClassName="active" to={`${DP_BASE_URL_RELATIVE}/agent/${appId}`} onClick={clickHandler}>
+          <span className="dpw-app-bar-notification">33</span>
+          <div className="dpw-app-bar-icon">
+            <div className={iconClassNames}></div>
+          </div>
+          {dpWindow.get('expandedSwitcher') ? (<span className="dps-app-bar-title">{title}</span>) : null }
         </Link>
       </li>
     );
   }
 
   render() {
-    const { dpWindow } = this.props;
-    const classesNames = ['dp-app-switcher'];
-
-    if (dpWindow.get('expandedSwitcher')) {
-      classesNames.push('expanded');
+    const classesNames = ['dpw-app-bar', 'dpw-app-bar-state-1'];
+    if (this.props.dpWindow.get('expandedSwitcher')) {
+      classesNames.push('dpw-app-bar-expanded');
     }
 
     return (
-      <nav onMouseEnter={this.hoverSwitcher.bind(this)}
-        onMouseLeave={this.cancelSwitcher.bind(this)}
-        className={classesNames.join(' ')}>
-
-
-        <div className="dpw-app-bar dpw-app-bar-state-1">
+      <nav className="dp-app-switcher" onMouseEnter={this.hoverSwitcher.bind(this)} onMouseLeave={this.cancelSwitcher.bind(this)}>
+        <div className={classesNames.join(' ')}>
           <ul className="app-list">
-            <li>
-              <a href="#" className="dpw-app-bar-item-1 active">
-                <span className="dpw-app-bar-notification">33</span>
-                <div className="dpw-app-bar-icon">
-                  <div className="icon icon-dp-streamline-mail-2"></div>
-                </div>
-              </a>
-            </li>
-
-            <li>
-              <a href="#" className="dpw-app-bar-item-2">
-                <div className="dpw-app-bar-icon">
-                  <div className="icon icon-dp-streamline-bubble-conversation-4"></div>
-                </div>
-              </a>
-            </li>
-
-            <li>
-              <a href="#" className="dpw-app-bar-item-3">
-                <span className="dpw-app-bar-notification">33</span>
-                <div className="dpw-app-bar-icon">
-                  <div className="icon icon-dp-streamline-connection-2"></div>
-                </div>
-              </a>
-            </li>
-
-            <li>
-              <a href="#" className="dpw-app-bar-item-4">
-                <div className="dpw-app-bar-icon">
-                  <div className="icon icon-dp-streamline-hand-like-2"></div>
-                </div>
-              </a>
-            </li>
-
-            <li>
-              <a href="#" className="dpw-app-bar-item-5">
-                <div className="dpw-app-bar-icon">
-                  <div className="icon icon-dp-streamline-edit-1"></div>
-                </div>
-              </a>
-            </li>
-
-            <li>
-              <a href="#" className="dpw-app-bar-item-6">
-                <div className="dpw-app-bar-icon">
-                  <div className="icon icon-dp-streamline-check-circle-2"></div>
-                </div>
-              </a>
-            </li>
-
+            {this.renderAppIcon('tickets', 'Tickets', 'dpw-app-bar-item-1', 'icon-dp-streamline-mail-2')}
+            {this.renderAppIcon('crm', 'CRM', 'dpw-app-bar-item-2', 'icon-dp-streamline-bubble-conversation-4')}
+            {this.renderAppIcon('chat', 'Chat', 'dpw-app-bar-item-3', 'icon-dp-streamline-connection-2')}
+            {this.renderAppIcon('feedback', 'Feedback', 'dpw-app-bar-item-4', 'icon-dp-streamline-hand-like-2')}
+            {this.renderAppIcon('publish', 'Publish', 'dpw-app-bar-item-5', 'icon-dp-streamline-edit-1')}
+            {this.renderAppIcon('tasks', 'Tasks', 'dpw-app-bar-item-6', 'icon-dp-streamline-check-circle-2')}
           </ul>
         </div>
       </nav>
