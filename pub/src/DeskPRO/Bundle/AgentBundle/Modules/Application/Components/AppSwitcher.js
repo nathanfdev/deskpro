@@ -15,7 +15,7 @@ export class AppSwitcher extends React.Component {
   }
 
   hoverSwitcher() {
-    this.expanded = setTimeout(() => this.props.dispatch(AppActions.expandSwitcher()), 750);
+    this.expanded = setTimeout(() => this.props.dispatch(AppActions.expandSwitcher()), 250);
   }
 
   cancelSwitcher() {
