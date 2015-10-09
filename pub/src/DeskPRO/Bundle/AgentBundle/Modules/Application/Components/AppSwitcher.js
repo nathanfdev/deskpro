@@ -23,7 +23,7 @@ export class AppSwitcher extends React.Component {
     this.props.dispatch(AppActions.collapseSwitcher());
   }
 
-  renderAppIcon(appId, title, linkClass, iconClass) {
+  renderAppIcon(appId, title, linkClass, iconClass, notificationCount = 0) {
     const { dispatch, dpWindow } = this.props;
     const clickHandler = () => dispatch(AppActions.setActiveApp(appId));
     const iconClassNames = 'icon ' + iconClass;
@@ -31,7 +31,7 @@ export class AppSwitcher extends React.Component {
     return (
       <li>
         <Link className={linkClass} activeClassName="active" to={`${DP_BASE_URL_RELATIVE}/agent/${appId}`} onClick={clickHandler}>
-          <span className="dpw-app-bar-notification">33</span>
+          {notificationCount > 0 ? (<span className="dpw-app-bar-notification">{notificationCount}</span>) : null}
           <div className="dpw-app-bar-icon">
             <div className={iconClassNames}></div>
           </div>
@@ -51,9 +51,9 @@ export class AppSwitcher extends React.Component {
       <nav className="dp-app-switcher" onMouseEnter={this.hoverSwitcher.bind(this)} onMouseLeave={this.cancelSwitcher.bind(this)}>
         <div className={classesNames.join(' ')}>
           <ul className="app-list">
-            {this.renderAppIcon('tickets', 'Tickets', 'dpw-app-bar-item-1', 'icon-dp-streamline-mail-2')}
+            {this.renderAppIcon('tickets', 'Tickets', 'dpw-app-bar-item-1', 'icon-dp-streamline-mail-2', 15)}
             {this.renderAppIcon('crm', 'CRM', 'dpw-app-bar-item-2', 'icon-dp-streamline-bubble-conversation-4')}
-            {this.renderAppIcon('chat', 'Chat', 'dpw-app-bar-item-3', 'icon-dp-streamline-connection-2')}
+            {this.renderAppIcon('chat', 'Chat', 'dpw-app-bar-item-3', 'icon-dp-streamline-connection-2', 2)}
             {this.renderAppIcon('feedback', 'Feedback', 'dpw-app-bar-item-4', 'icon-dp-streamline-hand-like-2')}
             {this.renderAppIcon('publish', 'Publish', 'dpw-app-bar-item-5', 'icon-dp-streamline-edit-1')}
             {this.renderAppIcon('tasks', 'Tasks', 'dpw-app-bar-item-6', 'icon-dp-streamline-check-circle-2')}
