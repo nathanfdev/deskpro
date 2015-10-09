@@ -5,7 +5,7 @@ export class AppContainer extends React.Component {
   static propTypes = {
     dpWindow: PropTypes.object.isRequired,
     thisAppId: PropTypes.func.isRequired,
-    children: PropTypes.array.isRequired
+    children: PropTypes.object.isRequired
   };
 
   render() {
