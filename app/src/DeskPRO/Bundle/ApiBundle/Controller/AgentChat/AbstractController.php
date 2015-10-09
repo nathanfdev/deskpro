@@ -29,11 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController as BaseController;
 use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 abstract class AbstractController extends BaseController
@@ -41,7 +43,8 @@ abstract class AbstractController extends BaseController
     /**
      * @param $id
      *
-     * @throws NotFoundHttpException;
+     * @throws NotFoundHttpException
+     * @throws AccessDeniedHttpException
      *
      * @return AgentChat|null
      */
@@ -51,6 +54,10 @@ abstract class AbstractController extends BaseController
         $messenger = $this->get('deskpro.agentchat.messenger');
         if (!$chat = $messenger->getChat($id)) {
             throw new NotFoundHttpException();
+        }
+
+        if (!$messenger->isPersonInvolvedInChat($this->getUser(), $chat)) {
+            throw new AccessDeniedHttpException();
         }
 
         return $chat;

@@ -8,9 +8,7 @@ export const loadMessages = createAction(
     return IM.loadMessages(chat_id, searchQuery).then(response => {
       const messages = response.data.data;
       return new Promise((resolve) => {
-        let chatMessages = {};
-        chatMessages[chat_id] = messages;
-        resolve(chatMessages);
+        resolve({chat_id: chat_id, messages: messages});
       });
     });
 
@@ -38,8 +36,8 @@ export const addMessageOptimistic = createAction(
   'IM_CHAT_ADD_MESSAGE_OPTIMISTIC',
   (chat_id, message, me) => {
     return new Promise((resolve) => {
-      const chatMessages = {
-        id: chat_id,
+      const payload = {
+        chat_id: chat_id,
         message: {
           agent_chat_id: chat_id,
           date_created: new Date().toUTCString(),
@@ -51,7 +49,7 @@ export const addMessageOptimistic = createAction(
         }
       };
 
-      resolve(chatMessages);
+      resolve(payload);
     });
   }
 );

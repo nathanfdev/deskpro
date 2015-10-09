@@ -26,34 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+namespace Application\InstallBundle\Upgrade\Build;
 
-namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
-
-use Application\DeskPRO\Entity\Person as PersonEntity;
-use Application\DeskPRO\EntityRepository\AgentTeam as AgentTeamRepository;
-use Doctrine\ORM\EntityRepository;
-
-class AgentChatParticipant extends EntityRepository
+class Build1444335702 extends AbstractBuild
 {
-    public function findChatsIds(PersonEntity $person)
+    public function run()
     {
-        /** @var AgentTeamRepository $teamRepo */
-        $teamRepo = $this->getEntityManager()->getRepository('DeskPRO:AgentTeam');
-        $teamIds  = $teamRepo->getTeamIdsForAgents([$person]);
-        $qb       = $this->createQueryBuilder('acp')
-            ->select('acp.agent_chat_id')
-            ->andWhere('acp.person_id = :person')
-            ->orWhere('acp.agent_team_id IN (:agent_team_id)')
-            ->setParameters(['person' => $person->getId(), 'agent_team_id' => $teamIds]);
-
-        $result = $qb->getQuery()->getScalarResult();
-        $ids    = array_map('current', $result);
-
-        return array_unique($ids);
+        $this->out('Upgrade agent_chats');
+        $this->execMutateSql("ALTER TABLE agent_chat ADD type ENUM('agent', 'team', 'department', 'group')");
     }
 }

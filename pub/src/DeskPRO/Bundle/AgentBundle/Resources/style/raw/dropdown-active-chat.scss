@@ -150,6 +150,14 @@
     float: right;
   }
 
+  p {
+    margin: 0 0 0 5px;
+    padding: 0;
+    color: #333;
+    font-size: 1.05em;
+    font-weight: 400;
+  }
+
   .message-read-mark {
     position: absolute;
     bottom: 1px;

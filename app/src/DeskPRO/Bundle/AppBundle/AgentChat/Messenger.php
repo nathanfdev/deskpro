@@ -32,8 +32,12 @@
 
 namespace DeskPRO\Bundle\AppBundle\AgentChat;
 
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\ORM\EntityManager;
+use DeskPRO\Bundle\AppBundle\AgentChat\Exceptions\WrongChatableTypeException;
+use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChat as AgentChatRepository;
@@ -45,10 +49,21 @@ class Messenger
      */
     protected $em;
 
+    /**
+     * @param EntityManager $em
+     */
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
     }
+
+    /**
+     * @param AgentChat $chat
+     * @param Person    $person
+     * @param $message
+     *
+     * @return AgentChatMessage
+     */
     public function addMessage(AgentChat $chat, Person $person, $message)
     {
         $agentMessage = new AgentChatMessage();
@@ -64,14 +79,14 @@ class Messenger
     }
     /**
      * @param array  $participants
-     * @param Person $person
+     * @param string $type
      *
      * @return \DeskPRO\Bundle\AppBundle\Entity\AgentChat $chat
      */
-    public function createChat(Person $person, array $participants)
+    public function createChat(array $participants, $type)
     {
         $chat = new AgentChat();
-        $chat->addParticipant($person);
+        $chat->setType($type);
         foreach ($participants as $participant) {
             $chat->addParticipant($participant);
         }
@@ -79,19 +94,135 @@ class Messenger
         return $chat;
     }
 
-    public function getChat($id)
+    /**
+     * @param Person   $user
+     * @param Chatable $target
+     *
+     * @throws WrongChatableTypeException
+     *
+     * @return AgentChat
+     */
+    public function startChat(Person $user, Chatable $target)
     {
-        /** @var AgentChatRepository $agentChatRepository */
-        $agentChatRepository = $this->em->getRepository('App:AgentChat');
-
-        return $agentChatRepository->find($id);
+        switch ($target->getChatableType()) {
+            case Chatable::PARTICIPANT_TYPE_PERSON:
+                /* @var Person $target */
+                return $this->createChatWithAgent($user, $target);
+                break;
+            case Chatable::PARTICIPANT_TYPE_TEAM:
+                /* @var AgentTeam $target */
+                return $this->createChatWithTeam($target);
+                break;
+            case Chatable::PARTICIPANT_TYPE_DEPARTMENT:
+                /* @var Department $target */
+                return $this->createChatWithDepartment($target);
+                break;
+            default:
+                throw new WrongChatableTypeException();
+        }
     }
 
-    public function findChatWithAgent($agent_id, $my_id)
+    /**
+     * @param Person $user
+     * @param Person $agent
+     *
+     * @return AgentChat
+     */
+    public function createChatWithAgent(Person $user, Person $agent)
+    {
+        return $this->createChat([$agent, $user], Chatable::PARTICIPANT_TYPE_PERSON);
+    }
+
+    /**
+     * @param AgentTeam $team
+     *
+     * @return AgentChat
+     */
+    public function createChatWithTeam(AgentTeam $team)
+    {
+        return $this->createChat([$team], Chatable::PARTICIPANT_TYPE_TEAM);
+    }
+
+    /**
+     * @param Department $department
+     *
+     * @return AgentChat
+     */
+    public function createChatWithDepartment(Department $department)
+    {
+        return $this->createChat([$department], Chatable::PARTICIPANT_TYPE_DEPARTMENT);
+    }
+
+    /**
+     * @param $id
+     * @param bool|false $forceReload
+     *
+     * @return null|object
+     */
+    public function getChat($id, $forceReload = false)
     {
         /** @var AgentChatRepository $agentChatRepository */
         $agentChatRepository = $this->em->getRepository('App:AgentChat');
-        $chats               = $agentChatRepository->findChatWithAgent($agent_id, $my_id);
+
+        return !$forceReload ? $agentChatRepository->find($id) : $agentChatRepository->findOneBy(['id' => $id]);
+    }
+
+    /**
+     * @param $type
+     * @param $id
+     *
+     * @throws WrongChatableTypeException
+     *
+     * @return null|Chatable
+     */
+    public function findParticipant($type, $id)
+    {
+        switch ($type) {
+            case Chatable::PARTICIPANT_TYPE_PERSON:
+                $entity_name = 'DeskPRO:Person';
+                break;
+            case Chatable::PARTICIPANT_TYPE_TEAM:
+                $entity_name = 'DeskPRO:AgentTeam';
+                break;
+            case Chatable::PARTICIPANT_TYPE_DEPARTMENT:
+                $entity_name = 'DeskPRO:Department';
+                break;
+            default:
+                throw new WrongChatableTypeException();
+        }
+
+        $repo = $this->em->getRepository($entity_name);
+
+        return $repo->find((int) $id);
+    }
+
+    /**
+     * @param Person   $user
+     * @param Chatable $target
+     *
+     * @throws WrongChatableTypeException
+     *
+     * @return bool|AgentChat
+     */
+    public function findChat(Person $user, Chatable $target)
+    {
+        /** @var AgentChatRepository $agentChatRepository */
+        $agentChatRepository = $this->em->getRepository('App:AgentChat');
+
+        switch ($target->getChatableType()) {
+            case Chatable::PARTICIPANT_TYPE_PERSON:
+                $chats = $agentChatRepository->findChatWithAgent($target->getId(), $user->getId());
+                break;
+            case Chatable::PARTICIPANT_TYPE_TEAM:
+                $chats = $agentChatRepository->findTeamChat($target->getId());
+                break;
+            case Chatable::PARTICIPANT_TYPE_DEPARTMENT:
+                $chats = $agentChatRepository->findDepartmentChat($target->getId());
+                break;
+            default:
+                throw new WrongChatableTypeException();
+        }
+
         if ($chats) {
             return array_shift($chats);
         }
@@ -99,6 +230,12 @@ class Messenger
         return false;
     }
 
+    /**
+     * @param Person    $person
+     * @param AgentChat $chat
+     *
+     * @return bool
+     */
     public function isPersonInvolvedInChat(Person $person, AgentChat $chat)
     {
         foreach ($chat->getPersonList() as $participant) {

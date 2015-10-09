@@ -13,11 +13,12 @@ Feature: Agent Chats api service
     And the response status code should be 200
     And the JSON node data should exist
 
-  Scenario: I create chat
-    When I send a POST request to "api/v2/agent_chats" with body:
+  Scenario: I create chat with agent
+    When I send a POST request to "api/v2/agent_chats/start" with body:
     """
       {
-        "agents": [1,2,3]
+        "type" : "agent",
+        "id": 3
       }
     """
     Then the response should be in JSON
@@ -25,6 +26,40 @@ Feature: Agent Chats api service
     And the header "Location" should be equal to "/api/v2/agent_chats/1"
     And the JSON node "data" should exist
     And the JSON node "data.id" should be equal to 1
+    And the JSON node "data.agents" should exist
+    And the JSON node "data.agents" should have 2 elements
+    And the JSON node "data.agents[0]" should be equal to 3
+    And the JSON node "data.agents[1]" should be equal to 1
+
+  Scenario: I create same chat with agent
+    When I send a POST request to "api/v2/agent_chats/start" with body:
+    """
+      {
+        "type" : "agent",
+        "id": 3
+      }
+    """
+    Then the response should be in JSON
+    And the response status code should be 302
+    And the header "Location" should be equal to "/api/v2/agent_chats/1"
+
+  Scenario: I create chat with team
+    When I send a POST request to "api/v2/agent_chats/start" with body:
+    """
+      {
+        "type" : "team",
+        "id": 1
+      }
+    """
+    Then the response should be in JSON
+    And the response status code should be 201
+    And the header "Location" should be equal to "/api/v2/agent_chats/2"
+    And the JSON node "data" should exist
+    And the JSON node "data.id" should be equal to 2
+    And the JSON node "data.agent_teams" should exist
+    And the JSON node "data.agent_teams" should have 1 element
+    And the JSON node "data.agent_teams[0]" should be equal to 1
+
 
   Scenario: I get a chat
     When I send a GET request to "/api/v2/agent_chats/1"
