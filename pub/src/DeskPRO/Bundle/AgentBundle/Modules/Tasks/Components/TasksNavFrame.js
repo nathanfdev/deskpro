@@ -56,7 +56,7 @@ export default class TasksNavFrame extends React.Component {
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
         <div part="inner">
-          <NavFrameHeader icon="fa-check-square-o">
+          <NavFrameHeader icon="icon-dp-streamline-check-circle-2">
             Tasks
           </NavFrameHeader>
 
