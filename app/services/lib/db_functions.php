@@ -28,8 +28,8 @@
 
 /**
  * @throws \Doctrine\DBAL\DBALException
- * @return \Application\DeskPRO\DBAL\Connection
  *
+ * @return \Application\DeskPRO\DBAL\Connection
  */
 function get_db()
 {

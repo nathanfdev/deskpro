@@ -46,12 +46,11 @@ require_once DP_ROOT.'/src/Orb/Util/ClassLoader.php';
 $loader = new \Orb\Util\ClassLoader();
 
 $loader->registerNamespaces(array(
-    'DeskPRO\\Services' => DP_ROOT.'/services/src',
-    'DeskPRO'           => DP_ROOT.'/src',
-    'Application'       => DP_ROOT.'/src',
-    'Cloud'             => DP_ROOT.'/src',
-    'Bundle'            => DP_ROOT.'/src',
-    'Orb'               => DP_ROOT.'/src',
+    'DeskPRO'     => DP_ROOT.'/src',
+    'Application' => DP_ROOT.'/src',
+    'Cloud'       => DP_ROOT.'/src',
+    'Bundle'      => DP_ROOT.'/src',
+    'Orb'         => DP_ROOT.'/src',
 
     'DpUnitTests'        => DP_ROOT.'/testing/tests/unit',
     'DpIntegrationTests' => DP_ROOT.'/testing/tests/integration',
@@ -113,6 +112,20 @@ $loader->registerClassNames(array(
     'tnef'                    => DP_ROOT.'/vendor-src/tnef-decoder/tnef.php',
     'PDODblibBundle'          => DP_ROOT.'/vendor-src/ouster',
 ));
+
+spl_autoload_register(function ($classname) {
+    if (strpos($classname, 'DeskPRO\\Service') !== 0) {
+        return false;
+    }
+
+    $classpath = str_replace('DeskPRO\\Services\\', '', $classname);
+    $classpath = str_replace('\\', DIRECTORY_SEPARATOR, $classpath);
+    $path = DP_ROOT.'/services/src/'.$classpath.'.php';
+
+    require $path;
+
+    return true;
+});
 
 spl_autoload_register(function ($classname) {
     if (strpos($classname, 'DeskproLanguages') !== 0) {

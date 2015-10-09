@@ -68,7 +68,7 @@ class EmailCollectionCommand extends Command
         }
 
         $reader = new AccountReader(function ($current) {
-            get_db_if_closed($current);
+            return get_db_if_closed($current);
         });
 
         $processor = new AccountProcessor($logger);
@@ -77,7 +77,7 @@ class EmailCollectionCommand extends Command
             'task_timeout'    => $task_timeout,
             'max_tasks'       => $max_tasks,
             'stop_after_time' => $stop_time,
-            'tick_time'       => 5,
+            'tick_time'       => 5.0,
             'reader'          => $reader,
             'processor'       => $processor,
             'logger'          => $logger,

@@ -40,12 +40,20 @@ if (!defined('DP_ROOT')) {
     define('DP_ROOT', realpath(__DIR__.'/../../'));
 }
 
+if (!defined('DP_WEB_ROOT')) {
+    define('DP_WEB_ROOT', realpath(DP_ROOT.'/../'));
+}
+
+if (!defined('DP_CONFIG_FILE')) {
+    define('DP_CONFIG_FILE', DP_WEB_ROOT.'/config.php');
+}
+
 @setlocale(LC_CTYPE, 'C');
 @date_default_timezone_set('UTC');
 @ini_set('default_charset', 'UTF-8');
 @ini_set('zlib.output_compression', '0');
 @ini_set('xdebug.max_nesting_level', 1000000);
-@ini_set('memory_limit', 0);
+@ini_set('memory_limit', -1);
 @set_time_limit(0);
 
 require DP_ROOT.'/sys/load_config.php';
@@ -74,9 +82,10 @@ if (!DP_REAL_ERROR_LOG) {
 require DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
 require DP_ROOT.'/src/Orb/Util/ClassLoader.php';
 require DP_ROOT.'/sys/autoload.php';
+require DP_ROOT.'/sys/DpShutdown.php';
 
 #------------------------------
 # Lib
 #------------------------------
 
-require './db_func.php';
+require __DIR__.'/db_functions.php';
