@@ -55,10 +55,10 @@ const TaskCard = React.createClass({
   propTypes: {
     task: React.PropTypes.object,
     projects: React.PropTypes.array,
-    linked_items: React.PropTypes.object,
+    linked_items: React.PropTypes.array,
     departments: React.PropTypes.array,
     teams: React.PropTypes.array,
-    tickets: React.PropTypes.object,
+    tickets: React.PropTypes.array,
     agents: React.PropTypes.array,
     source: React.PropTypes.string,
     connectDragSource: React.PropTypes.func,

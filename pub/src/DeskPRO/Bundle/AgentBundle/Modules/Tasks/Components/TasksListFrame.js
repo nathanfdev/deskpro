@@ -320,7 +320,6 @@ class TasksListFrame extends React.Component {
   }
 
   moveCard(item, targetItem, tasks, callback) {
-    console.log('move card');
     const cards = tasks;
     const id = item.get('id');
     const afterId = targetItem.get('id');
@@ -342,9 +341,6 @@ class TasksListFrame extends React.Component {
     callback(cards);
 
     const source = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameSource', {}) : {};
-
-    console.log(card);
-    console.log(targetItem);
 
     this.editTask(
       source,
@@ -481,6 +477,7 @@ class TasksListFrame extends React.Component {
                        closeWindow={this.closeAssignWindow.bind(this)}/>
         </ComponentRootWrapper>
         <TaskControls toggleView={this.toggleView.bind(this)}
+                      changeView={this.state.changeView}
                       agents={this.agents}
                       teams={this.teams}
                       departments={this.departments}

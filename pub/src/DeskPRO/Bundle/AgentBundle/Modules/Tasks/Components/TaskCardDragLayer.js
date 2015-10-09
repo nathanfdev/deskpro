@@ -55,7 +55,7 @@ class TaskCardDragLayer {
         let ticketLink = undefined;
         let ticketTitle = 'Linked ticket';
 
-        if (item.details.get('tickets') && item.details.get('tickets').length > 0) {
+        if (item.details.get('tickets') && item.details.get('tickets').size > 0) {
           ticketTitle = item.details.get('tickets')[0].subject;
           ticketLink = '#';
         }
@@ -166,12 +166,12 @@ class TaskCardDragLayer {
       case 'kanban':
         let assigneeName = '';
 
-        if (item.details.get('agents') && item.details.get('agents').length > 0) {
-          assigneeName = item.agents[item.details.get('agents')[0]].name;
-        } else if (item.details.get('teams') && item.details.get('teams').length > 0) {
-          assigneeName = item.teams[item.details.get('teams')[0]].name;
-        } else if (item.details.get('departments') && item.details.get('departments').length > 0) {
-          assigneeName = item.departments[item.details.get('departments')[0]].title;
+        if (item.details.get('agents') && item.details.get('agents').size > 0) {
+          assigneeName = item.agents[item.details.get('agents').get(0)].name;
+        } else if (item.details.get('teams') && item.details.get('teams').size > 0) {
+          assigneeName = item.teams[item.details.get('teams').get(0)].name;
+        } else if (item.details.get('departments') && item.details.get('departments').size > 0) {
+          assigneeName = item.departments[item.details.get('departments').get(0)].title;
         }
 
         return (<div className="kanban">

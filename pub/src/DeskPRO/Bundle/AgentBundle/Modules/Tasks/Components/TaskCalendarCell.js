@@ -58,7 +58,7 @@ export default class TaskCalendarCell extends React.Component {
     const _this = this;
 
     const additional = [];
-    let i = 0;
+    let counter = 0;
 
     return this.props.connectDropTarget(<td className={cellClass}>
       { day ? <div className={dayClass}>
@@ -66,9 +66,9 @@ export default class TaskCalendarCell extends React.Component {
         <div className="dpwd-calendar-tasks">
           <ul>
             {tasks ? tasks.map((task) => {
-              i++;
+              counter++;
 
-              if (i < 3) {
+              if (counter < 3) {
                 return (<TaskCalendarCard key={task.get('id')} task={task}
                             dispatch={_this.props.dispatch.bind(_this)}
                             openHover={_this.props.openHover.bind(_this)}

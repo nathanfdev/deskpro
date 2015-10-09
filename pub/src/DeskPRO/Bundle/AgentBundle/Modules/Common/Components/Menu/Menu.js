@@ -77,7 +77,15 @@ export default class Menu extends React.Component {
               window.TMP_COUNT++;
               const ref = window.TMP_COUNT;
 
-              return React.cloneElement(child, { counter: ref, parentMenuLevel: menuLevel, activeItem: this.state.activeItem, setActiveItem: this.setActiveItem.bind(this), closeMenu: this.closeMenu.bind(this) });
+              return React.cloneElement(child,
+                {
+                  counter: ref,
+                  parentMenuLevel: menuLevel,
+                  activeItem: this.state.activeItem,
+                  setActiveItem: this.setActiveItem.bind(this),
+                  closeMenu: this.closeMenu.bind(this)
+                }
+              );
             })}
           </ul>
         </div>);

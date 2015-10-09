@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Moment from 'moment';
 import { DragSource, DropTarget } from 'react-dnd';
-import { IntlMixin, FormattedDate } from 'react-intl';
 import DragTypes from '../../../Services/DragTypes.js';
 import $ from 'jquery';
 import { getEmptyImage } from 'react-dnd/modules/backends/HTML5';
@@ -10,7 +9,7 @@ import { getEmptyImage } from 'react-dnd/modules/backends/HTML5';
 const cardTarget = {
   drop(props, monitor) {
     const item = monitor.getItem();
-    if (item.id !== props.task.id) {
+    if (item.id !== props.task.get('id')) {
       props.moveCard(item, props.task);
     }
   }
@@ -21,7 +20,7 @@ const listCardSource = {
     const width = $(ReactDOM.findDOMNode(component)).width();
 
     return {
-      id: props.task.id,
+      id: props.task.get('id'),
       details: props.task,
       dispatch: props.dispatch,
       source: props.source,
@@ -66,12 +65,12 @@ const TaskKanbanCard = React.createClass({
   render: function() {
     let assigneeName = '';
 
-    if (this.props.task.get('agents') && this.props.task.get('agents').length > 0) {
-      assigneeName = this.props.agents[this.props.task.get('agents')[0]].name;
-    } else if (this.props.task.get('teams') && this.props.task.get('teams').length > 0) {
-      assigneeName = this.props.teams[this.props.task.get('teams')[0]].name;
-    } else if (this.props.task.get('departments') && this.props.task.get('departments').length > 0) {
-      assigneeName = this.props.departments[this.props.task.get('departments')[0]].title;
+    if (this.props.task.get('agents') && this.props.task.get('agents').size > 0) {
+      assigneeName = this.props.agents[this.props.task.get('agents').get(0)].name;
+    } else if (this.props.task.get('teams') && this.props.task.get('teams').size > 0) {
+      assigneeName = this.props.teams[this.props.task.get('teams').get(0)].name;
+    } else if (this.props.task.get('departments') && this.props.task.get('departments').size > 0) {
+      assigneeName = this.props.departments[this.props.task.get('departments').get(0)].title;
     }
 
     const placeHolder = this.props.isOver ? 'placeholder is-over' : 'placeholder';

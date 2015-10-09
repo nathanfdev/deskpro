@@ -24,7 +24,7 @@ const TaskCalendarList = React.createClass({
             <div className="dpwd-calendar-tasks dpwd-calendar-tasks-flat">
               <ul>
                 {tasks ? tasks.map((task) => {
-                  return (<TaskCalendarCard key={task.id} task={task}
+                  return (<TaskCalendarCard key={task.get('id')} task={task}
                             dispatch={_this.props.dispatch.bind(_this)}
                             openHover={_this.props.openHover.bind(_this)}
                             closeHover={_this.props.closeHover.bind(_this)} />);

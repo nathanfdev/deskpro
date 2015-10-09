@@ -36,19 +36,30 @@ const cardSource = {
   }
 };
 
-function collect(connect, monitor) {
-  return {
-    connectDragSource: connect.dragSource(),
-    connectDragPreview: connect.dragPreview()
-  };
-}
-
 const TaskCondensedCard = React.createClass({
   mixins: [
     require('react-onclickoutside')
   ],
 
-  handleClickOutside: function(evt) {
+  propTypes: {
+    task: React.PropTypes.object,
+    editTask: React.PropTypes.func,
+    updateMassActions: React.PropTypes.func,
+    source: React.PropTypes.string,
+    order: React.PropTypes.string,
+    projects: React.PropTypes.array,
+    linked_items: React.PropTypes.array,
+    departments: React.PropTypes.array,
+    teams: React.PropTypes.array,
+    agents: React.PropTypes.array,
+    selected: React.PropTypes.bool,
+    isOver: React.PropTypes.bool,
+    connectDragPreview: React.PropTypes.func,
+    connectDragSource: React.PropTypes.func,
+    connectDropTarget: React.PropTypes.func
+  },
+
+  handleClickOutside: function() {
     if (this.state.editing === true) {
       this.setState({
         editing: false
@@ -69,19 +80,19 @@ const TaskCondensedCard = React.createClass({
     };
   },
 
-  toggleDetails: function () {
+  toggleDetails: function() {
     this.setState({
       expanded: !this.state.expanded
     });
   },
 
-  editMode: function () {
+  editMode: function() {
     this.setState({
       editing: true
     });
   },
 
-  handleTitleChange: function (name, value) {
+  handleTitleChange: function(name, value) {
     const task = this.state.task;
     task.title = value;
     this.setState({
@@ -111,7 +122,7 @@ const TaskCondensedCard = React.createClass({
     this.props.editTask(this.props.source, task);
   },
 
-  toggleMassAction: function(event) {
+  toggleMassAction: function() {
     this.props.updateMassActions(this.props.task.get('id'));
   },
 
@@ -167,16 +178,10 @@ const TaskCondensedCard = React.createClass({
     };
   },
 
-  render: function () {
+  render: function() {
     const { task,
       projects,
-      linked_items,
-      departments,
-      teams,
-      agents,
-      source,
       connectDragSource,
-      connectDragPreview,
       connectDropTarget
     } = this.props;
 
@@ -184,12 +189,12 @@ const TaskCondensedCard = React.createClass({
 
     let assignee = null;
 
-    if (task.has('agents') && task.get('agents').length > 0) {
-      assignee = this.props.agents[task.get('agents')[0]].name;
-    } else if (task.has('teams') && task.get('teams').length > 0) {
-      assignee = this.props.teams[task.get('teams')[0]].name;
-    } else if (task.has('departments') && task.get('departments').length > 0) {
-      assignee = this.props.departments[task.get('departments')[0]].title;
+    if (task.has('agents') && task.get('agents').size > 0) {
+      assignee = this.props.agents[task.get('agents').get(0)].name;
+    } else if (task.has('teams') && task.get('teams').size > 0) {
+      assignee = this.props.teams[task.get('teams').get(0)].name;
+    } else if (task.has('departments') && task.get('departments').size > 0) {
+      assignee = this.props.departments[task.get('departments').get(0)].title;
     }
 
     let taskClass = task.get('is_done') ? 'ticket done' : 'ticket';

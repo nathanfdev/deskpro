@@ -6,7 +6,7 @@ const TaskCalendarYearsDropdown = React.createClass({
     require('react-onclickoutside')
   ],
 
-  handleClickOutside: function(evt) {
+  handleClickOutside: function() {
     this.props.closeYearDropdown();
   },
 

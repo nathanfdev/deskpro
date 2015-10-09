@@ -1,9 +1,8 @@
-import React, {PropTypes} from "react";
-import TaskKanbanCard from "./TaskKanbanCard";
-import { connect } from 'react-redux';
-import * as TaskActions from "../Actions/TaskListActions";
+import React from 'react';
+import TaskKanbanCard from './TaskKanbanCard';
+import * as TaskActions from '../Actions/TaskListActions';
 import { DropTarget } from 'react-dnd';
-import DragTypes from "../../../Services/DragTypes.js";
+import DragTypes from '../../../Services/DragTypes.js';
 
 function collect(connect, monitor) {
   return {
@@ -17,8 +16,8 @@ const listTarget = {
     const item = monitor.getItem();
 
     if (item[props.updateField] !== props.updateValue) {
-      let update = {
-        taskId : item.id
+      const update = {
+        taskId: item.details.get('id')
       };
       update[props.updateField] = props.updateValue;
 
@@ -55,14 +54,14 @@ export default class KanbanColumn extends React.Component {
       <h1 className="kanban-list-header">{this.props.taskList.title}</h1>
       {
         tasks ? tasks.map((task) => {
-          return <TaskKanbanCard task={task} key={task.id} departments={this.props.departments}
-                               agents={this.props.agents} teams={this.props.teams}
-                               dispatch={_this.props.dispatch.bind(_this)}
-                               moveCard={this.moveCard.bind(this)}
-                               order={this.props.order}
-                               updateMassActions={_this.props.updateMassActions.bind(_this)}
-                               selected={_this.props.actionable.indexOf(task.id) !== -1}
-                              />
+          return (<TaskKanbanCard task={task} key={task.get('id')} departments={this.props.departments}
+                                  agents={this.props.agents} teams={this.props.teams}
+                                  dispatch={_this.props.dispatch.bind(_this)}
+                                  moveCard={this.moveCard.bind(this)}
+                                  order={this.props.order}
+                                  updateMassActions={_this.props.updateMassActions.bind(_this)}
+                                  selected={_this.props.actionable.indexOf(task.get('id')) !== -1}
+                                />);
         }) : ''
       }
     </div>);
