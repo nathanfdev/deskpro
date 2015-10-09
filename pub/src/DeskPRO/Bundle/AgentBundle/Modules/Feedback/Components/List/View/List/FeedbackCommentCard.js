@@ -50,7 +50,7 @@ export class FeedbackCommentCard extends Component {
     const { comment } = this.props;
     if (this.state.isEditingNow) {
       return (
-        <textarea value={comment.content} style={{width: '100%'}}/>
+        <textarea defaultValue={comment.content} style={{width: '100%'}}/>
       );
     }
     return (

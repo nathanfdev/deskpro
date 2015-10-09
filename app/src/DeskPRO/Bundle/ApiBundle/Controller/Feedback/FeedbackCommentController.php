@@ -150,7 +150,7 @@ class FeedbackCommentController extends BaseController
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\FeedbackComment"
      * )
-     * @Get("/feedback_comments/{id}", name="api_feedback_comments_get")
+     * @Get("/feedback_comments/{id}", name="api_feedback_comments_get", requirements={"id": "\d+"})
      *
      * @param int $id
      *
@@ -184,7 +184,7 @@ class FeedbackCommentController extends BaseController
      *          404="Not Found"
      *      }
      * )
-     * @Put("/feedback_comments/{id}", name="api_feedback_comments_put")
+     * @Put("/feedback_comments/{id}", name="api_feedback_comments_put", requirements={"id": "\d+"})
      *
      * @param Request $request
      * @param         $id
@@ -218,7 +218,7 @@ class FeedbackCommentController extends BaseController
      *          404="Not Found"
      *      }
      * )
-     * @Delete("/feedback_comments/{id}", name="api_feedback_comments_delete")
+     * @Delete("/feedback_comments/{id}", name="api_feedback_comments_delete", requirements={"id": "\d+"})
      *
      * @param $id
      *
