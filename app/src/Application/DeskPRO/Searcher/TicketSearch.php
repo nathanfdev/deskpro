@@ -2684,7 +2684,7 @@ class TicketSearch extends SearcherAbstract
                 if ($ticket['status'] != Ticket::STATUS_ARCHIVED) {
                     return false;
                 }
-                if (!$this->_testDateMatch($ticket['ddoesTicketMatchate_archived'], $op, $choice)) {
+                if (!$this->_testDateMatch($ticket['date_archived'], $op, $choice)) {
                     return false;
                 }
                 break;
