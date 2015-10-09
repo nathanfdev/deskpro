@@ -14,14 +14,14 @@ export class AppSwitcher extends React.Component {
     this.expanded = false;
   }
 
-  hoverSwitcher() {
+  hoverSwitcher = () => {
     this.expanded = setTimeout(() => this.props.dispatch(AppActions.expandSwitcher()), 250);
-  }
+  };
 
-  cancelSwitcher() {
+  cancelSwitcher = () => {
     clearTimeout(this.expanded);
     this.props.dispatch(AppActions.collapseSwitcher());
-  }
+  };
 
   renderAppIcon(appId, title, linkClass, iconClass, notificationCount = 0) {
     const { dispatch, dpWindow } = this.props;
@@ -48,7 +48,7 @@ export class AppSwitcher extends React.Component {
     }
 
     return (
-      <nav className="dp-app-switcher" onMouseEnter={this.hoverSwitcher.bind(this)} onMouseLeave={this.cancelSwitcher.bind(this)}>
+      <nav className="dp-app-switcher" onMouseEnter={this.hoverSwitcher} onMouseLeave={this.cancelSwitcher}>
         <div className={classesNames.join(' ')}>
           <ul className="app-list">
             {this.renderAppIcon('tickets', 'Tickets', 'dpw-app-bar-item-1', 'icon-dp-streamline-mail-2', 15)}
