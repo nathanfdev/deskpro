@@ -51,6 +51,7 @@ a { color: $link-color; }
   @import 'sidebar-flags';
   @import 'sidebar-collapsed';
   @import 'sidebar-apps';
+  @import 'sidebar-titles';
 @import 'control-bar'; // Filters, order by and so on in ListFrame
 
 @import 'top-bar';//Basic structure, logo

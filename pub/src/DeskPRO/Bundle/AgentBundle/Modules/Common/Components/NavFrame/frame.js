@@ -80,25 +80,23 @@ export class NavFrameHeader extends React.Component {
 
   static propTypes = {
     children: PropTypes.object.isRequired,
-    icon: PropTypes.string.isRequired,
-    dispatch: PropTypes.func.isRequired
+    icon: PropTypes.string.isRequired
   };
 
   render() {
     const { children, icon } = this.props;
-    const iconClass = 'fa ' + icon;
+    const iconClass = 'icon ' + icon;
 
     return (
-      <div className="sidebar-title">
-        <span className="sidebar-type-icon">
-          <i className={iconClass}></i>
-          <span className="help">
-            <i className="fa fa-question"></i>
-          </span>
-        </span>
+      <div>
+        <div className="dpw-sidebar-main-title">
+          <h1 className="dpw-sidebar-main-title-active-section-1">{children}</h1>
 
-        <h1>{children}</h1>
-        <hr />
+          <div className="dpw-sidebar-main-title-active-app-icon">
+            <div className={iconClass}></div>
+          </div>
+        </div>
+        <span className="dpw-sidebar-main-title-footer"></span>
       </div>
     );
   }

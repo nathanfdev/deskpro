@@ -43,7 +43,7 @@ export class Nav extends React.Component {
         </div>
 
         <div part="inner">
-          <NavFrameHeader icon="fa-comments-o" dispatch={dispatch.bind(this)}>
+          <NavFrameHeader icon="icon-dp-streamline-connection-2">
             Chat
           </NavFrameHeader>
 

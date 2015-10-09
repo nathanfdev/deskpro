@@ -10,7 +10,7 @@ export class Nav extends React.Component {
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
-        <NavFrameHeader icon="fa-users" dispatch={dispatch.bind(this)}>
+        <NavFrameHeader icon="icon-dp-streamline-bubble-conversation-4">
           CRM
         </NavFrameHeader>
         <SectionHeader>People</SectionHeader>
@@ -40,11 +40,13 @@ export class Nav extends React.Component {
         </TabsPane>
 
         <SectionHeader>Agents</SectionHeader>
-        <ul>
-          <ListItem count={agents.total} label="All Agents" />
-          {agents.teams.map(item =>
-              <ListItem key={itemKey++} count={item.count} label={teamNames[item.group]} />)}
-        </ul>
+        <div className="sidebar-list">
+          <ul>
+            <ListItem count={agents.total} label="All Agents" />
+            {agents.teams.map(item =>
+                <ListItem key={itemKey++} count={item.count} label={teamNames[item.group]} />)}
+          </ul>
+        </div>
       </NavFrame>
     );
   }

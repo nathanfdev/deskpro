@@ -37,7 +37,9 @@ export class Nav extends React.Component {
         </div>
 
         <div part="inner">
-          <NavFrameHeader icon="fa-edit" dispatch={dispatch.bind(this)}>Publish</NavFrameHeader>
+          <NavFrameHeader icon="icon-dp-streamline-edit-1">
+            Publish
+          </NavFrameHeader>
           <TabsPane>
 
             <Tab title="KB">

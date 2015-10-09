@@ -56,7 +56,9 @@ export default class TasksNavFrame extends React.Component {
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
         <div part="inner">
-          <NavFrameHeader dispatch={dispatch.bind(this)} icon="fa-check-square-o">Tasks</NavFrameHeader>
+          <NavFrameHeader icon="icon-dp-streamline-check-circle-2">
+            Tasks
+          </NavFrameHeader>
 
           <div className="sidebar-list sidebar-list-filters">
             <TaskNavGroups taskList={taskList} filterTasks={this.filterTasks.bind(this)} />
