@@ -1,25 +1,20 @@
-import * as TaskListActions from "../Actions/TaskListActions";
-import { Reducer } from "Ampliflux/reducers";
+import { createReducer } from 'Ampliflux';
+import * as TaskListActions from '../Actions/TaskListActions';
 
-export default class LabelList extends Reducer {
-  getInitialState() {
-    return {
-    	labelList: null,
-      labelCharacters: []
-    };
-  }
-  
-  labelsLoaded(state, action) {
-    let payload = action.payload.data;
+const initialState = {
+  labelCharacters: [],
+  labelList: []
+};
 
-    let sortedLabels = {};
-    let sortedCharacters = [];
+export default createReducer(initialState, {
+  [TaskListActions.loadLabels]: (state, payload) => {
+    const sortedLabels = {};
+    const sortedCharacters = [];
 
-    // Sort labels according to their respective first letters
-    if (typeof payload.forEach === 'function') {
-      payload.forEach(function(key){
-        let label = key.label.toLowerCase();
-        let currentCharacter = label.substr(0, 1).toUpperCase();
+    if (typeof payload.data !== 'undefined' && typeof payload.data.forEach === 'function') {
+      payload.data.forEach((key) => {
+        const label = key.label.toLowerCase();
+        const currentCharacter = label.substr(0, 1).toUpperCase();
 
         // .keys() not available, so we push it ourselves
         if (sortedCharacters.indexOf(currentCharacter) === -1) {
@@ -29,18 +24,12 @@ export default class LabelList extends Reducer {
         if (typeof sortedLabels[currentCharacter] === 'undefined') {
           sortedLabels[currentCharacter] = [];
         }
+
         sortedLabels[currentCharacter].push(key);
       });
     }
 
-    return {
-        ...state,
-        labelList: sortedLabels,
-        labelCharacters: sortedCharacters
-    };
+    const withCharacters = state.set('labelCharacters', sortedCharacters);
+    return withCharacters.set('labelList', sortedLabels);
   }
-  
-  registerHandlers() {this
-    .r(TaskListActions.loadLabels, this.labelsLoaded)
-  }
-}
+});

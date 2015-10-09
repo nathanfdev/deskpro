@@ -1,4 +1,4 @@
-import { createAction } from 'Ampliflux/actions';
+import { createAction } from 'Ampliflux';
 import * as Tasks from 'DeskPRO/Bundle/AgentBundle/Services/Api/Tasks';
 import * as People from 'DeskPRO/Bundle/AgentBundle/Services/Api/People';
 import * as AgentTeams from 'DeskPRO/Bundle/AgentBundle/Services/Api/AgentTeams';
@@ -6,108 +6,108 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export const loadTasks = createAction(
   'TASKS_LOAD_TASKS',
-  (trigger) => {
-    Tasks.loadTasksRemainingCount().then(
-      (value) => trigger(value.getData())
+  () => {
+    return Tasks.loadTasksRemainingCount().then(
+      result => result.getData()
     );
   }
 );
 
 export const loadProjects = createAction(
   'TASKS_LOAD_PROJECTS',
-  (trigger) => {
-    Tasks.loadProjects({is_done: false}).then(
-      (value) => trigger(value.getData())
+  () => {
+    return Tasks.loadProjects({is_done: false}).then(
+      value => value.getData()
     );
   }
 );
 
 export const loadMyTasks = createAction(
   'TASKS_LOAD_MY_TASKS',
-  (trigger) => {
-    Tasks.loadTasksRemainingCount({assigned: 'me'}).then(
-      (value) => trigger(value.getData())
+  () => {
+    return Tasks.loadTasksRemainingCount({assigned: 'me'}).then(
+      (value) => value.getData()
     );
   }
 );
 
 export const loadTeamTasks = createAction(
   'TASKS_LOAD_TEAM_TASKS',
-  (trigger) => {
-    Tasks.loadTasksRemainingCount({assigned_team: 'me'}).then(
-      (value) => trigger(value.getData())
+  () => {
+    return Tasks.loadTasksRemainingCount({assigned_team: 'me'}).then(
+      (value) => value.getData()
     );
   }
 );
 
 export const loadDepartmentTasks = createAction(
   'TASKS_LOAD_DEPARTMENT_TASKS',
-  (trigger) => {
-    Tasks.loadTasksRemainingCount({assigned_department: 'me'}).then(
-      (value) => trigger(value.getData())
+  () => {
+    return Tasks.loadTasksRemainingCount({assigned_department: 'me'}).then(
+      (value) => value.getData()
     );
   }
 );
 
 export const loadDelegatedTasks = createAction(
   'TASKS_LOAD_DELEGATED_TASKS',
-  (trigger) => {
-    Tasks.loadTasksRemainingCount({assigned: 'not_me', creator: 'me'}).then(
-    (value) => trigger(value.getData())
-  );
+  () => {
+    return Tasks.loadTasksRemainingCount({assigned: 'not_me', creator: 'me'}).then(
+      (value) => value.getData()
+    );
   }
 );
 
 export const loadUnassignedTasks = createAction(
   'TASKS_LOAD_UNASSIGNED_TASKS',
-  (trigger) => {
-    Tasks.loadTasksRemainingCount({assigned: null, assigned_team: null, assigned_department: null}).then(
-      (value) => trigger(value.getData())
+  () => {
+    return Tasks.loadTasksRemainingCount({assigned: null, assigned_team: null, assigned_department: null}).then(
+      (value) => value.getData()
     );
   }
 );
 
 export const loadAgents = createAction(
   'TASKS_LOAD_AGENTS',
-  (trigger) => {
-    Tasks.loadAgents().then(
-      (value) => trigger(value.getData())
+  () => {
+    return Tasks.loadAgents().then(
+      (value) => value.getData()
     );
   }
 );
 
 export const loadLabels = createAction(
   'TASKS_LOAD_LABELS',
-  (trigger) => {
-    Tasks.loadLabels().then(
-      (value) => trigger(value.getData())
+  () => {
+    return Tasks.loadLabels().then(
+      (value) => value.getData()
     );
   }
 );
 
 export const loadTeams = createAction(
   'TASKS_LOAD_TEAMS',
-  (trigger) => {
-    Tasks.loadTeams().then(
-      (value) => trigger(value.getData())
+  () => {
+    return Tasks.loadTeams().then(
+      (value) => value.getData()
     );
   }
 );
 
 export const loadDepartments = createAction(
   'TASKS_LOAD_DEPARTMENTS',
-  (trigger) => {
-    Tasks.loadDepartments().then(
-      (value) => trigger(value.getData())
+  () => {
+    return Tasks.loadDepartments().then(
+      (value) => value.getData()
     );
   }
 );
 
 export const loadLists = createAction(
   'TASKS_LOAD_LISTS',
-  (trigger, data) => {
-    Tasks.loadLists(data).then(
-      (value) => trigger(value.getData())
+  (data) => {
+    return Tasks.loadLists(data).then(
+      (value) => value.getData()
     );
   }
 );
@@ -115,38 +115,36 @@ export const loadLists = createAction(
 export const failedProject = createAction('TASKS_POST_PROJECT_FAIL');
 export const createProject = createAction(
   'TASKS_POST_PROJECT',
-  (trigger, data) => {
-    Tasks.createProject(data).then(
-      (value) => {
-        trigger(value.getData());
-        trigger(null, loadProjects());
+  (data) => {
+    return Tasks.createProject(data).then(
+      value => dispatch => {
+        value.getData();
+        dispatch(loadProjects());
       },
-      (value) => trigger(value.xhr.responseJSON, failedProject)
+      value => value.xhr.responseJSON
     );
   }
 );
 
 export const editProject = createAction(
   'TASKS_EDIT_PROJECT',
-  (trigger, data) => {
+  (data) => {
     const projectId = data.projectId;
     delete data.projectId;
-    Tasks.editProject(projectId, data).then(
-      (value) => {
-        trigger(value.getData(), createProject);
-        trigger(null, loadProjects());
+    return Tasks.editProject(projectId, data).then(
+      value => dispatch => {
+        value.getData();
+        dispatch(loadProjects());
       },
-      (value) => {
-        trigger(value.xhr.responseJSON, failedProject);
-      }
+      value => value.xhr.responseJSON
     );
   }
 );
 
 export const loadTaskList = createAction(
   'TASKS_LOAD_TASK_LIST',
-  (trigger, data) => {
-    Tasks.loadAddress(data).then(
+  (data) => {
+    return Tasks.loadAddress(data).then(
       (value) => {
         const result = value.getData();
         const output = result;
@@ -192,7 +190,7 @@ export const loadTaskList = createAction(
         });
 
         // Load all the relevant data, and when it's done fire the trigger
-        Promise.all([
+        return Promise.all([
           Tasks.loadProjects({ids: projects.join(',')}),
           Tasks.loadLinks({ids: linkedItems.join(',')}),
           People.loadPeople({ids: people.join(',')}),
@@ -214,9 +212,10 @@ export const loadTaskList = createAction(
             }
           });
 
-          Tasks.loadLinkedTickets({ids: linkedTickets.join(',')}).then((ticket) => {
+          return Tasks.loadLinkedTickets({ids: linkedTickets.join(',')}).then((ticket) => {
             output.tickets = ticket.getData().data;
-            trigger(output);
+            return output;
+            // trigger(output);
           });
         });
       }
@@ -226,7 +225,7 @@ export const loadTaskList = createAction(
 
 export const loadFilter = createAction(
   'TASKS_LOAD_FILTER',
-  (trigger, data)=> {
+  data => dispatch => {
     // Make sure we don't accidentally break the filter details
     const filter = data;
     const filterElements = {};
@@ -309,60 +308,61 @@ export const loadFilter = createAction(
 
     const compiled = 'tasks?' + Tasks.compileParams(filterElements);
 
-    trigger(null, loadTaskList(compiled));
+    dispatch(loadTaskList(compiled));
+
+    return compiled;
   }
 );
 
 export const setFilter = createAction(
   'TASKS_SET_FILTER',
-  (trigger, data) => {
-    trigger(null, loadFilter(data));
-    trigger(data);
+  data => dispatch => {
+    dispatch(loadFilter(data));
+    return data;
   }
 );
 
 export const failedTask = createAction('TASKS_POST_TASK_FAIL');
 export const createTask = createAction(
   'TASKS_POST_TASK',
-  (trigger, data, source = 'tasks') => {
-    Tasks.createTask(data).then(
-      (value) => {
-        trigger(value.getData());
-        trigger(null, loadTaskList(source));
+  (data, source = 'tasks') => {
+    return Tasks.createTask(data).then(
+      value => dispatch => {
+        const output = value.getData();
+        dispatch(loadTaskList(source));
+        return output;
       },
-      (value) => trigger(value.xhr.responseJSON, failedTask)
+      value => value.xhr.responseJSON
     );
   }
 );
 
 export const editTask = createAction(
   'TASKS_EDIT_TASK',
-  (trigger, data, source = 'nowhere') => {
+  (data, source = 'nowhere') => {
     const taskId = data.taskId;
     delete data.taskId;
-    Tasks.editTask(taskId, data).then(
-      (value) => {
-        trigger(value.getData(), createTask);
-        trigger(null, loadTaskList(source));
+    return Tasks.editTask(taskId, data).then(
+      value => dispatch => {
+        const output = value.getData();
+        dispatch(loadTaskList(source));
+        return output;
       },
-      (value) => {
-        trigger(value.xhr.responseJSON, failedTask);
-      }
+      value => value.xhr.responseJSON
     );
   }
 );
 
 export const massEditTasks = createAction(
   'TASKS_MASS_EDIT_TASKS',
-  (trigger, data, source = 'nowhere') => {
-    Tasks.massEditTasks(data).then(
-      (value) => {
-        trigger(value.getData(), createTask);
-        trigger(null, loadTaskList(source));
+  (data, source = 'nowhere') => {
+    return Tasks.massEditTasks(data).then(
+      value => dispatch => {
+        const output = value.getData();
+        dispatch(loadTaskList(source));
+        return output;
       },
-      (value) => {
-        trigger(value.xhr.responseJSON, failedTask);
-      }
+      value => value.xhr.responseJSON
     );
   }
 );

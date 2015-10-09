@@ -23,7 +23,7 @@ function collect(connector, monitor) {
 }
 
 @connect(state => ({
-  failedProject: state.failedProject
+  failedProject: state.Tasks.failedProject
 }))
 @DropTarget(DragTypes.TASK, projectTarget, collect)
 export default class TaskNavItemProject extends React.Component {
@@ -47,7 +47,7 @@ export default class TaskNavItemProject extends React.Component {
     return connectDropTarget(<li className={isOver ? 'droppable project-list-item' : 'project-list-item'}>
       <div className="list-counter-bucket" onMouseEnter={this.toggleEditIcon.bind(this, true)} onMouseLeave={this.toggleEditIcon.bind(this, false)}>
         {this.state.showEditIcon ?
-        <a href="#" className="edit-icon" onClick={this.props.toggleWindow.bind(this, project, event)}><i className="fa fa-cog" /></a> :
+        <a href="#" className="edit-icon" onClick={this.props.toggleWindow.bind(this, project)}><i className="fa fa-cog" /></a> :
         <a className="list-counter" href="#">
           {project.remaining}
         </a>}

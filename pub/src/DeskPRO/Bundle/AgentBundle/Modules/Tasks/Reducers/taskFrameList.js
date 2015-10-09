@@ -1,68 +1,35 @@
-import * as TaskListActions from "../Actions/TaskListActions";
-import { Reducer } from "Ampliflux/reducers";
+import { createReducer } from 'Ampliflux';
+import * as TaskListActions from '../Actions/TaskListActions';
+import { async, composeHandlers } from 'DeskPRO/Component/Ampliflux/reducers/handlers';
 
-export default class TaskFrameList extends Reducer {
-  getInitialState() {
-    return {
-      taskFrameList: null,
-      taskFrameSource: null,
-      taskFrameProjects: null,
-      taskFrameLinks: null,
-      taskFrameAgents: null,
-      taskFrameTeams: null,
-      taskFrameDepartments: null,
-      taskFrameTickets: null,
-      taskFrameMeta: null
-    };
-  }
+const initialState = {
+  taskFrameList: null,
+  taskFrameSource: null,
+  taskFrameProjects: null,
+  taskFrameLinks: null,
+  taskFrameAgents: null,
+  taskFrameTeams: null,
+  taskFrameDepartments: null,
+  taskFrameTickets: null,
+  taskFrameMeta: null
+};
 
-  tasksLoaded(state, action) {
-    let projects = [];
-    let links = [];
-    let agents = [];
-    let teams = [];
-    let departments = [];
-    let tickets = [];
-
-    if (typeof action.payload.projects !== 'undefined' && typeof action.payload.projects !== 'undefined') {
-      projects = action.payload.projects;
-    }
-
-    if (typeof action.payload.linked_items !== 'undefined') {
-      links = action.payload['linked_items'];
-    }
-
-    if (typeof action.payload.people !== 'undefined') {
-      agents = action.payload['people'];
-    }
-
-    if (typeof action.payload.teams !== 'undefined') {
-      teams = action.payload['teams'];
-    }
-
-    if (typeof action.payload.departments !== 'undefined') {
-      departments = action.payload['departments'];
-    }
-
-    if (typeof action.payload.tickets !== 'undefined') {
-      tickets = action.payload['tickets'];
-    }
-
-    return {
-      ...state,
-      taskFrameList: action.payload.data,
-      taskFrameSource: action.payload.source,
-      taskFrameProjects: projects,
-      taskFrameLinks: links,
-      taskFrameAgents: agents,
-      taskFrameTeams: teams,
-      taskFrameDepartments: departments,
-      taskFrameTickets: tickets,
-      taskFrameMeta: action.payload.meta
-    };
-  }
-
-  registerHandlers() {this
-    .r(TaskListActions.loadTaskList, this.tasksLoaded)
-  }
-}
+export default createReducer(initialState, {
+  [TaskListActions.loadTaskList]: composeHandlers(
+    async({
+      success: (state, payload) => {
+        return state.merge({
+          taskFrameList: (typeof payload !== 'undefined' && typeof payload.data !== 'undefined') ? payload.data : {},
+          taskFrameSource: (typeof payload !== 'undefined' && typeof payload.source !== 'undefined') ? payload.source : {},
+          taskFrameProjects: (typeof payload !== 'undefined' && typeof payload.projects !== 'undefined') ? payload.projects : {},
+          taskFrameLinks: (typeof payload !== 'undefined' && typeof payload.linked_items !== 'undefined') ? payload.linked_items : {},
+          taskFrameAgents: (typeof payload !== 'undefined' && typeof payload.people !== 'undefined') ? payload.people : {},
+          taskFrameTeams: (typeof payload !== 'undefined' && typeof payload.teams !== 'undefined') ? payload.teams : {},
+          taskFrameDepartments: (typeof payload !== 'undefined' && typeof payload.departments !== 'undefined') ? payload.departments : {},
+          taskFrameTickets: (typeof payload !== 'undefined' && typeof payload.tickets !== 'undefined') ? payload.tickets : {},
+          taskFrameMeta: (typeof payload !== 'undefined' && typeof payload.meta !== 'undefined') ? payload.meta : {},
+        });
+      }
+    })
+  )
+});

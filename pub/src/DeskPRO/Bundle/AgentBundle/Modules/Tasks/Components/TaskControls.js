@@ -123,7 +123,7 @@ export default class TaskControls extends React.Component {
             </span>
           </a>
 
-          <Positioned isOpen={this.state.changeView}
+          <Positioned isOpen={this.props.changeView}
                       positionAt="left bottom"
                       positionTarget={viewSwitcherPosition}>
             <TaskControlsViewSwitcher

@@ -31,14 +31,14 @@ export default class TaskCardGeneric extends React.Component {
             departments,
             linkedItems
           } = this.props;
-    const titleClass = task.is_done ? 'dpwd--card-title strikethrough' : 'dpwd--card-title';
-    const overdue = Moment(task.date_due).isBefore();
+    const titleClass = task.get('is_done', false) ? 'dpwd--card-title strikethrough' : 'dpwd--card-title';
+    const overdue = Moment(task.get('date_due')).isBefore();
 
     let ticketLink = undefined;
     let ticketTitle = 'Linked ticket';
 
-    if (task.linked_items && task.linked_items.length > 0) {
-      task.linked_items.forEach((item) => {
+    if (task.has('linked_items') && task.get('linked_items').size > 0) {
+      task.get('linked_items').forEach((item) => {
         if (typeof linkedItems[item].ticket !== 'undefined' && linkedItems[item].ticket !== null) {
           ticketLink = '#' + linkedItems[item].ticket;
           ticketTitle = tickets[linkedItems[item].ticket].subject;
@@ -48,26 +48,26 @@ export default class TaskCardGeneric extends React.Component {
 
     let assignee = null;
 
-    if (task.agents && task.agents.length > 0) {
+    if (task.has('agents') && task.get('agents').size > 0) {
       // We assume one assignment for now, though we will need to support more later
-      const agentId = task.agents[0];
+      const agentId = task.get('agents')[0];
       assignee = agents[agentId];
-    } else if (task.teams && task.teams.length > 0) {
-      const teamId = task.teams[0];
+    } else if (task.has('teams') && task.get('teams').size > 0) {
+      const teamId = task.get('teams')[0];
       assignee = teams[teamId];
-    } else if (task.departments && task.departments.length > 0) {
-      const departmentId = task.departments[0];
+    } else if (task.has('departments') && task.get('departments').size > 0) {
+      const departmentId = task.get('departments')[0];
       assignee = departments[departmentId];
     }
 
     return (
       <Card statusBars
-            cardType="float"
+            type="float"
             task={task} >
         <div className="dpw--card-line">
           <div className="dpw--card-line-left card-title">
             <div className={titleClass}>
-              <h1>{task.title}</h1>
+              <h1>{task.get('title')}</h1>
             </div>
           </div>
 
@@ -82,13 +82,13 @@ export default class TaskCardGeneric extends React.Component {
         <div className="dpw--card-line">
           <div className="dpw--card-line-left">
             <span className={overdue ? 'overdue dpwd--card-line-item' : 'dpwd--card-line-item'}>
-              <i className="fa fa-calendar-o" /> Due: {task.date_due ? this.dueIndicator(task.date_due) : 'N/A'}
+              <i className="fa fa-calendar-o" /> Due: {task.get('date_due') ? this.dueIndicator(task.get('date_due')) : 'N/A'}
             </span>
 
-            {task.project && projects[task.project] ? <span>
+            {task.has('project') && projects[task.get('project')] ? <span>
               <span className="dpw--card-disc" />
               <span className="dpwd--card-line-item">
-                <i className="fa fa-book" /> {projects[task.project].title}
+                <i className="fa fa-book" /> {projects[task.get('project')].title}
               </span>
             </span>
             : ''}
@@ -104,7 +104,7 @@ export default class TaskCardGeneric extends React.Component {
 
           <div className="dpw--card-line-right">
             <span className="dpwd--card-line-item">
-              {task.comment_count} <i className="fa fa-comment" />
+              {task.get('comment_count', 0)} <i className="fa fa-comment" />
             </span>
 
             {task.subtasks_total > 0 ?

@@ -170,13 +170,12 @@ export default class TaskCalendar extends React.Component {
     const counts = {};
 
     if (this.props.tasks) {
-      this.props.tasks.forEach((task) => {
-        if (task.date_due) {
-          const due = new Moment(task.date_due);
+      this.props.tasks.map((task) => {
+        if (task.has('date_due')) {
+          const due = new Moment(task.get('date_due'));
+          const dateString = due.date() + '-' + due.month();
 
           if (this.displayTask(due)) {
-            const dateString = due.date() + '-' + due.month();
-
             if (typeof tasks[dateString] === 'undefined') {
               tasks[dateString] = [];
             }
@@ -185,7 +184,7 @@ export default class TaskCalendar extends React.Component {
               counts[dateString] = 0;
             }
 
-            if (task.is_done) {
+            if (task.get('is_done')) {
               counts[dateString]++;
             } else {
               tasks[dateString].push(task);
@@ -215,6 +214,7 @@ export default class TaskCalendar extends React.Component {
 
       <table className="calendar-content" cellSpacing="0">
         <thead>
+          <tr>
           {weekdays.map((weekday) => {
             const today = new Moment();
             const weekdayClass = today.format('dddd') === weekday &&
@@ -222,6 +222,7 @@ export default class TaskCalendar extends React.Component {
                                  'dpwd-calendar-header-today' : '';
             return <td key={weekday} className={weekdayClass}>{weekday}</td>;
           })}
+          </tr>
         </thead>
         <tbody>
           {rows ? rows.map((row, key) => {
@@ -245,6 +246,7 @@ export default class TaskCalendar extends React.Component {
 
       <div>
         <ComponentRootWrapper open={this.state.showWindow}>
+          {this.props.tasks && this.state.tasks && this.state.tasks.size > 0 ?
           <TaskCalendarList tasks={this.state.tasks}
                             dayDate={this.state.dayDate}
                             position={this.state.position}
@@ -252,6 +254,7 @@ export default class TaskCalendar extends React.Component {
                             openHover={this.openHover.bind(this)}
                             closeHover={this.closeHover.bind(this)}
                             dispatch={this.props.dispatch.bind(this)} />
+          : <div /> }
         </ComponentRootWrapper>
       </div>
 
@@ -267,6 +270,7 @@ export default class TaskCalendar extends React.Component {
       <div>
         <ComponentRootWrapper open={this.state.showHover}>
           <div style={{position: 'absolute', top: this.state.hoverPosition.y, left: this.state.hoverPosition.x}}>
+            {typeof this.state.task !== 'undefined' && this.state.task && this.state.task.size > 0 ?
             <TaskCardGeneric task={this.state.task}
                              projects={this.props.projects}
                              linkedItems={this.props.linkedItems}
@@ -275,6 +279,7 @@ export default class TaskCalendar extends React.Component {
                              agents={this.props.agents}
                              position={this.state.hoverPosition}
                              tickets={this.props.tickets} />
+            : <div />}
           </div>
         </ComponentRootWrapper>
       </div>

@@ -1,23 +1,16 @@
-import * as TaskListActions from "../Actions/TaskListActions";
-import { Reducer } from "Ampliflux/reducers";
+import { createReducer } from 'Ampliflux';
+import * as TaskListActions from '../Actions/TaskListActions';
 
-export default class TeamList extends Reducer {
-  getInitialState() {
-    return {
-      teamList: null,
-      teamCount: 0
-    };
+const initialState = {
+  teamCount: 0,
+  teamList: []
+};
+
+export default createReducer(initialState, {
+  [TaskListActions.loadTeams]: (state, payload) => {
+    const teamCount = payload.meta ? payload.meta.total_count : 0;
+
+    const withCount = state.set('teamCount', teamCount);
+    return withCount.set('teamList', payload.data);
   }
-  
-  registerHandlers() {this
-    .r(TaskListActions.loadTeams, this.teamsLoaded)
-  }
-  
-  teamsLoaded(state, action) {
-    return {
-      ...state,
-      teamList: action.payload.data,
-      teamCount: action.payload.meta.total_count
-    };
-  }
-}
+});

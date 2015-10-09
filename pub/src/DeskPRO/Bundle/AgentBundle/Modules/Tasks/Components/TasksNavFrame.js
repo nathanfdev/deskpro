@@ -1,27 +1,40 @@
-import React from "react";
+import React from 'react';
 import { connect } from 'react-redux';
 
-import * as TaskActions from "../Actions/TaskListActions";
-import * as AppActions from "../../Application/Actions/AppActions";
-import TaskNavGroups from "../Components/TaskNavGroups";
-import TaskNavProjects from "../Components/TaskNavProjects";
-import TaskNavPeople from "../Components/TaskNavPeople";
-import TaskNavLabels from "../Components/TaskNavLabels";
-import { NavFrameHeader, NavFrame } from "../../Common/Components/NavFrame/index";
-import $ from "jquery";
+import * as TaskActions from '../Actions/TaskListActions';
+import TaskNavGroups from '../Components/TaskNavGroups';
+import TaskNavProjects from '../Components/TaskNavProjects';
+import TaskNavPeople from '../Components/TaskNavPeople';
+import TaskNavLabels from '../Components/TaskNavLabels';
+import { NavFrameHeader, NavFrame } from '../../Common/Components/NavFrame/index';
+import $ from 'jquery';
 
 @connect(state => ({
-  taskList: state.taskList,
-  projectList: state.projectList,
-  agentList: state.agentList,
-  labelList: state.labelList,
-  teamList: state.teamList,
-  departmentList: state.departmentList,
+  taskList: state.Tasks.taskList,
+  projectList: state.Tasks.projectList,
+  agentList: state.Tasks.agentList,
+  labelList: state.Tasks.labelList,
+  teamList: state.Tasks.teamList,
+  departmentList: state.Tasks.departmentList,
   user: state.Application.user,
-  createdProject: state.createdProject,
+  createdProject: state.Tasks.createdProject,
   dpWindow: state.Application.dpWindow
 }))
 export default class TasksNavFrame extends React.Component {
+  static propTypes = {
+    taskList: React.PropTypes.object,
+    projectList: React.PropTypes.object,
+    agentList: React.PropTypes.object,
+    labelList: React.PropTypes.object,
+    departmentList: React.PropTypes.object,
+    teamList: React.PropTypes.object,
+    createdProject: React.PropTypes.object,
+    dpWindow: React.PropTypes.object,
+    user: React.PropTypes.object,
+    dispatch: React.PropTypes.func,
+    children: React.PropTypes.any
+  }
+
   constructor(props) {
     super(props);
 
@@ -49,9 +62,6 @@ export default class TasksNavFrame extends React.Component {
   render() {
     const { taskList, projectList, agentList, labelList, departmentList,
             teamList, createdProject, dpWindow, dispatch } = this.props;
-
-    const className = dpWindow.get('collapseNav') ? 'sidebar-wrapper sidebar-collapsed' : 'sidebar-wrapper';
-    const expandNav = () => dispatch(AppActions.expandNav());
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
