@@ -89,16 +89,15 @@ export class NavFrameHeader extends React.Component {
     const iconClass = 'fa ' + icon;
 
     return (
-      <div className="sidebar-title">
-        <span className="sidebar-type-icon">
-          <i className={iconClass}></i>
-          <span className="help">
-            <i className="fa fa-question"></i>
-          </span>
-        </span>
+      <div>
+        <div className="dpw-sidebar-main-title">
+          <h1 className="dpw-sidebar-main-title-active-section-1">{children}</h1>
 
-        <h1>{children}</h1>
-        <hr />
+          <div className="dpw-sidebar-main-title-active-app-icon">
+            <div className="icon icon-dp-streamline-mail-2"></div>
+          </div>
+        </div>
+        <span className="dpw-sidebar-main-title-footer"></span>
       </div>
     );
   }
