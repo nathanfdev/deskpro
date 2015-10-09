@@ -4,10 +4,13 @@ import { Overlay } from './Overlay';
 import { Chat } from './ChatWindow/Chat';
 import { Recent } from './Recent';
 import * as listActions from '../Actions/imListActions';
+import * as chatActions from '../RecordStores/Actions/imChatsActions';
 import { getRecentAgents } from '../Selectors/list';
+import { chatsSelector } from '../RecordStores/Selectors/chats';
 
 @connect(state => ({
   recentAgents: getRecentAgents(state),
+  recentChats: chatsSelector(state),
   current: state.IM.chats.get('current'),
   me: state.Application.user
 }))
@@ -21,6 +24,7 @@ export class HeaderWidget extends React.Component {
     super(props);
     const { dispatch } = this.props;
     dispatch(listActions.loadRecentAgents());
+    dispatch(chatActions.loadChats('all'));
     this.state = {
       overlayShown: false,
       chating: false,
@@ -35,13 +39,11 @@ export class HeaderWidget extends React.Component {
                 IMs <i className="fa fa-angle-down"></i>
             </span>
         </a>
-        { this.props.recentAgents.length > 0
-          ? this.props.recentAgents.map(
-          (agent, index) => {
+        { this.props.recentChats.size > 0
+          ? this.props.recentChats.map(
+          (map, index) => {
             "use strict";
-            if (agent.id !== this.props.me.get('id')) {
-              return <Recent handleClickParticipant={this.handleClickParticipant} key={index} agent={agent}/>
-            }
+              return <Recent handleClickParticipant={this.handleClickParticipant} key={index} chat={chat} me={this.props.me}/>
           }
         )
           : null
