@@ -196,13 +196,10 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         $WEB_INSTALL        = true;
         $IMPORT_INSTALL     = false;
 
-        $install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
-        $em           = $this->getOrm();
-        $translate    = $this->getContainer()->get('deskpro.core.translate');
+        $em        = $this->getOrm();
+        $translate = $this->getContainer()->get('deskpro.core.translate');
 
-        foreach ($install_data as $php) {
-            eval($php);
-        }
+        require DP_ROOT.'/src/Application/InstallBundle/Data/data.php';
 
         $data_proc = new DefaultDataProcessor($this->getContainer());
         if ($logger) {
