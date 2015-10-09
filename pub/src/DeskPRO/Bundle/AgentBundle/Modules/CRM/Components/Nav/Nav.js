@@ -40,11 +40,13 @@ export class Nav extends React.Component {
         </TabsPane>
 
         <SectionHeader>Agents</SectionHeader>
-        <ul>
-          <ListItem count={agents.total} label="All Agents" />
-          {agents.teams.map(item =>
-              <ListItem key={itemKey++} count={item.count} label={teamNames[item.group]} />)}
-        </ul>
+        <div className="sidebar-list">
+          <ul>
+            <ListItem count={agents.total} label="All Agents" />
+            {agents.teams.map(item =>
+                <ListItem key={itemKey++} count={item.count} label={teamNames[item.group]} />)}
+          </ul>
+        </div>
       </NavFrame>
     );
   }
