@@ -86,7 +86,7 @@ export class NavFrameHeader extends React.Component {
 
   render() {
     const { children, icon } = this.props;
-    const iconClass = 'fa ' + icon;
+    const iconClass = 'icon ' + icon;
 
     return (
       <div>
@@ -94,7 +94,7 @@ export class NavFrameHeader extends React.Component {
           <h1 className="dpw-sidebar-main-title-active-section-1">{children}</h1>
 
           <div className="dpw-sidebar-main-title-active-app-icon">
-            <div className="icon icon-dp-streamline-mail-2"></div>
+            <div className={iconClass}></div>
           </div>
         </div>
         <span className="dpw-sidebar-main-title-footer"></span>
