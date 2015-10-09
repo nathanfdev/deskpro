@@ -1,6 +1,7 @@
 import { createAction } from 'Ampliflux';
 import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
 import { loadFeedback } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackActions';
+import { commentsToReview } from './FeedbackListActions';
 import { loadPeople } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { loadEmails } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/emailsActions';
 
@@ -65,7 +66,10 @@ export const commentsToggleOrder = createAction(
 export const deleteComment = createAction(
   'FEEDBACK_COMMENTS_DELETE',
     id => dispatch => {
-    Feedback.deleteFeedbackComment(id).then(()=>dispatch(loadCommentsList()));
+    Feedback.deleteFeedbackComment(id).then(()=> {
+      dispatch(commentsToReview());
+      dispatch(loadCommentsList());
+    });
     return id;
   }
 );
@@ -75,6 +79,9 @@ export const editComment = createAction(
     data => dispatch => {
     const commentId = data.commentId;
     delete data.commentId;
-    Feedback.editComment(commentId, data).then(()=>dispatch(loadCommentsList()));
+    Feedback.editComment(commentId, data).then(()=> {
+      dispatch(commentsToReview());
+      dispatch(loadCommentsList());
+    });
   }
 );
