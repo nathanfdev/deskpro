@@ -7,7 +7,6 @@ export class OrderByDropdown extends Component {
 
   static propTypes = {
     order: PropTypes.string.isRequired,
-    expanded: PropTypes.bool.isRequired,
     currentSortMode: PropTypes.object.isRequired,
     currentGroup: PropTypes.object.isRequired,
     sortOptions: PropTypes.object.isRequired,

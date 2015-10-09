@@ -41,7 +41,7 @@ export default class Positioned extends React.Component {
   componentDidMount() {
     this.node = ReactDOM.findDOMNode(this);
     jQuery(this.node).detach();
-    jQuery('body').prepend(this.node);
+    jQuery('.dpwd-navigation-dropdown-top-row').prepend(this.node);
 
     // Manipulate the DOM here
     this.renderContent();
@@ -77,15 +77,16 @@ export default class Positioned extends React.Component {
     if (this.props.positionCalc) {
       const positionResult = this.props.positionCalc();
       jQuery(this.node).css('position', 'absolute')
-                  .css('top', positionResult.top)
-                  .css('left', positionResult.left);
+        .css('top', positionResult.top)
+        .css('left', positionResult.left);
     } else {
-      const placement = this.props.position || {
-        my: 'left top',
-        at: 'right bottom',
-        of: null,
-        collision: 'none'
-      };
+      const placement = this.props.position ||
+        {
+          my: 'left top',
+          at: 'right bottom',
+          of: null,
+          collision: 'none'
+        };
 
       placement.my = this.props.positionMy || placement.my;
       placement.at = this.props.positionAt || placement.at;
@@ -102,7 +103,6 @@ export default class Positioned extends React.Component {
         if (placement.of === null) {
           console.error('No position target specified');
         }
-
         jQuery(this.node).css('position', 'absolute').position(placement);
       }
     }

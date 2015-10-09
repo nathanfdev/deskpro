@@ -3,7 +3,7 @@ import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu
 import ItemFormat from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemFormat';
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned';
 import classNames from 'classnames';
-import $ from 'jquery';
+import jQuery from 'jquery';
 
 const BaseItem = React.createClass({
 
@@ -87,12 +87,12 @@ const BaseItem = React.createClass({
 
   /**
    * Handle clicks outside the item
-   * @param {Event} e Click event
+   * @param {Event} event Click event
    * @return {void}
    */
-  handleClickOutside: function(e) {
+  handleClickOutside: function(event) {
     // Don't handle clicks for menu items - they deal with that themselves
-    const closest = $(e.target).parents('.dropdown-nav-item');
+    const closest = jQuery(event.target).parents('.dpw-navigation-dropdown-item');
 
     if (closest.length === 0) {
       this.closeMenu();
@@ -120,10 +120,12 @@ const BaseItem = React.createClass({
     });
   },
 
-  /**
+  /*
    * Format the output according to the format prop
    * @param  {mixed} output The output
    * @return {mixed}        The formatted output
+   * @param hasMenu
+   * @param hasItemList
    */
   formatOutput: function(output, hasMenu = false, hasItemList = false) {
     if (this.props.format && this.props.format === 'item') {
@@ -138,7 +140,7 @@ const BaseItem = React.createClass({
    * @return {React.Element} The menu container
    */
   render: function() {
-    const baseClass = 'dpw-navigation-dropdown-item dropdown-nav-item';
+    const baseClass = 'dpw-navigation-dropdown-item';
 
     const onMouseOverAction = this.props.onMouseOver ? this.props.onMouseOver : () => {};
     const onMouseOutAction = this.props.onMouseOut ? this.props.onMouseOut : () => {};
