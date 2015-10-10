@@ -23,7 +23,7 @@ export class LoginForm extends React.Component {
 
               <div className="dpw-login-header">
                 <div className="dpw-login-header-logo">
-                  <img src="../img/samples/sample-logo.png" />
+                  <img src="../../img/samples/sample-logo.png" />
                 </div>
                 <h1>Log in to Acme Helpdesk</h1>
               </div>
