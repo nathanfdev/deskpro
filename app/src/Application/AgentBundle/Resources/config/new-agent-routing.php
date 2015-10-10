@@ -109,5 +109,13 @@ $collection->create(
     )
 )
 ;
+$collection->create(
+    'react_agent_welcome',
+    array(
+        'path'       => '/welcome',
+        'controller' => 'AgentBundle:AgentChrome:agentChrome',
+    )
+)
+;
 
 return $collection;

@@ -10,6 +10,7 @@ import { CrmApp } from '../../CRM/Components/CrmApp';
 import { ChatApp } from '../../Chat/Components/ChatApp';
 import { PublishApp } from '../../Publish/Components/PublishApp';
 import { LoginApp } from '../../Login/Components/LoginApp';
+import { WelcomeApp } from '../../Welcome/Components/WelcomeApp';
 import * as AppActions from '../../Application/Actions/AppActions';
 import { Router, Route, Redirect } from 'react-router';
 
@@ -66,6 +67,7 @@ export class DpAppContainer extends React.Component {
           <Route name="test" path="test" component={TestApp}/>
         </Route>
         <Route name="login" path={basePath + '/login'} component={LoginApp}/>
+        <Route name="welcome" path={basePath + '/welcome'} component={WelcomeApp}/>
       </Router>
     );
   }

@@ -7,7 +7,7 @@ export class WelcomeBack extends React.Component {
         <div className="deskpro-loading-welcome-back">
 
           <div className="deskpro-loading-logo">
-            <img width="149" height="44" srcset="../img/loading/loading-logo-2x.png 2x" src="../img/loading/loading-logo.png" alt="DeskPRO" />
+            <img width="149" height="44" srcSet="../img/loading/loading-logo-2x.png 2x" src="../img/loading/loading-logo.png" alt="DeskPRO" />
           </div>
 
           <div className="deskpro-loading-blurb">
