@@ -9,6 +9,7 @@ import { FeedbackApp } from '../../Feedback/Components/FeedbackApp';
 import { CrmApp } from '../../CRM/Components/CrmApp';
 import { ChatApp } from '../../Chat/Components/ChatApp';
 import { PublishApp } from '../../Publish/Components/PublishApp';
+import { LoginApp } from '../../Login/Components/LoginApp';
 import * as AppActions from '../../Application/Actions/AppActions';
 import { Router, Route, Redirect } from 'react-router';
 
@@ -63,6 +64,7 @@ export class DpAppContainer extends React.Component {
           <Route name="publish" path="publish" component={PublishApp}/>
           <Route name="feedback" path="feedback" component={FeedbackApp}/>
           <Route name="test" path="test" component={TestApp}/>
+          <Route name="login" path="login" component={LoginApp}/>
         </Route>
       </Router>
     );
