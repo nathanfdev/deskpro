@@ -6,7 +6,7 @@ export class LoginForm extends React.Component {
       <div className="deskpro-loading">
         <div className="deskpro-loading-welcome-back">
           <div className="deskpro-loading-logo">
-            <img width="149" height="44" alt="DeskPRO" src="../img/loading/loading-logo.png" srcSet="../img/loading/loading-logo-2x.png 2x" />
+            <a href="https://www.deskpro.com/" className="logo"></a>
           </div>
         </div>
 
