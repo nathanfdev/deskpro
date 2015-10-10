@@ -55,7 +55,17 @@
     a { display: inline; }
     a:hover, a:hover strong { color: #3d83c5; }
 
-    span {
+    .logo {
+      display: block;
+      width: 27px;
+      height: 27px;
+      margin: 0 auto;
+      @include retina-image("../img/loading/footer-deskpro-logo", 27px 27px);
+      background-repeat: no-repeat;
+      background-position: center center;
+    }
+
+    .title {
       position: absolute;
       width: 200px;
       left: -70px;

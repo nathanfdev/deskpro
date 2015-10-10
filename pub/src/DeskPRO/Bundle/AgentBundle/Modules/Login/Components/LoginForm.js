@@ -90,8 +90,8 @@ export class LoginForm extends React.Component {
 
           <span className="deskpro-mark">
             <a href="#">
-              <img alt="Deskpro" width="27" height="27" src="../img/loading/footer-deskpro-logo.png" srcSet="../img/loading/footer-deskpro-logo-2x.png 2x" />
-              <span>Helpdesk software by <strong>DeskPRO</strong></span>
+              <span className="logo"></span>
+              <span className="title">Helpdesk software by <strong>DeskPRO</strong></span>
             </a>
           </span>
 
