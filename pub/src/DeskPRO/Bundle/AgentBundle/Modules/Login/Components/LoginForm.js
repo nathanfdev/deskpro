@@ -6,7 +6,7 @@ export class LoginForm extends React.Component {
       <div className="deskpro-loading">
         <div className="deskpro-loading-welcome-back">
           <div className="deskpro-loading-logo">
-            <img width="149" height="44" alt="DeskPRO" src="../img/loading/loading-logo.png" srcset="../img/loading/loading-logo-2x.png 2x" />
+            <img width="149" height="44" alt="DeskPRO" src="../img/loading/loading-logo.png" srcSet="../img/loading/loading-logo-2x.png 2x" />
           </div>
         </div>
 
@@ -63,15 +63,15 @@ export class LoginForm extends React.Component {
 
           <div className="right-panel">
             <div className="dpw-login-side">
-              <a href="#" className="dpw-main-banner" style="background-image: url(../img/samples/sample-banner.png);"></a>
+              <a href="#" className="dpw-main-banner" style={{backgroundImage: 'url(../img/samples/sample-banner.png)'}}></a>
 
               <div className="dpw-login-side-banners">
                 <div className="left">
-                  <a href="#" className="dpw-login-side-small-banner" style="background-image: url(../img/loading/banner-quickstart-guide.png);"></a>
+                  <a href="#" className="dpw-login-side-small-banner" style={{backgroundImage: 'url(../img/loading/banner-quickstart-guide.png)'}}></a>
                 </div>
 
                 <div className="right">
-                  <a href="#" className="dpw-login-side-small-banner" style="background-image: url(../img/loading/banner-mobile-apps.png);"></a>
+                  <a href="#" className="dpw-login-side-small-banner" style={{backgroundImage: 'url(../img/loading/banner-mobile-apps.png)'}}></a>
                 </div>
 
               </div>
@@ -80,22 +80,22 @@ export class LoginForm extends React.Component {
         </div>
 
         <div className="dpw-login-panels-footer">
-          <hr style="width: 20px;" />
+          <hr style={{width: '20px'}} />
 
           <span className="meta">
             <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
           </span>
 
-          <hr style="width: 140px;" />
+          <hr style={{width: '140px'}} />
 
           <span className="deskpro-mark">
             <a href="#">
-              <img alt="Deskpro" width="27" height="27" src="../img/loading/footer-deskpro-logo.png" srcset="../img/loading/footer-deskpro-logo-2x.png 2x" />
+              <img alt="Deskpro" width="27" height="27" src="../img/loading/footer-deskpro-logo.png" srcSet="../img/loading/footer-deskpro-logo-2x.png 2x" />
               <span>Helpdesk software by <strong>DeskPRO</strong></span>
             </a>
           </span>
 
-          <hr style="width: 260px;" />
+          <hr style={{width: '260px'}} />
 
           <span className="social-media">
             <a href="#"><i className="fa fa-facebook"></i></a>
@@ -103,7 +103,7 @@ export class LoginForm extends React.Component {
             <a href="#"><i className="fa fa-google-plus"></i></a>
           </span>
 
-          <hr style="width: 20px;" />
+          <hr style={{width: '20px'}} />
         </div>
       </div>
     );
