@@ -66,8 +66,10 @@ export class DpAppContainer extends React.Component {
           <Route name="feedback" path="feedback" component={FeedbackApp}/>
           <Route name="test" path="test" component={TestApp}/>
         </Route>
-        <Route name="login" path={basePath + '/login'} component={LoginApp}/>
-        <Route name="welcome" path={basePath + '/welcome'} component={WelcomeApp}/>
+        <Route path={basePath}>
+          <Route name="login" path="login" component={LoginApp}/>
+          <Route name="welcome" path="welcome" component={WelcomeApp}/>
+        </Route>
       </Router>
     );
   }
