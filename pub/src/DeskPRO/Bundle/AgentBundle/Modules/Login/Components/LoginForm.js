@@ -1,14 +1,11 @@
 import React from 'react';
+import { Logo } from './Logo';
 
 export class LoginForm extends React.Component {
   render() {
     return (
       <div className="deskpro-loading">
-        <div className="deskpro-loading-welcome-back">
-          <div className="deskpro-loading-logo">
-            <a href="https://www.deskpro.com/" className="logo"></a>
-          </div>
-        </div>
+        <Logo />
 
         <div className="dpw-login-panels">
           <div className="left-panel">

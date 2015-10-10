@@ -1,0 +1,20 @@
+import React, { PropTypes } from 'react';
+
+export class Logo extends React.Component {
+
+  static propTypes = {
+    children: PropTypes.object.isRequired
+  };
+
+  render() {
+    return (
+      <div className="deskpro-loading-welcome-back">
+        <div className="deskpro-loading-logo">
+          <a href="https://www.deskpro.com/" className="logo"></a>
+        </div>
+
+        {this.props.children}
+      </div>
+    );
+  }
+}

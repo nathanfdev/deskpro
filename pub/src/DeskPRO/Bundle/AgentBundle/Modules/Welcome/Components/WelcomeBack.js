@@ -1,15 +1,11 @@
 import React from 'react';
+import { Logo } from '../../Login/Components/Logo';
 
 export class WelcomeBack extends React.Component {
   render() {
     return (
       <div className="deskpro-loading">
-        <div className="deskpro-loading-welcome-back">
-
-          <div className="deskpro-loading-logo">
-            <img width="149" height="44" srcSet="../img/loading/loading-logo-2x.png 2x" src="../img/loading/loading-logo.png" alt="DeskPRO" />
-          </div>
-
+        <Logo>
           <div className="deskpro-loading-blurb">
             <h1>Welcome back, Dennis</h1>
             <p>Give us a second, we're busy loading your helpdesk.</p>
@@ -19,7 +15,7 @@ export class WelcomeBack extends React.Component {
             <span className="loader"></span>
             <div id="loader"></div>
           </div>
-        </div>
+        </Logo>
 
         <div className="deskpro-tip">
           <div className="deskpro-loading-tip-controls">
