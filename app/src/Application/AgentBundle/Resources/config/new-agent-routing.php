@@ -101,5 +101,13 @@ $collection->create(
     )
 )
 ;
+$collection->create(
+    'react_agent_login',
+    array(
+        'path'       => '/login',
+        'controller' => 'AgentBundle:AgentChrome:agentChrome',
+    )
+)
+;
 
 return $collection;
