@@ -9,9 +9,7 @@ import { LoginForm } from './LoginForm';
 export class LoginApp extends React.Component {
   render() {
     return (
-      <AppContainer thisAppId="login" {...this.props}>
-        <LoginForm />
-      </AppContainer>
+      <LoginForm />
     );
   }
 }
