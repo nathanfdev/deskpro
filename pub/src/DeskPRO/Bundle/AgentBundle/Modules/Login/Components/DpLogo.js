@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 export class DpLogo extends React.Component {
 
   static propTypes = {
-    children: PropTypes.object.isRequired
+    children: PropTypes.node
   };
 
   render() {

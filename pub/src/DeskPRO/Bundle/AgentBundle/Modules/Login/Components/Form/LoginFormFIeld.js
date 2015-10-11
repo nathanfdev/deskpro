@@ -6,7 +6,7 @@ export class LoginFormField extends React.Component {
   static propTypes = {
     label: PropTypes.string.isRequired,
     iconClass: PropTypes.string.isRequired,
-    children: PropTypes.object.isRequired,
+    children: PropTypes.node,
     customClass: PropTypes.string
   };
 
@@ -15,11 +15,6 @@ export class LoginFormField extends React.Component {
     const errorWidth = (parseInt($errorContainer.css('width').replace(/px/, ''), 10) * -1 + 10) + 'px';
 
     $errorContainer.css('right', errorWidth);
-
-    const $warningContainer = jQuery('.warning-container');
-    const warningWidth = (parseInt($warningContainer.css('width').replace(/px/, ''), 10) * -1 + 5) + 'px';
-
-    $warningContainer.css('left', warningWidth);
   }
 
   render() {
@@ -35,10 +30,6 @@ export class LoginFormField extends React.Component {
       <div className={fieldClasses.join(' ')}>
         <div className="dpw-login-form-warning-container error-container">
           <i className="fa fa-exclamation-triangle"></i> <span>Looks like this isn't the correct password</span>
-        </div>
-
-        <div className="dpw-login-form-warning-container warning-container">
-          <i className="fa fa-arrow-circle-o-up"></i> <span>Looks like caps lock is on?</span>
         </div>
 
         <label>{label}</label>
