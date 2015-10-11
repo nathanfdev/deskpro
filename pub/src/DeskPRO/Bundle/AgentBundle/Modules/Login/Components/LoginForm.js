@@ -1,6 +1,7 @@
 import React from 'react';
 import { DpLogo } from './DpLogo';
 import { LoginHeader } from './LoginHeader';
+import { LoginFooter } from './LoginFooter';
 
 export class LoginForm extends React.Component {
   render() {
@@ -84,32 +85,7 @@ export class LoginForm extends React.Component {
           </div>
         </div>
 
-        <div className="dpw-login-panels-footer">
-          <hr style={{width: '20px'}} />
-
-          <span className="meta">
-            <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
-          </span>
-
-          <hr style={{width: '140px'}} />
-
-          <span className="deskpro-mark">
-            <a href="#">
-              <span className="logo"></span>
-              <span className="title">Helpdesk software by <strong>DeskPRO</strong></span>
-            </a>
-          </span>
-
-          <hr style={{width: '260px'}} />
-
-          <span className="social-media">
-            <a href="#"><i className="fa fa-facebook"></i></a>
-            <a href="#"><i className="fa fa-twitter"></i></a>
-            <a href="#"><i className="fa fa-google-plus"></i></a>
-          </span>
-
-          <hr style={{width: '20px'}} />
-        </div>
+        <LoginFooter />
       </div>
     );
   }
