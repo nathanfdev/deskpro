@@ -1,11 +1,11 @@
 import React from 'react';
-import { Logo } from './Logo';
+import { DpLogo } from './DpLogo';
 
 export class LoginForm extends React.Component {
   render() {
     return (
       <div className="deskpro-loading">
-        <Logo />
+        <DpLogo />
 
         <div className="dpw-login-panels">
           <div className="left-panel">

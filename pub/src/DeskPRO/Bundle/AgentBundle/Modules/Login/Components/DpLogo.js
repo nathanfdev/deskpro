@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-export class Logo extends React.Component {
+export class DpLogo extends React.Component {
 
   static propTypes = {
     children: PropTypes.object.isRequired

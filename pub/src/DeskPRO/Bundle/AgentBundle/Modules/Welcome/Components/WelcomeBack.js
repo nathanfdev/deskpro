@@ -1,11 +1,11 @@
 import React from 'react';
-import { Logo } from '../../Login/Components/Logo';
+import { DpLogo } from '../../Login/Components/DpLogo';
 
 export class WelcomeBack extends React.Component {
   render() {
     return (
       <div className="deskpro-loading">
-        <Logo>
+        <DpLogo>
           <div className="deskpro-loading-blurb">
             <h1>Welcome back, Dennis</h1>
             <p>Give us a second, we're busy loading your helpdesk.</p>
@@ -15,7 +15,7 @@ export class WelcomeBack extends React.Component {
             <span className="loader"></span>
             <div id="loader"></div>
           </div>
-        </Logo>
+        </DpLogo>
 
         <div className="deskpro-tip">
           <div className="deskpro-loading-tip-controls">
