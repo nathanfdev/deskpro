@@ -14,8 +14,8 @@ import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordSt
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 
 //teams
-import { loadAllAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions'
-import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
+import { loadMyAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions'
+import { myAgentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
 
 // departmetns
 import { loadDepartments, loadAllDepartments }
@@ -27,7 +27,7 @@ import { departmentsSelector, allDepartmentsSelector }
   me: state.Application.user,
   agents: agentsSelector(state),
   departments: allDepartmentsSelector(state),
-  teams: agentTeamsSelector(state),
+  teams: myAgentTeamsSelector(state),
   messages: state.IM.messages
 }))
 export class Chat extends React.Component {
@@ -41,7 +41,7 @@ export class Chat extends React.Component {
 
   componentWillMount() {
     this.props.dispatch(loadAllAgents());
-    this.props.dispatch(loadAllAgentTeams());
+    this.props.dispatch(loadMyAgentTeams());
     this.props.dispatch(loadAllDepartments());
     this.props.dispatch(loadMessages(this.props.current.id));
   }

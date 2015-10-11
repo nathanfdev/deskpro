@@ -2,11 +2,11 @@ import React, {Component, PropTypes} from 'react';
 import { TeamsListItem } from './TeamsListItem';
 import { connect } from 'react-redux';
 
-import { loadAllAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions'
-import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
+import { loadMyAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions'
+import { myAgentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
 
 @connect(state => ({
-  agentTeams: agentTeamsSelector(state),
+  agentTeams: myAgentTeamsSelector(state),
   me: state.Application.user
 }))
 export class TeamsList extends Component {
@@ -16,7 +16,7 @@ export class TeamsList extends Component {
   };
 
   componentWillMount() {
-    this.props.dispatch(loadAllAgentTeams());
+    this.props.dispatch(loadMyAgentTeams());
   }
 
   render() {

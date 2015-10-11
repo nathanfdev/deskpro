@@ -16,3 +16,15 @@ export const loadAllAgentTeams    = createAction(
            .error(response => reject(response)))
   )
 );
+
+export const loadMyAgentTeams    = createAction(
+  'LOAD_AGENT_TEAMS',
+  recordStoreActions.createRecordsRequest(
+    ['RecordStores', 'Agent', 'agentTeams'],
+    'my',
+    () => new Promise((resolve, reject) =>
+      DpApi.sendGet('DP_API/agent_teams?my=true')
+           .success(response => resolve(response.data))
+           .error(response => reject(response)))
+  )
+);
