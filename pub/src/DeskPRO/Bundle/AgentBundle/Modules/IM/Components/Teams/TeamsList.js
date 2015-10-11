@@ -6,7 +6,8 @@ import { loadAllAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Reco
 import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
 
 @connect(state => ({
-  agentTeams: agentTeamsSelector(state)
+  agentTeams: agentTeamsSelector(state),
+  me: state.Application.user
 }))
 export class TeamsList extends Component {
 
@@ -15,14 +16,20 @@ export class TeamsList extends Component {
   };
 
   componentWillMount() {
-    "use strict";
     this.props.dispatch(loadAllAgentTeams());
   }
 
   render() {
     return (
       <ul className="im-list short">
-        { this.props.agentTeams.map((team, index) => <TeamsListItem key={index} team={team}/> ) }
+        {
+          this.props.agentTeams.map((team, index) => {
+          return <TeamsListItem
+            handleClickParticipant={this.props.handleClickParticipant}
+            key={index}
+            team={team}
+            />
+        } ) }
       </ul>
     );
   }

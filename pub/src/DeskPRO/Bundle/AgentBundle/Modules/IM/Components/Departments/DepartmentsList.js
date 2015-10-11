@@ -9,8 +9,7 @@ import { departmentsSelector, allDepartmentsSelector }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
 
 @connect(state => ({
-  departments: allDepartmentsSelector(state),
-
+  departments: allDepartmentsSelector(state)
 }))
 export class DepartmentsList extends Component {
 

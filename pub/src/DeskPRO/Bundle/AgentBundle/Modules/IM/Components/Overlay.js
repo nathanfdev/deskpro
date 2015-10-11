@@ -15,7 +15,7 @@ export class Overlay extends React.Component {
                         <a href="#" className="broadcast-to-all"><i className="fa fa-bullhorn"></i> Broadcast to Everyone</a>
                         <div className="im-list-wrapper">
                             <h2>Teams</h2>
-                            <TeamsList />
+                            <TeamsList handleClickParticipant={this.props.handleClickParticipant} />
                             <h2>Departments</h2>
                             <DepartmentsList />
                         </div>

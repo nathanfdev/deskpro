@@ -6,11 +6,6 @@ import { connect } from 'react-redux';
 import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions'
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 
-/**
- * TODO: find a way to avoid this really strong dark magic around porps.agents and state.agents. The point is that when
- * TODO: rendering this template at the very first time you have nothing in props.agents, cause ajax still on progress
- * TODO: and promise have no data yet.
- */
 @connect(state => ({
   agents: agentsSelector(state),
   me: state.Application.user

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\AgentChat;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -237,7 +238,8 @@ class Messenger
      */
     public function isPersonInvolvedInChat(Person $person, AgentChat $chat)
     {
-        foreach ($chat->getPersonList() as $participant) {
+        $participants = $chat->getPersonList();
+        foreach ($participants as $participant) {
             if ($person->getId() === $participant->getId()) {
                 return true;
             }

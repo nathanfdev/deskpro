@@ -1,5 +1,5 @@
 import React from 'react';
-import { startChat } from '../Actions/chatsActions';
+import * as actions from '../Actions/chatsActions';
 import { connect } from 'react-redux';
 
 @connect()
@@ -59,7 +59,7 @@ export class Recent extends React.Component {
 
   startChat = (id, type, callback) => {
     "use strict";
-    this.props.dispatch(startChat(id, type));
+    this.props.dispatch(actions.startChat(id, type));
     callback();
   }
 }

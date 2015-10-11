@@ -16,7 +16,33 @@ export class Header extends React.Component {
   }
 
   renderHeader() {
-    "use strict";
+    const { current, teams, departments } = this.props;
+    let text;
+    switch (current.chat_type) {
+      case 'agent':
+        text = this.calculateAgentText();
+        break;
+      case 'team':
+        text = teams.getIn([current.agent_teams[0], 'name']);
+        break;
+      case 'department':
+        text = departments.getIn([current.departments[0], 'name']);
+        break;
+      default:
+        text = 'Unknown chat. ALARM!!!';
+    }
+
+    return <h1>Your IM with <span>{text}</span> {this.renderOnline()}</h1>
+  }
+
+  renderOnline() {
+    if(this.props.current.chat_type === 'agent') {
+      return <b className="user-status online"></b>
+    }
+  }
+
+  calculateAgentText = () =>
+  {
     const { agents, current, me } = this.props;
     if(agents && agents.size > 0) {
       const filteredAgents = current.agents.filter(agent => agent != me.get('id') );
@@ -24,8 +50,7 @@ export class Header extends React.Component {
       if(filteredAgents.length > 1) {
         text = ' and ' + (filteredAgents.length - 1) + ' more';
       }
-      return <h1>Your IM with <span>{text}</span><b className="user-status online"></b></h1>
+      return text;
     }
   }
-
 }
