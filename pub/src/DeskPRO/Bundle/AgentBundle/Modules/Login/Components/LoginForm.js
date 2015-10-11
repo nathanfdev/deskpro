@@ -4,13 +4,25 @@ import { LoginHeader } from './LoginHeader';
 
 export class LoginForm extends React.Component {
   render() {
+    const hasError = true;
+    const loginClassNames = ['dpw-login'];
+    if (hasError) {
+      loginClassNames.push('error');
+    }
+
     return (
       <div className="deskpro-loading">
         <DpLogo />
 
         <div className="dpw-login-panels">
           <div className="left-panel">
-            <div className="dpw-login">
+            <div className={loginClassNames.join(' ')}>
+
+              <div className="dpw-login-warning-major">
+                <h1>Too many login attempts!</h1>
+                <p>At your next failed login attempt, your account will be temporarily locked for security. Please check your login details carefully.</p>
+              </div>
+
               <div className="dpw-login-language-controls">
                 <span className="dpw-login-language-controls-button">
                   <span className="dpw-login-language-controls-flag uk"></span>
