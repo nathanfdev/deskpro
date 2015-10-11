@@ -1,5 +1,6 @@
 import React from 'react';
 import { DpLogo } from './DpLogo';
+import { LoginHeader } from './LoginHeader';
 
 export class LoginForm extends React.Component {
   render() {
@@ -18,39 +19,34 @@ export class LoginForm extends React.Component {
                 </span>
               </div>
 
-              <div className="dpw-login-header">
-                <div className="dpw-login-header-logo">
-                  <img src="../../img/samples/sample-logo.png" />
-                </div>
-                <h1>Log in to Acme Helpdesk</h1>
+              <LoginHeader />
+
+              <div className="dpw-login-form">
+                <form>
+                  <div className="dpw-login-form-container">
+                    <label>Account name / Email</label>
+                    <span className="dpw-login-form-input-icon"><i className="fa fa-user"></i></span>
+                    <input type="text" placeholder="example@email.com" />
+                  </div>
+
+                  <div className="dpw-login-form-container password-container">
+                    <label>Password</label>
+                    <span className="dpw-login-form-input-icon"><i className="fa fa-lock"></i></span>
+                    <input type="password" />
+                  </div>
+
+                  <div className="dpw-login-form-options">
+                    <a href="#" className="password-reminder">Forgotten your password?</a>
+
+                    <span className="dpw-login-form-remember-me">
+                      <span className="dpw--checkbox-boxy"><i className="fa fa-check"></i></span>
+                      <span>Remember me</span>
+                    </span>
+                  </div>
+
+                  <input type="submit" value="Log in to DeskPRO" />
+                </form>
               </div>
-
-                <div className="dpw-login-form">
-                  <form>
-                    <div className="dpw-login-form-container">
-                      <label>Account name / Email</label>
-                      <span className="dpw-login-form-input-icon"><i className="fa fa-user"></i></span>
-                      <input type="text" placeholder="example@email.com" />
-                    </div>
-
-                    <div className="dpw-login-form-container password-container">
-                      <label>Password</label>
-                      <span className="dpw-login-form-input-icon"><i className="fa fa-lock"></i></span>
-                      <input type="password" />
-                    </div>
-
-                    <div className="dpw-login-form-options">
-                      <a href="#" className="password-reminder">Forgotten your password?</a>
-
-                      <span className="dpw-login-form-remember-me">
-                        <span className="dpw--checkbox-boxy"><i className="fa fa-check"></i></span>
-                        <span>Remember me</span>
-                      </span>
-                    </div>
-
-                    <input type="submit" value="Log in to DeskPRO" />
-                  </form>
-                </div>
             </div>
 
             <div className="dpw-left-panel-footer">
