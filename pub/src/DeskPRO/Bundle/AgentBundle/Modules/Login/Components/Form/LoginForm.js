@@ -1,6 +1,7 @@
 import React from 'react';
 import { DpLogo } from '../DpLogo';
 import { LoginFormHeader } from './LoginFormHeader';
+import { LoginFormField } from './LoginFormField';
 import { LoginFormFooter } from './LoginFormFooter';
 import { WarningMajor } from './WarningMajor';
 
@@ -35,17 +36,13 @@ export class LoginForm extends React.Component {
 
               <div className="dpw-login-form">
                 <form>
-                  <div className="dpw-login-form-container">
-                    <label>Account name / Email</label>
-                    <span className="dpw-login-form-input-icon"><i className="fa fa-user"></i></span>
+                  <LoginFormField iconClass="fa-user" label="Account name / Email">
                     <input type="text" placeholder="example@email.com" />
-                  </div>
+                  </LoginFormField>
 
-                  <div className="dpw-login-form-container password-container">
-                    <label>Password</label>
-                    <span className="dpw-login-form-input-icon"><i className="fa fa-lock"></i></span>
+                  <LoginFormField iconClass="fa-lock" label="Password" customClass="password-container">
                     <input type="password" />
-                  </div>
+                  </LoginFormField>
 
                   <div className="dpw-login-form-options">
                     <a href="#" className="password-reminder">Forgotten your password?</a>
