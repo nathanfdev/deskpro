@@ -2,6 +2,7 @@ import React from 'react';
 import { DpLogo } from './DpLogo';
 import { LoginHeader } from './LoginHeader';
 import { LoginFooter } from './LoginFooter';
+import { WarningMajor } from './WarningMajor';
 
 export class LoginForm extends React.Component {
   render() {
@@ -19,10 +20,7 @@ export class LoginForm extends React.Component {
           <div className="left-panel">
             <div className={loginClassNames.join(' ')}>
 
-              <div className="dpw-login-warning-major">
-                <h1>Too many login attempts!</h1>
-                <p>At your next failed login attempt, your account will be temporarily locked for security. Please check your login details carefully.</p>
-              </div>
+              <WarningMajor />
 
               <div className="dpw-login-language-controls">
                 <span className="dpw-login-language-controls-button">
