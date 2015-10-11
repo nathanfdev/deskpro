@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import jQuery from 'jquery';
 
 export class WarningMajor extends React.Component {
+
+  static propTypes = {
+    children: PropTypes.node
+  };
 
   componentDidMount() {
     const $container = jQuery('.dpw-login-warning-major');
@@ -13,8 +17,7 @@ export class WarningMajor extends React.Component {
   render() {
     return (
       <div className="dpw-login-warning-major">
-        <h1>Too many login attempts!</h1>
-        <p>At your next failed login attempt, your account will be temporarily locked for security. Please check your login details carefully.</p>
+        {this.props.children}
       </div>
     );
   }

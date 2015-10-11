@@ -4,7 +4,9 @@ import { LoginFormHeader } from './LoginFormHeader';
 import { LoginFormField } from './LoginFormField';
 import { Password } from './Password';
 import { LoginFormFooter } from './LoginFormFooter';
-import { WarningMajor } from './WarningMajor';
+import { WarningMajor } from './WarningMajor/WarningMajor';
+import { NotAgentWarning } from './WarningMajor/NotAgentWarning';
+import { TooManyAttempts } from './WarningMajor/TooManyAttempts';
 
 export class LoginForm extends React.Component {
 
@@ -23,7 +25,10 @@ export class LoginForm extends React.Component {
           <div className="left-panel">
             <div className={loginClassNames.join(' ')}>
 
-              <WarningMajor />
+              <WarningMajor>
+                <NotAgentWarning />
+                <TooManyAttempts />
+              </WarningMajor>
 
               <div className="dpw-login-language-controls">
                 <span className="dpw-login-language-controls-button">
