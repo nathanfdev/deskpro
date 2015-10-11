@@ -37,11 +37,11 @@ export class LoginForm extends React.Component {
 
               <div className="dpw-login-form">
                 <form>
-                  <LoginFormField iconClass="fa-user" label="Account name / Email">
+                  <LoginFormField iconClass="fa-user" label="Account name / Email" hasError={hasError}>
                     <input type="text" placeholder="example@email.com" />
                   </LoginFormField>
 
-                  <Password />
+                  <Password hasError={hasError} />
 
                   <div className="dpw-login-form-options">
                     <a href="#" className="password-reminder">Forgotten your password?</a>

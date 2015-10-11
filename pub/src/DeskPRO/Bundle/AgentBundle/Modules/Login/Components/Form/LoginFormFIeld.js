@@ -7,7 +7,8 @@ export class LoginFormField extends React.Component {
     label: PropTypes.string.isRequired,
     iconClass: PropTypes.string.isRequired,
     children: PropTypes.node,
-    customClass: PropTypes.string
+    customClass: PropTypes.string,
+    hasError: PropTypes.bool
   };
 
   componentDidMount() {
@@ -18,12 +19,15 @@ export class LoginFormField extends React.Component {
   }
 
   render() {
-    const { label, iconClass, children, customClass } = this.props;
+    const { label, iconClass, children, customClass, hasError } = this.props;
     const iconClasses = ['fa', iconClass];
 
     const fieldClasses = ['dpw-login-form-container'];
     if (customClass) {
       fieldClasses.push(customClass);
+    }
+    if (hasError) {
+      fieldClasses.push('error');
     }
 
     return (

@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { LoginFormField } from './LoginFormField';
 import jQuery from 'jquery';
 
 export class Password extends React.Component {
+
+  static propTypes = {
+    hasError: PropTypes.bool
+  };
 
   componentDidMount() {
     const $warningContainer = jQuery('.warning-container');
@@ -14,7 +18,7 @@ export class Password extends React.Component {
 
   render() {
     return (
-      <LoginFormField iconClass="fa-lock" label="Password" customClass="password-container">
+      <LoginFormField iconClass="fa-lock" label="Password" customClass="password-container" hasError={this.props.hasError}>
         <div className="dpw-login-form-warning-container warning-container">
           <i className="fa fa-arrow-circle-o-up"></i> <span>Looks like caps lock is on?</span>
         </div>
