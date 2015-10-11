@@ -2,10 +2,18 @@ import React from 'react';
 
 export class LoginHeader extends React.Component {
   render() {
+    const logoUrl = false;
+
     return (
       <div className="dpw-login-header">
         <div className="dpw-login-header-logo">
-          <img src="../../img/samples/sample-logo.png" />
+          {logoUrl ?
+            (<img src={logoUrl} />) :
+            (<a href="#">
+              <i className="fa fa-arrow-circle-o-up"></i>
+              <span>Upload your logo</span>
+            </a>
+          )}
         </div>
         <h1>Log in to Acme Helpdesk</h1>
       </div>
