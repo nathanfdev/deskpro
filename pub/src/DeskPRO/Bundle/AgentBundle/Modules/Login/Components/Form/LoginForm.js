@@ -1,7 +1,7 @@
 import React from 'react';
-import { DpLogo } from './DpLogo';
-import { LoginHeader } from './LoginHeader';
-import { LoginFooter } from './LoginFooter';
+import { DpLogo } from '../DpLogo';
+import { LoginFormHeader } from './LoginFormHeader';
+import { LoginFormFooter } from './LoginFormFooter';
 import { WarningMajor } from './WarningMajor';
 
 export class LoginForm extends React.Component {
@@ -31,7 +31,7 @@ export class LoginForm extends React.Component {
                 </span>
               </div>
 
-              <LoginHeader />
+              <LoginFormHeader />
 
               <div className="dpw-login-form">
                 <form>
@@ -84,7 +84,7 @@ export class LoginForm extends React.Component {
           </div>
         </div>
 
-        <LoginFooter />
+        <LoginFormFooter />
       </div>
     );
   }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export class LoginHeader extends React.Component {
+export class LoginFormHeader extends React.Component {
 
   render() {
     const logoUrl = false;
