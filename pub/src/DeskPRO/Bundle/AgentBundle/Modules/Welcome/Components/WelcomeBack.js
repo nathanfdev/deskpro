@@ -2,6 +2,7 @@ import React from 'react';
 import { DpLogo } from '../../Login/Components/DpLogo';
 
 export class WelcomeBack extends React.Component {
+
   render() {
     return (
       <div className="deskpro-loading">

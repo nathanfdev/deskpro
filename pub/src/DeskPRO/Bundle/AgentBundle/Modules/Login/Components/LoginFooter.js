@@ -1,6 +1,7 @@
 import React from 'react';
 
 export class LoginFooter extends React.Component {
+
   render() {
     return (
       <div className="dpw-login-panels-footer">

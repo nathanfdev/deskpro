@@ -5,6 +5,7 @@ import { LoginFooter } from './LoginFooter';
 import { WarningMajor } from './WarningMajor';
 
 export class LoginForm extends React.Component {
+
   render() {
     const hasError = true;
     const loginClassNames = ['dpw-login'];

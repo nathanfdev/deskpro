@@ -1,6 +1,7 @@
 import React from 'react';
 
 export class LoginHeader extends React.Component {
+
   render() {
     const logoUrl = false;
 
