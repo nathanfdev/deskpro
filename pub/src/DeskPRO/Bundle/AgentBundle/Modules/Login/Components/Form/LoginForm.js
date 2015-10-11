@@ -7,6 +7,7 @@ import { LoginFormFooter } from './LoginFormFooter';
 import { WarningMajor } from './WarningMajor/WarningMajor';
 import { NotAgentWarning } from './WarningMajor/NotAgentWarning';
 import { TooManyAttempts } from './WarningMajor/TooManyAttempts';
+import { WrongHelpdesk } from './WarningMajor/WrongHelpdesk';
 
 export class LoginForm extends React.Component {
 
@@ -28,6 +29,7 @@ export class LoginForm extends React.Component {
               <WarningMajor>
                 <NotAgentWarning />
                 <TooManyAttempts />
+                <WrongHelpdesk />
               </WarningMajor>
 
               <div className="dpw-login-language-controls">
