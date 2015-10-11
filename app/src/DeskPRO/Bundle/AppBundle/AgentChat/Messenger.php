@@ -70,7 +70,7 @@ class Messenger
     /**
      * @param AgentChat $chat
      * @param Person    $person
-     * @param $message
+     * @param           $message
      *
      * @return AgentChatMessage
      */
@@ -87,6 +87,7 @@ class Messenger
 
         return $agentMessage;
     }
+
     /**
      * @param array  $participants
      * @param string $type
@@ -164,7 +165,7 @@ class Messenger
     }
 
     /**
-     * @param $id
+     * @param            $id
      * @param bool|false $forceReload
      *
      * @return null|object

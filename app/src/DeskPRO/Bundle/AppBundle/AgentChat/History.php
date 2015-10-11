@@ -29,11 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\AgentChat;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\HistorySearcher;
+use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChat as AgentChatRepository;
@@ -55,13 +57,18 @@ class History
     protected $em;
 
     /**
-     * @param HistorySearcher $searcher
-     * @param EntityManager   $em
+     * @param HistorySearcher       $searcher
+     * @param EntityManager         $em
+     * @param DepartmentDataService $department_data_service
      */
-    public function __construct(HistorySearcher $searcher, EntityManager $em)
-    {
-        $this->searcher = $searcher;
-        $this->em       = $em;
+    public function __construct(
+        HistorySearcher $searcher,
+        EntityManager $em,
+        DepartmentDataService $department_data_service
+    ) {
+        $this->searcher                = $searcher;
+        $this->em                      = $em;
+        $this->department_data_service = $department_data_service;
     }
 
     /**
@@ -94,14 +101,13 @@ class History
     }
 
     /**
-     * @param Person $person
-     * @param string $searchString
+     * @param AgentChat[] $chats
+     * @param string      $searchString
      *
      * @return AgentChatMessage[]
      */
-    public function searchAllMessages(Person $person, $searchString)
+    public function searchAllMessages(array $chats, $searchString)
     {
-        $chats    = $this->findChats($person);
         $messages = array();
         foreach ($chats as $chat) {
             $messages = array_merge($messages, $this->getSearcher()->searchInChat($chat, $searchString));
@@ -111,41 +117,39 @@ class History
     }
 
     /**
-     * @param Person $person
-     * @param $searchString
+     * @param AgentChat[] $chats
+     * @param string      $searchString
      *
      * @return AgentChat[]
      */
-    public function searchAllChats(Person $person, $searchString)
+    public function searchAllChats(array $chats, $searchString)
     {
-        $chats    = $this->findChats($person);
-        $filtered = [];
-        if ($searchString) {
-            foreach ($chats as $chat) {
-                if ($this->getSearcher()->searchInChat($chat, $searchString)) {
-                    $filtered[] = $chat;
-                }
-            }
-        } else {
-            $filtered = $chats;
-        }
+        $filtered = array_filter($chats, function ($chat) use ($searchString) {
+            return $this->getSearcher()->searchInChat($chat, $searchString);
+        });
 
         return $filtered;
     }
 
     /**
      * @param Person $person
+     * @param array  $order
      *
      * @return AgentChat[]
      */
-    public function findChats(Person $person)
+    public function findChats(Person $person, $order = ['date_last_message' => 'DESC'])
     {
+        $departments_ids = [];
+        foreach ($this->department_data_service->getChatDepartmentsForPerson($person) as $department) {
+            $departments_ids[] = $department->getId();
+        }
+
         /** @var AgentChatParticipantRepository $repo */
         $repo = $this->em->getRepository('App:AgentChatParticipant');
-        $ids  = $repo->findChatsIds($person);
+        $ids  = $repo->findChatsIds($person, $departments_ids);
         /* @var AgentChatRepository $repo */
         $chatRepo = $this->em->getRepository('App:AgentChat');
-        $chats    = $chatRepo->findBy(array('id' => $ids), ['date_last_message' => 'DESC']);
+        $chats    = $chatRepo->findBy(array('id' => $ids), $order);
 
         return $chats;
     }

@@ -11,6 +11,7 @@ services:
       arguments:
           - @deskpro.agentchat.searcher
           - @doctrine.orm.default_entity_manager
+          - @data.departments
 
   deskpro.agentchat.searcher:
       class: DeskPRO\Bundle\AppBundle\AgentChat\Search\Doctrine

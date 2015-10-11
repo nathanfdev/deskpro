@@ -5,44 +5,7 @@ import { connect } from 'react-redux';
 @connect()
 export class Recent extends React.Component {
   render() {
-    let entity;
-
-    switch(this.props.chat.type)
-    {
-      case 'agent':
-         entity = {
-          picture_url: this.props.chat.gravatar_url,
-          name: this.props.chat.name,
-          id: this.props.chat.id,
-          type: 'agent'
-        };
-        break;
-      case 'team':
-        entity = {
-          picture_url: 'http://lorempixel.com/20/20/animals',
-          name: this.props.chat.name,
-          id: this.props.chat.id,
-          type: 'team'
-        };
-        break;
-      case 'department':
-        entity = {
-          picture_url: 'http://lorempixel.com/20/20/animals',
-          name: this.props.chat.name,
-          id: this.props.chat.id,
-          type: 'team'
-        };
-        break;
-      default:
-        entity = {
-          picture_url: 'http://lorempixel.com/20/20/animals',
-          name: 'unknown',
-          id: 0,
-          type: 'group'
-        };
-        name = 'unknown';
-    }
-
+    const entity = this.getEntity();
     const style = {
       backgroundImage: 'url("' + entity.picture_url + '")'
     };
@@ -50,16 +13,54 @@ export class Recent extends React.Component {
       <a
         href="#"
         title={entity.name}
-        onClick={this.startChat.bind(null, entity.id, 'agent', this.props.handleClickParticipant)}
+        onClick={this.startChat.bind(null, entity.id, entity.type, this.props.handleClickParticipant)}
         className="chat-avatar"
         style={style}>
       </a>
     );
   }
 
+  getEntity = () =>
+  {
+    let entity;
+
+    const { agents, teams, departments, me, chat } = this.props;
+
+    switch (chat.get('chat_type')) {
+      case 'agent':
+        const notMe = chat.get('agents').filter((agent) => agent != me.get('id'));
+        const agent = agents.get(notMe.get(0));
+        entity = {
+          picture_url: agent.get('gravatar_url'),
+          name: agent.get('name'),
+          id: agent.get('id'),
+          type: chat.get('chat_type')
+        };
+        break;
+      case 'team':
+        const team = teams.get(chat.getIn(['agent_teams', 0]));
+        entity = {
+          picture_url: 'http://lorempixel.com/20/20/animals',
+          name: team.get('name'),
+          id: team.get('id'),
+          type: chat.get('chat_type')
+        };
+        break;
+      case 'department':
+        const department = departments.get(chat.getIn(['departments', 0]));
+        entity = {
+          picture_url: 'http://lorempixel.com/20/20/people',
+          name: department.get('title'),
+          id: department.get('id'),
+          type: chat.get('chat_type')
+        };
+        break;
+    }
+    return entity;
+  };
+
   startChat = (id, type, callback) => {
-    "use strict";
     this.props.dispatch(actions.startChat(id, type));
     callback();
-  }
+  };
 }

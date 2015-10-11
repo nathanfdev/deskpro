@@ -9,23 +9,10 @@ import { connect } from 'react-redux';
 // messages
 import { loadMessages, addMessage } from '../../Actions/imMessagesActions';
 
-// agents
-import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions'
-import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 
-//teams
-import { loadMyAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions'
-import { myAgentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
-
-// departmetns
-import { loadMyDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
-import { myDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
 
 @connect(state => ({
   me: state.Application.user,
-  agents: agentsSelector(state),
-  departments: myDepartmentsSelector(state),
-  teams: myAgentTeamsSelector(state),
   messages: state.IM.messages
 }))
 export class Chat extends React.Component {
@@ -38,9 +25,6 @@ export class Chat extends React.Component {
   }
 
   componentWillMount() {
-    this.props.dispatch(loadAllAgents());
-    this.props.dispatch(loadMyAgentTeams());
-    this.props.dispatch(loadMyDepartments());
     this.props.dispatch(loadMessages(this.props.current.id));
   }
 

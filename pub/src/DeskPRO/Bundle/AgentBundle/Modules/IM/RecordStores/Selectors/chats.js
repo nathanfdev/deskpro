@@ -13,3 +13,7 @@ export const chatsSelector = createSelector(
   createChatsRequestSelectors('all').recordsSel,
     chats => chats
 );
+export const recentChatsSelector = createSelector(
+  createChatsRequestSelectors('recent').recordsSel,
+    chats => chats
+);

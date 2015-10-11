@@ -3,35 +3,58 @@ import { connect } from 'react-redux';
 import { Overlay } from './Overlay';
 import { Chat } from './ChatWindow/Chat';
 import { Recent } from './Recent';
-import * as listActions from '../Actions/imListActions';
+
+// chats
 import * as chatActions from '../RecordStores/Actions/imChatsActions';
-import { getRecentAgents } from '../Selectors/list';
-import { chatsSelector } from '../RecordStores/Selectors/chats';
+import { recentChatsSelector } from '../RecordStores/Selectors/chats';
+
+// agents
+import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions'
+import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
+
+//teams
+import { loadMyAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions'
+import { myAgentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
+
+// departmetns
+import { loadMyDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
+import { myDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
 
 @connect(state => ({
-  recentAgents: getRecentAgents(state),
-  recentChats: chatsSelector(state),
+  recentChats: recentChatsSelector(state),
   current: state.IM.chats.get('current'),
+  agents: agentsSelector(state),
+  departments: myDepartmentsSelector(state),
+  teams: myAgentTeamsSelector(state),
   me: state.Application.user
 }))
 export class HeaderWidget extends React.Component {
   static propTypes = {
-    recentAgents: PropTypes.array.isRequired,
-    current: PropTypes.object.isRequired
+    recentChats: PropTypes.array.isRequired,
+    current: PropTypes.object.isRequired,
+    me: PropTypes.object.isRequired
   };
 
   constructor(props) {
     super(props);
-    const { dispatch } = this.props;
-    dispatch(listActions.loadRecentAgents());
-    dispatch(chatActions.loadChats('all'));
     this.state = {
       overlayShown: false,
       chating: false,
     };
   }
 
+  componentWillMount() {
+    const { dispatch } = this.props;
+    dispatch(chatActions.loadRecentChats());
+    dispatch(loadAllAgents());
+    dispatch(loadMyAgentTeams());
+    dispatch(loadMyDepartments());
+  }
+
   render() {
+    const {agents, teams, departments, recentChats, current, me} = this.props;
+    const {overlayShown, chating} = this.state;
+
     return (
       <div className="agent-ims">
         <a href="#" onClick={this.onClick} className="show-more">
@@ -39,24 +62,35 @@ export class HeaderWidget extends React.Component {
                 IMs <i className="fa fa-angle-down"></i>
             </span>
         </a>
-        { this.props.recentChats.size > 0
-          ? this.props.recentChats.map(
-          (map, index) => {
-            "use strict";
-              return <Recent handleClickParticipant={this.handleClickParticipant} key={index} chat={chat} me={this.props.me}/>
-          }
-        )
+        { recentChats.map(
+            (chat, index) => {
+              return <Recent
+                me                     = {me}
+                key                    = {index}
+                chat                   = {chat}
+                teams                  = {teams}
+                agents                 = {agents}
+                departments            = {departments}
+                handleClickParticipant = {this.handleClickParticipant}
+                />
+            }
+          )
+        }
+        { overlayShown ? <Overlay handleClickParticipant={this.handleClickParticipant}/> : null }
+        { chating && current.id
+          ? <Chat
+              teams           = {teams}
+              agents          = {agents}
+              current         = {current}
+              departments     = {departments}
+              handleCloseChat = {this.handleCloseChat}/>
           : null
         }
-        { this.state.overlayShown ? <Overlay handleClickParticipant={this.handleClickParticipant}/> : null }
-        { this.state.chating && this.props.current.id ? <Chat current={this.props.current}
-                                                              handleCloseChat={this.handleCloseChat}/> : null }
       </div>
     );
   }
 
   handleCloseChat = () => {
-    "use strict";
     const oldState = this.state;
     let newState = {...oldState};
     newState.chating = false;

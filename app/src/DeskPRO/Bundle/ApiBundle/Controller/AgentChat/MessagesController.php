@@ -67,7 +67,7 @@ class MessagesController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        $searchString = $request->query->getAlnum('search', '');
+        $searchString = $request->query->get('search', '');
         $orderBy      = $request->query->get('order', 'date_created');
         $page         = $request->query->getInt('page', 1);
         /** @var History $searchService */
@@ -75,7 +75,7 @@ class MessagesController extends AbstractController
         $messages      = $searchService->searchInChat($chat, $searchString, $orderBy);
 
         $pager = new Pagerfanta(new ArrayAdapter(array_reverse($messages)));
-        $pager->setMaxPerPage(50);
+        $pager->setMaxPerPage(150);
         $pager->setCurrentPage($page);
 
         return View::create(

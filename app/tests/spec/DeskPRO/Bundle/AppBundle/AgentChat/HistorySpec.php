@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\AgentChat;
 
 use Application\DeskPRO\Entity\Person;
@@ -85,7 +86,7 @@ class HistorySpec extends ObjectBehavior
     }
     public function it_can_find_all_messages_among_all_user_chats(Person $alice)
     {
-        $this->searchAllMessages($alice, 'where is the Red Queen?')->shouldBeArray();
+        $this->searchAllMessages($this->findChats($alice), 'where is the Red Queen?')->shouldBeArray();
     }
     public function it_can_search_string_through_all_persons_chats(
         Person $JohnnyMnemonic,
