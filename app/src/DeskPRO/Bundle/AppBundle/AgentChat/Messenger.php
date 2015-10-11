@@ -38,9 +38,12 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\AgentChat\Exceptions\WrongChatableTypeException;
 use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
+use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChat as AgentChatRepository;
+use Doctrine\ORM\PersistentCollection;
 
 class Messenger
 {
@@ -50,11 +53,18 @@ class Messenger
     protected $em;
 
     /**
-     * @param EntityManager $em
+     * @var DepartmentDataService
      */
-    public function __construct(EntityManager $em)
+    protected $department_data_service;
+
+    /**
+     * @param EntityManager         $em
+     * @param DepartmentDataService $department_data_service
+     */
+    public function __construct(EntityManager $em, DepartmentDataService $department_data_service)
     {
-        $this->em = $em;
+        $this->em                      = $em;
+        $this->department_data_service = $department_data_service;
     }
 
     /**
@@ -238,11 +248,31 @@ class Messenger
      */
     public function isPersonInvolvedInChat(Person $person, AgentChat $chat)
     {
-        $participants = $chat->getPersonList();
-        foreach ($participants as $participant) {
-            if ($person->getId() === $participant->getId()) {
-                return true;
-            }
+        switch ($chat->getType()) {
+            case Chatable::PARTICIPANT_TYPE_DEPARTMENT:
+                /** @var PersistentCollection $participants */
+                $participants = $chat->getParticipants();
+                /** @var AgentChatParticipant $participant */
+                if ($participant = $participants->count() > 0 ? $participants->get(0) : false) {
+                    $departments = $this->department_data_service->getChatDepartmentsForPerson($person);
+                    foreach ($departments as $department) {
+                        if ($department->getId() === $participant->getDepartmentId()) {
+                            return true;
+                        }
+                    }
+                }
+                break;
+            case Chatable::PARTICIPANT_TYPE_PERSON:
+            case Chatable::PARTICIPANT_TYPE_TEAM:
+                $participants = $chat->getPersonList();
+                foreach ($participants as $participant) {
+                    if ($person->getId() === $participant->getId()) {
+                        return true;
+                    }
+                }
+                break;
+            default:
+                return false;
         }
 
         return false;

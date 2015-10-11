@@ -17,7 +17,7 @@ export class Overlay extends React.Component {
                             <h2>Teams</h2>
                             <TeamsList handleClickParticipant={this.props.handleClickParticipant} />
                             <h2>Departments</h2>
-                            <DepartmentsList />
+                            <DepartmentsList handleClickParticipant={this.props.handleClickParticipant} />
                         </div>
                     </div>
                 </div>

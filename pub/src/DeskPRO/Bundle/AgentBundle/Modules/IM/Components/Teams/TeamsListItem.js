@@ -18,7 +18,6 @@ export class TeamsListItem extends React.Component {
   }
 
   startChat = (id, type, callback) => {
-    "use strict";
     this.props.dispatch(actions.startChat(id, type));
     callback();
   }

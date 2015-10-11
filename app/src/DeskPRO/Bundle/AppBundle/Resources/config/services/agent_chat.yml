@@ -4,6 +4,7 @@ services:
       class: DeskPRO\Bundle\AppBundle\AgentChat\Messenger
       arguments:
           - @doctrine.orm.default_entity_manager
+          - @data.departments
 
   deskpro.agentchat.history:
       class: DeskPRO\Bundle\AppBundle\AgentChat\History

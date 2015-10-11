@@ -26,7 +26,7 @@ export class Header extends React.Component {
         text = teams.getIn([current.agent_teams[0], 'name']);
         break;
       case 'department':
-        text = departments.getIn([current.departments[0], 'name']);
+        text = departments.getIn([current.departments[0], 'title']);
         break;
       default:
         text = 'Unknown chat. ALARM!!!';

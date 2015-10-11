@@ -18,15 +18,13 @@ import { loadMyAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Recor
 import { myAgentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
 
 // departmetns
-import { loadDepartments, loadAllDepartments }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
-import { departmentsSelector, allDepartmentsSelector }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
+import { loadMyDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
+import { myDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
 
 @connect(state => ({
   me: state.Application.user,
   agents: agentsSelector(state),
-  departments: allDepartmentsSelector(state),
+  departments: myDepartmentsSelector(state),
   teams: myAgentTeamsSelector(state),
   messages: state.IM.messages
 }))
@@ -42,7 +40,7 @@ export class Chat extends React.Component {
   componentWillMount() {
     this.props.dispatch(loadAllAgents());
     this.props.dispatch(loadMyAgentTeams());
-    this.props.dispatch(loadAllDepartments());
+    this.props.dispatch(loadMyDepartments());
     this.props.dispatch(loadMessages(this.props.current.id));
   }
 

@@ -12,7 +12,8 @@ import { myAgentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/R
 export class TeamsList extends Component {
 
   static propTypes = {
-    agentTeams: PropTypes.object.isRequired
+    agentTeams: PropTypes.object.isRequired,
+    me: PropTypes.object.isRequired
   };
 
   componentWillMount() {

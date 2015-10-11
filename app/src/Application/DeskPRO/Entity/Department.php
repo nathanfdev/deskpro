@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -454,6 +455,9 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Chat
         return $this->getFullTitle();
     }
 
+    /**
+     * @return Person[]|null
+     */
     public function getPersonList()
     {
         return $this->_people;
