@@ -55,6 +55,22 @@ export class LoginForm extends React.Component {
                   <input type="submit" value="Log in to DeskPRO" />
                 </form>
               </div>
+
+              <div className="dpw-login-form-divider">
+                <span className="dpw-login-form-divider-title">Or Log in with</span>
+                <hr />
+              </div>
+
+              <div className="dpw-login-form-alternate-login">
+                <div className="dpw-login-form-main-button">
+                  <a href="#" className="dpw-login-form-alternate-login-button onelogin">&nbsp;</a>
+                </div>
+
+                <div className="dpw-login-form-extra-buttons">
+                  <a href="#" className="dpw-login-form-alternate-login-button more">Other <i className="fa fa-caret-down"></i></a>
+                </div>
+              </div>
+
             </div>
 
             <div className="dpw-left-panel-footer">
