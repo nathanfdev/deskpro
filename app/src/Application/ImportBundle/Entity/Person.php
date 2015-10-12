@@ -650,7 +650,9 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
      */
     public function addEmail($email)
     {
-        $this->emails[] = $email;
+        if (!in_array($email, $this->emails)) {
+            $this->emails[] = $email;
+        }
 
         return $this;
     }

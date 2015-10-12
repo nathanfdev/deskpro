@@ -1933,7 +1933,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Sets the primray email address on the account.
+     * Sets the primary email address on the account.
      *
      * @param $email_address
      *
@@ -2083,7 +2083,12 @@ class Person extends DomainObject implements HighlightableModelInterface
      */
     public function resetEmails()
     {
+        $this->primary_email = null;
         $this->emails->clear();
+
+        // todo
+        App::getOrm()->persist($this);
+        App::getOrm()->flush();
 
         return $this;
     }
@@ -3558,11 +3563,12 @@ class Person extends DomainObject implements HighlightableModelInterface
         );
         $metadata->mapOneToMany(
             array(
-                'fieldName'    => 'emails',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail',
-                'cascade'      => array('persist', 'detach'),
-                'mappedBy'     => 'person',
-                'dpApi'        => true,
+                'fieldName'     => 'emails',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\PersonEmail',
+                'cascade'       => array('persist', 'detach'),
+                'mappedBy'      => 'person',
+                'dpApi'         => true,
+                'orphanRemoval' => true,
             )
         );
         $metadata->mapOneToMany(

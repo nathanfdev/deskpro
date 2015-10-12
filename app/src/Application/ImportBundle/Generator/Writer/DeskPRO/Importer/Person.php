@@ -98,12 +98,17 @@ final class Person extends AbstractImporter
             }
         }
 
-        foreach ($entity->getEmails() as $num => $email) {
+        foreach ($entity->getEmails() as $email) {
             if ($this->getEmailAccountMapper()->findOneByEmail($email, false)) {
                 $this->logWarning(sprintf('Email `%s` is an a gateway account address (Skipping)', $email));
-            } elseif (!$person->hasEmailAddress($email)) {
-                $person->addEmailAddressString($email);
-                $this->logDebug(sprintf($num ? 'Set email `%s`' : 'Set primary email `%s`', $entity->getFirstEmail()));
+            } else {
+                if (!count($person->getEmailAddresses())) {
+                    $person->setEmail($email);
+                    $this->logDebug(sprintf('Set primary email `%s`', $entity->getFirstEmail()));
+                } else {
+                    $person->addEmailAddressString($email);
+                    $this->logDebug(sprintf('Set email `%s`', $entity->getFirstEmail()));
+                }
             }
         }
         foreach ($entity->getUserGroups() as $user_group_name) {
