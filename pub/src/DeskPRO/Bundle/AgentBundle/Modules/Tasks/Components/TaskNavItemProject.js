@@ -10,7 +10,7 @@ const projectTarget = {
     const item = monitor.getItem();
     item.dispatch(TaskActions.editTask({
       taskId: item.id,
-      project: props.project.id
+      project: props.project.get('id')
     }, item.source));
   }
 };
@@ -49,11 +49,11 @@ export default class TaskNavItemProject extends React.Component {
         {this.state.showEditIcon ?
         <a href="#" className="edit-icon" onClick={this.props.toggleWindow.bind(this, project)}><i className="fa fa-cog" /></a> :
         <a className="list-counter" href="#">
-          {project.remaining}
+          {project.get('remaining')}
         </a>}
       </div>
-      <a href="#" className="item" onClick={filterTasks.bind(this, {projects: [project.id]})}><i
-        className="fa fa-book"/> {project.title} </a>
+      <a href="#" className="item" onClick={filterTasks.bind(this, {projects: [project.get('id')]})}><i
+        className="fa fa-book"/> {project.get('title')} </a>
     </li>);
   }
 }

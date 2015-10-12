@@ -2,6 +2,7 @@ import React from 'react';
 import Formsy from 'formsy-react';
 import FRC from '../../../../../Component/FormComponents/main.js';
 import $ from 'jquery';
+import Immutable from 'immutable';
 
 const ProjectCreateHover = React.createClass({
 
@@ -36,9 +37,9 @@ const ProjectCreateHover = React.createClass({
 
     if (this.state.selected === null && Object.keys(this.props.projectData).length > 0) {
       state.selected = {
-        departments: this.props.projectData.departments,
-        teams: this.props.projectData.teams,
-        agents: this.props.projectData.agents
+        departments: this.props.projectData.get('departments'),
+        teams: this.props.projectData.get('teams'),
+        agents: this.props.projectData.get('agents')
       };
     }
 
@@ -189,7 +190,7 @@ const ProjectCreateHover = React.createClass({
   },
 
   render: function() {
-    const project = this.props.projectData ? this.props.projectData : {};
+    const project = this.props.projectData ? this.props.projectData : Immutable.Map();
     const positionY = (this.props.position.y - 20);
     const maxY = window.innerHeight - 400;
     let overshotY = false;
@@ -204,16 +205,16 @@ const ProjectCreateHover = React.createClass({
     return (<div style={{top: top}} className={overshotY ? 'sidebar-hover hide-indicator' : 'sidebar-hover'}>
         <div className="dpmw--popup-main">
           <div className="dpmw--popup-header">
-            <i className="fa fa-tags"/> Project - {project.id ? 'Edit' : 'Create New'}
+            <i className="fa fa-tags"/> Project - {project.has('id') ? 'Edit' : 'Create New'}
           </div>
           <Formsy.Form onValid={this.enableButton} onInvalid={this.disableButton} onSubmit={this.props.createProject}>
             <div className="dpw--popup-content">
               <div className="dpw--popup-content-line">
                 <div className="dpmw--popup-content-full">
-                  <FRC.Input name="projectId" type="hidden" value={project.id} />
+                  <FRC.Input name="projectId" type="hidden" value={project.get('id', false)} />
                   <h2 className="dpw--popup-item-section-title">Title</h2>
                   <div className="dpw--popup-form-container">
-                    <FRC.Input name="title" type="text" placeholder="Title" validations="minLength:1" validationErrors={{minLength: 'The title field is required'}} value={project.title} />
+                    <FRC.Input name="title" type="text" placeholder="Title" validations="minLength:1" validationErrors={{minLength: 'The title field is required'}} value={project.get('title')} />
                     {this.serverValidation('title')}
                   </div>
                 </div>
