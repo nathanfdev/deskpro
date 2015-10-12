@@ -1832,12 +1832,13 @@ class TicketSearch extends SearcherAbstract
                         if (!is_array($choice)) {
                             $choice = explode(',', $choice);
                         }
+                        if (!empty($choice)) {
+                            if (count($choice) == 1) {
+                                $this->specific_fields[] = self::TERM_ORGANIZATION;
+                            }
 
-                        if (count($choice) == 1) {
-                            $this->specific_fields[] = self::TERM_ORGANIZATION;
+                            $wheres[] = $this->_choiceMatch("$tickets_table.organization_id", $op, $choice, true);
                         }
-
-                        $wheres[] = $this->_choiceMatch("$tickets_table.organization_id", $op, $choice, true);
                         break;
                     case self::TERM_PARTICIPANT:
                         $this->affected_fields[] = 'ticket.participants';
