@@ -8,9 +8,10 @@ import TaskCardDragLayer from './TaskCardDragLayer';
 //import TasksSidebarHoverFrame from './TasksSidebarHoverFrame';
 import TasksNavFrame from './TasksNavFrame';
 import TasksListFrame from './TasksListFrame';
+import { meSelector } from '../RecordStores/Selectors/meSelectors';
 
 @connect(state => ({
-  user: state.Application.user,
+  user: meSelector(state),
   dpWindow: state.Application.dpWindow
 }))
 class TasksApp extends React.Component {

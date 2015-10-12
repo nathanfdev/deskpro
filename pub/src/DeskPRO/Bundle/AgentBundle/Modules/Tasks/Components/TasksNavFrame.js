@@ -11,6 +11,7 @@ import $ from 'jquery';
 
 import { loadProjects } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Actions/taskActions';
 import { createProjectRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/projectSelectors';
+import { meSelector } from '../RecordStores/Selectors/meSelectors';
 
 const projectRequestId = 'projectNavView';
 const projectSel = createProjectRequestSelectors(projectRequestId);
@@ -22,7 +23,7 @@ const projectSel = createProjectRequestSelectors(projectRequestId);
   labelList: state.Tasks.labelList,
   teamList: state.Tasks.teamList,
   departmentList: state.Tasks.departmentList,
-  user: state.Application.user,
+  user: meSelector(state),
   createdProject: state.Tasks.createdProject,
   dpWindow: state.Application.dpWindow,
   projects: projectSel.recordsSel(state),
