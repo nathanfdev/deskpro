@@ -44,7 +44,7 @@ export default class Positioned extends React.Component {
     jQuery('.dpwd-navigation-dropdown-top-row').prepend(this.node);
 
     // Manipulate the DOM here
-    this.renderContent();
+    this.renderContent(this.props);
   }
 
   /**
@@ -127,9 +127,9 @@ export default class Positioned extends React.Component {
    * @param  {Object} props The props to use
    * @return {void}
    */
-  renderContent() {
+  renderContent(props) {
     // Render the component with react, or don't if the prop changes
-    if (this.props.isOpen) {
+    if (props.isOpen) {
       // Put the element inside a div that we can position
       ReactDOM.render(<div className="positioned-element">{this.props.children}</div>, this.node);
       this.updatePosition();

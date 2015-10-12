@@ -30,6 +30,7 @@ export class OrderByContainer extends Component {
     dispatch: PropTypes.func.isRequired
   };
 
+
   /* Change sort option (Order By ...)*/
   toggleListSort(option) {
     const {dispatch, currentGroup} = this.props;
@@ -63,6 +64,7 @@ export class OrderByContainer extends Component {
           <Item
             key={index}
             isActive={currentSortMode.field === option.field}
+            checked={currentSortMode.field === option.field}
             onClick={this.toggleListSort.bind(this, option)}
             icon={option.icon}
             >

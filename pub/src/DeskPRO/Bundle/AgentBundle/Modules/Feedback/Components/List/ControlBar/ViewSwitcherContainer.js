@@ -34,11 +34,13 @@ export class ViewSwitcherContainer extends Component {
 
   renderOptions() {
     const {viewModeOptions, currentViewMode} = this.props;
+    console.log('Now current view is: ', currentViewMode);
     return (
       viewModeOptions.map((option, index)=>
           <Item
             key={index}
             isActive={currentViewMode.field === option.get('field')}
+            checked={currentViewMode.field === option.get('field')}
             onClick={this.toggleView.bind(this, option.get('field'))}
             icon={option.get('icon')}
             >

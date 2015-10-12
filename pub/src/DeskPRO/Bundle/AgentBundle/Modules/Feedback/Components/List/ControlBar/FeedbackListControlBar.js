@@ -12,35 +12,38 @@ export class FeedbackListControlBar extends React.Component {
     this.state = {
       orderByDropdownIsExpanded: false,
       filterByDropdownIsExpanded: false,
-      viewModeDropdownIsExpanded: false,
-      dropdownOffset: {left: 0, top: 0}
+      viewModeDropdownIsExpanded: false
     };
   }
 
-  toggleOrderByDropdown = () => {
+  toggleOrderByDropdown = (event) => {
+    event.preventDefault();
     this.setState({
       orderByDropdownIsExpanded: !this.state.orderByDropdownIsExpanded,
       viewModeDropdownIsExpanded: false,
       filterByDropdownIsExpanded: false
     });
+    console.log(this.state);
   };
 
-  toggleFilterByDropdown = (offset) => {
+  toggleFilterByDropdown = (event) => {
+    event.preventDefault();
     this.setState({
       filterByDropdownIsExpanded: !this.state.filterByDropdownIsExpanded,
       orderByDropdownIsExpanded: false,
-      viewModeDropdownIsExpanded: false,
-      dropdownOffset: offset
+      viewModeDropdownIsExpanded: false
     });
   };
 
-  toggleViewModeDropdown = () => {
+  toggleViewModeDropdown = (event) => {
+    event.preventDefault();
     this.setState({
       viewModeDropdownIsExpanded: !this.state.viewModeDropdownIsExpanded,
       orderByDropdownIsExpanded: false,
       filterByDropdownIsExpanded: false
     });
   };
+
 
   render() {
     return (
@@ -49,14 +52,14 @@ export class FeedbackListControlBar extends React.Component {
         <OrderByContainer
           expanded={this.state.orderByDropdownIsExpanded}
           toggleDropdown={this.toggleOrderByDropdown}
-          />
+          >
+        </OrderByContainer>
         <li>
           <hr/>
         </li>
         <FilterContainer
           expanded={this.state.filterByDropdownIsExpanded}
           toggleDropdown={this.toggleFilterByDropdown}
-          offset={this.state.dropdownOffset}
           />
         <li>
           <hr/>

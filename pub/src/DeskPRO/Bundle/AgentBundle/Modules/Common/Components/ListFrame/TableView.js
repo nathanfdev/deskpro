@@ -19,7 +19,7 @@ export class TableView extends Component {
 export class TableHeader extends Component {
 
   static propTypes = {
-    children: PropTypes.array.isRequired
+    children: PropTypes.any.isRequired
   };
 
   render() {

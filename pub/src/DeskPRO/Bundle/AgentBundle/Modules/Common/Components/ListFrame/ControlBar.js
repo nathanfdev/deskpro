@@ -27,19 +27,12 @@ export class ControlButton extends Component {
     icon: PropTypes.string.isRequired
   };
 
-  handleClick(event) {
-    event.preventDefault();
-    const {toggleDropdown} = this.props;
-    const offset = jQuery(event.target).closest('a').position();
-    toggleDropdown(offset);
-  }
-
   render() {
-    const { title, label, icon } = this.props;
+    const {toggleDropdown, title, label, icon } = this.props;
     var classes = classNames('fa', icon);
 
     return (
-      <a href="#" className="dpwd-navigation-dropdown-top-row-button" onClick={this.handleClick.bind(this)}>
+      <a href="#" className="dpwd-navigation-dropdown-top-row-button" onClick={toggleDropdown}>
         <span
           className="dpwd-navigation-dropdown-top-row-button-text dpwd-navigation-dropdown-top-row-button-text-grey">
           {title}
