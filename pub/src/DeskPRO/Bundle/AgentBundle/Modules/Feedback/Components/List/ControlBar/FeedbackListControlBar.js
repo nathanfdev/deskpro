@@ -23,7 +23,6 @@ export class FeedbackListControlBar extends React.Component {
       viewModeDropdownIsExpanded: false,
       filterByDropdownIsExpanded: false
     });
-    console.log(this.state);
   };
 
   toggleFilterByDropdown = (event) => {
@@ -52,8 +51,7 @@ export class FeedbackListControlBar extends React.Component {
         <OrderByContainer
           expanded={this.state.orderByDropdownIsExpanded}
           toggleDropdown={this.toggleOrderByDropdown}
-          >
-        </OrderByContainer>
+          />
         <li>
           <hr/>
         </li>
