@@ -140,8 +140,10 @@ class History
     public function findChats(Person $person, $order = ['date_last_message' => 'DESC'])
     {
         $departments_ids = [];
-        foreach ($this->department_data_service->getChatDepartmentsForPerson($person) as $department) {
-            $departments_ids[] = $department->getId();
+        if ($departments = $this->department_data_service->getChatDepartmentsForPerson($person)) {
+            foreach ($departments as $department) {
+                $departments_ids[] = $department->getId();
+            }
         }
 
         /** @var AgentChatParticipantRepository $repo */

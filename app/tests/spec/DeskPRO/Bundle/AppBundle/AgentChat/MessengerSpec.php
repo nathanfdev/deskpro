@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\AgentChat;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -38,6 +39,7 @@ use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
 use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
+use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat as AgentChatEntity;
 use PhpSpec\ObjectBehavior;
 
@@ -46,9 +48,9 @@ use PhpSpec\ObjectBehavior;
  */
 class MessengerSpec extends ObjectBehavior
 {
-    public function let(EntityManager $em, AbstractEntityRepository $repo, AgentChatEntity $chat)
+    public function let(EntityManager $em, DepartmentDataService $dataService, AbstractEntityRepository $repo, AgentChatEntity $chat)
     {
-        $this->beConstructedWith($em);
+        $this->beConstructedWith($em, $dataService);
         $em->getRepository('App:AgentChat')->willReturn($repo);
         $repo->find(1)->willReturn($chat);
         $chat->getId()->willReturn(1);
@@ -69,7 +71,10 @@ class MessengerSpec extends ObjectBehavior
         $department->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_DEPARTMENT);
         $team->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_TEAM);
         $participants = [$alice, $bob, $department, $team];
-        $this->createChat($creator, $participants)->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\Entity\AgentChat');
+        $this->createChat($participants, 'group')->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\Entity\AgentChat');
+        $this->createChat([$alice, $bob], 'agent')->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\Entity\AgentChat');
+        $this->createChat([$department], 'department')->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\Entity\AgentChat');
+        $this->createChat([$team], 'team')->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\Entity\AgentChat');
     }
     public function it_can_get_chat()
     {
