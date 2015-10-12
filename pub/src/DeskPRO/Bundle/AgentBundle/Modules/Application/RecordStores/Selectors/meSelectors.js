@@ -5,5 +5,5 @@ import { createPeopleRequestSelectors }
 export const meSelector = createPeopleRequestSelectors('me');
 export const meObjSelector = createSelector(
   meSelector.recordsSel,
-    users => users
+  users => users.first()
 );
