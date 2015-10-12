@@ -46,7 +46,14 @@ class BaseNotification extends React.Component {
     text: PropTypes.string
   };
 
-  static defaultAlive = 15;
+  static defaultAlive = 9;
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      hide: false
+    };
+  }
 
   getStyle() {
     return {marginBottom: (75 * (this.props.num - 1)) + 'px'};
@@ -60,13 +67,21 @@ class BaseNotification extends React.Component {
     return null;
   }
 
-  onClick = () => this.props.destroy();
+  letGo() {
+    this.setState({hide: true});
+    setTimeout(this.props.destroy, 500);
+  }
+
+  onClick() {
+    this.letGo();
+  }
 
   render() {
     const { title, text } = this.props;
+    const className = 'dpwd--notication--growl' + (this.state.hide ? ' hide' : '');
 
     return (
-      <div className="dpwd--notication--growl" style={this.getStyle()} onClick={this.onClick}>
+      <div className={className} style={this.getStyle()} onClick={this.onClick.bind(this)}>
         <span className="dpwd--notication--growl-icon">{this.renderIcon()}</span>
         <h1>{title}</h1>
         <p>{text}</p>
@@ -77,18 +92,20 @@ class BaseNotification extends React.Component {
   }
 
   componentDidMount() {
-    setTimeout(this.props.destroy, (this.props.alive || BaseNotification.defaultAlive) * 1000);
+    this.letGoTimeout = setTimeout(this.letGo.bind(this), (this.props.alive || BaseNotification.defaultAlive) * 1000);
+  }
+  componentWillUnmount() {
+    clearTimeout(this.letGoTimeout);
   }
 }
 
 class BaseCountdownNotification extends BaseNotification {
   constructor(props) {
     super(props);
-
     this.state = {
+      hide: false,
       counter: props.alive || BaseNotification.defaultAlive
     };
-
     this.interval = null;
   }
 
@@ -113,6 +130,7 @@ class BaseCountdownNotification extends BaseNotification {
   }
 
   componentWillUnmount() {
+    super.componentWillUnmount();
     this.clearCountdownInterval();
   }
 }
@@ -132,18 +150,18 @@ class DelayedActionNotification extends BaseCountdownNotification {
     this.props.undo && this.props.undo();
   }
 
-  onClick = () => {
+  onClick() {
     if (!this.commited) {
       this.props.commit();
       this.commited = true;
     }
-    this.props.destroy();
-  };
+    this.letGo();
+  }
 
   onUndoClick = (e) => {
     e.stopPropagation();
     this.undo();
-    this.props.destroy();
+    this.letGo();
   };
 
   renderOther() {
@@ -163,9 +181,13 @@ class DelayedActionNotification extends BaseCountdownNotification {
         this.props.commit();
         this.commited = true;
       }
-      this.props.destroy();
+      this.letGo();
     };
-    setTimeout(onDestroy, (this.props.alive || BaseNotification.defaultAlive) * 1000);
+    this.onDestroyTimeout = setTimeout(onDestroy, (this.props.alive || BaseNotification.defaultAlive) * 1000);
+  }
+  componentWillUnmount() {
+    super.componentWillUnmount();
+    clearTimeout(this.onDestroyTimeout);
   }
 }
 
