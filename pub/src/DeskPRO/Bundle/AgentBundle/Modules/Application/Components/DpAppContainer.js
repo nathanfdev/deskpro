@@ -12,13 +12,13 @@ import { PublishApp } from '../../Publish/Components/PublishApp';
 import { LoginApp } from '../../Login/Components/LoginApp';
 import { WelcomeApp } from '../../Welcome/Components/WelcomeApp';
 import { loadMe } from '../RecordStores/Actions/meActions';
-import { meSelector } from '../RecordStores/Selectors/meSelectors';
+import { meStateSelector } from '../RecordStores/Selectors/meSelectors';
 import { Router, Route, Redirect } from 'react-router';
 
 @connect((state) => {
   return {
     routing: state.Application.routing,
-    userStatus: meSelector.statusSel(state)
+    userStatus: meStateSelector.statusSel(state)
   };
 })
 export class DpAppContainer extends React.Component {

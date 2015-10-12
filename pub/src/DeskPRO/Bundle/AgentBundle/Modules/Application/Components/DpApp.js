@@ -4,11 +4,11 @@ import { Header } from './Header';
 import { AppSwitcher } from './AppSwitcher';
 import { TabFrame } from './TabFrame';
 import { routingStarted } from '../Actions/AppActions';
-import { meObjSelector } from '../RecordStores/Selectors/meSelectors';
+import { meSelector } from '../RecordStores/Selectors/meSelectors';
 
 @connect(state => ({
   ...state,
-  user: meObjSelector(state),
+  user: meSelector(state),
   dpWindow: state.Application.dpWindow
 }))
 export class DpApp extends React.Component {
