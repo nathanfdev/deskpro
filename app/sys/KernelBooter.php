@@ -41,6 +41,7 @@ use Doctrine\DBAL\DBALException;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Debug\Debug;
+use Symfony\Component\Debug\Exception\ContextErrorException;
 use Symfony\Component\HttpFoundation\Request;
 
 class KernelBooter
@@ -325,6 +326,14 @@ class KernelBooter
                     exit;
                 }
                 KernelErrorHandler::logException($e);
+            } catch (ContextErrorException $e) {
+                // this exception is thrown by the HttpCache if the DBALException is thrown.
+                // It is possible that the DBALException catch above will never be called, but I am keeping it there just in case.
+                // TODO: What other exceptions might this catch that should NOT result in an install screen?
+                deskpro_handle_boot_db_exception($e);
+
+                header('Location: ' . $request->getBasePath() . '/index.php/install/');
+                exit;
             } catch (\Exception $e) {
                 KernelErrorHandler::logException($e);
             }
