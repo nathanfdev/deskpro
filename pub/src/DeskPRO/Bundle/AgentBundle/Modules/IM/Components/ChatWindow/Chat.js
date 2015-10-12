@@ -9,8 +9,6 @@ import { connect } from 'react-redux';
 // messages
 import { loadMessages, addMessage } from '../../Actions/imMessagesActions';
 
-
-
 @connect(state => ({
   me: state.Application.user,
   messages: state.IM.messages

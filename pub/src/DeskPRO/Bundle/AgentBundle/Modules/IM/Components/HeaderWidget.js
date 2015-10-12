@@ -6,40 +6,50 @@ import { Recent } from './Recent';
 
 // chats
 import * as chatActions from '../RecordStores/Actions/imChatsActions';
-import { recentChatsSelector } from '../RecordStores/Selectors/chats';
+import { recentChatsSelector, recentChatsStatusSelector } from '../RecordStores/Selectors/chats';
 
 // agents
 import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions'
-import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
+import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 
 //teams
 import { loadMyAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions'
-import { myAgentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
+import { myAgentTeamsSelector, myAgentTeamsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
 
 // departmetns
 import { loadMyDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
-import { myDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
+import { myDepartmentsSelector, myDepartmentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
 
 @connect(state => ({
-  recentChats: recentChatsSelector(state),
-  current: state.IM.chats.get('current'),
-  agents: agentsSelector(state),
-  departments: myDepartmentsSelector(state),
+  me: state.Application.user,
   teams: myAgentTeamsSelector(state),
-  me: state.Application.user
+  agents: agentsSelector(state),
+  current: state.IM.chats.get('current'),
+  departments: myDepartmentsSelector(state),
+  recentChats: recentChatsSelector(state),
+
+  teamsStatus       : recentChatsStatusSelector(state),
+  agentsStatus      : agentsStatusSelector(state),
+  departmentsStatus : myDepartmentsStatusSelector(state),
+  recentChatsStatus : myAgentTeamsStatusSelector(state)
 }))
 export class HeaderWidget extends React.Component {
   static propTypes = {
-    recentChats: PropTypes.array.isRequired,
+    me: PropTypes.object.isRequired,
+    teams: PropTypes.object.isRequired,
+    agents: PropTypes.object.isRequired,
     current: PropTypes.object.isRequired,
-    me: PropTypes.object.isRequired
+    departments: PropTypes.object.isRequired,
+    recentChats: PropTypes.object.isRequired,
+    recentChatsStatus: PropTypes.object.isRequired
+
   };
 
   constructor(props) {
     super(props);
     this.state = {
       overlayShown: false,
-      chating: false,
+      chating: false
     };
   }
 
@@ -52,9 +62,6 @@ export class HeaderWidget extends React.Component {
   }
 
   render() {
-    const {agents, teams, departments, recentChats, current, me} = this.props;
-    const {overlayShown, chating} = this.state;
-
     return (
       <div className="agent-ims">
         <a href="#" onClick={this.onClick} className="show-more">
@@ -62,33 +69,55 @@ export class HeaderWidget extends React.Component {
                 IMs <i className="fa fa-angle-down"></i>
             </span>
         </a>
-        { recentChats.map(
-            (chat, index) => {
-              return <Recent
-                me                     = {me}
-                key                    = {index}
-                chat                   = {chat}
-                teams                  = {teams}
-                agents                 = {agents}
-                departments            = {departments}
-                handleClickParticipant = {this.handleClickParticipant}
-                />
-            }
-          )
-        }
-        { overlayShown ? <Overlay handleClickParticipant={this.handleClickParticipant}/> : null }
-        { chating && current.id
-          ? <Chat
-              teams           = {teams}
-              agents          = {agents}
-              current         = {current}
-              departments     = {departments}
-              handleCloseChat = {this.handleCloseChat}/>
-          : null
-        }
+        { this.renderRecent() }
+        { this.renderOverlay() }
+        { this.renderChat() }
       </div>
     );
   }
+
+  renderRecent = () => {
+    const { agents, teams, departments, recentChats, me } = this.props;
+    const { recentChatsStatus, agentsStatus, teamsStatus, departmentsStatus } = this.props;
+    return (
+      recentChatsStatus.get('isDone')
+      && agentsStatus.get('isDone')
+      && teamsStatus.get('isDone')
+      && departmentsStatus.get('isDone')
+      )
+      ? recentChats.map(
+          (chat, index) => {
+            return <Recent
+              me={me}
+              key={index}
+              chat={chat}
+              teams={teams}
+              agents={agents}
+              departments={departments}
+              handleClickParticipant={this.handleClickParticipant}
+              />
+          }
+        )
+      : <span className='chat-avatar-loading'><img src='/web/spinner.gif' style={{width: 20+'px', height: 20+'px'}}/> Loading recent agents... </span>
+  };
+
+  renderOverlay = () => {
+    return this.state.overlayShown ? <Overlay handleClickParticipant={this.handleClickParticipant}/> : null
+  };
+
+  renderChat = () => {
+    const {agents, teams, departments, current} = this.props;
+    const {agentsStatus, teamsStatus, departmentsStatus} = this.props;
+    return this.state.chating && current.id && agentsStatus.get('isDone') && teamsStatus.get('isDone') && departmentsStatus.get('isDone')
+      ? <Chat
+      teams={teams}
+      agents={agents}
+      current={current}
+      departments={departments}
+      handleCloseChat={this.handleCloseChat}/>
+      : null
+  };
+
 
   handleCloseChat = () => {
     const oldState = this.state;
@@ -100,8 +129,8 @@ export class HeaderWidget extends React.Component {
   onClick = () => {
     const oldState = this.state;
     let newState = {...oldState};
-    newState.overlayShown = !this.state.overlayShown,
-      newState.chating = this.state.chating
+    newState.overlayShown = !this.state.overlayShown;
+    newState.chating = this.state.chating;
     this.setState(newState);
   };
 

@@ -11,3 +11,4 @@ export const createDepartmentsRequestSelectors = createRequestSelectorsBuilder(d
 export const allDepartmentsSelector = createDepartmentsRequestSelectors('all').recordsSel;
 
 export const myDepartmentsSelector = createDepartmentsRequestSelectors('my').recordsSel;
+export const myDepartmentsStatusSelector = createDepartmentsRequestSelectors('my').statusSel;

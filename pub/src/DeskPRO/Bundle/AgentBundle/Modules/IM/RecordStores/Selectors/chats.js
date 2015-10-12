@@ -11,9 +11,15 @@ export const createChatsRequestSelectors = createRequestSelectorsBuilder(chatsSt
 
 export const chatsSelector = createSelector(
   createChatsRequestSelectors('all').recordsSel,
-    chats => chats
+  chats => chats
 );
+
 export const recentChatsSelector = createSelector(
   createChatsRequestSelectors('recent').recordsSel,
-    chats => chats
+  chats => chats
+);
+
+export const recentChatsStatusSelector = createSelector(
+  createChatsRequestSelectors('recent').statusSel,
+  chats => chats
 );
