@@ -70,10 +70,12 @@ class ChatsController extends AbstractController
         $searchService = $this->get('deskpro.agentchat.history');
         $user          = $this->getUser();
         $requestParams = $request->query->all();
-        $chats         = $searchService->findChats($user, ['id' => 'ASC']);
+
+        $chats = $searchService->findChats($user, ['id' => 'ASC']);
+
         if (isset($requestParams['search'])) {
             $searchString = $requestParams['search'];
-            $chats        = $searchService->searchAllChats($user, $searchString);
+            $chats        = $searchService->searchAllChats($chats, $searchString);
         }
 
         return View::create(
