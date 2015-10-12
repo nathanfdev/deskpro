@@ -2083,12 +2083,15 @@ class Person extends DomainObject implements HighlightableModelInterface
      */
     public function resetEmails()
     {
+        // todo hot fix
+        foreach ($this->emails as $email) {
+            App::getOrm()->remove($email);
+        }
+
+        App::getOrm()->flush();
+
         $this->primary_email = null;
         $this->emails->clear();
-
-        // todo
-        App::getOrm()->persist($this);
-        App::getOrm()->flush();
 
         return $this;
     }
