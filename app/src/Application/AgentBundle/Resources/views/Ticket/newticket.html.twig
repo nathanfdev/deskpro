@@ -577,14 +577,18 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="dp-menu-area dp-menu-area-primary">
 			<label>{{ phrase('agent.tickets.reply_and_set_status') }}</label>
 			<ul>
-				{% for status in ['awaiting_user', 'awaiting_agent', 'resolved'] %}
-					{% if status == ticket.status or ticket_perms['modify_set_' ~ status] %}
-						<li data-type="{{ status }}" data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_' ~ status)}) }}">
-							<div class="on-icon"><i class="icon-ok"></i></div>
-							{{ phrase('agent.tickets.kbd_' ~ status) }}
-						</li>
-					{% endif %}
-				{% endfor %}
+				<li data-type="awaiting_user" data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_awaiting_user')}) }}">
+					<div class="on-icon"><i class="icon-ok"></i></div>
+					{{ phrase('agent.tickets.kbd_awaiting_user') }}
+				</li>
+				<li data-type="awaiting_agent" data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_awaiting_agent')}) }}">
+					<div class="on-icon"><i class="icon-ok"></i></div>
+					{{ phrase('agent.tickets.kbd_awaiting_agent') }}
+				</li>
+				<li data-type="resolved" data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_resolved')}) }}">
+					<div class="on-icon"><i class="icon-ok"></i></div>
+					{{ phrase('agent.tickets.kbd_resolved') }}
+				</li>
 			</ul>
 		</div>
 	</section>
