@@ -139,6 +139,82 @@ if (!$IMPORT_INSTALL) {
 }
 
 ################################################################################
+# Feedback
+################################################################################
+
+$em->getConnection()->executeUpdate(
+    "
+INSERT INTO `feedback_categories` (`id`, `parent_id`, `title`, `slug`, `display_order`, `depth`, `root`) VALUES
+(1, NULL, 'Suggestion', 'suggestion', 0, 0, NULL),
+(2, NULL, 'Feature Request', 'feature-request', 0, 0, NULL),
+(3, NULL, 'Bug Report', 'bug-report', 0, 0, NULL);
+"
+);
+
+$em->getConnection()->executeUpdate(
+    "
+INSERT INTO `custom_def_feedback` (`id`, `parent_id`, `app_id`, `sys_name`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `default_value`, `is_agent_field`) VALUES
+(1, NULL, NULL, 'cat', '', 0, 0, 'Category', 'e.g., maybe Windows, Mac, Linux.', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Text', 'a:0:{}', 1, 1, 0, NULL, 1);
+"
+);
+
+$em->getConnection()->executeUpdate(
+    "
+INSERT INTO `feedback_status_categories` (`id`, `status_type`, `title`, `display_order`) VALUES
+(1, 'active', 'Gathering Feedback', 0),
+(2, 'active', 'Planning', 0),
+(3, 'active', 'Started', 0),
+(4, 'active', 'Under Review', 0),
+(5, 'closed', 'Completed', 0),
+(6, 'closed', 'Duplicate', 0),
+(7, 'closed', 'Declined', 0);
+"
+);
+
+$em->getConnection()->executeUpdate(
+    "
+INSERT INTO `feedback` (`id`, `status_category_id`, `category_id`, `person_id`, `language_id`, `hidden_status`, `validating`, `popularity`, `title`, `slug`, `content`, `view_count`, `total_rating`, `num_comments`, `num_ratings`, `status`, `date_created`, `date_published`) VALUES
+(1, 5, 1, 1, NULL, 'validating', NULL, 0, 'example-suggestion', 'Example Suggestion', 'This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 1, 0, 2, 'new', '2015-08-13 11:33:33', '2015-08-13 11:33:33'),
+(2, 1, 1, 1, NULL, 'deleted', NULL, 0, 'Test feedback 1', 'slug-to-feedback-1', 'Content of test feedback 1', 0, 3, 0, 4, 'hidden', '2015-08-01 00:00:00', NULL),
+(3, 1, 2, 1, NULL, NULL, NULL, 0, 'Test feedback 2', 'slug-to-feedback-2', 'Content of test feedback 2', 0, 5, 0, 6, 'active', '2015-08-02 00:00:00', NULL),
+(4, 2, 3, 1, NULL, 'validating', NULL, 0, 'Test feedback 3', 'slug-to-feedback-3', 'Content of test feedback 3', 0, 0, 0, 0, 'active', '2015-08-03 00:00:00', NULL),
+(5, 1, 1, 1, NULL, 'spam', NULL, 0, 'Test feedback 4', 'slug-to-feedback-4', 'Content of test feedback 4', 0, 1, 0, 1, 'hidden', '2015-08-04 00:00:00', NULL),
+(6, 5, 1, 1, NULL, 'validating', NULL, 0, 'Test feedback 5', 'slug-to-feedback-5', 'Content of test feedback 5', 0, 2, 0, 1, 'closed', '2015-08-05 00:00:00', NULL),
+(7, 1, 2, 1, NULL, 'validating', NULL, 15, 'Test feedback 6', 'slug-to-feedback-6', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'new', '2015-08-10 00:00:00', NULL);
+"
+);
+
+$em->getConnection()->executeUpdate(
+    "
+INSERT INTO `labels_feedback` (`feedback_id`, `label`) VALUES
+(1, 'label1'),
+(1, 'label2'),
+(2, 'label1'),
+(3, 'another');
+"
+);
+
+$em->getConnection()->executeUpdate(
+    "
+INSERT INTO `custom_data_feedback` (`id`, `feedback_id`, `field_id`, `root_field_id`, `value`, `input`) VALUES
+(1, 1, 1, NULL, 0, 'Windows'),
+(2, 2, 1, NULL, 0, 'Linux'),
+(3, 3, 1, NULL, 0, 'Linux'),
+(4, 4, 1, NULL, 0, 'Mac');
+"
+);
+
+$em->getConnection()->executeUpdate(
+    "
+INSERT INTO `feedback_comments` (`id`, `feedback_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `validating`, `is_reviewed`, `date_created`, `visitor_id`) VALUES
+(1, 1, 1, '', NULL, NULL, NULL, 'Some comment for the first feedback. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ultrices sem ac risus efficitur, vitae.', 'validating', NULL, 0, '2015-08-17 00:00:00', ''),
+(2, 1, 1, '', NULL, NULL, NULL, 'One more comment for the first feedback', 'validating', '0', 0, '2015-09-08 00:00:00', ''),
+(3, 2, 1, '', NULL, NULL, NULL, 'Some comment for the second feedback. Quisque id malesuada urna. Aliquam erat volutpat. Duis risus odio, faucibus ac lacus nec, dapibus.', 'validating', NULL, 0, '2015-09-23 00:00:00', ''),
+(4, 3, 1, '', NULL, NULL, NULL, 'Some comment for the third feedback. Proin enim mauris, faucibus sit amet pretium non, sagittis ut eros. Praesent non sem ut.', 'user_validating', '0', 0, '2015-10-01 00:00:00', '');
+"
+);
+
+################################################################################
 # Portal Blocks
 ################################################################################
 
@@ -595,82 +671,6 @@ $em->getConnection()->executeUpdate(
         (1, NULL, NULL, 'ArticlePendingCreate #1', '2015-09-01 10:05:30', 2),
         (2, NULL, NULL, 'ArticlePendingCreate #2', '2015-09-02 04:12:25', 3)
     ;
-"
-);
-
-################################################################################
-# TEMPORARY TEST DATA: Feedback
-################################################################################
-
-$em->getConnection()->executeUpdate(
-    "
-INSERT INTO `feedback_categories` (`id`, `parent_id`, `title`, `slug`, `display_order`, `depth`, `root`) VALUES
-(1, NULL, 'Suggestion', 'suggestion', 0, 0, NULL),
-(2, NULL, 'Feature Request', 'feature-request', 0, 0, NULL),
-(3, NULL, 'Bug Report', 'bug-report', 0, 0, NULL);
-"
-);
-
-$em->getConnection()->executeUpdate(
-    "
-INSERT INTO `custom_def_feedback` (`id`, `parent_id`, `app_id`, `sys_name`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `default_value`, `is_agent_field`) VALUES
-(1, NULL, NULL, 'cat', '', 0, 0, 'Category', 'e.g., maybe Windows, Mac, Linux.', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Text', 'a:0:{}', 1, 1, 0, NULL, 1);
-"
-);
-
-$em->getConnection()->executeUpdate(
-    "
-INSERT INTO `feedback_status_categories` (`id`, `status_type`, `title`, `display_order`) VALUES
-(1, 'active', 'Gathering Feedback', 0),
-(2, 'active', 'Planning', 0),
-(3, 'active', 'Started', 0),
-(4, 'active', 'Under Review', 0),
-(5, 'closed', 'Completed', 0),
-(6, 'closed', 'Duplicate', 0),
-(7, 'closed', 'Declined', 0);
-"
-);
-
-$em->getConnection()->executeUpdate(
-    "
-INSERT INTO `feedback` (`id`, `status_category_id`, `category_id`, `person_id`, `language_id`, `hidden_status`, `validating`, `popularity`, `title`, `slug`, `content`, `view_count`, `total_rating`, `num_comments`, `num_ratings`, `status`, `date_created`, `date_published`) VALUES
-(1, 5, 1, 1, NULL, 'validating', NULL, 0, 'example-suggestion', 'Example Suggestion', 'This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 1, 0, 2, 'new', '2015-08-13 11:33:33', '2015-08-13 11:33:33'),
-(2, 1, 1, 1, NULL, 'deleted', NULL, 0, 'Test feedback 1', 'slug-to-feedback-1', 'Content of test feedback 1', 0, 3, 0, 4, 'hidden', '2015-08-01 00:00:00', NULL),
-(3, 1, 2, 1, NULL, NULL, NULL, 0, 'Test feedback 2', 'slug-to-feedback-2', 'Content of test feedback 2', 0, 5, 0, 6, 'active', '2015-08-02 00:00:00', NULL),
-(4, 2, 3, 1, NULL, 'validating', NULL, 0, 'Test feedback 3', 'slug-to-feedback-3', 'Content of test feedback 3', 0, 0, 0, 0, 'active', '2015-08-03 00:00:00', NULL),
-(5, 1, 1, 1, NULL, 'spam', NULL, 0, 'Test feedback 4', 'slug-to-feedback-4', 'Content of test feedback 4', 0, 1, 0, 1, 'hidden', '2015-08-04 00:00:00', NULL),
-(6, 5, 1, 1, NULL, 'validating', NULL, 0, 'Test feedback 5', 'slug-to-feedback-5', 'Content of test feedback 5', 0, 2, 0, 1, 'closed', '2015-08-05 00:00:00', NULL),
-(7, 1, 2, 1, NULL, 'validating', NULL, 15, 'Test feedback 6', 'slug-to-feedback-6', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'new', '2015-08-10 00:00:00', NULL);
-"
-);
-
-$em->getConnection()->executeUpdate(
-    "
-INSERT INTO `labels_feedback` (`feedback_id`, `label`) VALUES
-(1, 'label1'),
-(1, 'label2'),
-(2, 'label1'),
-(3, 'another');
-"
-);
-
-$em->getConnection()->executeUpdate(
-    "
-INSERT INTO `custom_data_feedback` (`id`, `feedback_id`, `field_id`, `root_field_id`, `value`, `input`) VALUES
-(1, 1, 1, NULL, 0, 'Windows'),
-(2, 2, 1, NULL, 0, 'Linux'),
-(3, 3, 1, NULL, 0, 'Linux'),
-(4, 4, 1, NULL, 0, 'Mac');
-"
-);
-
-$em->getConnection()->executeUpdate(
-    "
-INSERT INTO `feedback_comments` (`id`, `feedback_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `validating`, `is_reviewed`, `date_created`, `visitor_id`) VALUES
-(1, 1, 1, '', NULL, NULL, NULL, 'Some comment for the first feedback. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ultrices sem ac risus efficitur, vitae.', 'validating', NULL, 0, '2015-08-17 00:00:00', ''),
-(2, 1, 1, '', NULL, NULL, NULL, 'One more comment for the first feedback', 'validating', '0', 0, '2015-09-08 00:00:00', ''),
-(3, 2, 1, '', NULL, NULL, NULL, 'Some comment for the second feedback. Quisque id malesuada urna. Aliquam erat volutpat. Duis risus odio, faucibus ac lacus nec, dapibus.', 'validating', NULL, 0, '2015-09-23 00:00:00', ''),
-(4, 3, 2, '', NULL, NULL, NULL, 'Some comment for the third feedback. Proin enim mauris, faucibus sit amet pretium non, sagittis ut eros. Praesent non sem ut.', 'user_validating', '0', 0, '2015-10-01 00:00:00', '');
 "
 );
 

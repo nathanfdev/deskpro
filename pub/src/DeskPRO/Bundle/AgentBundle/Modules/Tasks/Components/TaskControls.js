@@ -13,7 +13,7 @@ export default class TaskControls extends React.Component {
 
     this.state = {
       showWindow: false,
-      changeOrder: false,
+      changeOrder: false
     };
   }
 
