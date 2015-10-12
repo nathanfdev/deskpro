@@ -518,11 +518,11 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     {
         $logger = new Logger('exporter');
 
-        if ($config->getLogPath()) {
-            $formatter = new LineFormatter();
-            $formatter->ignoreEmptyContextAndExtra(true);
-            $formatter->allowInlineLineBreaks(true);
+        $formatter = new LineFormatter();
+        $formatter->ignoreEmptyContextAndExtra(true);
+        $formatter->allowInlineLineBreaks(true);
 
+        if ($config->getLogPath()) {
             $handler = new StreamHandler($config->getLogPath());
             $handler->setFormatter($formatter);
 
@@ -535,6 +535,12 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
                 $logger->pushHandler($handler);
             }
         }
+
+        $handler = new StreamHandler(dp_get_log_dir().'/export_perm.log');
+        $handler->setFormatter($formatter);
+
+        $logger->pushHandler($handler);
+
         if ($config->isConsoleOutputEnabled()) {
             $formatter = new ConsoleFormatter();
             $formatter->ignoreEmptyContextAndExtra(true);
