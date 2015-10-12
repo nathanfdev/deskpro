@@ -1,17 +1,16 @@
 import React from 'react';
+// components
 import { Footer } from './Footer';
 import { Header } from './Header';
 import { MessageList } from './MessageList';
 import { Offline } from './Offline';
 import { SearchForm } from './SearchForm';
 import { connect } from 'react-redux';
+// messages
 import { loadMessages, addMessage } from '../../Actions/imMessagesActions';
-import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions'
-import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 
 @connect(state => ({
   me: state.Application.user,
-  agents: agentsSelector(state),
   messages: state.IM.messages
 }))
 export class Chat extends React.Component {
@@ -24,22 +23,7 @@ export class Chat extends React.Component {
   }
 
   componentWillMount() {
-    "use strict";
-    this.props.dispatch(loadAllAgents());
     this.props.dispatch(loadMessages(this.props.current.id));
-  }
-
-  handleQuery = (event) => {
-    "use strict";
-    const oldState = this.state;
-    const newState = {...oldState};
-    newState.searchQuery = event.target.value;
-    this.setState(newState);
-  }
-
-  handleSearch = () => {
-    "use strict";
-    this.props.dispatch(loadMessages(this.props.current.id, this.state.searchQuery));
   }
 
   render() {
@@ -57,42 +41,50 @@ export class Chat extends React.Component {
     );
   }
 
+  head() {
+    if(this.props.agents.size > 0) {
+      return <Header
+        agents={this.props.agents}
+        teams={this.props.teams}
+        departments={this.props.departments}
+        me={this.props.me}
+        current={this.props.current}
+        handleCloseChat={this.props.handleCloseChat}
+        />
+    }
+  }
+
+  handleQuery = (event) => {
+    const oldState = this.state;
+    const newState = {...oldState};
+    newState.searchQuery = event.target.value;
+    this.setState(newState);
+  };
+
+  handleSearch = () => {
+    this.props.dispatch(loadMessages(this.props.current.id, this.state.searchQuery));
+  };
 
   refresh = () =>
   {
-    "use strict";
     this.props.dispatch(loadMessages(this.props.current.id));
   };
 
   handleAddMessage = (message) => {
-    "use strict";
     this.props.dispatch(addMessage(this.props.current.id, message, this.props.me));
   };
 
   searchForm() {
-    "use strict";
     if(this.props.agents.size > 0) {
       return <SearchForm handleQuery={this.handleQuery} handleSearch={this.handleSearch} />
     }
   }
 
-  head() {
-    "use strict";
-    if(this.props.agents.size > 0) {
-      return <Header agents={this.props.agents} me={this.props.me} current={this.props.current}
-                     handleCloseChat={this.props.handleCloseChat}/>
-    }
-  }
-
-
-
   static typing() {
-    "use strict";
     return <div className="active-chat-user-typing">Jeniffer is typing a message <span id="typing">...</span></div>
   }
 
   static offline() {
-    "use strict";
     return <Offline />
   }
 }

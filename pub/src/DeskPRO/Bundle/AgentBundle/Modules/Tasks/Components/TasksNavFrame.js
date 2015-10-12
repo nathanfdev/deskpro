@@ -9,6 +9,11 @@ import TaskNavLabels from '../Components/TaskNavLabels';
 import { NavFrameHeader, NavFrame } from '../../Common/Components/NavFrame/index';
 import $ from 'jquery';
 
+import { loadAllProjects } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Actions/taskActions';
+import { allProjectsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/projectSelectors';
+
+// const projectRequestId = 'projectNavView';
+
 @connect(state => ({
   taskList: state.Tasks.taskList,
   projectList: state.Tasks.projectList,
@@ -18,7 +23,8 @@ import $ from 'jquery';
   departmentList: state.Tasks.departmentList,
   user: state.Application.user,
   createdProject: state.Tasks.createdProject,
-  dpWindow: state.Application.dpWindow
+  dpWindow: state.Application.dpWindow,
+  projects: allProjectsSelector(state),
 }))
 export default class TasksNavFrame extends React.Component {
   static propTypes = {
@@ -32,7 +38,8 @@ export default class TasksNavFrame extends React.Component {
     dpWindow: React.PropTypes.object,
     user: React.PropTypes.object,
     dispatch: React.PropTypes.func,
-    children: React.PropTypes.any
+    children: React.PropTypes.any,
+    projects: React.PropTypes.object
   }
 
   constructor(props) {
@@ -40,9 +47,10 @@ export default class TasksNavFrame extends React.Component {
 
     const { dispatch } = this.props;
 
+    dispatch(loadAllProjects('all'));
+
     dispatch(TaskActions.loadTasks());
     dispatch(TaskActions.loadMyTasks());
-    dispatch(TaskActions.loadProjects());
     dispatch(TaskActions.loadTeamTasks());
     dispatch(TaskActions.loadDepartmentTasks());
     dispatch(TaskActions.loadDelegatedTasks());
@@ -61,7 +69,12 @@ export default class TasksNavFrame extends React.Component {
 
   render() {
     const { taskList, projectList, agentList, labelList, departmentList,
-            teamList, createdProject, dpWindow, dispatch } = this.props;
+            teamList, createdProject, dpWindow, dispatch, projects, status } = this.props;
+
+    // // if (!status.get('isLoading')) {
+    //   console.log('Projects');
+    //   console.log(projects.toJS());
+    // // }
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
@@ -73,7 +86,7 @@ export default class TasksNavFrame extends React.Component {
           <div className="sidebar-list sidebar-list-filters">
             <TaskNavGroups taskList={taskList} filterTasks={this.filterTasks.bind(this)} />
 
-            <TaskNavProjects projectList={projectList}
+            <TaskNavProjects projectList={projects}
                              agentList={agentList}
                              teamList={teamList}
                              departmentList={departmentList}

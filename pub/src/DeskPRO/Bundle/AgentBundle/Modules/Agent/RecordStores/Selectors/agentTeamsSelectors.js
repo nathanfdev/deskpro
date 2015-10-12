@@ -14,6 +14,16 @@ export const agentTeamsSelector = createSelector(
   teams => teams
 );
 
+export const myAgentTeamsSelector = createSelector(
+  createAgentTeamsRequestSelectors('my').recordsSel,
+  teams => teams
+);
+
+export const myAgentTeamsStatusSelector = createSelector(
+  createAgentTeamsRequestSelectors('my').statusSel,
+  teams => teams
+);
+
 export const agentTeamNamesSelector = createSelector(
   agentTeamsSelector,
   teams => reduceMapToProperty('name', teams.toJS())

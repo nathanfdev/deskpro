@@ -29,12 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
+use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
@@ -42,7 +44,7 @@ use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -81,19 +83,28 @@ class DepartmentsController extends BaseController implements ClassResourceInter
      */
     public function cgetAction(Request $request)
     {
-        $query = $request->query->all();
-
-        if (!empty($query['ids'])) {
-            $departments = $this->selectDepartments(explode(',', $query['ids']));
+        if ($request->query->getBoolean('my', false)) {
+            /** @var DepartmentDataService $departments_data_service */
+            $departments_data_service = $this->get('data.departments');
+            $departments              = $departments_data_service->getChatDepartmentsForPerson($this->getUser());
         } else {
-            $departments = $this->getDoctrine()->getManager()->createQueryBuilder()
-                ->select('d')->from('DeskPRO:Department', 'd')->getQuery();
+            $query = $request->query->all();
+
+            if (!empty($query['ids'])) {
+                $departments = $this->selectDepartments(explode(',', $query['ids']));
+            } else {
+                $departments = $this->getDoctrine()->getManager()->createQueryBuilder()
+                    ->select('d')->from('DeskPRO:Department', 'd')->getQuery();
+            }
+
+            $departments = $departments->getResult();
         }
+        /* @var Department[] $departments */
 
         $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
-        $pager = new Pagerfanta(new DoctrineORMAdapter($departments));
+        $pager = new Pagerfanta(new ArrayAdapter($departments));
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 

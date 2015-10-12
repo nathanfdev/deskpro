@@ -4,12 +4,14 @@ services:
       class: DeskPRO\Bundle\AppBundle\AgentChat\Messenger
       arguments:
           - @doctrine.orm.default_entity_manager
+          - @data.departments
 
   deskpro.agentchat.history:
       class: DeskPRO\Bundle\AppBundle\AgentChat\History
       arguments:
           - @deskpro.agentchat.searcher
           - @doctrine.orm.default_entity_manager
+          - @data.departments
 
   deskpro.agentchat.searcher:
       class: DeskPRO\Bundle\AppBundle\AgentChat\Search\Doctrine

@@ -17,10 +17,9 @@ export default createReducer(initialState, {
   ),
   [actions.addMessageOptimistic]: async({
     success: (state, payload) => {
-      return state.updateIn(['chatMessages', payload.chat_id], messages => {
-        messages.push(payload.message);
-        return messages;
-      });
+      // updateIn works well enough, but not causes components rerender
+      const messages = state.getIn(['chatMessages', payload.chat_id]).push(payload.message);
+      return state.set(['chatMessages', payload.chat_id], messages);
     }
   })
 

@@ -21,3 +21,15 @@ export const loadAllDepartments    = createAction(
         .error(response => reject(response)))
   )
 );
+
+export const loadMyDepartments    = createAction(
+  loadDepartments.type,
+  rsa.createRecordsRequest(
+    statePath,
+    'my',
+    () => new Promise((resolve, reject) =>
+      apiLoadDepartments({my: true})
+        .success(response => resolve(response.data))
+        .error(response => reject(response)))
+  )
+);

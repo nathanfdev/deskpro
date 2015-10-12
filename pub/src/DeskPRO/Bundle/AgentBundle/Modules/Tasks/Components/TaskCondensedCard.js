@@ -48,7 +48,7 @@ const TaskCondensedCard = React.createClass({
     source: React.PropTypes.string,
     order: React.PropTypes.string,
     projects: React.PropTypes.array,
-    linked_items: React.PropTypes.array,
+    linked_items: React.PropTypes.object,
     departments: React.PropTypes.array,
     teams: React.PropTypes.array,
     agents: React.PropTypes.array,
