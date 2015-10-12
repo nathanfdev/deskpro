@@ -4,7 +4,6 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import jQuery from 'jquery';
 
 const initialState = {
-  isLoaded: false,
   activeAppId: 'tickets',
   collapseNav: localStorage.getItem('dpWindow.sidebarMode') === 'hover',
   expandedSwitcher: false,
@@ -24,9 +23,6 @@ function triggerDpLayoutResize() {
 }
 
 export default createReducer(initialState, {
-  [actions.setIsLoaded]: state => {
-    return state.set('isLoaded', true);
-  },
   [actions.setActiveApp]: (state, payload) => {
     return state.merge({activeAppId: payload, expandedSwitcher: false});
   },

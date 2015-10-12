@@ -11,31 +11,28 @@ import { ChatApp } from '../../Chat/Components/ChatApp';
 import { PublishApp } from '../../Publish/Components/PublishApp';
 import { LoginApp } from '../../Login/Components/LoginApp';
 import { WelcomeApp } from '../../Welcome/Components/WelcomeApp';
-import * as AppActions from '../../Application/Actions/AppActions';
+import { loadMe } from '../RecordStores/Actions/meActions';
+import { meSelector } from '../RecordStores/Selectors/meSelectors';
 import { Router, Route, Redirect } from 'react-router';
 
 @connect((state) => {
   return {
-    dpWindow: state.Application.dpWindow,
-    routing: state.Application.routing
+    routing: state.Application.routing,
+    userStatus: meSelector.statusSel(state)
   };
 })
 export class DpAppContainer extends React.Component {
 
   static propTypes = {
-    dpWindow: PropTypes.object.isRequired,
     routing: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired
+    history: PropTypes.object.isRequired,
+    userStatus: PropTypes.object.isRequired
   };
 
   constructor(props) {
     super(props);
-    const { dpWindow, dispatch } = this.props;
-
-    if (!dpWindow.get('isLoaded')) {
-      dispatch(AppActions.loadWindow());
-    }
+    props.dispatch(loadMe());
   }
 
   workOutBasePath() {
@@ -45,9 +42,9 @@ export class DpAppContainer extends React.Component {
   }
 
   render() {
-    const { dpWindow, history } = this.props;
+    const { userStatus, history } = this.props;
 
-    if (!dpWindow.get('isLoaded')) {
+    if (!userStatus.get('isDone')) {
       return <DpAppLoading />;
     }
 

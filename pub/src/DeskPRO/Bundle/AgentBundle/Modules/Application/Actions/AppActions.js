@@ -1,8 +1,5 @@
 import { createAction } from 'Ampliflux';
-import * as PeopleApi from 'DeskPRO/Bundle/AgentBundle/Services/Api/People';
 
-export const setAppUser = createAction('APP_SET_USER');
-export const setIsLoaded = createAction('APP_IS_LOADED');
 export const setActiveApp = createAction('APP_SET_ACTIVE_APP');
 export const routingStarted = createAction('APP_ROUTING_STARTED');
 export const doTransitionTo = createAction('APP_TRANSITION_TO');
@@ -32,13 +29,3 @@ export function transitionTo(pathname, query = null, state = null) {
     dispatch(doTransitionTo([pathname, query, state]));
   };
 }
-
-export const loadWindow = createAction(
-  'APP_LOAD_WINDOW',
-  () => dispatch => PeopleApi.loadMe().then(promise => {
-    const user = promise.getData().data;
-
-    dispatch(setAppUser(user));
-    dispatch(setIsLoaded());
-  }
-));
