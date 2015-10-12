@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -443,22 +444,32 @@ class ApiDb extends AbstractDbSet
             INSERT INTO `usergroups`
                 (`id`, `title`, `note`, `is_agent_group`, `sys_name`, `is_enabled`)
             VALUES
-                (1, 'Group 1', 'test', 0, 'g1', 1),
-                (2, 'Group 2 (disabled)', 'test', 0, 'g2', 0),
-                (3, 'Group 3', 'test', 0, 'g3', 1),
-                (4, 'Group 4', 'test', 0, 'g4', 1)
+                (1, 'Everyone', 'test', 0, 'everyone', 1),
+                (2, 'Registered', 'test', 0, 'registered', 1),
+                (3, 'Group 1', 'test', 0, 'g1', 1),
+                (4, 'Group 2 (disabled)', 'test', 0, 'g2', 0),
+                (5, 'Group 3', 'test', 0, 'g3', 1),
+                (6, 'Group 4', 'test', 0, 'g4', 1)
             ;
 
             INSERT INTO `person2usergroups`
                 (`person_id`, `usergroup_id`)
             VALUES
                 (1, 1),
+                (2, 1),
+                (3, 1),
+                (4, 1),
                 (1, 2),
                 (2, 2),
+                (3, 2),
+                (4, 2),
                 (1, 3),
-                (2, 3),
-                (3, 3),
-                (4, 4)
+                (1, 4),
+                (2, 4),
+                (1, 5),
+                (2, 5),
+                (3, 5),
+                (4, 6)
             ;
         "
         );
