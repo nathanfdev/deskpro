@@ -34,7 +34,6 @@ export class ViewSwitcherContainer extends Component {
 
   renderOptions() {
     const {viewModeOptions, currentViewMode} = this.props;
-    console.log('Now current view is: ', currentViewMode);
     return (
       viewModeOptions.map((option, index)=>
           <Item
