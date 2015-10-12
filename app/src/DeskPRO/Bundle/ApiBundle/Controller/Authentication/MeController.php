@@ -61,7 +61,6 @@ class MeController extends BaseController
 
         $me              = new Me();
         $me->auth_method = $this->makeAuthMethodString($token);
-        $me->id          = $token->getUser()->getId();
         $me->person_id   = $token->getUser()->getId();
         $me->person      = $person->toApiData(); //TODO
 

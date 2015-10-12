@@ -48,12 +48,6 @@ class Me
      * @Serializer\Expose()
      * @Serializer\Type("string")
      */
-    public $id;
-
-    /**
-     * @Serializer\Expose()
-     * @Serializer\Type("string")
-     */
     public $person_id;
 
     /**
