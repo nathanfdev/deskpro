@@ -14,17 +14,16 @@ import { WelcomeApp } from '../../Welcome/Components/WelcomeApp';
 import { loadMe } from '../RecordStores/Actions/meActions';
 import { meStateSelector } from '../RecordStores/Selectors/meSelectors';
 import { Router, Route, Redirect } from 'react-router';
+import Jquery from 'jquery';
 
 @connect((state) => {
   return {
-    routing: state.Application.routing,
     userStatus: meStateSelector.statusSel(state)
   };
 })
 export class DpAppContainer extends React.Component {
 
   static propTypes = {
-    routing: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     userStatus: PropTypes.object.isRequired
@@ -33,6 +32,16 @@ export class DpAppContainer extends React.Component {
   constructor(props) {
     super(props);
     props.dispatch(loadMe());
+
+    Jquery.ajaxSetup({
+      statusCode: {
+        401: function() {
+          if (window.location.pathname !== '/agent/login') {
+            window.location.href = '/agent/login';
+          }
+        }
+      }
+    });
   }
 
   workOutBasePath() {
@@ -44,7 +53,7 @@ export class DpAppContainer extends React.Component {
   render() {
     const { userStatus, history } = this.props;
 
-    if (!userStatus.get('isDone')) {
+    if (userStatus.get('isLoading')) {
       return <DpAppLoading />;
     }
 
