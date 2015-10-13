@@ -3,6 +3,7 @@ import { DpLogo } from '../DpLogo';
 import { LoginFormHeader } from './LoginFormHeader';
 import { Email } from './Fields/Email';
 import { Password } from './Fields/Password';
+import { Options } from './Fields/Options';
 import { LoginFormFooter } from './LoginFormFooter';
 import { WarningMajor } from './WarningMajor/WarningMajor';
 import { NotAgentWarning } from './WarningMajor/NotAgentWarning';
@@ -66,15 +67,7 @@ export class LoginForm extends React.Component {
                 <form>
                   <Email hasError={hasError} value={this.state.email} onChange={this.onChangeEmail} />
                   <Password hasError={hasError} value={this.state.password} onChange={this.onChangePassword} />
-
-                  <div className="dpw-login-form-options">
-                    <a href="#" className="password-reminder">Forgotten your password?</a>
-
-                    <span className="dpw-login-form-remember-me">
-                      <span className="dpw--checkbox-boxy"><i className="fa fa-check"></i></span>
-                      <span>Remember me</span>
-                    </span>
-                  </div>
+                  <Options />
 
                   <input type="submit" value="Log in to DeskPRO" />
                 </form>
