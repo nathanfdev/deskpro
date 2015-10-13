@@ -1050,7 +1050,7 @@ HTML;
                 $message->setTemplate('DeskPRO:emails_agent:admin-noreset-password.html.twig', $vars);
                 $message->setTo($email, $person->getDisplayName());
                 $this->container->getMailer()->send($message);
-                $this->container->getTranslator()->setDefaultPersonContext($this->person);
+                $this->container->getTranslator()->setDefaultPersonContext($person);
 
                 if ($_format == 'json') {
                     return $this->createJsonResponse(array('success' => 1));
