@@ -75,6 +75,17 @@
     {% if is_agent() %}
       &middot;
       <a href="{{ path('agent') }}">{{ phrase('agent.general.agent_interface') }}</a>
+
+
+
+      {# TODO: temporary link for dev purposes #}
+      <a href="/old-agent">[OLD]</a>
+      {# TODO: temporary link for dev purposes #}
+
+
+
+
+
     {% endif %}
 
     {% if is_admin() %}
