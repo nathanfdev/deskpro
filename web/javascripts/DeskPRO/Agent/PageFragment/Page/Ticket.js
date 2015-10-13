@@ -36,7 +36,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	initPage: function(el) {
 		this.wrapper = el;
 		var self = this;
-		this.getEl('replybox_wrap').data('page', this);
+		this.getEl('replybox_wrap').children('form.ticket-reply-form:first')
+			.attr('data-element-handler', 'DeskPRO.Agent.ElementHandler.TicketReplyBox');
+
 		this.hasReplyFocused = false;
 
 		if (this.getEl('linked_count').data('count') == "0") {

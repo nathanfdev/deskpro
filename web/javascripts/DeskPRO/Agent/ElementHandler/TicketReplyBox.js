@@ -541,6 +541,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			},
 			onSnippetClick: function(info) {
 				if (!self.page) {
+					console.info('no page');
 					return;
 				}
 
@@ -693,7 +694,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
               self.page = self.el.closest('.with-page-fragment').data('page-fragment');
             }
 
-            if (self.page) self.page.pauseSend = true;
+            self.page.pauseSend = true;
 
             $.ajax({
               url: BASE_URL + 'agent/text-snippets/tickets/' + snippetId + '.json',
