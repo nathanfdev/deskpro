@@ -3534,6 +3534,7 @@ class Person extends DomainObject implements HighlightableModelInterface
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'fetch'        => ClassMetadata::FETCH_EAGER,
+                'cascade'      => array('persist'),
                 'joinColumns'  => array(
                     0 => array(
                         'name'                 => 'organization_id',
