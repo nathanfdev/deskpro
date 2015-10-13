@@ -1,8 +1,8 @@
 import React from 'react';
 import { DpLogo } from '../DpLogo';
 import { LoginFormHeader } from './LoginFormHeader';
-import { Email } from './Email';
-import { Password } from './Password';
+import { Email } from './Fields/Email';
+import { Password } from './Fields/Password';
 import { LoginFormFooter } from './LoginFormFooter';
 import { WarningMajor } from './WarningMajor/WarningMajor';
 import { NotAgentWarning } from './WarningMajor/NotAgentWarning';
