@@ -61,10 +61,10 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 		});
 
         var wrapper = $(this.wrapper).find('.upload-vcard-wrap');
-        
+
         console.log(wrapper);
         //console.log(this.page);
-        
+
         DeskPRO_Window.util.fileupload(wrapper, {
             page: this.page,
             uploadTemplate: $('.template-upload', wrapper),
@@ -75,7 +75,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
             }],
             completed: function() {
                 //var self = this;
-                
+
                 self.blobId = $('input.new_blob_id', this.wrapper).val();
 
                 $('.files .in', wrapper).css({
@@ -85,7 +85,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
                 }).html("Loading . . .");
 
                 $.ajax({
-                    url: BASE_URL + 'agent/misc/parse-vcard/' + self.blobId,
+                    url: BASE_URL + 'old-agent/misc/parse-vcard/' + self.blobId,
                     type: 'GET',
                     dataType: 'json',
                     data: {
@@ -107,7 +107,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
                                         $('.files .in', wrapper).append("<hr/>");
                                         for (var prop3 in vCard[prop][prop2]) {
                                             if (typeof vCard[prop][prop2][prop3] === 'string') {
-                                        $('.files .in', wrapper).append(prop3 + ": " + vCard[prop][prop2][prop3] + "<br/>");    
+                                        $('.files .in', wrapper).append(prop3 + ": " + vCard[prop][prop2][prop3] + "<br/>");
                                             }
                                         }
                                     }
@@ -166,7 +166,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
             //return true;
             if (self.isVCard) {
                 $.ajax({
-			url: BASE_URL + 'agent/people/new/save',
+			url: BASE_URL + 'old-agent/people/new/save',
 			type: 'POST',
 			data: {isVCard: true, 'blobId': self.blobId},
 			dataType: 'json',
@@ -187,7 +187,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 	            });
 
 		$.ajax({
-			url: BASE_URL + 'agent/people/new/save',
+			url: BASE_URL + 'old-agent/people/new/save',
 			type: 'POST',
 			data: formData,
 			dataType: 'json',
@@ -198,7 +198,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 		});
             }
 	},
-        
+
         createCallback: function(data) {
             if (data.success) {
                 if (this.getEl('org_id').val().length && this.fromCompanyTab) {
@@ -207,7 +207,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
                                 person_id: data.person_id
                         });
                 } else {
-                        DeskPRO_Window.runPageRoute('person:' + BASE_URL + 'agent/people/' + data.person_id);
+                        DeskPRO_Window.runPageRoute('person:' + BASE_URL + 'old-agent/people/' + data.person_id);
                 }
 
                 DeskPRO_Window.getMessageBroker().sendMessage('agent.person.added', { person_id: data.person_id });

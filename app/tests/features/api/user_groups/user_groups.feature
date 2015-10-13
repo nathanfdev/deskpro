@@ -12,12 +12,12 @@ Feature: /user_groups endpoint
     When I send a GET request to "/api/v2/user_groups"
     Then the response should be in JSON
     And the response status code should be 200
-    And the JSON node "data" should have 3 elements
-    And the JSON node "data[0].title" should be equal to "Group 1"
+    And the JSON node "data" should have 5 elements
+    And the JSON node "data[0].title" should be equal to "Everyone"
 
   Scenario: I get a single user groups
     When I send a GET request to "/api/v2/user_groups/3"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data.id" should be equal to "3"
-    And the JSON node "data.title" should be equal to "Group 3"
+    And the JSON node "data.title" should be equal to "Group 1"
