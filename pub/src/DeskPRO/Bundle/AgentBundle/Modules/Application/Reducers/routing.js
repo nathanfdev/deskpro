@@ -10,7 +10,12 @@ const initialState = {
 
 export default createReducer(initialState, {
   [actions.hashChanged]: (state, payload) => {
+    if (!payload || payload.length <= 1) {
+      return state.set('hash', Immutable.fromJS({}));
+    }
+
     const newHashState = stateFromString(payload.substring(1));
+    let next = state;
 
     // When we update window.location.hash from updateHashState() action reducer and
     // window.onhashchange() event is fired, we don't actually need to update state
@@ -19,17 +24,14 @@ export default createReducer(initialState, {
     // So to prevent unnecessary re-rendering of components using hash state, we skip
     // updating when state and hash are already synchronized.
     //
-    // @todo Test this all to work correctly when hash state is more extensively used
+    // @todo Test this to work correctly when hash state is more extensively used (check re-renderings w/ and w/o this)
+    // @todo Think about optimization, ideally comparing hash strings, not state objects
     //
-    if (shallowEqual(state.get('hash').toJS(), newHashState.toJS())) {
-      console.error('Skipping update!');
-      return state;
-    } else {
-      console.error('Updating');
-      return state.merge({
-        hash: payload ? newHashState : null
-      });
+    if (!shallowEqual(state.get('hash').toJS(), newHashState.toJS())) {
+      next = next.merge({hash: payload ? newHashState : {}});
     }
+
+    return next;
   },
   [actions.updateHashState]: (state, {component, option, value}) => {
     let next = state;
@@ -39,7 +41,7 @@ export default createReducer(initialState, {
     }
     next = next.setIn(['hash', component, option], value);
 
-    window.location.hash = stateToString(next);
+    window.location.hash = stateToString(next.get('hash'));
 
     return next;
   }

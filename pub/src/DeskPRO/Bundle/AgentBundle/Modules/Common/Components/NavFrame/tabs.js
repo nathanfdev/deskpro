@@ -3,9 +3,10 @@ import classNames from 'classnames';
 import { updateHashState } from '../../../Application/Actions/routingActions';
 import { connect } from 'react-redux';
 
-@connect(state => ({hash: state.Application.routing.get('hash')}))
+@connect(state => ({state: state.Application.routing.get('hash')}))
 export class TabsPane extends React.Component {
   static propTypes = {
+    state: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     children: PropTypes.node,
     stateful: PropTypes.string
@@ -16,6 +17,13 @@ export class TabsPane extends React.Component {
     this.state = {
       active: 0
     };
+  }
+
+  componentDidMount() {
+    if (this.props.stateful) {
+      const active = this.props.state.getIn([this.props.stateful, 'active']);
+      this.setState({active: active ? active : 0});
+    }
   }
 
   render() {
