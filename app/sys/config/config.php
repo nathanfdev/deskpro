@@ -171,7 +171,7 @@ foreach (array(
 $container->loadFromExtension('framework', array(
     'secret'     => 'irrelevant - compiler pass will override this',
     'templating' => array(
-        'engines'          => array('twig', 'php'/*, 'jsonphp'*/),
+        'engines'          => array('twig', 'php', 'jsonphp'),
         'assets_base_urls' => 'SET_IN_ASSET_PACKAGE_PASS',
         'packages'         => array(
             'app_assets' => array('base_url' => 'SET_IN_ASSET_PACKAGE_PASS'),
@@ -184,6 +184,20 @@ $container->loadFromExtension('framework', array(
         'resource' => DP_ROOT.'/sys/config/routing.php',
     ),
 ));
+
+// templating.engine.jsonphp
+$definition = new Definition();
+$definition->setClass('Orb\\Templating\\Engine\\PhpVarJsonEngine');
+$definition->setArguments(
+    array(
+        new Reference('templating.name_parser'),
+        new Reference('service_container'),
+        new Reference('templating.loader'),
+        new Reference('templating.globals'),
+    )
+);
+$definition->addTag('templating.engine', array('alias' => 'jsonphp'));
+$container->setDefinition('templating.engine.jsonphp', $definition);
 
 // Monolog default logging, turn off unless specifically enabled (eg in some _dev configs)
 $container->loadFromExtension('monolog', array(
