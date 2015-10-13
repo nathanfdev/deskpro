@@ -11,7 +11,7 @@ export class LabelsDictionary extends Component {
     const dictionary = {};
     let count;
 
-    // count BC both for Immutable and JS objectss
+    // count BC both for Immutable and JS objects
     count = labels.count ? labels.count() : labels.length;
     for (let i = 0, label, letter; i < count; i++) {
       label  = labels[i];
@@ -26,7 +26,7 @@ export class LabelsDictionary extends Component {
     const letters = Object.keys(dictionary);
     const grouped = [];
 
-    // count BC both for Immutable and JS objectss
+    // count BC both for Immutable and JS objects
     count = letters.count ? letters.count() : letters.length;
     for (let i = 0; i < count; i++) {
       grouped.push({letter: letters[i], labels: dictionary[letters[i]]});
