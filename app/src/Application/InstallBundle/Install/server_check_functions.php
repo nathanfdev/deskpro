@@ -184,7 +184,50 @@ function deskpro_install_check_pdo_mysql()
 
 function deskpro_install_check_image_manip()
 {
-    if (class_exists('Imagick', false) || class_exists('Gmagick', false) || function_exists('gd_info')) {
+    if (function_exists('gd_info')) {
+        $inf = gd_info();
+        if (!@$inf['GIF Create Support']) {
+            return false;
+        }
+        if (!@$inf['JPEG Suppor']) {
+            return false;
+        }
+        if (!@$inf['PNG Support']) {
+            return false;
+        }
+
+        return true;
+    }
+
+    if (class_exists('Imagick', false)) {
+        $imagick        = new \Imagick();
+        $imagickFormats = $imagick->queryFormats();
+        if (!in_array('PNG', $imagickFormats)) {
+            return false;
+        }
+        if (!in_array('GIF', $imagickFormats)) {
+            return false;
+        }
+        if (!in_array('JPEG', $imagickFormats)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    if (class_exists('Gmagick', false)) {
+        $gmagick        = new \Gmagick();
+        $gmagickFormats = $gmagick->queryFormats();
+        if (!in_array('PNG', $gmagickFormats)) {
+            return false;
+        }
+        if (!in_array('GIF', $gmagickFormats)) {
+            return false;
+        }
+        if (!in_array('JPEG', $gmagickFormats)) {
+            return false;
+        }
+
         return true;
     }
 
