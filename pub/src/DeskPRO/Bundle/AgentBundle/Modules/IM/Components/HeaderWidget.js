@@ -7,7 +7,7 @@ import * as listActions from '../Actions/imListActions';
 import * as chatActions from '../RecordStores/Actions/imChatsActions';
 import { getRecentAgents } from '../Selectors/list';
 import { chatsSelector } from '../RecordStores/Selectors/chats';
-import { meSelector } from '../RecordStores/Selectors/meSelectors';
+import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 
 @connect(state => ({
   recentAgents: getRecentAgents(state),

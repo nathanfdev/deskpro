@@ -8,7 +8,7 @@ import TaskCardDragLayer from './TaskCardDragLayer';
 //import TasksSidebarHoverFrame from './TasksSidebarHoverFrame';
 import TasksNavFrame from './TasksNavFrame';
 import TasksListFrame from './TasksListFrame';
-import { meSelector } from '../RecordStores/Selectors/meSelectors';
+import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 
 @connect(state => ({
   user: meSelector(state),

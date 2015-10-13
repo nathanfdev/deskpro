@@ -11,7 +11,7 @@ import $ from 'jquery';
 
 import { loadProjects } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Actions/taskActions';
 import { createProjectRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/projectSelectors';
-import { meSelector } from '../RecordStores/Selectors/meSelectors';
+import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 
 const projectRequestId = 'projectNavView';
 const projectSel = createProjectRequestSelectors(projectRequestId);
