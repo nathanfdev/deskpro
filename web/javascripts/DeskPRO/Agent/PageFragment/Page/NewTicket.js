@@ -450,7 +450,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
     var $toggle = this.getEl('message_toggle')
       , $input = this.el.find('input[name="options[notify_user]"]')
       , replyAsState = this.getEl('reply_as_type').data('type')
-      , emailCheckboxState = true
+      , emailCheckboxState = $input.prop('checked')
       ;
 
     $toggle.children('li').on('click', function(){

@@ -514,7 +514,7 @@ pageMeta.baseId = '{{ baseId }}';
 			</td><td valign="middle" style="vertical-align: middle;">
 				<div style="padding-top: 1px; line-height: 100%; margin-left: 10px; float:left;">
 					<label class="hide-note">
-						<input type="checkbox" name="options[notify_user]" {% if app.getSetting('core_tickets.new_default_send_user_notify') or ticket.id %}checked="checked"{% endif %} />
+						<input type="checkbox" name="options[notify_user]" {% if app.getSetting('core_tickets.new_default_send_user_notify') %}checked="checked"{% endif %} />
 						<span class="opt-label-text">
 							{{ phrase('agent.general.email_user') }}
 							<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.tickets.email_user_newticket_info') }}"></span>
