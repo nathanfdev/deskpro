@@ -1059,7 +1059,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				self.closeSelf();
 
 				if (self.getMetaData('goNextOnReply') && nextTicketId) {
-					DeskPRO_Window.runPageRoute('page:' + BASE_URL+'agent/tickets/' + nextTicketId);
+					DeskPRO_Window.runPageRoute('page:' + BASE_URL+'old-agent/tickets/' + nextTicketId);
 				}
 
 				return;

@@ -203,7 +203,7 @@ DeskPRO.Agent.TextSnippetClientDbDriver = new Orb.Class({
 		var snippetsDb = this.snippetsDb;
 
 		$.ajax({
-			url: BASE_URL+'agent/text-snippets/'+this.typename+'/'+(snippet.id||0)+'/save.json',
+			url: BASE_URL+'old-agent/text-snippets/'+this.typename+'/'+(snippet.id||0)+'/save.json',
 			type: 'POST',
 			dataType: 'json',
 			data: postData,
@@ -237,7 +237,7 @@ DeskPRO.Agent.TextSnippetClientDbDriver = new Orb.Class({
 		snippetId = parseInt(snippetId);
 
 		$.ajax({
-			url: BASE_URL+'agent/text-snippets/'+this.typename+'/'+(snippetId||0)+'/delete.json',
+			url: BASE_URL+'old-agent/text-snippets/'+this.typename+'/'+(snippetId||0)+'/delete.json',
 			type: 'POST',
 			dataType: 'json',
 			content: this,
