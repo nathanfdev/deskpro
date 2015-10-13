@@ -26,20 +26,22 @@ const OrderByDropdown = React.createClass({
   },
 
   toggleListOrder: function toggleListOrder(order) {
-    const {dispatch, currentGroup} = this.props;
+    const {dispatch, currentGroup, toggleDropdown} = this.props;
     if (currentGroup.name !== 'feedback_comments') {
       dispatch(toggleOrder(order));
     } else {
       dispatch(commentsToggleOrder(order));
     }
+    toggleDropdown();
   },
 
   /* Change sort option (Order By ...)*/
   toggleListSort: function toggleListSort(option) {
-    const {dispatch, currentGroup} = this.props;
+    const {dispatch, currentGroup, toggleDropdown} = this.props;
     if (currentGroup.name !== 'feedback_comments') {
       dispatch(toggleSort(option.field));
     }
+    toggleDropdown();
   },
 
   renderOptions: function renderOptions() {

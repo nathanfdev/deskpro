@@ -74,12 +74,13 @@ export default class Menu extends React.Component {
       return (
         <div className={divClass} style={{zIndex: 1000 + menuLevel}}>
           <ul>
-            {React.Children.map(this.props.children, (child) => {
+            {React.Children.map(this.props.children, (child, index) => {
               window.TMP_COUNT++;
               const ref = window.TMP_COUNT;
 
               return React.cloneElement(child,
                 {
+                  key: index,
                   counter: ref,
                   parentMenuLevel: menuLevel,
                   activeItem: this.state.activeItem,

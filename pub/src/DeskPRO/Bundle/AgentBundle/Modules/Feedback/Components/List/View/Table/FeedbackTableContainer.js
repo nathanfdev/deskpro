@@ -18,8 +18,8 @@ export class FeedbackTableContainer extends Component {
 
   static propTypes = {
     intl: intlShape.isRequired,
-    people: PropTypes.array.isRequired,
-    emails: PropTypes.array.isRequired,
+    people: PropTypes.object.isRequired,
+    emails: PropTypes.object.isRequired,
     feedback: PropTypes.array.isRequired,
     feedbackStatuses: PropTypes.object.isRequired,
     tableViewFields: PropTypes.array.isRequired,
@@ -59,7 +59,7 @@ export class FeedbackTableContainer extends Component {
       return (
         <FormattedRelative value={element.date_created}/>
       );
-    } else if (field.name === 'date_published') {
+    } else if (field.name === 'date_published' && element.date_published) {
       return (
         <FormattedRelative value={element.date_published}/>
       );

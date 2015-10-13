@@ -143,7 +143,7 @@ export class PersonInTable extends Component {
 export class IdContainer extends Component {
 
   static propTypes = {
-    id: PropTypes.string.isRequired
+    id: PropTypes.number.isRequired
   };
 
   render() {

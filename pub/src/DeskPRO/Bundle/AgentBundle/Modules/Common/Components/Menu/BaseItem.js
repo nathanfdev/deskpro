@@ -220,7 +220,7 @@ const BaseItem = React.createClass({
       }
 
       if (contents) {
-        output.push(<a className={classNames(divClasses)} href="#" onClick={this.onClickAction.bind(this)}
+        output.push(<a className={classNames(divClasses)} href="#" onClick={this.onClickAction}
                        onMouseOver={onMouseOverAction} onMouseOut={onMouseOutAction}>
           {this.formatOutput(contents, hasMenu, hasItemList)}
         </a>);

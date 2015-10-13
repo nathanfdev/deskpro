@@ -16,8 +16,9 @@ const ViewSwitcherDropdown = React.createClass({
   mixins: [require('react-onclickoutside')],
 
   toggleView: function toggleView(newView) {
-    const {dispatch} = this.props;
+    const {dispatch, toggleDropdown} = this.props;
     dispatch(toggleViewMode(newView));
+    toggleDropdown();
   },
 
   handleClickOutside: function handleClickOutside() {
