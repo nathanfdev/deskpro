@@ -21,9 +21,15 @@ export class LoginForm extends React.Component {
     };
   }
 
-  onChange = (event) => {
+  onChangeEmail = (event) => {
     this.setState({
       email: event.target.value
+    });
+  };
+
+  onChangePassword = (event) => {
+    this.setState({
+      password: event.target.value
     });
   };
 
@@ -58,8 +64,8 @@ export class LoginForm extends React.Component {
 
               <div className="dpw-login-form">
                 <form>
-                  <Email hasError={hasError} value={this.state.email} onChange={this.onChange} />
-                  <Password hasError={hasError} />
+                  <Email hasError={hasError} value={this.state.email} onChange={this.onChangeEmail} />
+                  <Password hasError={hasError} value={this.state.password} onChange={this.onChangePassword} />
 
                   <div className="dpw-login-form-options">
                     <a href="#" className="password-reminder">Forgotten your password?</a>
