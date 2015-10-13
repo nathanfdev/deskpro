@@ -17,7 +17,9 @@ export class FeedbackListControlBar extends React.Component {
   }
 
   toggleOrderByDropdown = (event) => {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
     this.setState({
       orderByDropdownIsExpanded: !this.state.orderByDropdownIsExpanded,
       viewModeDropdownIsExpanded: false,
@@ -26,7 +28,9 @@ export class FeedbackListControlBar extends React.Component {
   };
 
   toggleFilterByDropdown = (event) => {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
     this.setState({
       filterByDropdownIsExpanded: !this.state.filterByDropdownIsExpanded,
       orderByDropdownIsExpanded: false,
@@ -35,7 +39,9 @@ export class FeedbackListControlBar extends React.Component {
   };
 
   toggleViewModeDropdown = (event) => {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
     this.setState({
       viewModeDropdownIsExpanded: !this.state.viewModeDropdownIsExpanded,
       orderByDropdownIsExpanded: false,

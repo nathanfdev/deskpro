@@ -1,42 +1,48 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PropTypes} from 'react';
 import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
 import MenuFooter from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooter';
 import MenuFooterOptions from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterOptions';
-import { OrderSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/OrderSwitcher';
 import { toggleSort, toggleOrder } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { commentsToggleOrder } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
 
-export class OrderByDropdown extends Component {
+const OrderByDropdown = React.createClass({
 
-  static propTypes = {
+  propTypes: {
     order: PropTypes.string.isRequired,
     currentSortMode: PropTypes.object.isRequired,
     currentGroup: PropTypes.object.isRequired,
     sortOptions: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     toggleDropdown: PropTypes.func.isRequired
-  };
+  },
 
+  mixins: [
+    require('react-onclickoutside')
+  ],
 
-  toggleListOrder(order) {
+  handleClickOutside: function handleClickOutside() {
+    this.props.toggleDropdown();
+  },
+
+  toggleListOrder: function toggleListOrder(order) {
     const {dispatch, currentGroup} = this.props;
     if (currentGroup.name !== 'feedback_comments') {
       dispatch(toggleOrder(order));
     } else {
       dispatch(commentsToggleOrder(order));
     }
-  }
+  },
 
   /* Change sort option (Order By ...)*/
-  toggleListSort(option) {
+  toggleListSort: function toggleListSort(option) {
     const {dispatch, currentGroup} = this.props;
     if (currentGroup.name !== 'feedback_comments') {
       dispatch(toggleSort(option.field));
     }
-  }
+  },
 
-  renderOptions() {
+  renderOptions: function renderOptions() {
     const {currentGroup, toggleDropdown, currentSortMode, sortOptions} = this.props;
     if (currentGroup.name === 'feedback_comments') {
       return (
@@ -60,9 +66,9 @@ export class OrderByDropdown extends Component {
           </Item>
       )
     );
-  }
+  },
 
-  render() {
+  render: function render() {
     const { order } = this.props;
 
     return (
@@ -79,4 +85,6 @@ export class OrderByDropdown extends Component {
     );
   }
 
-}
+});
+
+module.exports = OrderByDropdown;
