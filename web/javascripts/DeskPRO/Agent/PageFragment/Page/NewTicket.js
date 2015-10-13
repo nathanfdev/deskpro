@@ -1490,7 +1490,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			onSnippetClick: function(info) {
 				var ticketLangId = self.getEl('value_form').find('.language_id').val();
 				if (!ticketLangId) {
-					ticketLangId = info.language_id == DESKPRO_DEFAULT_LANG_ID;
+					ticketLangId = info.language_id || DESKPRO_DEFAULT_LANG_ID;
 				}
 				var snippetId    = info.snippetId;
 				var snippetCode  = info.snippetCode;
@@ -1560,6 +1560,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				} else {
 					self.insertMessageText(result);
 				}
+
+				self.snippetsViewer.close();
 			}
 		});
 	},
