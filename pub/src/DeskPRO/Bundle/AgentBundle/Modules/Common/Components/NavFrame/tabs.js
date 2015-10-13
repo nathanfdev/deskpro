@@ -1,12 +1,21 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import { updateHashState } from '../../../Application/Actions/routingActions';
+import { connect } from 'react-redux';
 
+@connect(state => ({hash: state.Application.routing.get('hash')}))
 export class TabsPane extends React.Component {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    children: PropTypes.node,
+    stateful: PropTypes.string
+  };
+
   constructor(props) {
     super(props);
     this.state = {
       active: 0
-    }
+    };
   }
 
   render() {
@@ -61,7 +70,10 @@ export class TabsPane extends React.Component {
     return function(e) {
       e.preventDefault();
       this.setState({active: index});
-    }
+      if (this.props.stateful) {
+        this.props.dispatch(updateHashState(this.props.stateful, 'active', index));
+      }
+    };
   }
 }
 

@@ -41,7 +41,7 @@ export class Nav extends Component {
           commentsView={commentsView.bind(this)}
           />
 
-        <TabsPane>
+        <TabsPane stateful="tab">
           <Tab title={this.props.intl.formatMessage({id: 'feedback.nav.tabs.status'})}>
             <StatusTab currentGroup={currentGroup} statuses={statuses} onClick={groupChoice.bind(this)}/>
           </Tab>
