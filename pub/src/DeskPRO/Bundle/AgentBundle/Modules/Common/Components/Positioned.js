@@ -130,6 +130,7 @@ export default class Positioned extends React.Component {
   renderContent(props) {
     // Render the component with react, or don't if the prop changes
     if (props.isOpen) {
+      console.log(this.node);
       // Put the element inside a div that we can position
       ReactDOM.render(<div className="positioned-element">{this.props.children}</div>, this.node);
       this.updatePosition();
