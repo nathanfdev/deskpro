@@ -12,6 +12,21 @@ import { TimeLocked } from './WarningMajor/TimeLocked';
 
 export class LoginForm extends React.Component {
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      login: 'example@email.com',
+      password: 'password'
+    };
+  }
+
+  onChange = (event) => {
+    this.setState({
+      login: event.target.value
+    });
+  };
+
   render() {
     const hasError = true;
     const loginClassNames = ['dpw-login'];
@@ -44,7 +59,7 @@ export class LoginForm extends React.Component {
               <div className="dpw-login-form">
                 <form>
                   <LoginFormField iconClass="fa-user" label="Account name / Email" hasError={hasError}>
-                    <input type="text" placeholder="example@email.com" value="example@email.com" />
+                    <input type="text" placeholder="example@email.com" value={this.state.login} onChange={this.onChange} />
                   </LoginFormField>
 
                   <Password hasError={hasError} />
