@@ -20,7 +20,7 @@ DeskPRO.Agent.TextSnippetClientDbDriver = new Orb.Class({
 		var el = document.getElementById(id);
 		if (reload || !el) {
 			$.ajax({
-				url: BASE_URL + 'agent/text-snippets/' + this.typename + '/widget-shell.txt',
+				url: BASE_URL + 'old-agent/text-snippets/' + this.typename + '/widget-shell.txt',
 				type: 'GET',
 				dataType: 'text',
 				success: function(txt) {
@@ -69,7 +69,7 @@ DeskPRO.Agent.TextSnippetClientDbDriver = new Orb.Class({
 
 		var startLoad = function() {
 			$.ajax({
-				url: BASE_URL + 'agent/text-snippets/'+self.typename+'/reload-client.json',
+				url: BASE_URL + 'old-agent/text-snippets/'+self.typename+'/reload-client.json',
 				dataType: 'json',
 				success: function(data) {
 					numPages = data.num_pages;
@@ -80,7 +80,7 @@ DeskPRO.Agent.TextSnippetClientDbDriver = new Orb.Class({
 
 		var startBatch = function(num) {
 			$.ajax({
-				url: BASE_URL + 'agent/text-snippets/'+self.typename+'/reload-client/'+(num+1)+'.json',
+				url: BASE_URL + 'old-agent/text-snippets/'+self.typename+'/reload-client/'+(num+1)+'.json',
 				dataType: 'json',
 				success: function(data) {
 					if (!data.snippets || !data.snippets.length) {

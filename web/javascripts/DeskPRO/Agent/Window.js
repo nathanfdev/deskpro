@@ -322,9 +322,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 
         if (!options.url) {
           if (options.saveMedia) {
-            options.url = BASE_URL + 'agent/misc/accept-upload?save_media=1';
+            options.url = BASE_URL + 'old-agent/misc/accept-upload?save_media=1';
           } else {
-            options.url = BASE_URL + 'agent/misc/accept-upload';
+            options.url = BASE_URL + 'old-agent/misc/accept-upload';
           }
         }
 
@@ -796,7 +796,7 @@ DeskPRO.Agent.Window = new Orb.Class({
     if (DESKPRO_TIME_OUT_OF_SYNC) {
       DESKPRO_TIME_OUT_OF_SYNC = false;
       $.ajax({
-        url: BASE_URL + 'agent/misc/get-server-time',
+        url: BASE_URL + 'old-agent/misc/get-server-time',
         dataType: 'json',
         success: function (data) {
 
@@ -927,7 +927,7 @@ DeskPRO.Agent.Window = new Orb.Class({
         ev.preventDefault();
 
         $.ajax({
-          url: BASE_URL + 'agent/twitter/user/find',
+          url: BASE_URL + 'old-agent/twitter/user/find',
           data: {name: name},
           type: 'GET',
           dataType: 'json',
@@ -2597,7 +2597,7 @@ DeskPRO.Agent.Window = new Orb.Class({
     // - The login page is redirected to within the code when session expires,
     // so in the template we set this metadata to force this redirect
     if (pageMeta && pageMeta.goToLogin) {
-      window.location = BASE_URL + 'agent/';
+      window.location = BASE_URL + 'old-agent/';
 
       var page = new DeskPRO.Agent.PageFragment.Basic('');
       return page;
@@ -2685,7 +2685,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
     $.ajax({
       dataType: 'json',
-      url: BASE_URL + 'agent/misc/dismiss-help-message/' + escape(messageId),
+      url: BASE_URL + 'old-agent/misc/dismiss-help-message/' + escape(messageId),
       type: 'GET'
     });
   },
@@ -3278,8 +3278,8 @@ DeskPRO.Agent.Window = new Orb.Class({
     if (DESKPRO_PERSON_PERMS['agent_tickets.create']) {
       var self = this;
       this.newTicketLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
-        loadUrl: BASE_URL + 'agent/tickets/new',
-        tabRoute: 'page:' + BASE_URL + 'agent/tickets/new',
+        loadUrl: BASE_URL + 'old-agent/tickets/new',
+        tabRoute: 'page:' + BASE_URL + 'old-agent/tickets/new',
         autostart: autostart
       });
       this.newTicketLoader.newLinkedTicket = function (ticket_id, message_id) {
@@ -3296,8 +3296,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 
     if (DESKPRO_PERSON_PERMS['agent_people.create']) {
       this.newPersonLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
-        loadUrl: BASE_URL + 'agent/people/new',
-        tabRoute: 'page:' + BASE_URL + 'agent/people/new',
+        loadUrl: BASE_URL + 'old-agent/people/new',
+        tabRoute: 'page:' + BASE_URL + 'old-agent/people/new',
         autostart: autostart
       });
       $('#create_person_btn').on('click', function () {
@@ -3307,8 +3307,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 
     if (DESKPRO_PERSON_PERMS['agent_org.create']) {
       this.newOrganizationLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
-        loadUrl: BASE_URL + 'agent/organizations/new',
-        tabRoute: 'page:' + BASE_URL + 'agent/organizations/new',
+        loadUrl: BASE_URL + 'old-agent/organizations/new',
+        tabRoute: 'page:' + BASE_URL + 'old-agent/organizations/new',
         autostart: autostart
       });
       $('#create_organization_btn').on('click', function () {
@@ -3318,23 +3318,23 @@ DeskPRO.Agent.Window = new Orb.Class({
 
     if (DESKPRO_PERSON_PERMS['agent_publish.create']) {
       this.newArticleLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
-        loadUrl: BASE_URL + 'agent/kb/article/new',
-        tabRoute: 'page:' + BASE_URL + 'agent/kb/article/new',
+        loadUrl: BASE_URL + 'old-agent/kb/article/new',
+        tabRoute: 'page:' + BASE_URL + 'old-agent/kb/article/new',
         autostart: autostart
       });
       this.newNewsLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
-        loadUrl: BASE_URL + 'agent/news/new',
-        tabRoute: 'page:' + BASE_URL + 'agent/news/new',
+        loadUrl: BASE_URL + 'old-agent/news/new',
+        tabRoute: 'page:' + BASE_URL + 'old-agent/news/new',
         autostart: autostart
       });
       this.newDownloadLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
-        loadUrl: BASE_URL + 'agent/downloads/new',
-        tabRoute: 'page:' + BASE_URL + 'agent/downloads/new',
+        loadUrl: BASE_URL + 'old-agent/downloads/new',
+        tabRoute: 'page:' + BASE_URL + 'old-agent/downloads/new',
         autostart: autostart
       });
       this.newFeedbackLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
-        loadUrl: BASE_URL + 'agent/feedback/new',
-        tabRoute: 'page:' + BASE_URL + 'agent/feedback/new',
+        loadUrl: BASE_URL + 'old-agent/feedback/new',
+        tabRoute: 'page:' + BASE_URL + 'old-agent/feedback/new',
         autostart: autostart
       });
 
@@ -3353,8 +3353,8 @@ DeskPRO.Agent.Window = new Orb.Class({
     }
 
     this.newTaskLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
-      loadUrl: BASE_URL + 'agent/tasks/new',
-      tabRoute: 'page:' + BASE_URL + 'agent/tasks/new',
+      loadUrl: BASE_URL + 'old-agent/tasks/new',
+      tabRoute: 'page:' + BASE_URL + 'old-agent/tasks/new',
       autostart: autostart
     });
     $('#create_task_btn').on('click', function () {
@@ -3364,7 +3364,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
     if ($('#twitter_section').length) {
       this.newTweetLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
-        loadUrl: BASE_URL + 'agent/twitter/new',
+        loadUrl: BASE_URL + 'old-agent/twitter/new',
         autostart: autostart
       });
       $('#create_tweet_btn').on('click', function () {
@@ -3618,7 +3618,7 @@ DeskPRO.Agent.Window = new Orb.Class({
         success: function () {
           var focus = true;
           for (var i = 0; i < self.openDpNews.length; i++) {
-            self.loadPage(BASE_URL + 'agent/misc/view-dp-news/' + self.openDpNews[i].id, {
+            self.loadPage(BASE_URL + 'old-agent/misc/view-dp-news/' + self.openDpNews[i].id, {
               noToggle: true,
               focus: focus
             });
@@ -4075,35 +4075,35 @@ DeskPRO.Agent.Window = new Orb.Class({
 
     switch (section_id) {
       case 'tickets_section':
-        url = BASE_URL + 'agent/ticket-search/get-section-data.json';
+        url = BASE_URL + 'old-agent/ticket-search/get-section-data.json';
         break;
 
       case 'chat_section':
-        url = BASE_URL + 'agent/chat/get-section-data.json';
+        url = BASE_URL + 'old-agent/chat/get-section-data.json';
         break;
 
       case 'twitter_section':
-        url = BASE_URL + 'agent/twitter/get-section-data.json';
+        url = BASE_URL + 'old-agent/twitter/get-section-data.json';
         break;
 
       case 'people_section':
-        url = BASE_URL + 'agent/people/get-section-data.json';
+        url = BASE_URL + 'old-agent/people/get-section-data.json';
         break;
 
       case 'feedback_section':
-        url = BASE_URL + 'agent/feedback/get-section-data.json';
+        url = BASE_URL + 'old-agent/feedback/get-section-data.json';
         break;
 
       case 'publish_section':
-        url = BASE_URL + 'agent/publish/get-section-data.json';
+        url = BASE_URL + 'old-agent/publish/get-section-data.json';
         break;
 
       case 'tasks_section':
-        url = BASE_URL + 'agent/tasks/get-section-data.json';
+        url = BASE_URL + 'old-agent/tasks/get-section-data.json';
         break;
 
       case 'agent_chat_section':
-        url = BASE_URL + 'agent/agent-chat/get-section-data.json';
+        url = BASE_URL + 'old-agent/agent-chat/get-section-data.json';
         break;
     }
 
@@ -4169,7 +4169,7 @@ DeskPRO.Agent.Window = new Orb.Class({
     this._getSectionDataQueued = null;
 
     $.ajax({
-      url: BASE_URL + 'agent/get-combined-section-data.json',
+      url: BASE_URL + 'old-agent/get-combined-section-data.json',
       type: 'GET',
       data: data,
       dataType: 'json',
@@ -4608,7 +4608,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
     $.ajax({
       type: 'POST',
-      url: BASE_URL + 'agent/save-dom.json',
+      url: BASE_URL + 'old-agent/save-dom.json',
       data: {html: html}
     });
   },
@@ -4699,7 +4699,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
   dismissAllNotices: function () {
     $.ajax({
-      url: BASE_URL + 'agent/misc/version-notices/ALL/dismiss.json',
+      url: BASE_URL + 'old-agent/misc/version-notices/ALL/dismiss.json',
       dataType: 'json'
     });
 
@@ -4709,7 +4709,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
   dismissNotice: function (id) {
     $.ajax({
-      url: BASE_URL + 'agent/misc/version-notices/' + id + '/dismiss.json',
+      url: BASE_URL + 'old-agent/misc/version-notices/' + id + '/dismiss.json',
       dataType: 'json'
     });
 
@@ -4728,7 +4728,7 @@ DeskPRO.Agent.Window = new Orb.Class({
   loadNotice: function (id) {
     $('#notices_content').html('<div class="loading-icon-big"></div>');
     $.ajax({
-      url: BASE_URL + 'agent/misc/version-notices/' + id + '/log.html',
+      url: BASE_URL + 'old-agent/misc/version-notices/' + id + '/log.html',
       dataType: 'html',
       success: function (html) {
         $('#notices_content').html(html);

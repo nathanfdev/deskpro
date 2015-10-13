@@ -52,14 +52,14 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
 		var formData = this.form.serializeArray();
 
 		$.ajax({
-			url: BASE_URL + 'agent/organizations/new/save',
+			url: BASE_URL + 'old-agent/organizations/new/save',
 			type: 'POST',
 			data: formData,
 			dataType: 'json',
 			context: this,
 			success: function(data) {
 				if (data.success) {
-					DeskPRO_Window.runPageRoute('person:' + BASE_URL + 'agent/organizations/' + data.org_id);
+					DeskPRO_Window.runPageRoute('person:' + BASE_URL + 'old-agent/organizations/' + data.org_id);
 
 					$('select.dp-org-select').each(function() {
 						var opt = $('<option />');
