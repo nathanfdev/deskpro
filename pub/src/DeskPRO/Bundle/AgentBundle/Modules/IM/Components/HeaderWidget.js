@@ -127,13 +127,12 @@ export class HeaderWidget extends React.Component {
   };
 
   renderOverlay = () => {
-    console.log(this.refs.imListButton);
     return (
       <Positioned
         positionMy="left-10 top"
         positionAt="center bottom"
         collision="none"
-        positionTarget={this.refs.imListButton}
+        positionTarget={this}
         isOpen={this.state.overlayShown}
         >
         <Overlay
