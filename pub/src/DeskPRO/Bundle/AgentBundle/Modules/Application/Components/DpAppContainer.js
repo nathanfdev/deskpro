@@ -10,19 +10,16 @@ import { CrmApp } from '../../CRM/Components/CrmApp';
 import { ChatApp } from '../../Chat/Components/ChatApp';
 import { PublishApp } from '../../Publish/Components/PublishApp';
 import * as AppActions from '../../Application/Actions/AppActions';
+import { hashChanged } from '../../Application/Actions/routingActions';
 import { Router, Route, Redirect } from 'react-router';
 
-@connect((state) => {
-  return {
-    dpWindow: state.Application.dpWindow,
-    routing: state.Application.routing
-  };
-})
+@connect((state) => ({
+  dpWindow: state.Application.dpWindow
+}))
 export class DpAppContainer extends React.Component {
 
   static propTypes = {
     dpWindow: PropTypes.object.isRequired,
-    routing: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired
   };
@@ -43,7 +40,13 @@ export class DpAppContainer extends React.Component {
   }
 
   render() {
-    const { dpWindow, history } = this.props;
+    const { dpWindow, history, dispatch } = this.props;
+
+    // dispatch hashChanged() when hash is changed to bind it to the redux state
+    window.onhashchange = () => dispatch(hashChanged(window.location.hash));
+
+    // dispatch hashChanged() to track the initial hash value
+    dispatch(hashChanged(window.location.hash));
 
     if (!dpWindow.get('isLoaded')) {
       return <DpAppLoading />;
@@ -51,7 +54,6 @@ export class DpAppContainer extends React.Component {
 
     const basePath = this.workOutBasePath();
     const defaultPath = `${basePath}/tasks`;
-
     return (
       <Router history={history}>
         <Redirect from={basePath} to={defaultPath}/>

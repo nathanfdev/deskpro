@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Header } from './Header';
 import { AppSwitcher } from './AppSwitcher';
 import { TabFrame } from './TabFrame';
-import { routingStarted } from '../Actions/AppActions';
+import { routingStarted } from '../Actions/routingActions';
 import { NotificationsContainer } from './Notifications/notifications';
 
 @connect(state => ({
@@ -19,13 +19,6 @@ export class DpApp extends React.Component {
     dpWindow: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
   };
-
-  constructor(props) {
-    super(props);
-
-    const { dispatch, router } = this.props;
-    dispatch(routingStarted(router));
-  }
 
   render() {
     const { user, dpWindow, dispatch, children } = this.props;

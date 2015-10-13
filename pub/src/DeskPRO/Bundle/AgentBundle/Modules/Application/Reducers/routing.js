@@ -1,19 +1,13 @@
-import * as actions from '../Actions/AppActions';
+import * as actions from '../Actions/routingActions';
 import { createReducer } from 'Ampliflux';
+import { stateToString, stateFromString } from '../Service/hash';
 
 const initialState = {
-  router: null
+  hash: null
 };
 
 export default createReducer(initialState, {
-  [actions.doTransitionTo]: (state, payload) => {
-    if (state.router) {
-      state.router.transitionTo.apply(null, payload);
-    }
-
-    return state;
-  },
-  [actions.routingStarted]: (state, payload) => {
-    return state.merge({router: payload});
-  }
+  [actions.hashChanged]: (state, payload) => state.merge({
+    hash: payload ? stateFromString(payload.substring(1)) : null
+  })
 });

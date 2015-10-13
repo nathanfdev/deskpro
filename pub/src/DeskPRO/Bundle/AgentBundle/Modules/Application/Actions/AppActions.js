@@ -4,8 +4,6 @@ import * as PeopleApi from 'DeskPRO/Bundle/AgentBundle/Services/Api/People';
 export const setAppUser = createAction('APP_SET_USER');
 export const setIsLoaded = createAction('APP_IS_LOADED');
 export const setActiveApp = createAction('APP_SET_ACTIVE_APP');
-export const routingStarted = createAction('APP_ROUTING_STARTED');
-export const doTransitionTo = createAction('APP_TRANSITION_TO');
 export const collapseNav = createAction('APP_COLLAPSE_NAV');
 export const expandNav = createAction('APP_EXPAND_NAV');
 export const expandSwitcher = createAction('APP_EXPAND_SWITCHER');
