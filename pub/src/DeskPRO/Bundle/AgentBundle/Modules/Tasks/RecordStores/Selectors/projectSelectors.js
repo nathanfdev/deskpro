@@ -1,3 +1,4 @@
+import { createSelector } from 'reselect';
 import { createStoreSelectors, createRequestSelectorsBuilder } from 'Ampliflux/common/record-store/selectors';
 
 // You need to define this top-level
@@ -13,3 +14,8 @@ export const projectStateSelector = createStoreSelectors(appProjectStateSel);
 
 // This create a number of useful selectors that your client-code will find useful
 export const createProjectRequestSelectors = createRequestSelectorsBuilder(projectStateSelector);
+
+export const allProjectsSelector = createSelector(
+  createProjectRequestSelectors('all').recordsSel,
+  projects => projects
+);

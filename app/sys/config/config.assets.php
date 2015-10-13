@@ -53,7 +53,9 @@ $CONFIG['OPTIONS'] = array(
     'yui_compressor' => defined('DP_YUI_COMPRESSOR_PATH') ? DP_YUI_COMPRESSOR_PATH : '/usr/local/bin/yuicompressor.jar',
     'nodejs'         => defined('DP_NODEJS_PATH') ? DP_NODEJS_PATH : '/usr/bin/nodejs',
     'less'           => defined('DP_LESSC_PATH') ? DP_LESSC_PATH : '/usr/local/bin/lessc',
-    'smartsprites'   => defined('DP_SMARTSPRITES_PATH') ? DP_SMARTSPRITES_PATH : '/opt/smartsprites-0.2.8/smartsprites.sh',
+    'smartsprites'   => defined(
+        'DP_SMARTSPRITES_PATH'
+    ) ? DP_SMARTSPRITES_PATH : '/opt/smartsprites-0.2.8/smartsprites.sh',
 );
 
 if (isset($GLOBALS['DP_CONFIG']['assetic_config'])) {
@@ -86,9 +88,7 @@ $CONFIG['agent_vendors'] = array(
     'files' => array(
         'vendor/modernizr.min.js',
         'javascripts/Orb/modernizr-ext.js',
-
         'vendor/JSON-js/json2.js',
-
         'vendor/jquery/jquery.min.js',
         'vendor/jquery.patch.js',
         'vendor/jquery/jquery.resize.min.js',
@@ -97,9 +97,7 @@ $CONFIG['agent_vendors'] = array(
         'vendor/jquery/jquery.cookie.js',
         'vendor/jquery/jquery.history.js',
         'vendor/jquery/tmpl.min.js',
-
         'bower_components/underscore/underscore-min.js',
-
         'vendor/jquery/jquery.localscroll.js',
         'vendor/jquery/jquery.mousewheel.js',
         'vendor/jquery/jquery.scrollTo.js',
@@ -110,32 +108,23 @@ $CONFIG['agent_vendors'] = array(
         'vendor/jquery/jquery.serializeJSON.min.js',
         'vendor/jquery/jquery.dotdotdot.min.js',
         'vendor/jqTree/tree.jquery.js',
-
         'vendor/jquery/jquery-checkbox/jquery.checkbox.js',
-
         'vendor/tiny_mce/jquery.tinymce.js',
-
         'vendor/redactor/redactor.js',
-
         'vendor/jquery/colorbox/jquery.colorbox-min.js',
-
         'vendor/jquery/fileupload/jquery.fileupload.js',
         'vendor/jquery/fileupload/jquery.fileupload-ui.js',
         'vendor/jquery/fileupload/jquery.iframe-transport.js',
-
         'vendor/jquery/qtip/jquery.qtip.min.js',
         'vendor/mootools/mootools-core.min.js',
         'vendor/tinycon/tinycon.min.js',
-
         'vendor/select2/select2.js',
         'vendor/ZeroClipboard/ZeroClipboard.min.js',
         'vendor/idbstore/idbstore.min.js',
         'vendor/twig/twig.js',
         'bower_components/moment/min/moment-with-locales.min.js',
-
         'bower_components/notify.js/notify.js',
         'bower_components/intl-tel-input/build/js/intlTelInput.min.js',
-
         'vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
     ),
 );
@@ -143,21 +132,77 @@ $CONFIG['agent_vendors'] = array(
 $CONFIG['agent_settingswin'] = array(
     'out'   => 'js/agent-settingswin.js',
     'files' => array(
-
+        'javascripts/DeskPRO/Agent/ElementHandler/SettingsWindow.js',
+        'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/Profile.js',
+        'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/Signature.js',
+        'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/TicketNotifications.js',
+        'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/OtherNotifications.js',
+        'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/Macros.js',
+        'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/MacroEdit.js',
+        'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/Filters.js',
+        'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/FilterEdit.js',
+        'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/TicketSlas.js',
+        'javascripts/DeskPRO/Agent/ElementHandler/MediaManagerWindow.js',
+        'javascripts/DeskPRO/Agent/PageFragment/MediaManagerPage/Upload.js',
+        'javascripts/DeskPRO/Agent/PageFragment/MediaManagerPage/Browse.js',
     ),
 );
 
 $CONFIG['agent_window_sections'] = array(
     'out'   => 'js/agent-window-sections.js',
     'files' => array(
-
+        'javascripts/DeskPRO/Agent/WindowElement/Section/AbstractSection.js',
+        'javascripts/DeskPRO/Agent/WindowElement/Section/Tickets.js',
+        'javascripts/DeskPRO/Agent/WindowElement/Section/People.js',
+        'javascripts/DeskPRO/Agent/WindowElement/Section/Publish.js',
+        'javascripts/DeskPRO/Agent/WindowElement/Section/AgentChat.js',
+        'javascripts/DeskPRO/Agent/WindowElement/Section/UserChat.js',
+        'javascripts/DeskPRO/Agent/WindowElement/Section/Feedback.js',
+        'javascripts/DeskPRO/Agent/WindowElement/Section/Tasks.js',
+        'javascripts/DeskPRO/Agent/WindowElement/Section/Twitter.js',
     ),
 );
 
 $CONFIG['agent_pages_lists'] = array(
     'out'   => 'js/agent-pages-lists.js',
     'files' => array(
-
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/Basic.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/BasicTicketResults.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketFilter.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/OrganizationList.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/PeopleList.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketFlagged.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketDeletedList.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketCustomFilter.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketCustomFilterForm.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketSla.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/RecycleBin.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbPendingArticles.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbValidatingArticles.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbList.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/AgentChatHistory.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/AgentTeamChatHistory.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/OpenChats.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/UserChatFilter.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/FeedbackFilter.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/NewCustomFilter.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/NewsList.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/DownloadList.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishListComments.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishValidatingComments.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishValidatingContent.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishDraftsList.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishSearch.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/FeedbackSearch.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishSearchLog.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/FeedbackCommentsValidating.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/FeedbackContentValidating.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TaskList.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/Search.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterFollowers.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterStatus.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterSearch.js',
+        'javascripts/DeskPRO/Agent/PageFragment/List/TicketList.js',
     ),
 );
 
@@ -193,7 +238,6 @@ $CONFIG['agent_pages'] = array(
         'javascripts/DeskPRO/Agent/PageHelper/TaskListControl.js',
         'javascripts/DeskPRO/Agent/PageHelper/TicketBilling.js',
         'javascripts/DeskPRO/Agent/PageHelper/Twitter.js',
-
         'javascripts/DeskPRO/Agent/PageFragment/Page/SnippetViewer.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/TicketHelper/LinkTicket.js',
@@ -252,7 +296,7 @@ $CONFIG['agent_element_handlers'] = array(
         'javascripts/DeskPRO/Agent/ElementHandler/TimezoneSwitch.js',
         'javascripts/DeskPRO/Agent/ElementHandler/RadioExpander.js',
         'javascripts/DeskPRO/Agent/ElementHandler/FirstLogin.js',
-
+        'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
         'javascripts/DeskPRO/Agent/SourcePane/SearchForm.js',
     ),
 );
@@ -261,7 +305,6 @@ $CONFIG['agent_common'] = array(
     'out'   => 'js/agent-common.js',
     'files' => array(
         'javascripts/DeskPRO/Agent/TouchClicker.js',
-
         'javascripts/DeskPRO/DP.js',
         'javascripts/DeskPRO/ErrorLogger.js',
         'javascripts/Orb/Orb.js',
@@ -302,10 +345,8 @@ $CONFIG['agent_agent_ui'] = array(
         'javascripts/DeskPRO/Agent/KeyboardShortcuts.js',
         'javascripts/DeskPRO/Agent/Notifications.js',
         'javascripts/DeskPRO/Agent/RecentTabs.js',
-
         'javascripts/DeskPRO/Agent/PageFragment/Basic.js',
         'javascripts/DeskPRO/Agent/PageFragment/Loading.js',
-
         'javascripts/DeskPRO/Agent/WindowElement/TabWatcher/Tickets.js',
         'javascripts/DeskPRO/Agent/WindowElement/TabWatcher/UserChat.js',
         'javascripts/DeskPRO/Agent/WindowElement/TabBar.js',
@@ -343,21 +384,18 @@ $CONFIG['agent_misc'] = array(
         'javascripts/DeskPRO/Form/RuleBuilder.js',
         'javascripts/DeskPRO/FaviconBadge.js',
         'javascripts/DeskPRO/Agent/InterfaceEffects.js',
-
         'javascripts/DeskPRO/Agent/Widget/FindPerson.js',
         'javascripts/DeskPRO/Agent/Widget/AgentSelector.js',
         'javascripts/DeskPRO/Agent/Widget/SnippetViewer.js',
         'javascripts/DeskPRO/Agent/Widget/TicketChangeUser.js',
         'javascripts/DeskPRO/Agent/Widget/Merge.js',
-
+        'javascripts/DeskPRO/Agent/Widget/AgentChatWin.js',
         'javascripts/DeskPRO/Agent/Widget/BackgroundPopout.js',
-
         'javascripts/DeskPRO/Agent/RuleBuilder/TermAbstract.js',
         'javascripts/DeskPRO/Agent/RuleBuilder/DateTerm.js',
         'javascripts/DeskPRO/Agent/RuleBuilder/DateTimeTerm.js',
         'javascripts/DeskPRO/Agent/RuleBuilder/LabelsTerm.js',
         'javascripts/DeskPRO/Agent/RuleBuilder/SelectNewOption.js',
-
         'javascripts/DeskPRO/Agent/Ticket/ChangeManager.js',
         'javascripts/DeskPRO/Agent/Ticket/Property/Abstract.js',
         'javascripts/DeskPRO/Agent/Ticket/Property/Agent.js',
@@ -371,7 +409,15 @@ $CONFIG['agent_misc'] = array(
         'javascripts/DeskPRO/Agent/Ticket/Property/Flag.js',
         'javascripts/DeskPRO/Agent/Ticket/Property/Labels.js',
         'javascripts/DeskPRO/Agent/Ticket/Property/Hold.js',
-
+        'javascripts/DeskPRO/Agent/TicketList/MassActions.js',
+        'javascripts/DeskPRO/Agent/TicketList/ListView.js',
+        'javascripts/DeskPRO/Agent/TicketList/ChangeManager.js',
+        'javascripts/DeskPRO/Agent/TicketList/Property/Abstract.js',
+        'javascripts/DeskPRO/Agent/TicketList/Property/StandardOption.js',
+        'javascripts/DeskPRO/Agent/TicketList/Property/NewReply.js',
+        'javascripts/DeskPRO/Agent/TicketList/Property/TicketField.js',
+        'javascripts/DeskPRO/Agent/TicketList/Property/Flag.js',
+        'javascripts/DeskPRO/Agent/TicketList/Property/Labels.js',
         'javascripts/DeskPRO/UI/MultiLevelSelect.js',
     ),
 );
@@ -428,7 +474,6 @@ $CONFIG['user_common'] = array(
         'javascripts/DeskPRO/User/Window.js',
         'javascripts/DeskPRO/TouchCaller.js',
         'javascripts/DeskPRO/Translate.js',
-
         'javascripts/DeskPRO/User/ElementHandler/ElementHandlerAbstract.js',
         'javascripts/DeskPRO/User/ElementHandler/MoreLoader.js',
         'javascripts/DeskPRO/User/ElementHandler/LoginBox.js',
@@ -440,11 +485,9 @@ $CONFIG['user_common'] = array(
         'javascripts/DeskPRO/User/ElementHandler/CommentFormLogin.js',
         'javascripts/DeskPRO/User/ElementHandler/FeedbackAgreeBtn.js',
         'javascripts/DeskPRO/User/ElementHandler/OmniSearch.js',
-
         'javascripts/DeskPRO/User/SuggestedContentOverlay.js',
         'javascripts/DeskPRO/User/InlineSuggestions.js',
         'javascripts/DeskPRO/User/InlineLoginForm.js',
-
         'javascripts/DeskPRO/FormValidator/FormValidator.js',
         'javascripts/DeskPRO/FormValidator/FieldValidator.js',
         'javascripts/DeskPRO/FormValidator/LengthValidator.js',
@@ -460,26 +503,20 @@ $CONFIG['user_vendors'] = array(
         'vendor/modernizr.min.js',
         'vendor/html5shiv.min.js',
         'javascripts/Orb/modernizr-ext.js',
-
         'vendor/jquery/jquery.min.js',
         'vendor/jquery.patch.js',
         'vendor/jquery/jquery-ui/jquery-ui.min.js',
         'vendor/jquery/jquery.cookie.js',
         'vendor/jquery/jquery.history.js',
         'vendor/jquery/tmpl.min.js',
-
         'vendor/jquery/jquery.sizes.min.js',
-
         'vendor/jquery/jquery.uniform.min.js',
-
         'vendor/jquery/fileupload/jquery.fileupload.js',
         'vendor/jquery/fileupload/jquery.fileupload-ui.js',
         'vendor/jquery/fileupload/jquery.iframe-transport.js',
-
         'vendor/mootools/mootools-core.min.js',
         'vendor/PIE/PIE.js',
         'vendor/bootstrap/bootstrap-custom.js',
-
         'bower_components/moment/min/moment-with-locales.min.js',
         'vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
     ),
@@ -518,6 +555,10 @@ $CONFIG['agent_interface_css1'] = array(
     'filters' => array('less'),
     'files'   => array(
         'stylesheets-less/agent/dp-interface.less',
+        'stylesheets-less/agent/dp-agent-chat.less',
+        'stylesheets-less/agent/overlayCreateTicket.less',
+        'stylesheets-less/agent/dp-source-pane.less',
+        'stylesheets-less/agent/dp-list-pane.less',
     ),
 );
 
@@ -556,12 +597,10 @@ $CONFIG['agent_vendors_css'] = array(
         'vendor/jquery/colorbox/colorbox.css',
         'vendor/select2/select2.css',
         'vendor/redactor/redactor.css',
-
         'vendor/bootstrap/css/common.css',
         'vendor/bootstrap/css/modal.css',
         'vendor/bootstrap/css/dropdown.css',
         'vendor/bootstrap/css/table.css',
-
         'vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
         'vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-patch.css',
     ),

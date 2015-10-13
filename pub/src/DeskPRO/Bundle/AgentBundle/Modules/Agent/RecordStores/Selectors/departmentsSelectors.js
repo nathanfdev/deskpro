@@ -9,3 +9,6 @@ export const departmentsStateSelector = createStoreSelectors(departmentsStateSel
 export const createDepartmentsRequestSelectors = createRequestSelectorsBuilder(departmentsStateSelector);
 
 export const allDepartmentsSelector = createDepartmentsRequestSelectors('all').recordsSel;
+
+export const myDepartmentsSelector = createDepartmentsRequestSelectors('my').recordsSel;
+export const myDepartmentsStatusSelector = createDepartmentsRequestSelectors('my').statusSel;

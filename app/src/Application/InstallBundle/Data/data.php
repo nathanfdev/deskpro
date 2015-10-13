@@ -139,56 +139,80 @@ if (!$IMPORT_INSTALL) {
 }
 
 ################################################################################
-# Portal Blocks
+# Feedback
 ################################################################################
 
-##BEGIN:create_portal_block.news##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'portal';
-$b->type       = 'news';
-$b->is_enabled = true;
-$em->persist($b);
-$em->flush();
+$em->getConnection()->executeUpdate(
+    "
+INSERT INTO `feedback_categories` (`id`, `parent_id`, `title`, `slug`, `display_order`, `depth`, `root`) VALUES
+(1, NULL, 'Suggestion', 'suggestion', 0, 0, NULL),
+(2, NULL, 'Feature Request', 'feature-request', 0, 0, NULL),
+(3, NULL, 'Bug Report', 'bug-report', 0, 0, NULL);
+"
+);
 
-##BEGIN:create_portal_block.userinfo_sidebar##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'sidebar';
-$b->type       = 'userinfo';
-$b->is_enabled = true;
-$em->persist($b);
-$em->flush();
+$em->getConnection()->executeUpdate(
+    "
+INSERT INTO `custom_def_feedback` (`id`, `parent_id`, `app_id`, `sys_name`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `default_value`, `is_agent_field`) VALUES
+(1, NULL, NULL, 'cat', '', 0, 0, 'Category', 'e.g., maybe Windows, Mac, Linux.', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Text', 'a:0:{}', 1, 1, 0, NULL, 1);
+"
+);
 
-##BEGIN:create_portal_block.kb_cat_list##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'sidebar';
-$b->type       = 'kb_cat_list';
-$b->is_enabled = true;
-$em->persist($b);
-$em->flush();
+$em->getConnection()->executeUpdate(
+    "
+INSERT INTO `feedback_status_categories` (`id`, `status_type`, `title`, `display_order`) VALUES
+(1, 'active', 'Gathering Feedback', 0),
+(2, 'active', 'Planning', 0),
+(3, 'active', 'Started', 0),
+(4, 'active', 'Under Review', 0),
+(5, 'closed', 'Completed', 0),
+(6, 'closed', 'Duplicate', 0),
+(7, 'closed', 'Declined', 0);
+"
+);
 
-##BEGIN:create_portal_block.feedback_cat_list##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'sidebar';
-$b->type       = 'feedback_cat_list';
-$b->is_enabled = true;
-$em->persist($b);
-$em->flush();
+$em->getConnection()->executeUpdate(
+    "
+INSERT INTO `feedback` (`id`, `status_category_id`, `category_id`, `person_id`, `language_id`, `hidden_status`, `validating`, `popularity`, `title`, `slug`, `content`, `view_count`, `total_rating`, `num_comments`, `num_ratings`, `status`, `date_created`, `date_published`) VALUES
+(1, 5, 1, 1, NULL, 'validating', NULL, 0, 'example-suggestion', 'Example Suggestion', 'This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 1, 0, 2, 'new', '2015-08-13 11:33:33', '2015-08-13 11:33:33'),
+(2, 1, 1, 1, NULL, 'deleted', NULL, 0, 'Test feedback 1', 'slug-to-feedback-1', 'Content of test feedback 1', 0, 3, 0, 4, 'hidden', '2015-08-01 00:00:00', NULL),
+(3, 1, 2, 1, NULL, NULL, NULL, 0, 'Test feedback 2', 'slug-to-feedback-2', 'Content of test feedback 2', 0, 5, 0, 6, 'active', '2015-08-02 00:00:00', NULL),
+(4, 2, 3, 1, NULL, 'validating', NULL, 0, 'Test feedback 3', 'slug-to-feedback-3', 'Content of test feedback 3', 0, 0, 0, 0, 'active', '2015-08-03 00:00:00', NULL),
+(5, 1, 1, 1, NULL, 'spam', NULL, 0, 'Test feedback 4', 'slug-to-feedback-4', 'Content of test feedback 4', 0, 1, 0, 1, 'hidden', '2015-08-04 00:00:00', NULL),
+(6, 5, 1, 1, NULL, 'validating', NULL, 0, 'Test feedback 5', 'slug-to-feedback-5', 'Content of test feedback 5', 0, 2, 0, 1, 'closed', '2015-08-05 00:00:00', NULL),
+(7, 1, 2, 1, NULL, 'validating', NULL, 15, 'Test feedback 6', 'slug-to-feedback-6', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'new', '2015-08-10 00:00:00', NULL);
+"
+);
 
-##BEGIN:create_portal_block.downloads_cat_list##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'sidebar';
-$b->type       = 'downloads_cat_list';
-$b->is_enabled = true;
-$em->persist($b);
-$em->flush();
+$em->getConnection()->executeUpdate(
+    "
+INSERT INTO `labels_feedback` (`feedback_id`, `label`) VALUES
+(1, 'label1'),
+(1, 'label2'),
+(2, 'label1'),
+(3, 'another');
+"
+);
 
-##BEGIN:create_portal_block.staff_sidebar##
-$b             = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section    = 'sidebar';
-$b->type       = 'staff';
-$b->is_enabled = true;
-$em->persist($b);
-$em->flush();
+$em->getConnection()->executeUpdate(
+    "
+INSERT INTO `custom_data_feedback` (`id`, `feedback_id`, `field_id`, `root_field_id`, `value`, `input`) VALUES
+(1, 1, 1, NULL, 0, 'Windows'),
+(2, 2, 1, NULL, 0, 'Linux'),
+(3, 3, 1, NULL, 0, 'Linux'),
+(4, 4, 1, NULL, 0, 'Mac');
+"
+);
+
+$em->getConnection()->executeUpdate(
+    "
+INSERT INTO `feedback_comments` (`id`, `feedback_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `validating`, `is_reviewed`, `date_created`, `visitor_id`) VALUES
+(1, 1, 1, '', NULL, NULL, NULL, 'Some comment for the first feedback. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ultrices sem ac risus efficitur, vitae.', 'validating', NULL, 0, '2015-08-17 00:00:00', ''),
+(2, 1, 1, '', NULL, NULL, NULL, 'One more comment for the first feedback', 'validating', '0', 0, '2015-09-08 00:00:00', ''),
+(3, 2, 1, '', NULL, NULL, NULL, 'Some comment for the second feedback. Quisque id malesuada urna. Aliquam erat volutpat. Duis risus odio, faucibus ac lacus nec, dapibus.', 'validating', NULL, 0, '2015-09-23 00:00:00', ''),
+(4, 3, 1, '', NULL, NULL, NULL, 'Some comment for the third feedback. Proin enim mauris, faucibus sit amet pretium non, sagittis ut eros. Praesent non sem ut.', 'user_validating', '0', 0, '2015-10-01 00:00:00', '');
+"
+);
 
 ################################################################################
 # Agent Teams
@@ -353,30 +377,32 @@ $em->getConnection()->executeUpdate(
 # TEMPORARY TEST DATA: People
 ################################################################################
 
-function create_user($fname, $lname, $email, $pass, $agent = false, $admin = false, $is_deleted = false)
-{
-    $user             = new \Application\DeskPRO\Entity\Person();
-    $user->first_name = $fname;
-    $user->last_name  = $lname;
-    $user->setEmail($email, true);
-    $user->setPassword($pass);
-    $user->is_user      = true;
-    $user->is_confirmed = true;
-    $user->is_deleted   = $is_deleted;
+if (!function_exists('create_user')) {
+    function create_user($fname, $lname, $email, $pass, $agent = false, $admin = false, $is_deleted = false)
+    {
+        $user             = new \Application\DeskPRO\Entity\Person();
+        $user->first_name = $fname;
+        $user->last_name  = $lname;
+        $user->setEmail($email, true);
+        $user->setPassword($pass);
+        $user->is_user      = true;
+        $user->is_confirmed = true;
+        $user->is_deleted   = $is_deleted;
 
-    if ($agent || $admin) {
-        $user->is_agent_confirmed = true;
-        $user->is_agent           = true;
-        $user->can_agent          = true;
+        if ($agent || $admin) {
+            $user->is_agent_confirmed = true;
+            $user->is_agent           = true;
+            $user->can_agent          = true;
+        }
+
+        if ($admin) {
+            $user->can_admin   = true;
+            $user->can_billing = true;
+            $user->can_reports = true;
+        }
+
+        return $user;
     }
-
-    if ($admin) {
-        $user->can_admin   = true;
-        $user->can_billing = true;
-        $user->can_reports = true;
-    }
-
-    return $user;
 }
 
 $em->persist(create_user('John', 'Doe', 'john@doe.lo', '11111111', true, true));
@@ -595,82 +621,6 @@ $em->getConnection()->executeUpdate(
         (1, NULL, NULL, 'ArticlePendingCreate #1', '2015-09-01 10:05:30', 2),
         (2, NULL, NULL, 'ArticlePendingCreate #2', '2015-09-02 04:12:25', 3)
     ;
-"
-);
-
-################################################################################
-# TEMPORARY TEST DATA: Feedback
-################################################################################
-
-$em->getConnection()->executeUpdate(
-    "
-INSERT INTO `feedback_categories` (`id`, `parent_id`, `title`, `slug`, `display_order`, `depth`, `root`) VALUES
-(1, NULL, 'Suggestion', 'suggestion', 0, 0, NULL),
-(2, NULL, 'Feature Request', 'feature-request', 0, 0, NULL),
-(3, NULL, 'Bug Report', 'bug-report', 0, 0, NULL);
-"
-);
-
-$em->getConnection()->executeUpdate(
-    "
-INSERT INTO `custom_def_feedback` (`id`, `parent_id`, `app_id`, `sys_name`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `default_value`, `is_agent_field`) VALUES
-(1, NULL, NULL, 'cat', '', 0, 0, 'Category', 'e.g., maybe Windows, Mac, Linux.', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Text', 'a:0:{}', 1, 1, 0, NULL, 1);
-"
-);
-
-$em->getConnection()->executeUpdate(
-    "
-INSERT INTO `feedback_status_categories` (`id`, `status_type`, `title`, `display_order`) VALUES
-(1, 'active', 'Gathering Feedback', 0),
-(2, 'active', 'Planning', 0),
-(3, 'active', 'Started', 0),
-(4, 'active', 'Under Review', 0),
-(5, 'closed', 'Completed', 0),
-(6, 'closed', 'Duplicate', 0),
-(7, 'closed', 'Declined', 0);
-"
-);
-
-$em->getConnection()->executeUpdate(
-    "
-INSERT INTO `feedback` (`id`, `status_category_id`, `category_id`, `person_id`, `language_id`, `hidden_status`, `validating`, `popularity`, `title`, `slug`, `content`, `view_count`, `total_rating`, `num_comments`, `num_ratings`, `status`, `date_created`, `date_published`) VALUES
-(1, 5, 1, 1, NULL, 'validating', NULL, 0, 'example-suggestion', 'Example Suggestion', 'This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 1, 0, 2, 'new', '2015-08-13 11:33:33', '2015-08-13 11:33:33'),
-(2, 1, 1, 1, NULL, 'deleted', NULL, 0, 'Test feedback 1', 'slug-to-feedback-1', 'Content of test feedback 1', 0, 3, 0, 4, 'hidden', '2015-08-01 00:00:00', NULL),
-(3, 1, 2, 1, NULL, NULL, NULL, 0, 'Test feedback 2', 'slug-to-feedback-2', 'Content of test feedback 2', 0, 5, 0, 6, 'active', '2015-08-02 00:00:00', NULL),
-(4, 2, 3, 1, NULL, 'validating', NULL, 0, 'Test feedback 3', 'slug-to-feedback-3', 'Content of test feedback 3', 0, 0, 0, 0, 'active', '2015-08-03 00:00:00', NULL),
-(5, 1, 1, 1, NULL, 'spam', NULL, 0, 'Test feedback 4', 'slug-to-feedback-4', 'Content of test feedback 4', 0, 1, 0, 1, 'hidden', '2015-08-04 00:00:00', NULL),
-(6, 5, 1, 1, NULL, 'validating', NULL, 0, 'Test feedback 5', 'slug-to-feedback-5', 'Content of test feedback 5', 0, 2, 0, 1, 'closed', '2015-08-05 00:00:00', NULL),
-(7, 1, 2, 1, NULL, 'validating', NULL, 15, 'Test feedback 6', 'slug-to-feedback-6', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'new', '2015-08-10 00:00:00', NULL);
-"
-);
-
-$em->getConnection()->executeUpdate(
-    "
-INSERT INTO `labels_feedback` (`feedback_id`, `label`) VALUES
-(1, 'label1'),
-(1, 'label2'),
-(2, 'label1'),
-(3, 'another');
-"
-);
-
-$em->getConnection()->executeUpdate(
-    "
-INSERT INTO `custom_data_feedback` (`id`, `feedback_id`, `field_id`, `root_field_id`, `value`, `input`) VALUES
-(1, 1, 1, NULL, 0, 'Windows'),
-(2, 2, 1, NULL, 0, 'Linux'),
-(3, 3, 1, NULL, 0, 'Linux'),
-(4, 4, 1, NULL, 0, 'Mac');
-"
-);
-
-$em->getConnection()->executeUpdate(
-    "
-INSERT INTO `feedback_comments` (`id`, `feedback_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `validating`, `is_reviewed`, `date_created`, `visitor_id`) VALUES
-(1, 1, 1, '', NULL, NULL, NULL, 'Some comment for the first feedback. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ultrices sem ac risus efficitur, vitae.', 'validating', NULL, 0, '2015-08-17 00:00:00', ''),
-(2, 1, 1, '', NULL, NULL, NULL, 'One more comment for the first feedback', 'validating', '0', 0, '2015-09-08 00:00:00', ''),
-(3, 2, 1, '', NULL, NULL, NULL, 'Some comment for the second feedback. Quisque id malesuada urna. Aliquam erat volutpat. Duis risus odio, faucibus ac lacus nec, dapibus.', 'validating', NULL, 0, '2015-09-23 00:00:00', ''),
-(4, 3, 2, '', NULL, NULL, NULL, 'Some comment for the third feedback. Proin enim mauris, faucibus sit amet pretium non, sagittis ut eros. Praesent non sem ut.', 'user_validating', '0', 0, '2015-10-01 00:00:00', '');
 "
 );
 
@@ -1316,3 +1266,265 @@ VALUES
 (3, 4);
 
 ");
+
+########################################################
+# TEMP DATA
+########################################################
+
+$faker = \Faker\Factory::create();
+
+// the content publisher agent guy
+$publisher            = new \Application\DeskPRO\Entity\Person();
+$publisher->name      = 'Corporate Content';
+$publisher->can_agent = true;
+$publisher->is_agent  = true;
+$publisher->addEmailAddressString('content.publisher@deskprodemo.com');
+$publisher->setPassword('publisher');
+
+$em->persist($publisher);
+$em->flush($publisher);
+
+// a regular dude
+$person       = new \Application\DeskPRO\Entity\Person();
+$person->name = 'Joe Kool';
+$person->addEmailAddressString('joe@deskprodemo.com');
+$person->setPassword('joe');
+
+$em->persist($person);
+$em->flush($person);
+
+//////////////////////////////////////////////////////////////
+// articles
+//////////////////////////////////////////////////////////////
+
+$ac        = new \Application\DeskPRO\Entity\ArticleCategory();
+$ac->title = 'Germany Info';
+$ac->addUsergroup($USERGROUP_EVERYONE);
+$em->persist($ac);
+
+for ($i = 0; $i < 15; ++$i) {
+    $a = new \Application\DeskPRO\Entity\Article();
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setCategories(array($ac));
+    $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
+    $a->setPerson($publisher);
+    $em->persist($a);
+}
+
+$ac        = new \Application\DeskPRO\Entity\ArticleCategory();
+$ac->title = 'Finland Info';
+$ac->addUsergroup($USERGROUP_EVERYONE);
+$em->persist($ac);
+
+for ($i = 0; $i < 15; ++$i) {
+    $a = new \Application\DeskPRO\Entity\Article();
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setCategories(array($ac, $em->getRepository('DeskPRO:ArticleCategory')->find(1)));
+    $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
+    $a->setPerson($publisher);
+    $em->persist($a);
+}
+
+$ac        = new \Application\DeskPRO\Entity\ArticleCategory();
+$ac->title = 'Japan Info';
+$ac->addUsergroup($USERGROUP_EVERYONE);
+$em->persist($ac);
+
+for ($i = 0; $i < 15; ++$i) {
+    $a = new \Application\DeskPRO\Entity\Article();
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setCategories(array($ac));
+    $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
+    $a->setPerson($publisher);
+    $em->persist($a);
+}
+
+//////////////////////////////////////////////////////////////
+// news
+//////////////////////////////////////////////////////////////
+
+$ac        = new \Application\DeskPRO\Entity\NewsCategory();
+$ac->title = 'Canada Info';
+$ac->addUsergroup($USERGROUP_EVERYONE);
+$em->persist($ac);
+
+for ($i = 0; $i < 15; ++$i) {
+    $a = new \Application\DeskPRO\Entity\News();
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setCategory($ac);
+    $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
+    $a->setPerson($publisher);
+    $em->persist($a);
+}
+
+$ac        = new \Application\DeskPRO\Entity\NewsCategory();
+$ac->title = 'U.S. Info';
+$ac->addUsergroup($USERGROUP_EVERYONE);
+$em->persist($ac);
+
+for ($i = 0; $i < 15; ++$i) {
+    $a = new \Application\DeskPRO\Entity\News();
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setCategory($ac);
+    $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
+    $a->setPerson($publisher);
+    $em->persist($a);
+}
+
+$ac = $em->getRepository('DeskPRO:NewsCategory')->find(1);
+
+for ($i = 0; $i < 15; ++$i) {
+    $a = new \Application\DeskPRO\Entity\News();
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setCategory($ac);
+    $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
+    $a->setPerson($publisher);
+    $em->persist($a);
+}
+
+//////////////////////////////////////////////////////////////
+// downloads
+//////////////////////////////////////////////////////////////
+
+if (!function_exists('make_blob')) {
+    function make_blob(\Doctrine\ORM\EntityManager $em)
+    {
+        $storage = new \Application\DeskPRO\BlobStorage\DeskproBlobStorage($em);
+
+        $blob = $storage->createBlobRecordFromFile(
+            realpath(__DIR__.'/../../../../../web/images/dp-logo-130.png'),
+            'dp-logo-130.png',
+            'image/png'
+        );
+
+        $blob->authcode = rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18);
+
+        return $blob;
+    }
+}
+
+$ac        = new \Application\DeskPRO\Entity\DownloadCategory();
+$ac->title = 'Canada Info';
+$ac->addUsergroup($USERGROUP_EVERYONE);
+$em->persist($ac);
+
+for ($i = 0; $i < 15; ++$i) {
+    $blob = make_blob($em);
+    $a    = new \Application\DeskPRO\Entity\Download();
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setCategory($ac);
+    $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
+    $a->setPerson($publisher);
+    $a->setBlob($blob);
+    $em->persist($a);
+}
+
+$ac        = new \Application\DeskPRO\Entity\DownloadCategory();
+$ac->title = 'U.S. Info';
+$ac->addUsergroup($USERGROUP_EVERYONE);
+$em->persist($ac);
+
+for ($i = 0; $i < 15; ++$i) {
+    $blob = make_blob($em);
+    $a    = new \Application\DeskPRO\Entity\Download();
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setCategory($ac);
+    $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
+    $a->setPerson($publisher);
+    $a->setBlob($blob);
+    $em->persist($a);
+}
+
+$ac = $em->getRepository('DeskPRO:DownloadCategory')->find(1);
+
+for ($i = 0; $i < 15; ++$i) {
+    $blob = make_blob($em);
+    $a    = new \Application\DeskPRO\Entity\Download();
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setCategory($ac);
+    $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
+    $a->setPerson($publisher);
+    $a->setBlob($blob);
+    $em->persist($a);
+}
+
+//////////////////////////////////////////////////////////////
+// feedback
+//////////////////////////////////////////////////////////////
+
+// these are inserted already
+$DEFAULT_IDEA_CAT = $em->getRepository('DeskPRO:FeedbackCategory')->find(1);
+$FEEDBACK_FEATURE = $em->getRepository('DeskPRO:FeedbackCategory')->find(2);
+$FEEDBACK_BUG     = $em->getRepository('DeskPRO:FeedbackCategory')->find(3);
+
+if (!function_exists('rand_fb_status_pair')) {
+    function rand_fb_status_pair(\Doctrine\ORM\EntityManager $em)
+    {
+        $array = array();
+
+        $opts = array(
+            \Application\DeskPRO\Entity\Feedback::STATUS_ACTIVE,
+            \Application\DeskPRO\Entity\Feedback::STATUS_CLOSED,
+        );
+        $array['status'] = $opts[rand(0, (count($opts) - 1))];
+
+        $scs = $em->getRepository('DeskPRO:FeedbackStatusCategory')->findBy(
+            array(
+                'status_type' => $array['status'],
+            )
+        );
+
+        $array['status_category'] = $scs[rand(0, (count($scs) - 1))];
+
+        return $array;
+    }
+}
+
+for ($i = 0; $i < 30; ++$i) {
+    $a = new \Application\DeskPRO\Entity\Feedback();
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(750).'<br><br>'.$faker->text(1000));
+    $a->setCategory($DEFAULT_IDEA_CAT);
+    $fbinfo = rand_fb_status_pair($em);
+    $a->setStatus($fbinfo['status']);
+    $a->setStatusCategory($fbinfo['status_category']);
+    $a->setPerson($publisher);
+    $em->persist($a);
+}
+
+for ($i = 0; $i < 30; ++$i) {
+    $a = new \Application\DeskPRO\Entity\Feedback();
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(750).'<br><br>'.$faker->text(1000));
+    $a->setCategory($FEEDBACK_BUG);
+    $fbinfo = rand_fb_status_pair($em);
+    $a->setStatus($fbinfo['status']);
+    $a->setStatusCategory($fbinfo['status_category']);
+    $a->setPerson($publisher);
+    $em->persist($a);
+}
+
+$ac = $em->getRepository('DeskPRO:DownloadCategory')->find(1);
+
+for ($i = 0; $i < 30; ++$i) {
+    $a = new \Application\DeskPRO\Entity\Feedback();
+    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
+    $a->setContent($faker->text(750).'<br><br>'.$faker->text(1000));
+    $a->setCategory($FEEDBACK_FEATURE);
+    $fbinfo = rand_fb_status_pair($em);
+    $a->setStatus($fbinfo['status']);
+    $a->setStatusCategory($fbinfo['status_category']);
+    $a->setPerson($publisher);
+    $em->persist($a);
+}
+
+$em->flush();

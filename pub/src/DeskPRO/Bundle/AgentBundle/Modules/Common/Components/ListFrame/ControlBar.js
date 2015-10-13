@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import $ from 'jquery';
+import jQuery from 'jquery';
 import classNames from 'classnames';
 
 export class ControlBar extends Component {
@@ -27,19 +27,12 @@ export class ControlButton extends Component {
     icon: PropTypes.string.isRequired
   };
 
-  handleClick(e) {
-    e.preventDefault();
-    const {toggleDropdown} = this.props;
-    const offset = $(e.target).closest('a').position();
-    toggleDropdown(offset);
-  }
-
   render() {
-    const { title, label, icon } = this.props;
+    const {toggleDropdown, title, label, icon } = this.props;
     var classes = classNames('fa', icon);
 
     return (
-      <a href="#" className="dpwd-navigation-dropdown-top-row-button" onClick={this.handleClick.bind(this)}>
+      <a href="#" className="dpwd-navigation-dropdown-top-row-button" onClick={toggleDropdown}>
         <span
           className="dpwd-navigation-dropdown-top-row-button-text dpwd-navigation-dropdown-top-row-button-text-grey">
           {title}
@@ -55,6 +48,12 @@ export class ControlButton extends Component {
 
 export class MassActionCheckbox extends Component {
 
+  static propTypes = {
+    onClick: PropTypes.func.isRequired,
+    massAction: PropTypes.bool.isRequired,
+    count: PropTypes.string
+  };
+
   renderCount(count) {
     if (count) {
       return (
@@ -68,7 +67,7 @@ export class MassActionCheckbox extends Component {
   render() {
     const {count, massAction, onClick} = this.props;
 
-    var divClasses      = classNames('dpwd-navigation-top-row-mass-action-checkbox', {'active': massAction === true});
+    var divClasses = classNames('dpwd-navigation-top-row-mass-action-checkbox', {'active': massAction === true});
     var checkboxClasses = classNames('fa', {'fa-check': massAction === true});
 
     return (

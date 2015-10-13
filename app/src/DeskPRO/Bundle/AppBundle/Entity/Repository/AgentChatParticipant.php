@@ -39,16 +39,21 @@ use Doctrine\ORM\EntityRepository;
 
 class AgentChatParticipant extends EntityRepository
 {
-    public function findChatsIds(PersonEntity $person)
+    public function findChatsIds(PersonEntity $person, $department_ids)
     {
-        /** @var AgentTeamRepository $teamRepo */
-        $teamRepo = $this->getEntityManager()->getRepository('DeskPRO:AgentTeam');
-        $teamIds  = $teamRepo->getTeamIdsForAgents([$person]);
-        $qb       = $this->createQueryBuilder('acp')
+        /* @var AgentTeamRepository $teamRepo */
+        $qb = $this->createQueryBuilder('acp')
             ->select('acp.agent_chat_id')
             ->andWhere('acp.person_id = :person')
             ->orWhere('acp.agent_team_id IN (:agent_team_id)')
-            ->setParameters(['person' => $person->getId(), 'agent_team_id' => $teamIds]);
+            ->orWhere('acp.department_id IN (:department_id)')
+            ->setParameters(
+                [
+                    'person'        => $person->getId(),
+                    'agent_team_id' => $person->getTeamIds(),
+                    'department_id' => $department_ids,
+                ]
+            );
 
         $result = $qb->getQuery()->getScalarResult();
         $ids    = array_map('current', $result);

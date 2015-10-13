@@ -36,6 +36,7 @@ use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\AgentChat\History;
 use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
 use DeskPRO\Bundle\AppBundle\AgentChat\Search\Doctrine as DoctrineSearcher;
+use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChat as AgentChatRepo;
@@ -51,19 +52,20 @@ class HistorySpec extends ObjectBehavior
     public function let(
         DoctrineSearcher $searcher,
         EntityManager $em,
+        DepartmentDataService $dataService,
         AgentChatParticipantRepo $participantRepo,
         AgentChatRepo $chatRepo,
         AgentChat $chat1,
         AgentChat $chat2
     ) {
-        $this->beConstructedWith($searcher, $em);
+        $this->beConstructedWith($searcher, $em, $dataService);
         $chat1->getId()->willReturn(1);
         $chat2->getId()->willReturn(2);
         $searcher->searchInChat(Argument::type('DeskPRO\Bundle\AppBundle\Entity\AgentChat'), Argument::any())->willReturn(array());
         $em->getRepository('App:AgentChatParticipant')->willReturn($participantRepo);
         $em->getRepository('App:AgentChat')->willReturn($chatRepo);
-        $participantRepo->findChatsIds(Argument::type('Application\DeskPRO\Entity\Person'))->willReturn(array(1, 2));
-        $chatRepo->findBy(Argument::any())->willReturn(array($chat1, $chat2));
+        $participantRepo->findChatsIds(Argument::type('Application\DeskPRO\Entity\Person'), Argument::any())->willReturn(array(1, 2));
+        $chatRepo->findBy(Argument::any(), Argument::any())->willReturn(array($chat1, $chat2));
         $this->shouldHaveType('DeskPRO\Bundle\AppBundle\AgentChat\History');
     }
     public function it_can_get_all_messages_of_the_chat(AgentChat $chat, AgentChatMessage $message)
@@ -85,7 +87,7 @@ class HistorySpec extends ObjectBehavior
     }
     public function it_can_find_all_messages_among_all_user_chats(Person $alice)
     {
-        $this->searchAllMessages($alice, 'where is the Red Queen?')->shouldBeArray();
+        $this->searchAllMessages($this->findChats($alice), 'where is the Red Queen?')->shouldBeArray();
     }
     public function it_can_search_string_through_all_persons_chats(
         Person $JohnnyMnemonic,
@@ -95,10 +97,12 @@ class HistorySpec extends ObjectBehavior
     ) {
         $message->setMessage('where is Johnny?');
         $JohnnyMnemonic->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_PERSON);
+        $FriendsChat->setType(Chatable::PARTICIPANT_TYPE_PERSON);
         $FriendsChat->addMessage($message);
         $FoesChat->addMessage($message);
         $FriendsChat->addParticipant($JohnnyMnemonic);
         $FoesChat->addParticipant($JohnnyMnemonic);
-        $this->searchAllChats($JohnnyMnemonic, 'where is Johnny?')->shouldBeArray();
+
+        $this->searchAllChats([$FriendsChat], 'where is Johnny?')->shouldBeArray();
     }
 }

@@ -33,7 +33,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			'org',
 			this.meta.org_id,
 			this.meta.title,
-			BASE_URL + 'agent/organizations/' + this.meta.org_id
+			BASE_URL + 'old-agent/organizations/' + this.meta.org_id
 		);
 	},
 
@@ -51,7 +51,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		var self = this;
 
 		this.contactEditor = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor(this, {
-			saveUrl: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/save-contact-data.json',
+			saveUrl: BASE_URL + 'old-agent/organizations/' + this.meta.org_id + '/save-contact-data.json',
 			onReplaceEditor: function() {
 				self.refreshPropBox();
 			}
@@ -69,7 +69,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 				baseElement: this.wrapper,
 				editableClass: 'person-name-editable',
 				ajax: {
-					url: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save'
+					url: BASE_URL + 'old-agent/organizations/' + this.meta.org_id + '/ajax-save'
 				},
 				triggers: '.edit-name-gear'
 			});
@@ -103,11 +103,11 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 		this.changePic = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this, {
 			loadUrl: BASE_URL + "agent/organizations/" + this.meta.org_id + "/change-picture-overlay",
-			saveUrl: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save'
+			saveUrl: BASE_URL + 'old-agent/organizations/' + this.meta.org_id + '/ajax-save'
 		});
 		this.uploadFile = new DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadFile(this,{
 			el: self.getEl('files_box'),
-			deleteUrl: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save',
+			deleteUrl: BASE_URL + 'old-agent/organizations/' + this.meta.org_id + '/ajax-save',
 		});
 
 		this.ownObject(this.changePic);
@@ -126,7 +126,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			row.fadeOut('fast');
 
 			$.ajax({
-				url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/ajax-save',
+				url: BASE_URL + 'old-agent/organizations/' + self.meta.org_id + '/ajax-save',
 				data: { action: 'remove-person', person_id: personId },
 				type: 'POST',
 				context: this,
@@ -182,7 +182,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			var pos = self.getEl('newmember_position').val();
 
 			$.ajax({
-				url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/ajax-save',
+				url: BASE_URL + 'old-agent/organizations/' + self.meta.org_id + '/ajax-save',
 				data: { action: 'add-person', person_id: personId, position: pos },
 				type: 'POST',
 				context: this,
@@ -213,7 +213,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			}
 
 			$.ajax({
-				url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/ajax-save',
+				url: BASE_URL + 'old-agent/organizations/' + self.meta.org_id + '/ajax-save',
 				data: { action: 'get-person-row', person_id: info.person_id },
 				type: 'GET',
 				context: this,
@@ -337,7 +337,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
           $notes.off('click', notesClickHandler);
 
           $.ajax({
-            url: BASE_URL + 'agent/organizations/notes/' + $el.data('note-id'),
+            url: BASE_URL + 'old-agent/organizations/notes/' + $el.data('note-id'),
             type: 'DELETE',
             dataType: 'json',
             success: function(data) {
@@ -429,7 +429,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			$('.cancel', box).hide();
 
 			$.ajax({
-				url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/ajax-save-custom-fields',
+				url: BASE_URL + 'old-agent/organizations/' + self.meta.org_id + '/ajax-save-custom-fields',
 				type: 'POST',
 				data: formData,
 				dataType: 'html',
@@ -523,7 +523,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 				$('.controls .save', newContain).on('click', function() {
 					$.ajax({
-						url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/assign-domain',
+						url: BASE_URL + 'old-agent/organizations/' + self.meta.org_id + '/assign-domain',
 						type: 'POST',
 						data: { domain: newInput.val().trim() },
 						dataType: 'html',
@@ -577,14 +577,14 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 					var removeusers = $(this).is('.remove-email-users') ? 1 : 0;
 
 					$.ajax({
-						url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/unassign-domain',
+						url: BASE_URL + 'old-agent/organizations/' + self.meta.org_id + '/unassign-domain',
 						type: 'POST',
 						data: { domain: domain, remove_users: removeusers },
 						dataType: 'html',
 						success: function(newDisplayHtml) {
 							self.emailDomainOverlay.destroy();
 							self.closeSelf();
-							DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/organizations/' + self.meta.org_id);
+							DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'old-agent/organizations/' + self.meta.org_id);
 						}
 					});
 				});
@@ -593,14 +593,14 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 					var domain = $(this).closest('tr').data('org-domain');
 
 					$.ajax({
-						url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/domain/move-users',
+						url: BASE_URL + 'old-agent/organizations/' + self.meta.org_id + '/domain/move-users',
 						type: 'POST',
 						data: { domain: domain },
 						dataType: 'html',
 						success: function(newDisplayHtml) {
 							self.emailDomainOverlay.destroy();
 							self.closeSelf();
-							DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/organizations/' + self.meta.org_id);
+							DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'old-agent/organizations/' + self.meta.org_id);
 						}
 					});
 				});
@@ -609,14 +609,14 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 					var domain = $(this).closest('tr').data('org-domain');
 
 					$.ajax({
-						url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/domain/reassign-users',
+						url: BASE_URL + 'old-agent/organizations/' + self.meta.org_id + '/domain/reassign-users',
 						type: 'POST',
 						data: { domain: domain },
 						dataType: 'html',
 						success: function(newDisplayHtml) {
 							self.emailDomainOverlay.destroy();
 							self.closeSelf();
-							DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/organizations/' + self.meta.org_id);
+							DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'old-agent/organizations/' + self.meta.org_id);
 						}
 					});
 				});
@@ -658,7 +658,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			var formData = $('input, select, textarea', fieldsEditWrap).serializeArray();
 
 			$.ajax({
-				url: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save-custom-fields',
+				url: BASE_URL + 'old-agent/organizations/' + this.meta.org_id + '/ajax-save-custom-fields',
 				type: 'POST',
 				data: formData,
 				dataType: 'html',
@@ -780,7 +780,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 			showSaving();
 			$.ajax({
-				url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/ajax-save',
+				url: BASE_URL + 'old-agent/organizations/' + self.meta.org_id + '/ajax-save',
 				type: 'POST',
 				dataType: 'json',
 				data: formData,

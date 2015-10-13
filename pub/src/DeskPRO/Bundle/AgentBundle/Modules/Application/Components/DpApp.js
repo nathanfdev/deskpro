@@ -4,6 +4,7 @@ import { Header } from './Header';
 import { AppSwitcher } from './AppSwitcher';
 import { TabFrame } from './TabFrame';
 import { routingStarted } from '../Actions/AppActions';
+import { NotificationsContainer } from './Notifications/notifications';
 import { meSelector } from '../RecordStores/Selectors/meSelectors';
 
 @connect(state => ({
@@ -38,6 +39,7 @@ export class DpApp extends React.Component {
         {children}
 
         <TabFrame dpWindow={dpWindow} />
+        <NotificationsContainer />
       </div>
     );
   }

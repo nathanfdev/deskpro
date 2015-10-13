@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 
 export default class MenuFooter extends React.Component {
 
@@ -9,8 +10,8 @@ export default class MenuFooter extends React.Component {
   static propTypes = {
     widgetClass: React.PropTypes.string,
     overrideWidgetClass: React.PropTypes.bool,
-    children: React.PropTypes.node,
-  }
+    children: React.PropTypes.node
+  };
 
   /**
    * Render the menu
@@ -18,13 +19,12 @@ export default class MenuFooter extends React.Component {
    */
   render() {
     const widgetClass = this.props.widgetClass ? this.props.widgetClass : '';
-
-    const displayClass = this.props.overrideWidgetClass
-                          ? widgetClass
-                          : 'dpw-navigation-dropdown-item dpw-navigation-dropdown-footer ' + widgetClass;
+    var classes = classNames(widgetClass, {
+      'dpw-navigation-dropdown-item dpw-navigation-dropdown-footer': !this.props.overrideWidgetClass
+    });
 
     return (<li>
-      <div className={displayClass}>
+      <div className={classes}>
         {this.props.children}
       </div>
     </li>);

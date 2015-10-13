@@ -55,7 +55,8 @@ const BaseItem = React.createClass({
    * Execute an action on click
    * @return {void}
    */
-  onClickAction: function() {
+  onClickAction: function(event) {
+    event.preventDefault();
     if (this.props.onClick) {
       this.props.onClick();
     }
@@ -120,7 +121,7 @@ const BaseItem = React.createClass({
     });
   },
 
-  /*
+  /**
    * Format the output according to the format prop
    * @param  {mixed} output The output
    * @return {mixed}        The formatted output
@@ -129,7 +130,8 @@ const BaseItem = React.createClass({
    */
   formatOutput: function(output, hasMenu = false, hasItemList = false) {
     if (this.props.format && this.props.format === 'item') {
-      return (<ItemFormat {...this.props} hasMenu={hasMenu} hasItemList={hasItemList} toggleInnerList={this.toggleInnerList}>{output}</ItemFormat>);
+      return (<ItemFormat {...this.props} hasMenu={hasMenu} hasItemList={hasItemList}
+                                          toggleInnerList={this.toggleInnerList}>{output}</ItemFormat>);
     }
 
     return output;
@@ -142,8 +144,10 @@ const BaseItem = React.createClass({
   render: function() {
     const baseClass = 'dpw-navigation-dropdown-item';
 
-    const onMouseOverAction = this.props.onMouseOver ? this.props.onMouseOver : () => {};
-    const onMouseOutAction = this.props.onMouseOut ? this.props.onMouseOut : () => {};
+    const onMouseOverAction = this.props.onMouseOver ? this.props.onMouseOver : () => {
+    };
+    const onMouseOutAction = this.props.onMouseOut ? this.props.onMouseOut : () => {
+    };
 
     let output = [];
 
@@ -177,8 +181,8 @@ const BaseItem = React.createClass({
                               collision="none"
                               positionTarget={this}
                               key={child}>
-              <Menu {...childProps} menuLevel={parentLevel + 1}
-                    isOpen={this.props.activeItem === this} closeMenu={this.closeMenu} />
+            <Menu {...childProps} menuLevel={parentLevel + 1}
+                                  isOpen={this.props.activeItem === this} closeMenu={this.closeMenu}/>
           </Positioned>);
         }
       });
@@ -216,7 +220,8 @@ const BaseItem = React.createClass({
       }
 
       if (contents) {
-        output.push(<a className={classNames(divClasses)} href="#" onClick={this.onClickAction} onMouseOver={onMouseOverAction} onMouseOut={onMouseOutAction}>
+        output.push(<a className={classNames(divClasses)} href="#" onClick={this.onClickAction.bind(this)}
+                       onMouseOver={onMouseOverAction} onMouseOut={onMouseOutAction}>
           {this.formatOutput(contents, hasMenu, hasItemList)}
         </a>);
       }

@@ -8,6 +8,6 @@ export default createReducer(
     releaseRecordsAction: actions.releaseProjects,
     releaseRequestAction: actions.releaseProjectRequest,
     setRequestRecordAction: actions.setProjectRequest,
-    requestRecordsAction: actions.loadProjects
+    requestRecordsAction: actions.loadAllProjects
   })
 );

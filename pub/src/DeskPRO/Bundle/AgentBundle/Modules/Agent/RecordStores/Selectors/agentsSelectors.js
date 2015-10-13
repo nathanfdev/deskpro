@@ -8,6 +8,11 @@ export const agentsSelector = createSelector(
   agents => agents
 );
 
+export const agentsStatusSelector = createSelector(
+  createPeopleRequestSelectors('agents').statusSel,
+  agents => agents
+);
+
 export const agentNamesSelector = createSelector(
   agentsSelector,
   agents => reduceMapToProperty('name', agents.toJS())

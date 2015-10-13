@@ -2,27 +2,35 @@ import React, {Component, PropTypes} from 'react';
 import { TeamsListItem } from './TeamsListItem';
 import { connect } from 'react-redux';
 
-import { loadAllAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions'
-import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
+import { loadMyAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions'
+import { myAgentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
 
 @connect(state => ({
-  agentTeams: agentTeamsSelector(state)
+  agentTeams: myAgentTeamsSelector(state),
+  me: state.Application.user
 }))
 export class TeamsList extends Component {
 
   static propTypes = {
-    agentTeams: PropTypes.object.isRequired
+    agentTeams: PropTypes.object.isRequired,
+    me: PropTypes.object.isRequired
   };
 
   componentWillMount() {
-    "use strict";
-    this.props.dispatch(loadAllAgentTeams());
+    this.props.dispatch(loadMyAgentTeams());
   }
 
   render() {
     return (
       <ul className="im-list short">
-        { this.props.agentTeams.map((team, index) => <TeamsListItem key={index} team={team}/> ) }
+        {
+          this.props.agentTeams.map((team, index) => {
+          return <TeamsListItem
+            handleClickParticipant={this.props.handleClickParticipant}
+            key={index}
+            team={team}
+            />
+        } ) }
       </ul>
     );
   }

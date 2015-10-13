@@ -5,6 +5,8 @@ import ComponentRootWrapper from 'DeskPRO/Component/ComponentRootWrapper';
 import { connect } from 'react-redux';
 import $ from 'jquery';
 
+import Immutable from 'immutable';
+
 import * as TaskActions from '../Actions/TaskListActions';
 
 @connect(state => ({
@@ -29,14 +31,14 @@ export default class TasksNavProjects extends React.Component {
 
     this.state = {
       showWindow: false,
-      projectData: {},
+      projectData: Immutable.Map(),
       position: {}
     };
   }
 
   toggleWindow(project = {}, event) {
     this.setState({
-      projectData: {}
+      projectData: Immutable.Map()
     });
 
     if (this.state.showWindow === false) {
@@ -64,7 +66,7 @@ export default class TasksNavProjects extends React.Component {
 
   closeWindow() {
     this.setState({
-      projectData: {},
+      projectData: Immutable.Map(),
       showWindow: false
     });
   }
@@ -123,8 +125,6 @@ export default class TasksNavProjects extends React.Component {
       });
     }
 
-    const projects = projectList.get('projectList', []);
-
     return (<section className="sidebar-list tasks-nav-projects">
         <div>
           <ComponentRootWrapper open={this.state.showWindow}>
@@ -142,8 +142,8 @@ export default class TasksNavProjects extends React.Component {
           </ComponentRootWrapper>
         </div>
         <div className="list-sidebar-title">Projects <a href="#" onClick={this.toggleWindow.bind(this, {})}><i className="fa fa-plus"/></a></div>
-        <ul>{projects ? projects.map((object) => {
-          return (<TaskNavItemProject key={object.id}
+        <ul>{projectList ? projectList.map((object) => {
+          return (<TaskNavItemProject key={object.get('id')}
                                       project={object}
                                       filterTasks={_this.props.filterTasks.bind(this)}
                                       toggleWindow={_this.toggleWindow.bind(_this)}

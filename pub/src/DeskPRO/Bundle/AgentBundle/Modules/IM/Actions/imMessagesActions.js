@@ -19,12 +19,11 @@ export const loadMessages = createAction(
 export const addMessage = createAction(
   'IM_CHAT_ADD_MESSAGE',
   (chat_id, message, author) => (dispatch) => {
-    //dispatch(addMessageOptimistic(chat_id, message, author));
+    dispatch(addMessageOptimistic(chat_id, message, author));
     IM.addMessage(chat_id, message).then(response => {
-      "use strict";
       const message = response.data.data;
       return new Promise((resolve) => {
-        dispatch(loadMessages(chat_id));
+        //dispatch(loadMessages(chat_id));
         resolve(message);
       });
     });

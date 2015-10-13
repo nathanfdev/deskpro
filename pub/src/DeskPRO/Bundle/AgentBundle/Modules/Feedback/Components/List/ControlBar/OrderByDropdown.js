@@ -1,26 +1,52 @@
-import React, {Component, PropTypes} from 'react';
-import { Option, DropdownMenuFooter } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/GlobalWidgets/DropdownMenu';
-import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/GlobalWidgets/Menu';
-import { OrderSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/OrderSwitcher';
+import React, {PropTypes} from 'react';
+import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
+import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
+import MenuFooter from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooter';
+import MenuFooterOptions from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterOptions';
+import { toggleSort, toggleOrder } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
+import { commentsToggleOrder } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
 
-export class OrderByDropdown extends Component {
+const OrderByDropdown = React.createClass({
 
-  static propTypes = {
+  propTypes: {
     order: PropTypes.string.isRequired,
     currentSortMode: PropTypes.object.isRequired,
     currentGroup: PropTypes.object.isRequired,
     sortOptions: PropTypes.object.isRequired,
-    toggleDropdown: PropTypes.func.isRequired,
-    toggleListSort: PropTypes.func.isRequired,
-    toggleListOrder: PropTypes.func.isRequired,
-    offset: PropTypes.object.isRequired
-  };
+    dispatch: PropTypes.func.isRequired,
+    toggleDropdown: PropTypes.func.isRequired
+  },
 
-  renderOptions() {
-    const {currentGroup, toggleDropdown, currentSortMode, sortOptions, toggleListSort} = this.props;
+  mixins: [
+    require('react-onclickoutside')
+  ],
+
+  handleClickOutside: function handleClickOutside() {
+    this.props.toggleDropdown();
+  },
+
+  toggleListOrder: function toggleListOrder(order) {
+    const {dispatch, currentGroup} = this.props;
+    if (currentGroup.name !== 'feedback_comments') {
+      dispatch(toggleOrder(order));
+    } else {
+      dispatch(commentsToggleOrder(order));
+    }
+  },
+
+  /* Change sort option (Order By ...)*/
+  toggleListSort: function toggleListSort(option) {
+    const {dispatch, currentGroup} = this.props;
+    if (currentGroup.name !== 'feedback_comments') {
+      dispatch(toggleSort(option.field));
+    }
+  },
+
+  renderOptions: function renderOptions() {
+    const {currentGroup, toggleDropdown, currentSortMode, sortOptions} = this.props;
     if (currentGroup.name === 'feedback_comments') {
       return (
-        <Option
+        <Item
           active
           toggleDropdown={toggleDropdown}
           option={currentSortMode}
@@ -29,32 +55,36 @@ export class OrderByDropdown extends Component {
     }
     return (
       sortOptions.map((option, index)=>
-          <Option
+          <Item
             key={index}
-            active={currentSortMode.field === option.field}
-            callback={toggleListSort.bind(this)}
-            toggleDropdown={toggleDropdown}
-            option={option}
-            />
+            isActive={currentSortMode.field === option.field}
+            checked={currentSortMode.field === option.field}
+            onClick={this.toggleListSort.bind(this, option)}
+            icon={option.icon}
+            >
+            {option.label}
+          </Item>
       )
     );
-  }
+  },
 
-  render() {
-    const { order, offset, toggleDropdown, toggleListOrder } = this.props;
+  render: function render() {
+    const { order } = this.props;
 
     return (
-      <Menu offset={offset} toggleDropdown={toggleDropdown}>
+      <Menu>
         {this.renderOptions()}
-        <DropdownMenuFooter>
-          <OrderSwitcher
-            order={order}
-            toggleOrder={toggleListOrder}
-            toggleDropdown={toggleDropdown}
-            />
-        </DropdownMenuFooter>
+        <MenuFooter>
+          <MenuFooterOptions options={[{id: 'asc', onClick: this.toggleListOrder.bind(this, 'asc'), label: 'Asc'},
+                                             {id: 'desc', onClick: this.toggleListOrder.bind(this, 'desc'), label: 'Desc'}
+                                            ]} active={order}>
+            Sort
+          </MenuFooterOptions>
+        </MenuFooter>
       </Menu>
     );
   }
 
-}
+});
+
+module.exports = OrderByDropdown;

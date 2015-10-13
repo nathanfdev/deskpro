@@ -72,8 +72,24 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
                             ->select('t')->from('DeskPRO:AgentTeam', 't')->getQuery();
         }
 
+        $teams = $teams->getResult();
+        /* @var AgentTeam[] $teams */
+
+        if ($request->query->getBoolean('my', false)) {
+            $teams = array_filter($teams, function ($team) {
+                /** @var AgentTeam $team */
+                foreach ($team->getPersonList() as $person) {
+                    if ($person->getId() === $this->getUser()->getId()) {
+                        return true;
+                    }
+                }
+
+                return false;
+            });
+        }
+
         return View::create(
-            $this->DataSerialize($teams->getResult()),
+            $this->DataSerialize($teams),
             Response::HTTP_OK
         );
     }

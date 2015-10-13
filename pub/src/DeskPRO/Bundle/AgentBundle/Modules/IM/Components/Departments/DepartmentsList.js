@@ -3,31 +3,36 @@ import { DepartmentsListItem } from './DepartmentsListItem';
 
 import { connect } from 'react-redux';
 
-import { loadDepartments, loadAllDepartments }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
-import { departmentsSelector, allDepartmentsSelector }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
+import { loadMyDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
+import { myDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
 
 @connect(state => ({
-  departments: allDepartmentsSelector(state),
-
+  departments: myDepartmentsSelector(state),
+  me: state.Application.user
 }))
 export class DepartmentsList extends Component {
 
   static propTypes = {
-    departments: PropTypes.object.isRequired
+    departments: PropTypes.object.isRequired,
+    me: PropTypes.object.isRequired
   };
 
   componentWillMount() {
-    "use strict";
-    this.props.dispatch(loadAllDepartments());
+    this.props.dispatch(loadMyDepartments());
   }
 
   render() {
     return (
       <ul className="im-list short">
         {
-          this.props.departments.map((department, index) => <DepartmentsListItem key={index} department={department}/>)
+          this.props.departments.map((department, index) => {
+            "use strict";
+            return <DepartmentsListItem
+              handleClickParticipant={this.props.handleClickParticipant}
+              key={index}
+              department={department}
+              />
+          })
         }
       </ul>
     );

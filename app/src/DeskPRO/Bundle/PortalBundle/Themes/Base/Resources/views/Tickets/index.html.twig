@@ -99,11 +99,13 @@
                          </td>
                          <td class="info-block">
                              {% set last_message = ticket.messages|last %}
+                             {% if last_message %}
                              <a href="{{ portal_path(ticket) }}">
                                  <img src="{{ avatar_url(last_message.person) }}" class="avatar">
                                  <span class="person">{{ last_message.person.display_name_user }}</span>
                                  <span class="date">{{ ticket.last_activity_date|date }}</span>
                              </a>
+                             {% endif %}
                          </td>
                      </tr>
                  {% endfor %}

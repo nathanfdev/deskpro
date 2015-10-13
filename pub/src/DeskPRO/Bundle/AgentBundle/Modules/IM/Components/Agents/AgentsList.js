@@ -7,11 +7,6 @@ import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordSt
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 
-/**
- * TODO: find a way to avoid this really strong dark magic around porps.agents and state.agents. The point is that when
- * TODO: rendering this template at the very first time you have nothing in props.agents, cause ajax still on progress
- * TODO: and promise have no data yet.
- */
 @connect(state => ({
   agents: agentsSelector(state),
   me: meSelector(state)

@@ -46,7 +46,6 @@ class AgentChatTransformer extends AbstractDataSerializerTransformer
             'id',
             'date_created',
             'date_last_message',
-            'type',
         ];
     }
 
@@ -72,6 +71,7 @@ class AgentChatTransformer extends AbstractDataSerializerTransformer
         foreach ($data as &$datum) {
             array_unique($datum);
         }
+        $data['chat_type'] = $entity->getType();
 
         return $data;
     }

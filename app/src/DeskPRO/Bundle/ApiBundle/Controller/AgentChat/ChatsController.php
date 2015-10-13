@@ -70,13 +70,49 @@ class ChatsController extends AbstractController
         $user          = $this->getUser();
         $requestParams = $request->query->all();
 
+        $chats = $searchService->findChats($user, ['id' => 'ASC']);
+
         if (isset($requestParams['search'])) {
             $searchString = $requestParams['search'];
-        } else {
-            $searchString = '';
+            $chats        = $searchService->searchAllChats($chats, $searchString);
         }
 
-        $chats = $searchService->searchAllChats($user, $searchString);
+        return View::create(
+            $this->dataSerialize($chats),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="get agent-chat collection",
+     *      filters={
+     *          {"name"="search", "dataType"="string"}
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\Entity\AgentChat"
+     * )
+     *
+     * @param Request $request
+     * @Annotations\Get("/agent_chats/recent", name="agent_chats_list_recent")
+     *
+     * @return View
+     */
+    public function recentAction(Request $request)
+    {
+        /** @var History $searchService */
+        $searchService = $this->get('deskpro.agentchat.history');
+        $user          = $this->getUser();
+        $requestParams = $request->query->all();
+
+        $chats = $searchService->findChats($user);
+
+        if (isset($requestParams['search'])) {
+            $searchString = $requestParams['search'];
+            $chats        = $searchService->searchAllChats($chats, $searchString);
+        }
 
         return View::create(
             $this->dataSerialize($chats),

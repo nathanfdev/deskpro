@@ -1,12 +1,11 @@
 import React, {Component, PropTypes} from 'react';
-import { connect } from 'react-redux';
 import { OrderBy } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
-import { OrderByDropdown } from './OrderByDropdown';
-import { toggleSort, toggleOrder } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
-import { commentsToggleOrder } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
+import OrderByDropdown from './OrderByDropdown';
 import { sortingDataSelector } from '../../../Selectors/list';
 import { groupDataSelector } from '../../../Selectors/nav';
+import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned';
 
+import { connect } from 'react-redux';
 @connect(state => ({
   sortOptions: state.Feedback.list.get('sortOptions').toJS(),
   order: state.Feedback.list.get('order'),
@@ -19,7 +18,6 @@ export class OrderByContainer extends Component {
   static propTypes = {
     order: PropTypes.string.isRequired,
     expanded: PropTypes.bool.isRequired,
-    offset: PropTypes.object.isRequired,
     currentSortMode: PropTypes.object.isRequired,
     sortOptions: PropTypes.object.isRequired,
     currentGroup: PropTypes.object.isRequired,
@@ -27,51 +25,28 @@ export class OrderByContainer extends Component {
     dispatch: PropTypes.func.isRequired
   };
 
-  /* Change sort option (Order By ...)*/
-  toggleListSort(option) {
-    const {dispatch, currentGroup} = this.props;
-    if (currentGroup.name !== 'feedback_comments') {
-      dispatch(toggleSort(option.field));
-    }
-  }
-
-  toggleListOrder(order) {
-    const {dispatch, currentGroup} = this.props;
-    if (currentGroup.name !== 'feedback_comments') {
-      dispatch(toggleOrder(order));
-    } else {
-      dispatch(commentsToggleOrder(order));
-    }
-  }
-
-  renderDropdown() {
-    const {expanded, offset, toggleDropdown, order, currentSortMode, sortOptions, currentGroup} = this.props;
-    if (expanded) {
-      return (
-        <OrderByDropdown
-          offset={offset}
-          order={order}
-          toggleListSort={this.toggleListSort.bind(this)}
-          toggleListOrder={this.toggleListOrder.bind(this)}
-          currentSortMode={currentSortMode}
-          toggleDropdown={toggleDropdown}
-          sortOptions={sortOptions}
-          currentGroup={currentGroup}
-          />
-      );
-    }
-  }
-
   render() {
-    const { sortOptions, order, currentSortMode, toggleDropdown } = this.props;
+    const { dispatch, expanded, sortOptions, order, currentSortMode, currentGroup, toggleDropdown } = this.props;
     return (
       <OrderBy
         sortOptions={sortOptions}
         currentSortMode={currentSortMode}
         order={order}
         toggleDropdown={toggleDropdown}
+        ref="orderButton"
         >
-        {this.renderDropdown()}
+        <Positioned isOpen={expanded}
+                    positionAt="left bottom"
+                    positionTarget={this.refs.orderButton}>
+          <OrderByDropdown
+            order={order}
+            currentGroup={currentGroup}
+            toggleDropdown={toggleDropdown}
+            sortOptions={sortOptions}
+            currentSortMode={currentSortMode}
+            dispatch={dispatch}
+            />
+        </Positioned>
       </OrderBy>
     );
   }

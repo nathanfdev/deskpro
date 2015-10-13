@@ -5,7 +5,8 @@ export class ViewModeSwitcher extends Component {
 
   static propTypes = {
     currentViewMode: PropTypes.object.isRequired,
-    toggleDropdown: PropTypes.func.isRequired
+    toggleDropdown: PropTypes.func.isRequired,
+    children: PropTypes.any
   };
 
   render() {
