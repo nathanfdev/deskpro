@@ -4,7 +4,9 @@ require(__DIR__.'/lib/env.php');
 
 use Symfony\Component\Console\Application;
 use DeskPRO\Services\EmailCollection\Command\EmailCollectionCommand;
+use DeskPRO\Services\EmailProcess\Command\EmailProcessCommand;
 
 $application = new Application();
 $application->add(new EmailCollectionCommand());
+$application->add(new EmailProcessCommand());
 $application->run();

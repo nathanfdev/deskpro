@@ -79,6 +79,7 @@ class RedisReader implements ReaderInterface
 
         $this->redis_key    = $this->options['redis_key'];
         $this->task_factory = $this->options['task_factory'];
+        $this->logger       = $this->options['logger'];
     }
 
     /**
@@ -115,8 +116,8 @@ class RedisReader implements ReaderInterface
 
     /**
      * @throws \Exception
-     * @return Client
      *
+     * @return Client
      */
     private function getRedisClient()
     {
@@ -159,8 +160,8 @@ class RedisReader implements ReaderInterface
 
     /**
      * @throws \Exception
-     * @return null|\DeskPRO\Component\TaskRunner\Task\TaskInterface
      *
+     * @return null|\DeskPRO\Component\TaskRunner\Task\TaskInterface
      */
     public function getNext()
     {
@@ -177,7 +178,7 @@ class RedisReader implements ReaderInterface
                     return;
                 }
             } catch (\Exception $e) {
-                $this->logger->warning(sprintf('[Redis] getNext failure (attempt %s): %s', $e->getMessage()), array('exception' => $e));
+                $this->logger->warning(sprintf('[Redis] getNext failure (attempt %s): %s', $i, $e->getMessage()), array('exception' => $e));
                 $last_e = $e;
             }
 

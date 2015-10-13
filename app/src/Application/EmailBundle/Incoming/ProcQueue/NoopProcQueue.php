@@ -26,29 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Services\EmailProcess\TaskRunner\Processor;
+/**
+ * DeskPRO.
+ */
+namespace Application\EmailBundle\Incoming\ProcQueue;
 
-use DeskPRO\Component\TaskRunner\Processor\AbstractCommandProcessor;
-use DeskPRO\Component\TaskRunner\Task\Task;
+use Application\DeskPRO\Entity\EmailSource;
 
-class EmailTaskProcessor extends AbstractCommandProcessor
+class NoopProcQueue implements ProcQueueInterface
 {
-    /**
-     * @param Task $task
-     *
-     * @return string
-     */
-    protected function getCmdString(Task $task)
+    public function enqueueNewEmail(EmailSource $source)
     {
-        $email_id = $task->get('email_id');
-
-        $cmd_path = realpath(DP_ROOT.'/../cmd.php');
-        $cmd      = dp_get_php_command($cmd_path, 'dp:process-email --enable-retries '.$email_id);
-
-        $this->logger->info("[EmailTaskProcessor] <EmailSource::{$email_id}> process command: $cmd", array(
-            'task' => $task,
-        ));
-
-        return $cmd;
+        // nothing
     }
 }

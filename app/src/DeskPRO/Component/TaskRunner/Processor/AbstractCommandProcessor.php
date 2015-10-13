@@ -72,10 +72,19 @@ abstract class AbstractCommandProcessor implements ProcessorInterface
             throw new InvalidArgumentException();
         }
 
-        $proc = $this->createProc($task);
+        $cmd  = $this->getCmdString($task);
+        $proc = new Process($cmd);
         $proc->start($loop);
+        $this->attachProcLoggers($task, $proc);
 
         $handle = new TaskHandle($task, $proc);
+        $proc->on('exit', function ($code) use ($handle) {
+            if ((int) $code !== 0) {
+                $handle->setFailed();
+            } else {
+                $handle->setSuccess();
+            }
+        });
 
         return $handle;
     }
@@ -85,12 +94,10 @@ abstract class AbstractCommandProcessor implements ProcessorInterface
      *
      * @return Process
      */
-    protected function createProc(Task $task)
+    protected function attachProcLoggers(Task $task, Process $process)
     {
-        $cmd                     = $this->getCmdString($task);
-        list($out_buf, $err_buf) = each($this->createLineBuffers($task));
+        list($out_buf, $err_buf) = $this->createLineBuffers($task);
 
-        $process = new Process($cmd);
         $process->stdout->on('data', function ($output) use ($out_buf) {
             $out_buf->append($output);
         });
@@ -101,8 +108,6 @@ abstract class AbstractCommandProcessor implements ProcessorInterface
             $err_buf->flush();
             $out_buf->flush();
         });
-
-        return $process;
     }
 
     /**

@@ -32,6 +32,7 @@ use DeskPRO\Component\TaskRunner\Reader\RedisReader;
 use DeskPRO\Component\TaskRunner\Task\JsonTaskFactory;
 use DeskPRO\Component\TaskRunner\TaskRunner;
 use DeskPRO\Services\EmailProcess\TaskRunner\Processor\EmailTaskProcessor;
+use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
@@ -47,9 +48,11 @@ class EmailProcessCommand extends Command
         $this
             ->setName('email:process')
             ->setDescription('Starts the email processing routine')
-            ->addOption('load-config', null, InputOption::VALUE_NONE, 'Specify this to use values from config.php')
+            ->addOption('load-config', null, InputOption::VALUE_NONE, 'Fetch options from config.php if not defined as a CLI param')
             ->addOption('max-processes', null, InputOption::VALUE_REQUIRED, 'Specify the number of tasks to run in parallel')
             ->addOption('max-time', null, InputOption::VALUE_REQUIRED, 'Specify the max time this process should run before it exits gracefully. This will wait for all tasks to complete before exiting.')
+            ->addOption('redis-key', null, InputOption::VALUE_REQUIRED, 'Specify the redis key (default to dp_incoming_email)')
+            ->addOption('redis', null, InputOption::VALUE_REQUIRED, 'Specify the redis host. Example: tcp://127.0.0.1:6379')
         ;
     }
 
@@ -60,17 +63,65 @@ class EmailProcessCommand extends Command
         $stop_time    = $input->getOption('max-time') ?: 0;
         $task_timeout = 600;
         $max_tasks    = $input->getOption('max-processes') ?: 8;
+        $redis_key    = $input->getOption('redis-key') ?: 'dp_incoming_email';
+
+        if ($input->getOption('redis')) {
+            $urlinfo = parse_url($input->getOption('redis'));
+            $redis   = array(
+                'scheme'             => $urlinfo['scheme'],
+                'host'               => $urlinfo['host'],
+                'port'               => $urlinfo['port'],
+                'read_write_timeout' => '20',
+            );
+        } else {
+            $redis = null;
+        }
+
+        if ($input->getOption('load-config')) {
+            global $DP_CONFIG;
+            if (!$input->getOption('max-time') && isset($DP_CONFIG['adv_email_process']['max_time'])) {
+                $stop_time = (int) $DP_CONFIG['adv_email_process']['max_time'];
+            }
+            if (!$input->getOption('max-processes') && isset($DP_CONFIG['adv_email_process']['max_processes'])) {
+                $max_tasks = (int) $DP_CONFIG['adv_email_process']['max_processes'];
+            }
+            if (!$input->getOption('redis-key') && isset($DP_CONFIG['adv_email_process']['redis_key'])) {
+                $redis_key = $DP_CONFIG['adv_email_process']['redis_key'];
+            }
+            if (!$input->getOption('redis') && isset($DP_CONFIG['adv_email_process']['redis_params'])) {
+                $redis = $DP_CONFIG['adv_email_process']['redis_params'];
+            }
+        }
+
+        if (!$redis) {
+            $output->writeln('<error>No redis client params were set. Use --redis to specify the redis host.</error>');
+
+            return 1;
+        }
 
         $logger = new Logger('email.process');
-        $logger->pushHandler(new StreamHandler(dp_get_log_dir().'/email.process.log', Logger::INFO));
+
+        $formatter = new LineFormatter('[%datetime%] %channel%.%level_name%: %message%'."\n");
 
         if ($output->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) {
-            $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
-            $logger->pushHandler(new ConsoleHandler($output));
+            $h = new ConsoleHandler($output);
+            $h->setFormatter($formatter);
+            $logger->pushHandler($h);
+
+            $h = new StreamHandler(dp_get_log_dir().'/email.process.log', Logger::DEBUG);
+            $h->setFormatter($formatter);
+            $logger->pushHandler($h);
+        } else {
+            $h = new StreamHandler(dp_get_log_dir().'/email.process.log', Logger::INFO);
+            $h->setFormatter($formatter);
+            $logger->pushHandler($h);
         }
 
         $reader = new RedisReader(array(
             'task_factory' => new JsonTaskFactory(),
+            'redis_params' => $redis,
+            'redis_key'    => $redis_key,
+            'logger'       => $logger,
         ));
 
         $processor = new EmailTaskProcessor($logger);
@@ -79,7 +130,7 @@ class EmailProcessCommand extends Command
             'task_timeout'    => $task_timeout,
             'max_tasks'       => $max_tasks,
             'stop_after_time' => $stop_time,
-            'tick_time'       => 5,
+            'tick_time'       => 1.0,
             'reader'          => $reader,
             'processor'       => $processor,
             'logger'          => $logger,
@@ -88,6 +139,6 @@ class EmailProcessCommand extends Command
         $runner = new TaskRunner($options);
         $output->writeln('Running ...');
         $runner->start();
-        $output->writeln('Email collection ended');
+        $output->writeln('Email processing ended');
     }
 }

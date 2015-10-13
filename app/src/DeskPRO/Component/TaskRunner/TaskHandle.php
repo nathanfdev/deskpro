@@ -36,6 +36,9 @@ use DeskPRO\Component\TaskRunner\Task\TaskInterface;
  */
 class TaskHandle
 {
+    const EVENT_DONE_SUCCESS = 'done.success';
+    const EVENT_DONE_FAILURE = 'done.failure';
+
     /**
      * @var TaskInterface
      */
@@ -50,6 +53,21 @@ class TaskHandle
      * @var float
      */
     private $start_time;
+
+    /**
+     * @var array
+     */
+    private $event_listeners = array();
+
+    /**
+     * @var mixed
+     */
+    private $success_value = null;
+
+    /**
+     * @var mixed
+     */
+    private $error_value = null;
 
     /**
      * @param TaskInterface $task
@@ -84,5 +102,73 @@ class TaskHandle
     public function getStartTime()
     {
         return $this->start_time;
+    }
+
+    /**
+     * @param string   $ev
+     * @param callable $cb
+     */
+    public function addEventListener($ev, $cb)
+    {
+        if (!isset($this->event_listeners[$ev])) {
+            $this->event_listeners[$ev] = array();
+        }
+
+        $this->event_listeners[$ev][] = $cb;
+
+        if ($ev === self::EVENT_DONE_SUCCESS && $this->success_value !== null) {
+            call_user_func($cb, $this->success_value);
+        } elseif ($ev === self::EVENT_DONE_FAILURE && $this->error_value !== null) {
+            call_user_func($cb, $this->error_value);
+        }
+    }
+
+    /**
+     * Internal to the processor.
+     *
+     * @internal
+     *
+     * @param mixed $value
+     */
+    public function setSuccess($value = true)
+    {
+        if ($this->success_value !== null || $this->error_value !== null) {
+            throw new \RuntimeException('Task result has already been set.');
+        }
+
+        $this->success_value = $value;
+
+        $this->execEvent(self::EVENT_DONE_SUCCESS, $value);
+    }
+
+    /**
+     * Internal to the processor.
+     *
+     * @internal
+     *
+     * @param mixed $value
+     */
+    public function setFailed($value = false)
+    {
+        if ($this->success_value !== null || $this->error_value !== null) {
+            throw new \RuntimeException('Task result has already been set.');
+        }
+
+        $this->error_value = $value;
+
+        $this->execEvent(self::EVENT_DONE_FAILURE, $value);
+    }
+
+    /**
+     * @param string $ev
+     * @param mixed  $value
+     */
+    private function execEvent($ev, $value)
+    {
+        if (!empty($this->event_listeners[$ev])) {
+            foreach ($this->event_listeners[$ev] as $cb) {
+                call_user_func($cb, $value, $this);
+            }
+        }
     }
 }

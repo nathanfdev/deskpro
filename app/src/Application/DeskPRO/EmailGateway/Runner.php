@@ -648,6 +648,8 @@ class Runner
      */
     public function executeAccount(EmailAccount $account, $time_limit = 0, $only_collect = false)
     {
+        global $DP_CONFIG;
+
         gc_enable();
 
         $this->logger->log("Start processing {$account['address']} {$account['account_type']}", 'info');
@@ -679,7 +681,9 @@ class Runner
 
         $inserted_source_ids = array();
 
-        if ($only_collect) {
+        $only_collect = $only_collect || !empty($DP_CONFIG['adv_email_process']);
+
+        if (!$only_collect) {
             $inserted_source_ids = App::getDb()->fetchAllCol("
                 SELECT id FROM
                 email_sources
@@ -789,10 +793,28 @@ class Runner
                 continue;
             }
 
+            if ($only_collect && $source->status !== 'error' && !empty($DP_CONFIG['adv_email_process'])) {
+                /** @var \Application\EmailBundle\Incoming\ProcQueue\ProcQueueInterface $proc */
+                $proc = App::getContainer()->get('in_email.proc_queue');
+                try {
+                    $this->logger->logDebug('Queueing message for processing');
+                    $proc->enqueueNewEmail($source);
+                } catch (\Exception $e) {
+                    $this->logger->logError('Exception: '.$e->getMessage());
+                    $source->status = 'retry';
+                    App::$container->getDb()->update(
+                        'email_sources',
+                        array('status' => $source->status, 'date_status' => $source->date_status->format('Y-m-d H:i:s')),
+                        array('id'     => $source->id)
+                    );
+                }
+            }
+
+            $is_mem_limit = false;
+
             if (!$only_collect) {
                 $this->logger->logDebug('START: executeSource('.$source->getId().')');
-                $t            = microtime(true);
-                $is_mem_limit = false;
+                $t = microtime(true);
                 try {
                     $this->executeSource($source);
                 } catch (ProcessingException $e) {
@@ -804,39 +826,40 @@ class Runner
                 }
 
                 $this->logger->logDebug(sprintf('FINISH: executeSource('.$source->getId().') - %.4fs', microtime(true) - $t));
+            }
 
-                $m_end  = memory_get_usage();
-                $m_diff = $m_end - $m;
+            $m_end  = memory_get_usage();
+            $m_diff = $m_end - $m;
 
-                $this->logger->log(sprintf('Memory usage: %.2f MB (total: %.2f MB)', $m_diff / 1024 / 1024, $m_end / 1024 / 1024), 'debug');
+            $this->logger->log(sprintf('Memory usage: %.2f MB (total: %.2f MB)', $m_diff / 1024 / 1024, $m_end / 1024 / 1024), 'debug');
 
-                $time_so_far = time() - $exec_start;
-                if ($time_limit && $time_so_far >= $time_limit) {
-                    $this->logger->logInfo('Hit time limit, breaking');
+            $time_so_far = time() - $exec_start;
+            if ($time_limit && $time_so_far >= $time_limit) {
+                $this->logger->logInfo('Hit time limit, breaking');
+                break;
+            }
+
+            if ($is_mem_limit) {
+                $this->logger->logInfo('Hit memory limit, breaking');
+                break;
+            }
+
+            ++$this->message_count;
+
+            if ($this->soft_time_limit) {
+                $t = microtime(true) - DP_START_TIME;
+                if ($t > $this->soft_time_limit) {
+                    $this->logger->logWarn(sprintf('Hit soft time limit, breaking :: Running for %.3fs', $t));
                     break;
-                }
-
-                if ($is_mem_limit) {
-                    $this->logger->logInfo('Hit memory limit, breaking');
-                    break;
-                }
-
-                ++$this->message_count;
-
-                if ($this->soft_time_limit) {
-                    $t = microtime(true) - DP_START_TIME;
-                    if ($t > $this->soft_time_limit) {
-                        $this->logger->logWarn(sprintf('Hit soft time limit, breaking :: Running for %.3fs', $t));
-                        break;
-                    }
                 }
             }
         }
 
         $account->date_last_incoming = new \DateTime();
+        $account->is_read_active     = false;
         App::$container->getDb()->update(
             'email_accounts',
-            array('date_last_incoming' => $account->date_last_incoming->format('Y-m-d H:i:s')),
+            array('date_last_incoming' => $account->date_last_incoming->format('Y-m-d H:i:s'), 'is_read_active' => 0),
             array('id'                 => $account->id)
         );
 

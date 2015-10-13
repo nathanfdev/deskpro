@@ -44,10 +44,17 @@ class AccountReader implements ReaderInterface
     private $db;
 
     /**
+     * @var int
+     */
+    private $interval;
+
+    /**
+     * @param int      $interval   The min time between each check
      * @param callable $db_factory
      */
-    public function __construct($db_factory)
+    public function __construct($interval, $db_factory)
     {
+        $this->interval   = $interval;
         $this->db_factory = $db_factory;
     }
 
@@ -69,15 +76,28 @@ class AccountReader implements ReaderInterface
         $db = $this->getDb();
         $db->beginTransaction();
 
-        $account_id = $db->fetchColumn("
-            SELECT id
-            FROM email_accounts
-            WHERE
-              account_type = 'tickets'
-              AND is_read_active = 0
-            ORDER BY date_read_start ASC
-            LIMIT 1
-        ");
+        if ($this->interval) {
+            $date_cut   = new \DateTime("-{$this->interval} seconds");
+            $account_id = $db->fetchColumn("
+                SELECT id
+                FROM email_accounts
+                WHERE
+                  account_type = 'tickets'
+                  AND is_read_active = 0 AND (date_last_incoming IS NULL OR date_last_incoming <= ?)
+                ORDER BY date_read_start ASC
+                LIMIT 1
+            ", array($date_cut->format('Y-m-d H:i:s')));
+        } else {
+            $account_id = $db->fetchColumn("
+                SELECT id
+                FROM email_accounts
+                WHERE
+                  account_type = 'tickets'
+                  AND is_read_active = 0
+                ORDER BY date_read_start ASC
+                LIMIT 1
+            ");
+        }
 
         // The is_read_active is toggled on/off during dp:collect-email anyway,
         // but by reserving it here, it makes sure there's no races

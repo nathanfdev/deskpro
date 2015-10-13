@@ -154,7 +154,7 @@ class TaskRunner
     {
         if ($this->options['stop_after_time']) {
             $t = microtime(true) - $this->start_time;
-            if ($t > $this->options['stop_after_time]']) {
+            if ($t > $this->options['stop_after_time']) {
                 return true;
             }
         }
@@ -171,6 +171,7 @@ class TaskRunner
 
         if ($this->isOverTime() && empty($this->running_tasks)) {
             $this->loop->stop();
+            $this->logger->debug('Stopping loop due to isOverTime');
 
             return;
         }
@@ -179,8 +180,14 @@ class TaskRunner
         // So housekeeping has a chance to run even if max_tasks if high
         $max_per_tick = 50;
 
+        $me = $this;
+
         if (!$this->isOverTime()) {
+            $count = 0;
             while (count($this->running_tasks) < $this->options['max_tasks'] && ($task = $this->getNext()) && $max_per_tick-- > 0) {
+                ++$count;
+
+                /** @var TaskHandle $handle */
                 $handle                              = $this->processor->start($task, $this->loop);
                 $this->running_tasks[$task->getId()] = $handle;
 
@@ -188,6 +195,17 @@ class TaskRunner
                     sprintf('[Task %s] Task started', $task->getId()),
                     array('task' => $task, 'log_event' => self::LOG_EV_TASK_START)
                 );
+
+                $handle->addEventListener(TaskHandle::EVENT_DONE_SUCCESS, function ($v, TaskHandle $handle) use ($me) {
+                    $me->_markTaskHandlerDone($handle, true);
+                });
+                $handle->addEventListener(TaskHandle::EVENT_DONE_FAILURE, function ($v, TaskHandle $handle) use ($me) {
+                    $me->_markTaskHandlerDone($handle, false);
+                });
+            }
+
+            if ($count) {
+                $this->logger->debug(sprintf('[TaskRunner] tick -- got %d new tasks', $count));
             }
         }
 
@@ -198,6 +216,7 @@ class TaskRunner
 
         if ($this->options['stop_on_done'] && empty($this->running_tasks)) {
             $this->loop->stop();
+            $this->logger->debug('Stopping loop due to stop_on_done option and empty task queue');
         }
     }
 
@@ -207,8 +226,10 @@ class TaskRunner
     private function housekeeping()
     {
         foreach ($this->running_tasks as $c) {
+            if ($this->processor->status($c) !== ProcessorInterface::STATUS_RUNNING) {
+                $this->_markTaskHandlerDone($c);
             // Check for timeout and terminate any that are too old
-            if ($this->options['task_timeout'] && (microtime() - $c->getStartTime()) > $this->options['task_timeout']) {
+            } elseif ($this->options['task_timeout'] && (microtime() - $c->getStartTime()) > $this->options['task_timeout']) {
                 $this->logger->alert(
                     sprintf('[Task %s] Timed out after %s seconds; terminating', $c->getTask()->getId(), $this->options['task_timeout']),
                     array('task' => $c->getTask(), 'log_event' => self::LOG_EV_TASK_TIMEOUT)
@@ -222,12 +243,30 @@ class TaskRunner
                         array('task' => $c->getTask(), 'exception' => $e, 'log_event' => self::LOG_EV_ERROR)
                     );
                 }
-
-                // Check for tasks that are over, we can remove them from our log
-            } elseif ($this->processor->status($c) !== ProcessorInterface::STATUS_RUNNING) {
-                unset($this->running_tasks[$c->getTask()->getId()]);
             }
         }
+    }
+
+    /**
+     * @internal
+     *
+     * @param TaskHandle $c
+     * @param bool       $is_success
+     */
+    public function _markTaskHandlerDone(TaskHandle $c, $is_success)
+    {
+        if (!$is_success) {
+            $this->logger->err(
+                sprintf('[Task %s] Task done (failure)', $c->getTask()->getId()),
+                array('task' => $c->getTask(), 'log_event' => self::LOG_EV_TASK_END)
+            );
+        } else {
+            $this->logger->info(
+                sprintf('[Task %s] Task done (success)', $c->getTask()->getId()),
+                array('task' => $c->getTask(), 'log_event' => self::LOG_EV_TASK_END)
+            );
+        }
+        unset($this->running_tasks[$c->getTask()->getId()]);
     }
 
     /**

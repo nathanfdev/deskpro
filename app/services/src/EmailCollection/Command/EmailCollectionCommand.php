@@ -31,6 +31,7 @@ namespace DeskPRO\Services\EmailCollection\Command;
 use DeskPRO\Component\TaskRunner\TaskRunner;
 use DeskPRO\Services\EmailCollection\TaskRunner\Processor\AccountProcessor;
 use DeskPRO\Services\EmailCollection\TaskRunner\Reader\AccountReader;
+use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
@@ -46,8 +47,10 @@ class EmailCollectionCommand extends Command
         $this
             ->setName('email:collection')
             ->setDescription('Starts the email collection routine')
-            ->addOption('load-config', null, InputOption::VALUE_NONE, 'Specify this to use values from config.php')
+            ->addOption('load-config', null, InputOption::VALUE_NONE, 'Fetch options from config.php if not defined as a CLI param')
+            ->addOption('connect-interval', null, InputOption::VALUE_REQUIRED, 'How long to wait between each email account check (default 30s)')
             ->addOption('max-time', null, InputOption::VALUE_REQUIRED, 'Specify the max time this process should run before it exits gracefully. This will wait for all tasks to complete before exiting.')
+            ->addOption('max-processes', null, InputOption::VALUE_REQUIRED, 'Specify the number of tasks to run in parallel')
         ;
     }
 
@@ -57,17 +60,41 @@ class EmailCollectionCommand extends Command
 
         $stop_time    = $input->getOption('max-time') ?: 0;
         $task_timeout = 600;
-        $max_tasks    = 999;
+        $interval     = $input->getOption('connect-interval') ?: 30;
+        $max_tasks    = $input->getOption('max-processes') ?: 999;
 
-        $logger = new Logger('email.collection');
-        $logger->pushHandler(new StreamHandler(dp_get_log_dir().'/email.collection.log', Logger::INFO));
-
-        if ($output->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) {
-            $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
-            $logger->pushHandler(new ConsoleHandler($output));
+        if ($input->getOption('load-config')) {
+            global $DP_CONFIG;
+            if (!$input->getOption('max-time') && isset($DP_CONFIG['adv_email_collect']['max_time'])) {
+                $stop_time = (int) $DP_CONFIG['adv_email_collect']['max_time'];
+            }
+            if (!$input->getOption('max-processes') && isset($DP_CONFIG['adv_email_process']['max_processes'])) {
+                $max_tasks = (int) $DP_CONFIG['adv_email_collect']['max_processes'];
+            }
+            if (!$input->getOption('connect-interval') && isset($DP_CONFIG['adv_email_collect']['connect_interval'])) {
+                $interval = (int) $DP_CONFIG['adv_email_collect']['connect_interval'];
+            }
         }
 
-        $reader = new AccountReader(function ($current) {
+        $logger = new Logger('email.collection');
+
+        $formatter = new LineFormatter('[%datetime%] %channel%.%level_name%: %message%'."\n");
+
+        if ($output->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) {
+            $h = new ConsoleHandler($output);
+            $h->setFormatter($formatter);
+            $logger->pushHandler($h);
+
+            $h = new StreamHandler(dp_get_log_dir().'/email.collection.log', Logger::DEBUG);
+            $h->setFormatter($formatter);
+            $logger->pushHandler($h);
+        } else {
+            $h = new StreamHandler(dp_get_log_dir().'/email.collection.log', Logger::INFO);
+            $h->setFormatter($formatter);
+            $logger->pushHandler($h);
+        }
+
+        $reader = new AccountReader($interval, function ($current) {
             return get_db_if_closed($current);
         });
 
