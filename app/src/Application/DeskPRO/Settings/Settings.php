@@ -294,12 +294,10 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
                 }
 
                 $this->db->executeUpdate('
-                    INSERT INTO settings
+                    REPLACE INTO settings
                         (name, value)
                     VALUES
                         (?, ?)
-                    ON DUPLICATE KEY UPDATE
-                        value = VALUES(value)
                 ', array($setting, $value));
             } else {
                 $this->db->delete('settings', array('name' => $setting));
