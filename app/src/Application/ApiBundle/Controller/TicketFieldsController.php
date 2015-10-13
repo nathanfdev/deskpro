@@ -406,7 +406,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         }
 
         $data['products']       = $this->getApiData($cats, false);
-        $data['default_id']     = $ticket_prods->count() ? $ticket_prods->getDefaultProduct()->getId() : 0;
+        $data['default_id']     = $ticket_prods->getDefaultProduct() ? $ticket_prods->getDefaultProduct()->getId() : 0;
         $data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_prod_user_required') ? true : false;
         $data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_prod_agent_required') ? true : false;
         $data['enabled']        = $field_manager->isProductEnabled();
