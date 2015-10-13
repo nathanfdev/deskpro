@@ -151,35 +151,6 @@
     }
 
     &:hover, &.active { border: 1px solid #3d83c5; }
-
-    &.password-container {
-      position: relative;
-
-      ::-webkit-input-placeholder {
-        font-size: 26px;
-        letter-spacing: 5px;
-        color: #e7e7e7;
-        line-height: 0;
-      }
-      ::-moz-placeholder { /* Firefox 19+ */
-        font-size: 26px;
-        letter-spacing: 5px;
-        color: #e7e7e7;
-        line-height: 0;
-      }
-      :-ms-input-placeholder {
-        font-size: 26px;
-        letter-spacing: 5px;
-        color: #e7e7e7;
-        line-height: 0;
-      }
-      :-moz-placeholder { /* Firefox 18- */
-        font-size: 26px;
-        letter-spacing: 5px;
-        color: #e7e7e7;
-        line-height: 0;
-      }
-    }
   }
 
   form.disabled {
@@ -220,6 +191,33 @@
     &:-ms-input-placeholder { color: #d3d3d3; font-weight: 400; opacity: 1; }
 
     &:disabled { background: inherit; }
+  }
+
+  input[type="password"] {
+    &::-webkit-input-placeholder {
+      font-size: 26px;
+      letter-spacing: 5px;
+      color: #e7e7e7;
+      line-height: 0;
+    }
+    &::-moz-placeholder { /* Firefox 19+ */
+      font-size: 26px;
+      letter-spacing: 5px;
+      color: #e7e7e7;
+      line-height: 0;
+    }
+    &:-ms-input-placeholder {
+      font-size: 26px;
+      letter-spacing: 5px;
+      color: #e7e7e7;
+      line-height: 0;
+    }
+    &:-moz-placeholder { /* Firefox 18- */
+      font-size: 26px;
+      letter-spacing: 5px;
+      color: #e7e7e7;
+      line-height: 0;
+    }
   }
 
   .dpw-login-form-log-out {

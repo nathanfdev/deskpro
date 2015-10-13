@@ -20,10 +20,9 @@ export class Password extends React.Component {
 
   render() {
     const { hasError, value, onChange } = this.props;
-    const customClasses = ['password-container'];
 
     return (
-      <LoginFormField iconClass="fa-lock" label="Password" customClasses={customClasses} hasError={hasError}>
+      <LoginFormField iconClass="fa-lock" label="Password" hasError={hasError}>
         <div className="dpw-login-form-warning-container warning-container">
           <i className="fa fa-arrow-circle-o-up"></i> <span>Looks like caps lock is on?</span>
         </div>
