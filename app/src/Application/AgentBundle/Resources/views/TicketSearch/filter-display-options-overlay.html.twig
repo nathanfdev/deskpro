@@ -32,6 +32,10 @@
 			<option class="time_waiting_asc" value="ticket.date_user_waiting:asc">&darr; {{ phrase('agent.general.time_waiting') }}</option>
 			<option class="total_user_waiting_desc" value="ticket.total_user_waiting:desc">&darr; {{ phrase('agent.general.total_time_waiting') }}</option>
 			<option class="total_user_waiting_asc" value="ticket.total_user_waiting:asc">&uarr; {{ phrase('agent.general.total_time_waiting') }}</option>
+			{% for f in ticket_field_defs %}
+				<option class="ticket_field_{{ f.id }}_asc" value="ticket.ticket_field[{{ f.id }}]:asc">&uarr; {{ f.title }}</option>
+				<option class="ticket_field_{{ f.id }}_desc" value="ticket.ticket_field[{{ f.id }}]:desc">&uarr; {{ f.title }}</option>
+			{% endfor %}
 		</select>
 	</div>
 {% endblock %}

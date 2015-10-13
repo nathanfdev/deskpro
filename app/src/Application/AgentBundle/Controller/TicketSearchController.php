@@ -349,8 +349,8 @@ class TicketSearchController extends AbstractController
         $user_all_custom_fields = array();
 
         if ($has_t_fields || $has_u_fields) {
-            $field_manager      = $this->container->getSystemService('ticket_fields_manager');
-            $user_field_manager = $this->container->getSystemService('person_fields_manager');
+            $field_manager      = $this->container->getTicketFieldManager();
+            $user_field_manager = $this->container->getPersonFieldManager();
 
             foreach ($tickets as $t) {
                 if ($has_t_fields) {
