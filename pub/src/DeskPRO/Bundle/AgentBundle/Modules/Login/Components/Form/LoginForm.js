@@ -1,7 +1,7 @@
 import React from 'react';
 import { DpLogo } from '../DpLogo';
 import { LoginFormHeader } from './LoginFormHeader';
-import { LoginFormField } from './LoginFormField';
+import { Email } from './Email';
 import { Password } from './Password';
 import { LoginFormFooter } from './LoginFormFooter';
 import { WarningMajor } from './WarningMajor/WarningMajor';
@@ -16,14 +16,14 @@ export class LoginForm extends React.Component {
     super(props);
 
     this.state = {
-      login: 'example@email.com',
+      email: 'example@email.com',
       password: 'password'
     };
   }
 
   onChange = (event) => {
     this.setState({
-      login: event.target.value
+      email: event.target.value
     });
   };
 
@@ -58,10 +58,7 @@ export class LoginForm extends React.Component {
 
               <div className="dpw-login-form">
                 <form>
-                  <LoginFormField iconClass="fa-user" label="Account name / Email" hasError={hasError}>
-                    <input type="text" placeholder="example@email.com" value={this.state.login} onChange={this.onChange} />
-                  </LoginFormField>
-
+                  <Email hasError={hasError} value={this.state.email} onChange={this.onChange} />
                   <Password hasError={hasError} />
 
                   <div className="dpw-login-form-options">
