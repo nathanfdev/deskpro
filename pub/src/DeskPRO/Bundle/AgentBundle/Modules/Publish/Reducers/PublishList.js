@@ -43,6 +43,6 @@ export default class PublishList extends Reducer {
   }
 
   viewToggled(prev) {
-    return {...prev, view: prev.view === constants.VIEW_MODE_LIST ? constants.VIEW_MODE_TABLE : constants.VIEW_MODE_LIST};
+    return {...prev, view: prev.view === constants.VIEW_MODE_CARD ? constants.VIEW_MODE_TABLE : constants.VIEW_MODE_CARD};
   }
 }

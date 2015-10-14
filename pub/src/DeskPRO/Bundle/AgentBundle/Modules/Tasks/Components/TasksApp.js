@@ -5,9 +5,9 @@ import HTML5Backend from 'react-dnd/modules/backends/HTML5';
 import { DragDropContext } from 'react-dnd';
 import TaskCardDragLayer from './TaskCardDragLayer';
 
-//import TasksSidebarHoverFrame from './TasksSidebarHoverFrame';
+// import TasksSidebarHoverFrame from './TasksSidebarHoverFrame';
 import TasksNavFrame from './TasksNavFrame';
-import TasksListFrame from './TasksListFrame';
+import { TasksListFrame } from './TasksListFrame';
 
 @connect(state => ({
   user: state.Application.user,

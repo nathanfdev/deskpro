@@ -8,7 +8,7 @@ const initialState = {
   activeAppId: 'tickets',
   collapseNav: localStorage.getItem('dpWindow.sidebarMode') === 'hover',
   expandedSwitcher: false,
-  taskView: constants.VIEW_MODE_LIST,
+  taskView: constants.VIEW_MODE_CARD,
   columnMode: localStorage.getItem('dpWindow.columnMode') || 'column',
   columnDimensions: parseInt(localStorage.getItem('dpWindow.columnDimensions'), 10) || 40,
   sidebarMode: localStorage.getItem('dpWindow.sidebarMode') || 'static'

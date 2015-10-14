@@ -1,5 +1,4 @@
 import React, {Component, PropTypes} from 'react';
-import jQuery from 'jquery';
 import classNames from 'classnames';
 
 export class ControlBar extends Component {

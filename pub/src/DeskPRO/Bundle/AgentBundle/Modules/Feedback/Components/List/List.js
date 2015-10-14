@@ -43,7 +43,7 @@ export class List extends Component {
             feedbackComments, feedbackStatuses } = this.props;
 
     var viewMode = currentViewMode.field;
-    if (viewMode === constants.VIEW_MODE_LIST) {
+    if (viewMode === constants.VIEW_MODE_CARD) {
       return (
         <FeedbackList
           elements={feedback}
@@ -72,7 +72,7 @@ export class List extends Component {
   renderComments() {
     const {dispatch, feedbackFromStore, currentViewMode, comments, selected, toggleSelected, massAction, people, emails, feedbackStatuses} = this.props;
     var viewMode = currentViewMode.field;
-    if (viewMode === constants.VIEW_MODE_LIST) {
+    if (viewMode === constants.VIEW_MODE_CARD) {
       return (
         <FeedbackCommentList
           dispatch={dispatch}

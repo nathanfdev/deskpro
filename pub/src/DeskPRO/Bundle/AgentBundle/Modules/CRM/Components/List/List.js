@@ -25,7 +25,7 @@ export class List extends Component {
     return (
       <ListFrameContainer>
         <CrmListControlBar />
-        {viewModeOptions.find((option)=>option.current === true).field === constants.VIEW_MODE_LIST ? <CrmList elements={elements}/> : <CrmTable elements={elements}/>}
+        {viewModeOptions.find((option)=>option.current === true).field === constants.VIEW_MODE_CARD ? <CrmList elements={elements}/> : <CrmTable elements={elements}/>}
       </ListFrameContainer>
     );
   }
