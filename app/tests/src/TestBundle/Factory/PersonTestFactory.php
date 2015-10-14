@@ -58,15 +58,16 @@ class PersonTestFactory
 
     /**
      * Returns a basic user as a new Person, already flushed to the database.
+     * They are "invalid" because they have not validated their email yet.
      *
      * @param null $email
      * @param null $name
      *
      * @return \Application\DeskPRO\Entity\Person
      */
-    public function createNewInvalidUser($email = null, $name = null, $flush = true)
+    public function createNewInvalidUser($email = null, $name = null, $password = null, $flush = true)
     {
-        return $this->getBuilder()->createNew($email, $name)->getPerson($flush);
+        return $this->getBuilder()->createNew($email, $name, $password)->getPerson($flush);
     }
 
     public function getBuilder()
