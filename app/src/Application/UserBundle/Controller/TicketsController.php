@@ -34,10 +34,13 @@ namespace Application\UserBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\HttpKernel\Event\PrePostEvent;
+use Application\DeskPRO\People\PersonGuest;
 use Application\UserBundle\Form\NewTicketParticipantType;
 use Application\UserBundle\Form\NewTicketReplyType;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class TicketsController extends AbstractController
 {
@@ -54,6 +57,19 @@ class TicketsController extends AbstractController
         if ($this->session->get('ticket_access')) {
             $this->session_allowed        = $this->session->get('ticket_access');
             $GLOBALS['DP_SET_SKIP_CACHE'] = true;
+        }
+    }
+
+    public function DeskPRO_onControllerPreAction($event)
+    {
+        parent::DeskPRO_onControllerPreAction($event);
+
+        /* @var $event PrePostEvent */
+        if ($this->person instanceof PersonGuest) {
+            $event->setResponse(new RedirectResponse($this->generateUrl(
+                'user_login',
+                array('return' => $this->request->getRequestUri())
+            )));
         }
     }
 
