@@ -1843,6 +1843,7 @@ class TicketSearch extends SearcherAbstract
                         if (!is_array($choice)) {
                             $choice = explode(',', $choice);
                         }
+                        $choice = Arrays::removeFalsey($choice);
                         if (!empty($choice)) {
                             if (count($choice) == 1) {
                                 $this->specific_fields[] = self::TERM_ORGANIZATION;
