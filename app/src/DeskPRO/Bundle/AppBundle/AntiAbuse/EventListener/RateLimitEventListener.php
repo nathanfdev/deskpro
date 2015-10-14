@@ -32,7 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener;
 
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
-use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuseEvent;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\AntiAbuseEvent;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
