@@ -36,8 +36,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	initPage: function(el) {
 		this.wrapper = el;
 		var self = this;
-		this.getEl('replybox_wrap').children('form.ticket-reply-form:first')
-			.attr('data-element-handler', 'DeskPRO.Agent.ElementHandler.TicketReplyBox');
+
+		var replyBoxHandler = this.getEl('replybox_wrap').find('[data-element-handler]:first').data('handler');
+		if (replyBoxHandler) {
+			replyBoxHandler.page = this;
+		}
+		this.getEl('replybox_wrap').data('page', this);
 
 		this.hasReplyFocused = false;
 

@@ -541,7 +541,6 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			},
 			onSnippetClick: function(info) {
 				if (!self.page) {
-					console.info('no page');
 					return;
 				}
 
