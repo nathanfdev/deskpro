@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f3362edaa9a91badf561f9fbad574e9e",
+    "hash": "823a9969e8bc65240a420c51491eb728",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -415,7 +415,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DeskPRO/deskpro-api-php/zipball/c19f3bd8e50830ea49d4753c8a93e56461b0237d",
+                "url": "https://api.github.com/repos/DeskPRO/deskpro-api-php/zipball/e1b38aa839402225ad8da5c70803bfc244ac241e",
                 "reference": "c19f3bd8e50830ea49d4753c8a93e56461b0237d",
                 "shasum": ""
             },
@@ -2482,7 +2482,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/ba7e0aa0363bdf24e85ff13b3acc65b090f420dc",
+                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/1308a458d9483eccdb217f2a85a419ef495b7454",
                 "reference": "ba7e0aa0363bdf24e85ff13b3acc65b090f420dc",
                 "shasum": ""
             },
@@ -3216,6 +3216,50 @@
                 "event-loop"
             ],
             "time": "2014-02-26 17:36:58"
+        },
+        {
+            "name": "react/promise",
+            "version": "v2.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/reactphp/promise.git",
+                "reference": "3b6fca09c7d56321057fa8867c8dbe1abf648627"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/reactphp/promise/zipball/3b6fca09c7d56321057fa8867c8dbe1abf648627",
+                "reference": "3b6fca09c7d56321057fa8867c8dbe1abf648627",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "React\\Promise\\": "src/"
+                },
+                "files": [
+                    "src/functions_include.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jan Sorgalla",
+                    "email": "jsorgalla@gmail.com"
+                }
+            ],
+            "description": "A lightweight implementation of CommonJS Promises/A for PHP",
+            "time": "2015-07-03 13:48:55"
         },
         {
             "name": "react/stream",

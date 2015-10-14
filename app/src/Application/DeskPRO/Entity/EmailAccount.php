@@ -125,6 +125,11 @@ class EmailAccount extends DomainObject
     protected $date_last_incoming;
 
     /**
+     * @var bool
+     */
+    protected $is_read_active = false;
+
+    /**
      * @param string $account_type
      */
     public function __construct($account_type)
@@ -415,6 +420,12 @@ class EmailAccount extends DomainObject
             'fieldName'  => 'date_last_incoming',
             'type'       => 'datetime',
             'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'is_read_active',
+            'fieldName'  => 'is_read_active',
+            'type'       => 'boolean',
+            'nullable'   => false,
         ));
     }
 }
