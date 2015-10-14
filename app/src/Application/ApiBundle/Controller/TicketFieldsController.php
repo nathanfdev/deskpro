@@ -39,7 +39,6 @@ use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Hierarchy\HierarchyStructureProcessor;
 use Application\DeskPRO\TicketLayout\LayoutField;
-use Application\DeskPRO\Tickets\TicketCategories;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -611,15 +610,33 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 
     public function convertAction($type)
     {
-        $singular = 'ies' === substr($type, -3) ? (substr($type, 0, -3).'y') : substr($type, 0, -1);
-        if (!in_array($singular, array('category', 'priority', 'workflow', 'product'))) {
-            throw new NotFoundHttpException();
-        }
-
         $rep_layouts = $this->em->getRepository('DeskPRO:TicketLayout');
         $conn        = $this->em->getConnection();
-        /** @var TicketCategories $service */
-        $service = $this->container->getSystemService('ticket_'.$type);
+
+        switch ($type) {
+            case 'category':
+            case 'categories':
+                $service = $this->container->getSystemService('ticket_categories');
+                break;
+
+            case 'priority':
+            case 'priorities':
+                $service = $this->container->getSystemService('ticket_priorities');
+                break;
+
+            case 'workflow':
+            case 'workflows':
+                $service = $this->container->getSystemService('ticket_workflows');
+                break;
+
+            case 'product':
+            case 'products':
+                $service = $this->container->getSystemService('products');
+                break;
+
+            default:
+                throw new NotFoundHttpException();
+        }
 
         $short = array(
             'category' => 'cat',
@@ -627,8 +644,9 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
             'product'  => 'prod',
             'workflow' => 'work',
         );
-        $short   = $short[$singular];
-        $default = 'prod' === $short
+        $singular = 'ies' === substr($type, -3) ? (substr($type, 0, -3).'y') : substr($type, 0, -1);
+        $short    = $short[$singular];
+        $default  = 'prod' === $short
             ? $this->settings->get('core.default_product_id')
             : $this->settings->get('core.default_ticket_'.$short);
 
