@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { VIEW_MODE_LIST } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { VIEW_MODE_CARD } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { ChatsListControlBar } from './ControlBar/ChatsListControlBar';
 import { ChatsList } from './View/List/ChatsList';
@@ -17,7 +17,7 @@ export class List extends React.Component {
     return (
       <ListFrameContainer>
         <ChatsListControlBar />
-        {viewMode === VIEW_MODE_LIST ? <ChatsList elements={elements} /> : <ChatsTable elements={elements} />}
+        {viewMode === VIEW_MODE_CARD ? <ChatsList elements={elements} /> : <ChatsTable elements={elements} />}
       </ListFrameContainer>
     );
   }

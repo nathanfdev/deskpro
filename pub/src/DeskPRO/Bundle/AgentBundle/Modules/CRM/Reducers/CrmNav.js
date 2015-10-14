@@ -7,7 +7,7 @@ export default class CrmNav extends Reducer {
     return {
       viewModeOptions: [
         {field: constants.VIEW_MODE_TABLE, label: 'Table view', icon: 'fa-table', current: true},
-        {field: constants.VIEW_MODE_LIST, label: 'List view', icon: 'fa-list', current: false}
+        {field: constants.VIEW_MODE_CARD, label: 'List view', icon: 'fa-list', current: false}
       ],
       order: constants.ORDER_DESC, /* Asc, Desc */
       sortOptions: [/* @ToDo actualize field properties */
@@ -104,7 +104,7 @@ export default class CrmNav extends Reducer {
 
   viewModeChanged(prev) {
     const next    = {...prev};
-    next.viewMode = prev.viewMode === constants.VIEW_MODE_LIST ? constants.VIEW_MODE_TABLE : constants.VIEW_MODE_LIST;
+    next.viewMode = prev.viewMode === constants.VIEW_MODE_CARD ? constants.VIEW_MODE_TABLE : constants.VIEW_MODE_CARD;
     return next;
   }
 

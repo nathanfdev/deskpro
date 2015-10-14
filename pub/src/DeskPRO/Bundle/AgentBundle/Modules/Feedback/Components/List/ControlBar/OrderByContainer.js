@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { OrderBy } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
-import { OrderByDropdown } from './OrderByDropdown';
+import OrderByDropdown from './OrderByDropdown';
 import { sortingDataSelector } from '../../../Selectors/list';
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned';
 

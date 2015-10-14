@@ -27,6 +27,7 @@ services:
           - @portal_email_sender
           - @doctrine.dbal.default_connection
           - @person_repository
+          - @anti_abuse
         tags:
             - { name: 'monolog.logger', channel: 'security' }
 

@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\AntiAbuse;
+namespace DeskPRO\Bundle\AppBundle\AntiAbuse\Event;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException;
@@ -75,6 +75,11 @@ abstract class AntiAbuseEvent extends Event
      * @var bool
      */
     protected $require_response;
+
+    /**
+     * @var bool
+     */
+    protected $check_only;
 
     public function __construct($person_or_email, $ip = null)
     {
@@ -204,5 +209,28 @@ abstract class AntiAbuseEvent extends Event
     public function generateException()
     {
         return new AntiAbuseException($this);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCheckOnly()
+    {
+        return $this->check_only;
+    }
+
+    /**
+     * If the event is marked as "check only" then it will ONLY CHECK the state of the abuse system
+     * but it will NOT contribute to the logging/metrics that would influce the anti-abuse system.
+     *
+     * Without marking your event as "check only" then it will potentially add logs to the db that are then
+     * used to calculate wether or not there is abuse. For this reason, tests will use an event that is
+     * "check only" so that it can verify the state of the anti-abuse system.
+     *
+     * @return bool
+     */
+    public function markAsCheckOnly()
+    {
+        $this->check_only = true;
     }
 }

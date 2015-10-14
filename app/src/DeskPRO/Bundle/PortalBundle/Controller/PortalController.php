@@ -76,6 +76,7 @@ class PortalController extends AbstractController
             array(
                 'auth_manager'         => $this->get('dp_authentication_manager.user'),
                 'login_error'          => $request->get('retry') == 'auth',
+                'lockout_error'        => $request->get('lockout') == 'auth',
                 'saved_form'           => $saved_form,
                 'saved_form_message'   => $saved_form_message,
                 'last_username'        => $this->getSession()->get('last_username'),

@@ -1,0 +1,12 @@
+services:
+
+  anti_abuse:
+    class: DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse
+    arguments: [@event_dispatcher, @doctrine.orm.default_entity_manager]
+
+  # AntiAbuse listeners
+  anti_abuse.listener.lockout:
+    class: DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener\LockoutEventListener
+    arguments: [@doctrine.orm.default_entity_manager, @settings_resolver, @router]
+    tags:
+      - { name: kernel.event_subscriber }

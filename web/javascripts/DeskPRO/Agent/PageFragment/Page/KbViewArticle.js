@@ -13,7 +13,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			'article',
 			this.meta.article_id,
 			this.meta.title,
-			BASE_URL + 'agent/kb/article/' + this.meta.article_id
+			BASE_URL + 'old-agent/kb/article/' + this.meta.article_id
 		);
 	},
 
@@ -57,7 +57,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			disabled: !this.meta.canEdit,
 			onContentLinked: function(typename, content_id) {
 				$.ajax({
-					url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
+					url: BASE_URL + 'old-agent/kb/article/' + self.meta.article_id + '/ajax-save',
 					type: 'POST',
 					data: { content_type: typename, content_id: content_id, action: 'add-related' },
 					context: this,
@@ -66,7 +66,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			},
 			onContentUnlinked: function(typename, content_id) {
 				$.ajax({
-					url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
+					url: BASE_URL + 'old-agent/kb/article/' + self.meta.article_id + '/ajax-save',
 					type: 'POST',
 					data: { content_type: typename, content_id: content_id, action: 'remove-related' },
 					context: this,
@@ -80,7 +80,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			triggerElement: '.who-voted-trigger',
 			contentMethod: 'ajax',
 			contentAjax: {
-				url: BASE_URL + 'agent/publish/rating-who-voted/article/' + this.meta.article_id
+				url: BASE_URL + 'old-agent/publish/rating-who-voted/article/' + this.meta.article_id
 			}
 		});
 		this.ownObject(this.whoVotedOverlay);
@@ -89,13 +89,13 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			triggerElement: '.open-who-viewed',
 			contentMethod: 'ajax',
 			contentAjax: {
-				url: BASE_URL + 'agent/publish/who-viewed/1/' + this.meta.article_id
+				url: BASE_URL + 'old-agent/publish/who-viewed/1/' + this.meta.article_id
 			}
 		});
 		this.ownObject(this.whoViewedOverlay);
 
 		this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {
-			revisionCompareUrl: BASE_URL + 'agent/kb/compare-revs/{OLD}/{NEW}'
+			revisionCompareUrl: BASE_URL + 'old-agent/kb/compare-revs/{OLD}/{NEW}'
 		});
 		this.ownObject(this.miscContent);
 
@@ -125,7 +125,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			var formData = $('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm);
 
 			$.ajax({
-				url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save-custom-fields',
+				url: BASE_URL + 'old-agent/kb/article/' + self.meta.article_id + '/ajax-save-custom-fields',
 				type: 'POST',
 				data: formData,
 				dataType: 'html',
@@ -169,18 +169,18 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 		if (this.meta.canEdit) {
 			$('.edit-trigger', this.wrapper).on('click', function() {
-				DeskPRO_Window.runPageRoute('kb_article_edit:' + BASE_URL + 'agent/kb/article/' + self.article_id);
+				DeskPRO_Window.runPageRoute('kb_article_edit:' + BASE_URL + 'old-agent/kb/article/' + self.article_id);
 				DeskPRO_Window.removePage(self);
 			});
 
 			$('.validate-trigger', this.wrapper).on('click', function() {
-				DeskPRO_Window.runPageRoute('kb_article_edit:' + BASE_URL + 'agent/kb/article/' + self.article_id + '?do_validate=1');
+				DeskPRO_Window.runPageRoute('kb_article_edit:' + BASE_URL + 'old-agent/kb/article/' + self.article_id + '?do_validate=1');
 				DeskPRO_Window.removePage(self);
 			});
 
 			var editTitle = new DeskPRO.Agent.PageFragment.Page.EditTitle(
 				this,
-				BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save'
+				BASE_URL + 'old-agent/kb/article/' + self.meta.article_id + '/ajax-save'
 			);
 		}
 
@@ -204,7 +204,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 				if ($(info.tabContent).is('.revisions-tab') && !$(info.tabContent).is('.loaded')) {
 					$.ajax({
-						url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/view-revisions',
+						url: BASE_URL + 'old-agent/kb/article/' + this.meta.article_id + '/view-revisions',
 						type: 'GET',
 						dataType: 'html',
 						context: self,
@@ -245,7 +245,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			var blob_id = $(this).data('blob-id'),
 					$em = $(this);
 			$.ajax({
-				url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
+				url: BASE_URL + 'old-agent/kb/article/' + self.meta.article_id + '/ajax-save',
 				type: 'POST',
 				data: {action: 'remove-blob', blob_id: blob_id},
 				context: self,
@@ -284,7 +284,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			}
 
 			$.ajax({
-				url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
+				url: BASE_URL + 'old-agent/kb/article/' + self.meta.article_id + '/ajax-save',
 				type: 'POST',
 				data: {action: 'status', status: status},
 				context: self,
@@ -297,7 +297,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		});
 
 		this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
-			ajaxSaveUrl: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save'
+			ajaxSaveUrl: BASE_URL + 'old-agent/kb/article/' + self.meta.article_id + '/ajax-save'
 		});
 		this.ownObject(this.deleteHelper);
 
@@ -412,7 +412,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
+			url: BASE_URL + 'old-agent/kb/article/' + this.meta.article_id + '/ajax-save',
 			type: 'POST',
 			data: formData,
 			context: this,
@@ -461,7 +461,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
+			url: BASE_URL + 'old-agent/kb/article/' + this.meta.article_id + '/ajax-save',
 			type: 'POST',
 			data: formData,
 			context: this,
@@ -597,7 +597,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 	removeAutoUnPubOptions: function() {
 		$.ajax({
-			url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
+			url: BASE_URL + 'old-agent/kb/article/' + this.meta.article_id + '/ajax-save',
 			type: 'POST',
 			data: {action: 'remove-auto-unpub'},
 			context: this,
@@ -630,7 +630,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
+			url: BASE_URL + 'old-agent/kb/article/' + this.meta.article_id + '/ajax-save',
 			type: 'POST',
 			data: data,
 			context: this,
@@ -687,7 +687,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 	removeAutoPubOptions: function() {
 		$.ajax({
-			url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
+			url: BASE_URL + 'old-agent/kb/article/' + this.meta.article_id + '/ajax-save',
 			type: 'POST',
 			data: {action: 'remove-auto-pub'},
 			context: this,
@@ -715,7 +715,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
+			url: BASE_URL + 'old-agent/kb/article/' + this.meta.article_id + '/ajax-save',
 			type: 'POST',
 			data: data,
 			context: this,
@@ -779,7 +779,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this.ownObject(this.editStateSaver);
 
 		DeskPRO_Window.util.fileupload(this.getEl('content_ed').find('.article-editor'), {
-			url: BASE_URL + 'agent/misc/accept-upload?attach_to_object=article&object_id=' + this.meta.article_id,
+			url: BASE_URL + 'old-agent/misc/accept-upload?attach_to_object=article&object_id=' + this.meta.article_id,
 			page: this
 		});
 
@@ -816,7 +816,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			showSaving.show();
 
 			$.ajax({
-				url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
+				url: BASE_URL + 'old-agent/kb/article/' + this.meta.article_id + '/ajax-save',
 				type: 'POST',
 				context: this,
 				data: data,
@@ -967,7 +967,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'agent/kb/article/' + this.getMetaData('article_id') + '/ajax-save-comment',
+			url: BASE_URL + 'old-agent/kb/article/' + this.getMetaData('article_id') + '/ajax-save-comment',
 			type: 'POST',
 			context: this,
 			data: data,
@@ -1034,7 +1034,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 			row.addClass('dp-loading-on');
 			$.ajax({
-				url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
+				url: BASE_URL + 'old-agent/kb/article/' + self.meta.article_id + '/ajax-save',
 				type: 'POST',
 				data: postData,
 				context: this,
@@ -1063,7 +1063,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				newSlug = newSlug.toLowerCase().replace(/[^0-9a-zA-Z_\-]/g, '-').replace(/\-{2,}/g, '-').replace(/^\-/, '').replace(/\-$/, '');
 				slugEl.text(newSlug);
 				$.ajax({
-					url: BASE_URL + 'agent/kb/article/' + id + '/ajax-save',
+					url: BASE_URL + 'old-agent/kb/article/' + id + '/ajax-save',
 					type: 'POST',
 					data: { slug: newSlug, action: 'slug' },
 					context: this,

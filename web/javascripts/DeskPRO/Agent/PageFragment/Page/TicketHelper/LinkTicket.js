@@ -20,13 +20,13 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket = new Orb.Class({
 
 	_initOverlay: function() {
 		var self = this;
-		
+
 		if (this.overlay) {
 			return;
 		}
 
 		this.wrapperEl = $('<div class="link-ticket-overlay"><div class="overlay-content" style="width: 400px; height: 300px; "/><div>Loading...</div></div>');
-		
+
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentElement: this.wrapperEl,
 			destroyOnClose: true,
@@ -54,19 +54,19 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket = new Orb.Class({
 
 	_initControls: function() {
 		var self = this;
-		
+
 		var wrapper = this.overlay.getWrapper();
 
 		wrapper.on('click', '.save-trigger', this._doSave.bind(this));
 
 		$('.ticket-search-box').on('click', 'ul.results-list li', function(){
 			var footerEl = self.overlay.getWrapper().find('.overlay-footer').addClass('loading');
-			
+
 			var isParent = wrapper.find("#is-parent").is(":checked");
-			
+
 			if (confirm("Are you sure you want to link the current to this ticket?")) {
 				$.ajax({
-					url: BASE_URL + 'agent/tickets/' + self.page.meta.ticket_id + '/link/' + $(this).attr('ticket-id'),
+					url: BASE_URL + 'old-agent/tickets/' + self.page.meta.ticket_id + '/link/' + $(this).attr('ticket-id'),
 					data: {"isParent" : isParent ? 1 : 0},
 					type: 'POST',
 					dataType: 'json',
@@ -87,7 +87,7 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket = new Orb.Class({
 						}
 
 						self.overlay.close();
-						DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.page.getMetaData('ticket_id'), {ignoreExist:true});
+						DeskPRO_Window.loadPage(BASE_URL + 'old-agent/tickets/' + self.page.getMetaData('ticket_id'), {ignoreExist:true});
 						self.page.closeSelf();
 					},
 					error: function(xhr, textStatus, errorThrown) {

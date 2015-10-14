@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import $ from 'jquery';
+import jQuery from 'jquery';
 import * as TaskActions from '../Actions/TaskListActions';
 import { IntlMixin } from 'react-intl';
 import Formsy from 'formsy-react';
@@ -33,8 +33,8 @@ import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Co
   departmentList: state.Tasks.departmentList,
   dpWindow: state.Application.dpWindow
 }))
-export default
-class TasksListFrame extends React.Component {
+
+export class TasksListFrame extends React.Component {
   static propTypes = {
     dispatch: React.PropTypes.func,
     taskFrameList: React.PropTypes.object,
@@ -53,7 +53,7 @@ class TasksListFrame extends React.Component {
 
     this.state = {
       actionable: [],
-      view: constants.VIEW_MODE_LIST,
+      view: constants.VIEW_MODE_CARD,
       changeView: false,
       order: 'due',
       direction: constants.ORDER_ASC,
@@ -248,14 +248,14 @@ class TasksListFrame extends React.Component {
   }
 
   showMassActionControls() {
-    $('.ticket-controls-bulk-editing').animate({'left': '22px'});
+    jQuery('.ticket-controls-bulk-editing').animate({'left': '22px'});
   }
 
   hideMassActionControls() {
     this.setState({
       actionable: []
     });
-    $('.ticket-controls-bulk-editing').animate({'left': '100%'});
+    jQuery('.ticket-controls-bulk-editing').animate({'left': '100%'});
   }
 
   editTask(source, model) {
@@ -301,11 +301,11 @@ class TasksListFrame extends React.Component {
   }
 
   toggleAssignWindow(task, event) {
-    let target = $(event.target).closest('div.top-right-box');
+    let target = jQuery(event.target).closest('div.top-right-box');
     let modifier = 12;
 
     if (typeof target[0] === 'undefined') {
-      target = $(event.target).closest('.list-sidebar-title');
+      target = jQuery(event.target).closest('.list-sidebar-title');
       modifier = 13;
     }
 

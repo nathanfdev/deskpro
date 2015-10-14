@@ -12,7 +12,7 @@ const initialState = {
   comments: [],
   viewModeOptions: [
     {field: constants.VIEW_MODE_TABLE, label: 'Table view', icon: 'table', current: false},
-    {field: constants.VIEW_MODE_LIST, label: 'Card view', icon: 'list', current: true}
+    {field: constants.VIEW_MODE_CARD, label: 'Card view', icon: 'list', current: true}
   ],
   order: constants.ORDER_DESC, /* Asc, Desc */
   sortOptions: [

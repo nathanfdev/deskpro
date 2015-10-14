@@ -6,3 +6,8 @@ services:
     class: DeskPRO\Bundle\AppBundle\EventListener\AutoPostOnGetRequestListener
     tags:
       - { name: kernel.event_subscriber }
+
+  event_listener.anti_abuse_exception_listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\AntiAbuse\AntiAbuseExceptionListener
+    tags:
+      - { name: kernel.event_subscriber }

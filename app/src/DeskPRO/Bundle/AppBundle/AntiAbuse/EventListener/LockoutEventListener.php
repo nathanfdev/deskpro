@@ -35,9 +35,11 @@ use Application\DeskPRO\EntityRepository\LoginLog;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use Application\DeskPRO\Settings\LoginRateLimitSettings;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
-use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuseEvent;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\AntiAbuseEvent;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class LockoutEventListener implements EventSubscriberInterface
 {
@@ -51,6 +53,11 @@ class LockoutEventListener implements EventSubscriberInterface
      */
     private $settings_resolver;
 
+    /**
+     * @var UrlGeneratorInterface
+     */
+    private $url_generator;
+
     public static function getSubscribedEvents()
     {
         return [
@@ -58,10 +65,14 @@ class LockoutEventListener implements EventSubscriberInterface
         ];
     }
 
-    public function __construct(EntityManager $em, SettingsResolver $settings_resolver)
-    {
+    public function __construct(
+        EntityManager $em,
+        SettingsResolver $settings_resolver,
+        UrlGeneratorInterface $url_generator
+    ) {
         $this->em                = $em;
         $this->settings_resolver = $settings_resolver;
+        $this->url_generator     = $url_generator;
     }
 
     public function checkAntiAbuse(AntiAbuseEvent $event)
@@ -91,7 +102,10 @@ class LockoutEventListener implements EventSubscriberInterface
         $lockout_time = $rep->getLoginLockoutTime($person, $max_attempts, $check_time, $lock_time);
 
         if ($lockout_time > 0) {
-            // TODO: make new response, set it, and mark event as requiring a response
+            $event->setResponse(new RedirectResponse($this->url_generator->generate('portal_login', ['lockout' => 'auth'], UrlGeneratorInterface::ABSOLUTE_PATH)));
+            $event->markLockoutRecommended();
+            $event->markResponseRequired();
+            $event->stopPropagation();
         }
     }
 

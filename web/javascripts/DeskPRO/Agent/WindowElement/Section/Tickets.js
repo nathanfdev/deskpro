@@ -143,7 +143,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		$('#user_settings_filters_link').on('click', function() {
 			var overlay = new DeskPRO.UI.Overlay({
 				contentMethod: 'iframe',
-				iframeUrl: BASE_URL + 'agent/settings/ticket-filters'
+				iframeUrl: BASE_URL + 'old-agent/settings/ticket-filters'
 			});
 
 			overlay.openOverlay();
@@ -937,7 +937,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this.runningRefreshFilterGrouping = filterIds;
 
 		$.ajax({
-			url: BASE_URL + 'agent/ticket-search/group-tickets.json',
+			url: BASE_URL + 'old-agent/ticket-search/group-tickets.json',
 			type: 'POST',
 			dataType: 'json',
 			data: postData,
@@ -1147,7 +1147,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				$.ajax({
 					timeout: 20000,
 					type: 'POST',
-					url: BASE_URL + 'agent/misc/ajax-save-prefs',
+					url: BASE_URL + 'old-agent/misc/ajax-save-prefs',
 					data: data
 				});
 			}
@@ -1186,7 +1186,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				if (newTitle.length) {
 					$.ajax({
 						type: 'POST',
-						url: BASE_URL + 'agent/misc/ajax-save-prefs',
+						url: BASE_URL + 'old-agent/misc/ajax-save-prefs',
 						data: [{
 							name: 'prefs[agent.ui.flag.' + li.data('flag') + ']',
 							value: newTitle
@@ -1275,7 +1275,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 	getUpdatedSlaCounts: function() {
 		$.ajax({
-			url: BASE_URL + 'agent/ticket-search/get-sla-counts.json',
+			url: BASE_URL + 'old-agent/ticket-search/get-sla-counts.json',
 			dataType: 'json',
 			context: this,
 			success: function(data) {

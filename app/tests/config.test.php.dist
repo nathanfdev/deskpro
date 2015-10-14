@@ -60,12 +60,24 @@ $DP_CONFIG['SETTINGS']['core.use_mail_queue'] = 'never';
 $DP_CONFIG['SETTINGS']['core.show_share_widget'] = false;
 $DP_CONFIG['SETTINGS']['core.use_gravatar'] = false;
 $DP_CONFIG['SETTINGS']['core.default_timezone'] = 'EST';
+
+// cache settings
 $DP_CONFIG['SETTINGS']['portal.http_cache_etags'] = false;
 $DP_CONFIG['SETTINGS']['portal.http_cache_last_modified'] = false;
 $DP_CONFIG['SETTINGS']['portal.smaxage_guest_page'] = 0;
 $DP_CONFIG['SETTINGS']['portal.smaxage_guest_tag'] = 0;
 $DP_CONFIG['SETTINGS']['portal.smaxage_user_page'] = 0;
 $DP_CONFIG['SETTINGS']['portal.smaxage_user_tag'] = 0;
+
+// anti-abuse settings
+$DP_CONFIG['SETTINGS']['user.login_rate_limit.enabled'] = true;
+$DP_CONFIG['SETTINGS']['user.login_rate_limit.attempts'] = 3; // set low for testing
+$DP_CONFIG['SETTINGS']['user.login_rate_limit.attempts_time'] = 900;
+$DP_CONFIG['SETTINGS']['user.login_rate_limit.lock_time'] = 900;
+$DP_CONFIG['SETTINGS']['agent.login_rate_limit.enabled'] = true;
+$DP_CONFIG['SETTINGS']['agent.login_rate_limit.attempts'] = 3; // set low for testing
+$DP_CONFIG['SETTINGS']['agent.login_rate_limit.attempts_time'] = 900;
+$DP_CONFIG['SETTINGS']['agent.login_rate_limit.lock_time'] = 900;
 
 $DP_CONFIG['rewrite_urls'] = false;
 
