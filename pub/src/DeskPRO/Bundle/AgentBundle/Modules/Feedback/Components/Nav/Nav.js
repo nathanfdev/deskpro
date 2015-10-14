@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { NavFrame, NavFrameHeader, TabsPane, Tab, LabelsDictionary }
+import { NavFrame, NavFrameHeader, TabsPaneStatefulContainer, Tab, LabelsDictionary }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { Pending } from './Pending';
 import { StatusTab } from './StatusTab';
@@ -41,7 +41,7 @@ export class Nav extends Component {
           commentsView={commentsView.bind(this)}
           />
 
-        <TabsPane stateful="tab">
+        <TabsPaneStatefulContainer id="tab">
           <Tab title={this.props.intl.formatMessage({id: 'feedback.nav.tabs.status'})}>
             <StatusTab currentGroup={currentGroup} statuses={statuses} onClick={groupChoice.bind(this)}/>
           </Tab>
@@ -56,7 +56,7 @@ export class Nav extends Component {
             <CategoryTab currentGroup={currentGroup} customCategories={customCategories}
                          onClick={groupChoice.bind(this)}/>
           </Tab>
-        </TabsPane>
+        </TabsPaneStatefulContainer>
       </NavFrame>
     );
   }

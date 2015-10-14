@@ -3,27 +3,18 @@ import classNames from 'classnames';
 import { updateHashState } from '../../../Application/Actions/routingActions';
 import { connect } from 'react-redux';
 
-@connect(state => ({state: state.Application.routing.get('hash')}))
 export class TabsPane extends React.Component {
   static propTypes = {
-    state: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired,
-    children: PropTypes.node,
-    stateful: PropTypes.string
+    children: PropTypes.node
   };
+
+  static defaultTab = 0;
 
   constructor(props) {
     super(props);
     this.state = {
-      active: 0
+      active: TabsPane.defaultTab
     };
-  }
-
-  componentDidMount() {
-    if (this.props.stateful) {
-      const active = this.props.state.getIn([this.props.stateful, 'active']);
-      this.setState({active: active ? active : 0});
-    }
   }
 
   render() {
@@ -75,12 +66,33 @@ export class TabsPane extends React.Component {
   }
 
   activate(index) {
-    return function(e) {
+    return e => {
       e.preventDefault();
       this.setState({active: index});
-      if (this.props.stateful) {
-        this.props.dispatch(updateHashState(this.props.stateful, 'active', index));
-      }
+    };
+  }
+}
+
+@connect(state => ({state: state.Application.routing.get('hash')}))
+export class TabsPaneStatefulContainer extends TabsPane {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    state: PropTypes.object.isRequired,
+    id: PropTypes.string.isRequired
+  };
+
+  componentDidMount() {
+    this.setState({
+      active: this.props.state.getIn([this.props.id, 'active'], TabsPane.defaultTab)
+    });
+  }
+
+  activate(index) {
+    const parentHandler = super.activate(index);
+
+    return e => {
+      this.props.dispatch(updateHashState(this.props.id, 'active', index));
+      parentHandler(e);
     };
   }
 }
