@@ -1,8 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import { ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { FeedbackListItem } from './FeedbackListItem';
 
 export class TypeTab extends Component {
-
   static propTypes = {
     types: PropTypes.array.isRequired,
     currentGroup: PropTypes.object.isRequired,
@@ -15,11 +14,12 @@ export class TypeTab extends Component {
     return (
       <ul>
         {types.map((item, index) =>
-          <div key={index} onClick={onClick.bind(this, {name: 'category', value: item.title})}>
-            <ListItem count={item.value} label={item.title}
-                      active={currentGroup.name === 'category' && currentGroup.value === item.title}
-              />
-          </div>
+          <FeedbackListItem
+            key={index}
+            count={item.value}
+            label={item.title}
+            onClick={onClick({name: 'category', value: item.title})}
+          />
         )}
       </ul>
     );

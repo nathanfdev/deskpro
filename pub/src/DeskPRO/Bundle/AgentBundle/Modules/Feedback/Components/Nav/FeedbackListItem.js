@@ -3,13 +3,18 @@ import { ListItemStatefulContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Co
 
 export class FeedbackListItem extends Component {
   static propTypes = {
-    itemId: PropTypes.string.isRequired,
+
+    // Label is also used as "itemId" of underlying ListItemStatefulContainer, so labels must be unique
+    label: PropTypes.string.isRequired,
     children: PropTypes.node
   };
 
   render() {
+    // @todo common urlSanitize() helper replacing spaces and reserved characters
+    const itemId = this.props.label.replace(/\s/g, '_');
+
     return (
-      <ListItemStatefulContainer groupId="nav" itemId={this.props.itemId} {...this.props}>
+      <ListItemStatefulContainer groupId="nav" itemId={itemId} {...this.props}>
         {this.props.children}
       </ListItemStatefulContainer>
     );

@@ -17,11 +17,9 @@ export class CategoryTab extends Component {
         {customCategories.map((item, index) =>
           <FeedbackListItem
             key={index}
-            itemId={item.group}
             count={item.count}
             label={item.group}
             onClick={onClick({name: 'custom_category', value: item.group})}
-            active={currentGroup.name === 'custom_category' && currentGroup.value === item.group}
           />
         )}
       </ul>
