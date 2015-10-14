@@ -8,28 +8,28 @@ export class FieldWrapper extends React.Component {
     label: PropTypes.string.isRequired,
     iconClass: PropTypes.string.isRequired,
     children: PropTypes.node,
-    hasError: PropTypes.bool
+    errorMessage: PropTypes.string
   };
 
   render() {
-    const { label, iconClass, children, hasError } = this.props;
+    const { label, iconClass, children, errorMessage } = this.props;
     const iconClasses = ['fa', iconClass];
 
     const fieldClasses = ['dpw-login-form-container'];
-    if (hasError) {
+    if (errorMessage) {
       fieldClasses.push('error');
     }
 
     return (
       <div className={fieldClasses.join(' ')}>
         <Positioned
-          isOpen={hasError}
+          isOpen={errorMessage}
           positionTarget={this}
           positionAt="right top"
           positionMy="left center">
 
           <div className="dpw-login-form-warning-container error-container">
-            <i className="fa fa-exclamation-triangle"></i> <span>Looks like this isn't the correct password</span>
+            <i className="fa fa-exclamation-triangle"></i> <span>{errorMessage}</span>
           </div>
         </Positioned>
 

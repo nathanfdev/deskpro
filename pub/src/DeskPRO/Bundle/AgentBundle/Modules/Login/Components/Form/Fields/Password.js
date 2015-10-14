@@ -5,7 +5,6 @@ import jQuery from 'jquery';
 export class Password extends React.Component {
 
   static propTypes = {
-    hasError: PropTypes.bool,
     value: PropTypes.string,
     onChange: PropTypes.func.isRequired
   };
@@ -19,10 +18,10 @@ export class Password extends React.Component {
   }
 
   render() {
-    const { hasError, value, onChange } = this.props;
+    const { value, onChange } = this.props;
 
     return (
-      <FieldWrapper iconClass="fa-lock" label="Password" hasError={hasError}>
+      <FieldWrapper iconClass="fa-lock" label="Password" errorMessage="Wrong password">
         <div className="dpw-login-form-warning-container warning-container">
           <i className="fa fa-arrow-circle-o-up"></i> <span>Looks like caps lock is on?</span>
         </div>
