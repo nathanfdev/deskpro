@@ -189,7 +189,7 @@ function deskpro_install_check_image_manip()
         if (!@$inf['GIF Create Support']) {
             return false;
         }
-        if (!@$inf['JPEG Suppor']) {
+        if (!@$inf['JPEG Support']) {
             return false;
         }
         if (!@$inf['PNG Support']) {
