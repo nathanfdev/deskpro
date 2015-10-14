@@ -41,7 +41,7 @@ export default class Positioned extends React.Component {
   componentDidMount() {
     this.node = ReactDOM.findDOMNode(this);
     jQuery(this.node).detach();
-    jQuery('.dpwd-navigation-dropdown-top-row').prepend(this.node);
+    jQuery('body').prepend(this.node);
 
     // Manipulate the DOM here
     this.renderContent(this.props);

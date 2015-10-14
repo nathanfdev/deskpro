@@ -9,13 +9,15 @@
 .dpw-login-form-warning-container {
   position: absolute;
   color: #fff;
-  top: 0px;
   line-height: 1em;
   padding: 12px;
   border-radius: 2px;
-  top: 3px;
   z-index: 2999;
+  font-size: 12px;
+  width: 260px;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+  left: 5px;
+  top: 5px;
 
   i { margin-right: 5px; }
 
@@ -40,7 +42,6 @@
   }
 
   &.error-container {
-    right: 0px;
     background: #ff5460;
     z-index: 2999;
     i { color: #fff !important; }

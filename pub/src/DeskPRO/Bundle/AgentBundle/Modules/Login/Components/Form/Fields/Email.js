@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { LoginFormField } from './LoginFormField';
+import { FieldWrapper } from './FieldWrapper';
 
 export class Email extends React.Component {
 
@@ -13,9 +13,9 @@ export class Email extends React.Component {
     const { hasError, value, onChange } = this.props;
 
     return (
-      <LoginFormField iconClass="fa-user" label="Account name / Email" hasError={hasError}>
+      <FieldWrapper iconClass="fa-user" label="Account name / Email" hasError={hasError}>
         <input type="text" placeholder="example@email.com" value={value} onChange={onChange} />
-      </LoginFormField>
+      </FieldWrapper>
     );
   }
 }
