@@ -9,7 +9,7 @@ export class TypeTab extends Component {
   };
 
   render() {
-    const { types, onClick, currentGroup } = this.props;
+    const { types } = this.props;
 
     return (
       <ul>
@@ -18,7 +18,7 @@ export class TypeTab extends Component {
             key={index}
             count={item.value}
             label={item.title}
-            onClick={onClick({name: 'category', value: item.title})}
+            listOptions={{category: item.title}}
           />
         )}
       </ul>

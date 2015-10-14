@@ -1,35 +1,16 @@
 import React, { Component, PropTypes } from 'react';
-import classNames from 'classnames';
+import { NestedList as BaseNestedList } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 
-export class NestedList extends React.Component {
+export class NestedList extends Component {
 
   render() {
-    const { node, label, onClick, status, currentGroup } = this.props;
-    var active  = currentGroup.name === 'status' && currentGroup.value === status;
-    var classes = classNames('item', {
-      'active': active
-    });
+    const { node, label, status } = this.props;
     return (
-      <li className="counter-display" onClick={onClick.bind(this, {name: 'status', value: status})}>
-        <RenderCount count={node.count} active={active}/>
-        <a href="#" className={classes}>{label}</a>
+      <li className="counter-display">
+        <RenderCount count={node.count} />
+        <a href="#" className={'item'}>{label}</a>
         {this.renderChildren(node.nested, status)}
       </li>
-    );
-  }
-
-
-  renderCount(count, active) {
-    if ((count !== 0) && !count) {
-      return;
-    }
-    var classes = classNames('list-counter', {
-      'active': active
-    });
-    return (
-      <div className="list-counter-bucket">
-        <a className={classes} href="#">{count}</a>
-      </div>
     );
   }
 
@@ -37,14 +18,12 @@ export class NestedList extends React.Component {
     if (nested.length === 0) {
       return;
     }
-    const {status, currentGroup, onClick} = this.props;
+    const {status} = this.props;
     return (
       <ul className="with-connectors">
         {nested.map((item, index) => <ChildListItem
             key={index}
             item={item}
-            currentGroup={currentGroup}
-            onClick={onClick}
             status={status}
             />
         )}
@@ -54,42 +33,33 @@ export class NestedList extends React.Component {
 
 }
 
-export class ChildListItem extends React.Component {
+export class ChildListItem extends Component {
   render() {
-    const { item, status, onClick, currentGroup } = this.props;
-    var active      = false,
-          groupName = 'status_category';
-    if (status !== 'hidden') {
-      active = currentGroup.name === groupName && currentGroup.value === item.group;
-    }
-    else {
+    const { item, status } = this.props;
+    let groupName = 'status_category';
+    if (status === 'hidden') {
       groupName = 'hidden_status';
-      active    = currentGroup.name === groupName && currentGroup.value === item.group;
     }
-    var classes = classNames('item', {
-      'active': active
-    });
+
     return (
-      <li onClick={onClick.bind(this, {name: groupName, value: item.group})}>
-        <RenderCount count={item.count} active={active}/>
-        <a href="#" className={classes}>{item.group}</a>
+      <li className={'onClick={onClick.bind(this, {name: groupName, value: item.group})}'}>
+        <RenderCount count={item.count} />
+        <a href="#" className={'item'}>{item.group}</a>
       </li>
     );
   }
 }
 
-export class RenderCount extends React.Component {
+export class RenderCount extends Component {
   render() {
-    const { count, active } = this.props;
+    const { count } = this.props;
     if ((count !== 0) && !count) {
       return;
     }
-    var classes = classNames('list-counter', {
-      'active': active
-    });
+
     return (
       <div className="list-counter-bucket">
-        <a className={classes} href="#">{count}</a>
+        <a className={'list-counter'} href="#">{count}</a>
       </div>
     );
   }

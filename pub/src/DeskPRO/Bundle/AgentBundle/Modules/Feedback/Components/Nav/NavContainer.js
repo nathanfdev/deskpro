@@ -4,7 +4,6 @@ import * as actions from '../../Actions/FeedbackListActions';
 import * as commentActions from '../../Actions/FeedbackCommentsActions';
 import { Nav } from './Nav';
 import { filterDataSelector } from '../../Selectors/list';
-import { groupDataSelector } from '../../Selectors/nav';
 import { loadFeedbackTypes } from '../../RecordStores/Actions/feedbackTypesActions';
 import { loadFeedbackLabels } from '../../RecordStores/Actions/feedbackLabelsActions';
 
@@ -17,7 +16,6 @@ import { loadFeedbackLabels } from '../../RecordStores/Actions/feedbackLabelsAct
     labels: state.Feedback.nav.get('labels'),
     customCategories: state.Feedback.nav.get('customCategories').toJS(),
     currentFilterMode: filterDataSelector(state),
-    currentGroup: groupDataSelector(state),
     dpWindow: state.Application.dpWindow
   });
 })
@@ -33,7 +31,6 @@ export class NavContainer extends Component {
     labels: PropTypes.array.isRequired,
     types: PropTypes.array.isRequired,
     customCategories: PropTypes.array.isRequired,
-    currentGroup: PropTypes.object.isRequired,
     dpWindow: PropTypes.object.isRequired
   };
 
@@ -54,32 +51,19 @@ export class NavContainer extends Component {
     dispatch(actions.feedbackHiddenStatus());
     dispatch(actions.getFilterValues(currentFilterMode.name));
     //dispatch(actions.getDisplayFieldsFromPersonSetting());
-    dispatch(actions.loadFeedbackList());
-  }
-
-
-  groupChoice(group) {
-    return (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      const { dispatch } = this.props;
-      dispatch(actions.changeGroupState(group));
-      dispatch(actions.loadFeedbackList());
-    };
   }
 
   commentsView(group, event) {
     event.preventDefault();
     event.stopPropagation();
     const {dispatch } = this.props;
-    dispatch(actions.changeGroupState(group));
     dispatch(actions.toggleSort('date_created'));
     dispatch(actions.toggleOrder('desc'));
     dispatch(commentActions.loadCommentsList());
   }
 
   render() {
-    const {statuses, toValidateCount, commentsToReviewCount, dispatch, labels, types, customCategories, currentGroup, dpWindow} = this.props;
+    const {statuses, toValidateCount, commentsToReviewCount, dispatch, labels, types, customCategories, dpWindow} = this.props;
 
     return (
       <Nav
@@ -90,11 +74,9 @@ export class NavContainer extends Component {
         labels={labels}
         types={types}
         customCategories={customCategories}
-        currentGroup={currentGroup}
-        groupChoice={this.groupChoice.bind(this)}
         commentsView={this.commentsView.bind(this)}
         dpWindow={dpWindow}
-        />
+      />
     );
   }
 }

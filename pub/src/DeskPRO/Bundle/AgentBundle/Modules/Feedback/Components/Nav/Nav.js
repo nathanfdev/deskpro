@@ -12,9 +12,7 @@ export class Nav extends Component {
 
   static propTypes = {
     intl: intlShape.isRequired,
-    groupChoice: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
-    currentGroup: PropTypes.object.isRequired,
     statuses: PropTypes.object.isRequired,
     labels: PropTypes.array.isRequired,
     types: PropTypes.array.isRequired,
@@ -24,7 +22,7 @@ export class Nav extends Component {
   };
 
   render() {
-    const { currentGroup, groupChoice, labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dispatch, dpWindow, commentsView } = this.props;
+    const { labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dispatch, dpWindow, commentsView } = this.props;
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
@@ -36,24 +34,22 @@ export class Nav extends Component {
         <Pending
           toValidateCount={toValidateCount}
           commentsToReviewCount={commentsToReviewCount}
-          currentGroup={currentGroup}
-          onClick={groupChoice.bind(this)}
           commentsView={commentsView.bind(this)}
-          />
+        />
 
         <TabsPaneStatefulContainer id="tab">
           <Tab title={this.props.intl.formatMessage({id: 'feedback.nav.tabs.status'})}>
-            <StatusTab currentGroup={currentGroup} statuses={statuses} onClick={groupChoice.bind(this)}/>
+            <StatusTab statuses={statuses} />
           </Tab>
 
           <Tab title="Labels">
-            <LabelsDictionary labels={labels} onClick={groupChoice.bind(this)}/>
+            <LabelsDictionary labels={labels} />
           </Tab>
           <Tab title="Type">
-            <TypeTab currentGroup={currentGroup} types={types} onClick={groupChoice.bind(this)}/>
+            <TypeTab types={types} />
           </Tab>
           <Tab title="Category">
-            <CategoryTab currentGroup={currentGroup} customCategories={customCategories} onClick={groupChoice}/>
+            <CategoryTab customCategories={customCategories} />
           </Tab>
         </TabsPaneStatefulContainer>
       </NavFrame>

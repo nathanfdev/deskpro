@@ -194,7 +194,7 @@ export class NestedList extends BaseList {
 
   ensureValidDepth(depth) {
     if (depth > NestedList.maxDepth) {
-      throw new Error('NestedList maximum recursion depth exceeded');
+      throw new Error(`NestedList maximum recursion depth ${NestedList.maxDepth} exceeded`);
     }
   }
 }

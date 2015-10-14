@@ -30,7 +30,8 @@ export class NavFrame extends React.Component {
 
   render() {
     const { children, dpWindow } = this.props;
-    let outer, inner = children;
+    let outer;
+    let inner = children;
 
     if (children instanceof Array && children.length) {
       children.forEach((child) => {

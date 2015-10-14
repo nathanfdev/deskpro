@@ -12,7 +12,6 @@ export class OrderByDropdown extends Component {
   static propTypes = {
     order: PropTypes.string.isRequired,
     currentSortMode: PropTypes.object.isRequired,
-    currentGroup: PropTypes.object.isRequired,
     sortOptions: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     toggleDropdown: PropTypes.func.isRequired

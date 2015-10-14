@@ -5,7 +5,6 @@ import { loadEmails } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/
 import { loadFeedbackCommentsCounter } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCommentsActions';
 import { loadFeedbackStatuses } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackStatusesActions';
 import { sortingDataSelector, filterDataSelector } from '../Selectors/list';
-import { groupDataSelector } from '../Selectors/nav';
 
 /**
  * Used to identify requests within record stores
@@ -42,15 +41,18 @@ export const getStatuses = createAction(
 export const loadFeedbackList = createAction(
   'FEEDBACK_LIST',
   (overwriteParams = {}) => (dispatch, getState)=> {
+    console.log('overwriteParams', overwriteParams);
+
     const state = getState();
     const feedbackListState = state.Feedback.list.toJS();
     const currentParams = {
-      group: groupDataSelector(state),
       sort: sortingDataSelector(state).field,
-      filters: filterDataSelector(state).field,
       order: feedbackListState.order
     };
     const params = {...currentParams, ...overwriteParams};
+
+    console.log('params', params);
+
     return () => Feedback.getList(params).then(promise => {
       const feedback = promise.getData();
       const ids = [];
@@ -102,11 +104,6 @@ export const feedbackClosedStatus = createAction(
 export const feedbackHiddenStatus = createAction(
   'FEEDBACK_HIDDEN_STATUS',
   () => Feedback.getHidden().then(promise => promise.getData()));
-
-export const changeGroupState = createAction(
-  'FEEDBACK_CHANGE_GROUP',
-    group => group
-);
 
 export const getFilterValues = createAction(
   'FEEDBACK_SELECT_FILTER',

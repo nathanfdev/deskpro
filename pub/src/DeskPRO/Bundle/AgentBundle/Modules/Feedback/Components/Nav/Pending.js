@@ -7,13 +7,11 @@ export class Pending extends Component {
   static propTypes = {
     toValidateCount: PropTypes.number.isRequired,
     commentsToReviewCount: PropTypes.number.isRequired,
-    onClick: PropTypes.func.isRequired,
-    commentsView: PropTypes.func.isRequired,
-    currentGroup: PropTypes.object.isRequired
+    commentsView: PropTypes.func.isRequired
   };
 
   render() {
-    const { toValidateCount, commentsToReviewCount, onClick, currentGroup, commentsView } = this.props;
+    const { toValidateCount, commentsToReviewCount, commentsView } = this.props;
 
     return (
       <Section>
@@ -22,7 +20,7 @@ export class Pending extends Component {
           <FeedbackListItem
             count={toValidateCount}
             label="Feedback to Validate"
-            onClick={onClick({name: 'awaiting_validation', value: 1})}
+            listOptions={{awaiting_validation: 1}}
           />
           <FeedbackListItem
             count={commentsToReviewCount}

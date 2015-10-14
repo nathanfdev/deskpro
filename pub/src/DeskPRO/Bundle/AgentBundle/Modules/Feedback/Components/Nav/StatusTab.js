@@ -10,17 +10,17 @@ export class StatusTab extends Component {
   };
 
   render() {
-    const { statuses, onClick, currentGroup } = this.props;
+    const { statuses } = this.props;
     return (
       <ul>
         <FeedbackListItem
           label="New"
           count={statuses.new}
-          onClick={onClick({name: 'status', value: 'new'})}
+          listOptions={{status: 'new'}}
         />
-        <NestedList currentGroup={currentGroup} node={statuses.active} onClick={onClick.bind(this)} status="active" label="Active"/>
-        <NestedList currentGroup={currentGroup} node={statuses.closed} onClick={onClick.bind(this)} status="closed" label="Closed"/>
-        <NestedList currentGroup={currentGroup} node={statuses.hidden} onClick={onClick.bind(this)} status="hidden" label="Hidden"/>
+        <NestedList node={statuses.active} status="active" label="Active"/>
+        <NestedList node={statuses.closed} status="closed" label="Closed"/>
+        <NestedList node={statuses.hidden} status="hidden" label="Hidden"/>
       </ul>
     );
   }

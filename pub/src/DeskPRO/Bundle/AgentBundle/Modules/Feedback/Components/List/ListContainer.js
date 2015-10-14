@@ -2,7 +2,6 @@ import React, {Component, PropTypes} from 'react';
 import { List } from './List';
 import { viewDataSelector, peopleSelector, emailsSelector, feedbackTypesSelector, feedbackLabelsSelector, feedbackCommentsSelector, feedbackStatusesSelector, feedbackSelector } from '../../Selectors/list';
 import { toggleSelectedAction } from '../../Actions/FeedbackListActions';
-import { groupDataSelector } from '../../Selectors/nav';
 
 import { connect } from 'react-redux';
 @connect(state => {
@@ -18,14 +17,12 @@ import { connect } from 'react-redux';
     feedbackLabels: feedbackLabelsSelector(state),
     feedbackComments: feedbackCommentsSelector(state),
     feedbackFromStore: feedbackSelector(state),
-    feedbackStatuses: feedbackStatusesSelector(state),
-    currentGroup: groupDataSelector(state)
+    feedbackStatuses: feedbackStatusesSelector(state)
   });
 })
 export class ListContainer extends Component {
 
   static propTypes = {
-    currentGroup: PropTypes.object.isRequired,
     currentViewMode: PropTypes.object.isRequired,
     comments: PropTypes.array.isRequired,
     dispatch: PropTypes.func.isRequired,
@@ -42,7 +39,7 @@ export class ListContainer extends Component {
   };
 
   render() {
-    const { dispatch, currentGroup, massAction, feedback, selected, comments, currentViewMode, people, emails, feedbackTypes,
+    const { dispatch, massAction, feedback, selected, comments, currentViewMode, people, emails, feedbackTypes,
       feedbackLabels, feedbackComments, feedbackStatuses, feedbackFromStore } = this.props;
 
     const toggleSelected = (id) => () => dispatch(toggleSelectedAction(id));
@@ -50,7 +47,6 @@ export class ListContainer extends Component {
     return (
       <List
         dispatch={dispatch}
-        currentGroup={currentGroup}
         massAction={massAction}
         feedback={feedback}
         selected={selected}

@@ -4,13 +4,11 @@ import { FeedbackListItem } from './FeedbackListItem';
 export class CategoryTab extends Component {
 
   static propTypes = {
-    customCategories: PropTypes.array.isRequired,
-    currentGroup: PropTypes.object.isRequired,
-    onClick: PropTypes.func.isRequired
+    customCategories: PropTypes.array.isRequired
   };
 
   render() {
-    const { customCategories, onClick, currentGroup } = this.props;
+    const { customCategories } = this.props;
 
     return (
       <ul>
@@ -19,7 +17,7 @@ export class CategoryTab extends Component {
             key={index}
             count={item.count}
             label={item.group}
-            onClick={onClick({name: 'custom_category', value: item.group})}
+            listOptions={{custom_category: item.group}}
           />
         )}
       </ul>
