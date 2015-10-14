@@ -45,7 +45,7 @@ export class Header extends React.Component {
         </a>
 
         <a href="#" className="user-options-button">
-          <span className="user-photo" style={{backgroundImage: 'url(' + user.get('picture_url') + ')'}}></span>
+          {user ? (<span className="user-photo" style={{backgroundImage: 'url(' + user.get('picture_url') + ')'}}></span>) : null}
           <span className="title">Settings <i className="fa fa-angle-down"></i></span>
         </a>
       </div>

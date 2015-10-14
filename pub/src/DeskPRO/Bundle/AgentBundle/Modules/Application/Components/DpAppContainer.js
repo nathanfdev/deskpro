@@ -53,7 +53,7 @@ export class DpAppContainer extends React.Component {
   render() {
     const { userStatus, history } = this.props;
 
-    if (userStatus.get('isLoading')) {
+    if (!userStatus.get('isDone')) {
       return <DpAppLoading />;
     }
 
