@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import jQuery from 'jquery';
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned';
 
 export class FieldWrapper extends React.Component {

@@ -16,13 +16,10 @@
   font-size: 12px;
   width: 260px;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
-  left: 5px;
-  top: 5px;
 
   i { margin-right: 5px; }
 
   &.warning-container {
-    left: 0px;
     background: #fef6ea;
     color: #b5afa6;
     i { color: #b5afa6; }
@@ -43,6 +40,8 @@
 
   &.error-container {
     background: #ff5460;
+    left: 5px;
+    top: 5px;
     z-index: 2999;
     i { color: #fff !important; }
 
