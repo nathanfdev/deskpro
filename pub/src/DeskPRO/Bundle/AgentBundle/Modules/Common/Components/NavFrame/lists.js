@@ -31,15 +31,30 @@ export class ListItem extends BaseList {
   };
 
   render() {
-    const { count, label, active, onClick } = this.props;
+    const { children, count, active, onClick } = this.props;
     const classes = classNames('item', {'active': active});
+
+    let label = this.props.label;
+    let nested = children;
+
+    if (children instanceof Array && children.length) {
+      children.forEach(child => {
+        if (child.props.part === 'label') {
+          label = child;
+        } else if (child.props.part === 'nested') {
+          nested = child;
+        }
+      });
+    }
 
     return (
       <li className="counter-display">
         {this.renderCount(count, active)}
-        <a href="#" className={classes} onClick={onClick}>{label}</a>
+        <a href="#" className={classes} onClick={onClick}>
+          {label}
+        </a>
 
-        {this.props.children}
+        {nested}
       </li>
     );
   }
@@ -76,6 +91,12 @@ export class ListItemStatefulContainer extends Component {
 }
 
 export class NestedList extends BaseList {
+  static propTypes = {
+    onClick: PropTypes.func.isRequired,
+    groups: PropTypes.object,
+    items: PropTypes.object,
+    depth: PropTypes.number
+  };
 
   // nested list rendering recursion max depth
   static maxDepth = 10;
@@ -85,7 +106,7 @@ export class NestedList extends BaseList {
 
     this.state = {
       expanded: []
-    }
+    };
   }
 
   render() {
@@ -101,56 +122,59 @@ export class NestedList extends BaseList {
     );
   }
 
-  renderListItem({count, group, nested}, depth) {
-    if (depth > NestedList.maxDepth) {
-      throw 'NestedList maximum recursion depth exceeded'
+  renderListItem({nested, group, count}, depth) {
+    this.ensureValidDepth(depth);
+    const parts = this.getListItemParts(nested, group, depth);
+
+    return (
+      <ListItem key={group} count={count} onClick={this.toggleExpanded(group)}>
+        <div part="label">{parts.label}</div>
+        <div part="nested">{parts.nested}</div>
+      </ListItem>
+    );
+  }
+
+  getListItemParts(nested, group, depth) {
+    const hasNested = nested && nested.length;
+
+    const parts = {};
+    if (hasNested) {
+      const expanded = this.state.expanded.indexOf(group) > -1;
+      parts.label = (
+        <span className="icon">
+          <i className={'fa fa-caret-' + (expanded ? 'down' : 'right')}></i>
+          {this.props.groups[group]}
+        </span>
+      );
+      parts.nested = this.renderNested(nested, group, depth);
+    } else {
+      parts.label = this.props.groups[group];
+      parts.nested = '';
     }
 
+    return parts;
+  }
+
+  renderNested(nested, group, depth) {
     const hasNested  = nested && nested.length;
     const isExpanded = this.state.expanded.indexOf(group) > -1;
 
-    const renderNested = () => {
-      if (!hasNested || !isExpanded) {
-        return;
-      }
-
-      return (
-        <ul className={'with-connectors depth-' + depth}>
-          {nested.map(item => this.renderListItem(item, depth + 1))}
-        </ul>
-      );
-    };
-
-    const renderLabel = () => {
-      const label = this.props.groups[group];
-
-      if (hasNested) {
-        const expanded = this.state.expanded.indexOf(group) > -1;
-        return (
-          <span className="icon"><i className={'fa fa-caret-' + (expanded ? 'down' : 'right')}></i> {label}</span>
-        );
-      } else {
-        return label;
-      }
-    };
+    if (!hasNested || !isExpanded) {
+      return;
+    }
 
     return (
-      <li key={group}>
-        {this.renderCount(count)}
-        <a href className="item" onClick={this.toggleExpanded(group).bind(this)}>
-          {renderLabel()}
-        </a>
-
-        {renderNested()}
-      </li>
+      <ul className={'with-connectors depth-' + depth}>
+        {nested.map(item => this.renderListItem(item, depth + 1))}
+      </ul>
     );
   }
 
   toggleExpanded(group) {
-    return function (e) {
+    return e => {
       e.preventDefault();
 
-      let expanded = [...this.state.expanded];
+      const expanded = [...this.state.expanded];
 
       const i = expanded.indexOf(group);
       if (i > -1) {
@@ -165,6 +189,12 @@ export class NestedList extends BaseList {
       }
 
       this.setState({expanded});
+    };
+  }
+
+  ensureValidDepth(depth) {
+    if (depth > NestedList.maxDepth) {
+      throw new Error('NestedList maximum recursion depth exceeded');
     }
   }
 }
