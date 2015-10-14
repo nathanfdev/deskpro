@@ -81,10 +81,11 @@ export class TabsPaneStatefulContainer extends TabsPane {
     id: PropTypes.string.isRequired
   };
 
-  componentDidMount() {
-    this.setState({
+  constructor(props) {
+    super(props);
+    this.state = {
       active: this.props.state.getIn([this.props.id, 'active'], TabsPane.defaultTab)
-    });
+    };
   }
 
   activate(index) {
