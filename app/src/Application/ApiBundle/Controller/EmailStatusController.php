@@ -635,8 +635,9 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         switch ($action) {
             case 'reprocess':
                 $this->db->updateIn('email_sources', array(
-                    'status'     => 'retry',
-                    'error_code' => null,
+                    'status'      => 'retry',
+                    'date_status' => date('Y-m-d H:i:s'),
+                    'error_code'  => null,
                 ), $ids);
                 break;
 
