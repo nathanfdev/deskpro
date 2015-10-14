@@ -4,6 +4,7 @@ import { Card, CardLine, CardLineLeft, CardLineFull, CardLineItem, CardCheckbox,
 import jQuery from 'jquery';
 import { deleteComment, editComment } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import Immutable from 'immutable';
 
 export class FeedbackCommentCard extends Component {
 
@@ -52,7 +53,8 @@ export class FeedbackCommentCard extends Component {
   }
 
   render() {
-    const { dispatch, comment, author, feedback, selected, toggleSelected } = this.props;
+    const { dispatch, comment, author, selected, toggleSelected } = this.props;
+    const feedback = this.props.feedback || Immutable.fromJS({});
     const containerWidth = jQuery('.dp-list-frame-contents').innerWidth();
     const cardWidth = containerWidth - 15;
     return (
