@@ -1,20 +1,13 @@
 import React, {Component, PropTypes} from 'react';
 import { AgentsListItem } from './AgentsListItem';
 
-import { connect } from 'react-redux';
-
-import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
-import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
-import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
-
-@connect(state => ({
-  agents: agentsSelector(state),
-  me: meSelector(state)
-}))
 export class AgentsList extends Component {
 
   static propTypes = {
-    agents: PropTypes.object.isRequired
+    me: PropTypes.object.isRequired,
+    agents: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    handleClickParticipant: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -25,9 +18,30 @@ export class AgentsList extends Component {
     };
   }
 
-  componentWillMount() {
-    "use strict";
-    this.props.dispatch(loadAllAgents());
+  onChange(event) {
+    const oldState = this.state;
+    const newState = {
+      ...oldState,
+      agents: this.filterAgents(event.target.value),
+      value: event.target.value
+    };
+    this.setState(newState);
+  }
+
+  filterAgents(value = '') {
+    let newAgents = [];
+    if (typeof value === 'string' && value.trim()) {
+      this.props.agents.forEach((agent) => {
+        const name = agent.get('name').toLowerCase();
+        if (name.indexOf(value.toLowerCase()) >= 0) {
+          newAgents.push(agent);
+        }
+      });
+    } else {
+      newAgents = this.props.agents.toArray();
+    }
+
+    return newAgents;
   }
 
   render() {
@@ -49,26 +63,25 @@ export class AgentsList extends Component {
               this.state.agents.length > 0
                 ? this.state.agents.map(
                 (agent, index) => {
-                  "use strict";
                   if (this.props.me.get('id') !== agent.get('id')) {
-                    return <AgentsListItem
+                    return (<AgentsListItem
+                      dispatch={this.props.dispatch}
                       handleClickParticipant={this.props.handleClickParticipant}
                       key={index}
                       agent={agent}
-                      highlight={this.state.value}/>
+                      highlight={this.state.value}/>);
                   }
-
                 }
               )
                 : this.props.agents.map(
                 (agent, index) => {
-                  "use strict";
                   if (this.props.me.get('id') !== agent.get('id')) {
-                    return <AgentsListItem
+                    return (<AgentsListItem
+                      dispatch={this.props.dispatch}
                       handleClickParticipant={this.props.handleClickParticipant}
                       key={index}
                       agent={agent}
-                      highlight={this.state.value}/>
+                      highlight={this.state.value}/>);
                   }
                 }
               )
@@ -77,34 +90,5 @@ export class AgentsList extends Component {
         </div>
       </div>
     );
-  }
-
-
-  filterAgents(value = '') {
-    let newAgents = [];
-    if (typeof value == 'string' && value.trim()) {
-      this.props.agents.forEach((agent) => {
-        const name = agent.get('name').toLowerCase();
-        if (name.indexOf(value.toLowerCase()) >= 0) {
-          newAgents.push(agent);
-        }
-      });
-    } else {
-      newAgents = this.props.agents.toArray();
-    }
-
-    return newAgents;
-  }
-
-
-  onChange(event) {
-    "use strict";
-    const oldState = this.state;
-    const newState = {
-      ...oldState,
-      agents: this.filterAgents(event.target.value),
-      value: event.target.value
-    };
-    this.setState(newState);
   }
 }

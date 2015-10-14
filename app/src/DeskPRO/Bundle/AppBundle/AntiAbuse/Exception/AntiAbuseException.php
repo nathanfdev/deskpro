@@ -31,7 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse\Exception;
 
-use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuseEvent;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\AntiAbuseEvent;
 
 /**
  * This is fired by the AntiAbuse system when we need to return a response

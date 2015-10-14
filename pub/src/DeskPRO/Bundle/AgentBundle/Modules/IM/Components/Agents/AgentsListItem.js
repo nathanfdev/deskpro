@@ -1,9 +1,19 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import * as actions from '../../Actions/chatsActions';
-import { connect } from 'react-redux';
 
-@connect()
 export class AgentsListItem extends React.Component {
+  static propTypes = {
+    agent: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    highlight: PropTypes.string.isRequired || PropTypes.bool.isRequired,
+    handleClickParticipant: PropTypes.func.isRequired
+  };
+
+  startChat = (id, type, callback) => {
+    this.props.dispatch(actions.startChat(id, type));
+    callback();
+  };
+
   render() {
     const style = {
       backgroundImage: 'url("' + this.props.agent.get('gravatar_url') + '")'
@@ -20,7 +30,6 @@ export class AgentsListItem extends React.Component {
     }
 
     return (
-
       <li>
         <a href="#"
            onClick={this.startChat.bind(null, this.props.agent.get('id'), 'agent', this.props.handleClickParticipant)}
@@ -33,9 +42,5 @@ export class AgentsListItem extends React.Component {
     );
   }
 
-  startChat = (id, type, callback) => {
-    "use strict";
-    this.props.dispatch(actions.startChat(id, type));
-    callback();
-  }
+
 }

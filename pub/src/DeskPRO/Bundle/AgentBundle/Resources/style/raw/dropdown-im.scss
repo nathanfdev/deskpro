@@ -4,7 +4,8 @@
   width: 500px;
   background: #f5f6f7;
   font-weight: 500;
-  z-index: 999;
+  position: relative;
+  top: 0px;
 
   // Left & right containers (agents/teams)
   .bucket {

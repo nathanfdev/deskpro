@@ -29,7 +29,9 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\AntiAbuse;
+namespace DeskPRO\Bundle\AppBundle\AntiAbuse\Event;
+
+use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 
 /**
  * Fire this with the AntiAbuse service to log a login attempt and

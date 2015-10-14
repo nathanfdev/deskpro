@@ -32,8 +32,9 @@
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\AntiAbuseEvent;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * A service, used by controllers, that helps prevent abuse to the system.
@@ -65,7 +66,7 @@ class AntiAbuse
      */
     private $em;
 
-    public function __construct(EventDispatcher $dispatcher, EntityManager $em)
+    public function __construct(EventDispatcherInterface $dispatcher, EntityManager $em)
     {
         $this->dispatcher = $dispatcher;
         $this->em         = $em;

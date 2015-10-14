@@ -69,7 +69,7 @@ class PersonTestBuilder
      *
      * @return $this
      */
-    public function createNew($primary_email = null, $name = null)
+    public function createNew($primary_email = null, $name = null, $password = null)
     {
         $this->person = new Person();
 
@@ -82,6 +82,10 @@ class PersonTestBuilder
             $primary_email = $this->faker->email;
         }
         $this->person->setEmail($primary_email);
+
+        if ($password) {
+            $this->person->setPassword($password);
+        }
 
         return $this;
     }
