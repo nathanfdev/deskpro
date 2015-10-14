@@ -227,7 +227,7 @@ class TaskRunner
     {
         foreach ($this->running_tasks as $c) {
             if ($this->processor->status($c) !== ProcessorInterface::STATUS_RUNNING) {
-                $this->_markTaskHandlerDone($c);
+                $this->_markTaskHandlerDone($c, true);
             // Check for timeout and terminate any that are too old
             } elseif ($this->options['task_timeout'] && (microtime() - $c->getStartTime()) > $this->options['task_timeout']) {
                 $this->logger->alert(
