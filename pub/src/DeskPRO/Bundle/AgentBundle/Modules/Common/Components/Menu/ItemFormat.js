@@ -1,18 +1,88 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 
-export default class ItemFormat extends React.Component {
+export default class ItemFormat extends Component {
   static propTypes = {
-    icon: React.PropTypes.string,
-    itemType: React.PropTypes.string,
-    widgetClass: React.PropTypes.string,
-    checked: React.PropTypes.bool,
-    children: React.PropTypes.any,
-    listItem: React.PropTypes.bool,
-    hasMenu: React.PropTypes.bool,
-    hasItemList: React.PropTypes.bool,
-    toggleInnerList: React.PropTypes.func
+    icon: PropTypes.string,
+    itemType: PropTypes.string,
+    widgetClass: PropTypes.string,
+    checked: PropTypes.bool,
+    children: PropTypes.any,
+    listItem: PropTypes.bool,
+    hasMenu: PropTypes.bool,
+    hasItemList: PropTypes.bool,
+    toggleInnerList: PropTypes.func
+  };
+
+  renderIcon() {
+    if (this.props.icon) {
+      return (
+        <span className="dpw-navigation-dropdown-item-mark">
+            <span className="dpw-navigation-dropdown-item-icon dpw-navigation-dropdown-item-icon-2x">
+              <i className={'fa fa-' + this.props.icon}/>
+            </span>
+        </span>
+      );
+    }
   }
 
+  renderMenuCaret() {
+    if (this.props.hasMenu) {
+      return (
+        <span className="dpw-navigation-dropdown-item-status">
+            <i className="fa fa-caret-right menu-submenu-caret"/>
+          </span>
+      );
+    }
+  }
+
+  renderChecked() {
+    if (this.props.checked) {
+      return (
+        <span className="dpw-navigation-dropdown-item-status">
+            <i className="fa fa-check"/>
+        </span>
+      );
+    }
+  }
+
+  renderInnerListToggle() {
+    if (this.props.hasItemList) {
+      return (
+        <span className="dpw-navigation-dropdown-item-expand" onClick={this.props.toggleInnerList}>
+            <i className="fa fa-caret-down"/>
+          </span>
+      );
+    }
+  }
+
+  renderChildren() {
+    if (this.props.listItem) {
+      return (
+        <div>
+        <span className="dpw-navigation-dropdown-column-list-disc">
+          <i className="fa fa-circle"/>
+        </span>
+        <span className="dpw-navigation-dropdown-column-list-title">
+          {this.props.children}
+        </span>
+        </div>
+      );
+    }
+    return (
+      <div>
+        {this.renderIcon()}
+        <span className="dpw-navigation-dropdown-item-title">
+          {this.props.children}
+        </span>
+        {this.renderMenuCaret()}
+        {this.renderChecked()}
+        {this.renderInnerListToggle()}
+      </div>
+    );
+  }
+
+  // @ToDo Why we need that stuff with typeClass calculation? We never use it later
+  // https://github.com/DeskPRO/DeskPRO/blob/fe6f1a0c3e663e5e597dc306b27a0d1f1fc117c5/pub/src/DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemFormat.js
   render() {
     let typeClass = '';
 
@@ -33,49 +103,6 @@ export default class ItemFormat extends React.Component {
       }
     }
 
-    return (<div>
-      {this.props.listItem ?
-      <div>
-        <span className="dpw-navigation-dropdown-column-list-disc">
-          <i className="fa fa-circle" />
-        </span>
-        <span className="dpw-navigation-dropdown-column-list-title">
-          {this.props.children}
-        </span>
-      </div>
-      :
-      <div>
-        { this.props.icon ?
-          <span className="dpw-navigation-dropdown-item-mark">
-            <span className="dpw-navigation-dropdown-item-icon dpw-navigation-dropdown-item-icon-2x">
-              <i className={'fa fa-' + this.props.icon} />
-            </span>
-          </span>
-        : '' }
-
-        <span className="dpw-navigation-dropdown-item-title">
-          {this.props.children}
-        </span>
-
-        {this.props.hasMenu ?
-          <span className="dpw-navigation-dropdown-item-status">
-            <i className="fa fa-caret-right menu-submenu-caret" />
-          </span>
-        : ''}
-
-        {this.props.checked ?
-          <span className="dpw-navigation-dropdown-item-status">
-            <i className="fa fa-check" />
-          </span>
-        : ''}
-
-        {this.props.hasItemList ?
-          <span className="dpw-navigation-dropdown-item-expand" onClick={this.props.toggleInnerList}>
-            <i className="fa fa-caret-down" />
-          </span>
-        : ''}
-      </div>
-      }
-      </div>);
+    return this.renderChildren();
   }
 }
