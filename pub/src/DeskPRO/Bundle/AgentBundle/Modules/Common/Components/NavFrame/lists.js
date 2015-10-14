@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import { pureRender } from 'Ampliflux';
+import { connect } from 'react-redux';
+import { updateHashState } from '../../../Application/Actions/routingActions';
 
 
 class BaseList extends Component {
@@ -21,16 +23,16 @@ class BaseList extends Component {
 @pureRender
 export class ListItem extends BaseList {
   static propTypes = {
+    children: PropTypes.node,
     count: PropTypes.number.isRequired,
     label: PropTypes.string.isRequired,
-    active: PropTypes.bool.isRequired
+    active: PropTypes.bool.isRequired,
+    onClick: PropTypes.func.isRequired
   };
 
   render() {
-    const {count, label, active} = this.props;
-    const onClick = this.props.onClick ? this.props.onClick : () => {};
-
-    var classes = classNames('item', {'active': active});
+    const { count, label, active, onClick } = this.props;
+    const classes = classNames('item', {'active': active});
 
     return (
       <li className="counter-display">
@@ -39,6 +41,36 @@ export class ListItem extends BaseList {
 
         {this.props.children}
       </li>
+    );
+  }
+}
+
+@connect(state => ({state: state.Application.routing.get('hash')}))
+export class ListItemStatefulContainer extends Component {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    state: PropTypes.object.isRequired,
+    groupId: PropTypes.string.isRequired,
+    itemId: PropTypes.string.isRequired
+  };
+
+  render() {
+    const props = this.props;
+    const newProps = {
+      ...props,
+
+      // declaring "active" property accordingly to the URL state
+      active: props.state.getIn([props.groupId, 'active']) === props.itemId,
+
+      // decorating original "onClick" with additional URL state saving functionality
+      onClick: function(event) {
+        props.onClick(event);
+        props.dispatch(updateHashState(props.groupId, 'active', props.itemId));
+      }
+    };
+
+    return (
+      <ListItem {...newProps} />
     );
   }
 }
