@@ -7,7 +7,7 @@ const initialState = {
 
   viewModeOptions: [
     {field: constants.VIEW_MODE_TABLE, label: 'Table view', icon: 'fa-table', current: true},
-    {field: constants.VIEW_MODE_LIST, label: 'List view', icon: 'fa-list', current: false}
+    {field: constants.VIEW_MODE_CARD, label: 'List view', icon: 'fa-list', current: false}
   ],
 
   // Display Fields in Table/List view switcher

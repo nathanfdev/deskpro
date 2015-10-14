@@ -1,18 +1,19 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
+import classNames from 'classnames';
 
-export default class Menu extends React.Component {
+export default class Menu extends Component {
 
   /**
    * Valid prop types
    * @type {Object}
    */
   static propTypes = {
-    widgetClass: React.PropTypes.string,
-    overrideWidgetClass: React.PropTypes.bool,
-    children: React.PropTypes.node,
-    menuLevel: React.PropTypes.number,
-    isOpen: React.PropTypes.bool,
-    closeMenu: React.PropTypes.func
+    widgetClass: PropTypes.string,
+    overrideWidgetClass: PropTypes.bool,
+    children: PropTypes.node,
+    menuLevel: PropTypes.number,
+    isOpen: PropTypes.bool,
+    closeMenu: PropTypes.func
   };
 
   /**
@@ -56,14 +57,13 @@ export default class Menu extends React.Component {
    * @return {XML} The menu container
    */
   render() {
-    const baseClass = 'dpw-navigation-dropdown';
+    const {widgetClass} = this.props;
     const isOpen = typeof this.props.isOpen !== 'undefined' ? this.props.isOpen : true;
+    var divClass = classNames({
+      'dpw-navigation-dropdown': !this.props.overrideWidgetClass,
+      widgetClass: widgetClass
+    });
 
-    let divClass = (this.props.widgetClass ? baseClass + ' ' + this.props.widgetClass : baseClass);
-
-    if (this.props.overrideWidgetClass) {
-      divClass = this.props.widgetClass;
-    }
 
     if (!window.TMP_COUNT) {
       window.TMP_COUNT = 0;

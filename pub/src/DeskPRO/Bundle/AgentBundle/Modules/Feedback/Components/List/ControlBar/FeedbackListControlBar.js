@@ -12,7 +12,8 @@ export class FeedbackListControlBar extends React.Component {
     this.state = {
       orderByDropdownIsExpanded: false,
       filterByDropdownIsExpanded: false,
-      viewModeDropdownIsExpanded: false
+      viewModeDropdownIsExpanded: false,
+      viewOptionsIsExpanded: false,
     };
   }
 
@@ -23,7 +24,8 @@ export class FeedbackListControlBar extends React.Component {
     this.setState({
       orderByDropdownIsExpanded: !this.state.orderByDropdownIsExpanded,
       viewModeDropdownIsExpanded: false,
-      filterByDropdownIsExpanded: false
+      viewOptionsIsExpanded: false,
+      filterByDropdownIsExpanded: false,
     });
   };
 
@@ -34,7 +36,8 @@ export class FeedbackListControlBar extends React.Component {
     this.setState({
       filterByDropdownIsExpanded: !this.state.filterByDropdownIsExpanded,
       orderByDropdownIsExpanded: false,
-      viewModeDropdownIsExpanded: false
+      viewModeDropdownIsExpanded: false,
+      viewOptionsIsExpanded: false
     });
   };
 
@@ -44,6 +47,19 @@ export class FeedbackListControlBar extends React.Component {
     }
     this.setState({
       viewModeDropdownIsExpanded: !this.state.viewModeDropdownIsExpanded,
+      viewOptionsIsExpanded: false,
+      orderByDropdownIsExpanded: false,
+      filterByDropdownIsExpanded: false
+    });
+  };
+
+  toggleOptionsMenu = (event) => {
+    if (event) {
+      event.preventDefault();
+    }
+    this.setState({
+      viewOptionsIsExpanded: !this.state.viewOptionsIsExpanded,
+      viewModeDropdownIsExpanded: false,
       orderByDropdownIsExpanded: false,
       filterByDropdownIsExpanded: false
     });
@@ -69,8 +85,10 @@ export class FeedbackListControlBar extends React.Component {
           <hr/>
         </li>
         <ViewSwitcherContainer
-          expanded={this.state.viewModeDropdownIsExpanded}
+          menuExpanded={this.state.viewModeDropdownIsExpanded}
+          optionsExpanded={this.state.viewOptionsIsExpanded}
           toggleDropdown={this.toggleViewModeDropdown}
+          toggleOptionsMenu={this.toggleOptionsMenu}
           />
       </ListFrameMenu>
     );

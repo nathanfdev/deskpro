@@ -3,6 +3,7 @@ import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu
 import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
 import { toggleViewMode } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import MenuFooter from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooter';
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 const ViewSwitcherDropdown = React.createClass({
 
@@ -25,30 +26,29 @@ const ViewSwitcherDropdown = React.createClass({
     this.props.toggleDropdown();
   },
 
-  renderOptions: function renderOptions() {
-    const {viewModeOptions, currentViewMode} = this.props;
-    return (
-      viewModeOptions.map((option, index)=>
-          <Item
-            key={index}
-            isActive={currentViewMode.field === option.get('field')}
-            checked={currentViewMode.field === option.get('field')}
-            onClick={this.toggleView.bind(this, option.get('field'))}
-            icon={option.get('icon')}
-            >
-            {option.get('label')}
-          </Item>
-      )
-    );
-  },
-
   render: function render() {
+    const {currentViewMode, toggleOptionsMenu} = this.props;
     return (
       <Menu>
-        {this.renderOptions()}
+        <Item
+          isActive={currentViewMode.field === constants.VIEW_MODE_CARD}
+          checked={currentViewMode.field === constants.VIEW_MODE_CARD}
+          onClick={this.toggleView.bind(this, constants.VIEW_MODE_CARD)}
+          icon="list"
+          >
+          Card view
+        </Item>
+        <Item
+          isActive={currentViewMode.field === constants.VIEW_MODE_TABLE}
+          checked={currentViewMode.field === constants.VIEW_MODE_TABLE}
+          onClick={this.toggleView.bind(this, constants.VIEW_MODE_TABLE)}
+          icon="table"
+          >
+          Table view
+        </Item>
         <MenuFooter>
           <div className="dpw-navigation-dropdown-options-link">
-            <a href="#">View Options <i className="fa fa-cog"></i></a>
+            <a href="#" onClick={toggleOptionsMenu}>View Options <i className="fa fa-cog"></i></a>
           </div>
         </MenuFooter>
       </Menu>
