@@ -32,6 +32,8 @@
 namespace DeskPRO\Bundle\AppBundle\Security\Handler;
 
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\PortalBundle\EmailSender\PortalEmailSender;
 use Doctrine\DBAL\Driver\Connection;
 use Psr\Log\LoggerInterface;
@@ -58,12 +60,18 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
      */
     private $person_repo;
 
-    public function __construct(HttpKernelInterface $httpKernel, HttpUtils $httpUtils, array $options = array(), LoggerInterface $logger = null, PortalEmailSender $portal_mailer, Connection $db, PersonRepository $person_repo)
+    /**
+     * @var AntiAbuse
+     */
+    private $anti_abuse;
+
+    public function __construct(HttpKernelInterface $httpKernel, HttpUtils $httpUtils, array $options = array(), LoggerInterface $logger = null, PortalEmailSender $portal_mailer, Connection $db, PersonRepository $person_repo, AntiAbuse $anti_abuse)
     {
         parent::__construct($httpKernel, $httpUtils, $options, $logger);
         $this->portal_mailer = $portal_mailer;
         $this->db            = $db;
         $this->person_repo   = $person_repo;
+        $this->anti_abuse    = $anti_abuse;
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
@@ -75,22 +83,26 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
         $token = $exception->getToken();
 
         // Send alert
-        $attempt_person = $this->person_repo->findOneByEmail($token->getUsername());
+        if (!$attempt_person = $this->person_repo->findOneByEmail($token->getUsername())) {
+            $attempt_person = $this->person_repo->findOneByEmail($token->getUser());
+        }
         if ($attempt_person && $attempt_person->getPref('agent_notif.login_attempt_fail.email') && !$attempt_person->is_deleted) {
             $this->portal_mailer->sendLoginAlert($attempt_person, false);
         }
 
         // Save login log
         if ($attempt_person) {
+            $ip = dp_get_user_ip_address();
             $this->db->insert('login_log', array(
                 'person_id'    => $attempt_person->getId(),
                 'area'         => defined('DP_INTERFACE') ? DP_INTERFACE : 'unknown',
                 'is_success'   => 0,
-                'ip_address'   => dp_get_user_ip_address(),
-                'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
+                'ip_address'   => $ip,
+                'hostname'     => @gethostbyaddr($ip) ?: '',
                 'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
                 'date_created' => date('Y-m-d H:i:s'),
             ));
+            $this->anti_abuse->check(new LoginAbuseCheck($attempt_person, $ip));
         }
 
         return parent::onAuthenticationFailure($request, $exception);
