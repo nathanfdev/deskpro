@@ -60,10 +60,11 @@ export default class Menu extends Component {
     const {widgetClass} = this.props;
     const isOpen = typeof this.props.isOpen !== 'undefined' ? this.props.isOpen : true;
     var divClass = classNames({
-      'dpw-navigation-dropdown': !this.props.overrideWidgetClass,
-      widgetClass: widgetClass
+      'dpw-navigation-dropdown': !this.props.overrideWidgetClass
     });
-
+    if (widgetClass) {
+      divClass += ' ' + widgetClass;
+    }
 
     if (!window.TMP_COUNT) {
       window.TMP_COUNT = 0;

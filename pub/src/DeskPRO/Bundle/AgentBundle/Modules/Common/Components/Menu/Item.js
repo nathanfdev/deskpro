@@ -1,5 +1,6 @@
 import React from 'react';
 import BaseItem from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/BaseItem';
+import classNames from 'classnames';
 
 export default class Item extends React.Component {
   static propTypes = {
@@ -15,23 +16,15 @@ export default class Item extends React.Component {
   };
 
   render() {
-    let typeClass = '';
+    let typeClass = classNames({
+      'dpw-navigation-dropdown-item-grey': this.props.itemType === 'locked',
+      'dpw-navigation-dropdown-item-lock': this.props.itemType === 'locked',
+      'dpw-navigation-dropdown-item-greyer': this.props.itemType === 'danger',
+      'dpw-navigation-dropdown-item-warning': this.props.itemType === 'danger'
+    });
 
-    if (this.props.itemType) {
-      switch (this.props.itemType) {
-        case ('locked'):
-          typeClass = 'dpw-navigation-dropdown-item-grey dpw-navigation-dropdown-item-lock';
-          break;
-        case ('danger'):
-          typeClass = 'dpw-navigation-dropdown-item-greyer dpw-navigation-dropdown-item-warning';
-          break;
-        default:
-          break;
-      }
-
-      if (typeClass && this.props.widgetClass) {
-        typeClass = this.props.widgetClass + ' ' + typeClass;
-      }
+    if (this.props.widgetClass) {
+      typeClass += ' ' + this.props.widgetClass;
     }
 
     return (<BaseItem {...this.props} widgetClass={typeClass} format="item">
