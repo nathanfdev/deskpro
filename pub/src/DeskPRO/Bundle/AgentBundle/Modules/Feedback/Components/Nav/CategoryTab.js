@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import { ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { FeedbackListItem } from './FeedbackListItem';
 
-export class CategoryTab extends React.Component {
+export class CategoryTab extends Component {
 
   static propTypes = {
     customCategories: PropTypes.array.isRequired,
@@ -15,12 +15,14 @@ export class CategoryTab extends React.Component {
     return (
       <ul>
         {customCategories.map((item, index) =>
-            <div key={index}
-                 onClick={onClick.bind(this, {name:'custom_category', value:item.group})}>
-              <ListItem count={item.count} label={item.group}
-                        active={currentGroup.name === 'custom_category' && currentGroup.value === item.group}
-                />
-            </div>
+          <FeedbackListItem
+            key={index}
+            itemId={item.group}
+            count={item.count}
+            label={item.group}
+            onClick={onClick({name: 'custom_category', value: item.group})}
+            active={currentGroup.name === 'custom_category' && currentGroup.value === item.group}
+          />
         )}
       </ul>
     );

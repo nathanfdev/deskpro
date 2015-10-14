@@ -53,17 +53,19 @@ export class NavContainer extends Component {
     dispatch(actions.feedbackClosedStatus());
     dispatch(actions.feedbackHiddenStatus());
     dispatch(actions.getFilterValues(currentFilterMode.name));
-    // dispatch(actions.getDisplayFieldsFromPersonSetting());
+    //dispatch(actions.getDisplayFieldsFromPersonSetting());
     dispatch(actions.loadFeedbackList());
   }
 
 
-  groupChoice(group, event) {
-    event.preventDefault();
-    event.stopPropagation();
-    const {dispatch } = this.props;
-    dispatch(actions.changeGroupState(group));
-    dispatch(actions.loadFeedbackList());
+  groupChoice(group) {
+    return (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const { dispatch } = this.props;
+      dispatch(actions.changeGroupState(group));
+      dispatch(actions.loadFeedbackList());
+    };
   }
 
   commentsView(group, event) {

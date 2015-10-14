@@ -53,8 +53,7 @@ export class Nav extends Component {
             <TypeTab currentGroup={currentGroup} types={types} onClick={groupChoice.bind(this)}/>
           </Tab>
           <Tab title="Category">
-            <CategoryTab currentGroup={currentGroup} customCategories={customCategories}
-                         onClick={groupChoice.bind(this)}/>
+            <CategoryTab currentGroup={currentGroup} customCategories={customCategories} onClick={groupChoice}/>
           </Tab>
         </TabsPaneStatefulContainer>
       </NavFrame>
