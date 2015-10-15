@@ -25,14 +25,14 @@ export class List extends Component {
     toggleSelected: PropTypes.func.isRequired,
     comments: PropTypes.array.isRequired,
     massAction: PropTypes.bool.isRequired,
-    currentViewMode: PropTypes.object.isRequired
+    currentViewMode: PropTypes.string.isRequired,
+    isComments: PropTypes.bool.isRequired
   };
 
   contentChoice() {
-    //const {currentGroup} = this.props;
-    //if (currentGroup.name === 'feedback_comments') {
-    //  return this.renderComments();
-    //}
+    if (this.props.isComments) {
+      return this.renderComments();
+    }
     return this.renderFeedback();
   }
 
@@ -41,7 +41,7 @@ export class List extends Component {
             currentViewMode, feedback, selected, toggleSelected, people, feedbackTypes, massAction, feedbackLabels,
             feedbackComments, feedbackStatuses } = this.props;
 
-    var viewMode = currentViewMode.field;
+    var viewMode = currentViewMode;
     if (viewMode === constants.VIEW_MODE_CARD) {
       return (
         <FeedbackList
@@ -70,7 +70,7 @@ export class List extends Component {
 
   renderComments() {
     const {dispatch, feedbackFromStore, currentViewMode, comments, selected, toggleSelected, massAction, people, emails, feedbackStatuses} = this.props;
-    var viewMode = currentViewMode.field;
+    var viewMode = currentViewMode;
     if (viewMode === constants.VIEW_MODE_CARD) {
       return (
         <FeedbackCommentList

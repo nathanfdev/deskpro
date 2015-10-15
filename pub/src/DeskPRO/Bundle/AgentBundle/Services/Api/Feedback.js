@@ -42,7 +42,7 @@ export function commentsToReviewList(params) {
     paramsEncoded.push('order=' + params.order);
   }
   paramsEncoded.push('awaiting_validation=1');
-  console.log('DP_API/feedback_comments_list?' + paramsEncoded.join('&'));
+
   return DpApi.sendGet('DP_API/feedback_comments_list?' + paramsEncoded.join('&'));
 }
 

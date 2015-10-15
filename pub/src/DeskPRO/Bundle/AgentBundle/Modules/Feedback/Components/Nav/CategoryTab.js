@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { FeedbackListItem } from './FeedbackListItem';
+import { ListItemContainer } from './ListItemContainer';
 
 export class CategoryTab extends Component {
 
@@ -13,7 +13,7 @@ export class CategoryTab extends Component {
     return (
       <ul>
         {customCategories.map((item, index) =>
-          <FeedbackListItem
+          <ListItemContainer
             key={index}
             count={item.count}
             label={item.group}

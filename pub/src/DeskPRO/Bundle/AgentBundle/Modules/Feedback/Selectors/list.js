@@ -8,6 +8,7 @@ import{createFeedbackLabelsRequestSelectors} from '../RecordStores/Selectors/fee
 import{createFeedbackCommentsRequestSelectors} from '../RecordStores/Selectors/feedbackCommentsSelectors';
 import{createFeedbackStatusesRequestSelectors} from '../RecordStores/Selectors/feedbackStatusesSelectors';
 import{createFeedbackRequestSelectors} from '../RecordStores/Selectors/feedbackSelectors';
+import { hashStateSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
 
 const stateSelector = state => state.Feedback.list;
 
@@ -16,14 +17,14 @@ export const sortingDataSelector = createSelector(
     list => list.get('sortOptions').toJS().find(option => option.current === true)
 );
 
-export const viewDataSelector = createSelector(
-  stateSelector,
-    list => list.get('viewModeOptions').toJS().find(option=> option.current === true)
-);
-
 export const filterDataSelector = createSelector(
   stateSelector,
     list => list.get('filterOptions').toJS().find(option=> option.current === true)
+);
+
+export const isCommentsSelector = createSelector(
+  stateSelector,
+  list => list.get('isComments')
 );
 
 export const peopleSelector = createSelector(
@@ -60,3 +61,5 @@ export const feedbackSelector = createSelector(
   createFeedbackRequestSelectors('feedback').recordsSel,
     feedback => feedback
 );
+
+export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');

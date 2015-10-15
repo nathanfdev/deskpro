@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { updateHashState } from '../../../Application/Actions/routingActions';
 import { connect } from 'react-redux';
+import { routingStateSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
 
 export class TabsPane extends React.Component {
   static propTypes = {
@@ -73,7 +74,7 @@ export class TabsPane extends React.Component {
   }
 }
 
-@connect(state => ({state: state.Application.routing.get('hash')}))
+@connect(state => ({state: routingStateSelector(state)}))
 export class TabsPaneStatefulContainer extends TabsPane {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,

@@ -95,7 +95,8 @@ export class NestedList extends BaseList {
     onClick: PropTypes.func.isRequired,
     groups: PropTypes.object,
     items: PropTypes.object,
-    depth: PropTypes.number
+    depth: PropTypes.number,
+    alwaysExpanded: PropTypes.bool
   };
 
   // nested list rendering recursion max depth
@@ -138,7 +139,7 @@ export class NestedList extends BaseList {
     const hasNested = nested && nested.length;
 
     const parts = {};
-    if (hasNested) {
+    if (hasNested || this.props.alwaysExpanded) {
       const expanded = this.state.expanded.indexOf(group) > -1;
       parts.label = (
         <span className="icon">
@@ -157,7 +158,7 @@ export class NestedList extends BaseList {
 
   renderNested(nested, group, depth) {
     const hasNested  = nested && nested.length;
-    const isExpanded = this.state.expanded.indexOf(group) > -1;
+    const isExpanded = this.props.alwaysExpanded || this.state.expanded.indexOf(group) > -1;
 
     if (!hasNested || !isExpanded) {
       return;
@@ -173,6 +174,10 @@ export class NestedList extends BaseList {
   toggleExpanded(group) {
     return e => {
       e.preventDefault();
+
+      if (this.props.alwaysExpanded) {
+        return;
+      }
 
       const expanded = [...this.state.expanded];
 

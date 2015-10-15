@@ -1,11 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import { FeedbackListItem } from './FeedbackListItem';
+import { ListItemContainer } from './ListItemContainer';
 
 export class TypeTab extends Component {
   static propTypes = {
-    types: PropTypes.array.isRequired,
-    currentGroup: PropTypes.object.isRequired,
-    onClick: PropTypes.func.isRequired
+    types: PropTypes.array.isRequired
   };
 
   render() {
@@ -14,7 +12,7 @@ export class TypeTab extends Component {
     return (
       <ul>
         {types.map((item, index) =>
-          <FeedbackListItem
+          <ListItemContainer
             key={index}
             count={item.value}
             label={item.title}

@@ -131,3 +131,13 @@ export function stateFromString(string) {
 
   return Immutable.fromJS(state);
 }
+
+/**
+ * Sanitize data to safely put into URL state
+ *
+ * @param {*} data Data to sanitize
+ * @returns {*} Data safe tu put into URL state
+ */
+export function urlSanitize(data) {
+  return data.replace(/\s/g, '_').replace(reservedCharsRegex, '_');
+}

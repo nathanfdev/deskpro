@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { FeedbackListItem } from './FeedbackListItem';
+import { ListItemContainer } from './ListItemContainer';
 import { NestedList } from './NestedList';
 
 export class StatusTab extends Component {
@@ -10,17 +10,23 @@ export class StatusTab extends Component {
   };
 
   render() {
-    const { statuses } = this.props;
+    const { active, closed, hidden } = this.props.statuses;
+
+    // @todo Turn it in form of NestedList in the reducer
+    const items = [
+      {...active, group: 'active'},
+      {...closed, group: 'closed'},
+      {...hidden, group: 'hidden'}
+    ];
+
     return (
       <ul>
-        <FeedbackListItem
+        <ListItemContainer
           label="New"
-          count={statuses.new}
+          count={this.props.statuses.new}
           listOptions={{status: 'new'}}
         />
-        <NestedList node={statuses.active} status="active" label="Active"/>
-        <NestedList node={statuses.closed} status="closed" label="Closed"/>
-        <NestedList node={statuses.hidden} status="hidden" label="Hidden"/>
+        <NestedList items={items} alwaysExpanded />
       </ul>
     );
   }
