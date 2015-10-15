@@ -1,16 +1,16 @@
-import React, {Component, PropTypes} from 'react';
+import React from 'react';
 
-export default class ItemList extends Component {
+export default class ItemList extends React.Component {
 
   /**
    * Valid prop types
    * @type {Object}
    */
   static propTypes = {
-    widgetClass: PropTypes.string,
-    overrideWidgetClass: PropTypes.bool,
-    children: PropTypes.node
-  };
+    widgetClass: React.PropTypes.string,
+    overrideWidgetClass: React.PropTypes.bool,
+    children: React.PropTypes.node,
+  }
 
   /**
    * Render the menu
@@ -20,16 +20,14 @@ export default class ItemList extends Component {
     const widgetClass = this.props.widgetClass ? this.props.widgetClass : '';
 
     const displayClass = this.props.overrideWidgetClass
-                          ? widgetClass
-                          : '' + widgetClass;
+      ? widgetClass
+      : '' + widgetClass;
 
-    return (
-      <div className="dpw-navigation-dropdown-column-list">
+    return (<li className={displayClass}>
+      <div className="dpw-navigation-dropdown-column-list dpw-navigation-dropdown-column-list-v2">
         <ul>
-          {React.Children.map(this.props.children, (child, index) => {
+          {React.Children.map(this.props.children, (child) => {
             return React.cloneElement(child, {
-              ...this.props,
-              key: index,
               widgetClass: 'dpw-navigation-dropdown-column-list-item',
               overrideWidgetClass: true,
               listItem: true
@@ -37,6 +35,6 @@ export default class ItemList extends Component {
           })}
         </ul>
       </div>
-    );
+    </li>);
   }
 }

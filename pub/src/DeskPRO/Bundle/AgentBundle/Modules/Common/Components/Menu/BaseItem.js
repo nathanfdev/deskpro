@@ -3,7 +3,7 @@ import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu
 import ItemFormat from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemFormat';
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned';
 import classNames from 'classnames';
-import jQuery from 'jquery';
+import $ from 'jquery';
 
 const BaseItem = React.createClass({
 
@@ -55,8 +55,7 @@ const BaseItem = React.createClass({
    * Execute an action on click
    * @return {void}
    */
-  onClickAction: function(event) {
-    event.preventDefault();
+  onClickAction: function() {
     if (this.props.onClick) {
       this.props.onClick();
     }
@@ -88,12 +87,12 @@ const BaseItem = React.createClass({
 
   /**
    * Handle clicks outside the item
-   * @param {Event} event Click event
+   * @param {Event} e Click event
    * @return {void}
    */
-  handleClickOutside: function(event) {
+  handleClickOutside: function(e) {
     // Don't handle clicks for menu items - they deal with that themselves
-    const closest = jQuery(event.target).parents('.dpw-navigation-dropdown-item');
+    const closest = $(e.target).parents('.dropdown-nav-item');
 
     if (closest.length === 0) {
       this.closeMenu();
@@ -125,40 +124,13 @@ const BaseItem = React.createClass({
    * Format the output according to the format prop
    * @param  {mixed} output The output
    * @return {mixed}        The formatted output
-   * @param hasMenu
-   * @param hasItemList
    */
   formatOutput: function(output, hasMenu = false, hasItemList = false) {
     if (this.props.format && this.props.format === 'item') {
-      return (
-        <ItemFormat {...this.props} hasMenu={hasMenu} hasItemList={hasItemList} toggleInnerList={this.toggleInnerList}>
-          {output}
-        </ItemFormat>
-      );
+      return (<ItemFormat {...this.props} hasMenu={hasMenu} hasItemList={hasItemList} toggleInnerList={this.toggleInnerList}>{output}</ItemFormat>);
     }
 
     return output;
-  },
-
-  /**
-   * @param {boolean} keepMenuState If we need keep state of the menu
-   * @returns {string} Class names for the menu item
-   */
-  defineDivClasses: function(keepMenuState) {
-    const {overrideWidgetClass, widgetClass, disabled, activeItem, isActive, condensed} = this.props;
-    let divClasses = '';
-    if (overrideWidgetClass) {
-      divClasses = widgetClass;
-    } else {
-      divClasses = classNames(
-        'dpw-navigation-dropdown-item', widgetClass,
-        {
-          'dpw-navigation-dropdown-item-disabled': disabled,
-          'active': (activeItem === this && keepMenuState || isActive),
-          'dpw-navigation-dropdown-item-condensed': condensed
-        });
-    }
-    return divClasses;
   },
 
   /**
@@ -166,10 +138,10 @@ const BaseItem = React.createClass({
    * @return {React.Element} The menu container
    */
   render: function() {
-    const onMouseOverAction = this.props.onMouseOver ? this.props.onMouseOver : () => {
-    };
-    const onMouseOutAction = this.props.onMouseOut ? this.props.onMouseOut : () => {
-    };
+    const baseClass = 'dpw-navigation-dropdown-item dropdown-nav-item';
+
+    const onMouseOverAction = this.props.onMouseOver ? this.props.onMouseOver : () => {};
+    const onMouseOutAction = this.props.onMouseOut ? this.props.onMouseOut : () => {};
 
     let output = [];
 
@@ -196,6 +168,7 @@ const BaseItem = React.createClass({
           hasMenu = true;
           const parentLevel = this.props.parentMenuLevel ? this.props.parentMenuLevel : 1;
           const childProps = child.props;
+          const menuLevel = parentLevel + 1;
 
           return (<Positioned isOpen
                               positionMy="left top"
@@ -203,8 +176,8 @@ const BaseItem = React.createClass({
                               collision="none"
                               positionTarget={this}
                               key={child}>
-            <Menu {...childProps} menuLevel={parentLevel + 1}
-                                  isOpen={this.props.activeItem === this} closeMenu={this.closeMenu}/>
+            <Menu {...childProps} menuLevel={menuLevel}
+              isOpen={this.props.activeItem === this} closeMenu={this.closeMenu} />
           </Positioned>);
         }
       });
@@ -218,10 +191,31 @@ const BaseItem = React.createClass({
         }
       });
 
-      var divClasses = this.defineDivClasses(keepMenuState);
+      let divClasses = [baseClass];
+
+      if (this.props.widgetClass) {
+        divClasses.push(this.props.widgetClass);
+      }
+
+      if (this.props.disabled) {
+        divClasses.push('dpw-navigation-dropdown-item-disabled');
+      }
+
+      // Only add an active state if the menu is open and exists
+      if (this.props.activeItem === this && keepMenuState || this.props.isActive) {
+        divClasses.push('active');
+      }
+
+      if (this.props.condensed) {
+        divClasses.push('dpw-navigation-dropdown-item-condensed');
+      }
+
+      if (this.props.overrideWidgetClass) {
+        divClasses = this.props.widgetClass;
+      }
+
       if (contents) {
-        output.push(<a className={divClasses} href="#" onClick={this.onClickAction}
-                       onMouseOver={onMouseOverAction} onMouseOut={onMouseOutAction}>
+        output.push(<a className={classNames(divClasses)} href="#" onClick={this.onClickAction} onMouseOver={onMouseOverAction} onMouseOut={onMouseOutAction}>
           {this.formatOutput(contents, hasMenu, hasItemList)}
         </a>);
       }
@@ -234,6 +228,7 @@ const BaseItem = React.createClass({
         output = output.concat(menu);
       }
     }
+
     if (this.props.subMenuMode && this.props.subMenuMode === 'click') {
       return (<li onClick={this.toggleMenu}>{output}</li>);
     } else if (this.props.subMenuMode && this.props.subMenuMode === 'none') {
