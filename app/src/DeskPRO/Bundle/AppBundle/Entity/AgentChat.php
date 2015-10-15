@@ -68,7 +68,7 @@ class AgentChat extends DomainObject implements PersonList
 
     /**
      * @var string
-     * @ORM\Column(type="string", columnDefinition="ENUM('agent', 'team', 'department', 'group')")
+     * @ORM\Column(type="string", length=80)
      */
     protected $type;
 
