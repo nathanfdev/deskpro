@@ -111,9 +111,11 @@ const BaseItem = React.createClass({
 
   /**
    * Toggle the inner list
+   * @param  {object} event The click event
    * @return {[type]} [description]
    */
-  toggleInnerList: function() {
+  toggleInnerList: function(event) {
+    event.preventDefault();
     this.setState({
       openInnerList: !this.state.openInnerList
     });

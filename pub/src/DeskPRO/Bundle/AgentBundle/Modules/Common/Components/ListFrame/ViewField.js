@@ -15,13 +15,15 @@ export class ViewField extends Component {
     const {label, fixed } = this.props;
     const moveIconClass = classNames('fa', {'fa-minus': fixed, 'fa-navicon': !fixed});
     return (
-      <a className="dpw-navigation-dropdown-column-list-item" href="#">
-        <span className="dpw-navigation-dropdown-column-list-status"><i className="fa fa-check"></i></span>
+      <li>
+        <a className="dpw-navigation-dropdown-column-list-item" href="#">
+          <span className="dpw-navigation-dropdown-column-list-status"><i className="fa fa-check"></i></span>
         <span className="dpw-navigation-dropdown-column-list-move">
           <i className={moveIconClass}></i>
         </span>
-        <span className="dpw-navigation-dropdown-column-list-title">{label}</span>
-      </a>
+          <span className="dpw-navigation-dropdown-column-list-title">{label}</span>
+        </a>
+      </li>
     );
   }
 }

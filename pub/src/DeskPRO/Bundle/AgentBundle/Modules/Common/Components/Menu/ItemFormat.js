@@ -92,14 +92,16 @@ export default class ItemFormat extends React.Component {
     }
 
     if (this.props.listItem) {
-      return (<div>
+      return (
+        <div>
         <span className="dpw-navigation-dropdown-column-list-disc">
           <i className="fa fa-circle"/>
         </span>
         <span className="dpw-navigation-dropdown-column-list-title">
           {this.props.children}
         </span>
-      </div>);
+        </div>
+      );
     }
     return (<div>
       {this.renderDiscMark()}
