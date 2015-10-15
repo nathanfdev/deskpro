@@ -1,17 +1,18 @@
 import React, { PropTypes } from 'react';
+import { Router, Route, Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import { ReactRouterWrapper } from './ReactRouterWrapper';
 import { DpAppLoading } from './DpAppLoading';
-import TicketsApp from '../../Tickets/Components/TicketsApp';
-import TasksApp from '../../Tasks/Components/TasksApp';
-import TestApp from '../../Test/Components/TestApp';
 import { FeedbackApp } from '../../Feedback/Components/FeedbackApp';
 import { CrmApp } from '../../CRM/Components/CrmApp';
 import { ChatApp } from '../../Chat/Components/ChatApp';
 import { PublishApp } from '../../Publish/Components/PublishApp';
+import TicketsApp from '../../Tickets/Components/TicketsApp';
+import TasksApp from '../../Tasks/Components/TasksApp';
+import TestApp from '../../Test/Components/TestApp';
 import * as AppActions from '../../Application/Actions/AppActions';
 import { hashChanged } from '../../Application/Actions/routingActions';
-import { Router, Route, Redirect } from 'react-router';
+
 
 @connect((state) => ({
   dpWindow: state.Application.dpWindow

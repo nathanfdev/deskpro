@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Overlay } from './Overlay';
 import { Chat } from './ChatWindow/Chat';
 import { Recent } from './Recent';
-import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned';
+import SimplePositioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Simple';
 
 // chats
 import * as chatActions from '../RecordStores/Actions/imChatsActions';
@@ -127,8 +127,14 @@ export class HeaderWidget extends React.Component {
   };
 
   renderOverlay = () => {
-    if (this.state.overlayShown) {
-      return (
+    return (
+      <SimplePositioned
+        positionMy="left-15 top"
+        positionAt="center bottom"
+        collision="none"
+        positionTarget={this.refs.imListButton}
+        isOpen={this.state.overlayShown}
+        >
         <Overlay
           me={this.props.me}
           agents={this.props.agents}
@@ -137,8 +143,8 @@ export class HeaderWidget extends React.Component {
           dispatch={this.props.dispatch}
           handleClickParticipant={this.handleClickParticipant}
           />
-      );
-    }
+      </SimplePositioned>
+    );
   };
 
   render() {
