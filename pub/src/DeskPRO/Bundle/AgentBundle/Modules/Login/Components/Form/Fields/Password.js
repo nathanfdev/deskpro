@@ -5,17 +5,18 @@ import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Pos
 export class Password extends React.Component {
 
   static propTypes = {
+    errorMessage: PropTypes.string,
     value: PropTypes.string,
     onChange: PropTypes.func.isRequired
   };
 
   render() {
-    const { value, onChange } = this.props;
+    const { value, errorMessage, onChange } = this.props;
 
     return (
-      <FieldWrapper iconClass="fa-lock" label="Password" errorMessage="Wrong password">
+      <FieldWrapper iconClass="fa-lock" label="Password" errorMessage={errorMessage}>
         <Positioned
-          isOpen={true}
+          isOpen={errorMessage}
           positionTarget={this}
           positionAt="left top"
           positionMy="right center">

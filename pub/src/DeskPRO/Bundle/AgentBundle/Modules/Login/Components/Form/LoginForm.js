@@ -65,8 +65,8 @@ export class LoginForm extends React.Component {
 
               <div className="dpw-login-form">
                 <form>
-                  <Email hasError={hasError} value={this.state.email} onChange={this.onChangeEmail} />
-                  <Password hasError={hasError} value={this.state.password} onChange={this.onChangePassword} />
+                  <Email value={this.state.email} onChange={this.onChangeEmail} errorMessage="Looks like this isn't the correct password" />
+                  <Password value={this.state.password} onChange={this.onChangePassword} errorMessage="Wrong password" />
                   <Options />
 
                   <input type="submit" value="Log in to DeskPRO" />

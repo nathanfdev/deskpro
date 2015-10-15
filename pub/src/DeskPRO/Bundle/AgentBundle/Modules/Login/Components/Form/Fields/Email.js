@@ -4,15 +4,16 @@ import { FieldWrapper } from './FieldWrapper';
 export class Email extends React.Component {
 
   static propTypes = {
+    errorMessage: PropTypes.string,
     value: PropTypes.string,
     onChange: PropTypes.func.isRequired
   };
 
   render() {
-    const { value, onChange } = this.props;
+    const { value, errorMessage, onChange } = this.props;
 
     return (
-      <FieldWrapper iconClass="fa-user" label="Account name / Email" errorMessage="Looks like this isn't the correct password">
+      <FieldWrapper iconClass="fa-user" label="Account name / Email" errorMessage={errorMessage}>
         <input type="text" placeholder="example@email.com" value={value} onChange={onChange} />
       </FieldWrapper>
     );
