@@ -41,8 +41,6 @@ export const getStatuses = createAction(
 export const loadFeedbackList = createAction(
   'FEEDBACK_LIST',
   (overwriteParams = {}) => (dispatch, getState)=> {
-    console.log('overwriteParams', overwriteParams);
-
     const state = getState();
     const feedbackListState = state.Feedback.list.toJS();
     const currentParams = {
@@ -50,8 +48,6 @@ export const loadFeedbackList = createAction(
       order: feedbackListState.order
     };
     const params = {...currentParams, ...overwriteParams};
-
-    console.log('params', params);
 
     return () => Feedback.getList(params).then(promise => {
       const feedback = promise.getData();

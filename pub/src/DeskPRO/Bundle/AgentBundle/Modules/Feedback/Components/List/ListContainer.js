@@ -1,7 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import { List } from './List';
 import { peopleSelector, emailsSelector, feedbackTypesSelector, feedbackLabelsSelector, feedbackCommentsSelector,
-         feedbackStatusesSelector, feedbackSelector, isCommentsSelector } from '../../Selectors/list';
+         feedbackStatusesSelector, feedbackSelector, isCommentsSelector, currentViewModeSelector }
+  from '../../Selectors/list';
 import { toggleSelectedAction } from '../../Actions/FeedbackListActions';
 import { connect } from 'react-redux';
 
@@ -11,7 +12,7 @@ import { connect } from 'react-redux';
     feedback: state.Feedback.list.get('feedback'),
     selected: state.Feedback.list.get('selected'),
     comments: state.Feedback.list.get('comments'),
-    currentViewMode: state.Application.routing.getIn(['hash', 'list', 'view'], 'card'),
+    currentViewMode: currentViewModeSelector(state),
     people: peopleSelector(state),
     emails: emailsSelector(state),
     feedbackTypes: feedbackTypesSelector(state),

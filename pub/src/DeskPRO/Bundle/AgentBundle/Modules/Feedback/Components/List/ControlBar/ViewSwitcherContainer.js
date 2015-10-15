@@ -4,16 +4,16 @@ import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Pos
 import ViewSwitcherDropdown from './ViewSwitcherDropdown';
 import {FeedbackViewOptions} from './FeedbackViewOptions';
 import { VIEW_MODE_TABLE, VIEW_MODE_CARD } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-
+import { currentViewModeSelector } from '../../../Selectors/list';
 import { connect } from 'react-redux';
+
 @connect(state => ({
   order: state.Feedback.list.get('order'),
   filters: state.Feedback.list.get('filters'),
   tableViewFields: state.Feedback.list.get('tableViewFields'),
   listViewFields: state.Feedback.list.get('listViewFields'),
-  currentViewMode: state.Application.routing.getIn(['hash', 'list', 'view'], 'card')
+  currentViewMode: currentViewModeSelector(state)
 }))
-
 export class ViewSwitcherContainer extends Component {
 
   static propTypes = {

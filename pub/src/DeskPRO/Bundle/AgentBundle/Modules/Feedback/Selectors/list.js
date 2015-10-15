@@ -8,6 +8,7 @@ import{createFeedbackLabelsRequestSelectors} from '../RecordStores/Selectors/fee
 import{createFeedbackCommentsRequestSelectors} from '../RecordStores/Selectors/feedbackCommentsSelectors';
 import{createFeedbackStatusesRequestSelectors} from '../RecordStores/Selectors/feedbackStatusesSelectors';
 import{createFeedbackRequestSelectors} from '../RecordStores/Selectors/feedbackSelectors';
+import { hashStateSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
 
 const stateSelector = state => state.Feedback.list;
 
@@ -60,3 +61,5 @@ export const feedbackSelector = createSelector(
   createFeedbackRequestSelectors('feedback').recordsSel,
     feedback => feedback
 );
+
+export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');

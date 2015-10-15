@@ -1,6 +1,6 @@
 import * as actions from '../Actions/routingActions';
 import { createReducer } from 'Ampliflux';
-import { stateToString, stateFromString } from '../Service/hash';
+import { stateToString, stateFromString } from '../Service/routing';
 import Immutable from 'immutable';
 import shallowEqual from 'fbjs/lib/shallowEqual';
 
