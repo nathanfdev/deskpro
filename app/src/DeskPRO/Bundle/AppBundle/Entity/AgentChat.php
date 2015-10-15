@@ -151,6 +151,10 @@ class AgentChat extends DomainObject implements PersonList
      */
     public function setType($type)
     {
+        if (!in_array($type, $this->allowedTypes)) {
+            $err = 'Used invalid Chatable type in AgentChat::setType. Should be one of %s';
+            throw new WrongChatableTypeException(sprintf($err, implode(',', $this->allowedTypes)));
+        }
         $this->type = $type;
     }
 
