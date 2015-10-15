@@ -120,19 +120,21 @@ export function requestRecords(stateKey, loaderFn, defaultMode = MODE_APPEND) {
  */
 export function createRecordsRequest(stateKey, requestId, loaderFn, defaultMode = MODE_APPEND) {
   return (mode = defaultMode) => (dispatch, getState) => {
-    const state   = objGet(getState(), stateKey) || Immutable.fromJS({records: {}, requests: []});
+    const state = objGet(getState(), stateKey) || Immutable.fromJS({records: {}, requests: []});
     const records = state.get('records');
     const requests = state.get('requests');
 
     return {
       requestId: requestId,
-      promise: new Promise((resolve) => {
+      promise: new Promise((resolve, reject) => {
         if (requests.has(requestId)) {
           resolve({
             requestId: requestId,
             records: records,
             ids: requests.get(requestId),
             mode: mode
+          }).catch(error => {
+            reject(error);
           });
         } else {
           loaderFn().then(newRecords => {
@@ -141,7 +143,11 @@ export function createRecordsRequest(stateKey, requestId, loaderFn, defaultMode 
               records: records.merge(mapKeyedFromArray(newRecords, 'id')),
               ids: newRecords.map(record => record.id),
               mode: mode
+            }).catch(error => {
+              reject(error);
             });
+          }, (error, err) => {
+            console.log('error', error, err);
           });
         }
       })
