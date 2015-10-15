@@ -34,7 +34,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	replaceLinks: function() {
-		this.wrapper.find('a').each(function(){
+		$('.body-text-message a', this.wrapper).each(function(){
 			var $a = $(this)
 				, href = $a.attr('href')
 				;
