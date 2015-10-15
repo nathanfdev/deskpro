@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import { pureRender } from 'Ampliflux';
 import { connect } from 'react-redux';
-import { updateHashState } from '../../../Application/Actions/routingActions';
+import { updateRoutingState } from '../../../Application/Actions/routingActions';
 
 
 class BaseList extends Component {
@@ -80,7 +80,7 @@ export class ListItemStatefulContainer extends Component {
       // decorating original "onClick" with additional URL state saving functionality
       onClick: function(event) {
         props.onClick(event);
-        props.dispatch(updateHashState(props.groupId, 'active', props.itemId));
+        props.dispatch(updateRoutingState(props.groupId, 'active', props.itemId));
       }
     };
 
