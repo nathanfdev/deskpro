@@ -239,7 +239,11 @@ function _resolveProps(rawProps, state, payload, action) {
     props = { loading: props };
   }
 
-  for (const key in props) {
+  let key;
+  for (key in props) {
+    if (!props.hasOwnProperty(key)) {
+      continue;
+    }
     if (typeof props[key] === 'function') {
       props[key] = props[key](state, payload, action);
     }
