@@ -9,7 +9,7 @@ const personTarget = {
     const item = monitor.getItem();
     item.dispatch(TaskActions.editTask({
       taskId: item.id,
-      agents: [props.agent.id],
+      agents: [props.agent.get('id')],
       teams: [],
       departments: []
     }, item.source));
@@ -34,15 +34,15 @@ export default class TaskNavItemPeople extends React.Component {
 
     return connectDropTarget(<li className={isOver ? 'droppable project-list-item' : 'project-list-item'}>
       <div className="list-counter-bucket">
-        <a className="list-counter" href="#">{agent.assigned_tasks.length}</a>
+        <a className="list-counter" href="#">{agent.get('assigned_tasks', 0).size}</a>
       </div>
-      <a href="#" className="item" onClick={filterTasks.bind(this, {agents: [agent.id]})}>
-        {agent.picture_blob ?
+      <a href="#" className="item" onClick={filterTasks.bind(this, {agents: [agent.get('id')]})}>
+        {agent.has('picture_blob') ?
           <span className="list-icon">
             <span
-              style={{backgroundImage: 'url(' + agent.picture_blob.download_url + ')'}} className="avatar"/>
+              style={{backgroundImage: 'url(' + agent.get('picture_blob') + ')'}} className="avatar"/>
           </span> : '' }
-        {agent.name}
+        {agent.get('name')}
       </a>
     </li>);
   }

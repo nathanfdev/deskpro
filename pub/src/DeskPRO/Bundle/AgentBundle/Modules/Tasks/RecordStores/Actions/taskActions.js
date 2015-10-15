@@ -1,20 +1,19 @@
 import { createAction } from 'Ampliflux';
 import * as recordStoreActions from 'Ampliflux/common/record-store/actions';
 import * as Tasks from 'DeskPRO/Bundle/AgentBundle/Services/Api/Tasks';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 
-export const releaseProjects = createAction('RELEASE_PROJECTS', recordStoreActions.releaseRecords());
-export const releaseProjectRequest = createAction('RELEASE_PROJECT_REQUEST', recordStoreActions.releaseRequest());
-export const setProjectRequest = createAction('SET_PROJECTS_REQUEST', recordStoreActions.setRequestRecords());
+export const releaseTasks = createAction('RELEASE_TASKS', recordStoreActions.releaseRecords());
+export const releaseTaskRequest = createAction('RELEASE_TASK_REQUEST', recordStoreActions.releaseRequest());
+export const setTaskRequest = createAction('SET_TASKS_REQUEST', recordStoreActions.setRequestRecords());
 
-export const loadAllProjects = createAction(
-  'LOAD_PROJECTS',
+export const loadAllTasks = createAction(
+  'LOAD_ALL_TASKS',
   recordStoreActions.createRecordsRequest(
-    ['RecordStores', 'Tasks', 'projects'],
+    ['RecordStores', 'Tasks', 'tasks'],
     'all',
     () => {
       return new Promise((resolve, reject) => {
-        Tasks.loadProjects({})
+        Tasks.loadAddress('tasks', {})
           .success(response => resolve(response.data))
           .error(response => reject(response));
       });

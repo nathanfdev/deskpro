@@ -81,8 +81,7 @@ export class NavFrameHeader extends React.Component {
 
   static propTypes = {
     children: PropTypes.any.isRequired,
-    icon: PropTypes.string.isRequired,
-    dispatch: PropTypes.func.isRequired
+    icon: PropTypes.string.isRequired
   };
 
   render() {

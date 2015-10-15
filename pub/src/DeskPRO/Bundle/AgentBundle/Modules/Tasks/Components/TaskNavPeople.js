@@ -10,12 +10,10 @@ export default class TasksNavPeople extends React.Component {
     const {agentList} = this.props;
     const _this = this;
 
-    const agents = agentList ? agentList.get('agentList', false) : false;
-
     return (<section className="sidebar-list tasks-nav-people">
       <div className="list-sidebar-title">Agents</div>
-      <ul>{agents ? agents.map((object) => {
-        return (<TaskNavItemPeople key={object.id} agent={object}
+      <ul>{agentList ? agentList.map((object) => {
+        return (<TaskNavItemPeople key={object.get('id')} agent={object}
                     filterTasks={_this.props.filterTasks.bind(_this)} />);
       }) : ''}
       </ul>

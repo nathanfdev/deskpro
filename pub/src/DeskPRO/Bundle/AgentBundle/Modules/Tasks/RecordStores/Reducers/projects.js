@@ -1,4 +1,4 @@
-import * as actions from '../Actions/taskActions';
+import * as actions from '../Actions/projectActions';
 import { createReducer } from 'Ampliflux';
 import { createEmptyRecordStoreState, buildRecordStoreHandlers } from 'Ampliflux/common/record-store/handlers';
 

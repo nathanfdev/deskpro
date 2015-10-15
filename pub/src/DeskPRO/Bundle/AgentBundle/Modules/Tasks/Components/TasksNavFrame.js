@@ -9,14 +9,21 @@ import TaskNavLabels from '../Components/TaskNavLabels';
 import { NavFrameHeader, NavFrame } from '../../Common/Components/NavFrame/index';
 import $ from 'jquery';
 
-import { loadAllProjects } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Actions/taskActions';
+import { loadAllAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions';
+import { loadAllDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
+import { loadAllProjects } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Actions/projectActions';
+import { loadAllTaskLabels } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Actions/taskLabelActions';
+
+import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
+import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
+import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
 import { allProjectsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/projectSelectors';
+import { allTaskLabelsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/taskLabelSelectors';
 
 // const projectRequestId = 'projectNavView';
 
 @connect(state => ({
   taskList: state.Tasks.taskList,
-  projectList: state.Tasks.projectList,
   agentList: state.Tasks.agentList,
   labelList: state.Tasks.labelList,
   teamList: state.Tasks.teamList,
@@ -25,11 +32,14 @@ import { allProjectsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Re
   createdProject: state.Tasks.createdProject,
   dpWindow: state.Application.dpWindow,
   projects: allProjectsSelector(state),
+  agents: agentsSelector(state),
+  agentTeams: agentTeamsSelector(state),
+  departments: allDepartmentsSelector(state),
+  labels: allTaskLabelsSelector(state)
 }))
 export default class TasksNavFrame extends React.Component {
   static propTypes = {
     taskList: React.PropTypes.object,
-    projectList: React.PropTypes.object,
     agentList: React.PropTypes.object,
     labelList: React.PropTypes.object,
     departmentList: React.PropTypes.object,
@@ -39,7 +49,12 @@ export default class TasksNavFrame extends React.Component {
     user: React.PropTypes.object,
     dispatch: React.PropTypes.func,
     children: React.PropTypes.any,
-    projects: React.PropTypes.object
+    projects: React.PropTypes.object,
+    tasks: React.PropTypes.object,
+    agents: React.PropTypes.object,
+    agentTeams: React.PropTypes.object,
+    departments: React.PropTypes.object,
+    labels: React.PropTypes.object
   }
 
   constructor(props) {
@@ -47,7 +62,10 @@ export default class TasksNavFrame extends React.Component {
 
     const { dispatch } = this.props;
 
-    dispatch(loadAllProjects('all'));
+    dispatch(loadAllProjects());
+    dispatch(loadAllAgentTeams());
+    dispatch(loadAllDepartments());
+    dispatch(loadAllTaskLabels());
 
     dispatch(TaskActions.loadTasks());
     dispatch(TaskActions.loadMyTasks());
@@ -68,13 +86,8 @@ export default class TasksNavFrame extends React.Component {
   }
 
   render() {
-    const { taskList, projectList, agentList, labelList, departmentList,
-            teamList, createdProject, dpWindow, dispatch, projects, status } = this.props;
-
-    // // if (!status.get('isLoading')) {
-    //   console.log('Projects');
-    //   console.log(projects.toJS());
-    // // }
+    const { taskList, agents, labels, departments,
+            agentTeams, createdProject, dpWindow, dispatch, projects } = this.props;
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
@@ -87,17 +100,17 @@ export default class TasksNavFrame extends React.Component {
             <TaskNavGroups taskList={taskList} filterTasks={this.filterTasks.bind(this)} />
 
             <TaskNavProjects projectList={projects}
-                             agentList={agentList}
-                             teamList={teamList}
-                             departmentList={departmentList}
+                             agentList={agents}
+                             teamList={agentTeams}
+                             departmentList={departments}
                              createdProject={createdProject}
                              filterTasks={this.filterTasks.bind(this)}
                              user={this.props.user}
               />
 
-            <TaskNavPeople agentList={agentList} filterTasks={this.filterTasks.bind(this)} />
+            <TaskNavPeople agentList={agents} filterTasks={this.filterTasks.bind(this)} />
 
-            <TaskNavLabels labelList={labelList} filterTasks={this.filterTasks.bind(this)} />
+            <TaskNavLabels labelList={labels} filterTasks={this.filterTasks.bind(this)} />
           </div>
         </div>
       </NavFrame>

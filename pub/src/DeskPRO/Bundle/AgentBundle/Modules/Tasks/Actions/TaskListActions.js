@@ -3,6 +3,8 @@ import * as Tasks from 'DeskPRO/Bundle/AgentBundle/Services/Api/Tasks';
 import * as People from 'DeskPRO/Bundle/AgentBundle/Services/Api/People';
 import * as AgentTeams from 'DeskPRO/Bundle/AgentBundle/Services/Api/AgentTeams';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import * as RecordStoreTaskActions from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Actions/taskActions';
+import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 
 export const loadTasks = createAction(
   'TASKS_LOAD_TASKS',
@@ -145,8 +147,14 @@ export const loadTaskList = createAction(
   'TASKS_LOAD_TASK_LIST',
   (data) => {
     return Tasks.loadAddress(data).then(
-      (value) => {
+      value => dispatch => {
+        const requestId = 'loadTaskList';
+
+        dispatch(RecordStoreTaskActions.releaseTaskRequest(requestId));
+
         const result = value.getData();
+
+        // This can all be deleted eventually
         const output = result;
 
         const projects = [];
@@ -189,8 +197,8 @@ export const loadTaskList = createAction(
           }
         });
 
-        // Load all the relevant data, and when it's done fire the trigger
-        return Promise.all([
+        // Load all the relevant data
+        const tasks = Promise.all([
           Tasks.loadProjects({ids: projects.join(',')}),
           Tasks.loadLinks({ids: linkedItems.join(',')}),
           People.loadPeople({ids: people.join(',')}),
@@ -212,12 +220,18 @@ export const loadTaskList = createAction(
             }
           });
 
-          return Tasks.loadLinkedTickets({ids: linkedTickets.join(',')}).then((ticket) => {
+          return Tasks.loadLinkedTickets({
+            ids: linkedTickets.join(',')
+          }).then((ticket) => {
             output.tickets = ticket.getData().data;
             return output;
-            // trigger(output);
           });
         });
+        // Stop deleting things!
+
+        dispatch(RecordStoreTaskActions.setTaskRequest(requestId, mapKeyedFromArray(result.data, 'id'), false, 'append'));
+
+        return tasks;
       }
     );
   }
