@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -53,8 +54,8 @@ class AgentChatSpec extends ObjectBehavior
         Person $Phoenix,
         Person $Cyclops
     ) {
-        $AngelinaJolie->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_PERSON);
-        $BradPitt->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_PERSON);
+        $AngelinaJolie->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_AGENT);
+        $BradPitt->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_AGENT);
         $XMenTeam->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_TEAM);
         $XMenTeam->addPerson($Wolverine);
         $XMenTeam->addPerson($Phoenix);
@@ -72,7 +73,7 @@ class AgentChatSpec extends ObjectBehavior
         AgentTeam $HelsingTeam,
         Department $DemonHunters
     ) {
-        $VanHelsing->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_PERSON);
+        $VanHelsing->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_AGENT);
         $HelsingTeam->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_TEAM);
         $DemonHunters->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_DEPARTMENT);
         $this->addParticipant($VanHelsing);

@@ -26,27 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace Application\InstallBundle\Upgrade\Build;
 
-namespace DeskPRO\Bundle\AppBundle\AgentChat\Interfaces;
-
-/**
- * Interface Chatable.
- */
-interface Chatable
+class Build1444941131 extends AbstractBuild
 {
-    const PARTICIPANT_TYPE_AGENT      = 'agent';
-    const PARTICIPANT_TYPE_TEAM       = 'team';
-    const PARTICIPANT_TYPE_DEPARTMENT = 'department';
-
-    const PARTICIPANT_TYPE_GROUP = 'group';
-
-    /**
-     * @return int
-     */
-    public function getChatableType();
-
-    public function getId();
+    public function run()
+    {
+        $this->out('Upgrade agent chat schema');
+        $sql = <<<SQL
+ALTER TABLE `agent_chat`
+	ALTER `type` DROP DEFAULT;
+ALTER TABLE `agent_chat`
+	CHANGE COLUMN `type` `type` VARCHAR(8) NOT NULL AFTER `date_last_message`;
+SQL;
+        $this->execMutateSql($sql);
+    }
 }

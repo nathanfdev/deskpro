@@ -97,8 +97,8 @@ class HistorySpec extends ObjectBehavior
         AgentChat $FoesChat
     ) {
         $message->setMessage('where is Johnny?');
-        $JohnnyMnemonic->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_PERSON);
-        $FriendsChat->setType(Chatable::PARTICIPANT_TYPE_PERSON);
+        $JohnnyMnemonic->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_AGENT);
+        $FriendsChat->setType(Chatable::PARTICIPANT_TYPE_AGENT);
         $FriendsChat->addMessage($message);
         $FoesChat->addMessage($message);
         $FriendsChat->addParticipant($JohnnyMnemonic);

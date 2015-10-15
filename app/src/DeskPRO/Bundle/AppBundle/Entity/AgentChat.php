@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -110,6 +111,13 @@ class AgentChat extends DomainObject implements PersonList
      * @ORM\OrderBy({"date_created" = "DESC"})
      */
     protected $messages;
+
+    protected $allowedTypes = [
+        Chatable::PARTICIPANT_TYPE_AGENT,
+        Chatable::PARTICIPANT_TYPE_TEAM,
+        Chatable::PARTICIPANT_TYPE_DEPARTMENT,
+        Chatable::PARTICIPANT_TYPE_GROUP,
+    ];
 
     /**
      * class constructor, insures that date_created equals now.
@@ -219,7 +227,7 @@ class AgentChat extends DomainObject implements PersonList
         $participant = new AgentChatParticipant();
         $type        = $participantPrototype->getChatableType();
         switch ($type) {
-            case Chatable::PARTICIPANT_TYPE_PERSON;
+            case Chatable::PARTICIPANT_TYPE_AGENT;
                 /* @var Person $participantPrototype */
                 $participant->setPerson($participantPrototype);
                 break;
