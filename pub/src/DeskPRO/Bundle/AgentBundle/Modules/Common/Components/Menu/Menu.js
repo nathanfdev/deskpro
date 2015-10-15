@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 
 export default class Menu extends React.Component {
 
@@ -12,8 +13,8 @@ export default class Menu extends React.Component {
     children: React.PropTypes.node,
     menuLevel: React.PropTypes.number,
     isOpen: React.PropTypes.bool,
-    closeMenu: React.PropTypes.func,
-  }
+    closeMenu: React.PropTypes.func
+  };
 
   /**
    * Constructor
@@ -56,14 +57,9 @@ export default class Menu extends React.Component {
    * @return {React.Element} The menu container
    */
   render() {
-    const baseClass = 'dpw-navigation-dropdown';
     const isOpen = typeof this.props.isOpen !== 'undefined' ? this.props.isOpen : true;
 
-    let divClass = (this.props.widgetClass ? baseClass + ' ' + this.props.widgetClass : baseClass);
-
-    if (this.props.overrideWidgetClass) {
-      divClass = this.props.widgetClass;
-    }
+    const divClass = classNames(this.props.widgetClass, {'dpw-navigation-dropdown': !this.props.overrideWidgetClass});
 
     if (!window.TMP_COUNT) {
       window.TMP_COUNT = 0;
