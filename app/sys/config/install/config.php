@@ -32,6 +32,11 @@ if (!defined('DP_ROOT')) {
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
+#####
+# NOTE: unlike all other kernels, the InstallKernel does NOT use "config.shared.php" and so it is a standalone
+# kernel config. It uses this file and the InstallExtension container extension.
+#####
+
 ############################################################################
 # Parameters
 ############################################################################
