@@ -20,15 +20,14 @@ export default class ItemList extends React.Component {
     const widgetClass = this.props.widgetClass ? this.props.widgetClass : '';
 
     const displayClass = this.props.overrideWidgetClass
-                          ? widgetClass
-                          : '' + widgetClass;
+      ? widgetClass
+      : '' + widgetClass;
 
     return (<li className={displayClass}>
       <div className="dpw-navigation-dropdown-column-list dpw-navigation-dropdown-column-list-v2">
         <ul>
           {React.Children.map(this.props.children, (child) => {
             return React.cloneElement(child, {
-              ...this.props,
               widgetClass: 'dpw-navigation-dropdown-column-list-item',
               overrideWidgetClass: true,
               listItem: true

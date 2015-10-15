@@ -12,8 +12,8 @@ export default class Menu extends React.Component {
     children: React.PropTypes.node,
     menuLevel: React.PropTypes.number,
     isOpen: React.PropTypes.bool,
-    closeMenu: React.PropTypes.func
-  };
+    closeMenu: React.PropTypes.func,
+  }
 
   /**
    * Constructor
@@ -53,7 +53,7 @@ export default class Menu extends React.Component {
 
   /**
    * Render the menu
-   * @return {XML} The menu container
+   * @return {React.Element} The menu container
    */
   render() {
     const baseClass = 'dpw-navigation-dropdown';
@@ -71,26 +71,16 @@ export default class Menu extends React.Component {
 
     if (isOpen) {
       const menuLevel = this.props.menuLevel ? this.props.menuLevel : 1;
-      return (
-        <div className={divClass} style={{zIndex: 1000 + menuLevel}}>
-          <ul>
-            {React.Children.map(this.props.children, (child) => {
-              window.TMP_COUNT++;
-              const ref = window.TMP_COUNT;
+      return (<div className={divClass} style={{zIndex: 1000 + menuLevel}}>
+        <ul>
+          {React.Children.map(this.props.children, (child) => {
+            window.TMP_COUNT++;
+            const ref = window.TMP_COUNT;
 
-              return React.cloneElement(child,
-                {
-                  counter: ref,
-                  parentMenuLevel: menuLevel,
-                  activeItem: this.state.activeItem,
-                  setActiveItem: this.setActiveItem.bind(this),
-                  closeMenu: this.closeMenu.bind(this)
-                }
-              );
-            })}
-          </ul>
-        </div>
-      );
+            return React.cloneElement(child, { counter: ref, parentMenuLevel: menuLevel, activeItem: this.state.activeItem, setActiveItem: this.setActiveItem.bind(this), closeMenu: this.closeMenu.bind(this) });
+          })}
+        </ul>
+      </div>);
     }
 
     return <div />;

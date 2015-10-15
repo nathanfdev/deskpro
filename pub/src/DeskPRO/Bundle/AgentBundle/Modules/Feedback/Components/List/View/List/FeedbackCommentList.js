@@ -27,7 +27,7 @@ export class FeedbackCommentList extends Component {
             toggleSelected={toggleSelected}
             massAction={massAction}
             author={people.get(element.person_id)}
-            email={emails.get(element.person_id).get('email')}
+            email={emails.get(element.person_id) ? emails.get(element.person_id).get('email') : ''}
             comment={element}
             key={index}>
             {element.content}

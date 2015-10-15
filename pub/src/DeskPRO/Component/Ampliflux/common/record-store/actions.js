@@ -45,10 +45,15 @@ export function setRequestRecords(defaultMode = MODE_APPEND) {
 
     if (!Immutable.Map.isMap(records)) {
       records = Immutable.fromJS(records);
-    } else {
-      if (collectIds) {
-        ids = records.keys().toArray();
+    }
+
+    if (collectIds) {
+      const keys = [];
+      for (const value of records.keys()) {
+        keys.push(value);
       }
+
+      ids = keys;
     }
 
     ids = Immutable.Set(ids);
@@ -68,7 +73,7 @@ export function setRequestRecords(defaultMode = MODE_APPEND) {
  *
  * @param  {String}   stateKey The key in the store that is being used for the record-store. Use an array to denote hierarchy.
  * @param  {Function} loaderFn Your function will accept an Immutable.Set of IDs the reqestor wants to load.
- * @param {String} defaultMode Specify the default mode (MODE_APPEND or MODE_SET).
+ * @param  {String}   defaultMode Specify the default mode (MODE_APPEND or MODE_SET).
  * @return {Function} action creator
  */
 export function requestRecords(stateKey, loaderFn, defaultMode = MODE_APPEND) {
@@ -138,9 +143,10 @@ export function createRecordsRequest(stateKey, requestId, loaderFn, defaultMode 
           });
         } else {
           loaderFn().then(newRecords => {
+            const merged = records.merge(mapKeyedFromArray(newRecords, 'id'));
             resolve({
               requestId: requestId,
-              records: records.merge(mapKeyedFromArray(newRecords, 'id')),
+              records: merged,
               ids: newRecords.map(record => record.id),
               mode: mode
             }).catch(error => {

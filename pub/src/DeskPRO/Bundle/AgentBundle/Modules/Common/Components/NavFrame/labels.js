@@ -9,10 +9,11 @@ export class LabelsDictionary extends Component {
 
   groupByFirstLetter(labels) {
     const dictionary = {};
-    // @ToDo some bug with length, size and count(). I can use only length at the moment.
-    // but we have deprecation warning
-    // https://github.com/facebook/immutable-js/issues/225
-    for (let i = 0, label, letter; i < labels.length; i++) {
+    let count;
+
+    // count BC both for Immutable and JS objects
+    count = labels.count ? labels.count() : labels.length;
+    for (let i = 0, label, letter; i < count; i++) {
       label  = labels[i];
       letter = label[0].toUpperCase();
       if (!dictionary.hasOwnProperty(letter)) {
@@ -24,7 +25,10 @@ export class LabelsDictionary extends Component {
 
     const letters = Object.keys(dictionary);
     const grouped = [];
-    for (let i = 0; i < letters.length; i++) {
+
+    // count BC both for Immutable and JS objects
+    count = letters.count ? letters.count() : letters.length;
+    for (let i = 0; i < count; i++) {
       grouped.push({letter: letters[i], labels: dictionary[letters[i]]});
     }
 

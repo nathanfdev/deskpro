@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { NavFrame, NavFrameHeader, TabsPane, Tab, LabelsDictionary }
+import { NavFrame, NavFrameHeader, TabsPaneStatefulContainer, Tab, LabelsDictionary }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { Pending } from './Pending';
 import { StatusTab } from './StatusTab';
@@ -12,9 +12,7 @@ export class Nav extends Component {
 
   static propTypes = {
     intl: intlShape.isRequired,
-    groupChoice: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
-    currentGroup: PropTypes.object.isRequired,
     statuses: PropTypes.object.isRequired,
     labels: PropTypes.array.isRequired,
     types: PropTypes.array.isRequired,
@@ -24,7 +22,7 @@ export class Nav extends Component {
   };
 
   render() {
-    const { currentGroup, groupChoice, labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dispatch, dpWindow, commentsView } = this.props;
+    const { labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dispatch, dpWindow, commentsView } = this.props;
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
@@ -36,27 +34,24 @@ export class Nav extends Component {
         <Pending
           toValidateCount={toValidateCount}
           commentsToReviewCount={commentsToReviewCount}
-          currentGroup={currentGroup}
-          onClick={groupChoice.bind(this)}
           commentsView={commentsView.bind(this)}
-          />
+        />
 
-        <TabsPane>
+        <TabsPaneStatefulContainer id="tab">
           <Tab title={this.props.intl.formatMessage({id: 'feedback.nav.tabs.status'})}>
-            <StatusTab currentGroup={currentGroup} statuses={statuses} onClick={groupChoice.bind(this)}/>
+            <StatusTab statuses={statuses} />
           </Tab>
 
           <Tab title="Labels">
-            <LabelsDictionary labels={labels} onClick={groupChoice.bind(this)}/>
+            <LabelsDictionary labels={labels} />
           </Tab>
           <Tab title="Type">
-            <TypeTab currentGroup={currentGroup} types={types} onClick={groupChoice.bind(this)}/>
+            <TypeTab types={types} />
           </Tab>
           <Tab title="Category">
-            <CategoryTab currentGroup={currentGroup} customCategories={customCategories}
-                         onClick={groupChoice.bind(this)}/>
+            <CategoryTab customCategories={customCategories} />
           </Tab>
-        </TabsPane>
+        </TabsPaneStatefulContainer>
       </NavFrame>
     );
   }

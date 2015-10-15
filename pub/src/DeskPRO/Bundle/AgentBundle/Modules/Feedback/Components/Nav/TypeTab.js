@@ -1,25 +1,23 @@
 import React, { Component, PropTypes } from 'react';
-import { ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { ListItemContainer } from './ListItemContainer';
 
 export class TypeTab extends Component {
-
   static propTypes = {
-    types: PropTypes.array.isRequired,
-    currentGroup: PropTypes.object.isRequired,
-    onClick: PropTypes.func.isRequired
+    types: PropTypes.array.isRequired
   };
 
   render() {
-    const { types, onClick, currentGroup } = this.props;
+    const { types } = this.props;
 
     return (
       <ul>
         {types.map((item, index) =>
-          <div key={index} onClick={onClick.bind(this, {name: 'category', value: item.title})}>
-            <ListItem count={item.value} label={item.title}
-                      active={currentGroup.name === 'category' && currentGroup.value === item.title}
-              />
-          </div>
+          <ListItemContainer
+            key={index}
+            count={item.value}
+            label={item.title}
+            listOptions={{category: item.title}}
+          />
         )}
       </ul>
     );

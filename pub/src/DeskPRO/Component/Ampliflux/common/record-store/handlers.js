@@ -1,5 +1,6 @@
 import { async, asyncIndicator, composeHandlers } from '../../reducers/handlers';
 import { MODE_SET } from './actions';
+import Immutable from 'immutable';
 
 /**
  * (Reducer builder) Runs cleanup of unused records

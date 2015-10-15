@@ -38,8 +38,8 @@ export default class TaskNavItemLabel extends React.Component {
     const { label, connectDropTarget, isOver, filterTasks } = this.props;
 
     return connectDropTarget(<a href="#" className={isOver ? 'item-label active' : 'item-label'}
-            key={label.label} onClick={filterTasks.bind(this, {labels: [label.label]})}>
-            {label.label}
+            key={label.get('label')} onClick={filterTasks.bind(this, {labels: [label.get('label')]})}>
+            {label.get('label')}
           </a>);
   }
 }

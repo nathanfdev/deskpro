@@ -30,7 +30,8 @@ export class NavFrame extends React.Component {
 
   render() {
     const { children, dpWindow } = this.props;
-    let outer, inner = children;
+    let outer;
+    let inner = children;
 
     if (children instanceof Array && children.length) {
       children.forEach((child) => {
@@ -80,8 +81,7 @@ export class NavFrameHeader extends React.Component {
 
   static propTypes = {
     children: PropTypes.any.isRequired,
-    icon: PropTypes.string.isRequired,
-    dispatch: PropTypes.func.isRequired
+    icon: PropTypes.string.isRequired
   };
 
   render() {

@@ -35,47 +35,47 @@ export default class ItemFormat extends React.Component {
 
     return (<div>
       {this.props.listItem ?
-      <div>
+        <div>
         <span className="dpw-navigation-dropdown-column-list-disc">
           <i className="fa fa-circle" />
         </span>
         <span className="dpw-navigation-dropdown-column-list-title">
           {this.props.children}
         </span>
-      </div>
-      :
-      <div>
-        { this.props.icon ?
-          <span className="dpw-navigation-dropdown-item-mark">
+        </div>
+        :
+        <div>
+          { this.props.icon ?
+            <span className="dpw-navigation-dropdown-item-mark">
             <span className="dpw-navigation-dropdown-item-icon dpw-navigation-dropdown-item-icon-2x">
               <i className={'fa fa-' + this.props.icon} />
             </span>
           </span>
-        : '' }
+            : '' }
 
         <span className="dpw-navigation-dropdown-item-title">
           {this.props.children}
         </span>
 
-        {this.props.hasMenu ?
-          <span className="dpw-navigation-dropdown-item-status">
+          {this.props.hasMenu ?
+            <span className="dpw-navigation-dropdown-item-status">
             <i className="fa fa-caret-right menu-submenu-caret" />
           </span>
-        : ''}
+            : ''}
 
-        {this.props.checked ?
-          <span className="dpw-navigation-dropdown-item-status">
+          {this.props.checked ?
+            <span className="dpw-navigation-dropdown-item-status">
             <i className="fa fa-check" />
           </span>
-        : ''}
+            : ''}
 
-        {this.props.hasItemList ?
-          <span className="dpw-navigation-dropdown-item-expand" onClick={this.props.toggleInnerList}>
+          {this.props.hasItemList ?
+            <span className="dpw-navigation-dropdown-item-expand" onClick={this.props.toggleInnerList}>
             <i className="fa fa-caret-down" />
           </span>
-        : ''}
-      </div>
+            : ''}
+        </div>
       }
-      </div>);
+    </div>);
   }
 }

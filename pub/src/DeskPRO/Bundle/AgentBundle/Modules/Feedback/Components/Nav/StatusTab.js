@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { ListItem }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { ListItemContainer } from './ListItemContainer';
 import { NestedList } from './NestedList';
 
 export class StatusTab extends Component {
@@ -11,17 +10,23 @@ export class StatusTab extends Component {
   };
 
   render() {
-    const { statuses, onClick, currentGroup } = this.props;
+    const { active, closed, hidden } = this.props.statuses;
+
+    // @todo Turn it in form of NestedList in the reducer
+    const items = [
+      {...active, group: 'active'},
+      {...closed, group: 'closed'},
+      {...hidden, group: 'hidden'}
+    ];
+
     return (
       <ul>
-        <div onClick={onClick.bind(this, {name: 'status', value: 'new'})}>
-          <ListItem count={statuses.new} label="New"
-                    active={currentGroup.name === 'status' && currentGroup.value === 'new'}
-            />
-        </div>
-        <NestedList currentGroup={currentGroup} node={statuses.active} onClick={onClick.bind(this)} status="active" label="Active"/>
-        <NestedList currentGroup={currentGroup} node={statuses.closed} onClick={onClick.bind(this)} status="closed" label="Closed"/>
-        <NestedList currentGroup={currentGroup} node={statuses.hidden} onClick={onClick.bind(this)} status="hidden" label="Hidden"/>
+        <ListItemContainer
+          label="New"
+          count={this.props.statuses.new}
+          listOptions={{status: 'new'}}
+        />
+        <NestedList items={items} alwaysExpanded />
       </ul>
     );
   }

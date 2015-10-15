@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardUser, CardLabel, CardComments, CardStatusBar }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 import jQuery from 'jquery';
+import Immutable from 'immutable';
 
 export class FeedbackCard extends Component {
 
@@ -28,7 +29,7 @@ export class FeedbackCard extends Component {
     }
   }
 
-  renderStatus(status = {}) {
+  renderStatus(status = Immutable.fromJS({})) {
     var realStatus = '';
     if (status.get('title')) {
       realStatus = status.get('title');
@@ -41,8 +42,8 @@ export class FeedbackCard extends Component {
   }
 
   render() {
-    const { feedback, author, type, selected, toggleSelected, feedbackLabels, feedbackComments, feedbackStatus }
-      = this.props;
+    const { feedback, author, selected, toggleSelected, feedbackLabels, feedbackComments, feedbackStatus } = this.props;
+    const type = this.props.type || Immutable.fromJS({});
     const labels = feedbackLabels ? feedbackLabels.get('labels') : false;
     const comments = feedbackComments ? feedbackComments.get('counter') : 0;
     const containerWidth = jQuery('.dp-list-frame-contents').innerWidth();

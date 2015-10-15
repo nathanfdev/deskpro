@@ -1,38 +1,32 @@
 import React, { Component, PropTypes } from 'react';
-import { Section, SectionHeader, ListItem }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { Section, SectionHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { ListItemContainer } from './ListItemContainer';
 
 export class Pending extends Component {
 
   static propTypes = {
     toValidateCount: PropTypes.number.isRequired,
     commentsToReviewCount: PropTypes.number.isRequired,
-    onClick: PropTypes.func.isRequired,
-    commentsView: PropTypes.func.isRequired,
-    currentGroup: PropTypes.object.isRequired
+    commentsView: PropTypes.func.isRequired
   };
 
   render() {
-    const { toValidateCount, commentsToReviewCount, onClick, currentGroup, commentsView } = this.props;
+    const { toValidateCount, commentsToReviewCount, commentsView } = this.props;
 
     return (
       <Section>
         <SectionHeader>Pending</SectionHeader>
         <ul>
-          <div onClick={onClick.bind(this, {name: 'awaiting_validation', value: 1})}>
-            <ListItem
-              count={toValidateCount}
-              label="Feedback to Validate"
-              active={currentGroup.name === 'awaiting_validation'}
-              />
-          </div>
-          <div onClick={commentsView.bind(this, {name: 'feedback_comments'})}>
-            <ListItem
-              count={commentsToReviewCount}
-              label="Comments to Review"
-              active={currentGroup.name === 'feedback_comments'}
-              />
-          </div>
+          <ListItemContainer
+            count={toValidateCount}
+            label="Feedback to Validate"
+            listOptions={{awaiting_validation: 1}}
+          />
+          <ListItemContainer
+            count={commentsToReviewCount}
+            label="Comments to Review"
+            onClick={commentsView.bind(this, {name: 'feedback_comments'})}
+          />
         </ul>
       </Section>
     );

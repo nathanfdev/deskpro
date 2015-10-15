@@ -1,8 +1,6 @@
 import { createAction } from 'Ampliflux';
 
 export const setActiveApp = createAction('APP_SET_ACTIVE_APP');
-export const routingStarted = createAction('APP_ROUTING_STARTED');
-export const doTransitionTo = createAction('APP_TRANSITION_TO');
 export const collapseNav = createAction('APP_COLLAPSE_NAV');
 export const expandNav = createAction('APP_EXPAND_NAV');
 export const expandSwitcher = createAction('APP_EXPAND_SWITCHER');

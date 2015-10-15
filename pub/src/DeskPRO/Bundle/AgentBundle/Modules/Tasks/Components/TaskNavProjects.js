@@ -9,6 +9,8 @@ import Immutable from 'immutable';
 
 import * as TaskActions from '../Actions/TaskListActions';
 
+import { updateProject, loadAllProjects } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Actions/projectActions';
+
 @connect(state => ({
   failedProject: state.Tasks.failedProject
 }))
@@ -88,40 +90,43 @@ export default class TasksNavProjects extends React.Component {
         agents: model.agents
       }));
     }
+
+    model.id = model.projectId;
+    delete model.projectId;
+
+    // This doesn't work.
+    this.props.dispatch(updateProject('updateProjectDetails', [model], undefined));
+    this.props.dispatch(loadAllProjects('all'));
   }
 
   render() {
-    const {projectList, createdProject} = this.props;
+    const {projectList, createdProject, departmentList, agentList, teamList} = this.props;
     // Workaround to bind toggleWindow to every edit link
     const _this = this;
     const agents = [];
     const teams = [];
     const departments = [];
 
-    const departmentList = (this.props.departmentList && typeof this.props.departmentList.get === 'function') ? this.props.departmentList.get('departmentList', {}) : {};
-    const teamList = (this.props.teamList && typeof this.props.teamList.get === 'function') ? this.props.teamList.get('teamList', {}) : {};
-    const agentList = (this.props.agentList && typeof this.props.agentList.get === 'function') ? this.props.agentList.get('agentList', {}) : {};
-
     if (typeof departmentList !== 'undefined' && departmentList !== null) {
-      departmentList.forEach((object) => {
-        departments.push({value: object.id, label: object.title, name: object.title});
+      departmentList.map((object) => {
+        departments.push({value: object.get('id'), label: object.get('title'), name: object.get('title')});
       });
     }
 
     if (typeof teamList !== 'undefined' && teamList !== null) {
-      teamList.forEach((object) => {
-        teams.push({value: object.id, label: object.name, name: object.name});
+      teamList.map((object) => {
+        teams.push({value: object.get('id'), label: object.get('name'), name: object.get('name')});
       });
     }
 
     if (typeof agentList !== 'undefined' && agentList !== null) {
-      agentList.forEach((object) => {
+      agentList.map((object) => {
         const label = (<span>
-                      {object.picture_blob ? <span className="chat-avatar" style={{backgroundImage: 'url(' + object.picture_blob.download_url + ')'}}/> : '' }
-                      {object.name}
+                      {object.get('picture_blob') ? <span className="chat-avatar" style={{backgroundImage: 'url(' + object.get('picture_blob') + ')'}}/> : '' }
+                      {object.get('name')}
                     </span>
         );
-        agents.push({value: object.id, label: label, name: object.name});
+        agents.push({value: object.get('id'), label: label, name: object.get('name')});
       });
     }
 

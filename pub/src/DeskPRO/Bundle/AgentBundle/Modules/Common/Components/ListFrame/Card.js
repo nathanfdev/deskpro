@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import classNames from 'classnames';
 import { injectIntl, intlShape, FormattedRelative } from 'react-intl';
+import Immutable from 'immutable';
 
 export class Card extends Component {
 
@@ -196,7 +197,7 @@ export class CardUser extends Component {
   };
 
   render() {
-    const user = this.props.user || {};
+    const user = this.props.user || Immutable.fromJS({});
     const {email} = this.props;
 
     return (

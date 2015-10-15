@@ -444,6 +444,10 @@
       color: #979797;
     }
 
+    i.fa {
+      margin-right: 5px;
+    }
+
     &:hover, &.active {
       background: $top-bar-blue;
       color: #fff;

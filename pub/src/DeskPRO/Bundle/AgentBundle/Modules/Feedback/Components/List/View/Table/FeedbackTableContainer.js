@@ -18,8 +18,8 @@ export class FeedbackTableContainer extends Component {
 
   static propTypes = {
     intl: intlShape.isRequired,
-    people: PropTypes.array.isRequired,
-    emails: PropTypes.array.isRequired,
+    people: PropTypes.object.isRequired,
+    emails: PropTypes.object.isRequired,
     feedback: PropTypes.array.isRequired,
     feedbackStatuses: PropTypes.object.isRequired,
     tableViewFields: PropTypes.array.isRequired,
@@ -40,7 +40,10 @@ export class FeedbackTableContainer extends Component {
       );
     } else if (field.name === 'author_name') {
       return (
-        <PersonInTable person={people.get(element.person_id)} email={emails.get(element.person_id).get('email')}/>
+        <PersonInTable
+          person={people.get(element.person_id)}
+          email={emails.get(element.person_id) ? emails.get(element.person_id).get('email') : null}
+        />
       );
     } else if (field.name === 'title') {
       content = element.title.substr(0, 40);
@@ -59,12 +62,12 @@ export class FeedbackTableContainer extends Component {
       return (
         <FormattedRelative value={element.date_created}/>
       );
-    } else if (field.name === 'date_published') {
+    } else if (field.name === 'date_published' && element.date_published) {
       return (
         <FormattedRelative value={element.date_published}/>
       );
     } else if (field.name === 'status_category' && feedbackStatuses) {
-      content = feedbackStatuses.get(element.id).get('title');
+      content = feedbackStatuses.get(element.id) ? feedbackStatuses.get(element.id).get('title') : null;
     }
     return content;
   }

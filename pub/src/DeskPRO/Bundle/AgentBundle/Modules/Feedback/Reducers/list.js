@@ -6,14 +6,11 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import Immutable from 'immutable';
 
 const initialState = {
+  isComments: false, // whether comments or feedbacks list is shown
   massAction: false,
   feedback: [],
   selected: [], // array of IDs
   comments: [],
-  viewModeOptions: [
-    {field: constants.VIEW_MODE_TABLE, label: 'Table view', icon: 'table', current: false},
-    {field: constants.VIEW_MODE_LIST, label: 'Card view', icon: 'list', current: true}
-  ],
   order: constants.ORDER_DESC, /* Asc, Desc */
   sortOptions: [
     {field: 'date_created', label: 'Date', icon: 'calendar', current: true},
@@ -123,15 +120,6 @@ export default createReducer(initialState, {
       : selected.push(payload);
 
     return state.set('selected', selected);
-  },
-  [actions.toggleViewMode]: (state, payload) => {
-    const viewModeOptions = [];
-    state.get('viewModeOptions').toJS().forEach(obj=> {
-      const nextObj = {...obj};
-      nextObj.current = obj.field === payload;
-      viewModeOptions.push(nextObj);
-    });
-    return state.set('viewModeOptions', Immutable.fromJS(viewModeOptions));
   },
   [actions.toggleSort]: (state, payload) => {
     const sortOptions = [];

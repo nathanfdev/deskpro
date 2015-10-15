@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import $ from 'jquery';
+import jQuery from 'jquery';
 import * as TaskActions from '../Actions/TaskListActions';
 import { IntlMixin } from 'react-intl';
 import Formsy from 'formsy-react';
@@ -22,6 +22,21 @@ import TaskMassActions from '../Components/TaskMassActions';
 import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
+import { loadLinkedItems } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Actions/linkedItemActions';
+
+import { filteredTasksSelector, statusFilteredTasksSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/taskSelectors';
+import { allProjectsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/projectSelectors';
+import { createLinkedItemRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/linkedItemSelectors';
+import { createTicketRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/RecordStores/Selectors/ticketSelectors';
+import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
+import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
+import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
+
+
+const requestId = 'taskListFrame';
+const ticketsSelector = createTicketRequestSelectors(requestId);
+const linkedItemsSelector = createLinkedItemRequestSelectors(requestId);
+
 @connect(state => ({
   taskFrameList: state.Tasks.taskFrameList,
   taskListList: state.Tasks.taskListList,
@@ -31,10 +46,18 @@ import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Co
   agentList: state.Tasks.agentList,
   teamList: state.Tasks.teamList,
   departmentList: state.Tasks.departmentList,
-  dpWindow: state.Application.dpWindow
+  dpWindow: state.Application.dpWindow,
+  tasks: filteredTasksSelector(state),
+  status: statusFilteredTasksSelector(state),
+  projects: allProjectsSelector(state),
+  agents: agentsSelector(state),
+  agentTeams: agentTeamsSelector(state),
+  departments: allDepartmentsSelector(state),
+  tickets: ticketsSelector.recordsSel(state),
+  linkedItems: linkedItemsSelector.recordsSel(state)
 }))
-export default
-class TasksListFrame extends React.Component {
+
+export class TasksListFrame extends React.Component {
   static propTypes = {
     dispatch: React.PropTypes.func,
     taskFrameList: React.PropTypes.object,
@@ -45,7 +68,15 @@ class TasksListFrame extends React.Component {
     agentList: React.PropTypes.object,
     teamList: React.PropTypes.object,
     departmentList: React.PropTypes.object,
-    dpWindow: React.PropTypes.object
+    dpWindow: React.PropTypes.object,
+    tasks: React.PropTypes.object,
+    status: React.PropTypes.object,
+    projects: React.PropTypes.object,
+    agents: React.PropTypes.object,
+    agentTeams: React.PropTypes.object,
+    departments: React.PropTypes.object,
+    tickets: React.PropTypes.object,
+    linkedItems: React.PropTypes.object
   }
 
   constructor(props) {
@@ -53,7 +84,7 @@ class TasksListFrame extends React.Component {
 
     this.state = {
       actionable: [],
-      view: constants.VIEW_MODE_LIST,
+      view: constants.VIEW_MODE_CARD,
       changeView: false,
       order: 'due',
       direction: constants.ORDER_ASC,
@@ -73,6 +104,29 @@ class TasksListFrame extends React.Component {
 
     // Temp project ID
     props.dispatch(TaskActions.loadLists(1));
+
+    // Demo get linked items
+    if (props.tasks.size > 0) {
+      const linkedItemIds = [];
+      const filteredLinkedItemIds = [];
+      props.tasks.map(task => {
+        if (task.get('linked_items')) {
+          linkedItemIds.concat('linked_items');
+        }
+      });
+
+      if (linkedItemIds.length > 0) {
+        linkedItemIds.map((itemId) => {
+          if (filteredLinkedItemIds.indexOf(itemId) < 0) {
+            filteredLinkedItemIds.push(itemId);
+          }
+        });
+      }
+
+      if (linkedItemIds.length > 0) {
+        props.dispatch(loadLinkedItems(requestId, filteredLinkedItemIds));
+      }
+    }
   }
 
   setYear(year) {
@@ -248,14 +302,14 @@ class TasksListFrame extends React.Component {
   }
 
   showMassActionControls() {
-    $('.ticket-controls-bulk-editing').animate({'left': '22px'});
+    jQuery('.ticket-controls-bulk-editing').animate({'left': '22px'});
   }
 
   hideMassActionControls() {
     this.setState({
       actionable: []
     });
-    $('.ticket-controls-bulk-editing').animate({'left': '100%'});
+    jQuery('.ticket-controls-bulk-editing').animate({'left': '100%'});
   }
 
   editTask(source, model) {
@@ -301,11 +355,11 @@ class TasksListFrame extends React.Component {
   }
 
   toggleAssignWindow(task, event) {
-    let target = $(event.target).closest('div.top-right-box');
+    let target = jQuery(event.target).closest('div.top-right-box');
     let modifier = 12;
 
     if (typeof target[0] === 'undefined') {
-      target = $(event.target).closest('.list-sidebar-title');
+      target = jQuery(event.target).closest('.list-sidebar-title');
       modifier = 13;
     }
 

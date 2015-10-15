@@ -4,17 +4,6 @@ import * as actions from '../Actions/FeedbackListActions';
 import Immutable from 'immutable';
 
 const initialState = {
-  groups: [
-    {name: 'awaiting_validation', value: 1, current: true},
-    {name: 'status', value: '', current: false},
-    {name: 'hidden_status', value: '', current: false},
-    {name: 'label', value: '', current: false},
-    {name: 'no_labels', value: 1, current: false},
-    {name: 'status_category', value: '', current: false},
-    {name: 'category', value: '', current: false},
-    {name: 'custom_category', value: '', current: false},
-    {name: 'feedback_comments', value: '', current: false}
-  ],
   toValidateCount: 0,
   commentsToReviewCount: 0,
   labels: [/* string */],
@@ -24,14 +13,17 @@ const initialState = {
     new: 0,
     active: {
       count: 0,
+      group: 'active',
       nested: [/* {count, group} */]
     },
     closed: {
       count: 0,
+      group: 'closed',
       nested: [/* {count, group} */]
     },
     hidden: {
       count: 0,
+      group: 'hidden',
       nested: [/* {count, group} */]
     }
   }
@@ -74,17 +66,5 @@ export default createReducer(initialState, {
     success: (state, payload) =>
       state
         .setIn(['statuses', 'hidden'], payload.data)
-  }),
-  [actions.changeGroupState]: (state, payload) => {
-    const groups = [];
-    state.get('groups').toJS().forEach(obj=> {
-      const nextObj = {...obj};
-      nextObj.current = obj.name === payload.name;
-      if (obj.name === payload.name) {
-        nextObj.value = payload.value;
-      }
-      groups.push(nextObj);
-    });
-    return state.set('groups', Immutable.fromJS(groups));
-  }
+  })
 });

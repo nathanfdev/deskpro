@@ -42,7 +42,7 @@ export function commentsToReviewList(params) {
     paramsEncoded.push('order=' + params.order);
   }
   paramsEncoded.push('awaiting_validation=1');
-  console.log('DP_API/feedback_comments_list?' + paramsEncoded.join('&'));
+
   return DpApi.sendGet('DP_API/feedback_comments_list?' + paramsEncoded.join('&'));
 }
 
@@ -161,17 +161,7 @@ export function getDisplayFieldsFromPersonSetting(settingName) {
  * @return Promise
  */
 export function getList(params) {
-  const paramsEncoded = [];
-  paramsEncoded.push('sort=' + params.sort);
-  paramsEncoded.push('order=' + params.order);
-  if (params.group) {
-    paramsEncoded.push(params.group.name + '=' + String(params.group.value).replace(/\s/g, '%20'));
-  }
-  if (params.filters.value && params.filters.value.length > 0) {
-    paramsEncoded.push(params.filters.alias + '=' + params.filters.value.replace(/\s/g, '%20'));
-  }
-  console.log(' DP_API/feedback/?' + paramsEncoded.join('&'));
-  return DpApi.sendGet('DP_API/feedback/?' + paramsEncoded.join('&'));
+  return DpApi.sendGet('DP_API/feedback/?' + compileParams(params));
 }
 /*
  * Get values for chosen filter

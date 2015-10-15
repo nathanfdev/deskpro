@@ -1,17 +1,18 @@
 import React, {Component, PropTypes} from 'react';
 import { List } from './List';
-import { viewDataSelector, peopleSelector, emailsSelector, feedbackTypesSelector, feedbackLabelsSelector, feedbackCommentsSelector, feedbackStatusesSelector, feedbackSelector } from '../../Selectors/list';
+import { peopleSelector, emailsSelector, feedbackTypesSelector, feedbackLabelsSelector, feedbackCommentsSelector,
+         feedbackStatusesSelector, feedbackSelector, isCommentsSelector, currentViewModeSelector }
+  from '../../Selectors/list';
 import { toggleSelectedAction } from '../../Actions/FeedbackListActions';
-import { groupDataSelector } from '../../Selectors/nav';
-
 import { connect } from 'react-redux';
+
 @connect(state => {
   return ({
     massAction: state.Feedback.list.get('massAction'),
     feedback: state.Feedback.list.get('feedback'),
     selected: state.Feedback.list.get('selected'),
     comments: state.Feedback.list.get('comments'),
-    currentViewMode: viewDataSelector(state),
+    currentViewMode: currentViewModeSelector(state),
     people: peopleSelector(state),
     emails: emailsSelector(state),
     feedbackTypes: feedbackTypesSelector(state),
@@ -19,14 +20,13 @@ import { connect } from 'react-redux';
     feedbackComments: feedbackCommentsSelector(state),
     feedbackFromStore: feedbackSelector(state),
     feedbackStatuses: feedbackStatusesSelector(state),
-    currentGroup: groupDataSelector(state)
+    isComments: isCommentsSelector(state)
   });
 })
 export class ListContainer extends Component {
 
   static propTypes = {
-    currentGroup: PropTypes.object.isRequired,
-    currentViewMode: PropTypes.object.isRequired,
+    currentViewMode: PropTypes.string.isRequired,
     comments: PropTypes.array.isRequired,
     dispatch: PropTypes.func.isRequired,
     people: PropTypes.array.isRequired,
@@ -38,33 +38,15 @@ export class ListContainer extends Component {
     feedbackStatuses: PropTypes.object.isRequired,
     feedbackFromStore: PropTypes.array.isRequired,
     massAction: PropTypes.bool.isRequired,
-    selected: PropTypes.array.isRequired
+    selected: PropTypes.array.isRequired,
+    isComments: PropTypes.bool.isRequired
   };
 
   render() {
-    const { dispatch, currentGroup, massAction, feedback, selected, comments, currentViewMode, people, emails, feedbackTypes,
-      feedbackLabels, feedbackComments, feedbackStatuses, feedbackFromStore } = this.props;
-
-    const toggleSelected = (id) => () => dispatch(toggleSelectedAction(id));
+    const toggleSelected = (id) => () => this.props.dispatch(toggleSelectedAction(id));
 
     return (
-      <List
-        dispatch={dispatch}
-        currentGroup={currentGroup}
-        massAction={massAction}
-        feedback={feedback}
-        selected={selected}
-        toggleSelected={toggleSelected}
-        comments={comments}
-        currentViewMode={currentViewMode}
-        people={people}
-        emails={emails}
-        feedbackTypes={feedbackTypes}
-        feedbackLabels={feedbackLabels}
-        feedbackComments={feedbackComments}
-        feedbackStatuses={feedbackStatuses}
-        feedbackFromStore={feedbackFromStore}
-        />
+      <List {...this.props} toggleSelected={toggleSelected} />
     );
   }
 }

@@ -8,7 +8,7 @@ const ProjectCreateHover = React.createClass({
 
   propTypes: {
     projectData: React.PropTypes.object,
-    agentList: React.PropTypes.object,
+    agentList: React.PropTypes.array,
     createdProject: React.PropTypes.object,
     user: React.PropTypes.object,
     position: React.PropTypes.object,

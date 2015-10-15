@@ -1,12 +1,21 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import { updateHashState } from '../../../Application/Actions/routingActions';
+import { connect } from 'react-redux';
+import { routingStateSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
 
 export class TabsPane extends React.Component {
+  static propTypes = {
+    children: PropTypes.node
+  };
+
+  static defaultTab = 0;
+
   constructor(props) {
     super(props);
     this.state = {
-      active: 0
-    }
+      active: TabsPane.defaultTab
+    };
   }
 
   render() {
@@ -58,10 +67,35 @@ export class TabsPane extends React.Component {
   }
 
   activate(index) {
-    return function(e) {
+    return e => {
       e.preventDefault();
       this.setState({active: index});
-    }
+    };
+  }
+}
+
+@connect(state => ({state: routingStateSelector(state)}))
+export class TabsPaneStatefulContainer extends TabsPane {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    state: PropTypes.object.isRequired,
+    id: PropTypes.string.isRequired
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      active: this.props.state.getIn([this.props.id, 'active'], TabsPane.defaultTab)
+    };
+  }
+
+  activate(index) {
+    const parentHandler = super.activate(index);
+
+    return e => {
+      this.props.dispatch(updateHashState(this.props.id, 'active', index));
+      parentHandler(e);
+    };
   }
 }
 

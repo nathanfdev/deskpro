@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import jQuery from 'jquery';
 import position from 'jquery-ui/position';
 
@@ -24,7 +23,7 @@ export default class Positioned extends React.Component {
 
   /**
    * Constructor
-   * @param  {Object} props The props for the object
+   * @param  {Object} props The props for the objject
    * @return {void}
    */
   constructor(props) {
@@ -39,7 +38,7 @@ export default class Positioned extends React.Component {
    * @returns {void}
    */
   componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this);
+    this.node = React.findDOMNode(this);
     jQuery(this.node).detach();
     jQuery('body').prepend(this.node);
 
@@ -70,7 +69,6 @@ export default class Positioned extends React.Component {
 
   /**
    * Update the position of the component
-   * @param  {Object} element DOM element to move
    * @return {void}
    */
   updatePosition() {
@@ -93,8 +91,8 @@ export default class Positioned extends React.Component {
 
       if (this.props.positionTarget) {
         placement.of = this.props.positionTarget;
-        if (!(this.props.positionTarget instanceof jQuery) && ReactDOM.findDOMNode(this.props.positionTarget) !== null) {
-          placement.of = ReactDOM.findDOMNode(this.props.positionTarget);
+        if (!(this.props.positionTarget instanceof jQuery) && React.findDOMNode(this.props.positionTarget) !== null) {
+          placement.of = React.findDOMNode(this.props.positionTarget);
         }
 
         placement.collision = this.props.collision || placement.collision;
@@ -103,6 +101,7 @@ export default class Positioned extends React.Component {
         if (placement.of === null) {
           console.error('No position target specified');
         }
+
         jQuery(this.node).css('position', 'absolute').position(placement);
       }
     }
@@ -131,13 +130,13 @@ export default class Positioned extends React.Component {
     // Render the component with react, or don't if the prop changes
     if (props.isOpen) {
       // Put the element inside a div that we can position
-      ReactDOM.render(<div className="positioned-element">{this.props.children}</div>, this.node);
+      React.render(<div className="positioned-element">{this.props.children}</div>, this.node);
       this.updatePosition();
       if (this.shouldFire() && this.props.onOpen) {
         this.props.onOpen();
       }
     } else {
-      ReactDOM.render(<div />, this.node);
+      React.render(<div />, this.node);
       if (this.shouldFire() && this.props.onClose) {
         this.props.onClose();
       }

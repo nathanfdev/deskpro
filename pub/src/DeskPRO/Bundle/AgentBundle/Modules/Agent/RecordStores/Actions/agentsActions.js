@@ -11,6 +11,7 @@ export const loadAllAgents = createAction(
     () => new Promise((resolve, reject) =>
       DpApi.sendGet('DP_API/agents')
            .success(response => resolve(response.data))
-           .error(response => reject(response)))
+           .error(response => reject(response))),
+    'append'
   )
 );

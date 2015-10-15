@@ -13,6 +13,7 @@ import { LoginApp } from '../../Login/Components/LoginApp';
 import { WelcomeApp } from '../../Welcome/Components/WelcomeApp';
 import { loadMe } from '../RecordStores/Actions/meActions';
 import { meStateSelector } from '../RecordStores/Selectors/meSelectors';
+import { hashChanged } from '../../Application/Actions/routingActions';
 import { Router, Route, Redirect } from 'react-router';
 import Jquery from 'jquery';
 
@@ -51,7 +52,13 @@ export class DpAppContainer extends React.Component {
   }
 
   render() {
-    const { userStatus, history } = this.props;
+    const { userStatus, history, dispatch } = this.props;
+
+    // dispatch hashChanged() when hash is changed to bind it to the redux state
+    window.onhashchange = () => dispatch(hashChanged(window.location.hash));
+
+    // dispatch hashChanged() to track the initial hash value
+    dispatch(hashChanged(window.location.hash));
 
     if (userStatus.get('isLoading')) {
       return <DpAppLoading />;
@@ -59,7 +66,6 @@ export class DpAppContainer extends React.Component {
 
     const basePath = this.workOutBasePath();
     const defaultPath = `${basePath}/tasks`;
-
     return (
       <Router history={history}>
         <Redirect from={basePath} to={defaultPath}/>

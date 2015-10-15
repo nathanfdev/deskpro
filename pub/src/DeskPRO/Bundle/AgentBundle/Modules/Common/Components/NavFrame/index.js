@@ -1,7 +1,7 @@
 import { NavFrame, NavFrameHeader } from './frame';
 import { SectionsPane, Section, SectionHeader, SectionGroupedHeader } from './section';
-import { TabsPane, Tab } from './tabs';
-import { ListItem, NestedList } from './lists';
+import { TabsPane, TabsPaneStatefulContainer, Tab } from './tabs';
+import { ListItem, ListItemStatefulContainer, NestedList } from './lists';
 import { ListGroupingControl } from './list-grouping-control';
 import { LabelsDictionary } from './labels';
 import { ButtonsPane, Button } from './buttons';
@@ -9,8 +9,8 @@ import { ButtonsPane, Button } from './buttons';
 export default {
   NavFrame, NavFrameHeader,
   SectionsPane, Section, SectionHeader, SectionGroupedHeader,
-  TabsPane, Tab,
-  ListItem, NestedList,
+  TabsPane, TabsPaneStatefulContainer, Tab,
+  ListItem, ListItemStatefulContainer, NestedList,
   ListGroupingControl,
   LabelsDictionary,
   ButtonsPane, Button
