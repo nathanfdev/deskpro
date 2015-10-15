@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import jQuery from 'jquery';
 
-export class WarningMajor extends React.Component {
+export class WarningMajorWrapper extends React.Component {
 
   static propTypes = {
     children: PropTypes.node
