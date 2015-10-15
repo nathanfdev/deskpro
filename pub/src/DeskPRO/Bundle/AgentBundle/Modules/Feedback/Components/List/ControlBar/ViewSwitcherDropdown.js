@@ -1,15 +1,14 @@
 import React, {PropTypes} from 'react';
 import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
-import { toggleViewMode } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
+import { updateHashState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import MenuFooter from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooter';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 const ViewSwitcherDropdown = React.createClass({
 
   propTypes: {
-    viewModeOptions: PropTypes.object.isRequired,
-    currentViewMode: PropTypes.object.isRequired,
+    currentViewMode: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired,
     toggleDropdown: PropTypes.func.isRequired
   },
@@ -18,7 +17,7 @@ const ViewSwitcherDropdown = React.createClass({
 
   toggleView: function toggleView(newView) {
     const {dispatch, toggleDropdown} = this.props;
-    dispatch(toggleViewMode(newView));
+    dispatch(updateHashState('list', 'view', newView));
     toggleDropdown();
   },
 
@@ -31,16 +30,16 @@ const ViewSwitcherDropdown = React.createClass({
     return (
       <Menu>
         <Item
-          isActive={currentViewMode.field === constants.VIEW_MODE_CARD}
-          checked={currentViewMode.field === constants.VIEW_MODE_CARD}
+          isActive={currentViewMode === constants.VIEW_MODE_CARD}
+          checked={currentViewMode === constants.VIEW_MODE_CARD}
           onClick={this.toggleView.bind(this, constants.VIEW_MODE_CARD)}
           icon="list"
           >
           Card view
         </Item>
         <Item
-          isActive={currentViewMode.field === constants.VIEW_MODE_TABLE}
-          checked={currentViewMode.field === constants.VIEW_MODE_TABLE}
+          isActive={currentViewMode === constants.VIEW_MODE_TABLE}
+          checked={currentViewMode === constants.VIEW_MODE_TABLE}
           onClick={this.toggleView.bind(this, constants.VIEW_MODE_TABLE)}
           icon="table"
           >

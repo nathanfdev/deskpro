@@ -1,17 +1,17 @@
 import React, {Component, PropTypes} from 'react';
 import { List } from './List';
-import { viewDataSelector, peopleSelector, emailsSelector, feedbackTypesSelector, feedbackLabelsSelector,
-         feedbackCommentsSelector, feedbackStatusesSelector, feedbackSelector, isCommentsSelector } from '../../Selectors/list';
+import { peopleSelector, emailsSelector, feedbackTypesSelector, feedbackLabelsSelector, feedbackCommentsSelector,
+         feedbackStatusesSelector, feedbackSelector, isCommentsSelector } from '../../Selectors/list';
 import { toggleSelectedAction } from '../../Actions/FeedbackListActions';
-
 import { connect } from 'react-redux';
+
 @connect(state => {
   return ({
     massAction: state.Feedback.list.get('massAction'),
     feedback: state.Feedback.list.get('feedback'),
     selected: state.Feedback.list.get('selected'),
     comments: state.Feedback.list.get('comments'),
-    currentViewMode: viewDataSelector(state),
+    currentViewMode: state.Application.routing.getIn(['hash', 'list', 'view'], 'card'),
     people: peopleSelector(state),
     emails: emailsSelector(state),
     feedbackTypes: feedbackTypesSelector(state),
@@ -25,7 +25,7 @@ import { connect } from 'react-redux';
 export class ListContainer extends Component {
 
   static propTypes = {
-    currentViewMode: PropTypes.object.isRequired,
+    currentViewMode: PropTypes.string.isRequired,
     comments: PropTypes.array.isRequired,
     dispatch: PropTypes.func.isRequired,
     people: PropTypes.array.isRequired,
@@ -42,10 +42,10 @@ export class ListContainer extends Component {
   };
 
   render() {
-    const toggleSelected = (id) => () => dispatch(toggleSelectedAction(id));
+    const toggleSelected = (id) => () => this.props.dispatch(toggleSelectedAction(id));
 
     return (
-      <List {...this.props} toggleSelected={toggleSelected}/>
+      <List {...this.props} toggleSelected={toggleSelected} />
     );
   }
 }
