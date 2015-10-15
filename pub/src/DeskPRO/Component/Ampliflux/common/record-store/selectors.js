@@ -55,7 +55,9 @@ function createStatusSelBuilder(statusSelector) {
     [statusSelector],
     status => Immutable.Map({
       isLoading: status.getIn([requestId, 'isLoading']),
-      isDone: status.getIn([requestId, 'isDone'])
+      isDone: status.getIn([requestId, 'isDone']),
+      isError: status.getIn([requestId, 'isError']),
+      errorCode: status.getIn([requestId, 'errorCode'])
     })
   );
 }
