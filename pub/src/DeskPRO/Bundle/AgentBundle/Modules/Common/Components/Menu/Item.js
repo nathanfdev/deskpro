@@ -12,7 +12,7 @@ export default class Item extends React.Component {
     closeMenu: React.PropTypes.func,
     activeItem: React.PropTypes.object,
     isActive: React.PropTypes.bool
-  }
+  };
 
   render() {
     let typeClass = '';
