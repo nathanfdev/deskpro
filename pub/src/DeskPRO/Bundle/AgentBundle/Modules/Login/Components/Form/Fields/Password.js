@@ -16,7 +16,7 @@ export class Password extends React.Component {
     return (
       <FieldWrapper iconClass="fa-lock" label="Password" errorMessage={errorMessage}>
         <Positioned
-          isOpen={errorMessage}
+          isOpen={!!errorMessage}
           positionTarget={this}
           positionAt="left top"
           positionMy="right center">

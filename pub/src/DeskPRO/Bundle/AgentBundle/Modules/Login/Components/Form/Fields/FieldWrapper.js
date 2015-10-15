@@ -22,7 +22,7 @@ export class FieldWrapper extends React.Component {
     return (
       <div className={fieldClasses.join(' ')}>
         <Positioned
-          isOpen={errorMessage}
+          isOpen={!!errorMessage}
           positionTarget={this}
           positionAt="right top"
           positionMy="left center">
