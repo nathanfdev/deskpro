@@ -104,6 +104,8 @@ export function requestRecords() {
     asyncIndicator((state, payload) => ({
       loading: `status.${payload.requestId}.isLoading`,
       success: `status.${payload.requestId}.isDone`,
+      isError: `status.${payload.requestId}.isError`,
+      errorCode: `status.${payload.requestId}.errorCode`
     })),
     async({
       success: (state, payload) => {
