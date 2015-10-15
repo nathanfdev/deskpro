@@ -110,7 +110,7 @@ class DepartmentDataService extends AbstractDataService
 
         return $this->generateAndCache(
             array(
-                'getAuthorizedDepartmentsForPersonInPortal',
+                'getChatDepartmentsForPerson',
                 $person,
             ),
             function () use ($person, $portal_permissions_manager, $em) {
