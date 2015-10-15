@@ -32,7 +32,7 @@ export function releaseRequest() {
 export function setRequestRecords(defaultMode = MODE_APPEND) {
   return (requestId, setRecords, reqIds, mode = defaultMode) => {
     let records = setRecords;
-    let ids     = reqIds;
+    let ids = reqIds;
 
     if (!records) {
       records = Immutable.Map();
@@ -74,9 +74,9 @@ export function setRequestRecords(defaultMode = MODE_APPEND) {
 export function requestRecords(stateKey, loaderFn, defaultMode = MODE_APPEND) {
   return (requestId, reqIds, mode = defaultMode) => (dispatch, getState) => {
     const ids = Immutable.Set(reqIds);
-    const allState   = getState();
-    const state      = objGet(allState, stateKey) || Immutable.fromJS({records: {}});
-    const records    = state.get('records');
+    const allState = getState();
+    const state = objGet(allState, stateKey) || Immutable.fromJS({records: {}});
+    const records = state.get('records');
     const missingIds = ids.filter(id => !records.has(id));
 
     return {

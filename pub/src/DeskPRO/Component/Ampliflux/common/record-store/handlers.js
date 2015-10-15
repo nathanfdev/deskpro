@@ -4,6 +4,7 @@ import { MODE_SET } from './actions';
 /**
  * (Reducer builder) Runs cleanup of unused records
  *
+ * @param {Immutable.Map} state The current state
  * @return {Function} reducer
  */
 function gc(state) {
