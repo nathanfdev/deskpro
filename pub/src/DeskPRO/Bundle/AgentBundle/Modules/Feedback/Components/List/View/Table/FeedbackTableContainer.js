@@ -40,7 +40,10 @@ export class FeedbackTableContainer extends Component {
       );
     } else if (field.name === 'author_name') {
       return (
-        <PersonInTable person={people.get(element.person_id)} email={emails.get(element.person_id).get('email')}/>
+        <PersonInTable
+          person={people.get(element.person_id)}
+          email={emails.get(element.person_id) ? emails.get(element.person_id).get('email') : null}
+        />
       );
     } else if (field.name === 'title') {
       content = element.title.substr(0, 40);
@@ -64,7 +67,7 @@ export class FeedbackTableContainer extends Component {
         <FormattedRelative value={element.date_published}/>
       );
     } else if (field.name === 'status_category' && feedbackStatuses) {
-      content = feedbackStatuses.get(element.id).get('title');
+      content = feedbackStatuses.get(element.id) ? feedbackStatuses.get(element.id).get('title') : null;
     }
     return content;
   }
