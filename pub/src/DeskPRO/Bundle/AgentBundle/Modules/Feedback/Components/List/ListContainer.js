@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { List } from './List';
-import { viewDataSelector, peopleSelector, emailsSelector, feedbackTypesSelector, feedbackLabelsSelector, feedbackCommentsSelector, feedbackStatusesSelector, feedbackSelector } from '../../Selectors/list';
+import { viewDataSelector, peopleSelector, emailsSelector, feedbackTypesSelector, feedbackLabelsSelector,
+         feedbackCommentsSelector, feedbackStatusesSelector, feedbackSelector, isCommentsSelector } from '../../Selectors/list';
 import { toggleSelectedAction } from '../../Actions/FeedbackListActions';
 
 import { connect } from 'react-redux';
@@ -17,7 +18,8 @@ import { connect } from 'react-redux';
     feedbackLabels: feedbackLabelsSelector(state),
     feedbackComments: feedbackCommentsSelector(state),
     feedbackFromStore: feedbackSelector(state),
-    feedbackStatuses: feedbackStatusesSelector(state)
+    feedbackStatuses: feedbackStatusesSelector(state),
+    isComments: isCommentsSelector(state)
   });
 })
 export class ListContainer extends Component {
@@ -35,32 +37,15 @@ export class ListContainer extends Component {
     feedbackStatuses: PropTypes.object.isRequired,
     feedbackFromStore: PropTypes.array.isRequired,
     massAction: PropTypes.bool.isRequired,
-    selected: PropTypes.array.isRequired
+    selected: PropTypes.array.isRequired,
+    isComments: PropTypes.bool.isRequired
   };
 
   render() {
-    const { dispatch, massAction, feedback, selected, comments, currentViewMode, people, emails, feedbackTypes,
-      feedbackLabels, feedbackComments, feedbackStatuses, feedbackFromStore } = this.props;
-
     const toggleSelected = (id) => () => dispatch(toggleSelectedAction(id));
 
     return (
-      <List
-        dispatch={dispatch}
-        massAction={massAction}
-        feedback={feedback}
-        selected={selected}
-        toggleSelected={toggleSelected}
-        comments={comments}
-        currentViewMode={currentViewMode}
-        people={people}
-        emails={emails}
-        feedbackTypes={feedbackTypes}
-        feedbackLabels={feedbackLabels}
-        feedbackComments={feedbackComments}
-        feedbackStatuses={feedbackStatuses}
-        feedbackFromStore={feedbackFromStore}
-        />
+      <List {...this.props} toggleSelected={toggleSelected}/>
     );
   }
 }

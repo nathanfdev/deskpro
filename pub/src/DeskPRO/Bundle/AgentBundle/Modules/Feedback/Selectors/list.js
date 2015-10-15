@@ -26,6 +26,11 @@ export const filterDataSelector = createSelector(
     list => list.get('filterOptions').toJS().find(option=> option.current === true)
 );
 
+export const isCommentsSelector = createSelector(
+  stateSelector,
+  list => list.get('isComments')
+);
+
 export const peopleSelector = createSelector(
   createPeopleRequestSelectors('feedback').recordsSel,
     people => people

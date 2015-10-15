@@ -25,14 +25,14 @@ export class List extends Component {
     toggleSelected: PropTypes.func.isRequired,
     comments: PropTypes.array.isRequired,
     massAction: PropTypes.bool.isRequired,
-    currentViewMode: PropTypes.object.isRequired
+    currentViewMode: PropTypes.object.isRequired,
+    isComments: PropTypes.bool.isRequired
   };
 
   contentChoice() {
-    //const {currentGroup} = this.props;
-    //if (currentGroup.name === 'feedback_comments') {
-    //  return this.renderComments();
-    //}
+    if (this.props.isComments) {
+      return this.renderComments();
+    }
     return this.renderFeedback();
   }
 

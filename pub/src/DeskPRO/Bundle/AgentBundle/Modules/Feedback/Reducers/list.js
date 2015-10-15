@@ -6,6 +6,7 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import Immutable from 'immutable';
 
 const initialState = {
+  isComments: false, // whether comments or feedbacks list is shown
   massAction: false,
   feedback: [],
   selected: [], // array of IDs

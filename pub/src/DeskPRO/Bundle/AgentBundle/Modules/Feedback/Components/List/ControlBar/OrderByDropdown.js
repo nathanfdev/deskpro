@@ -13,7 +13,8 @@ const OrderByDropdown = React.createClass({
     currentSortMode: PropTypes.object.isRequired,
     sortOptions: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
-    toggleDropdown: PropTypes.func.isRequired
+    toggleDropdown: PropTypes.func.isRequired,
+    isComments: PropTypes.bool.isRequired
   },
 
   mixins: [
@@ -25,33 +26,33 @@ const OrderByDropdown = React.createClass({
   },
 
   toggleListOrder: function toggleListOrder(order) {
-    const {dispatch, currentGroup, toggleDropdown} = this.props;
-    if (currentGroup.name !== 'feedback_comments') {
-      dispatch(toggleOrder(order));
-    } else {
+    const { dispatch, isComments, toggleDropdown } = this.props;
+    if (isComments) {
       dispatch(commentsToggleOrder(order));
+    } else {
+      dispatch(toggleOrder(order));
     }
     toggleDropdown();
   },
 
   /* Change sort option (Order By ...)*/
   toggleListSort: function toggleListSort(option) {
-    const {dispatch, currentGroup, toggleDropdown} = this.props;
-    if (currentGroup.name !== 'feedback_comments') {
+    const { dispatch, isComments, toggleDropdown } = this.props;
+    if (!isComments) {
       dispatch(toggleSort(option.field));
     }
     toggleDropdown();
   },
 
   renderOptions: function renderOptions() {
-    const {currentGroup, toggleDropdown, currentSortMode, sortOptions} = this.props;
-    if (currentGroup.name === 'feedback_comments') {
+    const { isComments, toggleDropdown, currentSortMode, sortOptions } = this.props;
+    if (isComments) {
       return (
         <Item
           active
           toggleDropdown={toggleDropdown}
           option={currentSortMode}
-          />
+        />
       );
     }
     return (
@@ -62,7 +63,7 @@ const OrderByDropdown = React.createClass({
             checked={currentSortMode.field === option.field}
             onClick={this.toggleListSort.bind(this, option)}
             icon={option.icon}
-            >
+          >
             {option.label}
           </Item>
       )
