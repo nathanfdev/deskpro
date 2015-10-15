@@ -11,14 +11,16 @@ import { filterDataSelector } from '../../../Selectors/list';
 export class FilterByDropdownContainer extends Component {
 
   static propTypes = {
-    offset: PropTypes.object.isRequired
+    filterOptions: PropTypes.array.isRequired,
+    currentFilterMode: PropTypes.object.isRequired,
+    toggleDropdown: PropTypes.func.isRequired
   };
 
   render() {
-    const { filterOptions, currentFilterMode, offset, toggleDropdown } = this.props;
+    const { filterOptions, currentFilterMode, toggleDropdown } = this.props;
 
     return (
-      <Menu offset={offset} toggleDropdown={toggleDropdown}>
+      <Menu toggleDropdown={toggleDropdown}>
         {filterOptions.map((option, index)=>
             <Option
               key={index}

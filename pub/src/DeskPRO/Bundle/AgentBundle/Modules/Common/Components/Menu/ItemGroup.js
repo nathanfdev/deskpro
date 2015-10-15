@@ -1,33 +1,33 @@
-import React, {Component, PropTypes} from 'react';
-import classNames from 'classnames';
+import React from 'react';
 
-export default class ItemGroup extends Component {
+export default class ItemGroup extends React.Component {
 
   /**
    * Valid prop types
    * @type {Object}
    */
   static propTypes = {
-    widgetClass: PropTypes.string,
-    overrideWidgetClass: PropTypes.bool,
-    children: PropTypes.node,
-    menuLevel: PropTypes.number
-  };
+    widgetClass: React.PropTypes.string,
+    overrideWidgetClass: React.PropTypes.bool,
+    children: React.PropTypes.node,
+    menuLevel: React.PropTypes.number
+  }
 
   /**
    * Render the menu
    * @return {React.Element} The menu container
    */
   render() {
-    const divClass = classNames(this.props.widgetClass,
-      {'navigation-item-group': !this.props.overrideWidgetClass}
-    );
+    const baseClass = 'navigation-item-group';
 
-    return (
-      <ul className={divClass}>
-        {React.Children.map(this.props.children, (child) => {
-          return React.cloneElement(child, this.props);
-        })}
+    let divClass = (this.props.widgetClass ? baseClass + ' ' + this.props.widgetClass : baseClass);
+
+    if (this.props.overrideWidgetClass) {
+      divClass = this.props.widgetClass;
+    }
+
+    return (<ul className={divClass}>
+        {this.props.children}
       </ul>
     );
   }
