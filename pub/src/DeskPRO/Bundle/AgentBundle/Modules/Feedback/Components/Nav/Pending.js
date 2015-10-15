@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Section, SectionHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
-import { FeedbackListItem } from './FeedbackListItem';
+import { ListItemContainer } from './ListItemContainer';
 
 export class Pending extends Component {
 
@@ -17,12 +17,12 @@ export class Pending extends Component {
       <Section>
         <SectionHeader>Pending</SectionHeader>
         <ul>
-          <FeedbackListItem
+          <ListItemContainer
             count={toValidateCount}
             label="Feedback to Validate"
             listOptions={{awaiting_validation: 1}}
           />
-          <FeedbackListItem
+          <ListItemContainer
             count={commentsToReviewCount}
             label="Comments to Review"
             onClick={commentsView.bind(this, {name: 'feedback_comments'})}

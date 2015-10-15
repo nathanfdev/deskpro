@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { FeedbackListItem } from './FeedbackListItem';
+import { ListItemContainer } from './ListItemContainer';
 
 export class TypeTab extends Component {
   static propTypes = {
@@ -14,7 +14,7 @@ export class TypeTab extends Component {
     return (
       <ul>
         {types.map((item, index) =>
-          <FeedbackListItem
+          <ListItemContainer
             key={index}
             count={item.value}
             label={item.title}

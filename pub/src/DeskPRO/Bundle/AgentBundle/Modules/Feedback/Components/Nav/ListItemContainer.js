@@ -6,7 +6,7 @@ import * as actions from '../../Actions/FeedbackListActions';
 @connect(state => ({
   activeItemId: state.Application.routing.getIn(['hash', 'nav', 'active'])}
 ))
-export class FeedbackListItem extends Component {
+export class ListItemContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     activeItemId: PropTypes.string,
