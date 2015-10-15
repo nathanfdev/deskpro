@@ -155,83 +155,83 @@ export const loadTaskList = createAction(
         const result = value.getData();
 
         // This can all be deleted eventually
-        const output = result;
+        // const output = result;
 
-        const projects = [];
-        const linkedItems = [];
-        const people = [];
-        const departments = [];
-        const teams = [];
+        // const projects = [];
+        // const linkedItems = [];
+        // const people = [];
+        // const departments = [];
+        // const teams = [];
 
-        result.data.forEach((task) => {
-          if (task.project !== null && projects.indexOf(task.project) === -1) {
-            projects.push(task.project);
-          }
+        // result.data.forEach((task) => {
+        //   if (task.project !== null && projects.indexOf(task.project) === -1) {
+        //     projects.push(task.project);
+        //   }
 
-          if (task.linked_items !== null && linkedItems.indexOf(task.linked_items.id) === -1) {
-            linkedItems.push(task.linked_items.id);
-          }
+        //   if (task.linked_items !== null && linkedItems.indexOf(task.linked_items.id) === -1) {
+        //     linkedItems.push(task.linked_items.id);
+        //   }
 
-          if (task.agents !== null && typeof task.agents.forEach === 'function') {
-            task.agents.forEach((agent) => {
-              if (people.indexOf(agent) === -1) {
-                people.push(agent);
-              }
-            });
-          }
+        //   if (task.agents !== null && typeof task.agents.forEach === 'function') {
+        //     task.agents.forEach((agent) => {
+        //       if (people.indexOf(agent) === -1) {
+        //         people.push(agent);
+        //       }
+        //     });
+        //   }
 
-          if (task.departments !== null && typeof task.departments.forEach === 'function') {
-            task.departments.forEach((department) => {
-              if (departments.indexOf(department) === -1) {
-                departments.push(department);
-              }
-            });
-          }
+        //   if (task.departments !== null && typeof task.departments.forEach === 'function') {
+        //     task.departments.forEach((department) => {
+        //       if (departments.indexOf(department) === -1) {
+        //         departments.push(department);
+        //       }
+        //     });
+        //   }
 
-          if (task.teams !== null && typeof task.teams.forEach === 'function') {
-            task.teams.forEach((team) => {
-              if (teams.indexOf(team) === -1) {
-                teams.push(team);
-              }
-            });
-          }
-        });
+        //   if (task.teams !== null && typeof task.teams.forEach === 'function') {
+        //     task.teams.forEach((team) => {
+        //       if (teams.indexOf(team) === -1) {
+        //         teams.push(team);
+        //       }
+        //     });
+        //   }
+        // });
 
-        // Load all the relevant data
-        const tasks = Promise.all([
-          Tasks.loadProjects({ids: projects.join(',')}),
-          Tasks.loadLinks({ids: linkedItems.join(',')}),
-          People.loadPeople({ids: people.join(',')}),
-          Tasks.loadDepartments({ids: departments.join(',')}),
-          AgentTeams.loadAgentTeams({ids: teams.join(',')})
-        ]).then((ps) => {
-          output.projects = ps[0].getData().data;
-          output.linked_items = ps[1].getData().data;
-          output.people = ps[2].getData().data;
-          output.departments = ps[3].getData().data;
-          output.teams = ps[4].getData().data;
+        // // Load all the relevant data
+        // const tasks = Promise.all([
+        //   Tasks.loadProjects({ids: projects.join(',')}),
+        //   Tasks.loadLinks({ids: linkedItems.join(',')}),
+        //   People.loadPeople({ids: people.join(',')}),
+        //   Tasks.loadDepartments({ids: departments.join(',')}),
+        //   AgentTeams.loadAgentTeams({ids: teams.join(',')})
+        // ]).then((ps) => {
+        //   output.projects = ps[0].getData().data;
+        //   output.linked_items = ps[1].getData().data;
+        //   output.people = ps[2].getData().data;
+        //   output.departments = ps[3].getData().data;
+        //   output.teams = ps[4].getData().data;
 
-          output.source = data;
-        }).then(() => {
-          const linkedTickets = [];
-          output.linked_items.forEach((item) => {
-            if (item.ticket) {
-              linkedTickets.push(item.ticket);
-            }
-          });
+        //   output.source = data;
+        // }).then(() => {
+        //   const linkedTickets = [];
+        //   output.linked_items.forEach((item) => {
+        //     if (item.ticket) {
+        //       linkedTickets.push(item.ticket);
+        //     }
+        //   });
 
-          return Tasks.loadLinkedTickets({
-            ids: linkedTickets.join(',')
-          }).then((ticket) => {
-            output.tickets = ticket.getData().data;
-            return output;
-          });
-        });
+        //   return Tasks.loadLinkedTickets({
+        //     ids: linkedTickets.join(',')
+        //   }).then((ticket) => {
+        //     output.tickets = ticket.getData().data;
+        //     return output;
+        //   });
+        // });
         // Stop deleting things!
 
         dispatch(RecordStoreTaskActions.setTaskRequest(requestId, mapKeyedFromArray(result.data, 'id'), false, 'append'));
 
-        return tasks;
+        return result.data;
       }
     );
   }

@@ -3,11 +3,9 @@ import { connect } from 'react-redux';
 import jQuery from 'jquery';
 import * as TaskActions from '../Actions/TaskListActions';
 import { IntlMixin } from 'react-intl';
-import Formsy from 'formsy-react';
-import FRC from '../../../../../Component/FormComponents/main.js';
 import TaskControls from '../Components/TaskControls';
-import TaskCardGroup from '../Components/TaskCardGroup';
 import TaskCalendar from '../Components/TaskCalendar';
+import TaskListContents from '../Components/TaskListContents';
 import TaskCardCondensedGroup from '../Components/TaskCardCondensedGroup';
 import KanbanColumn from '../Components/KanbanColumn';
 import Moment from 'moment';
@@ -17,6 +15,7 @@ import * as constants from '../../../Constants/Constants';
 import ReactPaginate from '../../Common/Components/Pagination/deskpro-react-paginate';
 import ComponentRootWrapper from 'DeskPRO/Component/ComponentRootWrapper';
 import AssignHover from '../Components/AssignHover';
+import Immutable from 'immutable';
 
 import TaskMassActions from '../Components/TaskMassActions';
 import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
@@ -31,7 +30,6 @@ import { createTicketRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Modules
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
 import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
-
 
 const requestId = 'taskListFrame';
 const ticketsSelector = createTicketRequestSelectors(requestId);
@@ -54,7 +52,8 @@ const linkedItemsSelector = createLinkedItemRequestSelectors(requestId);
   agentTeams: agentTeamsSelector(state),
   departments: allDepartmentsSelector(state),
   tickets: ticketsSelector.recordsSel(state),
-  linkedItems: linkedItemsSelector.recordsSel(state)
+  linkedItems: linkedItemsSelector.recordsSel(state),
+  linkedItemsStatus: linkedItemsSelector.statusSel(state)
 }))
 
 export class TasksListFrame extends React.Component {
@@ -104,30 +103,34 @@ export class TasksListFrame extends React.Component {
 
     // Temp project ID
     props.dispatch(TaskActions.loadLists(1));
-
-    // Demo get linked items
-    if (props.tasks.size > 0) {
-      const linkedItemIds = [];
-      const filteredLinkedItemIds = [];
-      props.tasks.map(task => {
-        if (task.get('linked_items')) {
-          linkedItemIds.concat('linked_items');
-        }
-      });
-
-      if (linkedItemIds.length > 0) {
-        linkedItemIds.map((itemId) => {
-          if (filteredLinkedItemIds.indexOf(itemId) < 0) {
-            filteredLinkedItemIds.push(itemId);
-          }
-        });
-      }
-
-      if (linkedItemIds.length > 0) {
-        props.dispatch(loadLinkedItems(requestId, filteredLinkedItemIds));
-      }
-    }
   }
+
+  // componentWillReceiveProps(nextProps) {
+  //   console.log('willReceiveProps');
+  //   // Demo get linked items
+  //   if (nextProps.tasks && nextProps.tasks.size > 0 && !nextProps.linkedItemsStatus.get('isDone')) {
+  //     console.log('Got tasks');
+  //     const linkedItemIds = Immutable.List();
+  //     const linkedToMerge = [];
+
+  //     nextProps.tasks.map(task => {
+  //       if (task.has('linked_items') && task.get('linked_items').size > 0) {
+  //         const newLinkedItemIds = task.get('linked_items').toList();
+  //         linkedToMerge.push(newLinkedItemIds);
+  //       }
+  //     });
+
+  //     const linkedToLoad = linkedItemIds.merge(...linkedToMerge);
+
+  //     const loadArray = linkedToLoad.toArray();
+
+  //     if (linkedToLoad.size > 0) {
+  //       nextProps.dispatch(loadLinkedItems(requestId, loadArray));
+  //     }
+
+  //     console.log(nextProps.linkedItemsStatus);
+  //   }
+  // }
 
   setYear(year) {
     const moment = this.state.moment;
@@ -316,11 +319,7 @@ export class TasksListFrame extends React.Component {
     this.props.dispatch(TaskActions.editTask(model, source));
   }
 
-  createTask(source, model) {
-    this.props.dispatch(TaskActions.createTask({
-      title: model.title
-    }, source));
-  }
+  
 
   massEdit(data) {
     const source = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameSource') : null;
@@ -499,8 +498,8 @@ export class TasksListFrame extends React.Component {
     const taskFrameList = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameList', []) : [];
 
     // Split tasks up into the appropriate kanban columns
-    if (taskFrameList && taskFrameList.size > 0) {
-      taskFrameList.forEach((object) => {
+    if (this.props.tasks && this.props.tasks.size > 0) {
+      this.props.tasks.forEach((object) => {
         const columnId = grouping.getGroup(object, columnField);
 
         if (typeof tasks[columnId] === 'undefined') {
@@ -550,123 +549,22 @@ export class TasksListFrame extends React.Component {
 
         <TaskMassActions hideMassActionControls={this.hideMassActionControls.bind(this)}
                          projects={this.projects}/>
-
-
         <ListFrameContents>
-          {this.state.view === 'kanban' ?
-           <div className="kanban-columns">
-             {rawGroupings ? rawGroupings.map((group) => {
-               return (<KanbanColumn projects={this.projects} agents={this.agents} teams={this.teams}
-                                     departments={this.departments}
-                                     tasks={tasks[group.key]} key={group.id} taskList={group}
-                                     dispatch={_this.props.dispatch.bind(_this)}
-                                     columnField={columnField}
-                                     updateField={group.updateField}
-                                     updateValue={group.updateValue}
-                                     source={source}
-                                     updateMassActions={_this.updateMassActions.bind(_this)}
-                                     moveCard={this.moveCard.bind(this)}
-                                     massEdit={this.massEdit.bind(this)}
-                                     actionable={_this.state.actionable}
-                                     order={this.state.order}
-                                     editTask={_this.editTask.bind(_this)}/>);
-             }) : '' }
-           </div>
-            : (this.state.view === 'condensed') ?
-              <div>
-                <table cellSpacing="0" className="condensed-task-list">
-                  <thead>
-                  <tr>
-                    <th>Title</th>
-                    <th className="clickable-column" onClick={this.toggleOrder.bind(this, 'project')}>
-                      Project {this.state.order === 'project' ?
-                               this.state.direction === 'desc' ? <i className="fa fa-caret-down"/> : <i
-                                 className="fa fa-caret-up"/>
-                      : ''}</th>
-                    <th className="clickable-column" onClick={this.toggleOrder.bind(this, 'due')}>
-                      Due {this.state.order === 'due' ?
-                           this.state.direction === 'desc' ? <i className="fa fa-caret-down"/> : <i
-                             className="fa fa-caret-up"/>
-                      : ''}</th>
-                    <th className="clickable-column" onClick={this.toggleOrder.bind(this, 'assignee')}>
-                      Assignee {this.state.order === 'assignee' ?
-                                this.state.direction === 'desc' ? <i className="fa fa-caret-down"/> : <i
-                                  className="fa fa-caret-up"/>
-                      : ''}</th>
-                  </tr>
-                  </thead>
-                  {rawGroupings ? rawGroupings.map((group) => {
-                    if (tasks[group.key]) {
-                      return (<TaskCardCondensedGroup tasks={tasks[group.key]} key={group.id}
-                                                      columnField={columnField}
-                                                      source={source}
-                                                      dispatch={_this.props.dispatch.bind(_this)}
-                                                      updateField={group.updateField}
-                                                      updateValue={group.updateValue}
-                                                      teams={this.teams} projects={this.projects}
-                                                      linked_items={linkedItems}
-                                                      departments={this.departments}
-                                                      agents={this.agents} tickets={tickets}
-                                                      toggleDone={this.toggleDone.bind(this)}
-                                                      editTask={_this.editTask.bind(_this)}
-                                                      updateMassActions={_this.updateMassActions.bind(_this)}
-                                                      actionable={_this.state.actionable}
-                                                      order={this.state.order}
-                                                      divider={group.title}
-                                                      moveCard={this.moveCard.bind(this)}/>);
-                    }
-                  }) : '' }
-                </table>
-                <Formsy.Form onSubmit={_this.createTask.bind(_this, source)}>
-                  <FRC.Input name="title" type="text"/>
-                  <button type="submit" value="Save" className="button">Add</button>
-                </Formsy.Form>
-              </div>
-             : (this.state.view === 'calendar') ?
-               <div>
-                 <TaskCalendar tasks={taskFrameList}
-                               moment={this.state.moment}
-                               nextMonth={this.nextMonth.bind(this)}
-                               prevMonth={this.prevMonth.bind(this)}
-                               dispatch={_this.props.dispatch.bind(_this)}
-                               tickets={tickets}
-                               teams={this.teams}
-                               projects={this.projects}
-                               linked_items={linkedItems}
-                               departments={this.departments}
-                               agents={this.agents}
-                               setYear={this.setYear.bind(this)}/>
-               </div>
-                :
-               <div>
-                 <Formsy.Form onSubmit={_this.createTask.bind(_this, source)}>
-                   <FRC.Input name="title" type="text"/>
-                   <button type="submit" value="Save" className="button">Add</button>
-                 </Formsy.Form>
 
-                 {rawGroupings ? rawGroupings.map((group) => {
-                   return (<TaskCardGroup tasks={tasks[group.key]} key={group.id}
-                                          columnField={columnField}
-                                          source={source}
-                                          dispatch={_this.props.dispatch.bind(_this)}
-                                          updateField={group.updateField}
-                                          updateValue={group.updateValue}
-                                          teams={this.teams} projects={this.projects}
-                                          linked_items={linkedItems}
-                                          departments={this.departments} agents={this.agents}
-                                          tickets={tickets}
-                                          toggleDone={this.toggleDone.bind(this)}
-                                          editTask={_this.editTask.bind(_this)}
-                                          updateMassActions={_this.updateMassActions.bind(_this)}
-                                          actionable={_this.state.actionable}
-                                          divider={group.title}
-                                          order={this.state.order}
-                                          toggleAssignWindow={_this.toggleAssignWindow.bind(_this)}
-                                          moveCard={this.moveCard.bind(this)}/>);
-                 }) : '' }
+          {this.props.tasks && this.props.tasks.size > 0 ?
+          <TaskListContents {...this.props}
+                            direction={this.state.direction}
+                            groupedTasks={tasks}
+                            order={this.state.order}
+                            view={this.state.view}
 
-               </div>
-          }
+                            toggleDone={this.toggleDone.bind(this)}
+                            editTask={this.editTask.bind(this)}
+                            updateMassActions={this.updateMassActions.bind(this)}
+                            order={this.state.order}
+                            toggleAssignWindow={this.toggleAssignWindow.bind(this)}
+                            moveCard={this.moveCard.bind(this)} />
+          : '' }
         </ListFrameContents>
         {
           // pageNum: The total number of pages
