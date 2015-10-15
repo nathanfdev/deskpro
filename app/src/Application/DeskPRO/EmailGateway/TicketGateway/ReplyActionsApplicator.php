@@ -142,10 +142,7 @@ class ReplyActionsApplicator implements Loggable
                 foreach ($param as $field_id => $field_value) {
                     $custom_field_data['field_'.$field_id] = $field_value;
                 }
-
-                if ($custom_field_data) {
-                    $fm->saveFormToObject($custom_field_data, $ticket, true);
-                }
+                $fm->saveFormToObject($custom_field_data, $ticket, true);
                 break;
 
             default:

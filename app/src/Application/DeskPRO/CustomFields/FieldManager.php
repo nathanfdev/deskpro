@@ -32,6 +32,7 @@
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\CustomFields\Handler\Choice;
+use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Person;
@@ -477,7 +478,7 @@ class FieldManager
      *
      * @return array
      */
-    public function getFieldDataForObject($object)
+    public function getFieldDataForObject(DomainObject $object)
     {
         $prop = $this->options->get('custom_data_property');
         $data = $object->$prop;

@@ -141,10 +141,8 @@ class NewPerson
         $this->_em->persist($person);
         $this->_em->flush();
 
-        if ($this->custom_fields) {
-            $manager = App::$container->getPersonFieldManager();
-            $manager->saveFormToObject($this->custom_fields, $person);
-        }
+        $manager = App::$container->getPersonFieldManager();
+        $manager->saveFormToObject($this->custom_fields, $person);
 
         $this->_em->flush();
         $this->_em->commit();

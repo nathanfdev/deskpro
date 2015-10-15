@@ -2054,32 +2054,28 @@ class TicketController extends AbstractController
                 }
 
                 if ($this->person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
-                    if (!empty($_POST['custom_fields'])) {
-                        $post_custom_fields = $this->request->request->get('custom_fields', array());
-                        if (!empty($post_custom_fields)) {
-                            $field_manager->saveFormToObject($post_custom_fields, $ticket);
-                            $this->em->persist($ticket);
-                        }
+                    $post_custom_fields = $this->request->request->get('custom_fields', array());
+                    $field_manager->saveFormToObject($post_custom_fields, $ticket);
+                    $this->em->persist($ticket);
 
-                        $new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $layout, array('allow_edit' => true));
-                        if ($org = $ticket->person->organization) {
-                            $new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner(
-                                $ticket, $org, $layout, array('allow_edit' => true)
-                            ));
-                        }
-                        $new_custom_fields->handleRequest($this->get('request'));
-                        if ($new_custom_fields->isValid()) {
-                            $new_field_manager->flush($new_custom_fields);
-                        }
+                    $new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $layout, array('allow_edit' => true));
+                    if ($org = $ticket->person->organization) {
+                        $new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner(
+                            $ticket, $org, $layout, array('allow_edit' => true)
+                        ));
+                    }
+                    $new_custom_fields->handleRequest($this->request);
+                    if ($new_custom_fields->isValid()) {
+                        $new_field_manager->flush($new_custom_fields);
                         $this->em->flush();
                     }
+
                     $post_custom_person_fields = $this->request->request->get('custom_person_fields', array());
-                    if (!empty($post_custom_person_fields)) {
-                        $person_field_manager->saveFormToObject($post_custom_person_fields, $ticket->person);
-                        $this->em->persist($ticket->person);
-                    }
+                    $person_field_manager->saveFormToObject($post_custom_person_fields, $ticket->person);
+                    $this->em->persist($ticket->person);
+
                     $post_custom_org_fields = $this->request->request->get('custom_org_fields', array());
-                    if (!empty($post_custom_org_fields) && $this->person->organization) {
+                    if ($ticket->person->organization) {
                         $org_field_manager->saveFormToObject($post_custom_org_fields, $ticket->person->organization);
                         $this->em->persist($ticket->person->organization);
                     }
@@ -2644,10 +2640,8 @@ class TicketController extends AbstractController
         $this->em->persist($ticket);
         $this->em->flush();
 
-        if (!empty($custom_fields)) {
-            $field_manager->saveFormToObject($custom_fields, $charge);
-            $changes = $charge->getStateChangeRecorder()->getChanges();
-
+        $field_manager->saveFormToObject($custom_fields, $charge);
+        if ($changes = $charge->getStateChangeRecorder()->getChanges()) {
             $class      = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
             $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
             $obj        = unserialize($serialized);
@@ -2775,10 +2769,8 @@ class TicketController extends AbstractController
             $details['new_time'] = $charge->charge_time;
         }
 
-        if (!empty($custom_fields)) {
-            $field_manager->saveFormToObject($custom_fields, $charge);
-            $changes = $charge->getStateChangeRecorder()->getChanges();
-
+        $field_manager->saveFormToObject($custom_fields, $charge);
+        if ($changes = $charge->getStateChangeRecorder()->getChanges()) {
             $class      = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
             $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
             $obj        = unserialize($serialized);
@@ -4120,10 +4112,8 @@ class TicketController extends AbstractController
                             );
                             $this->em->persist($ticket_log);
 
-                            if (!empty($post_billing_fields)) {
-                                $billing_field_manager->saveFormToObject($post_billing_fields, $charge);
-                                $changes = $charge->getStateChangeRecorder()->getChanges();
-
+                            $billing_field_manager->saveFormToObject($post_billing_fields, $charge);
+                            if ($changes = $charge->getStateChangeRecorder()->getChanges()) {
                                 $class      = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
                                 $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
                                 $obj        = unserialize($serialized);

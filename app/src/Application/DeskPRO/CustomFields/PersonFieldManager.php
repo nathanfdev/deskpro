@@ -109,8 +109,6 @@ class PersonFieldManager extends FieldManager
             $save_data['field_'.$field->getId()] = $val;
         }
 
-        if ($save_data) {
-            $this->saveFormToObject($save_data, $person, true);
-        }
+        $this->saveFormToObject($save_data, $person, true);
     }
 }
