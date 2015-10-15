@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
 import ItemList from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemList';
@@ -29,18 +30,28 @@ export class TableViewFieldsList extends Component {
       <Item widgetClass="dpw-navigation-dropdown-column-list-item" discMarked>
         Table view
         <ItemList>
-          <ViewField label="Status"/>
-          <ViewField label="Submitter"/>
-          <ViewField label="Language"/>
-          <ViewField label="Created Date"/>
+          <ViewField value="id" label="ID" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="status" label="Status" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="hidden_status" label="Hidden status" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="title" label="Title" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="content" label="Content" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="status_category" label="Status category" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="custom_category" label="Category" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="author_name" label="Submitter" status={constants.FIELD_REQUIRED}/>
           <li>
             <hr/>
           </li>
-          <ViewField label="ID" fixed/>
-          <ViewField label="Hidden Status" fixed/>
-          <ViewField label="Status Category" fixed/>
-          <ViewField label="Type" fixed/>
-          <ViewField label="Slug" fixed/>
+          <ViewField value="language_id" label="Lang" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="type" label="Type" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="slug" label="Slug" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="date_created" label="Created" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="date_published" label="Published" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="view_count" label="Views" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="total_rating" label="Rating" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="num_rating" label="Votes" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="num_comments" label="Comments" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="validating" label="Validating" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="popularity" label="Popularity" status={constants.FIELD_REQUIRED}/>
         </ItemList>
       </Item>
     );
@@ -53,18 +64,28 @@ export class CardViewFieldsList extends Component {
       <Item widgetClass="dpw-navigation-dropdown-column-list-item" isActive discMarked>
         Card view
         <ItemList>
-          <ViewField label="Status"/>
-          <ViewField label="Submitter"/>
-          <ViewField label="Language"/>
-          <ViewField label="Created Date"/>
+          <ViewField value="status" label="Status" status={constants.FIELD_REQUIRED} fixed locked/>
+          <ViewField value="title" label="Title" status={constants.FIELD_REQUIRED} fixed/>
+          <ViewField value="type" label="Type" status={constants.FIELD_REQUIRED} fixed/>
+          <ViewField value="content" label="Content" status={constants.FIELD_REQUIRED} fixed/>
+          <ViewField value="author_name" label="Submitter" status={constants.FIELD_REQUIRED} fixed/>
           <li>
             <hr/>
           </li>
-          <ViewField label="ID" fixed/>
-          <ViewField label="Hidden Status" fixed/>
-          <ViewField label="Status Category" fixed/>
-          <ViewField label="Type" fixed/>
-          <ViewField label="Slug" fixed/>
+          <ViewField value="id" label="ID" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="hidden_status" label="Hidden status" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="status_category" label="Status category" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="custom_category" label="Category" status={constants.FIELD_REQUIRED} />
+          <ViewField value="language_id" label="Lang" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="slug" label="Slug" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="date_created" label="Created" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="date_published" label="Published" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="view_count" label="Views" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="total_rating" label="Rating" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="num_rating" label="Votes" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="num_comments" label="Comments" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="validating" label="Validating" status={constants.FIELD_REQUIRED}/>
+          <ViewField value="popularity" label="Popularity" status={constants.FIELD_REQUIRED}/>
         </ItemList>
       </Item>
     );
