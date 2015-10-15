@@ -138,8 +138,6 @@ export function createRecordsRequest(stateKey, requestId, loaderFn, defaultMode 
             records: records,
             ids: requests.get(requestId),
             mode: mode
-          }).catch(error => {
-            reject(error);
           });
         } else {
           loaderFn().then(newRecords => {
@@ -149,8 +147,6 @@ export function createRecordsRequest(stateKey, requestId, loaderFn, defaultMode 
               records: merged,
               ids: newRecords.map(record => record.id),
               mode: mode
-            }).catch(error => {
-              reject(error);
             });
           }, (error, err) => {
             console.log('error', error, err);

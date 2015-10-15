@@ -281,24 +281,33 @@ export function asyncIndicator(props) {
         if (useProps.success) {
           newState = newState.setIn(useProps.success, false);
         }
-        if (useProps.error) {
-          newState = newState.setIn(useProps.error, false);
+        if (useProps.isError) {
+          newState = newState.setIn(useProps.isError, false);
+        }
+        if (useProps.errorCode) {
+          newState = newState.setIn(useProps.errorCode, null);
         }
         break;
       case 'success':
         if (useProps.success) {
           newState = newState.setIn(useProps.success, true);
         }
-        if (useProps.error) {
-          newState = newState.setIn(useProps.error, false);
+        if (useProps.isError) {
+          newState = newState.setIn(useProps.isError, false);
+        }
+        if (useProps.errorCode) {
+          newState = newState.setIn(useProps.errorCode, null);
         }
         break;
       case 'error':
-        if (useProps.error) {
-          newState = newState.setIn(useProps.error, true);
-        }
         if (useProps.success) {
           newState = newState.setIn(useProps.success, false);
+        }
+        if (useProps.isError) {
+          newState = newState.setIn(useProps.isError, true);
+        }
+        if (useProps.errorCode) {
+          newState = newState.setIn(useProps.errorCode, null); // todo
         }
         break;
       case 'done':
