@@ -38,7 +38,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			var $a = $(this)
 				, href = $a.attr('href')
 				;
-			if (!href || href.length < 5 || href.substr(0, 4) === 'http' || href.substr(0, 2) === '//') return;
+			if (!href || href.length < 5 || href.substr(0, 4) === 'http' || href.substr(0, 1) === '/') return;
 			$a.attr('href', 'http://' + href);
       $a.attr('target', '_blank');
 		});
