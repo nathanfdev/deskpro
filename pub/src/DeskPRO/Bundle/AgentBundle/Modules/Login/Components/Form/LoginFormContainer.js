@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import * as loginActions from '../../Actions/loginActions';
 import { DpLogo } from '../DpLogo';
+import { RightPanel } from './RightPanel';
 import { LoginFormHeader } from './LoginFormHeader';
 import { Email } from './Fields/Email';
 import { Password } from './Fields/Password';
@@ -113,22 +114,7 @@ export class LoginFormContainer extends React.Component {
             </div>
           </div>
 
-          <div className="right-panel">
-            <div className="dpw-login-side">
-              <a href="#" className="dpw-main-banner sample-banner"></a>
-
-              <div className="dpw-login-side-banners">
-                <div className="left">
-                  <a href="#" className="dpw-login-side-small-banner quick-start"></a>
-                </div>
-
-                <div className="right">
-                  <a href="#" className="dpw-login-side-small-banner mobile-apps"></a>
-                </div>
-
-              </div>
-            </div>
-          </div>
+          <RightPanel />
         </div>
 
         <LoginFormFooter />
