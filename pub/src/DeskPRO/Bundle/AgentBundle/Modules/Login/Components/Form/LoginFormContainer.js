@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { emailChange, passwordChange, login } from '../../Actions/loginActions';
+import { emailChange, passwordChange, login, toggleRememberMe } from '../../Actions/loginActions';
 import { DpLogo } from '../DpLogo';
 import { LoginFormHeader } from './LoginFormHeader';
 import { Email } from './Fields/Email';
@@ -29,6 +29,10 @@ export class LoginFormContainer extends React.Component {
 
   onChangePassword = (event) => {
     this.props.dispatch(passwordChange(event.target.value));
+  };
+
+  onChangeRememberMe = () => {
+    this.props.dispatch(toggleRememberMe());
   };
 
   submitForm = (event) => {
@@ -70,7 +74,7 @@ export class LoginFormContainer extends React.Component {
                 <form>
                   <Email value={loginState.get('email')} onChange={this.onChangeEmail} errorMessage="Looks like this isn't the correct password" />
                   <Password value={loginState.get('password')} onChange={this.onChangePassword} errorMessage="Wrong password" />
-                  <Options />
+                  <Options checked={loginState.get('rememberMe')} onChange={this.onChangeRememberMe} />
 
                   <input type="submit" value="Log in to DeskPRO" onClick={this.submitForm} />
                 </form>

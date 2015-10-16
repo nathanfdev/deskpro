@@ -13,5 +13,8 @@ export default createReducer(initialState, {
   },
   [actions.passwordChange]: (state, payload) => {
     return state.set('password', payload);
+  },
+  [actions.toggleRememberMe]: state => {
+    return state.set('rememberMe', !state.get('rememberMe'));
   }
 });
