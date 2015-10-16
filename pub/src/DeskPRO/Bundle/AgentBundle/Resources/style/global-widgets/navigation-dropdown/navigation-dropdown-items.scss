@@ -44,6 +44,9 @@ $base-background: #fff;
   .dpw-navigation-dropdown-item-disabled {
     background: #f7f7f7;
     color: #686868;
+    .dpw-navigation-dropdown-column-list-status {
+      color: #cecece;
+    }
   }
 
 }

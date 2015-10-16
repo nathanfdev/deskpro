@@ -69,16 +69,17 @@ export default class Positioned extends React.Component {
 
   /**
    * Update the position of the component
+   * @param  {Object} props The props to use
    * @return {void}
    */
-  updatePosition() {
-    if (this.props.positionCalc) {
-      const positionResult = this.props.positionCalc();
+  updatePosition(props) {
+    if (props.positionCalc) {
+      const positionResult = props.positionCalc();
       jQuery(this.node).css('position', 'absolute')
         .css('top', positionResult.top)
         .css('left', positionResult.left);
     } else {
-      const placement = this.props.position ||
+      const placement = props.position ||
         {
           my: 'left top',
           at: 'right bottom',
@@ -86,16 +87,16 @@ export default class Positioned extends React.Component {
           collision: 'none'
         };
 
-      placement.my = this.props.positionMy || placement.my;
-      placement.at = this.props.positionAt || placement.at;
+      placement.my = props.positionMy || placement.my;
+      placement.at = props.positionAt || placement.at;
 
-      if (this.props.positionTarget) {
-        placement.of = this.props.positionTarget;
-        if (!(this.props.positionTarget instanceof jQuery) && React.findDOMNode(this.props.positionTarget) !== null) {
-          placement.of = React.findDOMNode(this.props.positionTarget);
+      if (props.positionTarget) {
+        placement.of = props.positionTarget;
+        if (!(props.positionTarget instanceof jQuery) && React.findDOMNode(props.positionTarget) !== null) {
+          placement.of = React.findDOMNode(props.positionTarget);
         }
 
-        placement.collision = this.props.collision || placement.collision;
+        placement.collision = props.collision || placement.collision;
 
         // Error out if we don't have a position target
         if (placement.of === null) {
@@ -127,11 +128,11 @@ export default class Positioned extends React.Component {
    * @return {void}
    */
   renderContent(props) {
-    // Render the component with react, or don't if the prop changes
+    // Render the component with react, or don't if is not open
     if (props.isOpen) {
-      // Put the element inside a div that we can position
       React.render(<div className="positioned-element">{this.props.children}</div>, this.node);
-      this.updatePosition();
+      // Put the element inside a div that we can position
+      this.updatePosition(props);
       if (this.shouldFire() && this.props.onOpen) {
         this.props.onOpen();
       }
