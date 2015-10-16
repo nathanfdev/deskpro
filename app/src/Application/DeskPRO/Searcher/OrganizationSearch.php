@@ -33,6 +33,7 @@ namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Organization;
+use Orb\Util\Arrays;
 use Orb\Util\Util;
 
 class OrganizationSearch extends SearcherAbstract
@@ -224,6 +225,10 @@ class OrganizationSearch extends SearcherAbstract
             }
 
             foreach ($term_set[1] as $info) {
+                if (!$info || !is_array($info)) {
+                    continue;
+                }
+
                 $join_id   = Util::requestUniqueId();
                 $join_name = "j_$join_id";
 
@@ -236,6 +241,12 @@ class OrganizationSearch extends SearcherAbstract
                 if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
                     $term    = $m[1];
                     $term_id = $m[2];
+                }
+
+                // The term handlers below that only accept single values
+                // will use $choice as a single value for brevity
+                if (is_array($choice) and count($choice) == 1) {
+                    $choice = Arrays::getFirstItem($choice);
                 }
 
                 switch ($term) {
@@ -373,12 +384,6 @@ class OrganizationSearch extends SearcherAbstract
                             case 'input':
                             case 'value':
 
-                                $join_id = Util::requestUniqueId();
-                                $joins[] = array(
-                                    'custom_data_organizations',
-                                    "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.field_id = $term_id)",
-                                );
-
                                 if (is_array($choice) && !isset($choice['date1'])) {
                                     $choice = array_pop($choice);
                                 }
@@ -386,6 +391,11 @@ class OrganizationSearch extends SearcherAbstract
                                 if ($choice === null) {
                                     $choice = 'DP_NO_SELECTION';
                                 }
+
+                                $joins[] = array(
+                                    'custom_data_organizations',
+                                    "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.field_id = $term_id)",
+                                );
 
                                 $field = 'custom_data_organizations_'.$join_id.'.'.$search_type;
                                 switch ($op) {
@@ -401,7 +411,13 @@ class OrganizationSearch extends SearcherAbstract
                                         if ($op == self::OP_NOTCONTAINS) {
                                             $op = 'NOT LIKE';
                                         }
-                                        $wheres[] = "$field $op ".$db->quote('%'.$choice.'%');
+                                        $w = "$field $op ".$this->quoteDbValue('%'.$choice.'%');
+
+                                        if ($op == self::OP_NOTCONTAINS) {
+                                            $w = "($w OR $field IS NULL)";
+                                        }
+
+                                        $wheres[] = $w;
                                         break;
                                     case self::OP_LTE:
                                     case self::OP_GTE:
