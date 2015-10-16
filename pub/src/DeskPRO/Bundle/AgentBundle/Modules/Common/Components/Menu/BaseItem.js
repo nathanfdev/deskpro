@@ -21,7 +21,7 @@ const BaseItem = React.createClass({
     onMouseOver: React.PropTypes.func,
     onMouseOut: React.PropTypes.func,
     subMenuMode: React.PropTypes.string,
-    parentMenuLevel: React.PropTypes.number,
+    parentMenuLevel:  React.PropTypes.number,
     disabled: React.PropTypes.bool,
     condensed: React.PropTypes.bool,
     format: React.PropTypes.string,
@@ -53,11 +53,11 @@ const BaseItem = React.createClass({
 
   /**
    * Execute an action on click
-   * @param {object} e Click event
+   * @param {object} event Click event
    * @return {void}
    */
-  onClickAction: function(e) {
-    e.preventDefault();
+  onClickAction: function(event) {
+    event.preventDefault();
 
     if (this.props.onClick) {
       this.props.onClick();
@@ -186,7 +186,7 @@ const BaseItem = React.createClass({
       });
 
       return (
-        <div><a className={divClasses} href="#" onClick={this.onClickAction}
+        <div className={this.props.widgetClass}><a className={divClasses} href="#" onClick={this.onClickAction}
                 onMouseOver={onMouseOverAction} onMouseOut={onMouseOutAction}>
           {this.formatOutput(label, hasMenu, hasItemList)}
         </a></div>

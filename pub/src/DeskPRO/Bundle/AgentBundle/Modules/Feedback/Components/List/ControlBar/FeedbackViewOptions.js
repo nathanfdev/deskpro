@@ -41,24 +41,24 @@ export class FeedbackViewOptions extends Component {
           <Menu>
             <ItemGroup>
               <Item label="Test"/>
-              <Item checked label="Test 2"/>
+              <Item checked label="Test 2 (checked)"/>
             </ItemGroup>
-            <Item icon="book" itemType="danger" checked label="Test 3">
+            <Item icon="book" itemType="danger" checked label="Test 3 (danger, checked)">
               <Menu>
                 <Item label="Sub-menu"/>
                 <Item label="Submarine"/>
               </Menu>
             </Item>
-            <Item icon="bolt" itemType="locked" label="Test 4">
+            <Item icon="bolt" itemType="locked" label="Test 4 (locked)">
               <Menu>
                 <Item label="Sub-menu 2"/>
                 <Item label="Subterranean"/>
               </Menu>
             </Item>
-            <Item itemType="danger" keepOpen label="Test 5"/>
-            <Item condensed label="Test 6"/>
-            <Item condensed icon="book" itemType="danger" keepOpen label="Test 7"/>
-            <Item disabled label="Test 8"/>
+            <Item itemType="danger" keepOpen label="Test 5 (danger)"/>
+            <Item condensed label="Test 6 (condensed)"/>
+            <Item condensed icon="book" itemType="danger" keepOpen label="Test 7 (danger, condensed)"/>
+            <Item disabled label="Test 8 (disabled)"/>
             <MenuFooter>
               <MenuFooterOptions options={[{id: 'asc', onClick: () => {}, label: 'Asc'},
                                                  {id: 'desc', onClick: () => {}, label: 'Desc'}
@@ -81,7 +81,7 @@ export class CardViewFieldsList extends Component {
   render() {
     return (
       <div>
-        <ViewField value="status" label="Status" status={constants.FIELD_REQUIRED} fixed locked/>
+        <ViewField value="status" label="Status" status={constants.FIELD_REQUIRED} fixed/>
         <ViewField value="title" label="Title" status={constants.FIELD_REQUIRED} fixed/>
         <ViewField value="type" label="Type" status={constants.FIELD_REQUIRED} fixed/>
         <ViewField value="content" label="Content" status={constants.FIELD_REQUIRED} fixed/>
