@@ -40,7 +40,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * THIS IS A TEST ENTITY and is only here temporarily to show how the API works (we also run unit tests
  * against it).  This data is NOT used in the actual deskpro app.
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\SandboxWidgetRepository")
  * @ORM\Table("api_sandbox_widgets")
  */
 class SandboxWidget extends NotifyPropertyChangeEntity
@@ -58,6 +58,13 @@ class SandboxWidget extends NotifyPropertyChangeEntity
      * @Assert\Length(min=10)
      */
     protected $name;
+
+    /**
+     * @ORM\Column(type="string", length=100)
+     * @Assert\NotNull()
+     * @Assert\Length(min=1)
+     */
+    protected $type = 'default';
 
     /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\SandboxWidget", inversedBy="children")
@@ -151,6 +158,22 @@ class SandboxWidget extends NotifyPropertyChangeEntity
     public function setName($name)
     {
         $this->setModelField('name', $name);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param mixed $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
     }
 
     /**

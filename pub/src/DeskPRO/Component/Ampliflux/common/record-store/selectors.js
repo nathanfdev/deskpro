@@ -1,4 +1,6 @@
 import { createSelector } from 'reselect';
+import isArray from 'lodash/lang/isArray';
+import objGet from 'lodash/object/get';
 import Immutable from 'immutable';
 
 /**
