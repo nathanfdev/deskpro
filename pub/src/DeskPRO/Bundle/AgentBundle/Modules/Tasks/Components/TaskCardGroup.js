@@ -68,7 +68,7 @@ export default class TaskCardGroup extends React.Component {
         <div className="divider"><hr/><h1><span>{this.props.divider}</span></h1></div> : '' }
       { tasks ? tasks.map((object) => {
         return (<span key={object.get('id')}>
-                  <TaskCard task={object} projects={this.props.projects} linked_items={this.props.linked_items}
+                  <TaskCard task={object} projects={this.props.projects}
                             departments={this.props.departments} teams={this.props.teams} agents={this.props.agents}
                             toggleDone={this.props.toggleDone.bind(this)} source={this.props.source}
                             dispatch={_this.props.dispatch.bind(_this)} editTask={_this.props.editTask.bind(_this)}

@@ -12,14 +12,11 @@ import * as constants from '../../../Constants/Constants';
 import Immutable from 'immutable';
 import * as TaskActions from '../Actions/TaskListActions';
 
-import { loadLinkedItems } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Actions/linkedItemActions';
 import { loadTickets } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/RecordStores/Actions/ticketActions';
 
-import { createLinkedItemRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/linkedItemSelectors';
 import { createTicketRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/RecordStores/Selectors/ticketSelectors';
 
 const requestId = 'taskListFrame';
-const linkedItemsSelector = createLinkedItemRequestSelectors(requestId);
 const ticketsSelector = createTicketRequestSelectors(requestId);
 
 @connect(state => ({
@@ -38,8 +35,7 @@ const ticketsSelector = createTicketRequestSelectors(requestId);
   // agentTeams: agentTeamsSelector(state),
   // departments: allDepartmentsSelector(state),
   tickets: ticketsSelector.recordsSel(state),
-  linkedItems: linkedItemsSelector.recordsSel(state),
-  linkedItemsStatus: linkedItemsSelector.statusSel(state)
+  ticketsStatus: ticketsSelector.statusSel(state)
 }))
 
 export default class TaskListContents extends React.Component {
@@ -55,8 +51,6 @@ export default class TaskListContents extends React.Component {
     dpWindow: React.PropTypes.object,
     groupedTasks: React.PropTypes.array,
     labelList: React.PropTypes.object,
-    linkedItems: React.PropTypes.object,
-    linkedItemsStatus: React.PropTypes.object,
     order: React.PropTypes.string,
     projectList: React.PropTypes.object,
     projects: React.PropTypes.object,
@@ -66,6 +60,7 @@ export default class TaskListContents extends React.Component {
     tasks: React.PropTypes.object,
     teamList: React.PropTypes.object,
     tickets: React.PropTypes.object,
+    ticketsStatus: React.PropTypes.object,
 
     toggleDone: React.PropTypes.func,
     editTask: React.PropTypes.func,
@@ -100,53 +95,33 @@ export default class TaskListContents extends React.Component {
 
   componentDidMount() {
     Promise.all([
-      new Promise(() => {
-        const linkedItems = this.loadTaskLinkedItems();
-
-        if (linkedItems instanceof Promise) {
-          linkedItems.then((result) => {
-            console.log(result);
-            const ticketIds = [];
-            result.records.map((linkedItem) => {
-              console.log('linkedItem');
-              console.log(linkedItem);
-              // Check we have a ticket, it's not empty, and we don't already have it
-              if (linkedItem.has('ticket') && linkedItem.get('ticket') && ticketIds.indexOf(linkedItem.get('ticket'))) {
-                ticketIds.push(linkedItem.get('ticket'));
-              }
-            });
-
-            if (ticketIds.length > 0) {
-              return this.props.dispatch(loadTickets(requestId, ticketIds));
-            }
-          });
-        }
-      })
+      this.loadTaskLinkedTickets()
     ]).then(() => {
+      console.log('Done');
       this.setState({
         loadedAll: true
       });
     });
   }
 
-  loadTaskLinkedItems() {
-    if (this.props.tasks && this.props.tasks.size > 0 && !this.props.linkedItemsStatus.get('isDone')) {
-      const linkedItemIds = Immutable.List();
+  loadTaskLinkedTickets() {
+    if (this.props.tasks && this.props.tasks.size > 0 && !this.props.ticketsStatus.get('isDone')) {
+      const linkedTicketIds = Immutable.List();
       const linkedToMerge = [];
 
       this.props.tasks.map(task => {
-        if (task.has('linked_items') && task.get('linked_items').size > 0) {
-          const newLinkedItemIds = task.get('linked_items').toList();
-          linkedToMerge.push(newLinkedItemIds);
+        if (task.has('linked_tickets') && task.get('linked_tickets').size > 0) {
+          const newLinkedTicketIds = task.get('linked_tickets').toList();
+          linkedToMerge.push(newLinkedTicketIds);
         }
       });
 
-      const linkedToLoad = linkedItemIds.merge(...linkedToMerge);
+      const linkedToLoad = linkedTicketIds.merge(...linkedToMerge);
 
       const loadArray = linkedToLoad.toArray();
 
       if (linkedToLoad.size > 0) {
-        return this.props.dispatch(loadLinkedItems(requestId, loadArray));
+        return this.props.dispatch(loadTickets(requestId, loadArray));
       }
     }
   }
@@ -158,16 +133,13 @@ export default class TaskListContents extends React.Component {
   }
 
   render() {
-    // Missing lists and tickets
-    const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, {}, this.props.linkedItems, {});
+    // Missing lists
+    const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, {}, this.props.linkedItems, this.props.tickets);
     const columnField = this.props.order;
     const rawGroupings = grouping.getRawGroupings(columnField, this.state.direction);
     const source = this.props.source || '';
 
     // debugger;
-
-    console.log('Grouped tasks');
-    console.log(this.props.groupedTasks);
 
     return (<div>
       <Formsy.Form onSubmit={this.createTask.bind(this, source)}>
@@ -185,7 +157,7 @@ export default class TaskListContents extends React.Component {
                                teams={this.teams} projects={this.projects}
                                linked_items={this.props.linkedItems}
                                departments={this.departments} agents={this.agents}
-                               tickets={{}}
+                               tickets={this.props.tickets}
                                toggleDone={this.props.toggleDone}
                                editTask={this.props.editTask}
                                updateMassActions={this.props.updateMassActions}

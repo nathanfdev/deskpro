@@ -485,13 +485,14 @@ export default class TaskGrouping {
 
   /**
    * Get the divider to use when grouping by linked ticket
+   *
    * @param object
    * @return string
    */
   getTicketDivider(object) {
     let ticketDivider = false;
-    if (object.get('linked_items') && object.get('linked_items').length > 0) {
-      object.get('linked_items').forEach((item) => {
+    if (object.get('linked_tickets') && object.get('linked_tickets').length > 0) {
+      object.get('linked_tickets').forEach((item) => {
         if (this.links[item] && this.links[item].ticket && ticketDivider === false) {
           ticketDivider = this.tickets[this.links[item].ticket].subject;
         }

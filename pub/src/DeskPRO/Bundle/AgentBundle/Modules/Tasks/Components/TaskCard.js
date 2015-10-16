@@ -191,7 +191,7 @@ const TaskCard = React.createClass({
   render: function() {
     const { task,
             projects,
-            linked_items,
+            tickets,
             departments,
             teams,
             agents,
@@ -207,11 +207,11 @@ const TaskCard = React.createClass({
     let ticketLink = undefined;
     let ticketTitle = 'Linked ticket';
 
-    if (task.has('linked_items') && task.get('linked_items').size > 0) {
-      task.get('linked_items').forEach((item) => {
-        if (typeof linked_items[item].ticket !== 'undefined' && linked_items[item].ticket !== null) {
-          ticketLink = '#' + linked_items[item].ticket;
-          ticketTitle = this.props.tickets[linked_items[item].ticket].subject;
+    if (task.has('linked_tickets') && task.get('linked_tickets').size > 0) {
+      task.get('linked_tickets').forEach((item) => {
+        if (typeof tickets[item] !== 'undefined' && tickets[item] !== null) {
+          ticketLink = '#' + tickets[item].get('id');
+          ticketTitle = tickets.get('subject');
         }
       });
     }
