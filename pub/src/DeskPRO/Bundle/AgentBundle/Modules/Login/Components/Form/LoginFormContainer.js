@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { emailChange, passwordChange, login, toggleRememberMe } from '../../Actions/loginActions';
+import * as loginActions from '../../Actions/loginActions';
 import { DpLogo } from '../DpLogo';
 import { LoginFormHeader } from './LoginFormHeader';
 import { Email } from './Fields/Email';
@@ -24,27 +24,31 @@ export class LoginFormContainer extends React.Component {
   };
 
   onChangeEmail = (event) => {
-    this.props.dispatch(emailChange(event.target.value));
+    this.props.dispatch(loginActions.emailChange(event.target.value));
   };
 
   onChangePassword = (event) => {
-    this.props.dispatch(passwordChange(event.target.value));
+    this.props.dispatch(loginActions.passwordChange(event.target.value));
   };
 
   onChangeRememberMe = () => {
-    this.props.dispatch(toggleRememberMe());
+    this.props.dispatch(loginActions.toggleRememberMe());
   };
 
   submitForm = (event) => {
     event.preventDefault();
-    this.props.dispatch(login());
+    const { dispatch } = this.props;
+
+    dispatch(loginActions.emailSetError('Looks like this isn\'t the correct password'));
+    dispatch(loginActions.passwordSetError('Wrong password'));
+    dispatch(loginActions.login());
   };
 
   render() {
     const { loginState } = this.props;
-    const hasError = true;
+
     const loginClassNames = ['dpw-login'];
-    if (hasError) {
+    if (loginState.get('emailError') || loginState.get('passwordError')) {
       loginClassNames.push('error');
     }
 
@@ -72,9 +76,16 @@ export class LoginFormContainer extends React.Component {
 
               <div className="dpw-login-form">
                 <form>
-                  <Email value={loginState.get('email')} onChange={this.onChangeEmail} errorMessage="Looks like this isn't the correct password" />
-                  <Password value={loginState.get('password')} onChange={this.onChangePassword} errorMessage="Wrong password" />
-                  <Options checked={loginState.get('rememberMe')} onChange={this.onChangeRememberMe} />
+                  <Email value={loginState.get('email')}
+                         errorMessage={loginState.get('emailError')}
+                         onChange={this.onChangeEmail} />
+
+                  <Password value={loginState.get('password')}
+                            errorMessage={loginState.get('passwordError')}
+                            onChange={this.onChangePassword} />
+
+                  <Options checked={loginState.get('rememberMe')}
+                           onChange={this.onChangeRememberMe} />
 
                   <input type="submit" value="Log in to DeskPRO" onClick={this.submitForm} />
                 </form>
