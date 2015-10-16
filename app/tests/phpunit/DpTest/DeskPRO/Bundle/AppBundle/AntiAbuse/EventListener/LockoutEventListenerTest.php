@@ -29,30 +29,27 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\AntiAbuse;
+namespace DpTest\DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener;
 
 use Application\DeskPRO\Settings\LoginRateLimitSettings;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DpTest\PortalTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * The anti-abuse system will throw an exception to give the client a different response sometimes, so we test
- * that functionality here.
- *
- * For specific tests around the various lockout/rate-limit logic please see the EventListener tests.
- */
-class AntiAbuseTest extends PortalTestCase
+class LockoutEventListenerTest extends PortalTestCase
 {
     protected function getLoginLockoutMaxAttempts()
     {
-        return $this->get('settings_resolver')->getGlobalSettings()->get('user.'.LoginRateLimitSettings::KEY.'.attempts');
+        return $this->get('settings_resolver')->getGlobalSettings()->get(
+            'user.'.LoginRateLimitSettings::KEY.'.attempts'
+        );
     }
 
-    public function testLoginLockoutDoesNotTriggerLockoutResponseWhenUnderLimit()
+    public function testLoginLockoutDoesNotTriggerWhenUnderLimit()
     {
         $this->installDataSet('fresh', true);
         $person = $this->get('test_factory.person')
-            ->createNewInvalidUser('foo@bar.com', 'Foo Bar', 'password123');
+                       ->createNewInvalidUser('foo@bar.com', 'Foo Bar', 'password123');
 
         $ip = '100.200.300.400';
 
@@ -70,17 +67,21 @@ class AntiAbuseTest extends PortalTestCase
             );
         }
 
-        // this should be the normal /login?retry=auth url
-        $response = $client->getResponse();
-        $this->assertRegExp('/\/login\?retry=auth$/', $response->headers->get('location'));
-        $this->assertEquals(302, $response->getStatusCode());
+        // should not be recommending anything
+        $event = new LoginAbuseCheck($person, $ip);
+        $event->markAsCheckOnly(); // checking state only
+        $this->get('anti_abuse')->check($event);
+        $this->assertFalse($event->isCaptchaRecommended());
+        $this->assertFalse($event->isLockoutRecommended());
+        $this->assertFalse($event->isResponseRecommended());
+        $this->assertNull($event->getRecommendedResponse());
     }
 
     public function testLoginLockoutAbuseException()
     {
         $this->installDataSet('fresh', true);
         $person = $this->get('test_factory.person')
-            ->createNewInvalidUser('foo@bar.com', 'Foo Bar', 'password123');
+                       ->createNewInvalidUser('foo@bar.com', 'Foo Bar', 'password123');
 
         $ip = '100.200.300.400';
 
@@ -98,9 +99,14 @@ class AntiAbuseTest extends PortalTestCase
             );
         }
 
-        // this is the last $response, and it should be to the /login?lockout=auth url
-        $response = $client->getResponse();
-        $this->assertRegExp('/\/login\?lockout=auth$/', $response->headers->get('location'));
-        $this->assertEquals(302, $response->getStatusCode());
+        // should now be recommending lockout
+        $event = new LoginAbuseCheck($person, $ip);
+        $event->markAsCheckOnly(); // checking state only
+
+        $this->get('anti_abuse')->check($event);
+        $this->assertFalse($event->isCaptchaRecommended());
+        $this->assertTrue($event->isLockoutRecommended());
+        $this->assertTrue($event->isResponseRecommended());
+        $this->assertInstanceOf(Response::class, $event->getRecommendedResponse());
     }
 }

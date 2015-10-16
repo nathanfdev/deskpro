@@ -1,5 +1,6 @@
 services:
 
+  # The system
   anti_abuse:
     class: DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse
     arguments: [@event_dispatcher, @doctrine.orm.default_entity_manager]
@@ -8,5 +9,10 @@ services:
   anti_abuse.listener.lockout:
     class: DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener\LockoutEventListener
     arguments: [@doctrine.orm.default_entity_manager, @settings_resolver, @router]
+    tags:
+      - { name: kernel.event_subscriber }
+  anti_abuse.listener.rate_limit:
+    class: DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener\RateLimitEventListener
+    arguments: [@doctrine.orm.default_entity_manager, @settings_resolver]
     tags:
       - { name: kernel.event_subscriber }
