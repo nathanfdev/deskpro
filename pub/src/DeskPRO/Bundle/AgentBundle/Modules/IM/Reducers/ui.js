@@ -1,0 +1,15 @@
+import { createReducer } from 'Ampliflux';
+import * as actions from '../Actions/uiActions';
+
+const initialState = {
+  overlayShown: false
+};
+
+export default createReducer(initialState, {
+  [actions.toggleOverlay]: (state) => {
+    return state.set('overlayShown', !state.get('overlayShown'));
+  },
+  [actions.toggleChat]: (state) => {
+    return state.set({'overlayShown': false, 'chating': !state.get('chating')});
+  }
+});

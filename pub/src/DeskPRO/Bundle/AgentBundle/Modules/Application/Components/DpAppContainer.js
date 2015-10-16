@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { Router, Route, Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import { ReactRouterWrapper } from './ReactRouterWrapper';
 import { DpAppLoading } from './DpAppLoading';
@@ -14,8 +15,7 @@ import { ExampleApp } from '../../Example/Components/ExampleApp';
 import { loadMe } from '../RecordStores/Actions/meActions';
 import { meStateSelector } from '../RecordStores/Selectors/meSelectors';
 import { hashChanged } from '../../Application/Actions/routingActions';
-import { Router, Route, Redirect } from 'react-router';
-import Jquery from 'jquery';
+import { IMContainer } from '../../IM/Components/IMContainer';
 
 @connect(state => ({
   userStatus: meStateSelector.statusSel(state)
@@ -65,22 +65,25 @@ export class DpAppContainer extends React.Component {
     const basePath = this.workOutBasePath();
     const defaultPath = `${basePath}/tasks`;
     return (
-      <Router history={history}>
-        <Redirect from={basePath} to={defaultPath}/>
-        <Route path={basePath} component={ReactRouterWrapper}>
-          <Route name="crm" path="crm" component={CrmApp}/>
-          <Route name="chat" path="chat" component={ChatApp}/>
-          <Route name="tickets" path="tickets" component={TicketsApp}/>
-          <Route name="tasks" path="tasks" component={TasksApp}/>
-          <Route name="publish" path="publish" component={PublishApp}/>
-          <Route name="feedback" path="feedback" component={FeedbackApp}/>
-          <Route name="example" path="example" component={ExampleApp}/>
-        </Route>
-        <Route path={basePath}>
-          <Route name="login" path="login" component={LoginApp}/>
-          <Route name="welcome" path="welcome" component={WelcomeApp}/>
-        </Route>
-      </Router>
+      <div>
+        <Router history={history}>
+          <Redirect from={basePath} to={defaultPath}/>
+          <Route path={basePath} component={ReactRouterWrapper}>
+            <Route name="crm" path="crm" component={CrmApp}/>
+            <Route name="chat" path="chat" component={ChatApp}/>
+            <Route name="tickets" path="tickets" component={TicketsApp}/>
+            <Route name="tasks" path="tasks" component={TasksApp}/>
+            <Route name="publish" path="publish" component={PublishApp}/>
+            <Route name="feedback" path="feedback" component={FeedbackApp}/>
+            <Route name="example" path="example" component={ExampleApp}/>
+          </Route>
+          <Route path={basePath}>
+            <Route name="login" path="login" component={LoginApp}/>
+            <Route name="welcome" path="welcome" component={WelcomeApp}/>
+          </Route>
+        </Router>
+        <IMContainer/>
+      </div>
     );
   }
 }

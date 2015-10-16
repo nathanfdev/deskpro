@@ -1,6 +1,5 @@
 import { createReducer } from 'Ampliflux';
 import * as actions from '../Actions/chatsActions';
-import Immutable from 'immutable';
 
 const initialState = {
   current: {}

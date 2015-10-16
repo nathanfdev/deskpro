@@ -1,8 +1,9 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import jQuery from 'jquery';
 import position from 'jquery-ui/position';
 
-export default class Positioned extends React.Component {
+export default class Abstract extends React.Component {
 
   /**
    * The valid PropTypes for this component
@@ -34,19 +35,6 @@ export default class Positioned extends React.Component {
   }
 
   /**
-   * Run when the component has been mounted
-   * @returns {void}
-   */
-  componentDidMount() {
-    this.node = React.findDOMNode(this);
-    jQuery(this.node).detach();
-    jQuery('body').prepend(this.node);
-
-    // Manipulate the DOM here
-    this.renderContent(this.props);
-  }
-
-  /**
    * Re-render the dialog content when we get a new set of props
    * @param  {Object} newProps The new props
    * @return {void}
@@ -63,7 +51,7 @@ export default class Positioned extends React.Component {
    */
   componentWillUnmount() {
     // Clean up the DOM when the component is umounted
-    React.unmountComponentAtNode(this.node);
+    ReactDOM.unmountComponentAtNode(this.node);
     jQuery(this.node).remove();
   }
 
@@ -91,8 +79,8 @@ export default class Positioned extends React.Component {
 
       if (this.props.positionTarget) {
         placement.of = this.props.positionTarget;
-        if (!(this.props.positionTarget instanceof jQuery) && React.findDOMNode(this.props.positionTarget) !== null) {
-          placement.of = React.findDOMNode(this.props.positionTarget);
+        if (!(this.props.positionTarget instanceof jQuery) && ReactDOM.findDOMNode(this.props.positionTarget) !== null) {
+          placement.of = ReactDOM.findDOMNode(this.props.positionTarget);
         }
 
         placement.collision = this.props.collision || placement.collision;
