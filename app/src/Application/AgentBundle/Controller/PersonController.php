@@ -773,7 +773,9 @@ class PersonController extends AbstractController
         }
         $manager->flush($form);
 
-        $field_manager->saveFormToObject($custom_fields, $person);
+        if (!empty($custom_fields)) {
+            $field_manager->saveFormToObject($custom_fields, $person);
+        }
 
         if ($timezone) {
             $person->timezone = $timezone;

@@ -144,12 +144,12 @@ class NewTicket
     /**
      * @var array
      */
-    public $custom_person_fields = array();
+    public $custom_person_fields;
 
     /**
      * @var array
      */
-    public $custom_org_fields = array();
+    public $custom_org_fields;
 
     /**
      * @var bool
@@ -497,25 +497,32 @@ class NewTicket
 
         $manager                   = App::$container->getPersonFieldManager();
         $post_custom_person_fields = array();
-        foreach ($this->custom_person_fields as $k => $v) {
-            $id = Strings::extractRegexMatch('#(\d+)$#', $k);
-            if (!$this->layout || $this->layout->hasActiveField('user_field_'.$id, $ticket)) {
-                $post_custom_person_fields[$k] = $v;
+        if ($this->custom_person_fields) {
+            foreach ($this->custom_person_fields as $k => $v) {
+                $id = Strings::extractRegexMatch('#(\d+)$#', $k);
+                if (!$this->layout || $this->layout->hasActiveField('user_field_'.$id, $ticket)) {
+                    $post_custom_person_fields[$k] = $v;
+                }
             }
         }
-
-        $manager->saveFormToObject($post_custom_person_fields, $ticket->person);
+        if (!empty($post_custom_person_fields)) {
+            $manager->saveFormToObject($post_custom_person_fields, $ticket->person);
+        }
 
         if ($ticket->person->organization) {
             $manager                = App::$container->getOrgFieldManager();
             $post_custom_org_fields = array();
-            foreach ($this->custom_org_fields as $k => $v) {
-                $id = Strings::extractRegexMatch('#(\d+)$#', $k);
-                if (!$this->layout || $this->layout->hasActiveField('org_field_'.$id, $ticket)) {
-                    $post_custom_org_fields[$k] = $v;
+            if ($this->custom_org_fields) {
+                foreach ($this->custom_org_fields as $k => $v) {
+                    $id = Strings::extractRegexMatch('#(\d+)$#', $k);
+                    if (!$this->layout || $this->layout->hasActiveField('org_field_'.$id, $ticket)) {
+                        $post_custom_org_fields[$k] = $v;
+                    }
                 }
             }
-            $manager->saveFormToObject($post_custom_org_fields, $ticket->person->organization);
+            if (!empty($post_custom_org_fields)) {
+                $manager->saveFormToObject($post_custom_org_fields, $ticket->person->organization);
+            }
         }
 
         foreach ($add_cc_people as $add_cc_person) {
