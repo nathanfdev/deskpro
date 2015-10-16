@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { FieldWrapper } from './FieldWrapper';
-import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned';
+import Simple from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Simple';
 
 export class Password extends React.Component {
 
@@ -15,7 +15,7 @@ export class Password extends React.Component {
 
     return (
       <FieldWrapper iconClass="fa-lock" label="Password" errorMessage={errorMessage}>
-        <Positioned
+        <Simple
           isOpen={!!errorMessage}
           positionTarget={this}
           positionAt="left top"
@@ -24,7 +24,7 @@ export class Password extends React.Component {
           <div className="dpw-login-form-warning-container warning-container">
             <i className="fa fa-arrow-circle-o-up"></i> <span>Looks like caps lock is on?</span>
           </div>
-        </Positioned>
+        </Simple>
 
         <input type="password" placeholder="........." value={value} onChange={onChange} />
       </FieldWrapper>

@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned';
+import Simple from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Simple';
 
 export class FieldWrapper extends React.Component {
 
@@ -21,7 +21,7 @@ export class FieldWrapper extends React.Component {
 
     return (
       <div className={fieldClasses.join(' ')}>
-        <Positioned
+        <Simple
           isOpen={!!errorMessage}
           positionTarget={this}
           positionAt="right top"
@@ -30,7 +30,7 @@ export class FieldWrapper extends React.Component {
           <div className="dpw-login-form-warning-container error-container">
             <i className="fa fa-exclamation-triangle"></i> <span>{errorMessage}</span>
           </div>
-        </Positioned>
+        </Simple>
 
         <label>{label}</label>
         <span className="dpw-login-form-input-icon"><i className={iconClasses.join(' ')}></i></span>
