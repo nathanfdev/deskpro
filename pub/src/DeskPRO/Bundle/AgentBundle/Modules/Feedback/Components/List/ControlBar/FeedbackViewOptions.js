@@ -81,7 +81,7 @@ export class CardViewFieldsList extends Component {
   render() {
     return (
       <div>
-        <ViewField value="status" label="Status" status={constants.FIELD_REQUIRED} fixed locked/>
+        <ViewField value="status" label="Status" status={constants.FIELD_REQUIRED} fixed/>
         <ViewField value="title" label="Title" status={constants.FIELD_REQUIRED} fixed/>
         <ViewField value="type" label="Type" status={constants.FIELD_REQUIRED} fixed/>
         <ViewField value="content" label="Content" status={constants.FIELD_REQUIRED} fixed/>
