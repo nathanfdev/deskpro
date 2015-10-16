@@ -29,10 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\AgentChat\Exceptions;
 
-use Exception;
+use InvalidArgumentException;
 
-class WrongChatableTypeException extends Exception
+class WrongChatableTypeException extends InvalidArgumentException
 {
 }

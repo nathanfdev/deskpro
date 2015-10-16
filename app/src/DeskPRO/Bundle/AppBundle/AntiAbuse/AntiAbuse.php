@@ -41,8 +41,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class AntiAbuse
 {
-    const SETTING_IS_DISABLED  = 'core.rate_limit_disabled';
-    const SETTING_IP_WHITELIST = 'core.rate_limit_ips';
+    const SETTING_RATE_LIMIT_IS_DISABLED = 'core.rate_limit_disabled';
+    const SETTING_IP_WHITELIST           = 'core.rate_limit_ips';
 
     const ACTION_LOGIN           = 'login';
     const ACTION_REGISTER        = 'registration';
@@ -57,7 +57,7 @@ class AntiAbuse
     const EVENT_NAME = 'anti_abuse.event';
 
     /**
-     * @var EventDispatcher
+     * @var EventDispatcherInterface
      */
     private $dispatcher;
 
@@ -85,10 +85,11 @@ class AntiAbuse
 
         $this->dispatcher->dispatch(self::EVENT_NAME, $event);
 
-        if ($event->isResponseRequired()) {
+        if ($event->isResponseRequired() && !$event->isCheckOnly()) {
             // a listener has signaled a response is required to be returned
             // to the user immediately. throw an exception so it is caught
             // by kernel.exception listeners and rendered.
+            // if $event is marked as "checkOnly" then don't do this.
             throw $event->generateException();
         }
 

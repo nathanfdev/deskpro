@@ -53,9 +53,12 @@ const BaseItem = React.createClass({
 
   /**
    * Execute an action on click
+   * @param {object} e Click event
    * @return {void}
    */
-  onClickAction: function() {
+  onClickAction: function(e) {
+    e.preventDefault();
+
     if (this.props.onClick) {
       this.props.onClick();
     }

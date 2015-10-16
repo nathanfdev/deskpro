@@ -2,8 +2,6 @@ import React, { PropTypes } from 'react';
 import { AgentsList } from './Agents/AgentsList';
 import { TeamsList } from './Teams/TeamsList';
 import { DepartmentsList } from './Departments/DepartmentsList';
-import jQuery from 'jquery';
-import position from 'jquery-ui/position';
 
 export class Overlay extends React.Component {
 
@@ -32,7 +30,17 @@ export class Overlay extends React.Component {
             <a href="#" className="broadcast-to-all"><i className="fa fa-bullhorn"></i> Broadcast to Everyone</a>
 
             <div className="im-list-wrapper">
-
+              <h2>Teams</h2>
+              <TeamsList
+                agentTeams={this.props.teams}
+                dispatch={this.props.dispatch}
+                handleClickParticipant={this.props.handleClickParticipant}
+                />
+              <h2>Departments</h2>
+              <DepartmentsList
+                departments={this.props.departments}
+                dispatch={this.props.dispatch}
+                handleClickParticipant={this.props.handleClickParticipant}/>
             </div>
           </div>
         </div>
