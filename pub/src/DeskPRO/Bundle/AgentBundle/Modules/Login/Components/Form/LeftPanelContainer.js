@@ -6,10 +6,6 @@ import { Email } from './Fields/Email';
 import { Password } from './Fields/Password';
 import { Options } from './Fields/Options';
 import { WarningMajorWrapper } from './WarningMajor/WarningMajorWrapper';
-import { NotAgentWarning } from './WarningMajor/NotAgentWarning';
-import { TooManyAttempts } from './WarningMajor/TooManyAttempts';
-import { WrongHelpdesk } from './WarningMajor/WrongHelpdesk';
-import { TimeLocked } from './WarningMajor/TimeLocked';
 
 @connect(state => ({
   loginState: state.Login.login
@@ -54,9 +50,7 @@ export class LeftPanelContainer extends React.Component {
       <div className="left-panel">
         <div className={loginClassNames.join(' ')}>
 
-          <WarningMajorWrapper>
-            <TimeLocked />
-          </WarningMajorWrapper>
+          <WarningMajorWrapper />
 
           <div className="dpw-login-language-controls">
                 <span className="dpw-login-language-controls-button">

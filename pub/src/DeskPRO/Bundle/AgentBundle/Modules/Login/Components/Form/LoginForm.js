@@ -12,7 +12,6 @@ export class LoginForm extends React.Component {
         <DpLogo />
 
         <div className="dpw-login-panels">
-
           <LeftPanelContainer />
           <RightPanel />
         </div>
