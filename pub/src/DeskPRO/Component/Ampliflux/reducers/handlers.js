@@ -307,7 +307,7 @@ export function asyncIndicator(props) {
           newState = newState.setIn(useProps.isError, true);
         }
         if (useProps.errorCode) {
-          newState = newState.setIn(useProps.errorCode, null); // todo
+          newState = newState.setIn(useProps.errorCode, payload.response.xhr.status);
         }
         break;
       case 'done':

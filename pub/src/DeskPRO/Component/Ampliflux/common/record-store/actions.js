@@ -148,9 +148,10 @@ export function createRecordsRequest(stateKey, requestId, loaderFn, defaultMode 
               ids: newRecords.map(record => record.id),
               mode: mode
             });
-          }).catch(() => reject({
+          }).catch(response => reject({
             requestId: requestId,
-            mode: mode
+            mode: mode,
+            response: response
           }));
         }
       })

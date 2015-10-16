@@ -11,7 +11,7 @@ export const loadMe = createAction(
     () => new Promise((resolve, reject) =>
       DpApi.sendGet('DP_API/me')
         .success(response => resolve([response.data.person]))
-        .error(response => reject(response))
+        .error((data, response) => reject(response))
     )
   )
 );
