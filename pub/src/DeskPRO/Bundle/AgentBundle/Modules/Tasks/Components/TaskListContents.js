@@ -98,9 +98,9 @@ export default class TaskListContents extends React.Component {
       this.loadTaskLinkedTickets()
     ]).then(() => {
       console.log('Done');
-      this.setState({
-        loadedAll: true
-      });
+      // this.setState({
+      //   loadedAll: true
+      // });
     });
   }
 
@@ -155,7 +155,6 @@ export default class TaskListContents extends React.Component {
                                updateField={group.updateField}
                                updateValue={group.updateValue}
                                teams={this.teams} projects={this.projects}
-                               linked_items={this.props.linkedItems}
                                departments={this.departments} agents={this.agents}
                                tickets={this.props.tickets}
                                toggleDone={this.props.toggleDone}

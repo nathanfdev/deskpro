@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { DragSource, DropTarget } from 'react-dnd';
-import $ from 'jquery';
+import jQuery from 'jquery';
 import Formsy from 'formsy-react';
 import FRC from 'DeskPRO/Component/FormComponents/main.js';
 import DragTypes from '../../../Services/DragTypes.js';
@@ -22,7 +22,7 @@ const cardTarget = {
 
 const cardSource = {
   beginDrag(props, monitor, component) {
-    const width = $(ReactDOM.findDOMNode(component)).width();
+    const width = jQuery(ReactDOM.findDOMNode(component)).width();
 
     return {
       id: props.task.get('id'),
@@ -39,13 +39,6 @@ const cardSource = {
     };
   }
 };
-
-function collect(connector, monitor) {
-  return {
-    connectDragSource: connector.dragSource(),
-    connectDragPreview: connector.dragPreview()
-  };
-}
 
 const TaskCard = React.createClass({
   mixins: [
@@ -209,9 +202,9 @@ const TaskCard = React.createClass({
 
     if (task.has('linked_tickets') && task.get('linked_tickets').size > 0) {
       task.get('linked_tickets').forEach((item) => {
-        if (typeof tickets[item] !== 'undefined' && tickets[item] !== null) {
-          ticketLink = '#' + tickets[item].get('id');
-          ticketTitle = tickets.get('subject');
+        if (typeof tickets.get(item) !== 'undefined' && tickets.get(item) !== null) {
+          ticketLink = '#' + item;
+          ticketTitle = tickets.get(item).get('subject');
         }
       });
     }

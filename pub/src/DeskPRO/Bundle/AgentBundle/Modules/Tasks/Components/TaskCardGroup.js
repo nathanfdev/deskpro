@@ -56,7 +56,6 @@ export default class TaskCardGroup extends React.Component {
   }
 
   render() {
-    console.log(this.props);
     const _this = this;
 
     const columnClass = this.props.isOver ? 'list-group-hover' : '';

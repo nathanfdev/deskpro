@@ -1,13 +1,12 @@
 import Moment from 'moment';
 
 export default class TaskGrouping {
-  constructor(projects = [], departments = [], teams = [], agents = [], lists = [], links = [], tickets = []) {
+  constructor(projects = [], departments = [], teams = [], agents = [], lists = [], tickets = []) {
     this.projects = projects;
     this.departments = departments;
     this.teams = teams;
     this.agents = agents;
     this.lists = lists;
-    this.links = links;
     this.tickets = tickets;
 
     this.futureDates = [
@@ -36,7 +35,7 @@ export default class TaskGrouping {
     ];
   }
 
-  /**
+  /*
    * Get the divider to return according to the grouping type
    * @param object object
    * @param grouping string
@@ -80,7 +79,7 @@ export default class TaskGrouping {
     return results;
   }
 
-  /**
+  /*
    * Returns an ID for the column / group
    * @param object
    * @param grouping
@@ -124,7 +123,7 @@ export default class TaskGrouping {
     return result;
   }
 
-  /**
+  /*
    * Get the details of the groupings according to the type to group by
    * Returns and array of objects, each object containing ID, a title, a field to update, and a value to update with
    * @param type
@@ -135,33 +134,6 @@ export default class TaskGrouping {
     const returnGroups = [];
     const reverse = 'desc';
     switch (type) {
-      case 'list':
-        this.lists.forEach((listObject) => {
-          returnGroups.push({
-            id: listObject.id,
-            title: listObject.title,
-            updateField: 'list',
-            updateValue: listObject.id,
-            key: 'list_' + listObject.id
-          });
-        });
-
-        returnGroups.sort((a, b) => {
-          if (a.display_order === b.display_order) {
-            return 0;
-          }
-
-          return a.display_order > b.display_order ? 1 : -1;
-        });
-
-        returnGroups.push({
-          id: 'none',
-          title: 'Tasks not in any list',
-          updateField: 'list',
-          updateValue: false,
-          key: 'none'
-        });
-        break;
       case 'project':
         this.projects.forEach((project) => {
           returnGroups.push({
@@ -172,12 +144,12 @@ export default class TaskGrouping {
             key: 'project_' + project.id
           });
         });
-        returnGroups.sort((a, b) => {
-          if (a.title === b.title) {
+        returnGroups.sort((first, second) => {
+          if (first.title === second.title) {
             return 0;
           }
 
-          return a.title > b.title ? 1 : -1;
+          return first.title > second.title ? 1 : -1;
         });
         break;
       case 'due':
@@ -211,7 +183,7 @@ export default class TaskGrouping {
             updateField: 'departments',
             updateValue: [department.id],
             key: 'department_' + department.id
-          })
+          });
         });
         this.teams.forEach((team) => {
           returnGroups.push({
@@ -220,7 +192,7 @@ export default class TaskGrouping {
             updateField: 'teams',
             updateValue: [team.id],
             key: 'team_' + team.id
-          })
+          });
         });
         this.agents.forEach((agent) => {
           returnGroups.push({
@@ -229,13 +201,41 @@ export default class TaskGrouping {
             updateField: 'agents',
             updateValue: [agent.id],
             key: 'agent_' + agent.id
-          })
+          });
         });
 
         returnGroups.unshift({
           id: 'none',
           title: 'Unassigned',
           updateField: 'agents',
+          updateValue: false,
+          key: 'none'
+        });
+        break;
+      case 'list':
+      default:
+        this.lists.forEach((listObject) => {
+          returnGroups.push({
+            id: listObject.id,
+            title: listObject.title,
+            updateField: 'list',
+            updateValue: listObject.id,
+            key: 'list_' + listObject.id
+          });
+        });
+
+        returnGroups.sort((first, second) => {
+          if (first.display_order === second.display_order) {
+            return 0;
+          }
+
+          return first.display_order > second.display_order ? 1 : -1;
+        });
+
+        returnGroups.push({
+          id: 'none',
+          title: 'Tasks not in any list',
+          updateField: 'list',
           updateValue: false,
           key: 'none'
         });
@@ -249,7 +249,7 @@ export default class TaskGrouping {
     return returnGroups;
   }
 
-  /**
+  /*
    * Get the divider to use when grouping by due date
    * @param object
    * @return string
@@ -295,7 +295,7 @@ export default class TaskGrouping {
     return objectDivider;
   }
 
-  /**
+  /*
    * Get divider to use when grouping by created date
    * @param object
    * @return string
@@ -337,7 +337,7 @@ export default class TaskGrouping {
     return objectDivider;
   }
 
-  /**
+  /*
    * Get divider to use when grouping by assignee
    * @param object
    * @return string
@@ -359,7 +359,7 @@ export default class TaskGrouping {
     return assignee;
   }
 
-  /**
+  /*
    * Get divider to use when grouping by assignee
    * @param object
    * @return string
@@ -377,7 +377,7 @@ export default class TaskGrouping {
     return project;
   }
 
-  /**
+  /*
    * Get the divider to use when grouping by list
    * @param object
    * @return string
@@ -396,7 +396,7 @@ export default class TaskGrouping {
     return listTitle;
   }
 
-  /**
+  /*
    * Get the divider to use when grouping by creator
    * @param object
    * @return string
@@ -415,7 +415,7 @@ export default class TaskGrouping {
     return creator;
   }
 
-  /**
+  /*
    * Get the divider to use when grouping by done date
    * @param object
    * @return string
@@ -460,7 +460,7 @@ export default class TaskGrouping {
     return objectDivider;
   }
 
-  /**
+  /*
    * Get the divider to use when grouping by labels
    * @param object
    * @return string
@@ -483,7 +483,7 @@ export default class TaskGrouping {
     return labelsDivider;
   }
 
-  /**
+  /*
    * Get the divider to use when grouping by linked ticket
    *
    * @param object
