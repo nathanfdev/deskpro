@@ -1,11 +1,11 @@
 import React from 'react';
-import { LoginForm } from './Form/LoginForm';
+import { LoginFormContainer } from './Form/LoginFormContainer';
 
 export class LoginApp extends React.Component {
 
   render() {
     return (
-      <LoginForm />
+      <LoginFormContainer />
     );
   }
 }

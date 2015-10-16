@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { login } from '../../Actions/loginActions';
 import { DpLogo } from '../DpLogo';
 import { LoginFormHeader } from './LoginFormHeader';
 import { Email } from './Fields/Email';
@@ -11,7 +13,13 @@ import { TooManyAttempts } from './WarningMajor/TooManyAttempts';
 import { WrongHelpdesk } from './WarningMajor/WrongHelpdesk';
 import { TimeLocked } from './WarningMajor/TimeLocked';
 
-export class LoginForm extends React.Component {
+@connect(state => ({
+}))
+export class LoginFormContainer extends React.Component {
+
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired
+  };
 
   constructor(props) {
     super(props);
@@ -32,6 +40,11 @@ export class LoginForm extends React.Component {
     this.setState({
       password: event.target.value
     });
+  };
+
+  submitForm = (event) => {
+    event.preventDefault();
+    this.props.dispatch(login());
   };
 
   render() {
@@ -69,7 +82,7 @@ export class LoginForm extends React.Component {
                   <Password value={this.state.password} onChange={this.onChangePassword} errorMessage="Wrong password" />
                   <Options />
 
-                  <input type="submit" value="Log in to DeskPRO" />
+                  <input type="submit" value="Log in to DeskPRO" onClick={this.submitForm} />
                 </form>
               </div>
 
