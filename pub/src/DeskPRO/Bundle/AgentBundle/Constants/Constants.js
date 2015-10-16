@@ -1,6 +1,9 @@
 export default {
   VIEW_MODE_CARD: 'card',
   VIEW_MODE_TABLE: 'table',
+  VIEW_MODE_CONDENSED: 'condensed',
+  VIEW_MODE_KANBAN: 'kanban',
+  VIEW_MODE_CALENDAR: 'calendar',
   ORDER_ASC: 'asc',
   ORDER_DESC: 'desc',
   ORDER_BY_DATE: 'date',
