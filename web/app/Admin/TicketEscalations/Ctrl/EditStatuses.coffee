@@ -66,24 +66,21 @@ define [
       promises = [promise, promise2, promise3]
 
       @$q.all(promises).then =>
-        @$timeout(=>
-          @updateCriteriaOptionTypes()
-          @$timeout(=>
-            @esc  = loadData.escalation
-            @form = loadData.form
+        @updateCriteriaOptionTypes()
 
-            if !@esc.actions.actions? || @esc.actions.actions.length != 1
-              return @esc.is_default_action = false
-            if 'SendUserEmail' == @esc.actions.actions[0].type && 'DeskPRO:emails_user:ticket-awaiting-warn.html.twig' == @esc.actions.actions[0].options.template
-              @esc.is_default_action = true
-            else if 3 == @esc.sys_num && 'SetStatus' == @esc.actions.actions[0].type && 'resolved' == @esc.actions.actions[0].options.status
-              @esc.is_default_action = true
-            else if (4 == @esc.sys_num || 5 == @esc.sys_num) && 'SetStatus' == @esc.actions.actions[0].type && 'archived' == @esc.actions.actions[0].options.status
-              @esc.is_default_action = true
-            else
-              @esc.is_default_action = false
-          )
-        )
+        @esc  = loadData.escalation
+        @form = loadData.form
+
+        if !@esc.actions.actions? || @esc.actions.actions.length != 1
+          return @esc.is_default_action = false
+        if 'SendUserEmail' == @esc.actions.actions[0].type && 'DeskPRO:emails_user:ticket-awaiting-warn.html.twig' == @esc.actions.actions[0].options.template
+          @esc.is_default_action = true
+        else if 3 == @esc.sys_num && 'SetStatus' == @esc.actions.actions[0].type && 'resolved' == @esc.actions.actions[0].options.status
+          @esc.is_default_action = true
+        else if (4 == @esc.sys_num || 5 == @esc.sys_num) && 'SetStatus' == @esc.actions.actions[0].type && 'archived' == @esc.actions.actions[0].options.status
+          @esc.is_default_action = true
+        else
+          @esc.is_default_action = false
 
 
 

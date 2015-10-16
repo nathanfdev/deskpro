@@ -107,7 +107,7 @@ final class ArticleCategory implements MapperInterface, MapperByTitleInterface
         $category = $this->findOneBy(
             array(
                 'title'  => array_shift($category_path),
-                'parent' => $parent,
+                'parent' => $parent ? $parent->getId() : null,
             ),
             $throw_exception
         );

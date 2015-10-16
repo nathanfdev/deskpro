@@ -33,6 +33,7 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Parser\ExportCollectionConfig;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserHelperSet;
 use Application\ImportBundle\Generator\Exporter\Parser\ParserPeopleStorageInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderInterface;
 
 /**
@@ -194,11 +195,30 @@ final class Tickets extends AbstractParser
             ->setAsNote((bool) $message['is_agent_note'])
         ;
 
-        foreach ($message->attachments as $num => $attachment) {
-            $entity->addAttachment($this->exportAttachment($attachment));
+        $attachments = $this->exportAttachments($message);
+        foreach ($attachments as $attachment) {
+            $entity->addAttachment($attachment);
         }
 
         return $entity;
+    }
+
+    /**
+     * @param DeskPROEntity\TicketMessage $message
+     *
+     * @return Entity\Collection
+     */
+    protected function exportAttachments(DeskPROEntity\TicketMessage $message)
+    {
+        $config = new ExportCollectionConfig();
+        $config
+            ->setData($message->attachments)
+            ->setPrefix('DPTicketMessageAttachment')
+            ->setRefColumn('id')
+            ->setMethod('exportAttachment')
+        ;
+
+        return $this->exportCollection($config);
     }
 
     /**
@@ -206,14 +226,20 @@ final class Tickets extends AbstractParser
      *
      * @return Entity\Attachment
      */
-    private function exportAttachment(DeskPROEntity\TicketAttachment $attachment)
+    protected function exportAttachment(DeskPROEntity\TicketAttachment $attachment)
     {
-        $blob   = $attachment->getBlob();
+        $blob = $attachment->getBlob();
+        $data = base64_encode($this->reader->getBlobData($blob));
+
+        if (!$data) {
+            throw new SkippingException('Empty blob data', $attachment->toApiData());
+        }
+
         $entity = new Entity\Attachment();
         $entity
             ->setDestination($entity->getDestinationPrefix().$attachment->getId())
             ->setOid($attachment->getId())
-            ->setBlobData(base64_encode($this->reader->getBlobData($blob)))
+            ->setBlobData($data)
             ->setFileName($blob['filename'])
             ->setContentType($blob['content_type'])
         ;

@@ -57,7 +57,8 @@ class ProcessEmailCommand extends ContainerAwareCommand
         $this->addOption('error-string', null, InputOption::VALUE_OPTIONAL,  'A special string to output in case of error (e.g., use as a trigger for external tool). Note that this command will return 1 on an error, so you can use that instead.');
         $this->addOption('enable-retries', null, InputOption::VALUE_NONE, 'If processing the message fails, enable retry scheduling instead of setting to "error".');
         $this->addOption('insert-only', null, InputOption::VALUE_NONE, 'Save the source with an inserted status (do not process right now)');
-        $this->setHelp("Example usage with dp:gen-rand-email:\n\tphp cmd.php dp:gen-rand-email --from-email=\"user@example.com\" --to-email=\"gateway@example.com\" | php cmd.php dp:process-email --file");
+        $this->addOption('expect-pending', null, InputOption::VALUE_NONE, 'When used with --source, this ensures that the source is either "inserted" or "retry" states.');
+        $this->setHelp("Example usage with dp:gen-rand-email:\n\tphp cmd.php dp:gen-rand-email --from=\"user@example.com\" --to=\"gateway@example.com\" | php cmd.php dp:process-email --file");
     }
 
     /**
@@ -73,6 +74,8 @@ class ProcessEmailCommand extends ContainerAwareCommand
         $success_string = $input->getOption('success-string');
         $error_string   = $input->getOption('error-string');
         $insert_only    = $input->getOption('insert-only');
+
+        $expect_pending = $input->getOption('expect-pending');
 
         if ($input->hasOption('to') && $input->getOption('to')) {
             $input->setOption('account', $input->getOption('to'));
@@ -98,6 +101,19 @@ class ProcessEmailCommand extends ContainerAwareCommand
             if (!$account) {
                 $account = $this->findEmailAccountFrom($reader);
             }
+
+            if ($expect_pending) {
+                if ($source->status !== EmailSource::STATUS_INSERTED && $source->status !== EmailSource::STATUS_RETRY) {
+                    $output->writeln(sprintf('<error>Status is %s (expected inserted or retry)</error>', $source->status));
+
+                    return 1;
+                }
+            }
+
+            // Mark as processing early
+            $source->status = EmailSource::STATUS_PROCESSING;
+            $this->getContainer()->getEm()->persist($source);
+            $this->getContainer()->getEm()->flush();
         } else {
             if ($input->getOption('file')) {
                 if (file_exists($input->getOption('file'))) {
@@ -268,7 +284,16 @@ class ProcessEmailCommand extends ContainerAwareCommand
 
                 return 1;
             }
+        } else {
+            global $DP_CONFIG;
+            if (!empty($DP_CONFIG['adv_email_process'])) {
+                /** @var \Application\EmailBundle\Incoming\ProcQueue\ProcQueueInterface $proc */
+                $proc = App::getContainer()->get('in_email.proc_queue');
+                $proc->enqueueNewEmail($source);
+            }
         }
+
+        return 0;
     }
 
     /**

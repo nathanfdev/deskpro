@@ -48,6 +48,7 @@ class QueueRawEmailCommand extends ContainerAwareCommand
     {
         $this->setName('dp:email:queue-raw-email');
         $this->addOption('as-pending', 'g', InputOption::VALUE_NONE, 'Insert the source as PENDING instead of ABORTED.');
+        $this->addOption('save-exact', 'k', InputOption::VALUE_NONE, 'Save this exact raw source (i.e., do not decode+re-encode)');
         $this->addArgument('file', InputArgument::OPTIONAL);
         $this->setHelp('Reads a raw email from a file inserts it into the system.');
     }
@@ -65,6 +66,9 @@ class QueueRawEmailCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $save_exact  = $input->getOption('save-exact');
+        $use_blob_id = null;
+
         if ($input->getArgument('file')) {
             $path = realpath($input->getArgument('file'));
 
@@ -80,12 +84,27 @@ class QueueRawEmailCommand extends ContainerAwareCommand
 
                 return 1;
             }
+
+            if ($save_exact) {
+                $use_blob_id = $this->getContainer()->getBlobStorage()->createBlobRowFromFile($path, 'email.eml', 'message/rfc822');
+                $use_blob_id = $use_blob_id['id'];
+            }
         } else {
-            $raw_stream = STDIN;
-            if (!$raw_stream) {
+            $in_stream = STDIN;
+            if (!$in_stream) {
                 $output->writeln('<error>No source file provided</error>');
 
                 return 1;
+            }
+
+            $raw_stream = tmpfile();
+            stream_copy_to_stream($in_stream, $raw_stream);
+            rewind($raw_stream);
+
+            if ($save_exact) {
+                $use_blob_id = $this->getContainer()->getBlobStorage()->createBlobRowFromString(stream_get_contents($raw_stream), 'email.eml', 'message/rfc822');
+                $use_blob_id = $use_blob_id['id'];
+                rewind($raw_stream);
             }
         }
 
@@ -111,6 +130,12 @@ class QueueRawEmailCommand extends ContainerAwareCommand
             $output->writeln("The email was inserted with the 'aborted' state and will not be sent automatically.");
             $output->writeln('You may with to manually send this email using the following command:');
             $output->writeln("\tphp cmd.php dp:email:sendsource $id\n");
+        }
+
+        if ($use_blob_id) {
+            $old_blob_id = $this->getContainer()->getDb()->fetchColumn('SELECT blob_id FROM sendmail_sources WHERE id = ?', array($id));
+            $this->getContainer()->getDb()->update('sendmail_sources', array('blob_id' => $use_blob_id), array('id' => $id));
+            $this->getContainer()->getBlobStorage()->deleteBlobRowId($old_blob_id);
         }
 
         return 0;
