@@ -115,7 +115,7 @@ class Messenger
     public function startChat(Person $user, Chatable $target)
     {
         switch ($target->getChatableType()) {
-            case Chatable::PARTICIPANT_TYPE_PERSON:
+            case Chatable::PARTICIPANT_TYPE_AGENT:
                 /* @var Person $target */
                 return $this->createChatWithAgent($user, $target);
                 break;
@@ -140,7 +140,7 @@ class Messenger
      */
     public function createChatWithAgent(Person $user, Person $agent)
     {
-        return $this->createChat([$agent, $user], Chatable::PARTICIPANT_TYPE_PERSON);
+        return $this->createChat([$agent, $user], Chatable::PARTICIPANT_TYPE_AGENT);
     }
 
     /**
@@ -188,7 +188,7 @@ class Messenger
     public function findParticipant($type, $id)
     {
         switch ($type) {
-            case Chatable::PARTICIPANT_TYPE_PERSON:
+            case Chatable::PARTICIPANT_TYPE_AGENT:
                 $entity_name = 'DeskPRO:Person';
                 break;
             case Chatable::PARTICIPANT_TYPE_TEAM:
@@ -220,7 +220,7 @@ class Messenger
         $agentChatRepository = $this->em->getRepository('App:AgentChat');
 
         switch ($target->getChatableType()) {
-            case Chatable::PARTICIPANT_TYPE_PERSON:
+            case Chatable::PARTICIPANT_TYPE_AGENT:
                 $chats = $agentChatRepository->findChatWithAgent($target->getId(), $user->getId());
                 break;
             case Chatable::PARTICIPANT_TYPE_TEAM:
@@ -262,7 +262,7 @@ class Messenger
                     }
                 }
                 break;
-            case Chatable::PARTICIPANT_TYPE_PERSON:
+            case Chatable::PARTICIPANT_TYPE_AGENT:
             case Chatable::PARTICIPANT_TYPE_TEAM:
                 $participants = $chat->getPersonList();
                 foreach ($participants as $participant) {

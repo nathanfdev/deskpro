@@ -3,7 +3,7 @@ import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu
 import ItemFormat from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemFormat';
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned';
 import classNames from 'classnames';
-import $ from 'jquery';
+import jQuery from 'jquery';
 
 const BaseItem = React.createClass({
 
@@ -41,7 +41,6 @@ const BaseItem = React.createClass({
 
   /**
    * Constructor
-   * @param  {Object} props The component props
    * @return {void}
    */
   getInitialState: function() {
@@ -53,14 +52,17 @@ const BaseItem = React.createClass({
 
   /**
    * Execute an action on click
+   * @param {object} e Click event
    * @return {void}
    */
-  onClickAction: function() {
+  onClickAction: function(e) {
+    e.preventDefault();
+
     if (this.props.onClick) {
       this.props.onClick();
     }
 
-    if (!this.props.keepOpen) {
+    if (!this.props.keepOpen && this.props.closeMenu) {
       this.props.closeMenu();
     }
   },
@@ -87,12 +89,12 @@ const BaseItem = React.createClass({
 
   /**
    * Handle clicks outside the item
-   * @param {Event} e Click event
+   * @param {Event} event Click event
    * @return {void}
    */
-  handleClickOutside: function(e) {
+  handleClickOutside: function(event) {
     // Don't handle clicks for menu items - they deal with that themselves
-    const closest = $(e.target).parents('.dropdown-nav-item');
+    const closest = jQuery(event.target).parents('.dropdown-nav-item');
 
     if (closest.length === 0) {
       this.closeMenu();
@@ -112,9 +114,11 @@ const BaseItem = React.createClass({
 
   /**
    * Toggle the inner list
+   * @param  {object} event The click event
    * @return {[type]} [description]
    */
-  toggleInnerList: function() {
+  toggleInnerList: function(event) {
+    event.preventDefault();
     this.setState({
       openInnerList: !this.state.openInnerList
     });
@@ -127,7 +131,8 @@ const BaseItem = React.createClass({
    */
   formatOutput: function(output, hasMenu = false, hasItemList = false) {
     if (this.props.format && this.props.format === 'item') {
-      return (<ItemFormat {...this.props} hasMenu={hasMenu} hasItemList={hasItemList} toggleInnerList={this.toggleInnerList}>{output}</ItemFormat>);
+      return (<ItemFormat {...this.props} hasMenu={hasMenu} hasItemList={hasItemList}
+                                          toggleInnerList={this.toggleInnerList}>{output}</ItemFormat>);
     }
 
     return output;
@@ -138,10 +143,10 @@ const BaseItem = React.createClass({
    * @return {React.Element} The menu container
    */
   render: function() {
-    const baseClass = 'dpw-navigation-dropdown-item dropdown-nav-item';
-
-    const onMouseOverAction = this.props.onMouseOver ? this.props.onMouseOver : () => {};
-    const onMouseOutAction = this.props.onMouseOut ? this.props.onMouseOut : () => {};
+    const onMouseOverAction = this.props.onMouseOver ? this.props.onMouseOver : () => {
+    };
+    const onMouseOutAction = this.props.onMouseOut ? this.props.onMouseOut : () => {
+    };
 
     let output = [];
 
@@ -177,7 +182,7 @@ const BaseItem = React.createClass({
                               positionTarget={this}
                               key={child}>
             <Menu {...childProps} menuLevel={menuLevel}
-              isOpen={this.props.activeItem === this} closeMenu={this.closeMenu} />
+                                  isOpen={this.props.activeItem === this} closeMenu={this.closeMenu}/>
           </Positioned>);
         }
       });
@@ -191,31 +196,16 @@ const BaseItem = React.createClass({
         }
       });
 
-      let divClasses = [baseClass];
-
-      if (this.props.widgetClass) {
-        divClasses.push(this.props.widgetClass);
-      }
-
-      if (this.props.disabled) {
-        divClasses.push('dpw-navigation-dropdown-item-disabled');
-      }
-
-      // Only add an active state if the menu is open and exists
-      if (this.props.activeItem === this && keepMenuState || this.props.isActive) {
-        divClasses.push('active');
-      }
-
-      if (this.props.condensed) {
-        divClasses.push('dpw-navigation-dropdown-item-condensed');
-      }
-
-      if (this.props.overrideWidgetClass) {
-        divClasses = this.props.widgetClass;
-      }
+      const divClasses = classNames(this.props.widgetClass, {
+        'dpw-navigation-dropdown-item dropdown-nav-item': !this.props.overrideWidgetClass,
+        'dpw-navigation-dropdown-item-disabled': this.props.disabled,
+        'dpw-navigation-dropdown-item-condensed': this.props.condensed,
+        'active': this.props.activeItem === this && keepMenuState || this.props.isActive
+      });
 
       if (contents) {
-        output.push(<a className={classNames(divClasses)} href="#" onClick={this.onClickAction} onMouseOver={onMouseOverAction} onMouseOut={onMouseOutAction}>
+        output.push(<a className={divClasses} href="#" onClick={this.onClickAction}
+                       onMouseOver={onMouseOverAction} onMouseOut={onMouseOutAction}>
           {this.formatOutput(contents, hasMenu, hasItemList)}
         </a>);
       }
@@ -230,14 +220,14 @@ const BaseItem = React.createClass({
     }
 
     if (this.props.subMenuMode && this.props.subMenuMode === 'click') {
-      return (<li onClick={this.toggleMenu}>{output}</li>);
+      return (<div onClick={this.toggleMenu}>{output}</div>);
     } else if (this.props.subMenuMode && this.props.subMenuMode === 'none') {
-      return (<li>{output}</li>);
+      return (<div>{output}</div>);
     }
 
-    return (<li onMouseOver={this.openMenu}>
+    return (<div onMouseOver={this.openMenu}>
       {output}
-    </li>);
+    </div>);
   }
 });
 

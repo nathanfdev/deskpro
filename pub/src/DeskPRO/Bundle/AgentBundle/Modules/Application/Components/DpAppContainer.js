@@ -4,13 +4,13 @@ import { ReactRouterWrapper } from './ReactRouterWrapper';
 import { DpAppLoading } from './DpAppLoading';
 import TicketsApp from '../../Tickets/Components/TicketsApp';
 import TasksApp from '../../Tasks/Components/TasksApp';
-import TestApp from '../../Test/Components/TestApp';
 import { FeedbackApp } from '../../Feedback/Components/FeedbackApp';
 import { CrmApp } from '../../CRM/Components/CrmApp';
 import { ChatApp } from '../../Chat/Components/ChatApp';
 import { PublishApp } from '../../Publish/Components/PublishApp';
 import { LoginApp } from '../../Login/Components/LoginApp';
 import { WelcomeApp } from '../../Welcome/Components/WelcomeApp';
+import { ExampleApp } from '../../Example/Components/ExampleApp';
 import { loadMe } from '../RecordStores/Actions/meActions';
 import { meStateSelector } from '../RecordStores/Selectors/meSelectors';
 import { hashChanged } from '../../Application/Actions/routingActions';
@@ -76,7 +76,7 @@ export class DpAppContainer extends React.Component {
           <Route name="tasks" path="tasks" component={TasksApp}/>
           <Route name="publish" path="publish" component={PublishApp}/>
           <Route name="feedback" path="feedback" component={FeedbackApp}/>
-          <Route name="test" path="test" component={TestApp}/>
+          <Route name="example" path="example" component={ExampleApp}/>
         </Route>
         <Route path={basePath}>
           <Route name="login" path="login" component={LoginApp}/>

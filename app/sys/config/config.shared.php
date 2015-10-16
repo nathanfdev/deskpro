@@ -100,12 +100,18 @@ $container->setDefinition('ticket.public_id_resolver', $definition);
 ############################################################################
 
 // Init readers
+$request_stack_reference = new Reference('request_stack');
+
 $definition = new Definition(
-    'Orb\Input\Reader\Source\Superglobal', array('_REQUEST', array('accept_json_post' => true))
+    'Orb\Input\Reader\Source\Superglobal',
+    array('_REQUEST', array('accept_json_post' => true), $request_stack_reference)
 );
 $container->setDefinition('deskpro.core.input_reader_req', $definition);
 
-$definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_POST', array('accept_json_post' => true)));
+$definition = new Definition(
+    'Orb\Input\Reader\Source\Superglobal',
+    array('_POST', array('accept_json_post' => true), $request_stack_reference)
+);
 $container->setDefinition('deskpro.core.input_reader_post', $definition);
 
 $definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_GET'));

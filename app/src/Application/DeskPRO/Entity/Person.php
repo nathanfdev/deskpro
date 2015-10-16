@@ -3264,7 +3264,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function getChatableType()
     {
-        return Chatable::PARTICIPANT_TYPE_PERSON;
+        return Chatable::PARTICIPANT_TYPE_AGENT;
     }
 
     ############################################################################

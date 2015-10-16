@@ -26,30 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
-use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\AntiAbuseEvent;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-
-class RateLimitEventListener implements EventSubscriberInterface
+class Build1444915520 extends AbstractBuild
 {
-    public static function getSubscribedEvents()
+    public function run()
     {
-        return [
-            AntiAbuse::EVENT_NAME => 'checkAntiAbuse',
-        ];
-    }
-
-    public function __construct(EntityManager $entity_manager)
-    {
-    }
-
-    public function checkAntiAbuse(AntiAbuseEvent $event)
-    {
+        $this->execMutateSql('ALTER TABLE api_sandbox_widgets ADD type VARCHAR(100) NOT NULL');
     }
 }

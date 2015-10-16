@@ -1,6 +1,10 @@
 import React, { PropTypes } from 'react';
 import * as AppActions from '../../../Application/Actions/AppActions';
+import { connect } from 'react-redux';
 
+@connect(state => ({
+  dpWindow: state.Application.dpWindow
+}))
 export class NavFrame extends React.Component {
 
   static propTypes = {

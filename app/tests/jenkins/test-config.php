@@ -86,10 +86,10 @@ $DP_CONFIG['SETTINGS']['portal.smaxage_user_tag']         = 0;
 
 // anti-abuse settings
 $DP_CONFIG['SETTINGS']['user.login_rate_limit.enabled']        = true;
-$DP_CONFIG['SETTINGS']['user.login_rate_limit.attempts']       = 3; // set low for testing
+$DP_CONFIG['SETTINGS']['user.login_rate_limit.attempts']       = 4; // set low for testing
 $DP_CONFIG['SETTINGS']['user.login_rate_limit.attempts_time']  = 900;
 $DP_CONFIG['SETTINGS']['user.login_rate_limit.lock_time']      = 900;
 $DP_CONFIG['SETTINGS']['agent.login_rate_limit.enabled']       = true;
-$DP_CONFIG['SETTINGS']['agent.login_rate_limit.attempts']      = 3; // set low for testing
+$DP_CONFIG['SETTINGS']['agent.login_rate_limit.attempts']      = 4; // set low for testing
 $DP_CONFIG['SETTINGS']['agent.login_rate_limit.attempts_time'] = 900;
 $DP_CONFIG['SETTINGS']['agent.login_rate_limit.lock_time']     = 900;

@@ -250,8 +250,16 @@ class UsersourcesController extends AbstractController
         return $this->container->getSystemService('usersource_sync_manager');
     }
 
-    public function getUsersourceExtraAction($type, $app_id)
+    public function getUsersourceExtraAction($type, $app_id = null)
     {
+        if ($app_id === null) {
+            return $this->createApiResponse(
+                array(
+                    'usersource_details' => array(),
+                )
+            );
+        }
+
         $sources = $this->getUsersourceManager()->getAll();
 
         if ($type === Usersource::TYPE_USER) {

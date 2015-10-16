@@ -62,9 +62,9 @@ $collection->create(
 )
 ;
 $collection->create(
-    'react_agent_test',
+    'react_agent_example',
     array(
-        'path'       => '/test',
+        'path'       => '/example',
         'controller' => 'AgentBundle:AgentChrome:agentChrome',
     )
 )

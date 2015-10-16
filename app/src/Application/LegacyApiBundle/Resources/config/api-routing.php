@@ -3527,11 +3527,84 @@ $collection->create(
 # Usersources
 ########################################################################################################################
 
+
+$collection->create(
+    'api_usersources_start_sync',
+    array(
+        'path'       => '/usersources/start-sync',
+        'controller' => 'LegacyApiBundle:Usersources:startUsersourceSync',
+        'methods'    => array('POST'),
+    )
+);
+
 $collection->create(
     'api_usersources_list',
     array(
         'path'       => '/usersources/{type}',
         'controller' => 'LegacyApiBundle:Usersources:listByType',
+        'methods'    => array('GET'),
+    )
+);
+
+$collection->create(
+    'api_usersources_iframe',
+    array(
+        'path'       => '/usersources/iframe/code/{interface}/{app_id}',
+        'controller' => 'LegacyApiBundle:Usersources:getIframe',
+        'methods'    => array('GET'),
+    )
+);
+
+$collection->create(
+    'api_usersources_display_order',
+    array(
+        'path'       => '/usersources/display-order',
+        'controller' => 'LegacyApiBundle:Usersources:updateDisplayOrder',
+        'methods'    => array('POST'),
+    )
+);
+
+$collection->create(
+    'api_usersources_sync_status',
+    array(
+        'path'       => '/usersources/sync/status',
+        'controller' => 'LegacyApiBundle:Usersources:syncStatus',
+        'methods'    => array('GET'),
+    )
+);
+
+$collection->create(
+    'api_usersources_sync_start',
+    array(
+        'path'       => '/usersources/sync/start',
+        'controller' => 'LegacyApiBundle:Usersources:syncStart',
+        'methods'    => array('POST'),
+    )
+);
+
+$collection->create(
+    'api_usersources_sync_stop',
+    array(
+        'path'       => '/usersources/sync/stop',
+        'controller' => 'LegacyApiBundle:Usersources:syncStop',
+        'methods'    => array('POST'),
+    )
+);
+
+$collection->create(
+    'api_usersources_sync_info',
+    array(
+        'path'       => '/usersources/sync/info/{app_id}',
+        'controller' => 'LegacyApiBundle:Usersources:getSyncInformation',
+        'methods'    => array('GET'),
+    )
+);
+
+$collection->create(
+    'api_usersources_available_apps',
+    array(
+        'path'       => '/usersources/available/app-packages/{interface}',
+        'controller' => 'LegacyApiBundle:Usersources:availableAppPackages',
         'methods'    => array('GET'),
     )
 );
@@ -3557,35 +3630,17 @@ $collection->create(
 $collection->create(
     'api_usersources_extra_details',
     array(
-        'path'       => '/usersources/{type}/app-{id}/extra-details',
+        'path'       => '/usersources/{type}/app-{app_id}/extra-details',
         'controller' => 'LegacyApiBundle:Usersources:getUsersourceExtra',
         'methods'    => array('GET'),
     )
 );
 
 $collection->create(
-    'api_usersources_iframe',
+    'api_usersource_refresh_person',
     array(
-        'path'       => '/usersources/iframe/code/{interface}/{app_id}',
-        'controller' => 'LegacyApiBundle:Usersources:getIframe',
-        'methods'    => array('GET'),
-    )
-);
-
-$collection->create(
-    'api_usersources_display_order',
-    array(
-        'path'       => '/usersources/display-order',
-        'controller' => 'LegacyApiBundle:Usersources:updateDisplayOrder',
-        'methods'    => array('POST'),
-    )
-);
-
-$collection->create(
-    'api_usersources_available_apps',
-    array(
-        'path'       => '/usersources/available/app-packages/{interface}',
-        'controller' => 'LegacyApiBundle:Usersources:availableAppPackages',
+        'path'       => '/usersources/{usersource_id}/person-refresh/{identity_or_email}',
+        'controller' => 'LegacyApiBundle:Usersources:personRefresh',
         'methods'    => array('GET'),
     )
 );

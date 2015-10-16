@@ -35,6 +35,7 @@ namespace Orb\Input\Reader\Source;
 
 use Orb\Util\OptionsArray;
 use Orb\Util\Web;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * A reader source that fetches data from a superglobal array.
@@ -61,15 +62,22 @@ class Superglobal implements SourceInterface, ResetSourceInterface
     protected $options = array();
 
     /**
+     * @var RequestStack|null
+     */
+    protected $request_stack;
+
+    /**
      * Create the source.
      *
-     * @param string $sg_name The name of the superglobal: _POST, _GET etc.
-     * @param array  $options
+     * @param string       $sg_name       The name of the superglobal: _POST, _GET etc.
+     * @param array        $options
+     * @param RequestStack $request_stack The symfony request stack for this request, if it exists
      */
-    public function __construct($sg_name, array $options = null)
+    public function __construct($sg_name, array $options = null, RequestStack $request_stack = null)
     {
-        $this->superglobal = $sg_name;
-        $this->options     = new OptionsArray($options ?: array());
+        $this->superglobal   = $sg_name;
+        $this->options       = new OptionsArray($options ?: array());
+        $this->request_stack = $request_stack;
     }
 
     /**
@@ -154,7 +162,11 @@ class Superglobal implements SourceInterface, ResetSourceInterface
     {
         $post = $_POST;
         if ($this->options->get('accept_json_post') && in_array(Web::getRequestContentType(), array('application/json', 'text/x-json'))) {
-            $json_post = @json_decode(@file_get_contents('php://input'), true);
+            if (!$this->request_stack) {
+                throw new \RuntimeException('the request_stack service should have been injected but was not, cannot read request data!');
+            }
+            $master_request = $this->request_stack->getMasterRequest();
+            $json_post      = @json_decode($master_request->getContent(), true);
             if ($json_post && is_array($json_post)) {
                 $post = array_merge($post, $json_post);
             }

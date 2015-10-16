@@ -46,5 +46,9 @@ export function getActionType(thing, returnNull = false) {
  * @return {Boolean} True if the action is a DSA action
  */
 export function isDSA(action) {
-  return action && typeof action.type === 'string';
+  return action
+    && (typeof action.type === 'string')
+    && action.hasOwnProperty('payload')
+    && action.hasOwnProperty('meta')
+  ;
 }

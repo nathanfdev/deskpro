@@ -128,14 +128,8 @@ export class HeaderWidget extends React.Component {
   };
 
   renderOverlay = () => {
-    return (
-      <Positioned
-        positionMy="left-15 top"
-        positionAt="center bottom"
-        collision="none"
-        positionTarget={this.refs.imListButton}
-        isOpen={this.state.overlayShown}
-        >
+    if (this.state.overlayShown) {
+      return (
         <Overlay
           me={this.props.me}
           agents={this.props.agents}
@@ -144,8 +138,8 @@ export class HeaderWidget extends React.Component {
           dispatch={this.props.dispatch}
           handleClickParticipant={this.handleClickParticipant}
           />
-      </Positioned>
-    );
+      );
+    }
   };
 
   render() {
