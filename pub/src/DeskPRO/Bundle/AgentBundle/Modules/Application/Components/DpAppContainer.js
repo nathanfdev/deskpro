@@ -58,7 +58,7 @@ export class DpAppContainer extends React.Component {
     // dispatch hashChanged() to track the initial hash value
     dispatch(hashChanged(window.location.hash));
 
-    if (userStatus.get('isLoading')) {
+    if (userStatus.get('isLoading') || (userStatus.get('isError') && window.location.pathname !== '/agent/login')) {
       return <DpAppLoading />;
     }
 
