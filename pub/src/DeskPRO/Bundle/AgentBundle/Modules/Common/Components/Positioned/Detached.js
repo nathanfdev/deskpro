@@ -14,6 +14,6 @@ export default class Detached extends Abstract {
     jQuery('body').prepend(this.node);
 
     // Manipulate the DOM here
-    this.renderContent(this.props);
+    this.renderContent();
   }
 }

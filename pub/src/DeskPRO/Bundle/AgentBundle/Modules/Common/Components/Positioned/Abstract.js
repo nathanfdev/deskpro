@@ -41,7 +41,8 @@ export default class Abstract extends React.Component {
    */
   componentWillReceiveProps(newProps) {
     // Re-render the dialog box with the new properties when there's a change
-    this.renderContent(newProps);
+    this.props = newProps;
+    this.renderContent();
   }
 
   /**
@@ -111,12 +112,11 @@ export default class Abstract extends React.Component {
 
   /**
    * Render the contents of the dialog
-   * @param  {Object} props The props to use
    * @return {void}
    */
-  renderContent(props) {
+  renderContent() {
     // Render the component with react, or don't if the prop changes
-    if (props.isOpen) {
+    if (this.props.isOpen) {
       // Put the element inside a div that we can position
       React.render(<div className="positioned-element">{this.props.children}</div>, this.node);
       this.updatePosition();
