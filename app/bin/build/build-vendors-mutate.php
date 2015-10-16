@@ -133,8 +133,22 @@ class VendorMutate
 
         file_put_contents($path, $file);
     }
+
+    public function mutateReactFunctions()
+    {
+        $path = DP_ROOT.'/vendor/react/promise/src/functions.php';
+        $file = file_get_contents($path);
+
+        // short array syntax, and this file is auto-included somewhere
+        // even though its unused unless using async stuff
+        $file = str_replace('([])', '(array())', $file);
+        $file = str_replace('= [];', '= array();', $file);
+
+        file_put_contents($path, $file);
+    }
 }
 
 $mutate = new VendorMutate();
 $mutate->mutateDoctrine();
 $mutate->mutateGeoipApi();
+$mutate->mutateReactFunctions();
