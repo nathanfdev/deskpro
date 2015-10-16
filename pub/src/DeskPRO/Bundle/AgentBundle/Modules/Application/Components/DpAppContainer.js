@@ -17,11 +17,9 @@ import { hashChanged } from '../../Application/Actions/routingActions';
 import { Router, Route, Redirect } from 'react-router';
 import Jquery from 'jquery';
 
-@connect((state) => {
-  return {
-    userStatus: meStateSelector.statusSel(state)
-  };
-})
+@connect(state => ({
+  userStatus: meStateSelector.statusSel(state)
+}))
 export class DpAppContainer extends React.Component {
 
   static propTypes = {
