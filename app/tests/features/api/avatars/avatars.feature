@@ -11,6 +11,7 @@ Feature: /avatars/* endpoints
     When I send a GET request to "/api/v2/avatars/<target>/1"
     And the response status code should be 200
     And the JSON node "url" should exist
+    And the JSON node "is_fallback" should exist
     And the JSON node "url_pattern" should exist
     And the JSON node "url_pattern" should contain "{{IMG_SIZE}}"
 

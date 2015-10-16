@@ -42,6 +42,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class AvatarsController extends BaseController
 {
+    const DEFAULT_SIZE = 80;
+
     /**
      * @ApiDoc(
      *      description="Get avatar",
@@ -84,10 +86,12 @@ class AvatarsController extends BaseController
 
         /* @var \DeskPRO\Bundle\AppBundle\Content\AvatarResolver $avatarResolver */
         $avatarResolver = $this->get('avatar_resolver');
+        $avatarResolver->setUseGravatar(false);
 
         $data = [
-            'url'         => $avatarResolver->getAvatar($targetEntity),
+            'url'         => $avatarResolver->getAvatar($targetEntity, self::DEFAULT_SIZE, $isFallback),
             'url_pattern' => $avatarResolver->getAvatarPattern($targetEntity, '{{IMG_SIZE}}'),
+            'is_fallback' => $isFallback,
         ];
         if ($targetEntity instanceof Person) {
             $data['gravatar'] = $targetEntity->getGravatarUrl();
