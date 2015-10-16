@@ -82,7 +82,7 @@ class AvatarsController extends BaseController
     {
         $targetEntity = $this->findOr404('DeskPRO:'.ucfirst($target), $id, 'Target entity not found');
 
-        /* @var \DeskPRO\Bundle\AppBundle\Content\AvatarResolver $avatar */
+        /* @var \DeskPRO\Bundle\AppBundle\Content\AvatarResolver $avatarResolver */
         $avatarResolver = $this->get('avatar_resolver');
 
         $data = [
