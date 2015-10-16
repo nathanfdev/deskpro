@@ -21,9 +21,3 @@ export const setSidebarMode = createAction(
     return mode;
   }
 );
-
-export function transitionTo(pathname, query = null, state = null) {
-  return dispatch => {
-    dispatch(doTransitionTo([pathname, query, state]));
-  };
-}
