@@ -43,7 +43,7 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\TokenExchangeAbuseCheck;
 use DpTest\PortalTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class RateLimitEventListenerTest extends PortalTestCase
+class CaptchaEventListenerTest extends PortalTestCase
 {
     protected function getRateLimitMaxAttempts($type)
     {
@@ -91,16 +91,10 @@ class RateLimitEventListenerTest extends PortalTestCase
 
             // no recommendations should be made (we are always under limit here)
             $this->assertFalse($event->isCaptchaRecommended());
-            $this->assertFalse($event->isLockoutRecommended());
-            $this->assertFalse($event->isResponseRecommended());
-            $this->assertNull($event->getRecommendedResponse());
         }
 
         // on the next check, we will hit the limit, and there should be a captcha recommended
         $this->get('anti_abuse')->check($event);
         $this->assertTrue($event->isCaptchaRecommended());
-        $this->assertFalse($event->isLockoutRecommended());
-        $this->assertFalse($event->isResponseRecommended());
-        $this->assertNull($event->getRecommendedResponse());
     }
 }

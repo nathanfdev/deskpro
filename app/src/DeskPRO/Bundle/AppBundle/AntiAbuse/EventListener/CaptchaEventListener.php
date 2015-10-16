@@ -41,7 +41,7 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\AntiAbuseEvent;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class RateLimitEventListener implements EventSubscriberInterface
+class CaptchaEventListener implements EventSubscriberInterface
 {
     /**
      * @var EntityManager

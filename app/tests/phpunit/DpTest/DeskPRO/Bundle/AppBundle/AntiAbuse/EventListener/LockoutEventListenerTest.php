@@ -71,7 +71,6 @@ class LockoutEventListenerTest extends PortalTestCase
         $event = new LoginAbuseCheck($person, $ip);
         $event->markAsCheckOnly(); // checking state only
         $this->get('anti_abuse')->check($event);
-        $this->assertFalse($event->isCaptchaRecommended());
         $this->assertFalse($event->isLockoutRecommended());
         $this->assertFalse($event->isResponseRecommended());
         $this->assertNull($event->getRecommendedResponse());
@@ -104,7 +103,6 @@ class LockoutEventListenerTest extends PortalTestCase
         $event->markAsCheckOnly(); // checking state only
 
         $this->get('anti_abuse')->check($event);
-        $this->assertFalse($event->isCaptchaRecommended());
         $this->assertTrue($event->isLockoutRecommended());
         $this->assertTrue($event->isResponseRecommended());
         $this->assertInstanceOf(Response::class, $event->getRecommendedResponse());
