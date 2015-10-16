@@ -1,10 +1,29 @@
 import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 
-export const emailChange = createAction('LOGIN_EMAIL_CHANGE');
 export const emailSetError = createAction('LOGIN_EMAIL_SET_ERROR');
-export const passwordChange = createAction('LOGIN_PASSWORD_CHANGE');
 export const passwordSetError = createAction('LOGIN_PASSWORD_SET_ERROR');
+
+export const emailChange = createAction(
+  'LOGIN_EMAIL_CHANGE',
+  value => dispatch => {
+    dispatch(emailSetError(null));
+    dispatch(passwordSetError(null));
+
+    return value;
+  }
+);
+
+export const passwordChange = createAction(
+  'LOGIN_PASSWORD_CHANGE',
+  value => dispatch => {
+    dispatch(emailSetError(null));
+    dispatch(passwordSetError(null));
+
+    return value;
+  }
+);
+
 export const toggleRememberMe = createAction('LOGIN_TOGGLE_REMEMBER_ME');
 export const login = createAction(
   'LOGIN_SUBMIT_FORM',
