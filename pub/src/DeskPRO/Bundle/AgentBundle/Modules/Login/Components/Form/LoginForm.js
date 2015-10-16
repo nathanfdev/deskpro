@@ -4,7 +4,7 @@ import { LeftPanelContainer } from './LeftPanelContainer';
 import { RightPanel } from './RightPanel';
 import { LoginFormFooter } from './LoginFormFooter';
 
-export class LoginFormContainer extends React.Component {
+export class LoginForm extends React.Component {
 
   render() {
     return (
