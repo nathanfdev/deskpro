@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { login } from '../../Actions/loginActions';
+import { emailChange, passwordChange, login } from '../../Actions/loginActions';
 import { DpLogo } from '../DpLogo';
 import { LoginFormHeader } from './LoginFormHeader';
 import { Email } from './Fields/Email';
@@ -14,6 +14,7 @@ import { WrongHelpdesk } from './WarningMajor/WrongHelpdesk';
 import { TimeLocked } from './WarningMajor/TimeLocked';
 
 @connect(state => ({
+  loginState: state.Login.login
 }))
 export class LoginFormContainer extends React.Component {
 
@@ -21,25 +22,12 @@ export class LoginFormContainer extends React.Component {
     dispatch: PropTypes.func.isRequired
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      email: 'example@email.com',
-      password: 'password'
-    };
-  }
-
   onChangeEmail = (event) => {
-    this.setState({
-      email: event.target.value
-    });
+    this.props.dispatch(emailChange(event.target.value));
   };
 
   onChangePassword = (event) => {
-    this.setState({
-      password: event.target.value
-    });
+    this.props.dispatch(passwordChange(event.target.value));
   };
 
   submitForm = (event) => {
@@ -48,6 +36,7 @@ export class LoginFormContainer extends React.Component {
   };
 
   render() {
+    const { loginState } = this.props;
     const hasError = true;
     const loginClassNames = ['dpw-login'];
     if (hasError) {
@@ -78,8 +67,8 @@ export class LoginFormContainer extends React.Component {
 
               <div className="dpw-login-form">
                 <form>
-                  <Email value={this.state.email} onChange={this.onChangeEmail} errorMessage="Looks like this isn't the correct password" />
-                  <Password value={this.state.password} onChange={this.onChangePassword} errorMessage="Wrong password" />
+                  <Email value={loginState.get('email')} onChange={this.onChangeEmail} errorMessage="Looks like this isn't the correct password" />
+                  <Password value={loginState.get('password')} onChange={this.onChangePassword} errorMessage="Wrong password" />
                   <Options />
 
                   <input type="submit" value="Log in to DeskPRO" onClick={this.submitForm} />
