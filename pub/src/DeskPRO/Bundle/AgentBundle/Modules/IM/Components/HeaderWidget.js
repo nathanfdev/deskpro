@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Overlay } from './Overlay';
+
 import { Chat } from './ChatWindow/Chat';
 import { Recent } from './Recent';
-import SimplePositioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Simple';
+// ui
+import * as uiActions from '../Actions/uiActions';
 
 // chats
 import * as chatActions from '../RecordStores/Actions/imChatsActions';
@@ -29,10 +30,10 @@ import { myDepartmentsSelector, myDepartmentsStatusSelector } from 'DeskPRO/Bund
   departments: myDepartmentsSelector(state),
   recentChats: recentChatsSelector(state),
 
-  teamsStatus: recentChatsStatusSelector(state),
+  teamsStatus: myAgentTeamsStatusSelector(state),
   agentsStatus: agentsStatusSelector(state),
   departmentsStatus: myDepartmentsStatusSelector(state),
-  recentChatsStatus: myAgentTeamsStatusSelector(state)
+  recentChatsStatus: recentChatsStatusSelector(state)
 }))
 export class HeaderWidget extends React.Component {
   static propTypes = {
@@ -52,7 +53,6 @@ export class HeaderWidget extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      overlayShown: false,
       chating: false
     };
   }
@@ -68,8 +68,7 @@ export class HeaderWidget extends React.Component {
   onClick = () => {
     const oldState = this.state;
     const newState = {...oldState};
-    newState.overlayShown = !this.state.overlayShown;
-    newState.chating = this.state.chating;
+    this.props.dispatch(uiActions.toggleOverlay());
     this.setState(newState);
   };
 
@@ -84,7 +83,6 @@ export class HeaderWidget extends React.Component {
     const oldState = this.state;
     const newState = {...oldState};
     newState.chating = true;
-    newState.overlayShown = false;
     this.setState(newState);
   };
 
@@ -126,37 +124,15 @@ export class HeaderWidget extends React.Component {
       : <span className="chat-avatar-loading"><img src="/web/spinner.gif" style={{width: 20 + 'px', height: 20 + 'px'}}/> Loading recent agents... </span>;
   };
 
-  renderOverlay = () => {
-    return (
-      <SimplePositioned
-        positionMy="left-15 top"
-        positionAt="center bottom"
-        collision="none"
-        positionTarget={this.refs.imListButton}
-        isOpen={this.state.overlayShown}
-        >
-        <Overlay
-          me={this.props.me}
-          agents={this.props.agents}
-          teams={this.props.teams}
-          departments={this.props.departments}
-          dispatch={this.props.dispatch}
-          handleClickParticipant={this.handleClickParticipant}
-          />
-      </SimplePositioned>
-    );
-  };
-
   render() {
     return (
-      <div className="agent-ims">
-        <a href="#" onClick={this.onClick} ref="imListButton" className="show-more">
+      <div className="agent-ims" id="im-button">
+        <a href="#" onClick={this.onClick} className="show-more">
             <span>
                 IMs <i className="fa fa-angle-down"></i>
             </span>
         </a>
         { this.renderRecent() }
-        { this.renderOverlay() }
         { this.renderChat() }
       </div>
     );

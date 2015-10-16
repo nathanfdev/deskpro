@@ -10,6 +10,7 @@ import { PublishApp } from '../../Publish/Components/PublishApp';
 import TicketsApp from '../../Tickets/Components/TicketsApp';
 import TasksApp from '../../Tasks/Components/TasksApp';
 import TestApp from '../../Test/Components/TestApp';
+import { IMContainer } from '../../IM/Components/IMContainer';
 import * as AppActions from '../../Application/Actions/AppActions';
 import { hashChanged } from '../../Application/Actions/routingActions';
 
@@ -56,18 +57,21 @@ export class DpAppContainer extends React.Component {
     const basePath = this.workOutBasePath();
     const defaultPath = `${basePath}/tasks`;
     return (
-      <Router history={history}>
-        <Redirect from={basePath} to={defaultPath}/>
-        <Route path={basePath} component={ReactRouterWrapper}>
-          <Route name="crm" path="crm" component={CrmApp}/>
-          <Route name="chat" path="chat" component={ChatApp}/>
-          <Route name="tickets" path="tickets" component={TicketsApp}/>
-          <Route name="tasks" path="tasks" component={TasksApp}/>
-          <Route name="publish" path="publish" component={PublishApp}/>
-          <Route name="feedback" path="feedback" component={FeedbackApp}/>
-          <Route name="test" path="test" component={TestApp}/>
-        </Route>
-      </Router>
+      <div>
+        <Router history={history}>
+          <Redirect from={basePath} to={defaultPath}/>
+          <Route path={basePath} component={ReactRouterWrapper}>
+            <Route name="crm" path="crm" component={CrmApp}/>
+            <Route name="chat" path="chat" component={ChatApp}/>
+            <Route name="tickets" path="tickets" component={TicketsApp}/>
+            <Route name="tasks" path="tasks" component={TasksApp}/>
+            <Route name="publish" path="publish" component={PublishApp}/>
+            <Route name="feedback" path="feedback" component={FeedbackApp}/>
+            <Route name="test" path="test" component={TestApp}/>
+          </Route>
+        </Router>
+        <IMContainer/>
+      </div>
     );
   }
 }
