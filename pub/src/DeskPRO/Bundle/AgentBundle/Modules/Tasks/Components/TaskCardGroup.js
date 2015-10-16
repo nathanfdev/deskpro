@@ -27,15 +27,15 @@ const listTarget = {
 export default class TaskCardGroup extends React.Component {
   static propTypes = {
     divider: PropTypes.any,
-    departments: PropTypes.array,
-    teams: PropTypes.array,
-    agents: PropTypes.array,
+    departments: PropTypes.object,
+    teams: PropTypes.object,
+    agents: PropTypes.object,
     dispatch: PropTypes.func,
     editTask: PropTypes.func,
     updateMassActions: PropTypes.func,
     actionable: PropTypes.array,
     tickets: PropTypes.object,
-    projects: PropTypes.array,
+    projects: PropTypes.object,
   }
 
   constructor(props) {
@@ -72,7 +72,7 @@ export default class TaskCardGroup extends React.Component {
                             toggleDone={this.props.toggleDone.bind(this)} source={this.props.source}
                             dispatch={_this.props.dispatch.bind(_this)} editTask={_this.props.editTask.bind(_this)}
                             updateMassActions={_this.props.updateMassActions.bind(_this)}
-                            selected={_this.props.actionable.indexOf(object.get('id')) !== -1} tickets={this.props.tickets}
+                            selected={_this.props.actionable && _this.props.actionable.indexOf(object.get('id')) !== -1} tickets={this.props.tickets}
                             moveCard={this.moveCard.bind(this)} order={this.props.order}
                             toggleAssignWindow={_this.props.toggleAssignWindow.bind(_this)} />
                 </span>);

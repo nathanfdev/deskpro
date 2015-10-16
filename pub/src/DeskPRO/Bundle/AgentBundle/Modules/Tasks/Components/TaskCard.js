@@ -47,12 +47,12 @@ const TaskCard = React.createClass({
 
   propTypes: {
     task: React.PropTypes.object,
-    projects: React.PropTypes.array,
+    projects: React.PropTypes.object,
     linked_items: React.PropTypes.object,
-    departments: React.PropTypes.array,
-    teams: React.PropTypes.array,
+    departments: React.PropTypes.object,
+    teams: React.PropTypes.object,
     tickets: React.PropTypes.object,
-    agents: React.PropTypes.array,
+    agents: React.PropTypes.object,
     source: React.PropTypes.string,
     connectDragSource: React.PropTypes.func,
     connectDropTarget: React.PropTypes.func,
@@ -214,13 +214,13 @@ const TaskCard = React.createClass({
     if (task.has('agents') && task.get('agents').size > 0) {
       // We assume one assignment for now, though we will need to support more later
       const agentId = task.get('agents')[0];
-      assignee = agents[agentId];
+      assignee = agents.get(agentId);
     } else if (task.has('teams') && task.get('teams').size > 0) {
       const teamId = task.get('teams')[0];
-      assignee = teams[teamId];
+      assignee = teams.get(teamId);
     } else if (task.has('departments') && task.get('departments').size > 0) {
       const departmentId = task.get('departments')[0];
-      assignee = departments[departmentId];
+      assignee = departments.get(departmentId);
     }
 
     const titleClass = task.get('is_done', false) ? 'dpwd--card-title strikethrough' : 'dpwd--card-title';
@@ -290,10 +290,10 @@ const TaskCard = React.createClass({
                 <input type="text" name="due-date" className="due-date-field" ref={dueField} disabled="disabled"/>
               </span>
 
-             {task.get('project') && projects[task.get('project')] ? <span>
+             {task.get('project') && projects.has(task.get('project')) ? <span>
                 <span className="dpw--card-disc"/>
                 <span className="dpwd--card-line-item">
-                  <i className="fa fa-book"/> {projects[task.get('project')].title}
+                  <i className="fa fa-book"/> {projects.get(task.get('project')).get('title')}
                 </span>
               </span>
                : ''}

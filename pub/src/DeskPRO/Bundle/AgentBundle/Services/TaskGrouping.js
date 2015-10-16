@@ -493,8 +493,8 @@ export default class TaskGrouping {
     let ticketDivider = false;
     if (object.get('linked_tickets') && object.get('linked_tickets').length > 0) {
       object.get('linked_tickets').forEach((item) => {
-        if (this.links[item] && this.links[item].ticket && ticketDivider === false) {
-          ticketDivider = this.tickets[this.links[item].ticket].subject;
+        if (this.tickets.has(item)) {
+          ticketDivider = this.tickets.get(item).get('subject');
         }
       });
     }

@@ -562,6 +562,7 @@ export class TasksListFrame extends React.Component {
                             editTask={this.editTask.bind(this)}
                             updateMassActions={this.updateMassActions.bind(this)}
                             order={this.state.order}
+                            actionable={this.state.actionable}
                             toggleAssignWindow={this.toggleAssignWindow.bind(this)}
                             moveCard={this.moveCard.bind(this)} />
           : '' }

@@ -15,6 +15,10 @@ import * as TaskActions from '../Actions/TaskListActions';
 import { loadTickets } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/RecordStores/Actions/ticketActions';
 
 import { createTicketRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/RecordStores/Selectors/ticketSelectors';
+import { allProjectsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/projectSelectors';
+import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
+import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
+import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
 
 const requestId = 'taskListFrame';
 const ticketsSelector = createTicketRequestSelectors(requestId);
@@ -30,19 +34,20 @@ const ticketsSelector = createTicketRequestSelectors(requestId);
   // departmentList: state.Tasks.departmentList,
   // dpWindow: state.Application.dpWindow,
   // status: statusFilteredTasksSelector(state),
-  // projects: allProjectsSelector(state),
-  // agents: agentsSelector(state),
-  // agentTeams: agentTeamsSelector(state),
-  // departments: allDepartmentsSelector(state),
+  projects: allProjectsSelector(state),
+  agents: agentsSelector(state),
+  teams: agentTeamsSelector(state),
+  departments: allDepartmentsSelector(state),
   tickets: ticketsSelector.recordsSel(state),
   ticketsStatus: ticketsSelector.statusSel(state)
 }))
 
 export default class TaskListContents extends React.Component {
   static propTypes = {
+    actionable: React.PropTypes.array,
     agentList: React.PropTypes.object,
     agents: React.PropTypes.object,
-    agentTeams: React.PropTypes.object,
+    teams: React.PropTypes.object,
     children: React.PropTypes.any,
     departmentList: React.PropTypes.object,
     departments: React.PropTypes.object,
@@ -86,11 +91,6 @@ export default class TaskListContents extends React.Component {
       massActionable: {},
       loadedAll: false
     };
-
-    this.agents = [];
-    this.teams = [];
-    this.departments = [];
-    this.projects = [];
   }
 
   componentDidMount() {
@@ -134,7 +134,7 @@ export default class TaskListContents extends React.Component {
 
   render() {
     // Missing lists
-    const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, {}, this.props.linkedItems, this.props.tickets);
+    const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, {}, this.props.tickets);
     const columnField = this.props.order;
     const rawGroupings = grouping.getRawGroupings(columnField, this.state.direction);
     const source = this.props.source || '';
@@ -154,13 +154,13 @@ export default class TaskListContents extends React.Component {
                                dispatch={this.props.dispatch.bind(this)}
                                updateField={group.updateField}
                                updateValue={group.updateValue}
-                               teams={this.teams} projects={this.projects}
-                               departments={this.departments} agents={this.agents}
+                               teams={this.props.teams} projects={this.props.projects}
+                               departments={this.props.departments} agents={this.props.agents}
                                tickets={this.props.tickets}
                                toggleDone={this.props.toggleDone}
                                editTask={this.props.editTask}
                                updateMassActions={this.props.updateMassActions}
-                               actionable={this.state.actionable}
+                               actionable={this.props.actionable}
                                divider={group.title}
                                order={this.state.order}
                                toggleAssignWindow={this.props.toggleAssignWindow}
