@@ -209,6 +209,10 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
             $lang_codes
         );
 
+        if (!$header_lang) {
+            return;
+        }
+
         // make sure the negotiated language was a language that was in the request headers
         // it is possible that a language was negotiated that didn't exist in the request
         // (e.g. if the request header had all langs that we do not support).
