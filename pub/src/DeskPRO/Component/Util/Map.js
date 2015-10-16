@@ -1,6 +1,6 @@
 import objGet from 'lodash/object/get';
-import isObject from 'lodash/lang/isArray';
-import isArray from 'lodash/lang/isObject';
+import isArray from 'lodash/lang/isArray';
+import isObject  from 'lodash/lang/isObject';
 import Immutable from 'immutable';
 
 /**

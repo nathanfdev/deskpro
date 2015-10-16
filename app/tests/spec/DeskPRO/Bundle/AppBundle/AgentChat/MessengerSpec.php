@@ -65,14 +65,14 @@ class MessengerSpec extends ObjectBehavior
                                        Department $department,
                                        AgentTeam $team
     ) {
-        $creator->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_PERSON);
-        $alice->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_PERSON);
-        $bob->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_PERSON);
+        $creator->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_AGENT);
+        $alice->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_AGENT);
+        $bob->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_AGENT);
         $department->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_DEPARTMENT);
         $team->getChatableType()->willReturn(Chatable::PARTICIPANT_TYPE_TEAM);
         $participants = [$alice, $bob, $department, $team];
         $this->createChat($participants, Chatable::PARTICIPANT_TYPE_GROUP)->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\Entity\AgentChat');
-        $this->createChat([$alice, $bob], Chatable::PARTICIPANT_TYPE_PERSON)->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\Entity\AgentChat');
+        $this->createChat([$alice, $bob], Chatable::PARTICIPANT_TYPE_AGENT)->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\Entity\AgentChat');
         $this->createChat([$department], Chatable::PARTICIPANT_TYPE_DEPARTMENT)->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\Entity\AgentChat');
         $this->createChat([$team], Chatable::PARTICIPANT_TYPE_TEAM)->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\Entity\AgentChat');
     }

@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -111,6 +112,13 @@ class AgentChat extends DomainObject implements PersonList
      */
     protected $messages;
 
+    protected $allowedTypes = [
+        Chatable::PARTICIPANT_TYPE_AGENT,
+        Chatable::PARTICIPANT_TYPE_TEAM,
+        Chatable::PARTICIPANT_TYPE_DEPARTMENT,
+        Chatable::PARTICIPANT_TYPE_GROUP,
+    ];
+
     /**
      * class constructor, insures that date_created equals now.
      */
@@ -143,6 +151,10 @@ class AgentChat extends DomainObject implements PersonList
      */
     public function setType($type)
     {
+        if (!in_array($type, $this->allowedTypes)) {
+            $err = 'Used invalid Chatable type in AgentChat::setType. Should be one of %s';
+            throw new WrongChatableTypeException(sprintf($err, implode(',', $this->allowedTypes)));
+        }
         $this->type = $type;
     }
 
@@ -219,7 +231,7 @@ class AgentChat extends DomainObject implements PersonList
         $participant = new AgentChatParticipant();
         $type        = $participantPrototype->getChatableType();
         switch ($type) {
-            case Chatable::PARTICIPANT_TYPE_PERSON;
+            case Chatable::PARTICIPANT_TYPE_AGENT;
                 /* @var Person $participantPrototype */
                 $participant->setPerson($participantPrototype);
                 break;

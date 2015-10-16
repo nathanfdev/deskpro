@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import { pureRender } from 'Ampliflux';
 import { connect } from 'react-redux';
-import { updateHashState } from '../../../Application/Actions/routingActions';
+import { updateRoutingState } from '../../../Application/Actions/routingActions';
 
 
 class BaseList extends Component {
@@ -17,6 +17,16 @@ class BaseList extends Component {
         <a className={classes} href="#">{count}</a>
       </div>
     );
+  }
+}
+
+export class ListSection extends Component {
+  render() {
+    return (
+      <section className="sidebar-list">
+        {this.props.children}
+      </section>
+    )
   }
 }
 
@@ -80,7 +90,7 @@ export class ListItemStatefulContainer extends Component {
       // decorating original "onClick" with additional URL state saving functionality
       onClick: function(event) {
         props.onClick(event);
-        props.dispatch(updateHashState(props.groupId, 'active', props.itemId));
+        props.dispatch(updateRoutingState(props.groupId, 'active', props.itemId));
       }
     };
 

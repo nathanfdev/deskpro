@@ -1,5 +1,9 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 
+@connect(state => ({
+  dpWindow: state.Application.dpWindow
+}))
 export class AppContainer extends React.Component {
 
   static propTypes = {

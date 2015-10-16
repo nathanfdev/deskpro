@@ -17,7 +17,7 @@ export default createReducer(initialState, {
     const newHashState = stateFromString(payload.substring(1));
     let next = state;
 
-    // When we update window.location.hash from updateHashState() action reducer and
+    // When we update window.location.hash from updateRoutingState() action reducer and
     // window.onhashchange() event is fired, we don't actually need to update state
     // as state and hash are already in sync.
     //
@@ -33,7 +33,7 @@ export default createReducer(initialState, {
 
     return next;
   },
-  [actions.updateHashState]: (state, {component, option, value}) => {
+  [actions.updateRoutingState]: (state, {component, option, value}) => {
     let next = state;
 
     if (!next.hasIn(['hash', component])) {

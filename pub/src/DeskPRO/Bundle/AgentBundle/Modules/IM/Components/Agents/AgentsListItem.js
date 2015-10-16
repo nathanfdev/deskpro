@@ -5,7 +5,7 @@ export class AgentsListItem extends React.Component {
   static propTypes = {
     agent: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
-    highlight: PropTypes.string.isRequired || PropTypes.bool.isRequired,
+    highlight: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
     handleClickParticipant: PropTypes.func.isRequired
   };
 

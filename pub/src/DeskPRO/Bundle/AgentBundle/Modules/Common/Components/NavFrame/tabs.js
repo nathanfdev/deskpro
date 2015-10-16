@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { updateHashState } from '../../../Application/Actions/routingActions';
+import { updateRoutingState } from '../../../Application/Actions/routingActions';
 import { connect } from 'react-redux';
 import { routingStateSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
 
@@ -93,7 +93,7 @@ export class TabsPaneStatefulContainer extends TabsPane {
     const parentHandler = super.activate(index);
 
     return e => {
-      this.props.dispatch(updateHashState(this.props.id, 'active', index));
+      this.props.dispatch(updateRoutingState(this.props.id, 'active', index));
       parentHandler(e);
     };
   }
