@@ -10,7 +10,8 @@ const ViewSwitcherDropdown = React.createClass({
   propTypes: {
     currentViewMode: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired,
-    toggleDropdown: PropTypes.func.isRequired
+    toggleDropdown: PropTypes.func.isRequired,
+    toggleOptionsMenu: PropTypes.func.isRequired
   },
 
   mixins: [require('react-onclickoutside')],
@@ -30,21 +31,19 @@ const ViewSwitcherDropdown = React.createClass({
     return (
       <Menu>
         <Item
+          label="Card view"
           isActive={currentViewMode === constants.VIEW_MODE_CARD}
           checked={currentViewMode === constants.VIEW_MODE_CARD}
           onClick={this.toggleView.bind(this, constants.VIEW_MODE_CARD)}
           icon="list"
-          >
-          Card view
-        </Item>
+          />
         <Item
+          label="Table view"
           isActive={currentViewMode === constants.VIEW_MODE_TABLE}
           checked={currentViewMode === constants.VIEW_MODE_TABLE}
           onClick={this.toggleView.bind(this, constants.VIEW_MODE_TABLE)}
           icon="table"
-          >
-          Table view
-        </Item>
+          />
         <MenuFooter>
           <div className="dpw-navigation-dropdown-options-link">
             <a href="#" onClick={toggleOptionsMenu}>View Options <i className="fa fa-cog"></i></a>
