@@ -11,6 +11,6 @@ export default class Simple extends Abstract {
     this.node = ReactDOM.findDOMNode(this);
 
     // Manipulate the DOM here
-    this.renderContent(this.props);
+    this.renderContent();
   }
 }
