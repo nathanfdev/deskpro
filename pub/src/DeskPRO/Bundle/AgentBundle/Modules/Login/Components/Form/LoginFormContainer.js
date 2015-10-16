@@ -19,6 +19,7 @@ import { TimeLocked } from './WarningMajor/TimeLocked';
 export class LoginFormContainer extends React.Component {
 
   static propTypes = {
+    loginState: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
   };
 
