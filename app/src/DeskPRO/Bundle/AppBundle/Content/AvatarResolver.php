@@ -75,6 +75,24 @@ class AvatarResolver
     }
 
     /**
+     * @param mixed  $obj
+     * @param string $placeholder
+     *
+     * @return null|string
+     */
+    public function getAvatarPattern($obj, $placeholder)
+    {
+        // Using an intermediate value instead of the passed $placeholder to prevent
+        // router from encoding special URL character of the original $placeholder
+        $safeSizePlaceholder = '_____SAFE_PLACEHOLDER_____';
+
+        $pattern = $this->getAvatar($obj, $safeSizePlaceholder);
+        $pattern = str_replace($safeSizePlaceholder, $placeholder, $pattern);
+
+        return $pattern;
+    }
+
+    /**
      * @param Person $person
      * @param int    $size
      *
