@@ -6,7 +6,6 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import { combineReducerHierarchy } from 'Ampliflux';
 import * as ampMiddleware from 'Ampliflux/middleware';
-import BrowserHistory from 'react-router/lib/BrowserHistory';
 import AppReducers from './AgentApp_Reducers.js';
 import { DpAppContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/DpAppContainer';
 import { batchedUpdatesMiddleware } from 'redux-batched-updates';
@@ -68,13 +67,11 @@ export default class AgentApp {
       }
     };
 
-    const hist = new BrowserHistory();
-
     ReactDOM.render(
       <div>
         <Provider store={store}>
           <IntlProvider locale={window.DP_LOCALE} messages={window.DP_LANG}>
-            <DpAppContainer {...intlData} history={hist} />
+            <DpAppContainer {...intlData} />
           </IntlProvider>
         </Provider>
       </div>,

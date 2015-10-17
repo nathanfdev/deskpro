@@ -14,29 +14,18 @@ import { WelcomeApp } from '../../Welcome/Components/WelcomeApp';
 import { ExampleApp } from '../../Example/Components/ExampleApp';
 import { loadMe } from '../RecordStores/Actions/meActions';
 import { hashChanged } from '../../Application/Actions/routingActions';
-import Jquery from 'jquery';
+import createBrowserHistory from 'history/lib/createBrowserHistory';
 
 @connect()
 export class DpAppContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired
+    dispatch: PropTypes.func.isRequired
   };
 
   constructor(props) {
     super(props);
     props.dispatch(loadMe());
-
-    Jquery.ajaxSetup({
-      statusCode: {
-        401: function() {
-          if (window.location.pathname !== '/agent/login') {
-            window.location.href = '/agent/login';
-          }
-        }
-      }
-    });
   }
 
   workOutBasePath() {
@@ -46,7 +35,7 @@ export class DpAppContainer extends React.Component {
   }
 
   render() {
-    const { history, dispatch } = this.props;
+    const { dispatch } = this.props;
 
     // dispatch hashChanged() when hash is changed to bind it to the redux state
     window.onhashchange = () => dispatch(hashChanged(window.location.hash));
@@ -56,6 +45,7 @@ export class DpAppContainer extends React.Component {
 
     const basePath = this.workOutBasePath();
     const defaultPath = `${basePath}/tasks`;
+    const history = createBrowserHistory();
 
     return (
       <Router history={history}>
