@@ -7,7 +7,7 @@ import { meStateSelector } from '../RecordStores/Selectors/meSelectors';
 @connect(state => ({
   userStatus: meStateSelector.statusSel(state)
 }))
-export class ReactRouterWrapper extends React.Component {
+export class RouteWrapperContainer extends React.Component {
 
   static propTypes = {
     children: PropTypes.object.isRequired,

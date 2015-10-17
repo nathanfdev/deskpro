@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Router, Route, Redirect } from 'react-router';
 import { connect } from 'react-redux';
-import { ReactRouterWrapper } from './ReactRouterWrapper';
+import { RouteWrapperContainer } from './RouteWrapperContainer';
 import TicketsApp from '../../Tickets/Components/TicketsApp';
 import TasksApp from '../../Tasks/Components/TasksApp';
 import { FeedbackApp } from '../../Feedback/Components/FeedbackApp';
@@ -59,7 +59,7 @@ export class DpAppContainer extends React.Component {
     return (
       <Router history={history}>
         <Redirect from={basePath} to={defaultPath}/>
-        <Route path={basePath} component={ReactRouterWrapper}>
+        <Route path={basePath} component={RouteWrapperContainer}>
           <Route name="crm" path="crm" component={CrmApp}/>
           <Route name="chat" path="chat" component={ChatApp}/>
           <Route name="tickets" path="tickets" component={TicketsApp}/>
