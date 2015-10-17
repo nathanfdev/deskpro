@@ -70,6 +70,7 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
             'Application\\DeskPRO\\Command\\AgentsCommand',
             'Application\\DeskPRO\\Command\\AsseticCommand',
             'Application\\DeskPRO\\Command\\CheckBlobStorageCommand',
+            'Application\\DeskPRO\\Command\\CollectEmailCommand',
             'Application\\DeskPRO\\Command\\DbCollationChangeCommand',
             'Application\\DeskPRO\\Command\\DecodeTacCommand',
             'Application\\DeskPRO\\Command\\DefaultDataCommand',

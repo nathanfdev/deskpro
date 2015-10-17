@@ -59,13 +59,12 @@ const OrderByDropdown = React.createClass({
       sortOptions.map((option, index)=>
           <Item
             key={index}
+            label={option.label}
             isActive={currentSortMode.field === option.field}
             checked={currentSortMode.field === option.field}
             onClick={this.toggleListSort.bind(this, option)}
             icon={option.icon}
-          >
-            {option.label}
-          </Item>
+          />
       )
     );
   },

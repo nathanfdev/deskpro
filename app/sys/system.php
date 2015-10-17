@@ -251,6 +251,7 @@ abstract class AbstractKernel extends BaseKernel
             && !preg_match('#^/admin/start#', $path)
             && !preg_match('#^/admin/login#', $path)
             && !preg_match('#^/agent/login#', $path)
+            && !preg_match('#^/old\-agent/login#', $path)
         ) {
             #------------------------------
             # No license

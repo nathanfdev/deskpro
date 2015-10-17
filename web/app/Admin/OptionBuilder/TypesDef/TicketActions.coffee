@@ -1476,6 +1476,9 @@ define [
               data.tasks.agents.map (agent) -> agents.push agent if agent.perms?.tasks?.use
               _public = options.public
               _public = true if !_public?
+              timezones = []
+              for i in [-12..12]
+                timezones.push {id: i, title: 'UTC ' + (if i >= 0 then '+' else '') + i + ':00'}
 
               return {
                 agents: agents
@@ -1485,17 +1488,21 @@ define [
                 public: _public
                 creator: options.creator
                 assignee: options.assignee
+                timezones: timezones
+                offset: options.offset
               }
 
             getValue: (model = {}, data) ->
+              date = moment(model.date_due).format('YYYY-MM-DD HH:mm') if model.date_due
               return {
                 type: 'CreateTask'
                 options: {
                   title: model.title
-                  date_due: model.date_due
+                  date_due: date if date?
                   public: model.public
                   creator: model.creator
                   assignee: model.assignee
+                  offset: model.offset
                 }
               }
           }

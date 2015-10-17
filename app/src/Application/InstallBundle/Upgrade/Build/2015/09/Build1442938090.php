@@ -35,9 +35,12 @@ class Build1442938090 extends AbstractBuild
 {
     public function run()
     {
-        $this->out('Add usersources.user_permission_group_id');
-        $this->execMutateSql('ALTER TABLE usersources ADD user_permission_group_id INT DEFAULT NULL');
-        $this->execMutateSql('ALTER TABLE usersources ADD CONSTRAINT FK_4E3C994C21AF6383 FOREIGN KEY (user_permission_group_id) REFERENCES usergroups (id) ON DELETE SET NULL');
-        $this->execMutateSql('CREATE INDEX IDX_4E3C994C21AF6383 ON usersources (user_permission_group_id)');
+        $did_do = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1413803749 AND name = 'did_pre_alter'");
+        if (!$did_do) {
+            $this->out('Add usersources.user_permission_group_id');
+            $this->execMutateSql('ALTER TABLE usersources ADD user_permission_group_id INT DEFAULT NULL');
+            $this->execMutateSql('ALTER TABLE usersources ADD CONSTRAINT FK_4E3C994C21AF6383 FOREIGN KEY (user_permission_group_id) REFERENCES usergroups (id) ON DELETE SET NULL');
+            $this->execMutateSql('CREATE INDEX IDX_4E3C994C21AF6383 ON usersources (user_permission_group_id)');
+        }
     }
 }

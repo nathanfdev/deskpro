@@ -246,7 +246,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         if ($category) {
             $this->setModelField('category', $category);
         } else {
-            $this->setModelField('category', -1);
+            $this->setModelField('category', null);
         }
 
         return $this;

@@ -34,27 +34,33 @@ const TaskOrderHover = React.createClass({
       <Item onClick={this.setOrder.bind(this, {order: 'list'})}
             isActive={order === 'list'}
             checked={order === 'list'}
-            icon="list">List</Item>
+            label="List"
+            icon="list"/>
       <Item onClick={this.setOrder.bind(this, {order: 'project'})}
             isActive={order === 'project'}
             checked={order === 'project'}
-            icon="briefcase">Project</Item>
+            label="Project"
+            icon="briefcase"/>
       <Item onClick={this.setOrder.bind(this, {order: 'due'})}
             isActive={order === 'due'}
             checked={order === 'due'}
-            icon="calendar">Due Date</Item>
+            label="Due Date"
+            icon="calendar"/>
       <Item onClick={this.setOrder.bind(this, {order: 'done'})}
             isActive={order === 'done'}
             checked={order === 'done'}
-            icon="calendar">Done Date</Item>
+            label="Done Date"
+            icon="calendar"/>
       <Item onClick={this.setOrder.bind(this, {order: 'created'})}
             isActive={order === 'created'}
             checked={order === 'created'}
-            icon="calendar">Created Date</Item>
+            label="Created Date"
+            icon="calendar"/>
       <Item onClick={this.setOrder.bind(this, {order: 'assignee'})}
             isActive={order === 'assignee'}
             checked={order === 'assignee'}
-            icon="user">Assignee</Item>
+            label="Assignee"
+            icon="user"/>
       <MenuFooter>
         <MenuFooterOptions options={[{id: 'asc', onClick: this.setOrder.bind(this, {direction: 'asc'}), label: 'Asc'},
                                              {id: 'desc', onClick: this.setOrder.bind(this, {direction: 'desc'}), label: 'Desc'}

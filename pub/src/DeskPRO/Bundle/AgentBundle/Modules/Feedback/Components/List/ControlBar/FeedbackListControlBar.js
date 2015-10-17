@@ -13,7 +13,7 @@ export class FeedbackListControlBar extends React.Component {
       orderByDropdownIsExpanded: false,
       filterByDropdownIsExpanded: false,
       viewModeDropdownIsExpanded: false,
-      viewOptionsIsExpanded: false,
+      viewOptionsIsExpanded: false
     };
   }
 
@@ -25,7 +25,7 @@ export class FeedbackListControlBar extends React.Component {
       orderByDropdownIsExpanded: !this.state.orderByDropdownIsExpanded,
       viewModeDropdownIsExpanded: false,
       viewOptionsIsExpanded: false,
-      filterByDropdownIsExpanded: false,
+      filterByDropdownIsExpanded: false
     });
   };
 

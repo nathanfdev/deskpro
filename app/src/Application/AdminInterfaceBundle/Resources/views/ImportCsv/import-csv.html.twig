@@ -246,22 +246,23 @@
 								<span ng-if="importSettings.showExtraMappings.new_custom[$index]">
 									<input type="text" ng-model="importSettings.additionalMappings[$index].title"
 											placeholder="Title">
+									{{ ng_var('importSettings.additionalMappings[$index].handler_class') }}
 									<select
 										ui-select2
 										ng-model="importSettings.additionalMappings[$index].handler_class"
 										style="min-width: 120px"
 										class="no-search"
 									>
-										<option value="Application\DeskPRO\CustomFields\Handler\Text">
+										<option ng-value="text">
 											Text
 										</option>
-										<option value="Application\DeskPRO\CustomFields\Handler\Textarea">
+										<option value="textarea">
 											Textarea
 										</option>
-										<option value="Application\DeskPRO\CustomFields\Handler\Choice">
+										<option value="choice">
 											Choice
 										</option>
-										<option value="Application\DeskPRO\CustomFields\Handler\Date">
+										<option value="date">
 											Date
 										</option>
 									</select>

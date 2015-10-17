@@ -1,0 +1,52 @@
+// The default color scheme
+$base-background: #fff;
+
+.dpw-navigation-dropdown {
+
+  .dpw-navigation-dropdown-item-condensed {
+    padding: 5px 10px 10px 30px;
+    display: block;
+    height: 26px;
+    border-bottom: 1px solid $base-background;
+    margin-top: -1px;
+    position: relative;
+    z-index: 997;
+    .dpw-navigation-dropdown-item-mark {
+      top: 5.5px;
+    }
+    .dpw-navigation-dropdown-item-title {
+      margin-top: 1px;
+    }
+
+    &.dpw-navigation-dropdown-item-white {
+      background: #fff;
+    }
+    &.dpw-navigation-dropdown-item-grey {
+      background: #f7f7f7;
+    }
+    &.dpw-navigation-dropdown-item-greyer {
+      background: #f2f2f2;
+    }
+  }
+
+  .dpw-navigation-dropdown-item-warning:hover {
+    //border: 1px solid #ff5460;
+    color: #fff;
+    background: #ff5460;
+  }
+
+  .dpw-navigation-dropdown-item-lock:hover {
+    //border: 1px solid #484848;
+    color: #fff;
+    background: #484848;
+  }
+
+  .dpw-navigation-dropdown-item-disabled {
+    background: #f7f7f7;
+    color: #686868;
+    .dpw-navigation-dropdown-column-list-status {
+      color: #cecece;
+    }
+  }
+
+}

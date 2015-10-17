@@ -177,7 +177,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
     plugins: [
       new ExtractTextPlugin("[name].css"),
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+        'process.env.NODE_ENV': (isProd ? "\"production\"" : "\"development\"")
       })
     ]
   };

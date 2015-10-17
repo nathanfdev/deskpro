@@ -34,7 +34,7 @@ export class ViewSwitcherContainer extends Component {
     };
     return (
       <ViewModeSwitcher
-        {...this.props}
+        toggleDropdown={toggleDropdown}
         currentViewMode={viewModesData[currentViewMode]}
         ref="viewModeButton"
         >
@@ -46,7 +46,7 @@ export class ViewSwitcherContainer extends Component {
             toggleDropdown={toggleDropdown}
             toggleOptionsMenu={toggleOptionsMenu}
             dispatch={dispatch}
-          />
+            />
         </Positioned>
         <Positioned isOpen={optionsExpanded}
                     positionAt="left bottom"
@@ -54,7 +54,7 @@ export class ViewSwitcherContainer extends Component {
           <FeedbackViewOptions
             currentViewMode={currentViewMode}
             dispatch={dispatch}
-          />
+            />
         </Positioned>
       </ViewModeSwitcher>
     );
