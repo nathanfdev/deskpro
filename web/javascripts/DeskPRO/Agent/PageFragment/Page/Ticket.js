@@ -1207,7 +1207,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					});
 				}
 
-        self.changeManager.updateDataholders();
+        if (keepOpen) {
+          self.changeManager.updateDataholders();
+        }
         ajaxHit = result;
         hitDone();
 			}
