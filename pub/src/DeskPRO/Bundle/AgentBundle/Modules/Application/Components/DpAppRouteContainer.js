@@ -7,7 +7,7 @@ import { meStateSelector } from '../RecordStores/Selectors/meSelectors';
 @connect(state => ({
   userStatus: meStateSelector.statusSel(state)
 }))
-export class RouteWrapperContainer extends React.Component {
+export class DpAppRouteContainer extends React.Component {
 
   static propTypes = {
     children: PropTypes.object.isRequired,
@@ -15,14 +15,14 @@ export class RouteWrapperContainer extends React.Component {
   };
 
   render() {
-    const { userStatus } = this.props;
+    const { userStatus, children } = this.props;
     if (userStatus.get('isLoading') || userStatus.get('isError')) {
       return <DpAppLoading />;
     }
 
     return (
       <DpApp>
-        {this.props.children}
+        {children}
       </DpApp>
     );
   }

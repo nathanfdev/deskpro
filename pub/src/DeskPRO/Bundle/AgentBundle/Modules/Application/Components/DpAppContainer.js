@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import { Router, Route, Redirect } from 'react-router';
 import { connect } from 'react-redux';
-import { RouteWrapperContainer } from './RouteWrapperContainer';
+import { DpAppRouteContainer } from './DpAppRouteContainer';
+import { LoginRouteContainer } from '../../Login/Components/LoginRouteContainer';
 import TicketsApp from '../../Tickets/Components/TicketsApp';
 import TasksApp from '../../Tasks/Components/TasksApp';
 import { FeedbackApp } from '../../Feedback/Components/FeedbackApp';
@@ -59,7 +60,7 @@ export class DpAppContainer extends React.Component {
     return (
       <Router history={history}>
         <Redirect from={basePath} to={defaultPath}/>
-        <Route path={basePath} component={RouteWrapperContainer}>
+        <Route path={basePath} component={DpAppRouteContainer}>
           <Route name="crm" path="crm" component={CrmApp}/>
           <Route name="chat" path="chat" component={ChatApp}/>
           <Route name="tickets" path="tickets" component={TicketsApp}/>
@@ -68,7 +69,7 @@ export class DpAppContainer extends React.Component {
           <Route name="feedback" path="feedback" component={FeedbackApp}/>
           <Route name="example" path="example" component={ExampleApp}/>
         </Route>
-        <Route path={basePath}>
+        <Route path={basePath} component={LoginRouteContainer}>
           <Route name="login" path="login" component={LoginApp}/>
           <Route name="welcome" path="welcome" component={WelcomeApp}/>
         </Route>
