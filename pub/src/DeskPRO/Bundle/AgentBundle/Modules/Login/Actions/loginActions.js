@@ -25,8 +25,11 @@ export const passwordChange = createAction(
 );
 
 export const toggleRememberMe = createAction('LOGIN_TOGGLE_REMEMBER_ME');
+export const setToken = createAction('LOGIN_SET_TOKEN');
 export const login = createAction(
   'LOGIN_SUBMIT_FORM',
-  () => () => DpApi.sendPost('DP_API/login').success(() => window.location.href = '/agent')
+  params => dispatch => DpApi.sendPost('DP_API/api_tokens', params)
+    .success(response => dispatch(setToken(response.data.token)))
 );
+
 export const logout = createAction('LOGOUT');

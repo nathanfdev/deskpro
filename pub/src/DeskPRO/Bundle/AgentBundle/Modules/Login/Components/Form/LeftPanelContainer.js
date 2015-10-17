@@ -31,11 +31,14 @@ export class LeftPanelContainer extends React.Component {
 
   submitForm = (event) => {
     event.preventDefault();
-    const { dispatch } = this.props;
+    const { dispatch, loginState } = this.props;
 
-    dispatch(loginActions.emailSetError('Looks like this isn\'t the correct password'));
-    dispatch(loginActions.passwordSetError('Wrong password'));
-    dispatch(loginActions.login());
+    //dispatch(loginActions.emailSetError('Looks like this isn\'t the correct password'));
+    //dispatch(loginActions.passwordSetError('Wrong password'));
+    dispatch(loginActions.login({
+      email: loginState.get('email'),
+      password: loginState.get('password'),
+    }));
   };
 
   render() {
