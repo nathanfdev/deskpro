@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import { Router, Route, Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import { ReactRouterWrapper } from './ReactRouterWrapper';
-import { DpAppLoading } from './DpAppLoading';
 import TicketsApp from '../../Tickets/Components/TicketsApp';
 import TasksApp from '../../Tasks/Components/TasksApp';
 import { FeedbackApp } from '../../Feedback/Components/FeedbackApp';
@@ -13,19 +12,15 @@ import { LoginApp } from '../../Login/Components/LoginApp';
 import { WelcomeApp } from '../../Welcome/Components/WelcomeApp';
 import { ExampleApp } from '../../Example/Components/ExampleApp';
 import { loadMe } from '../RecordStores/Actions/meActions';
-import { meStateSelector } from '../RecordStores/Selectors/meSelectors';
 import { hashChanged } from '../../Application/Actions/routingActions';
 import Jquery from 'jquery';
 
-@connect(state => ({
-  userStatus: meStateSelector.statusSel(state)
-}))
+@connect()
 export class DpAppContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
-    userStatus: PropTypes.object.isRequired
+    history: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -50,7 +45,7 @@ export class DpAppContainer extends React.Component {
   }
 
   render() {
-    const { userStatus, history, dispatch } = this.props;
+    const { history, dispatch } = this.props;
 
     // dispatch hashChanged() when hash is changed to bind it to the redux state
     window.onhashchange = () => dispatch(hashChanged(window.location.hash));
@@ -58,12 +53,9 @@ export class DpAppContainer extends React.Component {
     // dispatch hashChanged() to track the initial hash value
     dispatch(hashChanged(window.location.hash));
 
-    if (userStatus.get('isLoading') || (userStatus.get('isError') && window.location.pathname !== '/agent/login')) {
-      return <DpAppLoading />;
-    }
-
     const basePath = this.workOutBasePath();
     const defaultPath = `${basePath}/tasks`;
+
     return (
       <Router history={history}>
         <Redirect from={basePath} to={defaultPath}/>
