@@ -12,7 +12,8 @@ export class DpAppRouteContainer extends React.Component {
 
   static propTypes = {
     children: PropTypes.object.isRequired,
-    userStatus: PropTypes.object.isRequired
+    userStatus: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -21,9 +22,7 @@ export class DpAppRouteContainer extends React.Component {
     Jquery.ajaxSetup({
       statusCode: {
         401: function() {
-          if (window.location.pathname !== '/agent/login') {
-            window.location.href = '/agent/login';
-          }
+          props.history.pushState(null, '/index.php/agent/login');
         }
       }
     });
