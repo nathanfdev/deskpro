@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { DpApp } from './DpApp';
 import { DpAppLoading } from './DpAppLoading';
 import { meStateSelector } from '../RecordStores/Selectors/meSelectors';
-import Jquery from 'jquery';
 
 @connect(state => ({
   userStatus: meStateSelector.statusSel(state)
@@ -15,18 +14,6 @@ export class DpAppRouteContainer extends React.Component {
     userStatus: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired
   };
-
-  constructor(props) {
-    super(props);
-
-    Jquery.ajaxSetup({
-      statusCode: {
-        401: function() {
-          props.history.pushState(null, '/index.php/agent/login');
-        }
-      }
-    });
-  }
 
   render() {
     const { userStatus, children } = this.props;
