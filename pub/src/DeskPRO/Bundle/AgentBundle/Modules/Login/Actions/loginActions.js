@@ -35,8 +35,7 @@ export const login = createAction(
       window.location.href = '/agent';
     })
     .error(() => {
-      dispatch(emailSetError('Looks like this isn\'t the correct password'));
-      dispatch(passwordSetError('Wrong password'));
+      dispatch(passwordSetError('Looks like this isn\'t the correct password'));
     })
 );
 
