@@ -29,13 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Hierarchy\HierarchyStructureProcessor;
 use Application\DeskPRO\TicketLayout\LayoutField;
-use Application\DeskPRO\Tickets\TicketCategories;
 use Application\LegacyApiBundle\Controller\Helper\CustomFieldHelper;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
@@ -45,10 +45,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * Operations about Ticket fields.
  *
- * SWG\Resource(
- * 	resourcePath="/ticket_fields",
- * 	description="Operations about Ticket fields",
- * 	basePath="/api"
+ * @SWG\Resource(
+ *    resourcePath="/ticket_fields",
+ *    description="Operations about Ticket fields",
+ *    basePath="/api"
  * )
  */
 class TicketFieldsController extends AbstractController implements ProtectedControllerInterface
@@ -73,12 +73,12 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      * @return Response;
      *
      * SWG\Api(
-     * 	path="/ticket_fields",
+     *    path="/ticket_fields",
      * 	SWG\Operation(
-     * 		method="GET",
-     * 		summary="Get list of ticket fields, including custom fields",
-     * 		notes="",
-     *		type="array",
+     *        method="GET",
+     *        summary="Get list of ticket fields, including custom fields",
+     *        notes="",
+     *        type="array",
      *  )
      * )
      */
@@ -112,7 +112,26 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return Response
-     * @return Response
+     *
+     *
+     * @SWG\Api(
+     *    path="/ticket_fields/{id}",
+     * 	@SWG\Operation(
+     *        method="GET",
+     *        summary="Get custom ticket field by Id",
+     *        notes="",
+     *        type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *                name="id",
+     *                description="Custom field id",
+     *                paramType="path",
+     *                required=true,
+     *                type="integer",
+     *            ),
+     *      )
+     *  )
+     * )
      */
     public function getCustomFieldAction($id)
     {
@@ -140,7 +159,35 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      * @throws \Exception
      *
      * @return Response
-     * @return Response
+     *
+     *
+     * @SWG\Api(
+     *    path="/ticket_fields/{id}",
+     * 	@SWG\Operation(
+     *        method="POST",
+     *        summary="Save custom ticket field by ID",
+     *        notes="All you will pass in this query will be saved",
+     *        type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *                name="id",
+     *                description="Custom field id",
+     *                paramType="path",
+     *                required=true,
+     *                type="integer",
+     *            ),
+     *      )
+     *  )
+     * )
+     * @SWG\Api(
+     *    path="/ticket_fields",
+     * 	@SWG\Operation(
+     *        method="PUT",
+     *        summary="Create custom ticket field",
+     *        notes="All you will pass in this query will be saved",
+     *        type="array",
+     *  )
+     * )
      */
     public function saveCustomFieldAction($id)
     {
@@ -160,14 +207,18 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         $helper->saveFormToField($field, $post);
 
         if ($id) {
-            return $this->createSuccessResponse(array(
-                'field_id' => $field->id,
-            ));
+            return $this->createSuccessResponse(
+                array(
+                    'field_id' => $field->id,
+                )
+            );
         } else {
-            return $this->createSuccessResponse(array(
-                'field_id' => $field->id,
-                $this->generateUrl('api_ticket_fields_get', array('id' => $field->id)),
-            ));
+            return $this->createSuccessResponse(
+                array(
+                    'field_id' => $field->id,
+                    $this->generateUrl('api_ticket_fields_get', array('id' => $field->id)),
+                )
+            );
         }
     }
 
@@ -183,7 +234,26 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return Response
-     * @return Response
+     *
+     *
+     * @SWG\Api(
+     *    path="/ticket_fields/{id}",
+     * 	@SWG\Operation(
+     *        method="DELETE",
+     *        summary="Delete custom field by ID",
+     *        notes="",
+     *        type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *                name="id",
+     *                description="Custom field ID",
+     *                paramType="path",
+     *                required=true,
+     *                type="integer",
+     *            ),
+     *      )
+     *  )
+     * )
      */
     public function deleteCustomFieldAction($id)
     {
@@ -208,28 +278,28 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      *
      * @return Response
      *
-     * SWG\Api(
-     * 	path="/ticket_fields/set-enabled/{field_id}/{is_enabled}",
-     * 	SWG\Operation(
-     * 		method="POST",
-     * 		summary="Set custom field enabled/disabled",
-     * 		notes="",
-     *		type="array",
-     *      SWG\Parameters (
-     *          SWG\Parameter(
-     *				name="id",
-     *				description="Custom field ID",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *          SWG\Parameter(
-     *				name="is_enabled",
-     *				description="Enabled marker",
-     *				paramType="path",
-     *				required=true,
-     *				type="boolean",
-     *			),
+     * @SWG\Api(
+     *    path="/ticket_fields/set-enabled/{field_id}/{is_enabled}",
+     * 	@SWG\Operation(
+     *        method="POST",
+     *        summary="Set custom field enabled/disabled",
+     *        notes="",
+     *        type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *                name="id",
+     *                description="Custom field ID",
+     *                paramType="path",
+     *                required=true,
+     *                type="integer",
+     *            ),
+     *          @SWG\Parameter(
+     *                name="is_enabled",
+     *                description="Enabled marker",
+     *                paramType="path",
+     *                required=true,
+     *                type="boolean",
+     *            ),
      *      )
      *  )
      * )
@@ -261,11 +331,15 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
             $cats[] = $row['object'];
         }
 
-        $data['categories']     = $this->getApiData($cats, false);
-        $data['default_id']     = $ticket_cats->getDefaultCategory() ? $ticket_cats->getDefaultCategory()->getId() : 0;
-        $data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_cat_user_required') ? true : false;
-        $data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_cat_agent_required') ? true : false;
-        $data['enabled']        = $field_manager->isCategoryEnabled();
+        $data['categories']    = $this->getApiData($cats, false);
+        $data['default_id']    = $ticket_cats->getDefaultCategory() ? $ticket_cats->getDefaultCategory()->getId() : 0;
+        $data['user_required'] = $this->settings->get(
+            'core_tickets.field_validation_ticket_cat_user_required'
+        ) ? true : false;
+        $data['agent_required'] = $this->settings->get(
+            'core_tickets.field_validation_ticket_cat_agent_required'
+        ) ? true : false;
+        $data['enabled'] = $field_manager->isCategoryEnabled();
 
         return $this->createApiResponse($data);
     }
@@ -313,8 +387,14 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         # Save validation settings
         #------------------------------
 
-        $this->settings->setSetting('core_tickets.field_validation_ticket_cat_user_required', $this->in->getBoolInt('user_required'));
-        $this->settings->setSetting('core_tickets.field_validation_ticket_cat_agent_required', $this->in->getBoolInt('agent_required'));
+        $this->settings->setSetting(
+            'core_tickets.field_validation_ticket_cat_user_required',
+            $this->in->getBoolInt('user_required')
+        );
+        $this->settings->setSetting(
+            'core_tickets.field_validation_ticket_cat_agent_required',
+            $this->in->getBoolInt('agent_required')
+        );
 
         return $this->createSuccessResponse();
     }
@@ -338,11 +418,15 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
             $cats[] = $row['object'];
         }
 
-        $data['products']       = $this->getApiData($cats, false);
-        $data['default_id']     = $ticket_prods->count() ? $ticket_prods->getDefaultProduct()->getId() : 0;
-        $data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_prod_user_required') ? true : false;
-        $data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_prod_agent_required') ? true : false;
-        $data['enabled']        = $field_manager->isProductEnabled();
+        $data['products']      = $this->getApiData($cats, false);
+        $data['default_id']    = $ticket_prods->getDefaultProduct() ? $ticket_prods->getDefaultProduct()->getId() : 0;
+        $data['user_required'] = $this->settings->get(
+            'core_tickets.field_validation_ticket_prod_user_required'
+        ) ? true : false;
+        $data['agent_required'] = $this->settings->get(
+            'core_tickets.field_validation_ticket_prod_agent_required'
+        ) ? true : false;
+        $data['enabled'] = $field_manager->isProductEnabled();
 
         return $this->createApiResponse($data);
     }
@@ -390,8 +474,14 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         # Save validation settings
         #------------------------------
 
-        $this->settings->setSetting('core_tickets.field_validation_ticket_prod_user_required', $this->in->getBoolInt('user_required'));
-        $this->settings->setSetting('core_tickets.field_validation_ticket_prod_agent_required', $this->in->getBoolInt('agent_required'));
+        $this->settings->setSetting(
+            'core_tickets.field_validation_ticket_prod_user_required',
+            $this->in->getBoolInt('user_required')
+        );
+        $this->settings->setSetting(
+            'core_tickets.field_validation_ticket_prod_agent_required',
+            $this->in->getBoolInt('agent_required')
+        );
 
         return $this->createSuccessResponse();
     }
@@ -409,11 +499,15 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 
         $ticket_works = $this->container->getSystemService('ticket_workflows');
 
-        $data['workflows']      = $this->getApiData($ticket_works->getAll(), false);
-        $data['default_id']     = $ticket_works->getDefaultWorkflow() ? $ticket_works->getDefaultWorkflow()->getId() : 0;
-        $data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_work_user_required') ? true : false;
-        $data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_work_agent_required') ? true : false;
-        $data['enabled']        = $field_manager->isWorkflowEnabled();
+        $data['workflows']     = $this->getApiData($ticket_works->getAll(), false);
+        $data['default_id']    = $ticket_works->getDefaultWorkflow() ? $ticket_works->getDefaultWorkflow()->getId() : 0;
+        $data['user_required'] = $this->settings->get(
+            'core_tickets.field_validation_ticket_work_user_required'
+        ) ? true : false;
+        $data['agent_required'] = $this->settings->get(
+            'core_tickets.field_validation_ticket_work_agent_required'
+        ) ? true : false;
+        $data['enabled'] = $field_manager->isWorkflowEnabled();
 
         return $this->createApiResponse($data);
     }
@@ -463,8 +557,14 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         # Save validation settings
         #------------------------------
 
-        $this->settings->setSetting('core_tickets.field_validation_ticket_work_user_required', $this->in->getBoolInt('user_required'));
-        $this->settings->setSetting('core_tickets.field_validation_ticket_work_agent_required', $this->in->getBoolInt('agent_required'));
+        $this->settings->setSetting(
+            'core_tickets.field_validation_ticket_work_user_required',
+            $this->in->getBoolInt('user_required')
+        );
+        $this->settings->setSetting(
+            'core_tickets.field_validation_ticket_work_agent_required',
+            $this->in->getBoolInt('agent_required')
+        );
 
         return $this->createSuccessResponse();
     }
@@ -482,11 +582,15 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 
         $ticket_pris = $this->container->getSystemService('ticket_priorities');
 
-        $data['priorities']     = $this->getApiData($ticket_pris->getAll(), false);
-        $data['default_id']     = $ticket_pris->getDefaultPriority() ? $ticket_pris->getDefaultPriority()->getId() : 0;
-        $data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_pri_user_required') ? true : false;
-        $data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_pri_agent_required') ? true : false;
-        $data['enabled']        = $field_manager->isPriorityEnabled();
+        $data['priorities']    = $this->getApiData($ticket_pris->getAll(), false);
+        $data['default_id']    = $ticket_pris->getDefaultPriority() ? $ticket_pris->getDefaultPriority()->getId() : 0;
+        $data['user_required'] = $this->settings->get(
+            'core_tickets.field_validation_ticket_pri_user_required'
+        ) ? true : false;
+        $data['agent_required'] = $this->settings->get(
+            'core_tickets.field_validation_ticket_pri_agent_required'
+        ) ? true : false;
+        $data['enabled'] = $field_manager->isPriorityEnabled();
 
         return $this->createApiResponse($data);
     }
@@ -536,23 +640,47 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         # Save validation settings
         #------------------------------
 
-        $this->settings->setSetting('core_tickets.field_validation_ticket_pri_user_required', $this->in->getBoolInt('user_required'));
-        $this->settings->setSetting('core_tickets.field_validation_ticket_pri_agent_required', $this->in->getBoolInt('agent_required'));
+        $this->settings->setSetting(
+            'core_tickets.field_validation_ticket_pri_user_required',
+            $this->in->getBoolInt('user_required')
+        );
+        $this->settings->setSetting(
+            'core_tickets.field_validation_ticket_pri_agent_required',
+            $this->in->getBoolInt('agent_required')
+        );
 
         return $this->createSuccessResponse();
     }
 
     public function convertAction($type)
     {
-        $singular = 'ies' === substr($type, -3) ? (substr($type, 0, -3).'y') : substr($type, 0, -1);
-        if (!in_array($singular, array('category', 'priority', 'workflow', 'product'))) {
-            throw new NotFoundHttpException();
-        }
-
         $rep_layouts = $this->em->getRepository('DeskPRO:TicketLayout');
         $conn        = $this->em->getConnection();
-        /** @var TicketCategories $service */
-        $service = $this->container->getSystemService('ticket_'.$type);
+
+        switch ($type) {
+            case 'category':
+            case 'categories':
+                $service = $this->container->getSystemService('ticket_categories');
+                break;
+
+            case 'priority':
+            case 'priorities':
+                $service = $this->container->getSystemService('ticket_priorities');
+                break;
+
+            case 'workflow':
+            case 'workflows':
+                $service = $this->container->getSystemService('ticket_workflows');
+                break;
+
+            case 'product':
+            case 'products':
+                $service = $this->container->getSystemService('products');
+                break;
+
+            default:
+                throw new NotFoundHttpException();
+        }
 
         $short = array(
             'category' => 'cat',
@@ -560,8 +688,9 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
             'product'  => 'prod',
             'workflow' => 'work',
         );
-        $short   = $short[$singular];
-        $default = 'prod' === $short
+        $singular = 'ies' === substr($type, -3) ? (substr($type, 0, -3).'y') : substr($type, 0, -1);
+        $short    = $short[$singular];
+        $default  = 'prod' === $short
             ? $this->settings->get('core.default_product_id')
             : $this->settings->get('core.default_ticket_'.$short);
 
@@ -645,10 +774,12 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
             $offset = 0;
             $limit  = 100;
             $q      = 'select id from tickets where '.$singular.'_id = :cb limit %d, %d';
-            $stmt   = $conn->prepare('
+            $stmt   = $conn->prepare(
+                '
                 insert into custom_data_ticket (ticket_id, field_id, root_field_id, value, input)
                 values (:tid, '.$child['id'].', '.$field['id'].', 1, "")
-            ');
+            '
+            );
 
             while ($rows = $conn->fetchAll(sprintf($q, $offset, $limit), array('cb' => $cb))) {
                 foreach ($rows as $row) {
@@ -685,10 +816,13 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
                         }
                     }
                 }
-                $conn->executeUpdate('update ticket_filters set terms = :terms where id = :id', array(
-                    'terms' => json_encode($terms),
-                    'id'    => $row['id'],
-                ));
+                $conn->executeUpdate(
+                    'update ticket_filters set terms = :terms where id = :id',
+                    array(
+                        'terms' => json_encode($terms),
+                        'id'    => $row['id'],
+                    )
+                );
             }
             $offset += $limit;
         }
@@ -721,10 +855,13 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
                             }
                         }
                     }
-                    $conn->executeUpdate('update ticket_triggers set terms = :terms where id = :id', array(
-                        'terms' => json_encode($terms),
-                        'id'    => $row['id'],
-                    ));
+                    $conn->executeUpdate(
+                        'update ticket_triggers set terms = :terms where id = :id',
+                        array(
+                            'terms' => json_encode($terms),
+                            'id'    => $row['id'],
+                        )
+                    );
                 }
 
                 if ($actions = json_decode($row['actions'], 1)) {
@@ -738,10 +875,13 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
                         $action['type']    = 'SetTicketField'.$field['id'];
                         $action['options'] = array('value' => $val, 'field_id' => $field['id']);
                     }
-                    $conn->executeUpdate('update ticket_triggers set actions = :actions where id = :id', array(
-                        'actions' => json_encode($actions),
-                        'id'      => $row['id'],
-                    ));
+                    $conn->executeUpdate(
+                        'update ticket_triggers set actions = :actions where id = :id',
+                        array(
+                            'actions' => json_encode($actions),
+                            'id'      => $row['id'],
+                        )
+                    );
                 }
             }
             $offset += $limit;

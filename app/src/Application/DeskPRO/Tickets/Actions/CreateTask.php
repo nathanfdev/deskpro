@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Person;
@@ -55,7 +56,7 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
     {
         $options = new CheckedOptionsArray();
         $options->addRequiredNames('title', 'creator');
-        $options->addValidNames('date_due', 'public', 'assignee');
+        $options->addValidNames('date_due', 'public', 'assignee', 'offset');
 
         return $options;
     }
@@ -79,13 +80,18 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
         $task = new Task();
-        $form = $this->getContainer()->getFormFactory()->create(new TaskType(), $task);
+        $form = $this->getContainer()->getFormFactory()->create(new TaskType(), $task, array('timezone' => 'UTC'));
 
         if (!$person = $this->getCreator($ticket->person)) {
             $context->getLogger()->debug('[CreateTask] Wrong creator');
         }
 
-        $due_date = $this->getActionOption('date_due', '');
+        if ($due_date = $this->getActionOption('date_due', '')) {
+            $due_date = new \DateTime($due_date, new \DateTimeZone('UTC'));
+            $due_date->setTime(23, 59, 59);
+            $due_date->modify((int) $this->getActionOption('offset').'hours');
+            $due_date = $due_date->format('Y-m-d H:i:s');
+        }
 
         $assigned_agent_team = null;
         $assigned_agent      = null;

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\ServerReqs;
 
 use Application\DeskPRO\App;
@@ -207,7 +208,7 @@ class ServerReqs
                 'readMore'    => App::get('deskpro.service_urls')->get('dp.kb.install.error_tokenizer_ext'),
             ),
             'image_manip' => array(
-                'description' => 'Check that an image manipulation extension is installed (<a href="http://php.net/manual/en/imagick.installation.php">Imagick</a>, <a href="http://php.net/manual/en/gmagick.installation.php">Gmagick</a>, or <a href="http://php.net/manual/en/image.installation.php">GD</a>)',
+                'description' => 'Check that an image manipulation extension is installed (<a href="http://php.net/manual/en/imagick.installation.php">Imagick</a>, <a href="http://php.net/manual/en/gmagick.installation.php">Gmagick</a>, or <a href="http://php.net/manual/en/image.installation.php">GD</a>) and GIF, JPEG, PNG support is enabled',
                 'error'       => 'DeskPRO requires one of the following extensions: Imagick, Gmagick or GD.',
                 'readMore'    => App::get('deskpro.service_urls')->get('dp.kb.install.error_image_manip'),
             ),

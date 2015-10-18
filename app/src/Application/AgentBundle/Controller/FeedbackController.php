@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\FeedbackResults;
@@ -458,9 +459,11 @@ class FeedbackController extends AbstractController
                 break;
 
             case 'category':
-                $cat                  = $this->em->find('DeskPRO:FeedbackCategory', $this->in->getUint('category_id'));
-                $feedback['category'] = $cat;
-                $data['category_id']  = $cat['id'];
+                $cat = $this->em->find('DeskPRO:FeedbackCategory', $this->in->getUint('category_id'));
+                if ($cat) {
+                    $feedback['category'] = $cat;
+                    $data['category_id']  = $cat['id'];
+                }
                 break;
 
             case 'vote':

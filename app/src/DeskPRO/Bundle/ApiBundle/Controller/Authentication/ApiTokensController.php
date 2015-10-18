@@ -29,22 +29,21 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
 use Application\DeskPRO\Entity\ApiToken;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
-use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\HttpFoundation\Response;
 
-class ApiTokensController extends BaseController
+/**
+ * Class ApiTokensController.
+ */
+class ApiTokensController extends AbstractAuthController
 {
     /**
      * @ApiDoc(
@@ -59,71 +58,40 @@ class ApiTokensController extends BaseController
      * )
      *
      * @Post("/api_tokens", name="post_api_tokens")
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function newTokenAction(Request $request)
     {
-        $form = $this->createFormBuilder(
-            array('email'           => null, 'password' => null),
-            array('csrf_protection' => false)
-        )
-            ->add('email', 'email', array('constraints' => new NotNull()))
-            ->add('password', 'password', array('constraints' => new NotNull()))
-            ->getForm();
-
-        $form->submit($request->request->all());
-        if (!$form->isValid()) {
-            throw new InvalidFormException($form);
-        }
-
-        $data     = $form->getData();
-        $email    = $data['email'];
-        $password = $data['password'];
-
-        $auth_result = $this->get('dp_authentication_manager.agent')->authenticateFormLogin($email, $password);
-
-        if (!$auth_result->isValid()) {
-            // failed on agent usersources, revert to user
-            $auth_result = $this->get('dp_authentication_manager.user')->authenticateFormLogin($email, $password);
-            if (!$auth_result->isValid()) {
-                $this->throwUnauthorized();
-            }
-        }
-
-        $identity = $auth_result->getIdentity();
-
-        if (!$person_id = $identity->getIdentity()) {
-            $this->throwUnauthorized();
-        }
-
-        $em = $this->get('doctrine.orm.default_entity_manager');
-        if (!$person = $em->getRepository('DeskPRO:Person')->find($person_id)) {
-            $this->throwUnauthorized();
-        }
+        $person = $this->getPerson($request);
 
         $api_token         = new ApiToken();
         $api_token->person = $person;
         $api_token->scope  = ApiToken::SCOPE_CLIENT;
 
+        $em = $this->get('doctrine.orm.default_entity_manager');
         $em->persist($api_token);
         $em->flush($api_token);
 
         return View::create(
             $this->createRepresentation(
-                array(
+                [
                     'token' => $api_token->id.':'.$api_token->token,
-                )
+                ]
             ),
-            201
+            Response::HTTP_CREATED
         );
     }
 
+    /**
+     * @param AbstractApiSecurityToken $token
+     *
+     * @return string
+     */
     protected function makeAuthMethodString(AbstractApiSecurityToken $token)
     {
         return $token->getName();
-    }
-
-    private function throwUnauthorized()
-    {
-        throw new UnauthorizedHttpException(ApiAuthenticator::HTTP_REALM, ApiErrors::BAD_CREDENTIALS);
     }
 }

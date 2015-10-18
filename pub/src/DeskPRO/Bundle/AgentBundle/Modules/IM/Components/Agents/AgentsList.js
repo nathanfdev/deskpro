@@ -5,10 +5,10 @@ import { connect } from 'react-redux';
 // agents
 import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
-
+import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 
 @connect(state => ({
-  me: state.Application.user,
+  me: meSelector(state),
   agents: agentsSelector(state),
   agentsStatus: agentsStatusSelector(state)
 }))

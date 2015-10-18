@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Mail\RawMessage\Mail\Header;
 
 use Zend\Mail\AddressList;
@@ -48,10 +49,10 @@ class AddressListParser
 {
     public static function fromString($headerLine, $type, $header)
     {
-        $decodedLine = iconv_mime_decode($headerLine, ICONV_MIME_DECODE_CONTINUE_ON_ERROR, 'UTF-8');
-
         // split into name/value
-        list($fieldName, $fieldValue) = GenericHeader::splitHeaderLine($decodedLine);
+        list($fieldName, $fieldValueRaw) = GenericHeader::splitHeaderLine($headerLine);
+
+        $fieldValue = iconv_mime_decode($fieldValueRaw, ICONV_MIME_DECODE_CONTINUE_ON_ERROR, 'UTF-8');
 
         if (strtolower($fieldName) !== $type) {
             throw new \Zend\Mail\Header\Exception\InvalidArgumentException(sprintf(
@@ -60,7 +61,7 @@ class AddressListParser
             ));
         }
 
-        if ($decodedLine != $headerLine) {
+        if ($fieldValue != $fieldValueRaw) {
             $header->setEncoding('UTF-8');
         }
 

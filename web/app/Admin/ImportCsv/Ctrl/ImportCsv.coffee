@@ -53,8 +53,11 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
 
         if !@$scope.fileUploadResults.upload_failed
           @$scope.processStarted = true
-          for key, idx in @$scope.fileUploadResults.columns
-            @$scope.importSettings.additionalMappings[idx] = {}
+          @$scope.$apply =>
+            for key, idx in @$scope.fileUploadResults.columns
+              @$scope.importSettings.additionalMappings[idx] =
+                title: 'Custom Field'
+                handler_class: 'text'
       )
 
       @$scope.$on('fileuploadfail', (e, data) =>

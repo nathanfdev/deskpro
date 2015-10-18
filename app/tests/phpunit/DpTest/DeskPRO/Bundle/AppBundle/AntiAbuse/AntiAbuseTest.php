@@ -29,14 +29,19 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse;
 
 use Application\DeskPRO\Settings\LoginRateLimitSettings;
-use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
-use DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException;
 use DpTest\PortalTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * The anti-abuse system will throw an exception to give the client a different response sometimes, so we test
+ * that functionality here.
+ *
+ * For specific tests around the various lockout/rate-limit logic please see the EventListener tests.
+ */
 class AntiAbuseTest extends PortalTestCase
 {
     protected function getLoginLockoutMaxAttempts()
@@ -44,7 +49,7 @@ class AntiAbuseTest extends PortalTestCase
         return $this->get('settings_resolver')->getGlobalSettings()->get('user.'.LoginRateLimitSettings::KEY.'.attempts');
     }
 
-    public function testLoginLockoutDoesNotTriggerWhenUnderLimit()
+    public function testLoginLockoutDoesNotTriggerLockoutResponseWhenUnderLimit()
     {
         $this->installDataSet('fresh', true);
         $person = $this->get('test_factory.person')
@@ -70,15 +75,6 @@ class AntiAbuseTest extends PortalTestCase
         $response = $client->getResponse();
         $this->assertRegExp('/\/login\?retry=auth$/', $response->headers->get('location'));
         $this->assertEquals(302, $response->getStatusCode());
-
-        // should not be recommending anything (the limit is 20)
-        $event = new LoginAbuseCheck($person, $ip);
-        $event->markAsCheckOnly(); // checking state only
-        $this->get('anti_abuse')->check($event);
-        $this->assertFalse($event->isCaptchaRecommended());
-        $this->assertFalse($event->isLockoutRecommended());
-        $this->assertFalse($event->isResponseRecommended());
-        $this->assertNull($event->getRecommendedResponse());
     }
 
     public function testLoginLockoutAbuseException()
@@ -107,20 +103,5 @@ class AntiAbuseTest extends PortalTestCase
         $response = $client->getResponse();
         $this->assertRegExp('/\/login\?lockout=auth$/', $response->headers->get('location'));
         $this->assertEquals(302, $response->getStatusCode());
-
-        // should now be recommending lockout (>20 attemps so quickly)
-        $event = new LoginAbuseCheck($person, $ip);
-        $event->markAsCheckOnly(); // checking state only
-
-        // this is expected to throw an AntiAbuseException, which tells the kernel to return the Response object in the event
-        try {
-            $this->get('anti_abuse')->check($event);
-        } catch (AntiAbuseException $exception) {
-            $event = $exception->getAntiAbuseEvent();
-            $this->assertFalse($event->isCaptchaRecommended());
-            $this->assertTrue($event->isLockoutRecommended());
-            $this->assertTrue($event->isResponseRecommended());
-            $this->assertInstanceOf(Response::class, $event->getRecommendedResponse());
-        }
     }
 }

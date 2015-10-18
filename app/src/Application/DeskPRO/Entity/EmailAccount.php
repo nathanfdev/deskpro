@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -123,6 +124,11 @@ class EmailAccount extends DomainObject
      * @var \DateTime
      */
     protected $date_last_incoming;
+
+    /**
+     * @var bool
+     */
+    protected $is_read_active = false;
 
     /**
      * @param string $account_type
@@ -415,6 +421,12 @@ class EmailAccount extends DomainObject
             'fieldName'  => 'date_last_incoming',
             'type'       => 'datetime',
             'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'is_read_active',
+            'fieldName'  => 'is_read_active',
+            'type'       => 'boolean',
+            'nullable'   => false,
         ));
     }
 }

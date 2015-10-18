@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Sandbox;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 use DeskPRO\Bundle\AppBundle\Entity\SandboxWidget;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -74,7 +76,12 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
      */
     public function cgetAction(Request $request)
     {
-        $widgets = $this->getDoctrine()->getManager()->getRepository('App:SandboxWidget')->findAll();
+        $type = $request->get('type');
+        if ($type) {
+            $widgets = $this->getDoctrine()->getManager()->getRepository('App:SandboxWidget')->findBy(array('type' => $type));
+        } else {
+            $widgets = $this->getDoctrine()->getManager()->getRepository('App:SandboxWidget')->findAll();
+        }
 
         $pager = new Pagerfanta(new ArrayAdapter($widgets));
         $pager->setMaxPerPage(2);
@@ -243,5 +250,18 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
         }
 
         return $widget;
+    }
+
+    /**
+     * @Get("/sandbox_widget_types", name="api_sandbox_widget_types")
+     */
+    public function getTypesAction()
+    {
+        $types = $this->getDoctrine()->getRepository('App:SandboxWidget')->getWidgetTypes();
+
+        return View::create(
+            $this->dataSerialize(new PrimitiveArray($types)),
+            Response::HTTP_OK
+        );
     }
 }

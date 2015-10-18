@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Install;
 
 use Application\DeskPRO\App;
@@ -419,7 +420,7 @@ class ServerChecks
                 $this->getLogger()->log('[OK] An image manipulation extension is installed', Logger::DEBUG);
             } else {
                 $this->has_fatal_server_errors = true;
-                $msg                           = 'Install and enable the Imagick, Gmagick or GD extension';
+                $msg                           = 'Install and enable the Imagick, Gmagick or GD extension and GIF, JPEG, PNG support';
                 $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
                 $this->server_errors['image_manip'] = array(
                     'message' => $msg,

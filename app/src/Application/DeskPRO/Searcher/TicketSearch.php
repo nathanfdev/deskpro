@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
@@ -1228,10 +1229,21 @@ class TicketSearch extends SearcherAbstract
                     case 'value':
                         $this->add_raw_selects[] = "sort_table.$search_type AS status_order";
                         $order_by                = array(
-                            "INNER JOIN custom_data_ticket AS sort_table ON (sort_table.ticket_id = tickets.id AND sort_table.id = $term_id)",
+                            "JOIN custom_data_ticket AS sort_table ON (sort_table.ticket_id = tickets.id AND sort_table.root_field_id = $term_id)",
                             "ORDER BY status_order $dir, id DESC",
                         );
                         break;
+                    case 'id':
+                        $this->add_raw_selects[] = 'cdef.title AS status_order';
+                        $order_by                = array(
+                            "
+                                JOIN custom_data_ticket AS cdata ON cdata.ticket_id = tickets.id AND cdata.root_field_id = $term_id
+                                JOIN custom_def_ticket AS cdef ON cdef.id = cdata.field_id
+                            ",
+                            "ORDER BY status_order $dir, id DESC",
+                        );
+                        break;
+
                 }
                 break;
         }
@@ -1832,12 +1844,14 @@ class TicketSearch extends SearcherAbstract
                         if (!is_array($choice)) {
                             $choice = explode(',', $choice);
                         }
+                        $choice = Arrays::removeFalsey($choice);
+                        if (!empty($choice)) {
+                            if (count($choice) == 1) {
+                                $this->specific_fields[] = self::TERM_ORGANIZATION;
+                            }
 
-                        if (count($choice) == 1) {
-                            $this->specific_fields[] = self::TERM_ORGANIZATION;
+                            $wheres[] = $this->_choiceMatch("$tickets_table.organization_id", $op, $choice, true);
                         }
-
-                        $wheres[] = $this->_choiceMatch("$tickets_table.organization_id", $op, $choice, true);
                         break;
                     case self::TERM_PARTICIPANT:
                         $this->affected_fields[] = 'ticket.participants';
@@ -2684,7 +2698,7 @@ class TicketSearch extends SearcherAbstract
                 if ($ticket['status'] != Ticket::STATUS_ARCHIVED) {
                     return false;
                 }
-                if (!$this->_testDateMatch($ticket['ddoesTicketMatchate_archived'], $op, $choice)) {
+                if (!$this->_testDateMatch($ticket['date_archived'], $op, $choice)) {
                     return false;
                 }
                 break;

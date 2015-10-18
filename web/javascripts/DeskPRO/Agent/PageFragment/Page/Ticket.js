@@ -33,10 +33,27 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		);
 	},
 
+	replaceLinks: function() {
+		$('.body-text-message a', this.wrapper).each(function(){
+			var $a = $(this)
+				, href = $a.attr('href')
+				;
+			if (!href || href.length < 5 || href.substr(0, 4) === 'http' || href.substr(0, 1) === '/') return;
+			$a.attr('href', 'http://' + href);
+      $a.attr('target', '_blank');
+		});
+	},
+
 	initPage: function(el) {
 		this.wrapper = el;
 		var self = this;
+
+		var replyBoxHandler = this.getEl('replybox_wrap').find('[data-element-handler]:first').data('handler');
+		if (replyBoxHandler) {
+			replyBoxHandler.page = this;
+		}
 		this.getEl('replybox_wrap').data('page', this);
+
 		this.hasReplyFocused = false;
 
 		if (this.getEl('linked_count').data('count') == "0") {
@@ -855,6 +872,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         });
       }
     }, 1500);
+
+    this.replaceLinks();
 	},
 
 	setTicketReplyBox: function(rb) {
@@ -1381,6 +1400,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this.getEl('messagebox_tabs').find('.logs').addClass('dirty');
 		this.refreshLogTypes();
+    this.replaceLinks();
 	},
 
 	updateUi: function(toReplyHeight) {

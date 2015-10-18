@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -246,7 +247,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         if ($category) {
             $this->setModelField('category', $category);
         } else {
-            $this->setModelField('category', -1);
+            $this->setModelField('category', null);
         }
 
         return $this;

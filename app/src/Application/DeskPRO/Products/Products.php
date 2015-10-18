@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Products;
 
 use Application\DeskPRO\Hierarchy\LazyPreloadedHierarchy;
@@ -68,13 +69,17 @@ class Products extends LazyPreloadedHierarchy
      */
     public function getDefaultProduct()
     {
-        if (!$this->default_id || !$this->getById($this->default_id) || $this->hasChildren($this->default_id)) {
+        if ($this->default_id && (!$this->getById($this->default_id) || $this->hasChildren($this->default_id))) {
             foreach ($this->getAll() as $dep) {
                 if (!$this->hasChildren($dep)) {
                     $this->default_id = $dep->getId();
                     break;
                 }
             }
+        }
+
+        if (!$this->default_id) {
+            return;
         }
 
         return $this->getById($this->default_id);

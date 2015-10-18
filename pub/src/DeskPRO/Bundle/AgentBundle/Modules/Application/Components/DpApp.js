@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import { Header } from './Header';
 import { AppSwitcher } from './AppSwitcher';
 import { TabFrame } from './TabFrame';
-import { routingStarted } from '../Actions/routingActions';
 import { NotificationsContainer } from './Notifications/notifications';
+import { meSelector } from '../RecordStores/Selectors/meSelectors';
 
 @connect(state => ({
   ...state,
-  user: state.Application.user,
+  user: meSelector(state),
   dpWindow: state.Application.dpWindow
 }))
 export class DpApp extends React.Component {

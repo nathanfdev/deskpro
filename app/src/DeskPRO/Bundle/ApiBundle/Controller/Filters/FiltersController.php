@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Filters;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
@@ -335,10 +336,11 @@ class FiltersController extends BaseController
 
         $tickets_query->setCount($request->query->get('count', 10));
         $tickets_query->setPage($request->query->get('page', 1));
-        $tickets = $tickets_query->fetchAll();
+        $ticket_ids = $tickets_query->fetchIds();
+        $tickets    = $this->getEm()->getRepository('DeskPRO:Ticket')->findBy(['id' => $ticket_ids]);
 
         return View::create(
-            $this->createRepresentation($tickets),
+            $this->dataSerialize($tickets),
             Response::HTTP_OK
         );
     }

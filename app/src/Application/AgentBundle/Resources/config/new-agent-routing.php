@@ -62,9 +62,9 @@ $collection->create(
 )
 ;
 $collection->create(
-    'react_agent_test',
+    'react_agent_example',
     array(
-        'path'       => '/test',
+        'path'       => '/example',
         'controller' => 'AgentBundle:AgentChrome:agentChrome',
     )
 )
@@ -97,6 +97,22 @@ $collection->create(
     'react_agent_publish',
     array(
         'path'       => '/publish',
+        'controller' => 'AgentBundle:AgentChrome:agentChrome',
+    )
+)
+;
+$collection->create(
+    'react_agent_login',
+    array(
+        'path'       => '/login',
+        'controller' => 'AgentBundle:AgentChrome:agentChrome',
+    )
+)
+;
+$collection->create(
+    'react_agent_welcome',
+    array(
+        'path'       => '/welcome',
         'controller' => 'AgentBundle:AgentChrome:agentChrome',
     )
 )

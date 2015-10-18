@@ -149,9 +149,9 @@ export default class TaskMassActions extends React.Component {
                     positionTarget={this.refs.massExtras}
                     positionAt="left bottom">
           <Menu isOpen={this.state.openExtras}>
-            <Item icon="eye">Visibility</Item>
-            <Item icon="tag">Label</Item>
-            <Item icon="times" itemType="danger">Delete</Item>
+            <Item icon="eye" label="Visibility"/>
+            <Item icon="tag" label="Label"/>
+            <Item icon="times" itemType="danger" label="Delete"/>
           </Menu>
         </Positioned>
       </span>

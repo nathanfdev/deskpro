@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Kernel;
 
 require_once DP_ROOT.'/sys/DpShutdown.php';
@@ -332,7 +333,7 @@ class KernelBooter
                 // TODO: What other exceptions might this catch that should NOT result in an install screen?
                 deskpro_handle_boot_db_exception($e);
 
-                header('Location: ' . $request->getBasePath() . '/index.php/install/');
+                header('Location: '.$request->getBasePath().'/index.php/install/');
                 exit;
             } catch (\Exception $e) {
                 KernelErrorHandler::logException($e);

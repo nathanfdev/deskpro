@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import * as actions from '../../Actions/chatsActions';
+
 import { connect } from 'react-redux';
 
 @connect()
@@ -11,7 +11,8 @@ export class Item extends React.Component {
     departments: PropTypes.object.isRequired,
     me: PropTypes.object.isRequired,
     chat: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    startChat: PropTypes.func.isRequired
   };
 
   getEntity = () => {
@@ -57,9 +58,7 @@ export class Item extends React.Component {
     return entity;
   };
 
-  startChat = (id, type) => {
-    this.props.dispatch(actions.startChat(id, type));
-  };
+
 
   render() {
     const entity = this.getEntity();
@@ -71,7 +70,7 @@ export class Item extends React.Component {
         id={entity.elementId}
         href="#"
         title={entity.name}
-        onClick={this.startChat.bind(null, entity.id, entity.type)}
+        onClick={this.props.startChat.bind(null, entity.id, entity.type)}
         className="chat-avatar"
         style={style}>
       </a>

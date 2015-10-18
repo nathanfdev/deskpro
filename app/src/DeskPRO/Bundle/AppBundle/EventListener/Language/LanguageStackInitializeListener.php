@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\EventListener\Language;
 
 use Application\DeskPRO\Entity\Language;
@@ -208,6 +209,10 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
             $request->headers->get('Accept-Language'),
             $lang_codes
         );
+
+        if (!$header_lang) {
+            return;
+        }
 
         // make sure the negotiated language was a language that was in the request headers
         // it is possible that a language was negotiated that didn't exist in the request

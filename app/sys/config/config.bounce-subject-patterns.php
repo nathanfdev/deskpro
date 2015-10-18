@@ -40,4 +40,5 @@ return array(
     '#^Out of Office: (?P<subject>.*?)$#',
     '#^Automatic reply: (?P<subject>.*?)$#i',
     '#^Out of Office AutoReply: (?P<subject>.*?)$#i',
+    '#^Autosvar:\s*(?P<subject>.*?)$#i',
 );

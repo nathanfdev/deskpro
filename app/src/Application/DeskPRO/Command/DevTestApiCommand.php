@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
@@ -160,6 +161,10 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
             }
 
             $api_key = $key->getKeyString();
+
+            if ($v2) {
+                $api_key = 'key '.$api_key;
+            }
         }
 
         #------------------------------
@@ -169,7 +174,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         $headers = array();
 
         if ($v2) {
-            $headers['Authorization'] = 'key '.$api_key;
+            $headers['Authorization'] = $api_key;
         } else {
             $headers['X-DeskPRO-API-Key'] = $api_key;
         }

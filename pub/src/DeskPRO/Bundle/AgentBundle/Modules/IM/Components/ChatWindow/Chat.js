@@ -10,11 +10,12 @@ import { Offline } from './Offline';
 import { SearchForm } from './SearchForm';
 
 // messages
+import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 import { addMessage } from '../../Actions/imMessagesActions';
 
 @connect(state => ({
-  me: state.Application.user,
-  current: state.IM.chats.get('current')
+  me: meSelector(state),
+  messages: state.IM.messages
 }))
 export class Chat extends React.Component {
 

@@ -48,7 +48,7 @@ define [
     loadResults: ->
       @startSpinner 'loading_results'
       date = moment(@filter.date).format("YYYY-MM-DD")
-      @Api.sendGet("/reports/agent-activity/#{@filter.agent_or_team}/${date}").then (res) =>
+      @Api.sendGet("/reports/agent-activity/#{@filter.agent_or_team}/#{date}").then (res) =>
         @html = @$sce.trustAsHtml(res.data.html)
         @stopSpinner 'loading_results', true
 

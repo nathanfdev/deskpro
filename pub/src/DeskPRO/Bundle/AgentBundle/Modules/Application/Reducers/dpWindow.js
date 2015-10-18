@@ -4,14 +4,14 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import jQuery from 'jquery';
 
 const initialState = {
-  isLoaded: false,
   activeAppId: 'tickets',
   collapseNav: localStorage.getItem('dpWindow.sidebarMode') === 'hover',
   expandedSwitcher: false,
   taskView: constants.VIEW_MODE_CARD,
   columnMode: localStorage.getItem('dpWindow.columnMode') || 'column',
   columnDimensions: parseInt(localStorage.getItem('dpWindow.columnDimensions'), 10) || 40,
-  sidebarMode: localStorage.getItem('dpWindow.sidebarMode') || 'static'
+  sidebarMode: localStorage.getItem('dpWindow.sidebarMode') || 'static',
+  showWelcomePage: true
 };
 
 /**
@@ -24,9 +24,6 @@ function triggerDpLayoutResize() {
 }
 
 export default createReducer(initialState, {
-  [actions.setIsLoaded]: state => {
-    return state.set('isLoaded', true);
-  },
   [actions.setActiveApp]: (state, payload) => {
     return state.merge({activeAppId: payload, expandedSwitcher: false});
   },
@@ -59,5 +56,11 @@ export default createReducer(initialState, {
   [actions.setSidebarMode]: (state, payload) => {
     localStorage.setItem('dpWindow.sidebarMode', payload);
     return state.set('sidebarMode', payload);
+  },
+  [actions.showWelcomePage]: state => {
+    return state.set('showWelcomePage', true);
+  },
+  [actions.hideWelcomePage]: state => {
+    return state.set('showWelcomePage', false);
   }
 });

@@ -4,11 +4,12 @@ import { connect } from 'react-redux';
 import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
 import { Message } from './Message';
 import { loadMessages } from '../../Actions/imMessagesActions';
-import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions'
+import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
+import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 
 @connect(state => ({
-  me: state.Application.user,
+  me: meSelector(state),
   agents: agentsSelector(state),
   agentsStatus: agentsStatusSelector(state),
   messages: state.IM.messages

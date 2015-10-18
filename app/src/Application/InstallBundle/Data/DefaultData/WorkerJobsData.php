@@ -31,6 +31,7 @@
  *
  * @category Install
  */
+
 namespace Application\InstallBundle\Data\DefaultData;
 
 use Application\DeskPRO\WorkerProcess\Job;
@@ -313,6 +314,15 @@ class WorkerJobsData extends AbstractDefaultData
             'description'  => 'Supervises the job queue',
             'job_class'    => 'Application\\DeskPRO\\WorkerProcess\\Job\\JobQueueSupervisor',
             'run_interval' => Job\JobQueueSupervisor::DEFAULT_INTERVAL,
+        );
+
+        $jobs[] = array(
+            'id'           => 'incoming_email_supervisor',
+            'worker_group' => 'job_queue',
+            'title'        => 'Incoming Email Supervisor',
+            'description'  => 'Checks for errors and timeouts during incoming email logs',
+            'job_class'    => 'Application\\DeskPRO\\WorkerProcess\\Job\\IncomingEmailSupervisor',
+            'run_interval' => Job\IncomingEmailSupervisor::DEFAULT_INTERVAL,
         );
 
         #------------------------------

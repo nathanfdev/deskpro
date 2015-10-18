@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -43,6 +44,12 @@ class ProcessEmailGateways extends AbstractJob
 
     public function run()
     {
+        // Using adv_email_collect (daemon)
+        global $DP_CONFIG;
+        if (!empty($DP_CONFIG['adv_email_collect'])) {
+            return;
+        }
+
         @ini_set('memory_limit', DP_MAX_MEMSIZE);
 
         #------------------------------

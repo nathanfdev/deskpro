@@ -6,12 +6,14 @@ import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinne
 import { Item } from './Item';
 
 // chats
+import * as actions from '../../Actions/chatsActions';
 import * as chatActions from '../../RecordStores/Actions/imChatsActions';
 import { recentChatsSelector, recentChatsStatusSelector } from '../../RecordStores/Selectors/chats';
 
 // agents
 import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
+import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 
 // teams
 import { loadMyAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions';
@@ -22,7 +24,7 @@ import { loadMyDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Reco
 import { myDepartmentsSelector, myDepartmentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
 
 @connect(state => ({
-  me: state.Application.user,
+  me: meSelector(state),
   teams: myAgentTeamsSelector(state),
   agents: agentsSelector(state),
   current: state.IM.chats.get('current'),
@@ -52,11 +54,15 @@ export class List extends React.Component {
     dispatch(loadMyDepartments());
   }
 
+  startChat = (id, type) => {
+    this.props.dispatch(actions.startChat(id, type));
+  };
+
   renderList = () => {
     const { agents, teams, departments, recentChats, me } = this.props;
     return (
     <span>
-      { recentChats.map((chat, index) => <Item me={me} key={index} chat={chat} teams={teams} agents={agents} departments={departments}/>) }
+      { recentChats.map((chat, index) => <Item startChat={this.startChat} me={me} key={index} chat={chat} teams={teams} agents={agents} departments={departments}/>) }
     </span>);
   };
 

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -501,7 +502,7 @@ HTML;
         }
 
         $browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
-        if (!$person->browser && $browser) {
+        if ($browser) {
             $person->browser = $browser;
         }
 
@@ -1063,7 +1064,7 @@ HTML;
                 $message->setTemplate('DeskPRO:emails_agent:admin-noreset-password.html.twig', $vars);
                 $message->setTo($email, $person->getDisplayName());
                 $this->container->getMailer()->send($message);
-                $this->container->getTranslator()->setDefaultPersonContext($this->person);
+                $this->container->getTranslator()->setDefaultPersonContext($person);
 
                 if ($_format == 'json') {
                     return $this->createJsonResponse(array('success' => 1));
@@ -1203,7 +1204,8 @@ HTML;
             $this->ensureStandardRequestToken();
         }
 
-        if ($lockTime || !$result->isValid()) {            $html = $this->renderView('UserBundle:Common:form-email-login-row.html.twig', array('login_error' => true, 'mode' => $this->in->getString('mode')));
+        if ($lockTime || !$result->isValid()) {
+            $html = $this->renderView('UserBundle:Common:form-email-login-row.html.twig', array('login_error' => true, 'mode' => $this->in->getString('mode')));
 
             return $this->createJsonResponse(array(
                 'html' => $html,

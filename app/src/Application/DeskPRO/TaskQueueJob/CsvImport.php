@@ -31,6 +31,7 @@
  *
  * @category TaskQueueJob
  */
+
 namespace Application\DeskPRO\TaskQueueJob;
 
 use Application\DeskPRO\App;
@@ -231,15 +232,24 @@ class CsvImport extends AbstractJob
     protected function _createNewCustomFields()
     {
         $this->_data['new_custom_map'] = array();
+        $handlers                      = array(
+            'text'     => 'Application\DeskPRO\CustomFields\Handler\Text',
+            'textarea' => 'Application\DeskPRO\CustomFields\Handler\Textarea',
+            'choice'   => 'Application\DeskPRO\CustomFields\Handler\Choice',
+            'date'     => 'Application\DeskPRO\CustomFields\Handler\Date',
+        );
 
         foreach ($this->_data['field_maps'] as $column_id => $info) {
             if (!isset($info['map'])) {
                 continue;
             }
+            if (!isset($handlers[@$info['handler_class']])) {
+                continue;
+            }
             if ($info['map'] == 'new_custom') {
                 $field                = new \Application\DeskPRO\Entity\CustomDefPerson();
                 $field->title         = $info['title'];
-                $field->handler_class = $info['handler_class'];
+                $field->handler_class = $handlers[$info['handler_class']];
                 $field->display_order = $column_id;
 
                 App::getOrm()->persist($field);

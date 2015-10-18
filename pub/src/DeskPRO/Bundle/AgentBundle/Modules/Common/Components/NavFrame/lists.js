@@ -20,6 +20,16 @@ class BaseList extends Component {
   }
 }
 
+export class ListSection extends Component {
+  render() {
+    return (
+      <section className="sidebar-list">
+        {this.props.children}
+      </section>
+    )
+  }
+}
+
 @pureRender
 export class ListItem extends BaseList {
   static propTypes = {

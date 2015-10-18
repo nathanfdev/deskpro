@@ -5,6 +5,7 @@ import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinne
 // agents
 import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
+import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 // teams
 import { loadMyAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions';
 import { myAgentTeamsSelector, myAgentTeamsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
@@ -13,7 +14,7 @@ import { loadMyDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Reco
 import { myDepartmentsSelector, myDepartmentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
 
 @connect(state => ({
-  me: state.Application.user,
+  me: meSelector(state),
   agents: agentsSelector(state),
   agentsStatus: agentsStatusSelector(state),
   teams: myAgentTeamsSelector(state),

@@ -19,6 +19,7 @@ import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Rec
 import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
 import { allProjectsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/projectSelectors';
 import { allTaskLabelsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/taskLabelSelectors';
+import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 
 // const projectRequestId = 'projectNavView';
 
@@ -28,7 +29,7 @@ import { allTaskLabelsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/
   labelList: state.Tasks.labelList,
   teamList: state.Tasks.teamList,
   departmentList: state.Tasks.departmentList,
-  user: state.Application.user,
+  user: meSelector(state),
   createdProject: state.Tasks.createdProject,
   dpWindow: state.Application.dpWindow,
   projects: allProjectsSelector(state),

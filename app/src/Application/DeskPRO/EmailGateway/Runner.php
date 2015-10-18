@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
@@ -641,12 +642,15 @@ class Runner
      * limit will be exceeded (e.g., time limit of 10, message starts processing at 9 seconds so it continues).
      *
      * @param \Application\DeskPRO\Entity\EmailAccount $account
-     * @param int                                      $time_limit The max time spent processing email before we break.
+     * @param int                                      $time_limit   The max time spent processing email before we break.
+     * @param bool                                     $only_collect Only collect and save the emails, don't process them now.
      *
      * @throws \Exception
      */
-    public function executeAccount(EmailAccount $account, $time_limit = 0)
+    public function executeAccount(EmailAccount $account, $time_limit = 0, $only_collect = false)
     {
+        global $DP_CONFIG;
+
         gc_enable();
 
         $this->logger->log("Start processing {$account['address']} {$account['account_type']}", 'info');
@@ -676,14 +680,20 @@ class Runner
         $created_obj = null;
         $reader      = null;
 
-        $inserted_source_ids = App::getDb()->fetchAllCol("
-            SELECT id FROM
-            email_sources
-            WHERE status IN ('inserted', 'retry') AND email_account_id = ?
-            ORDER BY id ASC
-        ", array($account->getId()));
+        $inserted_source_ids = array();
 
-        $this->logger->logDebug(sprintf('%d inserted messages being processed first', count($inserted_source_ids)));
+        $only_collect = $only_collect || !empty($DP_CONFIG['adv_email_process']);
+
+        if (!$only_collect) {
+            $inserted_source_ids = App::getDb()->fetchAllCol("
+                SELECT id FROM
+                email_sources
+                WHERE status IN ('inserted', 'retry') AND email_account_id = ?
+                ORDER BY id ASC
+            ", array($account->getId()));
+
+            $this->logger->logDebug(sprintf('%d inserted messages being processed first', count($inserted_source_ids)));
+        }
 
         $processed_source_ids = array();
 
@@ -784,20 +794,40 @@ class Runner
                 continue;
             }
 
-            $this->logger->logDebug('START: executeSource('.$source->getId().')');
-            $t            = microtime(true);
-            $is_mem_limit = false;
-            try {
-                $this->executeSource($source);
-            } catch (ProcessingException $e) {
-                if ($e->getCode() == ProcessingException::MEMORY_LIMIT) {
-                    $is_mem_limit = true;
-                } else {
+            if ($only_collect && $source->status !== 'error' && !empty($DP_CONFIG['adv_email_process'])) {
+                /** @var \Application\EmailBundle\Incoming\ProcQueue\ProcQueueInterface $proc */
+                $proc = App::getContainer()->get('in_email.proc_queue');
+                try {
+                    $this->logger->logDebug('Queueing message for processing');
+                    $proc->enqueueNewEmail($source);
+                } catch (\Exception $e) {
                     $this->logger->logError('Exception: '.$e->getMessage());
+                    $source->status = 'retry';
+                    App::$container->getDb()->update(
+                        'email_sources',
+                        array('status' => $source->status, 'date_status' => $source->date_status->format('Y-m-d H:i:s')),
+                        array('id'     => $source->id)
+                    );
                 }
             }
 
-            $this->logger->logDebug(sprintf('FINISH: executeSource('.$source->getId().') - %.4fs', microtime(true) - $t));
+            $is_mem_limit = false;
+
+            if (!$only_collect) {
+                $this->logger->logDebug('START: executeSource('.$source->getId().')');
+                $t = microtime(true);
+                try {
+                    $this->executeSource($source);
+                } catch (ProcessingException $e) {
+                    if ($e->getCode() == ProcessingException::MEMORY_LIMIT) {
+                        $is_mem_limit = true;
+                    } else {
+                        $this->logger->logError('Exception: '.$e->getMessage());
+                    }
+                }
+
+                $this->logger->logDebug(sprintf('FINISH: executeSource('.$source->getId().') - %.4fs', microtime(true) - $t));
+            }
 
             $m_end  = memory_get_usage();
             $m_diff = $m_end - $m;
@@ -827,9 +857,10 @@ class Runner
         }
 
         $account->date_last_incoming = new \DateTime();
+        $account->is_read_active     = false;
         App::$container->getDb()->update(
             'email_accounts',
-            array('date_last_incoming' => $account->date_last_incoming->format('Y-m-d H:i:s')),
+            array('date_last_incoming' => $account->date_last_incoming->format('Y-m-d H:i:s'), 'is_read_active' => 0),
             array('id'                 => $account->id)
         );
 
