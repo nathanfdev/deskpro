@@ -58,7 +58,6 @@ export class Chat extends React.Component {
     const oldState = this.state;
     const newState = {...oldState};
     newState.searchShown = !oldState.searchShown;
-    console.log(newState);
     this.setState(newState);
   };
 

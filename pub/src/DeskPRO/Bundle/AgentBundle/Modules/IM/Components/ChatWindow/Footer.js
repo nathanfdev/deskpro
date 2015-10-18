@@ -27,7 +27,6 @@ export class Footer extends React.Component {
     const oldState = this.state;
     const newState = {...oldState};
     newState.message = event.target.value;
-    console.log(newState);
     this.setState(newState);
   }
 

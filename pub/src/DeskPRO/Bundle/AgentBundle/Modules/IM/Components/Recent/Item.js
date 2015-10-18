@@ -17,9 +17,7 @@ export class Item extends React.Component {
 
   getEntity = () => {
     let entity;
-
     const { agents, teams, departments, me, chat } = this.props;
-
     switch (chat.get('chat_type')) {
       case 'agent':
         const notMe = chat.get('agents').filter((agent) => agent !== me.get('id'));

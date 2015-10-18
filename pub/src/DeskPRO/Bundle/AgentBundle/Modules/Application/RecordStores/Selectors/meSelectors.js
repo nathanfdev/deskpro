@@ -7,3 +7,8 @@ export const meSelector = createSelector(
   meStateSelector.recordsSel,
   users => users.first()
 );
+
+export const meStatusSelector = createSelector(
+  meStateSelector.statusSel,
+  users => users
+);

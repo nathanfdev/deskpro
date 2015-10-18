@@ -33,7 +33,6 @@ export class IMContainer extends React.Component {
 
   renderChat = () => {
     const id = 'chat-with-' + this.props.current.get('chat_type') + '-' + this.props.current.get('id');
-    console.log(id);
     let node = document.getElementById(id);
     if (!node) {
       node = document.getElementById('im-button');

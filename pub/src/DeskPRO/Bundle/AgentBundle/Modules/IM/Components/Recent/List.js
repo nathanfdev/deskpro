@@ -13,7 +13,8 @@ import { recentChatsSelector, recentChatsStatusSelector } from '../../RecordStor
 // agents
 import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
-import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
+import { meSelector, meStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
+import { loadMe } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Actions/meActions';
 
 // teams
 import { loadMyAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions';
@@ -25,6 +26,7 @@ import { myDepartmentsSelector, myDepartmentsStatusSelector } from 'DeskPRO/Bund
 
 @connect(state => ({
   me: meSelector(state),
+  meStatus: meStatusSelector(state),
   teams: myAgentTeamsSelector(state),
   agents: agentsSelector(state),
   current: state.IM.chats.get('current'),
@@ -42,8 +44,13 @@ export class List extends React.Component {
     teams: PropTypes.object.isRequired,
     departments: PropTypes.object.isRequired,
     me: PropTypes.object.isRequired,
+    meStatus: PropTypes.object.isRequired,
     chat: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    teamsStatus: PropTypes.object.isRequired,
+    agentsStatus: PropTypes.object.isRequired,
+    departmentsStatus: PropTypes.object.isRequired,
+    recentChatsStatus: PropTypes.object.isRequired
   };
 
   componentWillMount() {
@@ -71,12 +78,13 @@ export class List extends React.Component {
   };
 
   render() {
-    const { recentChatsStatus, agentsStatus, teamsStatus, departmentsStatus } = this.props;
+    const { recentChatsStatus, agentsStatus, teamsStatus, departmentsStatus, meStatus } = this.props;
     return (
       recentChatsStatus.get('isDone')
       && agentsStatus.get('isDone')
       && teamsStatus.get('isDone')
       && departmentsStatus.get('isDone')
+      && meStatus.get('isDone')
     )
       ? this.renderList()
       : this.renderLoading();
