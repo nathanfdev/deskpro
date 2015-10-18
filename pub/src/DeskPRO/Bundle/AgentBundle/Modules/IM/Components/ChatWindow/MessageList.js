@@ -32,8 +32,15 @@ export class MessageList extends React.Component {
     const messages = this.props.messages.getIn(['chatMessages', this.props.current.id]) || [];
     return (messages.length > 0 ) ? (
       <ul className="chat-message-list">
-        {messages && messages.length > 0 ? messages.map((message, index) => <Message
-          key={index} message={message} agents={this.props.agents} me={this.props.me}/>) : null}
+        {
+          messages.map((message, index) => {
+            return (<Message
+              key={index}
+              message={message}
+              agents={this.props.agents}
+              me={this.props.me}/>);
+          })
+        }
       </ul>
     ) : <img src="/web/spinner.gif" style={{width: 40 + 'px', height: 40 + 'px'}}/>;
   }

@@ -1,14 +1,14 @@
 import { createAction } from 'Ampliflux';
 import * as IM from 'DeskPRO/Bundle/AgentBundle/Services/Api/IM';
-import { toggleChat } from './uiActions';
+import { openChat } from './uiActions';
 
 export const startChat = createAction(
   'IM_START_CHAT',
-  (target_id, target_type = 'agent') => (dispatch) => {
+  (targetId, targetType = 'agent') => (dispatch) => {
     dispatch(openChat());
     return new Promise(
       (resolve, reject) =>
-        IM.startChat(target_id, target_type)
+        IM.startChat(targetId, targetType)
           .success(response => resolve(response.data))
           .error(response => reject(response))
     );
