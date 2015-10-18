@@ -10,7 +10,8 @@ const initialState = {
   taskView: constants.VIEW_MODE_CARD,
   columnMode: localStorage.getItem('dpWindow.columnMode') || 'column',
   columnDimensions: parseInt(localStorage.getItem('dpWindow.columnDimensions'), 10) || 40,
-  sidebarMode: localStorage.getItem('dpWindow.sidebarMode') || 'static'
+  sidebarMode: localStorage.getItem('dpWindow.sidebarMode') || 'static',
+  showWelcomePage: true
 };
 
 /**
@@ -55,5 +56,11 @@ export default createReducer(initialState, {
   [actions.setSidebarMode]: (state, payload) => {
     localStorage.setItem('dpWindow.sidebarMode', payload);
     return state.set('sidebarMode', payload);
+  },
+  [actions.showWelcomePage]: state => {
+    return state.set('showWelcomePage', true);
+  },
+  [actions.hideWelcomePage]: state => {
+    return state.set('showWelcomePage', false);
   }
 });

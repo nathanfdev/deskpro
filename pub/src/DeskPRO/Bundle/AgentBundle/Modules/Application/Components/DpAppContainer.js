@@ -60,7 +60,7 @@ export class DpAppContainer extends React.Component {
     dispatch(hashChanged(window.location.hash));
 
     const basePath = this.workOutBasePath();
-    const defaultPath = `${basePath}/welcome`;
+    const defaultPath = `${basePath}/tasks`;
 
     return (
       <Router history={history}>
@@ -76,7 +76,6 @@ export class DpAppContainer extends React.Component {
         </Route>
         <Route path={basePath} component={LoginRouteContainer}>
           <Route name="login" path="login" component={LoginApp}/>
-          <Route name="welcome" path="welcome" component={WelcomeApp}/>
         </Route>
       </Router>
     );

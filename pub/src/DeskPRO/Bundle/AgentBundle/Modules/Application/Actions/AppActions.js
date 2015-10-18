@@ -8,6 +8,8 @@ export const collapseSwitcher = createAction('APP_COLLAPSE_SWITCHER');
 export const toggleView = createAction('APP_TOGGLE_VIEW');
 export const setColumnMode = createAction('APP_SET_COLUMN_MODE');
 export const setColumnDimensions = createAction('APP_SET_COLUMN_DIMENSIONS');
+export const showWelcomePage = createAction('APP_SHOW_WELCOME_PAGE');
+export const hideWelcomePage = createAction('APP_HIDE_WELCOME_PAGE');
 
 export const setSidebarMode = createAction(
   'APP_SET_SIDEBAR_MODE',

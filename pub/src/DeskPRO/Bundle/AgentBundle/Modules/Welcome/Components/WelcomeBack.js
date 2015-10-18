@@ -5,14 +5,8 @@ import { Tip } from './Tip';
 export class WelcomeBack extends React.Component {
 
   static propTypes = {
-    user: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired
   };
-
-  componentDidMount() {
-    const history = this.props.history;
-    setTimeout(() => history.pushState(null, `${DP_BASE_URL_RELATIVE}/agent/tasks`), 3000);
-  }
 
   render() {
     return (
