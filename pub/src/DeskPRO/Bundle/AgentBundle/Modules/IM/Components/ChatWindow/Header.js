@@ -35,7 +35,8 @@ export class Header extends React.Component {
     departments: PropTypes.object.isRequired,
     departmentsStatus: PropTypes.object.isRequired,
     current: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    toggleSearch: PropTypes.func.isRequired
   };
 
   componentDidMount() {
@@ -99,7 +100,7 @@ export class Header extends React.Component {
     return (
       <header>
         <div className="header-controls">
-          <a href="#"><i className="fa fa-search"></i> Search IM</a>
+          <a href="#" onClick={this.props.toggleSearch}><i className="fa fa-search"></i> Search IM</a>
             <span className="close">
               <a href="#" onClick={this.closeChat}><i className="fa fa-times"></i></a>
             </span>

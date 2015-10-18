@@ -10,7 +10,7 @@ import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle
   me: state.Application.user,
   agents: agentsSelector(state),
   agentsStatus: agentsStatusSelector(state),
-  messages: state.IM.messages,
+  messages: state.IM.messages
 }))
 export class MessageList extends React.Component {
 
@@ -20,12 +20,20 @@ export class MessageList extends React.Component {
     agentsStatus: PropTypes.object.isRequired,
     current: PropTypes.object.isRequired,
     messages: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    searchQuery: PropTypes.string.isRequired
   };
 
   componentDidMount() {
     this.props.dispatch(loadAllAgents());
     this.props.dispatch(loadMessages(this.props.current.id));
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.searchQuery !== this.props.searchQuery) {
+      this.props.dispatch(loadMessages(this.props.current.id, newProps.searchQuery));
+    }
+    
   }
 
   render() {

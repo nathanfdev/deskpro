@@ -24,23 +24,38 @@ export class Chat extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchQuery: ''
+      searchQuery: '',
+      searchTyped: '',
+      searchShown: false,
     };
   }
 
   messageList = () => {
-    return (this.props.current.id) ? <MessageList current={this.props.current} /> : <img src="/web/spinner.gif" style={{width: 40 + 'px', height: 40 + 'px'}}/>;
+    return (this.props.current.id)
+      ? <MessageList current={this.props.current} searchQuery={this.state.searchQuery}/>
+      : <img src="/web/spinner.gif" style={{width: 40 + 'px', height: 40 + 'px'}}/>;
   };
 
-  handleQuery = (event) => {
+  handleType = (event) => {
     const oldState = this.state;
     const newState = {...oldState};
-    newState.searchQuery = event.target.value;
+    newState.searchTyped = event.target.value;
     this.setState(newState);
   };
 
   handleSearch = () => {
-    this.props.dispatch(loadMessages(this.props.current.id, this.state.searchQuery));
+    const oldState = this.state;
+    const newState = {...oldState};
+    newState.searchQuery = oldState.searchTyped;
+    this.setState(newState);
+  };
+
+  toggleSearch = () => {
+    const oldState = this.state;
+    const newState = {...oldState};
+    newState.searchShown = !oldState.searchShown;
+    console.log(newState);
+    this.setState(newState);
   };
 
   refresh = () => {
@@ -52,7 +67,7 @@ export class Chat extends React.Component {
   };
 
   searchForm() {
-    return <SearchForm handleQuery={this.handleQuery} handleSearch={this.handleSearch} />;
+    return (this.state.searchShown) ? <SearchForm handleType={this.handleType} handleSearch={this.handleSearch} /> : null;
   }
 
   static typing() {
@@ -66,7 +81,7 @@ export class Chat extends React.Component {
   render() {
     return (
       <div className="dropdown active-chat-dropdown" id="active-chat-dropdown">
-        <Header />
+        <Header toggleSearch={this.toggleSearch}/>
         { this.searchForm() }
         <div className="chat-controls"><a href="#">Load old messages</a><a onClick={this.refresh} href="#">Refresh</a></div>
         { this.messageList() }
