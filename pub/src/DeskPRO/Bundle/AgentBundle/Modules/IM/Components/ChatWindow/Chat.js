@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 // components
 import { Footer } from './Footer';
 import { Header } from './Header';
@@ -11,10 +11,15 @@ import { loadMessages, addMessage } from '../../Actions/imMessagesActions';
 
 @connect(state => ({
   me: state.Application.user,
-  messages: state.IM.messages,
   current: state.IM.chats.get('current')
 }))
 export class Chat extends React.Component {
+
+  static propTypes = {
+    me: PropTypes.object.isRequired,
+    current: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired
+  };
 
   constructor(props) {
     super(props);
@@ -23,20 +28,9 @@ export class Chat extends React.Component {
     };
   }
 
-  render() {
-    return (
-      <div className="dropdown active-chat-dropdown" id="active-chat-dropdown">
-        <Header />
-        { this.searchForm() }
-        <div className="chat-controls"><a href="#">Load old messages</a><a onClick={this.refresh} href="#">Refresh</a></div>
-        <MessageList
-          agents={this.props.agents}
-          me={this.props.me}
-          messages={this.props.messages.getIn(['chatMessages',this.props.current.id])}/>
-        <Footer handleAddMessage={this.handleAddMessage}/>
-      </div>
-    );
-  }
+  messageList = () => {
+    return (this.props.current.id) ? <MessageList current={this.props.current} /> : <img src="/web/spinner.gif" style={{width: 40 + 'px', height: 40 + 'px'}}/>;
+  };
 
   handleQuery = (event) => {
     const oldState = this.state;
@@ -49,8 +43,7 @@ export class Chat extends React.Component {
     this.props.dispatch(loadMessages(this.props.current.id, this.state.searchQuery));
   };
 
-  refresh = () =>
-  {
+  refresh = () => {
     this.props.dispatch(loadMessages(this.props.current.id));
   };
 
@@ -63,10 +56,22 @@ export class Chat extends React.Component {
   }
 
   static typing() {
-    return <div className="active-chat-user-typing">Jeniffer is typing a message <span id="typing">...</span></div>
+    return <div className="active-chat-user-typing">Jeniffer is typing a message <span id="typing">...</span></div>;
   }
 
   static offline() {
-    return <Offline />
+    return <Offline />;
+  }
+
+  render() {
+    return (
+      <div className="dropdown active-chat-dropdown" id="active-chat-dropdown">
+        <Header />
+        { this.searchForm() }
+        <div className="chat-controls"><a href="#">Load old messages</a><a onClick={this.refresh} href="#">Refresh</a></div>
+        { this.messageList() }
+        <Footer handleAddMessage={this.handleAddMessage}/>
+      </div>
+    );
   }
 }

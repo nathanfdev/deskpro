@@ -81,8 +81,6 @@ export class HeaderWidget extends React.Component {
     this.setState(newState);
   };
 
-
-
   renderRecent = () => {
     const { agents, teams, departments, recentChats, me } = this.props;
     const { recentChatsStatus, agentsStatus, teamsStatus, departmentsStatus } = this.props;

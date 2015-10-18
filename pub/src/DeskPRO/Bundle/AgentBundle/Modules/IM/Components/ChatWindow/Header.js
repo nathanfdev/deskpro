@@ -61,24 +61,32 @@ export class Header extends React.Component {
     }
   };
 
+  wrapHeaderText = (text) => {
+    return <h1>Your IM with <span>{text}</span> {this.renderOnline()}</h1>;
+  };
+
   renderHeader() {
     const { current, teams, departments } = this.props;
     let text;
+    let render;
     switch (current.chat_type) {
       case 'agent':
         text = this.calculateAgentText();
+        render = this.wrapHeaderText(text);
         break;
       case 'team':
         text = teams.getIn([current.agent_teams[0], 'name']);
+        render = this.wrapHeaderText(text);
         break;
       case 'department':
         text = departments.getIn([current.departments[0], 'title']);
+        render = this.wrapHeaderText(text);
         break;
       default:
-        text = 'Unknown chat. ALARM!!!';
+        render = <img src="/web/spinner.gif" style={{width: 20 + 'px', height: 20 + 'px'}}/>;
     }
 
-    return <h1>Your IM with <span>{text}</span> {this.renderOnline()}</h1>;
+    return render;
   }
 
   renderOnline() {
@@ -92,9 +100,9 @@ export class Header extends React.Component {
       <header>
         <div className="header-controls">
           <a href="#"><i className="fa fa-search"></i> Search IM</a>
-                    <span className="close">
-                      <a href="#" onClick={this.closeChat}><i className="fa fa-times"></i></a>
-                    </span>
+            <span className="close">
+              <a href="#" onClick={this.closeChat}><i className="fa fa-times"></i></a>
+            </span>
         </div>
         { this.renderHeader() }
       </header>

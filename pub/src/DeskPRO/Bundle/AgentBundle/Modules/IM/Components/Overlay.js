@@ -10,7 +10,6 @@ export class Overlay extends React.Component {
         <header className="dropdown-header">Agent Instant Messages</header>
         <div className="wrapper">
           <AgentsList />
-
           <div className="bucket right">
             <a href="#" className="broadcast-to-all"><i className="fa fa-bullhorn"></i> Broadcast to Everyone</a>
 
