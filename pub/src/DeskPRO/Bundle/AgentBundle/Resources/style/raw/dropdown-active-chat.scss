@@ -240,12 +240,12 @@
 
 .emoticon-panel {
   position: absolute;
-  top: 40px;
-  left: 0px;
   border-radius: 2px;
   background: #fff;
   text-align: left;
   padding: 5px;
+  z-index: 20000;
+  width: 160px;
 
   &:before {
     content: "";
@@ -256,7 +256,7 @@
     border-bottom: 3px solid #fff;
     position: absolute;
     top: -6px;
-    right: 16px;
+    left: 16px;
   }
 
   .emoticon-link {

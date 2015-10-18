@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
 import { Message } from './Message';
@@ -35,6 +36,18 @@ export class MessageList extends React.Component {
     }
   }
 
+  componentWillUpdate = () => {
+    const node = ReactDOM.findDOMNode(this.refs.list);
+    this.shouldScrollBottom = node.scrollTop + node.offsetHeight === node.scrollHeight;
+  };
+
+  componentDidUpdate = () => {
+    if (this.shouldScrollBottom) {
+      const node = ReactDOM.findDOMNode(this.refs.list);
+      node.scrollTop = node.scrollHeight;
+    }
+  };
+
   controls = () => {
     return <div className="chat-controls"><a href="#">Load old messages</a><a onClick={this.refresh} href="#">Refresh</a></div>;
   };
@@ -48,7 +61,7 @@ export class MessageList extends React.Component {
     return (messages.length > 0 ) ? (
       <div>
       {this.controls()}
-        <ul className="chat-message-list">
+        <ul ref="list" className="chat-message-list">
           {
             messages.map((message, index) => {
               return (<Message
@@ -60,6 +73,6 @@ export class MessageList extends React.Component {
           }
         </ul>
       </div>
-    ) : <Spinner width="40" height="40" />;
+    ) : <Spinner ref="list" width="40" height="40" />;
   }
 }

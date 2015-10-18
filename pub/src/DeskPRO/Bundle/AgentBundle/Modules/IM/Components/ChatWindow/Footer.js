@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
+import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 
 export class Footer extends React.Component {
+
+  static propTypes = {
+    handleAddMessage: PropTypes.func.isRequired
+  };
 
   constructor(props) {
     super(props);
@@ -18,60 +23,65 @@ export class Footer extends React.Component {
     this.setState(newState);
   };
 
-  handleChange (event) {
+  handleChange(event) {
     const oldState = this.state;
     const newState = {...oldState};
     newState.message = event.target.value;
+    console.log(newState);
     this.setState(newState);
-  };
+  }
 
   handleSubmit = () => {
     if (this.state.message) {
       this.props.handleAddMessage(this.state.message);
       this.handleChange({target: {value: ''}});
     }
-    const oldState = this.state;
-    const newState = {...oldState};
-    newState.message = '';
-    this.setState(newState);
   };
 
-  renderEmojiTable() {
+  renderEmojiTable = () => {
     return (
-    <div className="emoticon-panel">
-      <div>
-        <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-1"></span></a>
-        <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-2"></span></a>
-        <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-3"></span></a>
-        <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-4"></span></a>
-        <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-5"></span></a>
-      </div>
+      <Positioned
+        positionMy="left-18px top+5px"
+        positionAt="center bottom"
+        positionTarget={this.refs.emojiButton}
+        isOpen={this.state.emojiOpened}
+        >
+        <div className="emoticon-panel">
+          <div>
+            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-1"></span></a>
+            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-2"></span></a>
+            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-3"></span></a>
+            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-4"></span></a>
+            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-5"></span></a>
+          </div>
 
-      <div>
-        <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-6"></span></a>
-        <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-7"></span></a>
-        <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-8"></span></a>
-        <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-9"></span></a>
-        <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-10"></span></a>
-      </div>
+          <div>
+            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-6"></span></a>
+            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-7"></span></a>
+            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-8"></span></a>
+            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-9"></span></a>
+            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-10"></span></a>
+          </div>
 
-      <div>
-        <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-11"></span></a>
-        <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-12"></span></a>
-        <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-13"></span></a>
-        <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-14"></span></a>
-        <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-15"></span></a>
-      </div>
+          <div>
+            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-11"></span></a>
+            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-12"></span></a>
+            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-13"></span></a>
+            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-14"></span></a>
+            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-15"></span></a>
+          </div>
 
-      <div>
-        <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-16"></span></a>
-        <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-17"></span></a>
-        <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-18"></span></a>
-        <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-19"></span></a>
-        <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-20"></span></a>
-      </div>
-    </div>);
-  }
+          <div>
+            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-16"></span></a>
+            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-17"></span></a>
+            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-18"></span></a>
+            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-19"></span></a>
+            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-20"></span></a>
+          </div>
+        </div>
+      </Positioned>
+      );
+  };
 
   render() {
     return (
@@ -82,11 +92,11 @@ export class Footer extends React.Component {
             placeholder="Send a message"
             rows={1}
             style={{maxHeight: 300}}
-            defaultValue={this.state.message}
+            value={this.state.message}
             />
-          <a href="#" onClick={this.toggleEmoji} className="insert-emoticon"><span className="emoticon sprite sprite-emoticon-1"></span></a>
+          <a href="#" ref="emojiButton" onClick={this.toggleEmoji} className="insert-emoticon"><span className="emoticon sprite sprite-emoticon-1"></span></a>
           <input onClick={this.handleSubmit} type="button" value="&#xf101;"/>
-          {this.state.emojiOpened ? this.renderEmojiTable() : null}
+          { this.renderEmojiTable() }
         </form>
       </footer>
     );
