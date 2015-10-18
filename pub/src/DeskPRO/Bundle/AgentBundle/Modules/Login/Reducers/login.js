@@ -2,12 +2,11 @@ import * as actions from '../Actions/loginActions';
 import { createReducer } from 'Ampliflux';
 
 const initialState = {
-  email: 'example@email.com',
+  email: 'admin@example.com',
   emailError: null,
   password: 'password',
   passwordError: null,
-  rememberMe: true,
-  token: null
+  rememberMe: true
 };
 
 export default createReducer(initialState, {
@@ -25,8 +24,5 @@ export default createReducer(initialState, {
   },
   [actions.toggleRememberMe]: state => {
     return state.set('rememberMe', !state.get('rememberMe'));
-  },
-  [actions.setToken]: (state, payload) => {
-    return state.set('token', payload);
-  },
+  }
 });
