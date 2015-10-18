@@ -7,13 +7,15 @@ Feature: /avatars/* endpoints
     Given I install the api data set
     And my request is authenticated
 
-  Scenario Outline: I get avatar information
-    When I send a GET request to "/api/v2/avatars/<target>/1"
+  Scenario Outline: I get avatars list
+    When I send a GET request to "/api/v2/avatars/<target>?ids=1,2"
     And the response status code should be 200
-    And the JSON node "url" should exist
-    And the JSON node "is_fallback" should exist
-    And the JSON node "url_pattern" should exist
-    And the JSON node "url_pattern" should contain "{{IMG_SIZE}}"
+    And the JSON node "meta.count" should be equal to "2"
+    And the JSON node "data[0].id" should exist
+    And the JSON node "data[0].url" should exist
+    And the JSON node "data[0].is_fallback" should exist
+    And the JSON node "data[0].url_pattern" should exist
+    And the JSON node "data[0].url_pattern" should contain "{{IMG_SIZE}}"
 
     Examples:
       | target        |
@@ -21,6 +23,8 @@ Feature: /avatars/* endpoints
       | organization  |
 
   Scenario: I get gravatar URL of a Person
-    When I send a GET request to "/api/v2/avatars/person/1"
+    When I send a GET request to "/api/v2/avatars/person?ids=1,2"
     And the response status code should be 200
-    And the JSON node "gravatar" should exist
+    And the JSON node "meta.count" should be equal to "2"
+    And the JSON node "data[0].gravatar" should exist
+
