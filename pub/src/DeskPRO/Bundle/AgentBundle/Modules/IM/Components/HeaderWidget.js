@@ -29,7 +29,7 @@ import { myDepartmentsSelector, myDepartmentsStatusSelector } from 'DeskPRO/Bund
   current: state.IM.chats.get('current'),
   departments: myDepartmentsSelector(state),
   recentChats: recentChatsSelector(state),
-
+  chating: state.IM.ui.get('chating'),
   teamsStatus: myAgentTeamsStatusSelector(state),
   agentsStatus: agentsStatusSelector(state),
   departmentsStatus: myDepartmentsStatusSelector(state),
@@ -47,15 +47,10 @@ export class HeaderWidget extends React.Component {
     teamsStatus: PropTypes.object.isRequired,
     departmentsStatus: PropTypes.object.isRequired,
     agentsStatus: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    chating: PropTypes.bool.isRequired
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      chating: false
-    };
-  }
 
   componentWillMount() {
     const { dispatch } = this.props;
@@ -88,8 +83,7 @@ export class HeaderWidget extends React.Component {
 
   renderChat = () => {
     const {agents, teams, departments, current} = this.props;
-    const {agentsStatus, teamsStatus, departmentsStatus} = this.props;
-    return this.state.chating && current.id && agentsStatus.get('isDone') && teamsStatus.get('isDone') && departmentsStatus.get('isDone')
+    return this.props.chating && current.id
       ? (<Chat
       teams={teams}
       agents={agents}
@@ -126,8 +120,8 @@ export class HeaderWidget extends React.Component {
 
   render() {
     return (
-      <div className="agent-ims" id="im-button">
-        <a href="#" onClick={this.onClick} className="show-more">
+      <div className="agent-ims">
+        <a href="#" id="im-button" onClick={this.onClick} className="show-more">
             <span>
                 IMs <i className="fa fa-angle-down"></i>
             </span>

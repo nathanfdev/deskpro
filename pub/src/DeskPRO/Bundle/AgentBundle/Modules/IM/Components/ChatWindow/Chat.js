@@ -22,7 +22,7 @@ export class Chat extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.dispatch(loadMessages(this.props.current.id));
   }
 

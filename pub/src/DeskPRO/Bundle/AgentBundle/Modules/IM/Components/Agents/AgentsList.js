@@ -1,13 +1,23 @@
 import React, {Component, PropTypes} from 'react';
 import { AgentsListItem } from './AgentsListItem';
+import { connect } from 'react-redux';
 
+// agents
+import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
+import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
+
+@connect(state => ({
+  me: state.Application.user,
+  agents: agentsSelector(state),
+  agentsStatus: agentsStatusSelector(state)
+}))
 export class AgentsList extends Component {
 
   static propTypes = {
     me: PropTypes.object.isRequired,
     agents: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired,
-    handleClickParticipant: PropTypes.func.isRequired
+    agentsStatus: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -16,6 +26,11 @@ export class AgentsList extends Component {
       value: false,
       agents: this.filterAgents.bind(this)
     };
+  }
+
+  componentWillMount() {
+    const { dispatch } = this.props;
+    dispatch(loadAllAgents());
   }
 
   onChange(event) {
@@ -45,7 +60,8 @@ export class AgentsList extends Component {
   }
 
   render() {
-    return (
+    return (this.props.agentsStatus.get('isDone'))
+    ? (
       <div className="bucket left">
         <h1>Agents</h1>
 
@@ -65,8 +81,6 @@ export class AgentsList extends Component {
                 (agent, index) => {
                   if (this.props.me.get('id') !== agent.get('id')) {
                     return (<AgentsListItem
-                      dispatch={this.props.dispatch}
-                      handleClickParticipant={this.props.handleClickParticipant}
                       key={index}
                       agent={agent}
                       highlight={this.state.value}/>);
@@ -77,8 +91,6 @@ export class AgentsList extends Component {
                 (agent, index) => {
                   if (this.props.me.get('id') !== agent.get('id')) {
                     return (<AgentsListItem
-                      dispatch={this.props.dispatch}
-                      handleClickParticipant={this.props.handleClickParticipant}
                       key={index}
                       agent={agent}
                       highlight={this.state.value}/>);
@@ -89,6 +101,7 @@ export class AgentsList extends Component {
           </ul>
         </div>
       </div>
-    );
+    )
+    : null;
   }
 }
