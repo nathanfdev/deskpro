@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity\Person;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -47,48 +48,53 @@ class AvatarsController extends BaseController
     /**
      * @ApiDoc(
      *      description="Get avatar",
-     *      requirements={
-     *          {
-     *              "name"="target",
-     *              "requirement"="person|organization",
-     *              "description"="target entity",
-     *              "dataType"="string"
-     *          },
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the target",
-     *              "dataType"="integer"
-     *          }
-     *      },
      *      statusCodes={
      *          200="Success",
      *          404="Not Found"
      *      }
      * )
      * @Get(
-     *     "/avatars/{target}/{id}",
-     *     name="api_avatar_get",
+     *     "/avatars/{target}",
+     *     name="api_avatars_collection_get",
      *     requirements={
      *         "target" = "person|organization",
      *         "id" = "\d+"
      *     }
      * )
      *
-     * @param string $target
-     * @param int    $id
+     * @param string  $target
+     * @param Request $request
      *
      * @return View
      */
-    public function getAction($target, $id)
+    public function cgetAction($target, Request $request)
     {
-        $targetEntity = $this->findOr404('DeskPRO:'.ucfirst($target), $id, 'Target entity not found');
+        $ids = explode(',', (string) $request->get('ids', ''));
+
+        $collection = [];
+        foreach ($ids as $id) {
+            $collection[] = $this->getAvatar($target, $id);
+        }
+
+        return View::create($this->createRepresentation($collection), Response::HTTP_OK);
+    }
+
+    /**
+     * @param string $target
+     * @param int    $personId
+     *
+     * @return array
+     */
+    private function getAvatar($target, $personId)
+    {
+        $targetEntity = $this->findOr404('DeskPRO:'.ucfirst($target), $personId, 'Target entity not found');
 
         /* @var \DeskPRO\Bundle\AppBundle\Content\AvatarResolver $avatarResolver */
         $avatarResolver = $this->get('avatar_resolver');
         $avatarResolver->setUseGravatar(false);
 
         $data = [
+            'id'          => $personId,
             'url'         => $avatarResolver->getAvatar($targetEntity, self::DEFAULT_SIZE, $isFallback),
             'url_pattern' => $avatarResolver->getAvatarPattern($targetEntity, '{{IMG_SIZE}}'),
             'is_fallback' => $isFallback,
@@ -97,6 +103,6 @@ class AvatarsController extends BaseController
             $data['gravatar'] = $targetEntity->getGravatarUrl();
         }
 
-        return View::create($data, Response::HTTP_OK);
+        return $data;
     }
 }
