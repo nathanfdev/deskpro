@@ -5,7 +5,7 @@ import { toggleChat } from './uiActions';
 export const startChat = createAction(
   'IM_START_CHAT',
   (target_id, target_type = 'agent') => (dispatch) => {
-    dispatch(toggleChat());
+    dispatch(openChat());
     return new Promise(
       (resolve, reject) =>
         IM.startChat(target_id, target_type)
