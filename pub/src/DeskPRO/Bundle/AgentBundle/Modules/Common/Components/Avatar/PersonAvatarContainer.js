@@ -12,7 +12,7 @@ import { Avatar } from './Avatar';
 export class PersonAvatarContainer extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    person: PropTypes.object,
+    person: PropTypes.object.isRequired,
     size: PropTypes.number,
     avatars: PropTypes.object.isRequired
   };
@@ -21,7 +21,7 @@ export class PersonAvatarContainer extends React.Component {
     this.id = uuid();
 
     const { size, person, avatars } = this.props;
-    const avatar = avatars.get(String(person.get('id'))) || Immutable.fromJS({});
+    const avatar = person && avatars.get(String(person.get('id'))) || Immutable.fromJS({});
 
     const props = {
       size,
@@ -38,9 +38,10 @@ export class PersonAvatarContainer extends React.Component {
   }
 
   componentDidMount() {
-    const id = this.props.person.get('id');
-    if (id) {
-      this.props.dispatch(actions.loadPersonAvatars(this.id, [this.props.person.get('id')]));
+    const { person, dispatch } = this.props;
+
+    if (person && person.get('id')) {
+      dispatch(actions.loadPersonAvatars(this.id, [person.get('id')]));
     }
   }
 
@@ -49,10 +50,10 @@ export class PersonAvatarContainer extends React.Component {
   }
 
   getPersonFallbackText() {
-    const person   = this.props.person || Immutable.fromJS({});
-    const first    = person.get('first_name');
-    const last     = person.get('last_name');
-    const initials = (first.length ? first[0] : '') + (last.length ? last[0] : '');
+    const person = this.props.person || Immutable.fromJS({});
+    const first = person.get('first_name');
+    const last = person.get('last_name');
+    const initials = (first && first.length ? first[0] : '') + (last && last.length ? last[0] : '');
 
     return initials ? initials : '?';
   }
