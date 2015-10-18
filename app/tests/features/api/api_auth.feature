@@ -91,7 +91,7 @@ Feature: API Authentication
     And the JSON node "data.person_id" should be equal to 3
     And I should have an authenticated token with the role ROLE_API
 
-  Scenario: I fail to get a token becasue I make a bad request
+  Scenario: I fail to get a token because I make a bad request
     When I send a POST request to "/api/v2/api_tokens" with body:
     """
     {
@@ -103,7 +103,7 @@ Feature: API Authentication
     And the JSON node "message" should be equal to "Request input is invalid."
     And the JSON node "errors" should exist
 
-  Scenario: I fail to get a token becasue I use the wrong credentials
+  Scenario: I fail to get a token because I use the wrong credentials
     When I send a POST request to "/api/v2/api_tokens" with body:
     """
     {
