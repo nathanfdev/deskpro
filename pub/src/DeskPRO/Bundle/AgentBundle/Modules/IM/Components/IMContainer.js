@@ -5,7 +5,7 @@ import { Overlay } from './Overlay';
 import { Chat } from './ChatWindow/Chat';
 
 @connect(state => ({
-  current: state.IM.chats.get('current'),
+  current: state.IM.ui.get('current'),
   chating: state.IM.ui.get('chating'),
   overlayShown: state.IM.ui.get('overlayShown'),
 }))
@@ -32,12 +32,18 @@ export class IMContainer extends React.Component {
   };
 
   renderChat = () => {
+    const id = 'chat-with-' + this.props.current.get('chat_type') + '-' + this.props.current.get('id');
+    console.log(id);
+    let node = document.getElementById(id);
+    if (!node) {
+      node = document.getElementById('im-button');
+    }
     return (
       <SimplePositioned
         positionMy="left-25 top+1"
         positionAt="center bottom"
         collision="none"
-        positionTarget={document.getElementById('im-button')}
+        positionTarget={node}
         isOpen={this.props.chating}
       >
         <Chat />
