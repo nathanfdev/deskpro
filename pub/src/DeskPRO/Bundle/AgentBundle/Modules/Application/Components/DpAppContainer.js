@@ -13,15 +13,19 @@ import { LoginApp } from '../../Login/Components/LoginApp';
 import { WelcomeApp } from '../../Welcome/Components/WelcomeApp';
 import { ExampleApp } from '../../Example/Components/ExampleApp';
 import { loadMe } from '../RecordStores/Actions/meActions';
+import { setHasAuth } from '../../Login/Actions/loginActions';
 import { hashChanged } from '../../Application/Actions/routingActions';
 import Jquery from 'jquery';
 
-@connect()
+@connect(state => ({
+  loginState: state.Login.login
+}))
 export class DpAppContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired
+    history: PropTypes.object.isRequired,
+    loginState: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -30,7 +34,14 @@ export class DpAppContainer extends React.Component {
 
     Jquery.ajaxSetup({
       statusCode: {
+        200: function() {
+          if (!props.loginState.get('hasAuth')) {
+            props.dispatch(setHasAuth(true));
+            props.history.pushState(null, '/index.php/agent/');
+          }
+        },
         401: function() {
+          props.dispatch(setHasAuth(false));
           props.history.pushState(null, '/index.php/agent/login');
         }
       }

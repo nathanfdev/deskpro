@@ -11,8 +11,7 @@ export class DpAppRouteContainer extends React.Component {
 
   static propTypes = {
     children: PropTypes.object.isRequired,
-    userStatus: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired
+    userStatus: PropTypes.object.isRequired
   };
 
   render() {

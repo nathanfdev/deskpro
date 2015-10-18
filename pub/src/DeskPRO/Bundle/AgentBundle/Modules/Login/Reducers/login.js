@@ -6,7 +6,8 @@ const initialState = {
   emailError: null,
   password: 'password',
   passwordError: null,
-  rememberMe: true
+  rememberMe: true,
+  hasAuth: false
 };
 
 export default createReducer(initialState, {
@@ -24,5 +25,8 @@ export default createReducer(initialState, {
   },
   [actions.toggleRememberMe]: state => {
     return state.set('rememberMe', !state.get('rememberMe'));
+  },
+  [actions.setHasAuth]: (state, payload) => {
+    return state.set('hasAuth', payload);
   }
 });
