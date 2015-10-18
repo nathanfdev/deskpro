@@ -11,7 +11,8 @@ import { loadMessages, addMessage } from '../../Actions/imMessagesActions';
 
 @connect(state => ({
   me: state.Application.user,
-  messages: state.IM.messages
+  messages: state.IM.messages,
+  current: state.IM.chats.get('current')
 }))
 export class Chat extends React.Component {
 
@@ -22,14 +23,10 @@ export class Chat extends React.Component {
     };
   }
 
-  componentDidMount() {
-    this.props.dispatch(loadMessages(this.props.current.id));
-  }
-
   render() {
     return (
       <div className="dropdown active-chat-dropdown" id="active-chat-dropdown">
-        { this.head() }
+        <Header />
         { this.searchForm() }
         <div className="chat-controls"><a href="#">Load old messages</a><a onClick={this.refresh} href="#">Refresh</a></div>
         <MessageList
@@ -39,19 +36,6 @@ export class Chat extends React.Component {
         <Footer handleAddMessage={this.handleAddMessage}/>
       </div>
     );
-  }
-
-  head() {
-    if(this.props.agents.size > 0) {
-      return <Header
-        agents={this.props.agents}
-        teams={this.props.teams}
-        departments={this.props.departments}
-        me={this.props.me}
-        current={this.props.current}
-        handleCloseChat={this.props.handleCloseChat}
-        />
-    }
   }
 
   handleQuery = (event) => {
@@ -75,9 +59,7 @@ export class Chat extends React.Component {
   };
 
   searchForm() {
-    if(this.props.agents.size > 0) {
-      return <SearchForm handleQuery={this.handleQuery} handleSearch={this.handleSearch} />
-    }
+    return <SearchForm handleQuery={this.handleQuery} handleSearch={this.handleSearch} />;
   }
 
   static typing() {

@@ -81,17 +81,7 @@ export class HeaderWidget extends React.Component {
     this.setState(newState);
   };
 
-  renderChat = () => {
-    const {agents, teams, departments, current} = this.props;
-    return this.props.chating && current.id
-      ? (<Chat
-      teams={teams}
-      agents={agents}
-      current={current}
-      departments={departments}
-      handleCloseChat={this.handleCloseChat}/>)
-      : null;
-  };
+
 
   renderRecent = () => {
     const { agents, teams, departments, recentChats, me } = this.props;
@@ -127,7 +117,6 @@ export class HeaderWidget extends React.Component {
             </span>
         </a>
         { this.renderRecent() }
-        { this.renderChat() }
       </div>
     );
   }

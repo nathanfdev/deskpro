@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 
+
 @connect(state => ({
   me: state.Application.user,
   agents: agentsSelector(state),
