@@ -17,15 +17,12 @@ import { setHasAuth } from '../../Login/Actions/loginActions';
 import { hashChanged } from '../../Application/Actions/routingActions';
 import Jquery from 'jquery';
 
-@connect(state => ({
-  loginState: state.Login.login
-}))
+@connect()
 export class DpAppContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
-    loginState: PropTypes.object.isRequired
+    history: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -63,7 +60,7 @@ export class DpAppContainer extends React.Component {
     dispatch(hashChanged(window.location.hash));
 
     const basePath = this.workOutBasePath();
-    const defaultPath = `${basePath}/tasks`;
+    const defaultPath = `${basePath}/welcome`;
 
     return (
       <Router history={history}>
