@@ -1,9 +1,9 @@
 import React from 'react';
+import TextareaAutosize from 'react-textarea-autosize';
 
 export class Footer extends React.Component {
 
   constructor(props) {
-    "use strict";
     super(props);
     this.state = {
       emojiOpened: false,
@@ -12,7 +12,6 @@ export class Footer extends React.Component {
   }
 
   toggleEmoji = () => {
-    "use strict";
     const oldState = this.state;
     const newState = {...oldState};
     newState.emojiOpened = !oldState.emojiOpened;
@@ -27,30 +26,19 @@ export class Footer extends React.Component {
   };
 
   handleSubmit = () => {
-    "use strict";
-    if(this.state.message) {
+    if (this.state.message) {
       this.props.handleAddMessage(this.state.message);
       this.handleChange({target: {value: ''}});
     }
-    this.state.message = '';
+    const oldState = this.state;
+    const newState = {...oldState};
+    newState.message = '';
+    this.setState(newState);
   };
 
-  render() {
+  renderEmojiTable() {
     return (
-      <footer>
-        <form onSubmit={this.handleSubmit}>
-          <input onChange={this.handleChange.bind(this)} type="text" placeholder="Send a message" value={this.state.message}/>
-          <a href="#" onClick={this.toggleEmoji} className="insert-emoticon"><span className="emoticon sprite sprite-emoticon-1"></span></a>
-          <input onClick={this.handleSubmit} type="button" value="&#xf101;"/>
-          {this.state.emojiOpened ? this.renderEmojiTable() : null}
-        </form>
-      </footer>
-    );
-  }
-
-  renderEmojiTable () {
-    "use strict";
-    return <div className="emoticon-panel">
+    <div className="emoticon-panel">
       <div>
         <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-1"></span></a>
         <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-2"></span></a>
@@ -82,6 +70,25 @@ export class Footer extends React.Component {
         <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-19"></span></a>
         <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-20"></span></a>
       </div>
-    </div>
+    </div>);
+  }
+
+  render() {
+    return (
+      <footer>
+        <form onSubmit={this.handleSubmit}>
+          <TextareaAutosize
+            onChange={this.handleChange.bind(this)}
+            placeholder="Send a message"
+            rows={1}
+            style={{maxHeight: 300}}
+            defaultValue={this.state.message}
+            />
+          <a href="#" onClick={this.toggleEmoji} className="insert-emoticon"><span className="emoticon sprite sprite-emoticon-1"></span></a>
+          <input onClick={this.handleSubmit} type="button" value="&#xf101;"/>
+          {this.state.emojiOpened ? this.renderEmojiTable() : null}
+        </form>
+      </footer>
+    );
   }
 }
