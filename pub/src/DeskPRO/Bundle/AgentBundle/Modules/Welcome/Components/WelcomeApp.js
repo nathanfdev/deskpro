@@ -12,6 +12,11 @@ export class WelcomeApp extends React.Component {
     user: PropTypes.object.isRequired
   };
 
+  constructor(props) {
+    super(props);
+    setTimeout(() => props.history.pushState(null, '/index.php/agent/tasks'), 3000);
+  }
+
   render() {
     return (
       <WelcomeBack user={this.props.user} />
