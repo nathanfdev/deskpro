@@ -118,13 +118,13 @@ export default class Abstract extends React.Component {
     // Render the component with react, or don't if the prop changes
     if (this.props.isOpen) {
       // Put the element inside a div that we can position
-      React.render(<div className="positioned-element">{this.props.children}</div>, this.node);
+      ReactDOM.render(<div className="positioned-element">{this.props.children}</div>, this.node);
       this.updatePosition();
       if (this.shouldFire() && this.props.onOpen) {
         this.props.onOpen();
       }
     } else {
-      React.render(<div />, this.node);
+      ReactDOM.render(<div />, this.node);
       if (this.shouldFire() && this.props.onClose) {
         this.props.onClose();
       }
