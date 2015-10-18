@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { HeaderWidget } from '../../IM/Components/HeaderWidget';
 import { WorkspaceContainer } from './Workspace/WorkspaceContainer';
+import { PersonAvatarContainer } from '../../Common/Components/Avatar/index';
 
 export class Header extends React.Component {
 
@@ -45,7 +46,7 @@ export class Header extends React.Component {
         </a>
 
         <a href="#" className="user-options-button">
-          <span className="user-photo" style={{backgroundImage: 'url(' + user.get('picture_url') + ')'}}></span>
+          <PersonAvatarContainer person={user} />
           <span className="title">Settings <i className="fa fa-angle-down"></i></span>
         </a>
       </div>
