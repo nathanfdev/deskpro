@@ -1,8 +1,9 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import jQuery from 'jquery';
 import position from 'jquery-ui/position';
 
-export default class Positioned extends React.Component {
+export default class Abstract extends React.Component {
 
   /**
    * The valid PropTypes for this component
@@ -34,26 +35,14 @@ export default class Positioned extends React.Component {
   }
 
   /**
-   * Run when the component has been mounted
-   * @returns {void}
-   */
-  componentDidMount() {
-    this.node = React.findDOMNode(this);
-    jQuery(this.node).detach();
-    jQuery('body').prepend(this.node);
-
-    // Manipulate the DOM here
-    this.renderContent(this.props);
-  }
-
-  /**
    * Re-render the dialog content when we get a new set of props
    * @param  {Object} newProps The new props
    * @return {void}
    */
   componentWillReceiveProps(newProps) {
     // Re-render the dialog box with the new properties when there's a change
-    this.renderContent(newProps);
+    this.props = newProps;
+    this.renderContent();
   }
 
   /**
@@ -69,17 +58,16 @@ export default class Positioned extends React.Component {
 
   /**
    * Update the position of the component
-   * @param  {Object} props The props to use
    * @return {void}
    */
-  updatePosition(props) {
-    if (props.positionCalc) {
-      const positionResult = props.positionCalc();
+  updatePosition() {
+    if (this.props.positionCalc) {
+      const positionResult = this.props.positionCalc();
       jQuery(this.node).css('position', 'absolute')
         .css('top', positionResult.top)
         .css('left', positionResult.left);
     } else {
-      const placement = props.position ||
+      const placement = this.props.position ||
         {
           my: 'left top',
           at: 'right bottom',
@@ -87,16 +75,16 @@ export default class Positioned extends React.Component {
           collision: 'none'
         };
 
-      placement.my = props.positionMy || placement.my;
-      placement.at = props.positionAt || placement.at;
+      placement.my = this.props.positionMy || placement.my;
+      placement.at = this.props.positionAt || placement.at;
 
-      if (props.positionTarget) {
-        placement.of = props.positionTarget;
-        if (!(props.positionTarget instanceof jQuery) && React.findDOMNode(props.positionTarget) !== null) {
-          placement.of = React.findDOMNode(props.positionTarget);
+      if (this.props.positionTarget) {
+        placement.of = this.props.positionTarget;
+        if (!(this.props.positionTarget instanceof jQuery) && ReactDOM.findDOMNode(this.props.positionTarget) !== null) {
+          placement.of = ReactDOM.findDOMNode(this.props.positionTarget);
         }
 
-        placement.collision = props.collision || placement.collision;
+        placement.collision = this.props.collision || placement.collision;
 
         // Error out if we don't have a position target
         if (placement.of === null) {
@@ -124,15 +112,14 @@ export default class Positioned extends React.Component {
 
   /**
    * Render the contents of the dialog
-   * @param  {Object} props The props to use
    * @return {void}
    */
-  renderContent(props) {
-    // Render the component with react, or don't if is not open
-    if (props.isOpen) {
-      React.render(<div className="positioned-element">{this.props.children}</div>, this.node);
+  renderContent() {
+    // Render the component with react, or don't if the prop changes
+    if (this.props.isOpen) {
       // Put the element inside a div that we can position
-      this.updatePosition(props);
+      React.render(<div className="positioned-element">{this.props.children}</div>, this.node);
+      this.updatePosition();
       if (this.shouldFire() && this.props.onOpen) {
         this.props.onOpen();
       }

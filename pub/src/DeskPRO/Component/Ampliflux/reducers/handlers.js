@@ -2,8 +2,8 @@ import Immutable from 'immutable';
 import isPlainObject from 'lodash/lang/isPlainObject';
 
 function verifyImmutable(...args) {
-  args.forEach(v => {
-    if (!Immutable.Iterable.isIterable(v)) {
+  args.forEach(val => {
+    if (!Immutable.Iterable.isIterable(val)) {
       throw new TypeError('Expected an Immutable');
     }
   });
@@ -239,12 +239,16 @@ function _resolveProps(rawProps, state, payload, action) {
     props = { loading: props };
   }
 
-  for (const k in props) {
-    if (typeof props[k] === 'function') {
-      props[k] = props[k](state, payload, action);
+  let key;
+  for (key in props) {
+    if (!props.hasOwnProperty(key)) {
+      continue;
     }
-    if (props[k] && props[k].indexOf('.') !== -1) {
-      props[k] = props[k].split('.');
+    if (typeof props[key] === 'function') {
+      props[key] = props[key](state, payload, action);
+    }
+    if (props[key] && props[key].indexOf('.') !== -1) {
+      props[key] = props[key].split('.');
     }
   }
 
@@ -271,20 +275,45 @@ export function asyncIndicator(props) {
 
     switch (seq) {
       case 'start':
-        if (useProps.loading) newState = newState.setIn(useProps.loading, true);
-        if (useProps.success) newState = newState.setIn(useProps.success, false);
-        if (useProps.error)   newState = newState.setIn(useProps.error,   false);
+        if (useProps.loading) {
+          newState = newState.setIn(useProps.loading, true);
+        }
+        if (useProps.success) {
+          newState = newState.setIn(useProps.success, false);
+        }
+        if (useProps.isError) {
+          newState = newState.setIn(useProps.isError, false);
+        }
+        if (useProps.errorCode) {
+          newState = newState.setIn(useProps.errorCode, null);
+        }
         break;
       case 'success':
-        if (useProps.success) newState = newState.setIn(useProps.success, true);
-        if (useProps.error)   newState = newState.setIn(useProps.error,   false);
+        if (useProps.success) {
+          newState = newState.setIn(useProps.success, true);
+        }
+        if (useProps.isError) {
+          newState = newState.setIn(useProps.isError, false);
+        }
+        if (useProps.errorCode) {
+          newState = newState.setIn(useProps.errorCode, null);
+        }
         break;
       case 'error':
-        if (useProps.error)   newState = newState.setIn(useProps.error,   true);
-        if (useProps.success) newState = newState.setIn(useProps.success, false);
+        if (useProps.success) {
+          newState = newState.setIn(useProps.success, false);
+        }
+        if (useProps.isError) {
+          newState = newState.setIn(useProps.isError, true);
+        }
+        if (useProps.errorCode) {
+          newState = newState.setIn(useProps.errorCode, payload.response.xhr.status);
+        }
         break;
       case 'done':
-        if (useProps.loading) newState = newState.setIn(useProps.loading, false);
+        if (useProps.loading) {
+          newState = newState.setIn(useProps.loading, false);
+        }
         break;
       default:
         return state;
@@ -301,5 +330,5 @@ export function asyncIndicator(props) {
  * @return {Function} Composed functions
  */
 export function composeHandlers(...funcs) {
-  return (state, payload, action) => funcs.reduceRight((composed, f) => f(composed, payload, action), state);
+  return (state, payload, action) => funcs.reduceRight((composed, fn) => fn(composed, payload, action), state);
 }

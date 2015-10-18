@@ -162,7 +162,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
             $api_key = $key->getKeyString();
 
             if ($v2) {
-                $api_key = 'key ' . $api_key;
+                $api_key = 'key '.$api_key;
             }
         }
 

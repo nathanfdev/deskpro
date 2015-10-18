@@ -137,13 +137,13 @@ security:
             stateless: true
             anonymous: ~
         api:
-            pattern: ^/api/v2(?!/api_tokens|/doc)
+            pattern: ^/api/v2(?!/api_tokens|/doc|/get_session$)
             stateless: true
             simple_preauth:
                 authenticator: api_authenticator
 
     access_control:
-        - { path: '^/api/v2(?!/api_tokens|/doc)', roles: ['ROLE_API'] }
+        - { path: '^/api/v2(?!/api_tokens|/doc|/get_session)', roles: ['ROLE_API'] }
 
 sensio_framework_extra:
     cache:    { annotations: true }

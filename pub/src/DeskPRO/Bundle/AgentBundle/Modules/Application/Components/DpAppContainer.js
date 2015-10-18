@@ -1,36 +1,46 @@
 import React, { PropTypes } from 'react';
+import { Router, Route, Redirect } from 'react-router';
 import { connect } from 'react-redux';
-import { ReactRouterWrapper } from './ReactRouterWrapper';
-import { DpAppLoading } from './DpAppLoading';
+import { DpAppRouteContainer } from './DpAppRouteContainer';
+import { LoginRouteContainer } from '../../Login/Components/LoginRouteContainer';
 import TicketsApp from '../../Tickets/Components/TicketsApp';
 import TasksApp from '../../Tasks/Components/TasksApp';
 import { FeedbackApp } from '../../Feedback/Components/FeedbackApp';
 import { CrmApp } from '../../CRM/Components/CrmApp';
 import { ChatApp } from '../../Chat/Components/ChatApp';
 import { PublishApp } from '../../Publish/Components/PublishApp';
+import { LoginApp } from '../../Login/Components/LoginApp';
 import { ExampleApp } from '../../Example/Components/ExampleApp';
-import * as AppActions from '../../Application/Actions/AppActions';
+import { loadMe } from '../RecordStores/Actions/meActions';
+import { setHasAuth } from '../../Login/Actions/loginActions';
 import { hashChanged } from '../../Application/Actions/routingActions';
-import { Router, Route, Redirect } from 'react-router';
+import Jquery from 'jquery';
 
-@connect((state) => ({
-  dpWindow: state.Application.dpWindow
-}))
+@connect()
 export class DpAppContainer extends React.Component {
 
   static propTypes = {
-    dpWindow: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired
   };
 
   constructor(props) {
     super(props);
-    const { dpWindow, dispatch } = this.props;
+    const { dispatch, history } = props;
 
-    if (!dpWindow.get('isLoaded')) {
-      dispatch(AppActions.loadWindow());
-    }
+    dispatch(loadMe());
+
+    Jquery.ajaxSetup({
+      statusCode: {
+        200: function() {
+          dispatch(setHasAuth(true));
+        },
+        401: function() {
+          dispatch(setHasAuth(false));
+          history.pushState(null, `${DP_BASE_URL_RELATIVE}/agent/login`);
+        }
+      }
+    });
   }
 
   workOutBasePath() {
@@ -40,7 +50,7 @@ export class DpAppContainer extends React.Component {
   }
 
   render() {
-    const { dpWindow, history, dispatch } = this.props;
+    const { dispatch, history } = this.props;
 
     // dispatch hashChanged() when hash is changed to bind it to the redux state
     window.onhashchange = () => dispatch(hashChanged(window.location.hash));
@@ -48,16 +58,13 @@ export class DpAppContainer extends React.Component {
     // dispatch hashChanged() to track the initial hash value
     dispatch(hashChanged(window.location.hash));
 
-    if (!dpWindow.get('isLoaded')) {
-      return <DpAppLoading />;
-    }
-
     const basePath = this.workOutBasePath();
     const defaultPath = `${basePath}/tasks`;
+
     return (
       <Router history={history}>
         <Redirect from={basePath} to={defaultPath}/>
-        <Route path={basePath} component={ReactRouterWrapper}>
+        <Route path={basePath} component={DpAppRouteContainer}>
           <Route name="crm" path="crm" component={CrmApp}/>
           <Route name="chat" path="chat" component={ChatApp}/>
           <Route name="tickets" path="tickets" component={TicketsApp}/>
@@ -65,6 +72,9 @@ export class DpAppContainer extends React.Component {
           <Route name="publish" path="publish" component={PublishApp}/>
           <Route name="feedback" path="feedback" component={FeedbackApp}/>
           <Route name="example" path="example" component={ExampleApp}/>
+        </Route>
+        <Route path={basePath} component={LoginRouteContainer}>
+          <Route name="login" path="login" component={LoginApp}/>
         </Route>
       </Router>
     );

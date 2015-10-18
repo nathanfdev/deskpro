@@ -1,4 +1,5 @@
 import React from "react"
+import ReactDOM from "react-dom"
 import _ from "lodash"
 import $ from "jquery"
 import PortalUrlGenerator from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator"
@@ -50,7 +51,7 @@ export default class ResultsPartial extends React.Component {
 
   setEvents() {
     let self = this;
-    let results = $(React.findDOMNode(this.refs.results));
+    let results = $(ReactDOM.findDOMNode(this.refs.results));
 
     // process pager
     results.find('.deskpro-pager a').each(function () {

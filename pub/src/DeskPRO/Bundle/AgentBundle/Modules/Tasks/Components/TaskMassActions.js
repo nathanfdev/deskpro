@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned';
+import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import ProjectDialog from '../Components/MassActions/ProjectDialog';
 import AssignHover from '../Components/AssignHover';
 import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';

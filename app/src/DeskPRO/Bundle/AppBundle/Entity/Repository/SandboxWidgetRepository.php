@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
@@ -46,8 +45,8 @@ class SandboxWidgetRepository extends EntityRepository
         $db = $this->getEntityManager()->getConnection();
 
         return array_map(
-            function($r) { return $r['type']; },
-            $db->fetchAll("SELECT DISTINCT(type) FROM api_sandbox_widgets ORDER BY type ASC")
+            function ($r) { return $r['type']; },
+            $db->fetchAll('SELECT DISTINCT(type) FROM api_sandbox_widgets ORDER BY type ASC')
         );
     }
 }

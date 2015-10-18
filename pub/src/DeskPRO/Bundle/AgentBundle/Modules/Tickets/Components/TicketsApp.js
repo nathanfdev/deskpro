@@ -5,9 +5,10 @@ import { AppContainer } from 'DeskPRO/Component/AppContainer';
 import TicketsSidebarHoverFrame from './TicketsSidebarHoverFrame';
 import TicketsNavFrame from './TicketsNavFrame';
 import TicketsListFrame from './TicketsListFrame';
+import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 
 @connect(state => ({
-  user: state.Application.user,
+  user: meSelector(state),
   dpWindow: state.Application.dpWindow
 }))
 export default class TicketsApp extends React.Component {

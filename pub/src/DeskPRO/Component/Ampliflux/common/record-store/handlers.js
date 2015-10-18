@@ -5,6 +5,7 @@ import Immutable from 'immutable';
 /**
  * (Reducer builder) Runs cleanup of unused records
  *
+ * @param {Immutable.Map} state The current state
  * @return {Function} reducer
  */
 function gc(state) {
@@ -104,6 +105,8 @@ export function requestRecords() {
     asyncIndicator((state, payload) => ({
       loading: `status.${payload.requestId}.isLoading`,
       success: `status.${payload.requestId}.isDone`,
+      isError: `status.${payload.requestId}.isError`,
+      errorCode: `status.${payload.requestId}.errorCode`
     })),
     async({
       success: (state, payload) => {

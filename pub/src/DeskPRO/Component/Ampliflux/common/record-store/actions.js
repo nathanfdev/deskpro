@@ -131,7 +131,7 @@ export function createRecordsRequest(stateKey, requestId, loaderFn, defaultMode 
 
     return {
       requestId: requestId,
-      promise: new Promise((resolve) => {
+      promise: new Promise((resolve, reject) => {
         if (requests.has(requestId)) {
           resolve({
             requestId: requestId,
@@ -148,7 +148,11 @@ export function createRecordsRequest(stateKey, requestId, loaderFn, defaultMode 
               ids: newRecords.map(record => record.id),
               mode: mode
             });
-          });
+          }).catch(response => reject({
+            requestId: requestId,
+            mode: mode,
+            response: response
+          }));
         }
       })
     };
