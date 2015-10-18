@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import * as ui from '../../Actions/uiActions';
-
+import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
 // agents
 import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
@@ -84,7 +84,7 @@ export class Header extends React.Component {
         render = this.wrapHeaderText(text);
         break;
       default:
-        render = <img src="/web/spinner.gif" style={{width: 20 + 'px', height: 20 + 'px'}}/>;
+        render = <Spinner width="20" height="20" />;
     }
 
     return render;

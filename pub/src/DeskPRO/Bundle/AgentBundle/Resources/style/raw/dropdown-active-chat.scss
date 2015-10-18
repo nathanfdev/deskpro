@@ -128,6 +128,12 @@
       box-shadow: none;
       margin-right: 5px;
     }
+
+    p {
+      word-wrap: break-word;
+      margin-right: 40px;
+      overflow: hidden;
+    }
   }
 
   .chat-message.yours {

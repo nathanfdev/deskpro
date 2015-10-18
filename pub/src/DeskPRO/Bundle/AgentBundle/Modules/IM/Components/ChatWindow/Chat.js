@@ -1,13 +1,16 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
+
 // components
 import { Footer } from './Footer';
 import { Header } from './Header';
 import { MessageList } from './MessageList';
 import { Offline } from './Offline';
 import { SearchForm } from './SearchForm';
-import { connect } from 'react-redux';
+
 // messages
-import { loadMessages, addMessage } from '../../Actions/imMessagesActions';
+import { addMessage } from '../../Actions/imMessagesActions';
 
 @connect(state => ({
   me: state.Application.user,
@@ -33,7 +36,7 @@ export class Chat extends React.Component {
   messageList = () => {
     return (this.props.current.id)
       ? <MessageList current={this.props.current} searchQuery={this.state.searchQuery}/>
-      : <img src="/web/spinner.gif" style={{width: 40 + 'px', height: 40 + 'px'}}/>;
+      : <Spinner width="40" height="40"/>;
   };
 
   handleType = (event) => {
@@ -58,10 +61,6 @@ export class Chat extends React.Component {
     this.setState(newState);
   };
 
-  refresh = () => {
-    this.props.dispatch(loadMessages(this.props.current.id));
-  };
-
   handleAddMessage = (message) => {
     this.props.dispatch(addMessage(this.props.current.id, message, this.props.me));
   };
@@ -83,7 +82,6 @@ export class Chat extends React.Component {
       <div className="dropdown active-chat-dropdown" id="active-chat-dropdown">
         <Header toggleSearch={this.toggleSearch}/>
         { this.searchForm() }
-        <div className="chat-controls"><a href="#">Load old messages</a><a onClick={this.refresh} href="#">Refresh</a></div>
         { this.messageList() }
         <Footer handleAddMessage={this.handleAddMessage}/>
       </div>

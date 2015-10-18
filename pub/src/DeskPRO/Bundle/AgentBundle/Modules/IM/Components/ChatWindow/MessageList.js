@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
-import { Message } from './Message';
-
 import { connect } from 'react-redux';
-import { loadMessages, addMessage } from '../../Actions/imMessagesActions';
+import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
+import { Message } from './Message';
+import { loadMessages } from '../../Actions/imMessagesActions';
 import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions'
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 
@@ -33,23 +33,33 @@ export class MessageList extends React.Component {
     if (newProps.searchQuery !== this.props.searchQuery) {
       this.props.dispatch(loadMessages(this.props.current.id, newProps.searchQuery));
     }
-    
   }
+
+  controls = () => {
+    return <div className="chat-controls"><a href="#">Load old messages</a><a onClick={this.refresh} href="#">Refresh</a></div>;
+  };
+
+  refresh = () => {
+    this.props.dispatch(loadMessages(this.props.current.id));
+  };
 
   render() {
     const messages = this.props.messages.getIn(['chatMessages', this.props.current.id]) || [];
     return (messages.length > 0 ) ? (
-      <ul className="chat-message-list">
-        {
-          messages.map((message, index) => {
-            return (<Message
-              key={index}
-              message={message}
-              agents={this.props.agents}
-              me={this.props.me}/>);
-          })
-        }
-      </ul>
-    ) : <img src="/web/spinner.gif" style={{width: 40 + 'px', height: 40 + 'px'}}/>;
+      <div>
+      {this.controls()}
+        <ul className="chat-message-list">
+          {
+            messages.map((message, index) => {
+              return (<Message
+                key={index}
+                message={message}
+                agents={this.props.agents}
+                me={this.props.me}/>);
+            })
+          }
+        </ul>
+      </div>
+    ) : <Spinner width="40" height="40" />;
   }
 }

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
 
-import { Chat } from './ChatWindow/Chat';
 import { Recent } from './Recent';
 // ui
 import * as uiActions from '../Actions/uiActions';
@@ -67,13 +67,6 @@ export class HeaderWidget extends React.Component {
     this.setState(newState);
   };
 
-  handleCloseChat = () => {
-    const oldState = this.state;
-    const newState = {...oldState};
-    newState.chating = false;
-    this.setState(newState);
-  };
-
   handleClickParticipant = () => {
     const oldState = this.state;
     const newState = {...oldState};
@@ -103,7 +96,7 @@ export class HeaderWidget extends React.Component {
           />);
       }
     )
-      : <span className="chat-avatar-loading"><img src="/web/spinner.gif" style={{width: 20 + 'px', height: 20 + 'px'}}/> Loading recent agents... </span>;
+      : <span className="chat-avatar-loading"><Spinner width="20" height="20" assignClass="recent-spinner"/> Loading recent agents... </span>;
   };
 
   render() {
