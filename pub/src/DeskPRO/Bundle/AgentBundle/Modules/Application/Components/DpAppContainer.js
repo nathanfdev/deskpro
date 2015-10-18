@@ -30,19 +30,18 @@ export class DpAppContainer extends React.Component {
 
   constructor(props) {
     super(props);
-    props.dispatch(loadMe());
+    const { dispatch, history } = props;
+
+    dispatch(loadMe());
 
     Jquery.ajaxSetup({
       statusCode: {
         200: function() {
-          if (!props.loginState.get('hasAuth')) {
-            props.dispatch(setHasAuth(true));
-            props.history.pushState(null, '/index.php/agent/');
-          }
+          dispatch(setHasAuth(true));
         },
         401: function() {
-          props.dispatch(setHasAuth(false));
-          props.history.pushState(null, '/index.php/agent/login');
+          dispatch(setHasAuth(false));
+          history.pushState(null, '/index.php/agent/login');
         }
       }
     });
