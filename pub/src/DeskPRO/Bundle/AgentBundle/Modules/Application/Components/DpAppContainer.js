@@ -38,7 +38,7 @@ export class DpAppContainer extends React.Component {
         },
         401: function() {
           dispatch(setHasAuth(false));
-          history.pushState(null, '/index.php/agent/login');
+          history.pushState(null, `${DP_BASE_URL_RELATIVE}/agent/login`);
         }
       }
     });

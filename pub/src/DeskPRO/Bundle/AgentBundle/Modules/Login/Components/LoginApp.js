@@ -15,7 +15,7 @@ export class LoginApp extends React.Component {
   render() {
     const { loginState, history } = this.props;
     if (loginState.get('hasAuth')) {
-      history.pushState(null, '/index.php/agent/');
+      history.pushState(null, `${DP_BASE_URL_RELATIVE}/agent/`);
     }
 
     return (

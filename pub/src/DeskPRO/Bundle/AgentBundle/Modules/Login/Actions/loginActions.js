@@ -4,6 +4,7 @@ import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 export const emailSetError = createAction('LOGIN_EMAIL_SET_ERROR');
 export const passwordSetError = createAction('LOGIN_PASSWORD_SET_ERROR');
 export const setHasAuth = createAction('LOGIN_SET_HAS_AUTH');
+import { loadMe } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Actions/meActions';
 
 export const emailChange = createAction(
   'LOGIN_EMAIL_CHANGE',
@@ -32,8 +33,8 @@ export const login = createAction(
     .success(() => {
       dispatch(emailChange(null));
       dispatch(passwordChange(null));
-
-      window.location.href = '/agent';
+      dispatch(loadMe());
+      dispatch(setHasAuth(true));
     })
     .error(() => {
       dispatch(passwordSetError('Looks like this isn\'t the correct password'));
