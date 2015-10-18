@@ -10,7 +10,6 @@ import { CrmApp } from '../../CRM/Components/CrmApp';
 import { ChatApp } from '../../Chat/Components/ChatApp';
 import { PublishApp } from '../../Publish/Components/PublishApp';
 import { LoginApp } from '../../Login/Components/LoginApp';
-import { WelcomeApp } from '../../Welcome/Components/WelcomeApp';
 import { ExampleApp } from '../../Example/Components/ExampleApp';
 import { loadMe } from '../RecordStores/Actions/meActions';
 import { setHasAuth } from '../../Login/Actions/loginActions';

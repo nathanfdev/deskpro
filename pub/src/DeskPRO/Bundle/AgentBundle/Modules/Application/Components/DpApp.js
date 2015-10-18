@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Header } from './Header';
 import { AppSwitcher } from './AppSwitcher';
 import { TabFrame } from './TabFrame';
-import { routingStarted } from '../Actions/routingActions';
 import { NotificationsContainer } from './Notifications/notifications';
 import { meSelector } from '../RecordStores/Selectors/meSelectors';
 
