@@ -2036,6 +2036,8 @@ class TicketSearch extends SearcherAbstract
                             break;
                         }
 
+                        $field = $field_def;
+
                         $this->affected_fields[] = 'ticket.custom_data_ticket_'.$field_def['id'];
 
                         $search_type = $field_def->getHandler()->getSearchType();
