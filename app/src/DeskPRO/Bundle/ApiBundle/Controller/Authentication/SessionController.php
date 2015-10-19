@@ -29,15 +29,21 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
 use Application\DeskPRO\Entity\Session;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
+use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\ApiBundle\Form\Type\AuthenticationType;
+use DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 /**
  * Class SessionController.
  */
-class SessionController extends AbstractAuthController
+class SessionController extends BaseController
 {
     /**
      * @Post("/get_session", name="post_get_session")
@@ -48,7 +54,41 @@ class SessionController extends AbstractAuthController
      */
     public function getSessionAction(Request $request)
     {
-        $person       = $this->getPerson($request);
+        $form = $this->createForm(new AuthenticationType());
+        $form->submit($request->request->all());
+
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        $data     = $form->getData();
+        $email    = $data['email'];
+        $password = $data['password'];
+
+        $auth_result = $this->get('dp_authentication_manager.agent')->authenticateFormLogin($email, $password);
+
+        if (!$auth_result->isValid()) {
+            // failed on agent usersources, revert to user
+            $auth_result = $this->get('dp_authentication_manager.user')->authenticateFormLogin($email, $password);
+            if (!$auth_result->isValid()) {
+                $this->throwUnauthorized();
+            }
+        }
+
+        $identity  = $auth_result->getIdentity();
+        $person_id = $identity->getIdentity();
+
+        if (!$person_id) {
+            $this->throwUnauthorized();
+        }
+
+        $em     = $this->get('doctrine.orm.default_entity_manager');
+        $person = $em->getRepository('DeskPRO:Person')->find($person_id);
+
+        if (!$person) {
+            $this->throwUnauthorized();
+        }
+
         $session_code = $request->cookies->get('dpsid-agent');
 
         $request->getSession()->set('auth_person_id', $person->getId());
@@ -69,5 +109,10 @@ class SessionController extends AbstractAuthController
         $em->flush();
 
         return View::create(null, Response::HTTP_OK);
+    }
+
+    protected function throwUnauthorized()
+    {
+        throw new UnauthorizedHttpException(ApiAuthenticator::HTTP_REALM, ApiErrors::BAD_CREDENTIALS);
     }
 }
