@@ -6,15 +6,15 @@ export class RightPanel extends React.Component {
     return (
       <div className="right-panel">
         <div className="dpw-login-side">
-          <a href="#" className="dpw-main-banner sample-banner"></a>
+          <a href="https://www.deskpro.com/mobile/" className="dpw-main-banner sample-banner"></a>
 
           <div className="dpw-login-side-banners">
             <div className="left">
-              <a href="#" className="dpw-login-side-small-banner quick-start"></a>
+              <a href="https://manuals.deskpro.com/files/agent-quickstart.pdf" className="dpw-login-side-small-banner quick-start"></a>
             </div>
 
             <div className="right">
-              <a href="#" className="dpw-login-side-small-banner mobile-apps"></a>
+              <a href="https://www.deskpro.com/mobile/" className="dpw-login-side-small-banner mobile-apps"></a>
             </div>
 
           </div>
