@@ -121,11 +121,12 @@ class TaskType extends AbstractType implements EventSubscriberInterface
      */
     public function onPostSubmit(FormEvent $event)
     {
-        if ($ticket_id = $event->getForm()->get('ticket')->getData()) {
+        $form = $event->getForm();
+        if ($ticket_id = $form->get('ticket')->getData()) {
             $ticket = App::getOrm()->getRepository('DeskPRO:Ticket')->find($ticket_id);
             if ($ticket_id) {
                 $assoc         = new \Application\DeskPRO\Entity\TaskAssociatedTicket();
-                $task          = $event->getForm()->getData();
+                $task          = $form->getData();
                 $assoc->ticket = $ticket;
                 $assoc->task   = $task;
                 $task->task_associations->add($assoc);
@@ -133,13 +134,14 @@ class TaskType extends AbstractType implements EventSubscriberInterface
         }
 
         // hardcoded date override
+        $timezone = $form->getConfig()->getOption('timezone');
         if ($date = $event->getForm()->get('date_due')->getData()) {
             /* @var $person Person */
             if (!$person = $event->getForm()->get('person')->getData()) {
                 return;
             }
 
-            $date = new \DateTime($date->format('Y-m-d H:i:s'), $person->getDateTimezone());
+            $date = new \DateTime($date->format('Y-m-d H:i:s'), $timezone ? new \DateTimeZone($timezone) : $person->getDateTimezone());
             $date->setTimezone(new \DateTimeZone('UTC'));
             $task             = $event->getForm()->getData();
             $task['date_due'] = $date;
@@ -150,6 +152,7 @@ class TaskType extends AbstractType implements EventSubscriberInterface
     {
         $resolver->setDefaults(array(
             'data_class' => 'Application\DeskPRO\Entity\Task',
+            'timezone'   => null,
         ));
     }
 

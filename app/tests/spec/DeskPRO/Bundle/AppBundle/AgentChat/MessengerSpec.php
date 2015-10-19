@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace spec\DeskPRO\Bundle\AppBundle\AgentChat;
 
 use Application\DeskPRO\Entity\AgentTeam;

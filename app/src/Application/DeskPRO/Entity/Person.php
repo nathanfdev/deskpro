@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -2128,7 +2127,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
-     * Sets the primray email address on the account.
+     * Sets the primary email address on the account.
      *
      * @param $email_address
      *
@@ -2278,6 +2277,14 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function resetEmails()
     {
+        // todo hot fix
+        foreach ($this->emails as $email) {
+            App::getOrm()->remove($email);
+        }
+
+        App::getOrm()->flush();
+
+        $this->primary_email = null;
         $this->emails->clear();
 
         return $this;
@@ -3769,6 +3776,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'fetch'        => ClassMetadata::FETCH_EAGER,
+                'cascade'      => array('persist'),
                 'joinColumns'  => array(
                     0 => array(
                         'name'                 => 'organization_id',
@@ -3803,11 +3811,12 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         );
         $metadata->mapOneToMany(
             array(
-                'fieldName'    => 'emails',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail',
-                'cascade'      => array('persist', 'detach'),
-                'mappedBy'     => 'person',
-                'dpApi'        => true,
+                'fieldName'     => 'emails',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\PersonEmail',
+                'cascade'       => array('persist', 'detach'),
+                'mappedBy'      => 'person',
+                'dpApi'         => true,
+                'orphanRemoval' => true,
             )
         );
         $metadata->mapOneToMany(

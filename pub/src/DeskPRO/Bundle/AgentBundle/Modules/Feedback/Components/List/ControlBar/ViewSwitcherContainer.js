@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { ViewModeSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
-import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned';
+import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { ViewSwitcherDropdownStatefulContainer } from './ViewSwitcherDropdownStatefulContainer';
 import {FeedbackViewOptions} from './FeedbackViewOptions';
 import { VIEW_MODE_TABLE, VIEW_MODE_CARD } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
@@ -34,7 +34,7 @@ export class ViewSwitcherContainer extends Component {
     };
     return (
       <ViewModeSwitcher
-        {...this.props}
+        toggleDropdown={toggleDropdown}
         currentViewMode={viewModesData[currentViewMode]}
         ref="viewModeButton"
         >
@@ -46,7 +46,7 @@ export class ViewSwitcherContainer extends Component {
             toggleDropdown={toggleDropdown}
             toggleOptionsMenu={toggleOptionsMenu}
             dispatch={dispatch}
-          />
+            />
         </Positioned>
         <Positioned isOpen={optionsExpanded}
                     positionAt="left bottom"
@@ -54,7 +54,7 @@ export class ViewSwitcherContainer extends Component {
           <FeedbackViewOptions
             currentViewMode={currentViewMode}
             dispatch={dispatch}
-          />
+            />
         </Positioned>
       </ViewModeSwitcher>
     );

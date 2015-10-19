@@ -58,20 +58,63 @@ class AvatarResolver
     }
 
     /**
+     * @param bool $use_gravatar
+     */
+    public function setUseGravatar($use_gravatar)
+    {
+        $this->use_gravatar = $use_gravatar;
+    }
+
+    /**
      * @param mixed $obj
      * @param int   $size
+     * @param bool  $returnedDefault Bool var passed by reference, will be true if returned image is a default fallback
      *
      * @return null|string
      */
-    public function getAvatar($obj, $size = 80)
+    public function getAvatar($obj, $size = 80, &$returnedDefault = null)
     {
         if ($obj instanceof Person) {
-            return $this->getPersonAvatar($obj, $size) ?: $this->getDefaultPersonAvatar($size);
+            if ($custom = $this->getPersonAvatar($obj, $size)) {
+                $returnedDefault = false;
+
+                return $custom;
+            } else {
+                $returnedDefault = true;
+
+                return $this->getDefaultPersonAvatar($size);
+            }
         } elseif ($obj instanceof Organization) {
-            return $this->getOrganizationAvatar($obj, $size) ?: $this->getDefaultOrganizationAvatar($size);
+            if ($custom = $this->getOrganizationAvatar($obj, $size)) {
+                $returnedDefault = false;
+
+                return $this->getOrganizationAvatar($obj, $size);
+            } else {
+                $returnedDefault = true;
+
+                return $this->getDefaultOrganizationAvatar($size);
+            }
         } else {
             return;
         }
+    }
+
+    /**
+     * @param mixed  $obj
+     * @param string $placeholder
+     *
+     * @return null|string
+     */
+    public function getAvatarPattern($obj, $placeholder)
+    {
+        // Using an intermediate value instead of the passed $placeholder to prevent
+        // router from encoding special URL character of the original $placeholder
+        $safeSizePlaceholder = '_____SAFE_PLACEHOLDER_____';
+
+        $pattern = $this->getAvatar($obj, $safeSizePlaceholder);
+        $pattern = str_replace($safeSizePlaceholder, $placeholder, $pattern);
+
+        return $pattern;
     }
 
     /**

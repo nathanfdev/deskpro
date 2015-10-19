@@ -27,21 +27,19 @@ const ViewSwitcherDropdown = React.createClass({
     return (
       <Menu>
         <Item
+          label="Card view"
           isActive={currentViewMode === constants.VIEW_MODE_CARD}
           checked={currentViewMode === constants.VIEW_MODE_CARD}
           onClick={toggleView.bind(this, constants.VIEW_MODE_CARD)}
           icon="list"
-          >
-          Card view
-        </Item>
+          />
         <Item
+          label="Table view"
           isActive={currentViewMode === constants.VIEW_MODE_TABLE}
           checked={currentViewMode === constants.VIEW_MODE_TABLE}
           onClick={toggleView.bind(this, constants.VIEW_MODE_TABLE)}
           icon="table"
-          >
-          Table view
-        </Item>
+          />
         <MenuFooter>
           <div className="dpw-navigation-dropdown-options-link">
             <a href="#" onClick={toggleOptionsMenu}>View Options <i className="fa fa-cog"></i></a>

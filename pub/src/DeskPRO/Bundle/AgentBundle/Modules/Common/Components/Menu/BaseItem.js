@@ -1,7 +1,7 @@
 import React from 'react';
 import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import ItemFormat from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemFormat';
-import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned';
+import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import classNames from 'classnames';
 import jQuery from 'jquery';
 
@@ -12,6 +12,7 @@ const BaseItem = React.createClass({
    * @type {Object}
    */
   propTypes: {
+    label: React.PropTypes.string,
     widgetClass: React.PropTypes.string,
     overrideWidgetClass: React.PropTypes.bool,
     children: React.PropTypes.node,
@@ -20,7 +21,7 @@ const BaseItem = React.createClass({
     onMouseOver: React.PropTypes.func,
     onMouseOut: React.PropTypes.func,
     subMenuMode: React.PropTypes.string,
-    parentMenuLevel: React.PropTypes.number,
+    parentMenuLevel:  React.PropTypes.number,
     disabled: React.PropTypes.bool,
     condensed: React.PropTypes.bool,
     format: React.PropTypes.string,
@@ -46,17 +47,17 @@ const BaseItem = React.createClass({
   getInitialState: function() {
     return {
       openMenu: false,
-      openInnerList: false
+      openInnerList: false,
     };
   },
 
   /**
    * Execute an action on click
-   * @param {object} e Click event
+   * @param {object} event Click event
    * @return {void}
    */
-  onClickAction: function(e) {
-    e.preventDefault();
+  onClickAction: function(event) {
+    event.preventDefault();
 
     if (this.props.onClick) {
       this.props.onClick();
@@ -126,51 +127,77 @@ const BaseItem = React.createClass({
 
   /**
    * Format the output according to the format prop
-   * @param  {mixed} output The output
-   * @return {mixed}        The formatted output
+   * @param {mixed} output        Output before formatting
+   * @param {boolean} hasMenu     If nested Menu exists
+   * @param {boolean} hasItemList If nested ItemList exists
+   * @return {mixed} output       The formatted output
    */
   formatOutput: function(output, hasMenu = false, hasItemList = false) {
     if (this.props.format && this.props.format === 'item') {
-      return (<ItemFormat {...this.props} hasMenu={hasMenu} hasItemList={hasItemList}
-                                          toggleInnerList={this.toggleInnerList}>{output}</ItemFormat>);
+      return (
+        <ItemFormat {...this.props} hasMenu={hasMenu} hasItemList={hasItemList} toggleInnerList={this.toggleInnerList}>
+          {output}
+        </ItemFormat>
+      );
     }
 
     return output;
   },
 
-  /**
-   * Render the menu
-   * @return {React.Element} The menu container
-   */
-  render: function() {
-    const onMouseOverAction = this.props.onMouseOver ? this.props.onMouseOver : () => {
-    };
-    const onMouseOutAction = this.props.onMouseOut ? this.props.onMouseOut : () => {
-    };
+  checkIfMenuExists: function() {
+    let hasMenu = false;
+    if (this.props.children) {
+      React.Children.map(this.props.children,
+        (child) => {
+          if (child.type && child.type.displayName === 'Menu') {
+            hasMenu = true;
+          }
+        });
+    }
+    return hasMenu;
+  },
 
-    let output = [];
+  checkIfItemListExists: function() {
+    let hasItemList = false;
+    if (this.props.children) {
+      React.Children.map(this.props.children,
+        (child) => {
+          if (child.type && child.type.displayName === 'ItemList') {
+            hasItemList = true;
+          }
+        });
+    }
+    return hasItemList;
+  },
 
-    let keepMenuState = false;
+  renderLabel: function(hasMenu, hasItemList) {
+    const {label} = this.props;
+    if (label) {
+      const onMouseOverAction = this.props.onMouseOver ? this.props.onMouseOver : () => {
+      };
+      const onMouseOutAction = this.props.onMouseOut ? this.props.onMouseOut : () => {
+      };
 
-    // Loop through the children to work out what to do with menus
-    if (this.props.parsable || this.props.children) {
-      const children = typeof this.props.children.map === 'function' ? this.props.children : [this.props.children];
-
-      // Calculate the raw menu items
-      const contents = React.Children.map(children, (child) => {
-        if (!child.type || (child.type.displayName !== 'Menu' && child.type.displayName !== 'ItemList')) {
-          return child;
-        }
+      const divClasses = classNames(this.props.widgetClass, {
+        'dpw-navigation-dropdown-item dropdown-nav-item': !this.props.overrideWidgetClass,
+        'dpw-navigation-dropdown-item-disabled': this.props.disabled,
+        'dpw-navigation-dropdown-item-condensed': this.props.condensed,
+        'active': this.props.activeItem === this && hasMenu || this.props.isActive
       });
 
-      let hasMenu = false;
-      let hasItemList = false;
+      return (
+        <div className={this.props.widgetClass}><a className={divClasses} href="#" onClick={this.onClickAction}
+                onMouseOver={onMouseOverAction} onMouseOut={onMouseOutAction}>
+          {this.formatOutput(label, hasMenu, hasItemList)}
+        </a></div>
+      );
+    }
+  },
 
-      // Calculate the menu
-      const menu = React.Children.map(children, (child) => {
+  renderMenu: function(hasMenu) {
+    if (hasMenu) {
+      return React.Children.map(this.props.children, (child) => {
         if (child.type && child.type.displayName === 'Menu') {
-          keepMenuState = true;
-          hasMenu = true;
           const parentLevel = this.props.parentMenuLevel ? this.props.parentMenuLevel : 1;
           const childProps = child.props;
           const menuLevel = parentLevel + 1;
@@ -186,48 +213,37 @@ const BaseItem = React.createClass({
           </Positioned>);
         }
       });
+    }
+  },
 
-      const itemList = React.Children.map(children, (child) => {
-        if (child.type && child.type.displayName === 'ItemList') {
-          hasItemList = true;
-          if (this.state.openInnerList) {
-            return child;
-          }
+  renderItemList: function(hasItemList) {
+    if (hasItemList) {
+      return React.Children.map(this.props.children, (child) => {
+        if (child.type && child.type.displayName === 'ItemList' && this.state.openInnerList) {
+          return child;
         }
       });
-
-      const divClasses = classNames(this.props.widgetClass, {
-        'dpw-navigation-dropdown-item dropdown-nav-item': !this.props.overrideWidgetClass,
-        'dpw-navigation-dropdown-item-disabled': this.props.disabled,
-        'dpw-navigation-dropdown-item-condensed': this.props.condensed,
-        'active': this.props.activeItem === this && keepMenuState || this.props.isActive
-      });
-
-      if (contents) {
-        output.push(<a className={divClasses} href="#" onClick={this.onClickAction}
-                       onMouseOver={onMouseOverAction} onMouseOut={onMouseOutAction}>
-          {this.formatOutput(contents, hasMenu, hasItemList)}
-        </a>);
-      }
-
-      if (itemList) {
-        output = output.concat(itemList);
-      }
-
-      if (menu) {
-        output = output.concat(menu);
-      }
     }
+  },
 
-    if (this.props.subMenuMode && this.props.subMenuMode === 'click') {
-      return (<div onClick={this.toggleMenu}>{output}</div>);
-    } else if (this.props.subMenuMode && this.props.subMenuMode === 'none') {
-      return (<div>{output}</div>);
-    }
+  /**
+   * Render the menu
+   * @return {React.Element} The menu container
+   */
+  render: function() {
+    const hasItemList = this.checkIfItemListExists();
+    const hasMenu = this.checkIfMenuExists();
 
-    return (<div onMouseOver={this.openMenu}>
-      {output}
-    </div>);
+    let childrenOutput = [];
+    childrenOutput = childrenOutput.concat(this.renderMenu(hasMenu));
+    childrenOutput = childrenOutput.concat(this.renderItemList(hasItemList));
+    return (
+      <div onMouseOver={this.props.subMenuMode ? ()=>{} : this.openMenu}
+           onClick={this.props.subMenuMode && this.props.subMenuMode === 'click' ? this.toggleMenu : ()=>{}}>
+        {this.renderLabel(hasMenu, hasItemList)}
+        {childrenOutput}
+      </div>
+    );
   }
 });
 

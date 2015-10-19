@@ -8,9 +8,10 @@ import { SearchForm } from './SearchForm';
 import { connect } from 'react-redux';
 // messages
 import { loadMessages, addMessage } from '../../Actions/imMessagesActions';
+import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 
 @connect(state => ({
-  me: state.Application.user,
+  me: meSelector(state),
   messages: state.IM.messages
 }))
 export class Chat extends React.Component {

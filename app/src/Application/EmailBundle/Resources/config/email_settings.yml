@@ -59,3 +59,9 @@ services:
       arguments: [@email.email_account_manager, @deskpro.blob_storage, @logger]
       tags:
         - { name: monolog.logger, channel: dp.email.out.transport }
+
+  in_email.proc_queue:
+      class: Application\EmailBundle\Incoming\ProcQueue\ProcQueueInterface
+      factory_class: Application\EmailBundle\Incoming\ProcQueue\DeskproProcQueueFactory
+      factory_method: create
+      arguments: [@service_container]

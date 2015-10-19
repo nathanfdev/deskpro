@@ -693,7 +693,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
               self.page = self.el.closest('.with-page-fragment').data('page-fragment');
             }
 
-            if (self.page) self.page.pauseSend = true;
+            self.page.pauseSend = true;
 
             $.ajax({
               url: BASE_URL + 'old-agent/text-snippets/tickets/' + snippetId + '.json',

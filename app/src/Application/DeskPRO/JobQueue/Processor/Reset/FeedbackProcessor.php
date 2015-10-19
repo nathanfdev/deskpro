@@ -35,5 +35,8 @@ class FeedbackProcessor extends Base
     protected function doProcess(array $data)
     {
         $this->connection->executeUpdate('DELETE FROM feedback');
+        $this->connection->executeUpdate('DELETE FROM custom_def_feedback');
+        $this->connection->executeUpdate('DELETE FROM feedback_categories');
+        $this->connection->executeUpdate('DELETE FROM feedback_status_categories');
     }
 }

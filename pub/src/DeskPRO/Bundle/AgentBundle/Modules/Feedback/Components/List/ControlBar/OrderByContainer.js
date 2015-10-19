@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import { OrderBy } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import OrderByDropdown from './OrderByDropdown';
 import { sortingDataSelector, isCommentsSelector } from '../../../Selectors/list';
-import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned';
+import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 
 import { connect } from 'react-redux';
 @connect(state => ({
@@ -26,6 +26,7 @@ export class OrderByContainer extends Component {
 
   render() {
     const { dispatch, expanded, sortOptions, order, currentSortMode, toggleDropdown, isComments } = this.props;
+
     return (
       <OrderBy
         sortOptions={sortOptions}

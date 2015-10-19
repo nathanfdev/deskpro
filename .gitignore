@@ -1,6 +1,6 @@
 # IDE project files
 .DS_Store
-/.idea/*
+/.idea
 /web/app/.idea/
 /nbproject/
 /catalog.xml

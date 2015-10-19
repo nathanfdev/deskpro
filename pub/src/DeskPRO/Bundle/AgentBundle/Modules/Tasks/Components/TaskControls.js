@@ -2,7 +2,7 @@ import React from 'react';
 import TaskFilterHover from '../Components/TaskFilterHover';
 import TaskOrderHover from '../Components/TaskOrderHover';
 import ComponentRootWrapper from 'DeskPRO/Component/ComponentRootWrapper';
-import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned';
+import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import ListFrameMenu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameMenu';
 import TaskControlsViewSwitcher from '../Components/TaskControlsViewSwitcher';
 import $ from 'jquery';

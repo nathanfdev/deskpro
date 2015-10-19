@@ -31,7 +31,6 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
-use DeskPRO\Bundle\ApiBundle\View\Representation\ErrorRepresentation;
 use DeskPRO\Bundle\ApiBundle\View\Representation\StandardRepresentation;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\Form\FormInterface;
@@ -106,13 +105,14 @@ class BaseController extends FOSRestController
     /**
      * @param string $class
      * @param int    $id
+     * @param string $message
      *
      * @return object
      */
-    protected function findOr404($class, $id)
+    protected function findOr404($class, $id, $message = 'Not found')
     {
         if (!$entity = $this->getDoctrine()->getRepository($class)->find($id)) {
-            throw $this->createNotFoundException();
+            throw $this->createNotFoundException($message);
         }
 
         return $entity;

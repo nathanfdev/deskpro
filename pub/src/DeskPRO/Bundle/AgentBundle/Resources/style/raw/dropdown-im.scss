@@ -1,3 +1,8 @@
+#im-container {
+ position: relative;
+ z-index: 10000;
+}
+
 .im-dropdown {
   @include corner-top;
   @include clearfix;
