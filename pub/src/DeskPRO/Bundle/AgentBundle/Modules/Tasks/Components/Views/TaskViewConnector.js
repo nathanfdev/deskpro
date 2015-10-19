@@ -1,5 +1,7 @@
 import React from 'react';
 
+import * as TaskActions from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Actions/TaskListActions';
+
 import { connect } from 'react-redux';
 import { createTicketRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/RecordStores/Selectors/ticketSelectors';
 import { allProjectsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/projectSelectors';
@@ -66,6 +68,15 @@ export default class TaskViewConnector extends React.Component {
         return this.props.dispatch(loadTickets(requestId, loadArray));
       }
     }
+  }
+
+  massEdit(data) {
+    const source = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameSource') : null;
+
+    this.props.dispatch(TaskActions.massEditTasks(
+      data,
+      source
+    ));
   }
 
   render() {

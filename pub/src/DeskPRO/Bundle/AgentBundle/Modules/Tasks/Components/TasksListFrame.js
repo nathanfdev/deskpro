@@ -4,26 +4,21 @@ import jQuery from 'jquery';
 import * as TaskActions from '../Actions/TaskListActions';
 import { IntlMixin } from 'react-intl';
 import TaskControls from '../Components/TaskControls';
-import TaskCalendar from '../Components/TaskCalendar';
 import ListView from '../Components/Views/List/ListView';
 import KanbanView from '../Components/Views/Kanban/KanbanView';
 import CondensedView from '../Components/Views/Condensed/CondensedView';
 import CalendarView from '../Components/Views/Calendar/CalendarView';
 import Moment from 'moment';
-import TaskGrouping from '../../../Services/TaskGrouping';
 import * as AppActions from '../../Application/Actions/AppActions';
 import * as constants from '../../../Constants/Constants';
 import ReactPaginate from '../../Common/Components/Pagination/deskpro-react-paginate';
 import ComponentRootWrapper from 'DeskPRO/Component/ComponentRootWrapper';
 import AssignHover from '../Components/AssignHover';
 import TaskViewConnector from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/Views/TaskViewConnector';
-import Immutable from 'immutable';
 
 import TaskMassActions from '../Components/TaskMassActions';
 import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
-
-import { loadLinkedItems } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Actions/linkedItemActions';
 
 import { filteredTasksSelector, statusFilteredTasksSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/taskSelectors';
 import { allProjectsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/projectSelectors';
@@ -32,51 +27,42 @@ import { createTicketRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Modules
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
 import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
+import { allTaskLabelsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/taskLabelSelectors';
 
 const requestId = 'taskListFrame';
 const ticketsSelector = createTicketRequestSelectors(requestId);
 const linkedItemsSelector = createLinkedItemRequestSelectors(requestId);
 
 @connect(state => ({
-  agentList: state.Tasks.agentList,
   agents: agentsSelector(state),
   agentTeams: agentTeamsSelector(state),
-  departmentList: state.Tasks.departmentList,
   departments: allDepartmentsSelector(state),
   dpWindow: state.Application.dpWindow,
-  labelList: state.Tasks.labelList,
+  labels: allTaskLabelsSelector(state),
   linkedItems: linkedItemsSelector.recordsSel(state),
   linkedItemsStatus: linkedItemsSelector.statusSel(state),
-  projectList: state.Tasks.projectList,
   projects: allProjectsSelector(state),
   status: statusFilteredTasksSelector(state),
   taskFilter: state.Tasks.taskFilter,
   taskFrameList: state.Tasks.taskFrameList,
-  taskListList: state.Tasks.taskListList,
   tasks: filteredTasksSelector(state),
-  teamList: state.Tasks.teamList,
   tickets: ticketsSelector.recordsSel(state)
 }))
 
 export class TasksListFrame extends React.Component {
   static propTypes = {
-    agentList: React.PropTypes.object,
     agents: React.PropTypes.object,
     agentTeams: React.PropTypes.object,
-    departmentList: React.PropTypes.object,
     departments: React.PropTypes.object,
     dispatch: React.PropTypes.func,
     dpWindow: React.PropTypes.object,
-    labelList: React.PropTypes.object,
+    labels: React.PropTypes.object,
     linkedItems: React.PropTypes.object,
-    projectList: React.PropTypes.object,
     projects: React.PropTypes.object,
     status: React.PropTypes.object,
     taskFilter: React.PropTypes.object,
     taskFrameList: React.PropTypes.object,
-    taskListList: React.PropTypes.object,
     tasks: React.PropTypes.object,
-    teamList: React.PropTypes.object,
     tickets: React.PropTypes.object
   }
 
@@ -98,10 +84,6 @@ export class TasksListFrame extends React.Component {
     };
     this.intl = IntlMixin;
     this.lastGrouping = '';
-    this.agents = [];
-    this.teams = [];
-    this.departments = [];
-    this.projects = [];
 
     // Temp project ID
     props.dispatch(TaskActions.loadLists(1));
@@ -269,15 +251,6 @@ export class TasksListFrame extends React.Component {
     this.props.dispatch(TaskActions.editTask(model, source));
   }
 
-  massEdit(data) {
-    const source = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameSource') : null;
-
-    this.props.dispatch(TaskActions.massEditTasks(
-      data,
-      source
-    ));
-  }
-
   handleAssigneeChange(assignee) {
     const task = {};
     const assignment = assignee.value;
@@ -362,96 +335,7 @@ export class TasksListFrame extends React.Component {
   render() {
     const {taskFilter} = this.props;
 
-    const linkedItems = {};
-    const lists = {};
-    const labels = [];
-    const tickets = {};
-
-    const projects = this.props.projectList ? this.props.projectList.get('projectList', []) : [];
-
-    // Attach IDs to the projects
-    if (projects && typeof projects.forEach === 'function') {
-      projects.forEach((project) => {
-        this.projects[project.id.toString()] = project;
-      });
-    }
-
-    const taskFrameLinks = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameLinks', {}) : {};
-
-    // Attach IDs to the linked item
-    if (taskFrameLinks && typeof taskFrameLinks.forEach === 'function') {
-      taskFrameLinks.forEach((link) => {
-        linkedItems[link.id.toString()] = link;
-      });
-    }
-
-    const agentList = this.props.agentList ? this.props.agentList.get('agentList', {}) : {};
-    const teamList = this.props.teamList ? this.props.teamList.get('teamList', {}) : {};
-    const departmentList = this.props.departmentList ? this.props.departmentList.get('departmentList', {}) : {};
-
-    // Attach assignments
-    if (agentList && typeof agentList.forEach === 'function') {
-      agentList.forEach((agent) => {
-        this.agents[agent.id.toString()] = agent;
-      });
-    }
-    if (teamList && typeof teamList.forEach === 'function') {
-      teamList.forEach((team) => {
-        this.teams[team.id.toString()] = team;
-      });
-    }
-    if (departmentList && typeof departmentList.forEach === 'function') {
-      departmentList.forEach((department) => {
-        this.departments[department.id.toString()] = department;
-      });
-    }
-
-    const taskFrameTickets = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameTickets', []) : [];
-
-    // Attach tickets
-    if (taskFrameTickets && typeof taskFrameTickets.forEach === 'function') {
-      taskFrameTickets.forEach((ticket) => {
-        tickets[ticket.id.toString()] = ticket;
-      });
-    }
-
-    const taskList = this.props.taskListList ? this.props.taskListList.get('taskList', []) : [];
-
-    if (taskList && typeof taskList.forEach === 'function') {
-      taskList.forEach((listObject) => {
-        lists[listObject.id.toString()] = listObject;
-      });
-    }
-
-    const labelList = this.props.labelList ? this.props.labelList.get('labelList', []) : [];
-    const labelCharacters = this.props.labelList ? this.props.labelList.get('labelCharacters', []) : [];
-
-    if (labelList && typeof labelCharacters.forEach === 'function') {
-      labelCharacters.forEach((character) => {
-        labelList[character].forEach((label) => {
-          labels[label.id.toString()] = label;
-        });
-      });
-    }
-
-    const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, lists, linkedItems, tickets);
-    const columnField = this.state.order;
     const sectionClass = this.state.view !== 'list' ? 'task-list-frame dp-list-frame kanban' : 'task-list-frame dp-list-frame';
-
-    // const tasks = [];
-
-    // // Split tasks up into the appropriate kanban columns
-    // if (this.props.tasks && this.props.tasks.size > 0) {
-    //   this.props.tasks.forEach((object) => {
-    //     const columnId = grouping.getGroup(object, columnField);
-
-    //     if (typeof tasks[columnId] === 'undefined') {
-    //       tasks[columnId] = [];
-    //     }
-
-    //     tasks[columnId].push(object);
-    //   });
-    // }
 
     let totalPages = 1;
 
@@ -466,19 +350,19 @@ export class TasksListFrame extends React.Component {
         <ComponentRootWrapper open={this.state.showAssignWindow}>
           <AssignHover position={this.state.position}
                        assignTask={this.handleAssigneeChange.bind(this)}
-                       agents={this.agents}
-                       teams={this.teams}
-                       departments={this.departments}
+                       agents={this.props.agents}
+                       teams={this.props.agentTeams}
+                       departments={this.props.departments}
                        taskData={this.state.taskData}
                        closeWindow={this.closeAssignWindow.bind(this)}/>
         </ComponentRootWrapper>
         <TaskControls toggleView={this.toggleView.bind(this)}
                       changeView={this.state.changeView}
-                      agents={this.agents}
-                      teams={this.teams}
-                      departments={this.departments}
-                      projects={this.projects}
-                      labels={labels}
+                      agents={this.props.agents}
+                      teams={this.props.agentTeams}
+                      departments={this.props.departments}
+                      projects={this.props.projects}
+                      labels={this.props.labels}
                       applyFilter={this.applyFilter.bind(this)}
                       taskFilter={taskFilter}
                       windowProps={this.props.dpWindow}
@@ -491,7 +375,7 @@ export class TasksListFrame extends React.Component {
           />
 
         <TaskMassActions hideMassActionControls={this.hideMassActionControls.bind(this)}
-                         projects={this.projects}/>
+                         projects={this.props.projects}/>
         <div>
           { this.props.tasks && this.props.tasks.size > 0 ?
             <ListFrameContents>
