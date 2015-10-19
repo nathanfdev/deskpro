@@ -31,12 +31,24 @@ export class LeftPanelContainer extends React.Component {
 
   submitForm = (event) => {
     event.preventDefault();
-    const { dispatch, loginState } = this.props;
 
-    dispatch(loginActions.login({
-      email: loginState.get('email'),
-      password: loginState.get('password')
-    }));
+    const { dispatch, loginState } = this.props;
+    const email = loginState.get('email');
+    const password = loginState.get('password');
+
+    if (!email) {
+      dispatch(loginActions.emailSetError('Email is empty'));
+    }
+    if (!password) {
+      dispatch(loginActions.passwordSetError('Password is empty'));
+    }
+
+    if (email && password) {
+      dispatch(loginActions.login({
+        email: email,
+        password: password
+      }));
+    }
   };
 
   render() {
@@ -98,7 +110,11 @@ export class LeftPanelContainer extends React.Component {
         </div>
 
         <div className="dpw-left-panel-footer">
-          <i className="fa fa-users"></i> <span className="text">No Account?</span> <a href="#">Request from admin</a> <hr /> <a href="#">Sign up for free</a>
+          <i className="fa fa-users"></i>
+          <span className="text">No Account?</span>
+          <a href="#">Request from admin</a>
+          <hr />
+          <a href="https://www.deskpro.com/signup/" target="_blank">Sign up for free</a>
         </div>
       </div>
     );

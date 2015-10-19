@@ -1,17 +1,17 @@
 import React, {PropTypes} from 'react';
 import * as actions from '../../Actions/chatsActions';
+import { connect } from 'react-redux';
 
+@connect()
 export class AgentsListItem extends React.Component {
   static propTypes = {
     agent: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
-    highlight: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
-    handleClickParticipant: PropTypes.func.isRequired
+    highlight: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired
   };
 
-  startChat = (id, type, callback) => {
+  startChat = (id, type) => {
     this.props.dispatch(actions.startChat(id, type));
-    callback();
   };
 
   render() {
@@ -32,7 +32,7 @@ export class AgentsListItem extends React.Component {
     return (
       <li>
         <a href="#"
-           onClick={this.startChat.bind(null, this.props.agent.get('id'), 'agent', this.props.handleClickParticipant)}
+           onClick={this.startChat.bind(null, this.props.agent.get('id'), 'agent')}
           >
           <span className="chat-avatar" style={style}></span>
           <span className="agent"><span dangerouslySetInnerHTML={{__html: name}}/><span

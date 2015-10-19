@@ -1,19 +1,79 @@
-import React from 'react';
-import { Message } from './Message'
-
+import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { loadMessages, addMessage } from '../../Actions/imMessagesActions';
-import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions'
-import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
+import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
+import { Message } from './Message';
+import { loadMessages } from '../../Actions/imMessagesActions';
+import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
+import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
+import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 
+@connect(state => ({
+  me: meSelector(state),
+  agents: agentsSelector(state),
+  agentsStatus: agentsStatusSelector(state),
+  messages: state.IM.messages
+}))
 export class MessageList extends React.Component {
 
+  static propTypes = {
+    me: PropTypes.object.isRequired,
+    agents: PropTypes.object.isRequired,
+    agentsStatus: PropTypes.object.isRequired,
+    current: PropTypes.object.isRequired,
+    messages: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    searchQuery: PropTypes.string.isRequired
+  };
+
+  componentDidMount() {
+    this.props.dispatch(loadAllAgents());
+    this.props.dispatch(loadMessages(this.props.current.id));
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.searchQuery !== this.props.searchQuery) {
+      this.props.dispatch(loadMessages(this.props.current.id, newProps.searchQuery));
+    }
+  }
+
+  componentWillUpdate = () => {
+    const node = ReactDOM.findDOMNode(this.refs.list);
+    this.shouldScrollBottom = node.scrollTop + node.offsetHeight === node.scrollHeight;
+  };
+
+  componentDidUpdate = () => {
+    if (this.shouldScrollBottom) {
+      const node = ReactDOM.findDOMNode(this.refs.list);
+      node.scrollTop = node.scrollHeight;
+    }
+  };
+
+  controls = () => {
+    return <div className="chat-controls"><a href="#">Load old messages</a><a onClick={this.refresh} href="#">Refresh</a></div>;
+  };
+
+  refresh = () => {
+    this.props.dispatch(loadMessages(this.props.current.id));
+  };
+
   render() {
-    return (
-      <ul className="chat-message-list">
-        {this.props.messages && this.props.messages.length > 0 ? this.props.messages.map((message, index) => <Message
-          key={index} message={message} agents={this.props.agents} me={this.props.me}/>) : null}
-      </ul>
-    );
+    const messages = this.props.messages.getIn(['chatMessages', this.props.current.id]) || [];
+    return (messages.length > 0 ) ? (
+      <div>
+      {this.controls()}
+        <ul ref="list" className="chat-message-list">
+          {
+            messages.map((message, index) => {
+              return (<Message
+                key={index}
+                message={message}
+                agents={this.props.agents}
+                me={this.props.me}/>);
+            })
+          }
+        </ul>
+      </div>
+    ) : <Spinner ref="list" width="40" height="40" />;
   }
 }

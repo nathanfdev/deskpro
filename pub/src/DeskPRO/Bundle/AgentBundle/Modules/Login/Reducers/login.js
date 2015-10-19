@@ -2,9 +2,9 @@ import * as actions from '../Actions/loginActions';
 import { createReducer } from 'Ampliflux';
 
 const initialState = {
-  email: 'admin@example.com',
+  email: null,
   emailError: null,
-  password: 'password',
+  password: null,
   passwordError: null,
   rememberMe: true,
   hasAuth: false

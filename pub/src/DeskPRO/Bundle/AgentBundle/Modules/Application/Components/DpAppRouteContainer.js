@@ -5,6 +5,7 @@ import { DpApp } from './DpApp';
 import { DpAppLoading } from './DpAppLoading';
 import { WelcomeBack } from '../../Welcome/Components/WelcomeBack';
 import { meSelector, meStateSelector } from '../RecordStores/Selectors/meSelectors';
+import { IMContainer } from '../../IM/Components/IMContainer';
 
 @connect(state => ({
   dpWindow: state.Application.dpWindow,
@@ -43,9 +44,12 @@ export class DpAppRouteContainer extends React.Component {
     }
 
     return (
-      <DpApp>
-        {children}
-      </DpApp>
+      <div>
+        <DpApp>
+          {children}
+        </DpApp>
+        <IMContainer/>
+      </div>
     );
   }
 }

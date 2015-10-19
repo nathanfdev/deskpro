@@ -11,7 +11,8 @@ const initialState = {
   columnMode: localStorage.getItem('dpWindow.columnMode') || 'column',
   columnDimensions: parseInt(localStorage.getItem('dpWindow.columnDimensions'), 10) || 40,
   sidebarMode: localStorage.getItem('dpWindow.sidebarMode') || 'static',
-  showWelcomePage: true
+  showWelcomePage: true,
+  isWorkspaceOpen: false
 };
 
 /**
@@ -43,6 +44,12 @@ export default createReducer(initialState, {
   },
   [actions.toggleView]: (state, payload) => {
     return state.set('taskView', payload);
+  },
+  [actions.toggleWorkspace]: state => {
+    return state.set('isWorkspaceOpen', !state.get('isWorkspaceOpen'));
+  },
+  [actions.closeWorkspace]: state => {
+    return state.set('isWorkspaceOpen', false);
   },
   [actions.setColumnMode]: (state, payload) => {
     localStorage.setItem('dpWindow.columnMode', payload);

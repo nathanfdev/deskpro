@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Incoming\ProcQueue;
 
 use Symfony\Component\DependencyInjection\Container;

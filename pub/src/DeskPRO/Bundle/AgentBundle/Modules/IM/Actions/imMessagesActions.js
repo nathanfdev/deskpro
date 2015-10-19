@@ -1,44 +1,26 @@
 import { createAction } from 'Ampliflux';
 import * as IM from 'DeskPRO/Bundle/AgentBundle/Services/Api/IM';
-import Immutable from 'immutable';
 
 export const loadMessages = createAction(
   'IM_LOAD_MESSAGES',
-  (chat_id, searchQuery = '') => {
-    return IM.loadMessages(chat_id, searchQuery).then(response => {
+  (chatId, searchQuery = '') => {
+    return IM.loadMessages(chatId, searchQuery).then(response => {
       const messages = response.data.data;
       return new Promise((resolve) => {
-        resolve({chat_id: chat_id, messages: messages});
-      });
-    });
-
-  }
-);
-
-
-export const addMessage = createAction(
-  'IM_CHAT_ADD_MESSAGE',
-  (chat_id, message, author) => (dispatch) => {
-    dispatch(addMessageOptimistic(chat_id, message, author));
-    IM.addMessage(chat_id, message).then(response => {
-      const message = response.data.data;
-      return new Promise((resolve) => {
-        //dispatch(loadMessages(chat_id));
-        resolve(message);
+        resolve({chat_id: chatId, messages: messages});
       });
     });
   }
 );
-
 
 export const addMessageOptimistic = createAction(
   'IM_CHAT_ADD_MESSAGE_OPTIMISTIC',
-  (chat_id, message, me) => {
+  (chatId, message, me) => {
     return new Promise((resolve) => {
       const payload = {
-        chat_id: chat_id,
+        chat_id: chatId,
         message: {
-          agent_chat_id: chat_id,
+          agent_chat_id: chatId,
           date_created: new Date().toUTCString(),
           id: null,
           message: message,
@@ -49,6 +31,19 @@ export const addMessageOptimistic = createAction(
       };
 
       resolve(payload);
+    });
+  }
+);
+
+export const addMessage = createAction(
+  'IM_CHAT_ADD_MESSAGE',
+  (chatId, message, author) => (dispatch) => {
+    dispatch(addMessageOptimistic(chatId, message, author));
+    IM.addMessage(chatId, message).then(response => {
+      const responseMessage = response.data.data;
+      return new Promise((resolve) => {
+        resolve(responseMessage);
+      });
     });
   }
 );

@@ -4,6 +4,7 @@
   width: 400px;
   background: #f5f6f7;
   z-index: 299;
+  top: 0px;
 
   .user-status {// User status disc on popup header
     display: inline-block;
@@ -127,6 +128,12 @@
       box-shadow: none;
       margin-right: 5px;
     }
+
+    p {
+      word-wrap: break-word;
+      margin-right: 40px;
+      overflow: hidden;
+    }
   }
 
   .chat-message.yours {
@@ -187,13 +194,14 @@
 
     input[type="text"], input[type="button"], input[type="submit"] button, .button { display: block; }
 
-    input[type="text"] {
+    textarea {
       float: left;
       border: 0px;
       background: #fff;
       border-radius: 2px;
-      padding: 10px 10px 44px 10px;
+      padding: 10px 45px 10px 10px;
       width: 80%;
+      resize: none;
     }
 
     input[type="button"], input[type="submit"] button, .button {
@@ -232,12 +240,12 @@
 
 .emoticon-panel {
   position: absolute;
-  top: 40px;
-  left: 0px;
   border-radius: 2px;
   background: #fff;
   text-align: left;
   padding: 5px;
+  z-index: 20000;
+  width: 160px;
 
   &:before {
     content: "";
@@ -248,7 +256,7 @@
     border-bottom: 3px solid #fff;
     position: absolute;
     top: -6px;
-    right: 16px;
+    left: 16px;
   }
 
   .emoticon-link {

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener;
 
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;

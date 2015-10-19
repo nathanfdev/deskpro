@@ -32,17 +32,23 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
 use Application\DeskPRO\Entity\ApiToken;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
+use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\ApiBundle\Form\Type\AuthenticationType;
+use DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 /**
  * Class ApiTokensController.
  */
-class ApiTokensController extends AbstractAuthController
+class ApiTokensController extends BaseController
 {
     /**
      * @ApiDoc(
@@ -64,7 +70,40 @@ class ApiTokensController extends AbstractAuthController
      */
     public function newTokenAction(Request $request)
     {
-        $person = $this->getPerson($request);
+        $form = $this->createForm(new AuthenticationType());
+        $form->submit($request->request->all());
+
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        $data     = $form->getData();
+        $email    = $data['email'];
+        $password = $data['password'];
+
+        $auth_result = $this->get('dp_authentication_manager.agent')->authenticateFormLogin($email, $password);
+
+        if (!$auth_result->isValid()) {
+            // failed on agent usersources, revert to user
+            $auth_result = $this->get('dp_authentication_manager.user')->authenticateFormLogin($email, $password);
+            if (!$auth_result->isValid()) {
+                $this->throwUnauthorized();
+            }
+        }
+
+        $identity  = $auth_result->getIdentity();
+        $person_id = $identity->getIdentity();
+
+        if (!$person_id) {
+            $this->throwUnauthorized();
+        }
+
+        $em     = $this->get('doctrine.orm.default_entity_manager');
+        $person = $em->getRepository('DeskPRO:Person')->find($person_id);
+
+        if (!$person) {
+            $this->throwUnauthorized();
+        }
 
         $api_token         = new ApiToken();
         $api_token->person = $person;
@@ -92,5 +131,10 @@ class ApiTokensController extends AbstractAuthController
     protected function makeAuthMethodString(AbstractApiSecurityToken $token)
     {
         return $token->getName();
+    }
+
+    protected function throwUnauthorized()
+    {
+        throw new UnauthorizedHttpException(ApiAuthenticator::HTTP_REALM, ApiErrors::BAD_CREDENTIALS);
     }
 }

@@ -2,59 +2,45 @@ import React, { PropTypes } from 'react';
 import { HeaderWidget } from '../../IM/Components/HeaderWidget';
 import { WorkspaceContainer } from './Workspace/WorkspaceContainer';
 import { PersonAvatarContainer } from '../../Common/Components/Avatar/index';
+import * as AppActions from '../Actions/AppActions';
 
 export class Header extends React.Component {
 
   static propTypes = {
-    user: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired,
+    dispatch: PropTypes.object.isRequired
   };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      isWorkspaceOpen: false
-    };
-  }
 
   toggleWorkspace = () => {
-    this.setState({
-      isWorkspaceOpen: !this.state.isWorkspaceOpen
-    });
-  };
-
-  closeWorkspace = () => {
-    this.setState({
-      isWorkspaceOpen: false
-    });
+    this.props.dispatch(AppActions.toggleWorkspace());
   };
 
   render() {
     const { user } = this.props;
 
-    return (<header className="dp-window-header top-bar">
-      <a href="https://www.deskpro.com/" className="logo"></a>
-      <HeaderWidget/>
+    return (
+        <header className="dp-window-header top-bar">
+          <a href="https://www.deskpro.com/" className="logo"></a>
+          <HeaderWidget/>
 
-      <div className="user-options">
-        <a href="#" className="notification-button" ref="workspace" onClick={this.toggleWorkspace}>
-          <span className="title" ><i className="fa fa-columns"></i><i className="fa fa-angle-down"></i></span>
-        </a>
+          <div className="user-options">
+            <a href="#" className="notification-button" ref="workspaceButton" onClick={this.toggleWorkspace}>
+              <span className="title" ><i className="fa fa-columns"></i><i className="fa fa-angle-down"></i></span>
+            </a>
 
-        <a href="#" className="notification-button">
-          <span className="notification-count">23</span>
-          <span className="title"><i className="fa fa-cog"></i> Admin <i className="fa fa-angle-down"></i></span>
-        </a>
+            <a href="#" className="notification-button">
+              <span className="notification-count">23</span>
+              <span className="title"><i className="fa fa-cog"></i> Admin <i className="fa fa-angle-down"></i></span>
+            </a>
 
-        <a href="#" className="user-options-button">
-          <PersonAvatarContainer person={user} />
-          <span className="title">Settings <i className="fa fa-angle-down"></i></span>
-        </a>
-      </div>
+            <a href="#" className="user-options-button">
+              <PersonAvatarContainer person={user} />
+              <span className="title">Settings <i className="fa fa-angle-down"></i></span>
+            </a>
+          </div>
 
-      <div style={{display: this.state.isWorkspaceOpen ? '' : 'none'}}>
-        <WorkspaceContainer closeFn={this.closeWorkspace} />
-      </div>
-
-    </header>);
+        <WorkspaceContainer positionTarget={this.refs.workspaceButton} />
+      </header>
+    );
   }
 }
