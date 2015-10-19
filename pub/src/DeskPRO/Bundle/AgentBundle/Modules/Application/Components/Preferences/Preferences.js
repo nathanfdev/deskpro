@@ -15,6 +15,8 @@ export class Preferences extends React.Component {
   };
 
   render() {
+    const { dpWindow } = this.props;
+
     return (
       <section className="popup no-footer" id="popup">
         <header>
@@ -24,8 +26,8 @@ export class Preferences extends React.Component {
           </div>
         </header>
 
-        <Menu />
-        <Content />
+        <Menu dpWindow={dpWindow} />
+        <Content dpWindow={dpWindow} />
 
       </section>
     );

@@ -14,6 +14,7 @@ const initialState = {
   showWelcomePage: true,
   isWorkspaceOpen: false,
   isPreferencesOpen: false,
+  preferenceTab: 'profile',
   coverShown: false
 };
 
@@ -90,5 +91,8 @@ export default createReducer(initialState, {
       isPreferencesOpen: false,
       coverShown: false
     });
+  },
+  [actions.changePreferenceTab]: (state, payload) => {
+    return state.set('preferenceTab', payload);
   }
 });

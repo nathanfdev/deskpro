@@ -32,3 +32,4 @@ export const setSidebarMode = createAction(
 // Preferences actions
 export const togglePreferences = createAction('APP_TOGGLE_PREFERENCES');
 export const closePreferences = createAction('APP_CLOSE_PREFERENCES');
+export const changePreferenceTab = createAction('APP_PREFERENCES_CHANGE_TAB');
