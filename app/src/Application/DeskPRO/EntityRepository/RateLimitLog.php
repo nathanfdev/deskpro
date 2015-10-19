@@ -48,10 +48,29 @@ class RateLimitLog extends AbstractEntityRepository
 
     public function count($action, $time, PersonEntity $person, $ip = null)
     {
-        $q = sprintf(
-            'select count(*) from %s where action = :action and date_created >= :date and (ip = %d or person_id = %d)',
-            $this->getTableName(), $ip ? ip2long($ip) : 0, $person['id']
-        );
+        $personIsNotGuest = $person && !$person->isGuest();
+        if ($personIsNotGuest && $ip) {
+            $q = sprintf(
+                'select count(*) from %s where action = :action and date_created >= :date and (ip = %d or person_id = %d)',
+                $this->getTableName(),
+                $ip ? ip2long($ip) : 0,
+                $person['id']
+            );
+        } elseif ($personIsNotGuest) {
+            $q = sprintf(
+                'select count(*) from %s where action = :action and date_created >= :date and person_id = %d',
+                $this->getTableName(),
+                $person['id']
+            );
+        } elseif ($ip) {
+            $q = sprintf(
+                'select count(*) from %s where action = :action and date_created >= :date and ip = %d',
+                $this->getTableName(),
+                $ip ? ip2long($ip) : 0
+            );
+        } else {
+            throw new \InvalidArgumentException('either a person with an ID or an IP address are required to count the rate_limit_log');
+        }
 
         $params = array(
             'action' => $action,
