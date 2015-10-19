@@ -19,8 +19,6 @@ export class AgentTeamAvatarContainer extends React.Component {
   };
 
   render() {
-    this.id = uuid();
-
     const { size, avatars } = this.props;
     const agentTeam = this.props.agentTeam || Immutable.fromJS({});
     const avatar = avatars.get(String(agentTeam.get('id'))) || Immutable.fromJS({});
@@ -43,6 +41,7 @@ export class AgentTeamAvatarContainer extends React.Component {
     const { agentTeam, dispatch } = this.props;
 
     if (agentTeam && agentTeam.get('id')) {
+      this.id = 'agent-team-' + agentTeam.get('id');
       dispatch(actions.loadAgentTeamAvatars(this.id, [agentTeam.get('id')]));
     }
   }

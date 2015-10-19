@@ -18,8 +18,6 @@ export class PersonAvatarContainer extends React.Component {
   };
 
   render() {
-    this.id = uuid();
-
     const { size, person, avatars } = this.props;
     const avatar = person && avatars.get(String(person.get('id'))) || Immutable.fromJS({});
 
@@ -42,6 +40,7 @@ export class PersonAvatarContainer extends React.Component {
     const { person, dispatch } = this.props;
 
     if (person && person.get('id')) {
+      this.id = 'person-' + person.get('id');
       dispatch(actions.loadPersonAvatars(this.id, [person.get('id')]));
     }
   }

@@ -19,8 +19,6 @@ export class DepartmentAvatarContainer extends React.Component {
   };
 
   render() {
-    this.id = uuid();
-
     const { size, avatars } = this.props;
     const department = this.props.department || Immutable.fromJS({});
     const avatar = avatars.get(String(department.get('id'))) || Immutable.fromJS({});
@@ -43,6 +41,7 @@ export class DepartmentAvatarContainer extends React.Component {
     const { department, dispatch } = this.props;
 
     if (department && department.get('id')) {
+      this.id = 'department-' + department.get('id');
       dispatch(actions.loadDepartmentAvatars(this.id, [department.get('id')]));
     }
   }
