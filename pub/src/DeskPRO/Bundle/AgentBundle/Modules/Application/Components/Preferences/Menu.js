@@ -1,4 +1,9 @@
 import React from 'react';
+import { Menu as ProfileMenu } from './Tabs/Profile/Menu';
+import { Menu as SignatureMenu } from './Tabs/Signature/Menu';
+import { Menu as SettingsMenu } from './Tabs/Settings/Menu';
+import { Menu as NotificationsMenu } from './Tabs/Notifications/Menu';
+import { Menu as DevicesMenu } from './Tabs/Devices/Menu';
 
 export class Menu extends React.Component {
   render() {
@@ -6,17 +11,11 @@ export class Menu extends React.Component {
       <div className="popup-sidebar" id="popup-sidebar">
         <div className="popup-sidebar-content">
           <ul>
-            <li className="active"><a href="popup-user-preferences.html">Profile</a></li>
-            <li><a href="popup-signature.html">Signature</a></li>
-            <li><a href="popup-general-settings.html">Settings</a></li>
-            <li>
-              <a href="popup-notification-settings.html">Notifications</a>
-              <ul className="stat-types-list">
-                <li><a href="#">Inbox</a></li>
-                <li><a href="#">Everything Else</a></li>
-              </ul>
-            </li>
-            <li><a href="popup-devices.html">Devices</a></li>
+            <li className="active"><ProfileMenu /></li>
+            <li><SignatureMenu /></li>
+            <li><SettingsMenu /></li>
+            <li><NotificationsMenu /></li>
+            <li><DevicesMenu /></li>
           </ul>
         </div>
       </div>
