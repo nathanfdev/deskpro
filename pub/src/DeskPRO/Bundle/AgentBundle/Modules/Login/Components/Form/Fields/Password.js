@@ -10,13 +10,22 @@ export class Password extends React.Component {
     onChange: PropTypes.func.isRequired
   };
 
+  isCapsLockWarningOpen() {
+    const { value } = this.props;
+    if (!value) {
+      return false;
+    }
+
+    return value.length > 2 && value.toUpperCase() === value;
+  }
+
   render() {
     const { value, errorMessage, onChange } = this.props;
 
     return (
       <FieldWrapper iconClass="fa-lock" label="Password" errorMessage={errorMessage}>
         <Simple
-          isOpen={!!errorMessage}
+          isOpen={this.isCapsLockWarningOpen()}
           positionTarget={this}
           positionAt="left top"
           positionMy="right center">
