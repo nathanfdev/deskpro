@@ -2044,6 +2044,12 @@ class TicketSearch extends SearcherAbstract
                         if (is_array($choice) && isset($choice['value']) && !$isDate) {
                             $choice = $choice['value'];
                         }
+                        if (is_array($choice) && isset($choice['custom_fields'])) {
+                            $choice = $choice['custom_fields'];
+                        }
+                        if (is_array($choice) && isset($choice['field_'.$field->getId()])) {
+                            $choice = $choice['field_'.$field->getId()];
+                        }
 
                         switch ($search_type) {
                             case 'input':
