@@ -14,6 +14,7 @@ import { ExampleApp } from '../../Example/Components/ExampleApp';
 import { loadMe } from '../RecordStores/Actions/meActions';
 import { setHasAuth } from '../../Login/Actions/loginActions';
 import { hashChanged } from '../../Application/Actions/routingActions';
+
 import Jquery from 'jquery';
 
 @connect()
