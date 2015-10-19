@@ -6,8 +6,9 @@ import { IntlMixin } from 'react-intl';
 import TaskControls from '../Components/TaskControls';
 import TaskCalendar from '../Components/TaskCalendar';
 import ListView from '../Components/Views/List/ListView';
-import TaskCardCondensedGroup from '../Components/TaskCardCondensedGroup';
-import KanbanColumn from '../Components/KanbanColumn';
+import KanbanView from '../Components/Views/Kanban/KanbanView';
+import CondensedView from '../Components/Views/Condensed/CondensedView';
+import CalendarView from '../Components/Views/Calendar/CalendarView';
 import Moment from 'moment';
 import TaskGrouping from '../../../Services/TaskGrouping';
 import * as AppActions from '../../Application/Actions/AppActions';
@@ -106,15 +107,6 @@ export class TasksListFrame extends React.Component {
     props.dispatch(TaskActions.loadLists(1));
   }
 
-  setYear(year) {
-    const moment = this.state.moment;
-    moment.year(year);
-
-    this.setState({
-      moment: moment
-    });
-  }
-
   setSortOrder(modifier) {
     const query = this.state.filter;
 
@@ -179,22 +171,6 @@ export class TasksListFrame extends React.Component {
     filter.page = page;
 
     this.props.dispatch(TaskActions.setFilter(filter));
-  }
-
-  nextMonth() {
-    const moment = this.state.moment.add(1, 'months');
-
-    this.setState({
-      moment: moment
-    });
-  }
-
-  prevMonth() {
-    const moment = this.state.moment.subtract(1, 'months');
-
-    this.setState({
-      moment: moment
-    });
   }
 
   toggleView() {
@@ -386,14 +362,12 @@ export class TasksListFrame extends React.Component {
   render() {
     const {taskFilter} = this.props;
 
-    const _this = this;
     const linkedItems = {};
     const lists = {};
     const labels = [];
     const tickets = {};
 
     const projects = this.props.projectList ? this.props.projectList.get('projectList', []) : [];
-    const source = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameSource', '') : '';
 
     // Attach IDs to the projects
     if (projects && typeof projects.forEach === 'function') {
@@ -462,25 +436,22 @@ export class TasksListFrame extends React.Component {
 
     const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, lists, linkedItems, tickets);
     const columnField = this.state.order;
-    const rawGroupings = grouping.getRawGroupings(columnField, this.state.direction);
     const sectionClass = this.state.view !== 'list' ? 'task-list-frame dp-list-frame kanban' : 'task-list-frame dp-list-frame';
 
-    const tasks = [];
+    // const tasks = [];
 
-    const taskFrameList = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameList', []) : [];
+    // // Split tasks up into the appropriate kanban columns
+    // if (this.props.tasks && this.props.tasks.size > 0) {
+    //   this.props.tasks.forEach((object) => {
+    //     const columnId = grouping.getGroup(object, columnField);
 
-    // Split tasks up into the appropriate kanban columns
-    if (this.props.tasks && this.props.tasks.size > 0) {
-      this.props.tasks.forEach((object) => {
-        const columnId = grouping.getGroup(object, columnField);
+    //     if (typeof tasks[columnId] === 'undefined') {
+    //       tasks[columnId] = [];
+    //     }
 
-        if (typeof tasks[columnId] === 'undefined') {
-          tasks[columnId] = [];
-        }
-
-        tasks[columnId].push(object);
-      });
-    }
+    //     tasks[columnId].push(object);
+    //   });
+    // }
 
     let totalPages = 1;
 
@@ -521,24 +492,69 @@ export class TasksListFrame extends React.Component {
 
         <TaskMassActions hideMassActionControls={this.hideMassActionControls.bind(this)}
                          projects={this.projects}/>
-        <ListFrameContents>
-          {this.state.view === 'card' && this.props.tasks && this.props.tasks.size > 0 ?
-            <TaskViewConnector tasks={this.props.tasks} order={this.state.order}>
-              <ListView direction={this.state.direction}
-                        groupedTasks={tasks}
-                        order={this.state.order}
-                        view={this.state.view}
+        <div>
+          { this.props.tasks && this.props.tasks.size > 0 ?
+            <ListFrameContents>
+              {this.state.view === 'card' ?
+                <TaskViewConnector tasks={this.props.tasks}
+                                   order={this.state.order}>
+                  <ListView direction={this.state.direction}
+                            view={this.state.view}
+                            toggleDone={this.toggleDone.bind(this)}
+                            editTask={this.editTask.bind(this)}
+                            updateMassActions={this.updateMassActions.bind(this)}
+                            actionable={this.state.actionable}
+                            toggleAssignWindow={this.toggleAssignWindow.bind(this)}
+                            moveCard={this.moveCard.bind(this)} />
+                </TaskViewConnector>
+              : '' }
 
-                        toggleDone={this.toggleDone.bind(this)}
-                        editTask={this.editTask.bind(this)}
-                        updateMassActions={this.updateMassActions.bind(this)}
-                        order={this.state.order}
-                        actionable={this.state.actionable}
-                        toggleAssignWindow={this.toggleAssignWindow.bind(this)}
-                        moveCard={this.moveCard.bind(this)} />
-            </TaskViewConnector>
+              {this.state.view === 'kanban' ?
+                <TaskViewConnector tasks={this.props.tasks}
+                                   order={this.state.order}>
+                  <KanbanView direction={this.state.direction}
+                            view={this.state.view}
+                            toggleDone={this.toggleDone.bind(this)}
+                            editTask={this.editTask.bind(this)}
+                            updateMassActions={this.updateMassActions.bind(this)}
+                            actionable={this.state.actionable}
+                            toggleAssignWindow={this.toggleAssignWindow.bind(this)}
+                            moveCard={this.moveCard.bind(this)} />
+                </TaskViewConnector>
+              : '' }
+
+              {this.state.view === 'condensed' ?
+                <TaskViewConnector tasks={this.props.tasks}
+                                   order={this.state.order}>
+                  <CondensedView direction={this.state.direction}
+                            view={this.state.view}
+                            toggleDone={this.toggleDone.bind(this)}
+                            editTask={this.editTask.bind(this)}
+                            updateMassActions={this.updateMassActions.bind(this)}
+                            actionable={this.state.actionable}
+                            toggleAssignWindow={this.toggleAssignWindow.bind(this)}
+                            toggleOrder={this.toggleOrder.bind(this)}
+                            moveCard={this.moveCard.bind(this)} />
+                </TaskViewConnector>
+              : '' }
+
+              {this.state.view === 'calendar' ?
+                <TaskViewConnector tasks={this.props.tasks}
+                                   order={this.state.order}>
+                  <CalendarView direction={this.state.direction}
+                            view={this.state.view}
+                            toggleDone={this.toggleDone.bind(this)}
+                            editTask={this.editTask.bind(this)}
+                            updateMassActions={this.updateMassActions.bind(this)}
+                            actionable={this.state.actionable}
+                            toggleAssignWindow={this.toggleAssignWindow.bind(this)}
+                            toggleOrder={this.toggleOrder.bind(this)}
+                            moveCard={this.moveCard.bind(this)} />
+                </TaskViewConnector>
+              : '' }
+            </ListFrameContents>
           : '' }
-        </ListFrameContents>
+        </div>
         {
           // pageNum: The total number of pages
           // pageRangeDisplayed: Number of pages to display in the center

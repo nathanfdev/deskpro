@@ -9,6 +9,11 @@ import ComponentRootWrapper from 'DeskPRO/Component/ComponentRootWrapper';
 import $ from 'jquery';
 
 export default class TaskCalendar extends React.Component {
+  static propTypes = {
+    moment: React.PropTypes.object,
+    tasks: React.PropTypes.object
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -107,8 +112,8 @@ export default class TaskCalendar extends React.Component {
     const moment = this.props.moment;
     const layout = calendar.getCalendar(moment.year(), moment.month());
 
-    let i = 0;
-    const j = layout.length;
+    let incrementer = 0;
+    const calendarLength = layout.length;
     const rows = [];
     const chunk = 7;
     let processedThisMonth = false;
@@ -152,8 +157,8 @@ export default class TaskCalendar extends React.Component {
       calendarDays.push(newDay);
     });
 
-    for (i = 0; i < j; i += chunk) {
-      rows.push(calendarDays.slice(i, i + chunk));
+    for (incrementer = 0; incrementer < calendarLength; incrementer += chunk) {
+      rows.push(calendarDays.slice(incrementer, incrementer + chunk));
     }
 
     const weekdays = [

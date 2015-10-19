@@ -39,9 +39,9 @@ const TaskKanbanCard = React.createClass({
   propTypes: {
     updateMassActions: React.PropTypes.func,
     task: React.PropTypes.object,
-    agents: React.PropTypes.array,
-    teams: React.PropTypes.array,
-    departments: React.PropTypes.array,
+    agents: React.PropTypes.object,
+    teams: React.PropTypes.object,
+    departments: React.PropTypes.object,
     connectDragPreview: React.PropTypes.func,
     connectDragSource: React.PropTypes.func,
     connectDropTarget: React.PropTypes.func,
@@ -66,11 +66,11 @@ const TaskKanbanCard = React.createClass({
     let assigneeName = '';
 
     if (this.props.task.get('agents') && this.props.task.get('agents').size > 0) {
-      assigneeName = this.props.agents[this.props.task.get('agents').get(0)].name;
+      assigneeName = this.props.agents.get(this.props.task.get('agents').get(0)).get('name');
     } else if (this.props.task.get('teams') && this.props.task.get('teams').size > 0) {
-      assigneeName = this.props.teams[this.props.task.get('teams').get(0)].name;
+      assigneeName = this.props.teams.get(this.props.task.get('teams').get(0)).get('name');
     } else if (this.props.task.get('departments') && this.props.task.get('departments').size > 0) {
-      assigneeName = this.props.departments[this.props.task.get('departments').get(0)].title;
+      assigneeName = this.props.departments.get(this.props.task.get('departments').get(0)).get('title');
     }
 
     const placeHolder = this.props.isOver ? 'placeholder is-over' : 'placeholder';

@@ -29,6 +29,7 @@ export default class TaskViewConnector extends React.Component {
     departments: React.PropTypes.object,
     dispatch: React.PropTypes.func,
     projects: React.PropTypes.object,
+    order: React.PropTypes.string,
     tasks: React.PropTypes.object,
     teams: React.PropTypes.object,
     tickets: React.PropTypes.object,
@@ -68,15 +69,32 @@ export default class TaskViewConnector extends React.Component {
   }
 
   render() {
+    const tasks = [];
     const grouping = new TaskGrouping(this.props.projects, this.props.departments, this.props.teams, this.props.agents, {}, this.props.tickets);
     const columnField = this.props.order;
     const rawGroupings = grouping.getRawGroupings(columnField, this.props.direction);
+
+    // Split tasks up into the appropriate kanban columns
+    if (this.props.tasks && this.props.tasks.size > 0) {
+      this.props.tasks.forEach((object) => {
+        const columnId = grouping.getGroup(object, columnField);
+
+        if (typeof tasks[columnId] === 'undefined') {
+          tasks[columnId] = [];
+        }
+
+        tasks[columnId].push(object);
+      });
+    }
 
     const childProps = Object.assign({
       agents: this.props.agents,
       departments: this.props.departments,
       dispatch: this.props.dispatch,
+      groupedTasks: tasks,
+      massEdit: this.props.massEdit,
       projects: this.props.projects,
+      order: this.props.order,
       rawGroupings: rawGroupings,
       tasks: this.props.tasks,
       teams: this.props.teams,

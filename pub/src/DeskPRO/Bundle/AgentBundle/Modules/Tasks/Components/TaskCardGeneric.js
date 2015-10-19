@@ -51,13 +51,13 @@ export default class TaskCardGeneric extends React.Component {
     if (task.has('agents') && task.get('agents').size > 0) {
       // We assume one assignment for now, though we will need to support more later
       const agentId = task.get('agents')[0];
-      assignee = agents[agentId];
+      assignee = agents.get(agentId);
     } else if (task.has('teams') && task.get('teams').size > 0) {
       const teamId = task.get('teams')[0];
-      assignee = teams[teamId];
+      assignee = teams.get(teamId);
     } else if (task.has('departments') && task.get('departments').size > 0) {
       const departmentId = task.get('departments')[0];
-      assignee = departments[departmentId];
+      assignee = departments.get(departmentId);
     }
 
     return (
@@ -107,9 +107,9 @@ export default class TaskCardGeneric extends React.Component {
               {task.get('comment_count', 0)} <i className="fa fa-comment" />
             </span>
 
-            {task.subtasks_total > 0 ?
+            {task.get('subtasks_total') > 0 ?
               <span className="dpwd--card-line-item">
-                <div><span className="dpw--card-disc" /> {task.subtasks_done}/{task.subtasks_total} <i className="fa fa-folder-open"/></div>
+                <div><span className="dpw--card-disc" /> {task.get('subtasks_done')}/{task.get('subtasks_total')} <i className="fa fa-folder-open"/></div>
               </span>
             : ''}
           </div>
