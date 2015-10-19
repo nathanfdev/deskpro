@@ -151,9 +151,9 @@ class TicketType extends AbstractType
         $context = $this->createTicketFormContext($ticket, $ticket_message, $form, $layout);
 
         // if there is only one department we want to make sure to set it now...
-        $person    = $context->getForm()->getConfig()->getOption('person');
-        $hierarchy = $this->hierarchy_generator->generateTicketDepartmentsHierarchy($person);
-            $ticket->department = $hierarchy->getFirstSelectable();
+        $person             = $context->getForm()->getConfig()->getOption('person');
+        $hierarchy          = $this->hierarchy_generator->generateTicketDepartmentsHierarchy($person);
+        $ticket->department = $hierarchy->getFirstSelectable();
 
         $this->manipulateForm(new Layout(), $context->getActiveLayout(), $context);
     }
@@ -662,7 +662,7 @@ class TicketType extends AbstractType
         );
 
         if ($ignore_validation) {
-            $options                      = $this->markNoValidation($form_context, $options);
+            $options = $this->markNoValidation($form_context, $options);
         }
 
         $form_context->getForm()->add(
@@ -754,7 +754,7 @@ class TicketType extends AbstractType
 
     private function addCaptcha(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
-        if (!$this->captcha_decider->shouldRequireTicketCaptchaForCurrentUser()) {
+        if (!$this->captcha_decider->shouldRequireTicketCaptchaForCurrentPerson()) {
             return;
         }
 

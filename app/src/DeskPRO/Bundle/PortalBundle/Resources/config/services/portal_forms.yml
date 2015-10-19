@@ -29,7 +29,7 @@ services:
 
   captcha_decider:
     class: DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider
-    arguments: [@brand_stack, @security.authorization_checker]
+    arguments: [@brand_stack, @security.authorization_checker, @security.token_storage, @request_stack, @anti_abuse]
 
   form_hierarchy_generator:
     class: DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyGenerator
@@ -93,6 +93,8 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CommentType
     tags:
       - { name: form.type, alias: comment }
+    arguments:
+      - @captcha_decider
 
 
   form.new_feedback:
@@ -131,12 +133,16 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PasswordResetRequestType
     tags:
       - { name: form.type, alias: request_password_reset }
+    arguments:
+      - @captcha_decider
 
 
   form.person_change_password:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonChangePasswordType
     tags:
       - { name: form.type, alias: person_change_password }
+    arguments:
+      - @captcha_decider
 
 
   form.deskpro_custom_per_field_data:

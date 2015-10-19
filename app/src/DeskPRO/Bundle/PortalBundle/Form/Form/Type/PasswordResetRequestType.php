@@ -31,14 +31,38 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class PasswordResetRequestType extends AbstractType
 {
+    /**
+     * @var CaptchaDecider
+     */
+    private $captcha_decider;
+
+    public function __construct(CaptchaDecider $captcha_decider)
+    {
+        $this->captcha_decider = $captcha_decider;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('email', 'email', array());
+
+        $builder->addEventListener(
+            FormEvents::PRE_SET_DATA,
+            function (FormEvent $event) {
+                $form = $event->getForm();
+
+                if ($this->captcha_decider->shouldRequireCommentCaptchaForCurrentPerson()) {
+                    $form->add('captcha', 'deskpro_captcha');
+                }
+            }
+        );
     }
 
     /**

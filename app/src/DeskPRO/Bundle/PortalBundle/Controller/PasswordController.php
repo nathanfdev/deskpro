@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\PasswordResetAbuseCheck;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -62,7 +63,9 @@ class PasswordController extends AbstractController
         $form->handleRequest($request);
 
         $render_error = false;
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->runAntiAbuseCheck($request);
+
             $data  = $form->getData();
             $email = $data['email'];
 
@@ -110,6 +113,7 @@ class PasswordController extends AbstractController
                 )
             );
         } elseif ($form->isSubmitted()) {
+            $this->runAntiAbuseCheck($request);
             $render_error = true;
         }
 
@@ -173,7 +177,9 @@ class PasswordController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->runAntiAbuseCheck($request);
+
             $person->setPasswordResetCode(null);
             $this->persistAndFlushEntity($person);
 
@@ -187,6 +193,8 @@ class PasswordController extends AbstractController
                 array('set_password_success' => 1);
 
             return $this->redirectToRoute('portal_login', $params);
+        } elseif ($form->isSubmitted()) {
+            $this->runAntiAbuseCheck($request);
         }
 
         $tpl = $isResetting ?
@@ -202,5 +210,11 @@ class PasswordController extends AbstractController
                 'page_title'   => $this->createPageTitle()->passwordReset($isResetting),
             )
         );
+    }
+
+    protected function runAntiAbuseCheck(Request $request)
+    {
+        $check = new PasswordResetAbuseCheck($this->getCurrentPerson(), $request->getClientIp());
+        $this->get('anti_abuse')->check($check);
     }
 }

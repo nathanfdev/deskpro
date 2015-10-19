@@ -31,9 +31,26 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Form\Captcha;
 
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\PasswordResetAbuseCheck;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\RegistrationAbuseCheck;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitFeedbackAbuseCheck;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
+/**
+ * The general pattern here is that if the user is a guest, we determine showing a captcha or not via a setting
+ * for the type of action the user is doing (ie. if user.registration_captcha is on and it's a guest, we show the
+ * captcah). Sometimes this setting may be off. In those cases, we still check with the anti-abuse system to check vs .
+ * IP. Therefore, it is always possible to see a captcha even if you disable it in settings, because the AntiAbuse system
+ * has precedence.
+ */
 class CaptchaDecider
 {
     /**
@@ -46,41 +63,121 @@ class CaptchaDecider
      */
     private $authorization_checker;
 
-    public function __construct(BrandStack $brand_stack, AuthorizationChecker $authorization_checker)
-    {
+    /**
+     * @var AntiAbuse
+     */
+    private $anti_abuse;
+
+    /**
+     * @var TokenStorage
+     */
+    private $token_storage;
+
+    /**
+     * @var RequestStack
+     */
+    private $request_stack;
+
+    public function __construct(
+        BrandStack $brand_stack,
+        AuthorizationChecker $authorization_checker,
+        TokenStorage $token_storage,
+        RequestStack $request_stack,
+        AntiAbuse $anti_abuse
+    ) {
         $this->brand_stack           = $brand_stack;
         $this->authorization_checker = $authorization_checker;
+        $this->token_storage         = $token_storage;
+        $this->request_stack         = $request_stack;
+        $this->anti_abuse            = $anti_abuse;
     }
 
-    public function shouldRequireContentCaptchaForCurrentUser()
+    public function shouldRequireFeedbackCaptchaForCurrentPerson()
     {
-        if ($this->authorization_checker->isGranted('ROLE_USER')) {
-            return false;
-        }
-
-        return $this->getBrandSetting('user.publish_captcha');
+        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_SUBMIT_FEEDBACK, 'user.publish_captcha');
     }
 
-    public function shouldRequireRegistrationCaptchaForCurrentUser()
+    public function shouldRequireCommentCaptchaForCurrentPerson()
     {
-        if ($this->authorization_checker->isGranted('ROLE_USER')) {
-            return false;
-        }
-
-        return $this->getBrandSetting('user.register_captcha');
+        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_SUBMIT_COMMENT, 'user.publish_captcha');
     }
 
-    public function shouldRequireTicketCaptchaForCurrentUser()
+    public function shouldRequireRegistrationCaptchaForCurrentPerson()
     {
-        if ($this->authorization_checker->isGranted('ROLE_USER')) {
-            return false;
+        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_REGISTER, 'user.register_captcha');
+    }
+
+    public function shouldRequireTicketCaptchaForCurrentPerson()
+    {
+        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_SUBMIT_TICKET, 'user.register_captcha');
+    }
+
+    public function shouldRequireForgotPasswordCaptchaForCurrentPerson()
+    {
+        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_RESET_PASSWORD, 'user.register_captcha');
+    }
+
+    protected function shouldRequireCaptcha($where, $guest_setting)
+    {
+        // this setting means captcha is always displayed
+        if ($this->getBrandSetting('user.always_show_captcha')) {
+            return true;
         }
 
-        return $this->getBrandSetting('user.register_captcha');
+        if (!$this->authorization_checker->isGranted('ROLE_USER')) {
+            // this setting means it should always be displayed to a guest
+            if ($this->getBrandSetting($guest_setting)) {
+                return true;
+            }
+        }
+
+        switch ($where) {
+            case AntiAbuse::ACTION_REGISTER:
+                $check = new RegistrationAbuseCheck($this->getCurrentPerson(), $this->getRequestIp());
+                break;
+            case AntiAbuse::ACTION_SUBMIT_FEEDBACK:
+                $check = new SubmitFeedbackAbuseCheck($this->getCurrentPerson(), $this->getRequestIp());
+                break;
+            case AntiAbuse::ACTION_SUBMIT_TICKET:
+                $check = new SubmitTicketAbuseCheck($this->getCurrentPerson(), $this->getRequestIp());
+                break;
+            case AntiAbuse::ACTION_SUBMIT_COMMENT:
+                $check = new SubmitCommentAbuseCheck($this->getCurrentPerson(), $this->getRequestIp());
+                break;
+            case AntiAbuse::ACTION_RESET_PASSWORD:
+                $check = new PasswordResetAbuseCheck($this->getCurrentPerson(), $this->getRequestIp());
+                break;
+            default:
+                throw new \InvalidArgumentException('CaptchaDecider does not support $where = "'.$where.'"');
+        }
+
+        $check->markAsCheckOnly();
+        $this->anti_abuse->check($check);
+
+        return $check->isCaptchaRecommended();
     }
 
     public function getBrandSetting($setting, $default = null)
     {
         return $this->brand_stack->getActive()->getSetting($setting, $default);
+    }
+
+    private function getRequestIp()
+    {
+        return $this->request_stack->getMasterRequest()->getClientIp();
+    }
+
+    protected function getCurrentPerson()
+    {
+        $user = null;
+        if (null !== $token = $this->token_storage->getToken()) {
+            if (is_object($person = $token->getUser())) {
+                if ($person instanceof Person) {
+                    return $person;
+                }
+            }
+        }
+
+        return new PersonGuest();
     }
 }

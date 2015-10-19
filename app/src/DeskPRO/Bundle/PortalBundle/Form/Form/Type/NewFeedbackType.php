@@ -88,7 +88,7 @@ class NewFeedbackType extends AbstractType
             ));
         }
 
-        if ($this->captcha_decider->shouldRequireContentCaptchaForCurrentUser()) {
+        if ($this->captcha_decider->shouldRequireFeedbackCaptchaForCurrentPerson()) {
             $builder->add('captcha', 'deskpro_captcha', array(
                 'mapped'         => false,
                 'error_bubbling' => false,

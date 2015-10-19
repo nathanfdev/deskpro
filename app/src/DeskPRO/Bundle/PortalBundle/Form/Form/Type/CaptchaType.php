@@ -83,6 +83,7 @@ class CaptchaType extends AbstractType
                     'theme' => 'clean',
                 ],
             ],
+            'label'       => false,
             'empty_data'  => null,
             'mapped'      => false,
             'constraints' => [
