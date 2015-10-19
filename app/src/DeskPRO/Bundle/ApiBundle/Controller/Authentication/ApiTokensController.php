@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
 use Application\DeskPRO\Entity\ApiToken;

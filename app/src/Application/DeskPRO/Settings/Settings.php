@@ -31,6 +31,7 @@
  *
  * @category Settings
  */
+
 namespace Application\DeskPRO\Settings;
 
 use Application\DeskPRO\App;

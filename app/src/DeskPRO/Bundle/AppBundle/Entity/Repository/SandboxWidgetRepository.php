@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;

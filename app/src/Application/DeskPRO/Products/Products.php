@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Products;
 
 use Application\DeskPRO\Hierarchy\LazyPreloadedHierarchy;

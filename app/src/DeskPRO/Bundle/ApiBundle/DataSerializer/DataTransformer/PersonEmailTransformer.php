@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;

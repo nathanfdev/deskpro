@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener;
 
 use Application\DeskPRO\Entity\Person;

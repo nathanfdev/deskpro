@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Mail\RawMessage\Mail\Header;
 
 use Zend\Mail\AddressList;

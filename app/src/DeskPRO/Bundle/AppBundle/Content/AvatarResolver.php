@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Content;
 
 use Application\DeskPRO\Entity\Organization;

@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
+
 // components
 import { Footer } from './Footer';
 import { Header } from './Header';
 import { MessageList } from './MessageList';
 import { Offline } from './Offline';
 import { SearchForm } from './SearchForm';
-import { connect } from 'react-redux';
+
 // messages
-import { loadMessages, addMessage } from '../../Actions/imMessagesActions';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
+import { addMessage } from '../../Actions/imMessagesActions';
 
 @connect(state => ({
   me: meSelector(state),
@@ -16,59 +19,46 @@ import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Recor
 }))
 export class Chat extends React.Component {
 
+  static propTypes = {
+    me: PropTypes.object.isRequired,
+    current: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired
+  };
+
   constructor(props) {
     super(props);
     this.state = {
-      searchQuery: ''
+      searchQuery: '',
+      searchTyped: '',
+      searchShown: false,
     };
   }
 
-  componentWillMount() {
-    this.props.dispatch(loadMessages(this.props.current.id));
-  }
+  messageList = () => {
+    return (this.props.current.id)
+      ? <MessageList current={this.props.current} searchQuery={this.state.searchQuery}/>
+      : <Spinner width="40" height="40"/>;
+  };
 
-  render() {
-    return (
-      <div className="dropdown active-chat-dropdown" id="active-chat-dropdown">
-        { this.head() }
-        { this.searchForm() }
-        <div className="chat-controls"><a href="#">Load old messages</a><a onClick={this.refresh} href="#">Refresh</a></div>
-        <MessageList
-          agents={this.props.agents}
-          me={this.props.me}
-          messages={this.props.messages.getIn(['chatMessages',this.props.current.id])}/>
-        <Footer handleAddMessage={this.handleAddMessage}/>
-      </div>
-    );
-  }
-
-  head() {
-    if(this.props.agents.size > 0) {
-      return <Header
-        agents={this.props.agents}
-        teams={this.props.teams}
-        departments={this.props.departments}
-        me={this.props.me}
-        current={this.props.current}
-        handleCloseChat={this.props.handleCloseChat}
-        />
-    }
-  }
-
-  handleQuery = (event) => {
+  handleType = (event) => {
     const oldState = this.state;
     const newState = {...oldState};
-    newState.searchQuery = event.target.value;
+    newState.searchTyped = event.target.value;
     this.setState(newState);
   };
 
   handleSearch = () => {
-    this.props.dispatch(loadMessages(this.props.current.id, this.state.searchQuery));
+    const oldState = this.state;
+    const newState = {...oldState};
+    newState.searchQuery = oldState.searchTyped;
+    this.setState(newState);
   };
 
-  refresh = () =>
-  {
-    this.props.dispatch(loadMessages(this.props.current.id));
+  toggleSearch = () => {
+    const oldState = this.state;
+    const newState = {...oldState};
+    newState.searchShown = !oldState.searchShown;
+    this.setState(newState);
   };
 
   handleAddMessage = (message) => {
@@ -76,16 +66,25 @@ export class Chat extends React.Component {
   };
 
   searchForm() {
-    if(this.props.agents.size > 0) {
-      return <SearchForm handleQuery={this.handleQuery} handleSearch={this.handleSearch} />
-    }
+    return (this.state.searchShown) ? <SearchForm handleType={this.handleType} handleSearch={this.handleSearch} /> : null;
   }
 
   static typing() {
-    return <div className="active-chat-user-typing">Jeniffer is typing a message <span id="typing">...</span></div>
+    return <div className="active-chat-user-typing">Jeniffer is typing a message <span id="typing">...</span></div>;
   }
 
   static offline() {
-    return <Offline />
+    return <Offline />;
+  }
+
+  render() {
+    return (
+      <div className="dropdown active-chat-dropdown" id="active-chat-dropdown">
+        <Header toggleSearch={this.toggleSearch}/>
+        { this.searchForm() }
+        { this.messageList() }
+        <Footer handleAddMessage={this.handleAddMessage}/>
+      </div>
+    );
   }
 }
