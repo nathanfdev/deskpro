@@ -15,6 +15,10 @@ export class Header extends React.Component {
     this.props.dispatch(AppActions.toggleWorkspace());
   };
 
+  togglePreferences = () => {
+    this.props.dispatch(AppActions.togglePreferences());
+  };
+
   render() {
     const { user } = this.props;
 
@@ -33,7 +37,7 @@ export class Header extends React.Component {
               <span className="title"><i className="fa fa-cog"></i> Admin <i className="fa fa-angle-down"></i></span>
             </a>
 
-            <a href="#" className="user-options-button">
+            <a href="#" className="user-options-button" onClick={this.togglePreferences}>
               <PersonAvatarContainer person={user} />
               <span className="title">Settings <i className="fa fa-angle-down"></i></span>
             </a>
