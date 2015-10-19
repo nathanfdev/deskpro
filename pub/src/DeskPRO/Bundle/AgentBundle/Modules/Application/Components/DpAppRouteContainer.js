@@ -6,6 +6,7 @@ import { DpAppLoading } from './DpAppLoading';
 import { WelcomeBack } from '../../Welcome/Components/WelcomeBack';
 import { meSelector, meStateSelector } from '../RecordStores/Selectors/meSelectors';
 import { IMContainer } from '../../IM/Components/IMContainer';
+import { PreferencesContainer } from './Preferences/PreferencesContainer';
 
 @connect(state => ({
   dpWindow: state.Application.dpWindow,
@@ -49,6 +50,7 @@ export class DpAppRouteContainer extends React.Component {
           {children}
         </DpApp>
         <IMContainer/>
+        <PreferencesContainer positionTarget={document.body}/>
       </div>
     );
   }

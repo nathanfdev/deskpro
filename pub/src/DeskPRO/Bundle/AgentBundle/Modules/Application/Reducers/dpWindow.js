@@ -12,7 +12,8 @@ const initialState = {
   columnDimensions: parseInt(localStorage.getItem('dpWindow.columnDimensions'), 10) || 40,
   sidebarMode: localStorage.getItem('dpWindow.sidebarMode') || 'static',
   showWelcomePage: true,
-  isWorkspaceOpen: false
+  isWorkspaceOpen: false,
+  isPreferencesOpen: false
 };
 
 /**
@@ -46,7 +47,10 @@ export default createReducer(initialState, {
     return state.set('taskView', payload);
   },
   [actions.toggleWorkspace]: state => {
-    return state.set('isWorkspaceOpen', !state.get('isWorkspaceOpen'));
+    return state.merge({
+      isWorkspaceOpen: !state.get('isWorkspaceOpen'),
+      isPreferencesOpen: false
+    });
   },
   [actions.closeWorkspace]: state => {
     return state.set('isWorkspaceOpen', false);
@@ -58,6 +62,7 @@ export default createReducer(initialState, {
   [actions.setColumnDimensions]: (state, payload) => {
     triggerDpLayoutResize();
     localStorage.setItem('dpWindow.columnDimensions', payload);
+
     return state.set('columnDimensions', payload || 0);
   },
   [actions.setSidebarMode]: (state, payload) => {
@@ -69,5 +74,14 @@ export default createReducer(initialState, {
   },
   [actions.hideWelcomePage]: state => {
     return state.set('showWelcomePage', false);
+  },
+  [actions.togglePreferences]: state => {
+    return state.merge({
+      isWorkspaceOpen: false,
+      isPreferencesOpen: !state.get('isPreferencesOpen')
+    });
+  },
+  [actions.closePreferences]: state => {
+    return state.set('isPreferencesOpen', false);
   }
 });
