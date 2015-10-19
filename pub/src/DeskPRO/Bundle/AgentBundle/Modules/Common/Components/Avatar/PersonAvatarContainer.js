@@ -13,7 +13,7 @@ export class PersonAvatarContainer extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     person: PropTypes.object.isRequired,
-    size: PropTypes.number,
+    size: PropTypes.any,
     avatars: PropTypes.object.isRequired
   };
 
@@ -29,7 +29,8 @@ export class PersonAvatarContainer extends React.Component {
       urlPattern: avatar.get('url_pattern'),
       gravatar: avatar.get('gravatar'),
       isFallback: avatar.get('is_fallback'),
-      fallbackText: this.getPersonFallbackText()
+      fallbackText: this.getPersonFallbackText(),
+      color: '#CDD2D4'
     };
 
     return (

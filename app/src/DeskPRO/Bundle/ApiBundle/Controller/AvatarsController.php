@@ -105,7 +105,7 @@ class AvatarsController extends BaseController
             'is_fallback' => $isFallback,
         ];
         if ($targetEntity instanceof Person) {
-            $data['gravatar'] = $targetEntity->getGravatarUrl();
+            $data['gravatar'] = $targetEntity->getRawGravatarUrl();
         }
 
         return $data;

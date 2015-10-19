@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import * as actions from '../../Actions/chatsActions';
+import { DepartmentAvatarContainer } from '../../../Common/Components/Avatar/index';
 
 export class DepartmentsListItem extends React.Component {
   static propTypes = {
@@ -17,7 +18,7 @@ export class DepartmentsListItem extends React.Component {
         <a href="#"
            onClick={this.startChat.bind(null, this.props.department.get('id'), 'department')}
           >
-          <span className="chat-avatar" style={{'backgroundImage': 'url(http://lorempixel.com/20/20/people)'}}></span>
+          <DepartmentAvatarContainer department={this.props.department} size="22" />
           <span className="agent">{this.props.department.get('title')}</span>
         </a>
       </li>

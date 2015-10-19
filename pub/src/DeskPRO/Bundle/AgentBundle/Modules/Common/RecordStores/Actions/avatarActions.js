@@ -21,3 +21,6 @@ function createAvatarActions(type) {
 }
 
 export const [loadPersonAvatars, releasePersonAvatarsRequest] = createAvatarActions('person');
+export const [loadOrganizationAvatars, releaseOrganizationAvatarsRequest] = createAvatarActions('organization');
+export const [loadAgentTeamAvatars, releaseAgentTeamAvatarsRequest] = createAvatarActions('agent_team');
+export const [loadDepartmentAvatars, releaseDepartmentAvatarsRequest] = createAvatarActions('department');

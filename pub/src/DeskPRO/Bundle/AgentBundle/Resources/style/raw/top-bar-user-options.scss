@@ -50,13 +50,19 @@
     margin-right: 2px;
     border-radius: 2px;
 
+    &.gravatar {
+      position: absolute;
+      top: 0;
+      left: 2px !important;
+    }
+
     &.text-fallback {
-      background-color: #CDD2D4;
+      background-color: #CDD2D4 !important;
       margin-left: 2px;
 
       .text {
         color: black;
-        font-size: 140%;
+        font-size: 150%;
         position: relative;
         top: 50%;
         -webkit-transform: translateY(-50%);

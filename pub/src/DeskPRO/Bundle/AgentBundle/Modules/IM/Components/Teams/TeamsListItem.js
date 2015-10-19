@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import * as actions from '../../Actions/chatsActions';
+import { AgentTeamAvatarContainer } from '../../../Common/Components/Avatar/index';
 
 export class TeamsListItem extends React.Component {
   static propTypes = {
@@ -17,7 +18,7 @@ export class TeamsListItem extends React.Component {
         <a href="#"
            onClick={this.startChat.bind(null, this.props.team.get('id'), 'team')}
           >
-          <span className="chat-avatar" style={{'backgroundImage': 'url(http://lorempixel.com/20/20/animals)'}}></span>
+          <AgentTeamAvatarContainer agentTeam={this.props.team} size="22" />
           <span className="agent">{this.props.team.get('name')}</span>
         </a>
       </li>
