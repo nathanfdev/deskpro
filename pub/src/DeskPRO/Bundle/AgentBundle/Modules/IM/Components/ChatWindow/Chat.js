@@ -15,7 +15,8 @@ import { addMessage } from '../../Actions/imMessagesActions';
 
 @connect(state => ({
   me: meSelector(state),
-  messages: state.IM.messages
+  messages: state.IM.messages,
+  current: state.IM.chats.get('current')
 }))
 export class Chat extends React.Component {
 

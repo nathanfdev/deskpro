@@ -7,7 +7,7 @@ import { Chat } from './ChatWindow/Chat';
 @connect(state => ({
   current: state.IM.ui.get('current'),
   chating: state.IM.ui.get('chating'),
-  overlayShown: state.IM.ui.get('overlayShown'),
+  overlayShown: state.IM.ui.get('overlayShown')
 }))
 export class IMContainer extends React.Component {
 
@@ -18,6 +18,7 @@ export class IMContainer extends React.Component {
   };
 
   renderOverlay = () => {
+
     return (
       <SimplePositioned
         positionMy="left-25 top+1"
