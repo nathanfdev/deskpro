@@ -91,8 +91,8 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
         }
 
         // Save login log
+        $ip = dp_get_user_ip_address();
         if ($attempt_person) {
-            $ip = dp_get_user_ip_address();
             $this->db->insert('login_log', array(
                 'person_id'    => $attempt_person->getId(),
                 'area'         => defined('DP_INTERFACE') ? DP_INTERFACE : 'unknown',
@@ -102,8 +102,9 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
                 'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
                 'date_created' => date('Y-m-d H:i:s'),
             ));
-            $this->anti_abuse->check(new LoginAbuseCheck($attempt_person, $ip));
         }
+
+        $this->anti_abuse->check(new LoginAbuseCheck($attempt_person, $ip));
 
         return parent::onAuthenticationFailure($request, $exception);
     }

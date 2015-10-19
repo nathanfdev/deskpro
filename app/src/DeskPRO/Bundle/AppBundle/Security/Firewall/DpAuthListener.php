@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\Security\Firewall;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usersource;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use DeskPRO\Bundle\AppBundle\Security\DpFormLoginToken;
 use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
@@ -88,6 +89,10 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         $tokenOrResponse = null;
 
         if ('portal_login_submit' == $request->attributes->get('_route')) {
+            if ($response = $this->checkCaptcha($request)) {
+                return $response;
+            }
+
             $tokenOrResponse = new DpFormLoginToken($request->get('username'), $request->get('password'));
         } elseif ('portal_agent_login' == $request->attributes->get('_route')) {
             $tokenOrResponse = new AgentImpersonateToken($request->attributes->get('code'));
@@ -105,6 +110,37 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         }
 
         return $this->authenticationManager->authenticate($tokenOrResponse);
+    }
+
+    protected function checkCaptcha(Request $request)
+    {
+        $anti_abuse  = $this->container->get('anti_abuse');
+        $abuse_check = new LoginAbuseCheck($request->get('username'), $request->getClientIp());
+        $abuse_check->markAsCheckOnly();
+        $anti_abuse->check($abuse_check);
+        if ($abuse_check->isCaptchaRecommended()) {
+            $captcha_check = $this->container->get('form.factory')->createNamed(
+                '',
+                'deskpro_captcha',
+                null,
+                [
+                    'csrf_double_submit_protection' => false,
+                ]
+            );
+            $captcha_check->submit([]); // the validator uses the request stack directly
+            if (!$captcha_check->isValid()) {
+                return new RedirectResponse(
+                    $this->container->get('router')->generate(
+                        'portal_login',
+                        [
+                            'retry' => 'captcha',
+                        ]
+                    )
+                );
+            }
+        }
+
+        return;
     }
 
     protected function getAuthRedirect(Request $request)

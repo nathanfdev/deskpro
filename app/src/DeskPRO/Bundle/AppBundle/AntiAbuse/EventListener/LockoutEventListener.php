@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\LoginLog;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use Application\DeskPRO\Settings\LoginRateLimitSettings;
@@ -81,9 +82,14 @@ class LockoutEventListener implements EventSubscriberInterface
             return;
         }
 
-        // TODO: UserBundle/LoginController:465 - make sure all of our failed logins insert this log
+        $person = $event->getPerson();
 
-        $person          = $event->getPerson();
+        if (!$person instanceof Person) {
+            // we cannot check because we require a person object for this listener
+            // we cannot throw an exception, because other listeners may not need a Person to do their job
+            return;
+        }
+
         $context         = $person->isAgent() ? 'agent' : 'user';
         $settings        = $this->settings_resolver->getGlobalSettings();
         $settings_prefix = $context.'.'.LoginRateLimitSettings::KEY;

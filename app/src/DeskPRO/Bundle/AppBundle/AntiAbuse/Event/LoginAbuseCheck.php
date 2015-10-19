@@ -36,6 +36,10 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 /**
  * Fire this with the AntiAbuse service to log a login attempt and
  * get recommendations about what to do if abuse is detected.
+ *
+ * NOTE: if you are checking for LOCKOUT, then a person object IS required
+ *       in otherwords, LOCKOUT functionality is only checked if the email
+ *       the user provides is actually a Person.
  */
 class LoginAbuseCheck extends AntiAbuseEvent
 {

@@ -77,17 +77,17 @@ class CaptchaType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('attr' => array(
-                'options' => array(
+        $resolver->setDefaults([
+            'attr' => [
+                'options' => [
                     'theme' => 'clean',
-                ),
-                'empty_data'  => null,
-                'mapped'      => false,
-                'constraints' => array(
-                    new ValidCaptcha(),
-                ),
-
-            ))
-        );
+                ],
+            ],
+            'empty_data'  => null,
+            'mapped'      => false,
+            'constraints' => [
+                new ValidCaptcha(),
+            ],
+        ]);
     }
 }
