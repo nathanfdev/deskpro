@@ -1,21 +1,44 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Menu as ProfileMenu } from './Tabs/Profile/Menu';
 import { Menu as SignatureMenu } from './Tabs/Signature/Menu';
 import { Menu as SettingsMenu } from './Tabs/Settings/Menu';
 import { Menu as NotificationsMenu } from './Tabs/Notifications/Menu';
 import { Menu as DevicesMenu } from './Tabs/Devices/Menu';
+import * as AppActions from '../../Actions/AppActions';
 
 export class Menu extends React.Component {
+
+  static propTypes = {
+    dpWindow: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired
+  };
+
+  renderMenuItem(name, children) {
+    const { dpWindow, dispatch } = this.props;
+    const clickHandler = () => dispatch(AppActions.changePreferenceTab(name));
+
+    const classNames = [];
+    if (dpWindow.get('preferenceTab') === name) {
+      classNames.push('active');
+    }
+
+    return (
+      <li className={classNames.join(' ')} onClick={clickHandler}>
+        {children}
+      </li>
+    );
+  }
+
   render() {
     return (
       <div className="popup-sidebar" id="popup-sidebar">
         <div className="popup-sidebar-content">
           <ul>
-            <li className="active"><ProfileMenu /></li>
-            <li><SignatureMenu /></li>
-            <li><SettingsMenu /></li>
-            <li><NotificationsMenu /></li>
-            <li><DevicesMenu /></li>
+            {this.renderMenuItem('profile', (<ProfileMenu />))}
+            {this.renderMenuItem('signature', (<SignatureMenu />))}
+            {this.renderMenuItem('settings', (<SettingsMenu />))}
+            {this.renderMenuItem('notifications', (<NotificationsMenu />))}
+            {this.renderMenuItem('devices', (<DevicesMenu />))}
           </ul>
         </div>
       </div>
