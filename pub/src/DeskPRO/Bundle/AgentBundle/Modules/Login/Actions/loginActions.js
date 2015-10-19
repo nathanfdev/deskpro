@@ -31,8 +31,8 @@ export const login = createAction(
   'LOGIN_SUBMIT_FORM',
   params => dispatch => DpApi.sendPost('DP_API/get_session', params)
     .success(() => {
-      dispatch(emailChange('admin@example.com'));
-      dispatch(passwordChange('password'));
+      dispatch(emailChange(null));
+      dispatch(passwordChange(null));
       dispatch(loadMe());
       dispatch(setHasAuth(true));
     })
