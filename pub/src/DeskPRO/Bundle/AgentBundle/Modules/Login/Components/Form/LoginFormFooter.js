@@ -14,7 +14,7 @@ export class LoginFormFooter extends React.Component {
         <hr style={{width: '140px'}} />
 
           <span className="deskpro-mark">
-            <a href="#">
+            <a href="https://www.deskpro.com/">
               <span className="logo"></span>
               <span className="title">Helpdesk software by <strong>DeskPRO</strong></span>
             </a>
