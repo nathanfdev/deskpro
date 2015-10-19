@@ -13,7 +13,8 @@ const initialState = {
   sidebarMode: localStorage.getItem('dpWindow.sidebarMode') || 'static',
   showWelcomePage: true,
   isWorkspaceOpen: false,
-  isPreferencesOpen: false
+  isPreferencesOpen: false,
+  coverShown: false
 };
 
 /**
@@ -76,12 +77,18 @@ export default createReducer(initialState, {
     return state.set('showWelcomePage', false);
   },
   [actions.togglePreferences]: state => {
+    const isOpen = !state.get('isPreferencesOpen');
+
     return state.merge({
       isWorkspaceOpen: false,
-      isPreferencesOpen: !state.get('isPreferencesOpen')
+      isPreferencesOpen: isOpen,
+      coverShown: isOpen
     });
   },
   [actions.closePreferences]: state => {
-    return state.set('isPreferencesOpen', false);
+    return state.merge({
+      isPreferencesOpen: false,
+      coverShown: false
+    });
   }
 });
