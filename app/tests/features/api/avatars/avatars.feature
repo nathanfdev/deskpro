@@ -21,6 +21,8 @@ Feature: /avatars/* endpoints
       | target        |
       | person        |
       | organization  |
+      | agent_team    |
+      | department    |
 
   Scenario: I get gravatar URL of a Person
     When I send a GET request to "/api/v2/avatars/person?ids=1,2"

@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Avatar\AvatarOwner;
 use DeskPRO\Bundle\PortalBundle\Form\Collection\CustomDataCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -46,7 +47,7 @@ use Orb\Util\Numbers;
 /**
  * An organization is a grouping we put similar people into (eg companies).
  */
-class Organization extends DomainObject implements HighlightableModelInterface
+class Organization extends DomainObject implements HighlightableModelInterface, AvatarOwner
 {
     /**
      * The unique ID.
@@ -646,6 +647,14 @@ class Organization extends DomainObject implements HighlightableModelInterface
                 return;
             }
         }
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getAvatarBlob()
+    {
+        return $this->picture_blob;
     }
 
     ############################################################################
