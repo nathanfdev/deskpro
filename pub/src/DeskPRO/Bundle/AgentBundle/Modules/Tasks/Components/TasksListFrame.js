@@ -5,7 +5,7 @@ import * as TaskActions from '../Actions/TaskListActions';
 import { IntlMixin } from 'react-intl';
 import TaskControls from '../Components/TaskControls';
 import TaskCalendar from '../Components/TaskCalendar';
-import TaskListContents from '../Components/TaskListContents';
+import ListView from '../Components/Views/List/ListView';
 import TaskCardCondensedGroup from '../Components/TaskCardCondensedGroup';
 import KanbanColumn from '../Components/KanbanColumn';
 import Moment from 'moment';
@@ -15,6 +15,7 @@ import * as constants from '../../../Constants/Constants';
 import ReactPaginate from '../../Common/Components/Pagination/deskpro-react-paginate';
 import ComponentRootWrapper from 'DeskPRO/Component/ComponentRootWrapper';
 import AssignHover from '../Components/AssignHover';
+import TaskViewConnector from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/Views/TaskViewConnector';
 import Immutable from 'immutable';
 
 import TaskMassActions from '../Components/TaskMassActions';
@@ -36,46 +37,46 @@ const ticketsSelector = createTicketRequestSelectors(requestId);
 const linkedItemsSelector = createLinkedItemRequestSelectors(requestId);
 
 @connect(state => ({
-  taskFrameList: state.Tasks.taskFrameList,
-  taskListList: state.Tasks.taskListList,
-  projectList: state.Tasks.projectList,
-  taskFilter: state.Tasks.taskFilter,
-  labelList: state.Tasks.labelList,
   agentList: state.Tasks.agentList,
-  teamList: state.Tasks.teamList,
-  departmentList: state.Tasks.departmentList,
-  dpWindow: state.Application.dpWindow,
-  tasks: filteredTasksSelector(state),
-  status: statusFilteredTasksSelector(state),
-  projects: allProjectsSelector(state),
   agents: agentsSelector(state),
   agentTeams: agentTeamsSelector(state),
+  departmentList: state.Tasks.departmentList,
   departments: allDepartmentsSelector(state),
-  tickets: ticketsSelector.recordsSel(state),
+  dpWindow: state.Application.dpWindow,
+  labelList: state.Tasks.labelList,
   linkedItems: linkedItemsSelector.recordsSel(state),
-  linkedItemsStatus: linkedItemsSelector.statusSel(state)
+  linkedItemsStatus: linkedItemsSelector.statusSel(state),
+  projectList: state.Tasks.projectList,
+  projects: allProjectsSelector(state),
+  status: statusFilteredTasksSelector(state),
+  taskFilter: state.Tasks.taskFilter,
+  taskFrameList: state.Tasks.taskFrameList,
+  taskListList: state.Tasks.taskListList,
+  tasks: filteredTasksSelector(state),
+  teamList: state.Tasks.teamList,
+  tickets: ticketsSelector.recordsSel(state)
 }))
 
 export class TasksListFrame extends React.Component {
   static propTypes = {
-    dispatch: React.PropTypes.func,
-    taskFrameList: React.PropTypes.object,
-    taskListList: React.PropTypes.object,
-    projectList: React.PropTypes.object,
-    taskFilter: React.PropTypes.object,
-    labelList: React.PropTypes.object,
     agentList: React.PropTypes.object,
-    teamList: React.PropTypes.object,
-    departmentList: React.PropTypes.object,
-    dpWindow: React.PropTypes.object,
-    tasks: React.PropTypes.object,
-    status: React.PropTypes.object,
-    projects: React.PropTypes.object,
     agents: React.PropTypes.object,
     agentTeams: React.PropTypes.object,
+    departmentList: React.PropTypes.object,
     departments: React.PropTypes.object,
-    tickets: React.PropTypes.object,
-    linkedItems: React.PropTypes.object
+    dispatch: React.PropTypes.func,
+    dpWindow: React.PropTypes.object,
+    labelList: React.PropTypes.object,
+    linkedItems: React.PropTypes.object,
+    projectList: React.PropTypes.object,
+    projects: React.PropTypes.object,
+    status: React.PropTypes.object,
+    taskFilter: React.PropTypes.object,
+    taskFrameList: React.PropTypes.object,
+    taskListList: React.PropTypes.object,
+    tasks: React.PropTypes.object,
+    teamList: React.PropTypes.object,
+    tickets: React.PropTypes.object
   }
 
   constructor(props) {
@@ -83,16 +84,16 @@ export class TasksListFrame extends React.Component {
 
     this.state = {
       actionable: [],
-      view: constants.VIEW_MODE_CARD,
       changeView: false,
-      order: 'due',
       direction: constants.ORDER_ASC,
       filter: {},
+      massActionable: {},
       moment: new Moment(),
-      showAssignWindow: false,
+      order: 'due',
       position: {},
+      showAssignWindow: false,
       taskData: {},
-      massActionable: {}
+      view: constants.VIEW_MODE_CARD
     };
     this.intl = IntlMixin;
     this.lastGrouping = '';
@@ -104,33 +105,6 @@ export class TasksListFrame extends React.Component {
     // Temp project ID
     props.dispatch(TaskActions.loadLists(1));
   }
-
-  // componentWillReceiveProps(nextProps) {
-  //   console.log('willReceiveProps');
-  //   // Demo get linked items
-  //   if (nextProps.tasks && nextProps.tasks.size > 0 && !nextProps.linkedItemsStatus.get('isDone')) {
-  //     console.log('Got tasks');
-  //     const linkedItemIds = Immutable.List();
-  //     const linkedToMerge = [];
-
-  //     nextProps.tasks.map(task => {
-  //       if (task.has('linked_items') && task.get('linked_items').size > 0) {
-  //         const newLinkedItemIds = task.get('linked_items').toList();
-  //         linkedToMerge.push(newLinkedItemIds);
-  //       }
-  //     });
-
-  //     const linkedToLoad = linkedItemIds.merge(...linkedToMerge);
-
-  //     const loadArray = linkedToLoad.toArray();
-
-  //     if (linkedToLoad.size > 0) {
-  //       nextProps.dispatch(loadLinkedItems(requestId, loadArray));
-  //     }
-
-  //     console.log(nextProps.linkedItemsStatus);
-  //   }
-  // }
 
   setYear(year) {
     const moment = this.state.moment;
@@ -318,8 +292,6 @@ export class TasksListFrame extends React.Component {
   editTask(source, model) {
     this.props.dispatch(TaskActions.editTask(model, source));
   }
-
-  
 
   massEdit(data) {
     const source = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameSource') : null;
@@ -550,21 +522,21 @@ export class TasksListFrame extends React.Component {
         <TaskMassActions hideMassActionControls={this.hideMassActionControls.bind(this)}
                          projects={this.projects}/>
         <ListFrameContents>
+          {this.state.view === 'card' && this.props.tasks && this.props.tasks.size > 0 ?
+            <TaskViewConnector tasks={this.props.tasks} order={this.state.order}>
+              <ListView direction={this.state.direction}
+                        groupedTasks={tasks}
+                        order={this.state.order}
+                        view={this.state.view}
 
-          {this.props.tasks && this.props.tasks.size > 0 ?
-          <TaskListContents {...this.props}
-                            direction={this.state.direction}
-                            groupedTasks={tasks}
-                            order={this.state.order}
-                            view={this.state.view}
-
-                            toggleDone={this.toggleDone.bind(this)}
-                            editTask={this.editTask.bind(this)}
-                            updateMassActions={this.updateMassActions.bind(this)}
-                            order={this.state.order}
-                            actionable={this.state.actionable}
-                            toggleAssignWindow={this.toggleAssignWindow.bind(this)}
-                            moveCard={this.moveCard.bind(this)} />
+                        toggleDone={this.toggleDone.bind(this)}
+                        editTask={this.editTask.bind(this)}
+                        updateMassActions={this.updateMassActions.bind(this)}
+                        order={this.state.order}
+                        actionable={this.state.actionable}
+                        toggleAssignWindow={this.toggleAssignWindow.bind(this)}
+                        moveCard={this.moveCard.bind(this)} />
+            </TaskViewConnector>
           : '' }
         </ListFrameContents>
         {
