@@ -72,10 +72,12 @@ function handleSetRequestRecords(state, requestId, setRecords, ids, mode) {
     }
   }
 
-  return state.merge({
+  const mergeState = Immutable.fromJS({
     records: state.get('records').merge(setRecords),
-    requests: { [requestId]: recordIds}
+    requests: state.get('requests').merge({ [requestId]: recordIds})
   });
+
+  return state.merge(mergeState);
 }
 
 
