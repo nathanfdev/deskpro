@@ -1,12 +1,25 @@
 import React, { PropTypes } from 'react';
+import * as AppActions from '../../Actions/AppActions';
 
 export class Preferences extends React.Component {
+
+  static propTypes = {
+    dpWindow: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired
+  };
+
+  close = () => {
+    this.props.dispatch(AppActions.closePreferences());
+  };
+
   render() {
     return (
       <section className="popup no-footer" id="popup">
         <header>
           <h1>Account Preferences</h1>
-          <div className="controls"><a href="#"><i className="fa fa-times"></i></a></div>
+          <div className="controls">
+            <a href="#" onClick={this.close}><i className="fa fa-times"></i></a>
+          </div>
         </header>
 
         <div className="popup-sidebar" id="popup-sidebar">
