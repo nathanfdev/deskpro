@@ -84,7 +84,7 @@
     "test": "jest",
     "eslint": "eslint src || true",
     "gulp": "gulp",
-    "gulp-prod": "gulp"
+    "gulp-prod": "gulp prod"
   },
   "jest": {
     "testDirectoryName": "tests",
