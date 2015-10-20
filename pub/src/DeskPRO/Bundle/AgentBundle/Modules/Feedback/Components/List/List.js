@@ -38,11 +38,10 @@ export class List extends Component {
 
   renderFeedback() {
     const {
-            currentViewMode, feedback, selected, toggleSelected, people, feedbackTypes, massAction, feedbackLabels,
-            feedbackComments, feedbackStatuses } = this.props;
+      currentViewMode, feedback, selected, toggleSelected, people, feedbackTypes, massAction, feedbackLabels,
+      feedbackComments, feedbackStatuses } = this.props;
 
-    var viewMode = currentViewMode;
-    if (viewMode === constants.VIEW_MODE_CARD) {
+    if (currentViewMode === constants.VIEW_MODE_CARD) {
       return (
         <FeedbackList
           elements={feedback}
@@ -70,8 +69,7 @@ export class List extends Component {
 
   renderComments() {
     const {dispatch, feedbackFromStore, currentViewMode, comments, selected, toggleSelected, massAction, people, emails, feedbackStatuses} = this.props;
-    var viewMode = currentViewMode;
-    if (viewMode === constants.VIEW_MODE_CARD) {
+    if (currentViewMode === constants.VIEW_MODE_CARD) {
       return (
         <FeedbackCommentList
           dispatch={dispatch}
@@ -94,9 +92,13 @@ export class List extends Component {
   }
 
   render() {
+    const {dispatch} = this.props;
     return (
       <ListFrameContainer>
-        <FeedbackListControlBar count={this.props.feedback ? this.props.feedback.size : 0}/>
+        <FeedbackListControlBar
+          count={this.props.feedback ? this.props.feedback.size : 0}
+          dispatch={dispatch}
+          />
         <ListFrameContents>
           {this.contentChoice()}
         </ListFrameContents>

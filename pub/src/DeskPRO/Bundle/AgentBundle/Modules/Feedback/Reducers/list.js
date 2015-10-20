@@ -124,6 +124,7 @@ export default createReducer(initialState, {
   [actions.toggleSort]: (state, payload) => {
     const sortOptions = [];
     state.get('sortOptions').toJS().forEach(obj=> {
+      console.log(obj.field);
       const nextObj = {...obj};
       nextObj.current = obj.field === payload;
       sortOptions.push(nextObj);
@@ -140,6 +141,10 @@ export default createReducer(initialState, {
     return state.set('tableViewFields', Immutable.fromJS(tableViewFields));
   },
   [actions.toggleOrder]: setFullPayload('order'),
+  [actions.getDisplayFieldsFromPersonSetting]: async({
+    success: (state, payload) =>
+      state.setIn(['cardViewFields'], payload.data.value.card)
+  }),
   [commentsActions.commentsToggleOrder]: setFullPayload('order'),
   [commentsActions.setTableSort]: (state, payload) => {
     const commentsTableViewFields = [];

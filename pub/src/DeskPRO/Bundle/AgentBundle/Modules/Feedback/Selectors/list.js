@@ -3,11 +3,11 @@ import { createPeopleRequestSelectors }
   from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Selectors/peopleSelectors';
 import { createEmailsRequestSelectors }
   from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Selectors/emailsSelectors';
-import{createFeedbackTypesRequestSelectors} from '../RecordStores/Selectors/feedbackTypesSelectors';
-import{createFeedbackLabelsRequestSelectors} from '../RecordStores/Selectors/feedbackLabelsSelectors';
-import{createFeedbackCommentsRequestSelectors} from '../RecordStores/Selectors/feedbackCommentsSelectors';
-import{createFeedbackStatusesRequestSelectors} from '../RecordStores/Selectors/feedbackStatusesSelectors';
-import{createFeedbackRequestSelectors} from '../RecordStores/Selectors/feedbackSelectors';
+import { createFeedbackTypesRequestSelectors } from '../RecordStores/Selectors/feedbackTypesSelectors';
+import { createFeedbackLabelsRequestSelectors } from '../RecordStores/Selectors/feedbackLabelsSelectors';
+import { createFeedbackCommentsRequestSelectors } from '../RecordStores/Selectors/feedbackCommentsSelectors';
+import { createFeedbackStatusesRequestSelectors } from '../RecordStores/Selectors/feedbackStatusesSelectors';
+import { createFeedbackRequestSelectors } from '../RecordStores/Selectors/feedbackSelectors';
 import { hashStateSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
 
 const stateSelector = state => state.Feedback.list;
@@ -24,7 +24,7 @@ export const filterDataSelector = createSelector(
 
 export const isCommentsSelector = createSelector(
   stateSelector,
-  list => list.get('isComments')
+    list => list.get('isComments')
 );
 
 export const peopleSelector = createSelector(
