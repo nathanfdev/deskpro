@@ -20,7 +20,7 @@ import TaskMassActions from '../Components/TaskMassActions';
 import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
-import { filteredTasksSelector, statusFilteredTasksSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/taskSelectors';
+// import { filteredTasksSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/taskSelectors';
 import { allProjectsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/projectSelectors';
 import { createLinkedItemRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/linkedItemSelectors';
 import { createTicketRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/RecordStores/Selectors/ticketSelectors';
@@ -28,6 +28,7 @@ import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordS
 import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
 import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
 import { allTaskLabelsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/taskLabelSelectors';
+import { taskListSelector, statusFilteredTasksSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Selectors/taskSelectors';
 
 const requestId = 'taskListFrame';
 const ticketsSelector = createTicketRequestSelectors(requestId);
@@ -45,7 +46,7 @@ const linkedItemsSelector = createLinkedItemRequestSelectors(requestId);
   status: statusFilteredTasksSelector(state),
   taskFilter: state.Tasks.taskFilter,
   taskFrameList: state.Tasks.taskFrameList,
-  tasks: filteredTasksSelector(state),
+  tasks: taskListSelector(state),
   tickets: ticketsSelector.recordsSel(state)
 }))
 

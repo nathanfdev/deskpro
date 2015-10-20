@@ -35,8 +35,6 @@ export default class KanbanView extends React.Component {
 
     const _this = this;
 
-    console.log(this.props);
-
     return (<div className="kanban-columns">
       {this.props.rawGroupings ? this.props.rawGroupings.map((group) => {
         return (<KanbanColumn projects={this.props.projects} agents={this.props.agents} teams={this.props.teams}

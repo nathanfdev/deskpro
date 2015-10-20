@@ -30,7 +30,7 @@ function getItemStyles(props) {
   };
 }
 
-class TaskCardDragLayer {
+export default class TaskCardDragLayer extends React.Component {
   dueIndicator(due) {
     const dueMoment = new Moment(due);
 

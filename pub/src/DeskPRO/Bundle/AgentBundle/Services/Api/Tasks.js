@@ -38,6 +38,15 @@ export function loadAddress(address, params = {}) {
 }
 
 /*
+ * Load tasks
+ * @param params
+ * @return Promise
+ */
+export function loadTasks(params = {}) {
+  return DpApi.sendGet('DP_API/tasks?' + compileParams(params));
+}
+
+/*
  * Load the number of remaining tasks
  * @param params
  * @return Promise
