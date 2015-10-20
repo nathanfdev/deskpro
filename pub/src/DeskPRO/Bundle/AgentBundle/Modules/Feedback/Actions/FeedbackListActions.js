@@ -1,5 +1,6 @@
 import { createAction } from 'Ampliflux';
 import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
+import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSetting';
 import { loadPeople } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { loadEmails } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/emailsActions';
 import { loadFeedbackCommentsCounter } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCommentsActions';
@@ -145,11 +146,18 @@ export const toggleSort = createAction(
 export const storeDisplayFieldsToPersonSetting = createAction(
   'FEEDBACK_STORE_DISPLAY_FIELD_TO_PERSON_SETTING',
   (displayFields) =>
-    Feedback.postDisplayFieldsToPersonSetting('feedback_display_fields', displayFields).then(value => value.getData()));
+    PersonSetting.post('feedback_display_fields', displayFields).then(value => value.getData())
+);
+
+export const updateDisplayFieldsToPersonSetting = createAction(
+  'FEEDBACK_UPDATE_DISPLAY_FIELD_TO_PERSON_SETTING',
+  (displayFields) =>
+    PersonSetting.put('feedback_display_fields', displayFields).then(value => value.getData())
+);
 
 export const getDisplayFieldsFromPersonSetting = createAction(
   'FEEDBACK_GET_DISPLAY_FIELD_FROM_PERSON_SETTING',
-  () => Feedback.getDisplayFieldsFromPersonSetting('feedback_display_fields').then(value => value.getData()));
+  () => PersonSetting.get('feedback_display_fields').then(value => value.getData()));
 
 export const toggleMassAction = createAction(
   'FEEDBACK_TOGGLE_MASS_ACTION'

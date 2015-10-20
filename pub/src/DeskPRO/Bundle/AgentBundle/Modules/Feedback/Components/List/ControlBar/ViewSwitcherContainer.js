@@ -4,7 +4,7 @@ import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Pos
 import { ViewSwitcherDropdownStatefulContainer } from './ViewSwitcherDropdownStatefulContainer';
 import FeedbackViewOptions from './FeedbackViewOptions';
 import { VIEW_MODE_TABLE, VIEW_MODE_CARD } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import { currentViewModeSelector, feedbackViewFieldsSelector } from '../../../Selectors/list';
+import { currentViewModeSelector } from '../../../Selectors/list';
 import { getDisplayFieldsFromPersonSetting } from '../../../Actions/FeedbackListActions';
 
 

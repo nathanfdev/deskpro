@@ -1,14 +1,14 @@
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
 import ItemList from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemList';
-import {TableViewFieldsList} from './TableViewFieldsList';
-import {CardViewFieldsList} from './CardViewFieldsList';
+import { TableViewFieldsList } from './TableViewFieldsList';
+import { CardViewFieldsList } from './CardViewFieldsList';
 import ItemGroup from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemGroup';
 import MenuFooter from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooter';
 import MenuFooterOptions from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterOptions';
-import {storeDisplayFieldsToPersonSetting, getDisplayFieldsFromPersonSetting} from '../../../Actions/FeedbackListActions';
+import { storeDisplayFieldsToPersonSetting, updateDisplayFieldsToPersonSetting } from '../../../Actions/FeedbackListActions';
 // import MenuFooterLink from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterLink';
 
 const FeedbackViewOptions = React.createClass({
@@ -36,13 +36,23 @@ const FeedbackViewOptions = React.createClass({
     };
     console.log(feedbackViewFields);
     return {
+      isStored: false,
+      isChanged: false,
       card: feedbackViewFields ? feedbackViewFields : defaultCardState
     };
   },
 
   componentWillUnmount: function componentWillUnmount() {
-    const {dispatch} = this.props;
-    dispatch(storeDisplayFieldsToPersonSetting(this.state));
+    const {dispatch, feedbackViewFields} = this.props;
+    if (this.state.isChanged) {
+      if (this.state.isStored || feedbackViewFields) {
+        console.log('Want update');
+         dispatch(updateDisplayFieldsToPersonSetting(this.state));
+      } else {
+        dispatch(storeDisplayFieldsToPersonSetting(this.state));
+        this.setState({ isStored: true });
+      }
+    }
   },
 
   handleClickOutside: function handleClickOutside() {
@@ -53,6 +63,7 @@ const FeedbackViewOptions = React.createClass({
     const currentState = this.state[type];
     currentState[field].isShown = isChecked;
     this.setState({ [type]: currentState });
+    this.setState({ isChanged: true });
   },
 
   render: function render() {
