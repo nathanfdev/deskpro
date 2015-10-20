@@ -3,8 +3,8 @@ import React, { PropTypes } from 'react';
 export class Password extends React.Component {
 
   static propTypes = {
-    value: PropTypes.string.isRequired,
-    confirmValue: PropTypes.string.isRequired,
+    value: PropTypes.string,
+    confirmValue: PropTypes.string,
     onChangeValue: PropTypes.func.isRequired,
     onChangeConfirmValue: PropTypes.func.isRequired
   };

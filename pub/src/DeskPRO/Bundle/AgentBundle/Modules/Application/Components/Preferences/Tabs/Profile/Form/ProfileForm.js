@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { FieldWrapper } from './Fields/FieldWrapper';
+import { Name } from './Fields/Name';
 import { Email } from './Fields/Email';
 import { Password } from './Fields/Password';
 
@@ -13,6 +14,7 @@ export class ProfileForm extends React.Component {
     super(props);
 
     this.state = {
+      name: null,
       emails: [],
       primaryEmail: null,
       phone: null,
@@ -22,6 +24,12 @@ export class ProfileForm extends React.Component {
       confirmPassword: null
     };
   }
+
+  onChangeName = (value) => {
+    this.setState({
+      name: value
+    });
+  };
 
   onChangeEmails = (emails) => {
     this.setState({
@@ -62,9 +70,7 @@ export class ProfileForm extends React.Component {
             </div>
           </div>
 
-          <div className="bucket-column">
-            <input type="text" placeholder="Your name" value="Dennis Schipper" />
-          </div>
+          <Name value={this.state.name} onChange={this.onChangeName} />
         </FieldWrapper>
 
         <div className="bucket short">
