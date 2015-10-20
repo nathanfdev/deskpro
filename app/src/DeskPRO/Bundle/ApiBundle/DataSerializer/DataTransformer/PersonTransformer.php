@@ -32,9 +32,26 @@
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
+use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 
 class PersonTransformer extends AbstractDataSerializerTransformer
 {
+    /**
+     * @var AvatarResolver
+     */
+    private $avatar_resolver;
+
+    /**
+     * @param AvatarResolver $avatar_resolver
+     */
+    public function __construct(AvatarResolver $avatar_resolver)
+    {
+        $this->avatar_resolver = $avatar_resolver;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
         return [
@@ -69,21 +86,46 @@ class PersonTransformer extends AbstractDataSerializerTransformer
             'organization_position',
             'organization_manager',
             'timezone',
-            'primary_email',
-            'emails',
             'phone_numbers',
             'date_created',
             'date_last_login',
             'browser',
-            'assigned_tasks',
+            'assigned_tasks', // TODO: shouldnt be here
         ];
     }
 
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\Entity\TicketFilter $data */
-        $data = $transformation_request->getDataToBeTransformed();
+        /** @var \Application\DeskPRO\Entity\Person $person */
+        $person = $transformation_request->getDataToBeTransformed();
 
-        return [];
+        #------------------------------
+        # Email addresses
+        #------------------------------
+
+        $ret = [
+            'emails'            => [],
+            'validating_emails' => [],
+            'primary_email'     => [],
+        ];
+
+        foreach ($person->getEmails() as $email) {
+            if ($email->is_validated) {
+                $ret['emails'][] = $email->getEmail();
+            } else {
+                $ret['validating_emails'][] = $email->getEmail();
+            }
+        }
+
+        if ($email = $person->getPrimaryEmail()) {
+            $ret['primary_email'] = $email->getEmail();
+        }
+
+        #------------------------------
+        # Avatar
+        #------------------------------
+        $ret['avatar'] = $this->avatar_resolver->getAvatarModel($person);
+
+        return $ret;
     }
 }

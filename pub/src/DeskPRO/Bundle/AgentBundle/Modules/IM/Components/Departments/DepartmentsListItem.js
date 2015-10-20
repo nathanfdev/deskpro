@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import * as actions from '../../Actions/chatsActions';
-import { DepartmentAvatarContainer } from '../../../Common/Components/Avatar/index';
+import { DepartmentAvatar } from '../../../Common/Components/Avatar/index';
 
 export class DepartmentsListItem extends React.Component {
   static propTypes = {
@@ -18,7 +18,7 @@ export class DepartmentsListItem extends React.Component {
         <a href="#"
            onClick={this.startChat.bind(null, this.props.department.get('id'), 'department')}
           >
-          <DepartmentAvatarContainer department={this.props.department} size="22" />
+          <DepartmentAvatar department={this.props.department} size="22" />
           <span className="agent">{this.props.department.get('title')}</span>
         </a>
       </li>

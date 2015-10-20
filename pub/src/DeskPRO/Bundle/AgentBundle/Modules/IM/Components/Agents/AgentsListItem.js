@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import * as actions from '../../Actions/chatsActions';
 import { connect } from 'react-redux';
-import { PersonAvatarContainer } from '../../../Common/Components/Avatar/index';
+import { PersonAvatar } from '../../../Common/Components/Avatar/index';
 
 @connect()
 export class AgentsListItem extends React.Component {
@@ -31,7 +31,7 @@ export class AgentsListItem extends React.Component {
         <a href="#"
            onClick={this.startChat.bind(null, this.props.agent.get('id'), 'agent')}
           >
-          <PersonAvatarContainer person={this.props.agent} size="22" />
+          <PersonAvatar person={this.props.agent} size="22" />
           <span className="agent"><span dangerouslySetInnerHTML={{__html: name}}/><span
             className="datestamp">2d ago</span></span>
         </a>

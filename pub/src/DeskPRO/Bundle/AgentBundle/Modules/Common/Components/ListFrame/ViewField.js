@@ -8,19 +8,38 @@ export class ViewField extends Component {
    */
   static propTypes = {
     fixed: PropTypes.bool,
+    isShown: PropTypes.any,
+    changeState: PropTypes.func,
+    value: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired
   };
 
+  clickHandle(event) {
+    event.preventDefault();
+    const {isShown, changeState, value} = this.props;
+    if (changeState) {
+      changeState(value, !isShown);
+    }
+  }
+
+  renderStatus() {
+    if (this.props.isShown) {
+      return (
+        <span className="dpw-navigation-dropdown-column-list-status"><i className="fa fa-check"></i></span>
+      );
+    }
+  }
+
   render() {
-    const {label, fixed } = this.props;
+    const { label, fixed } = this.props;
     const anchorClasses = classNames('dpw-navigation-dropdown-column-list-item', {
       'dpw-navigation-dropdown-item-disabled': fixed
     });
     const moveIconClass = classNames('fa', {'fa-minus': fixed, 'fa-navicon': !fixed});
     return (
       <li>
-        <a className={anchorClasses} href="#">
-          <span className="dpw-navigation-dropdown-column-list-status"><i className="fa fa-check"></i></span>
+        <a className={anchorClasses} href="#" onClick={this.clickHandle.bind(this)}>
+          {this.renderStatus()}
         <span className="dpw-navigation-dropdown-column-list-move">
           <i className={moveIconClass}></i>
         </span>

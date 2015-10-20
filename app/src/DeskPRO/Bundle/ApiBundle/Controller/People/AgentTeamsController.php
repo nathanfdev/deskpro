@@ -90,7 +90,7 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
         }
 
         return View::create(
-            $this->DataSerialize($teams),
+            $this->dataSerialize($teams),
             Response::HTTP_OK
         );
     }
@@ -127,7 +127,7 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
         }
 
         return View::create(
-            $this->DataSerialize($team),
+            $this->dataSerialize($team),
             Response::HTTP_OK
         );
     }
@@ -271,7 +271,7 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
             $location = $this->generateUrl('api_agent_teams_get', array('id' => $team->getId()));
 
             return View::create(
-                $this->DataSerialize($team),
+                $this->dataSerialize($team),
                 $status,
                 array(
                     'Location' => $location,

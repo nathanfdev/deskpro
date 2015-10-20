@@ -67,7 +67,7 @@ class TicketFilterSetsController extends BaseController
             ->findBy(array(), array('display_order' => 'ASC'));
 
         return View::create(
-            $this->DataSerialize($sets),
+            $this->dataSerialize($sets),
             Response::HTTP_OK
         );
     }
@@ -100,7 +100,7 @@ class TicketFilterSetsController extends BaseController
             throw new NotFoundHttpException();
         } else {
             return View::create(
-                $this->DataSerialize($set),
+                $this->dataSerialize($set),
                 Response::HTTP_OK
             );
         }
@@ -185,7 +185,7 @@ class TicketFilterSetsController extends BaseController
         $this->getEm()->flush();
 
         return View::create(
-            $this->DataSerialize($results),
+            $this->dataSerialize($results),
             Response::HTTP_OK
         );
     }
@@ -268,7 +268,7 @@ class TicketFilterSetsController extends BaseController
         $filter_set_count = $this->getFilterSetTicketsCount($set, $groupby);
 
         return View::create(
-            $this->DataSerialize(new PrimitiveArray($filter_set_count)),
+            $this->dataSerialize(new PrimitiveArray($filter_set_count)),
             Response::HTTP_OK
         );
     }
@@ -308,7 +308,7 @@ class TicketFilterSetsController extends BaseController
         }
 
         return View::create(
-            $this->DataSerialize($set->getFilters()),
+            $this->dataSerialize($set->getFilters()),
             Response::HTTP_OK
         );
     }
@@ -344,7 +344,7 @@ class TicketFilterSetsController extends BaseController
         }
 
         return View::create(
-            $this->DataSerialize(new PrimitiveArray($filter_set_counts)),
+            $this->dataSerialize(new PrimitiveArray($filter_set_counts)),
             Response::HTTP_OK
         );
     }
@@ -370,7 +370,7 @@ class TicketFilterSetsController extends BaseController
             $this->getEm()->flush($set);
 
             return View::create(
-                $this->DataSerialize($set),
+                $this->dataSerialize($set),
                 $status,
                 array(
                     'Location' => $this->generateUrl('api_ticket_filter_sets_get', array('id' => $set->getId())),

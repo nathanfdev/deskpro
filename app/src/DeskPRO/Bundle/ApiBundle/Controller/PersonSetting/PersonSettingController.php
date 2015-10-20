@@ -37,6 +37,7 @@ use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
+use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
@@ -84,6 +85,50 @@ class PersonSettingController extends BaseController
         return View::create(
             $this->dataSerialize($setting),
             Response::HTTP_CREATED,
+            array(
+                'Location' => $location,
+            )
+        );
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="update person setting",
+     *      statusCodes={
+     *          204="Updated",
+     *          400="Bad Request",
+     *          404="Not Found"
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\Entity\PersonSetting"
+     * )
+     * @Put("/person_setting", name="api_person_setting_put")
+     *
+     * @param Request $request
+     *
+     * @throws WrappedApiErrorException
+     * @throws InvalidFormException
+     * @throws \LogicException
+     * @throws \InvalidArgumentException
+     *
+     * @return View
+     */
+    public function putAction(Request $request)
+    {
+        $em      = $this->getDoctrine()->getManager();
+        $name    = $request->request->get('name');
+        $value   = $request->request->get('value');
+        $setting = $this->getDoctrine()->getManager()->getRepository('App:PersonSetting')
+            ->find(['name' => $name, 'person' => $this->getUser()]);
+        $setting->setValue($value);
+        $em->flush();
+        $location = $this->generateUrl(
+            'api_person_setting_get',
+            ['name' => $setting->getName()]
+        );
+
+        return View::create(
+            $this->dataSerialize($setting),
+            Response::HTTP_NO_CONTENT,
             array(
                 'Location' => $location,
             )

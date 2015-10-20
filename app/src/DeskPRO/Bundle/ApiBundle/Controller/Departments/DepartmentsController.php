@@ -74,7 +74,7 @@ class DepartmentsController extends BaseController
         $repo = $this->getEm()->getRepository('DeskPRO:Department');
 
         return View::create(
-            $this->DataSerialize($repo->findAll()),
+            $this->dataSerialize($repo->findAll()),
             Response::HTTP_OK
         );
     }
@@ -116,7 +116,7 @@ class DepartmentsController extends BaseController
         $department = $findings[0];
 
         return View::create(
-            $this->DataSerialize($department),
+            $this->dataSerialize($department),
             Response::HTTP_OK
         );
     }
@@ -158,7 +158,7 @@ class DepartmentsController extends BaseController
         $department = $findings[0];
 
         return View::create(
-            $this->DataSerialize($department->getPersonList()),
+            $this->dataSerialize($department->getPersonList()),
             Response::HTTP_OK
         );
     }

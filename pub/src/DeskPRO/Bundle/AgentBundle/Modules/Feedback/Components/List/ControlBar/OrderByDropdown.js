@@ -37,6 +37,7 @@ const OrderByDropdown = React.createClass({
 
   /* Change sort option (Order By ...)*/
   toggleListSort: function toggleListSort(option) {
+    console.log(option);
     const { dispatch, isComments, toggleDropdown } = this.props;
     if (!isComments) {
       dispatch(toggleSort(option.field));
@@ -49,7 +50,7 @@ const OrderByDropdown = React.createClass({
     if (isComments) {
       return (
         <Item
-          active
+          isActive
           toggleDropdown={toggleDropdown}
           option={currentSortMode}
         />

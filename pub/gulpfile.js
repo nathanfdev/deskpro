@@ -122,9 +122,13 @@ function getWebpackConfig(mode, isDevServer, isProd) {
       root: [
         path.join(__dirname, "src"),
         path.join(__dirname, "src/DeskPRO/Component"),
+        path.join(__dirname, "src/DeskPRO/Dev"),
         path.join(__dirname, "built-tools"),
       ],
-      alias: {}
+      alias: {
+        'invariant': 'fbjs/lib/invariant',
+        'warning': 'fbjs/lib/warning'
+      }
     },
     resolveLoader: {
       modulesDirectories: ["web_loaders", "web_modules", "node_loaders", "node_modules", "build-tools"]
