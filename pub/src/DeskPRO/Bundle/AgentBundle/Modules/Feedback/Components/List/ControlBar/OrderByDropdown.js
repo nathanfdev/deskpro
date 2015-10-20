@@ -49,7 +49,7 @@ const OrderByDropdown = React.createClass({
     if (isComments) {
       return (
         <Item
-          active
+          isActive
           toggleDropdown={toggleDropdown}
           option={currentSortMode}
         />
