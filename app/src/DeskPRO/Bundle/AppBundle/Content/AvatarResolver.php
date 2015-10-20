@@ -100,6 +100,37 @@ class AvatarResolver
     }
 
     /**
+     * @param mixed $obj
+     *
+     * @return Avatar
+     */
+    public function getAvatarModel($obj)
+    {
+        $safeSizePlaceholder = '_____SAFE_PLACEHOLDER_____';
+
+        $isDefault = false;
+        $pattern   = $this->getAvatar($obj, $safeSizePlaceholder, $isDefault);
+        $pattern   = str_replace($safeSizePlaceholder, '{{IMG_SIZE}}', $pattern);
+
+        $grav = null;
+        if ($obj instanceof Person) {
+            $grav = $obj->getRawGravatarUrl();
+
+            // 'fix' for getAvatar on person
+            if (!$obj->picture_blob) {
+                $pattern = $this->getDefaultPersonAvatar($safeSizePlaceholder);
+                $pattern = str_replace($safeSizePlaceholder, '{{IMG_SIZE}}', $pattern);
+            }
+        }
+
+        if ($isDefault) {
+            return Avatar::createDefaultAvatar($pattern, $grav);
+        } else {
+            return Avatar::createCustomAvatar($pattern, $grav);
+        }
+    }
+
+    /**
      * @param mixed  $obj
      * @param string $placeholder
      *

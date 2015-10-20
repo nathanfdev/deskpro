@@ -2529,7 +2529,11 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
 
     public function getRawGravatarUrl()
     {
-        return $this->gravatar_url;
+        if ($this->primary_email) {
+            return rtrim($this->primary_email->getGravatarUrl(true), '?');
+        }
+
+        return;
     }
 
     public function getGravatarUrl($size = 80, $secure = null)
