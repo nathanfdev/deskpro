@@ -32,9 +32,26 @@
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
+use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
+use Doctrine\ORM\EntityManager;
 
 class TicketTransformer extends AbstractDataSerializerTransformer
 {
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
+
+    /**
+     * TicketTransformer constructor.
+     *
+     * @param $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
         return [
@@ -105,11 +122,39 @@ class TicketTransformer extends AbstractDataSerializerTransformer
 
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\Entity\Task $data */
-        $data = $transformation_request->getDataToBeTransformed();
+        /** @var \Application\DeskPRO\Entity\Ticket $ticket */
+        $ticket = $transformation_request->getDataToBeTransformed();
 
-        return [
-            'sent_to_address' => $data['sent_to_address'],
+        $props = [
+            'sent_to_address' => $ticket->getSentToAddresses()
         ];
+
+        $includes = $transformation_request->getSerializerContext()->getRequestedIncludes();
+        if (in_array('ticket_excerpt', $includes)) {
+            // TODO make this more efficient
+
+            /** @var \Application\DeskPRO\Entity\TicketMessage $message */
+            $message = $this->em->getRepository('DeskPRO:TicketMessage')->getLastReply($ticket);
+
+            if ($message && $excerpt = $message->getMessagePreviewText(200)) {
+                $transformation_request->getSerializerContext()->getSideloads()->addSideloadDataId('ticket_excerpt', $ticket->id, new PrimitiveArray([
+                    'message_id' => $message->getId(),
+                    'excerpt'    => $excerpt,
+                ]));
+
+            // TODO this is for mobile testing
+            } else {
+                $excerpt = preg_replace('#[^a-zA-Z0-9\' \.]#', '', \Faker\Factory::create()->realText());
+                $excerpt = preg_replace('#-{2}#', '-', $excerpt);
+                $transformation_request->getSerializerContext()->getSideloads()->addSideloadDataId('ticket_excerpt', $ticket->id, new PrimitiveArray([
+                    'message_id' => $ticket->id + 1000,
+                    'excerpt'    => $excerpt,
+                ]));
+            }
+        }
+
+
+
+        return $props;
     }
 }
