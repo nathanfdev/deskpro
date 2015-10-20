@@ -11,8 +11,8 @@ export class Email extends React.Component {
   };
 
   onChangeEmails = (event) => {
-    const value = event.target.value;
-    const emails = value && value.split(',').map(email => email && email.trim() || '') || [];
+    const value = (event.target.value || '').replace(/\s/g, '');
+    const emails = value.split(',').map(email => email && email.trim() || '');
 
     this.props.onChangeEmails(emails);
   };
@@ -46,7 +46,7 @@ export class Email extends React.Component {
 
     return (
       <div className="bucket-column">
-        <input type="text" placeholder="Your email" value={emails.join(', ')} onChange={this.onChangeEmails} />
+        <input type="text" placeholder="Your email" value={emails.join(',')} onChange={this.onChangeEmails} />
         {this.renderSelectBox()}
       </div>
     );
