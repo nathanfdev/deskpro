@@ -41,6 +41,10 @@ export class ProfileForm extends React.Component {
     });
   };
 
+  submitForm = (event) => {
+    event.preventDefault();
+  };
+
   render() {
     return (
       <form className="popup-form-default">
@@ -101,7 +105,7 @@ export class ProfileForm extends React.Component {
           <Password value={this.state.password} confirmValue={this.state.confirmPassword} />
         </FieldWrapper>
 
-        <input type="submit" />
+        <input type="submit" onClick={this.submitForm} />
       </form>
     );
   }
