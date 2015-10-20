@@ -817,13 +817,13 @@ class LegacyTermsTransformer
                 return new Terms\FilterTicketField($op, $new_opts);
 
             case 'person_field':
-                $new_opts             = array();
+                $new_opts             = $options;
                 $new_opts['field_id'] = $type_id;
 
                 return new Terms\FilterUserField($op, $new_opts);
 
             case 'org_field':
-                $new_opts             = array();
+                $new_opts             = $options;
                 $new_opts['field_id'] = $type_id;
 
                 return new Terms\FilterOrgField($op, $new_opts);
