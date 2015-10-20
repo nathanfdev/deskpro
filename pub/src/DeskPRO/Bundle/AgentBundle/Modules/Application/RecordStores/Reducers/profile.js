@@ -7,7 +7,6 @@ export default createReducer(
   buildRecordStoreHandlers({
     releaseRecordsAction: profileActions.releaseProfile,
     releaseRequestAction: profileActions.releaseProfileRequest,
-    setRequestRecordAction: profileActions.setProfileRequest,
-    requestRecordsAction: profileActions.loadPeople
+    setRequestRecordAction: profileActions.setProfileRequest
   })
 );
