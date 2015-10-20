@@ -27,6 +27,12 @@ export class ProfileForm extends React.Component {
     this.setState({
       emails: emails
     });
+
+    if (emails.length === 1) {
+      this.setState({
+        primaryEmail: emails[0]
+      });
+    }
   };
 
   onChangePrimaryEmail = (value) => {

@@ -22,7 +22,7 @@ export class Email extends React.Component {
   renderSelectBox() {
     const { emails, onChangePrimary } = this.props;
 
-    if (emails && emails.length > 0) {
+    if (emails && emails.length > 1) {
       const options = emails.map(function(email) {
         return {
           value: email,
