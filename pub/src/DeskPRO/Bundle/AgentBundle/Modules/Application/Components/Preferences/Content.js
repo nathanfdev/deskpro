@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
-import { Content as ProfileContent } from './Tabs/Profile/Content';
-import { Content as SignatureContent } from './Tabs/Signature/Content';
-import { Content as SettingsContent } from './Tabs/Settings/Content';
-import { Content as NotificationsContent } from './Tabs/Notifications/Content';
-import { Content as DevicesContent } from './Tabs/Devices/Content';
+import { ContentContainer as ProfileContent } from './Tabs/Profile/ContentContainer';
+import { ContentContainer as SignatureContent } from './Tabs/Signature/ContentContainer';
+import { ContentContainer as SettingsContent } from './Tabs/Settings/ContentContainer';
+import { ContentContainer as NotificationsContent } from './Tabs/Notifications/ContentContainer';
+import { ContentContainer as DevicesContent } from './Tabs/Devices/ContentContainer';
 
 export class Content extends React.Component {
 
