@@ -8,36 +8,41 @@ import {CardViewFieldsList} from './CardViewFieldsList';
 import ItemGroup from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemGroup';
 import MenuFooter from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooter';
 import MenuFooterOptions from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterOptions';
+import {storeDisplayFieldsToPersonSetting, getDisplayFieldsFromPersonSetting} from '../../../Actions/FeedbackListActions';
 // import MenuFooterLink from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterLink';
 
 const FeedbackViewOptions = React.createClass({
   propTypes: {
     dispatch: PropTypes.func.isRequired,
     toggleOptionsMenu: PropTypes.func.isRequired,
+    feedbackViewFields: PropTypes.object.isRequired,
     currentViewMode: PropTypes.string.isRequired
   },
 
   mixins: [require('react-onclickoutside')],
 
   getInitialState() {
+    const {dispatch, feedbackViewFields} = this.props;
+    const defaultCardState = {
+      id: { isShown: true },
+      hidden_status: { isShown: true },
+      status_category: { isShown: true },
+      custom_category: { isShown: true },
+      date_created: { isShown: true },
+      total_rating: { isShown: true },
+      num_rating: { isShown: true },
+      num_comments: { isShown: true },
+      validating: { isShown: true }
+    };
+    console.log(feedbackViewFields);
     return {
-      card: {
-        id: {isShown: true},
-        hidden_status: {isShown: true},
-        status_category: {isShown: true},
-        custom_category: {isShown: true},
-        date_created: {isShown: true},
-        total_rating: {isShown: true},
-        num_rating: {isShown: true},
-        num_comments: {isShown: true},
-        validating: {isShown: true}
-      }
+      card: feedbackViewFields ? feedbackViewFields : defaultCardState
     };
   },
 
   componentWillUnmount: function componentWillUnmount() {
-    console.log('Unmounted');
-    // dispatch();
+    const {dispatch} = this.props;
+    dispatch(storeDisplayFieldsToPersonSetting(this.state));
   },
 
   handleClickOutside: function handleClickOutside() {
@@ -47,7 +52,7 @@ const FeedbackViewOptions = React.createClass({
   changeState: function changeState(type, field, isChecked) {
     const currentState = this.state[type];
     currentState[field].isShown = isChecked;
-    this.setState({[type]: currentState});
+    this.setState({ [type]: currentState });
   },
 
   render: function render() {

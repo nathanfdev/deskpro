@@ -140,6 +140,10 @@ export default createReducer(initialState, {
     return state.set('tableViewFields', Immutable.fromJS(tableViewFields));
   },
   [actions.toggleOrder]: setFullPayload('order'),
+  [actions.getDisplayFieldsFromPersonSetting]: async({
+    success: (state, payload) =>
+      state.setIn(['cardViewFields'], payload.data.value.card)
+  }),
   [commentsActions.commentsToggleOrder]: setFullPayload('order'),
   [commentsActions.setTableSort]: (state, payload) => {
     const commentsTableViewFields = [];

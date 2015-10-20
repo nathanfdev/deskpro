@@ -4,12 +4,15 @@ import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Pos
 import { ViewSwitcherDropdownStatefulContainer } from './ViewSwitcherDropdownStatefulContainer';
 import FeedbackViewOptions from './FeedbackViewOptions';
 import { VIEW_MODE_TABLE, VIEW_MODE_CARD } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import { currentViewModeSelector } from '../../../Selectors/list';
-import { connect } from 'react-redux';
+import { currentViewModeSelector, feedbackViewFieldsSelector } from '../../../Selectors/list';
+import { getDisplayFieldsFromPersonSetting } from '../../../Actions/FeedbackListActions';
 
+
+import { connect } from 'react-redux';
 @connect(state => ({
   order: state.Feedback.list.get('order'),
   filters: state.Feedback.list.get('filters'),
+  feedbackViewFields: state.Feedback.list.get('cardViewFields'),
   tableViewFields: state.Feedback.list.get('tableViewFields'),
   listViewFields: state.Feedback.list.get('listViewFields'),
   currentViewMode: currentViewModeSelector(state)
@@ -21,16 +24,23 @@ export class ViewSwitcherContainer extends Component {
     menuExpanded: PropTypes.bool.isRequired,
     optionsExpanded: PropTypes.bool.isRequired,
     currentViewMode: PropTypes.string.isRequired,
+    feedbackViewFields: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     toggleDropdown: PropTypes.func.isRequired,
     toggleOptionsMenu: PropTypes.func.isRequired
   };
 
+  constructor(props) {
+    super(props);
+    const { dispatch } = this.props;
+    dispatch(getDisplayFieldsFromPersonSetting());
+  }
+
   render() {
-    const { dispatch, menuExpanded, optionsExpanded, currentViewMode, toggleDropdown, toggleOptionsMenu } = this.props;
+    const { dispatch, menuExpanded, optionsExpanded, currentViewMode, toggleDropdown, toggleOptionsMenu, feedbackViewFields } = this.props;
     const viewModesData = {
-      [VIEW_MODE_TABLE]: {label: 'Table view', icon: 'table'},
-      [VIEW_MODE_CARD]: {label: 'Card view', icon: 'list'}
+      [VIEW_MODE_TABLE]: { label: 'Table view', icon: 'table' },
+      [VIEW_MODE_CARD]: { label: 'Card view', icon: 'list' }
     };
     return (
       <ViewModeSwitcher
@@ -52,6 +62,7 @@ export class ViewSwitcherContainer extends Component {
                     positionAt="left bottom"
                     positionTarget={this.refs.viewModeButton}>
           <FeedbackViewOptions
+            feedbackViewFields={feedbackViewFields}
             currentViewMode={currentViewMode}
             dispatch={dispatch}
             toggleOptionsMenu={toggleOptionsMenu}

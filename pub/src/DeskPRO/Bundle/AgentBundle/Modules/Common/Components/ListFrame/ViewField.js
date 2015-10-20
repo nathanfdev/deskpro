@@ -8,8 +8,8 @@ export class ViewField extends Component {
    */
   static propTypes = {
     fixed: PropTypes.bool,
+    isShown: PropTypes.any,
     changeState: PropTypes.func,
-    isShown: PropTypes.bool.isRequired,
     value: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired
   };
