@@ -109,7 +109,7 @@ class CaptchaDecider
 
     public function shouldRequireTicketCaptchaForCurrentPerson()
     {
-        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_SUBMIT_TICKET, 'user.register_captcha');
+        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_SUBMIT_TICKET, 'user.ticket_captcha');
     }
 
     public function shouldRequireForgotPasswordCaptchaForCurrentPerson()
