@@ -63,6 +63,18 @@ export class ProfileForm extends React.Component {
     });
   };
 
+  onChangePassword = (value) => {
+    this.setState({
+      password: value
+    });
+  };
+
+  onChangeConfirmPassword = (value) => {
+    this.setState({
+      confirmPassword: value
+    });
+  };
+
   submitForm = (event) => {
     event.preventDefault();
   };
@@ -126,7 +138,11 @@ export class ProfileForm extends React.Component {
         <hr />
 
         <FieldWrapper label="Password">
-          <Password value={this.state.password} confirmValue={this.state.confirmPassword} />
+          <Password
+            value={this.state.password}
+            confirmValue={this.state.confirmPassword}
+            onChangeValue={this.onChangePassword}
+            onChangeConfirmValue={this.onChangeConfirmPassword} />
         </FieldWrapper>
 
         <input type="submit" onClick={this.submitForm} />

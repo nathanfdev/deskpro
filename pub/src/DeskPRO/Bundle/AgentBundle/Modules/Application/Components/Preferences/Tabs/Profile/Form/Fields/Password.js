@@ -16,6 +16,14 @@ export class Password extends React.Component {
     };
   }
 
+  onChangeValue = () => {
+    this.props.onChangeValue(event.target.value);
+  };
+
+  onChangeConfirmValue = () => {
+    this.props.onChangeConfirmValue(event.target.value);
+  };
+
   open = () => {
     this.setState({
       expanded: true
@@ -29,15 +37,21 @@ export class Password extends React.Component {
   }
 
   renderFields() {
-    const { value, confirmValue, onChangeValue, onChangeConfirmValue} = this.props;
+    const { value, confirmValue } = this.props;
 
     return (
       <div>
         <p>
-          <input type="password" placeholder="Password" value={value} onChange={onChangeValue} />
+          <input type="password"
+                 placeholder="Password"
+                 value={value}
+                 onChange={this.onChangeValue} />
         </p>
         <p>
-          <input type="password" placeholder="Confirm password" value={confirmValue} onChange={onChangeConfirmValue} />
+          <input type="password"
+                 placeholder="Confirm password"
+                 value={confirmValue}
+                 onChange={this.onChangeConfirmValue} />
         </p>
       </div>
     );
