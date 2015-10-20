@@ -124,6 +124,7 @@ export default createReducer(initialState, {
   [actions.toggleSort]: (state, payload) => {
     const sortOptions = [];
     state.get('sortOptions').toJS().forEach(obj=> {
+      console.log(obj.field);
       const nextObj = {...obj};
       nextObj.current = obj.field === payload;
       sortOptions.push(nextObj);

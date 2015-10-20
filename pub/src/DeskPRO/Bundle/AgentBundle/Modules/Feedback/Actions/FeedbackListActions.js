@@ -14,7 +14,7 @@ const recordStoresId = 'feedback';
 
 export const getAuthors = createAction(
   'FEEDBACK_GET_AUTHORS',
-  (feedback, dispatch) => {
+  (feedback) => (dispatch) => {
     const ids = [];
     const unique = {};
     for (var index in feedback.data) {
@@ -49,7 +49,7 @@ export const loadFeedbackList = createAction(
       sort: sortingDataSelector(state).field,
       order: feedbackListState.order
     };
-    const params = {...currentParams, ...overwriteParams};
+    const params = { ...currentParams, ...overwriteParams };
 
     return () => Feedback.getList(params).then(promise => {
       const feedback = promise.getData();
@@ -117,8 +117,8 @@ export const resetFilterValue = createAction(
 export const setTableSort = createAction(
   'FEEDBACK_SET_TABLE_SORT',
   (sort, order) => dispatch => {
-    dispatch(loadFeedbackList({sort: sort, order: order}));
-    return {sort, order};
+    dispatch(loadFeedbackList({ sort: sort, order: order }));
+    return { sort, order };
   });
 
 export const toggleViewMode = createAction(
@@ -128,16 +128,16 @@ export const toggleViewMode = createAction(
 
 export const toggleOrder = createAction(
   'FEEDBACK_TOGGLE_ORDER',
-  (order, dispatch) => {
-    dispatch(loadFeedbackList({order: order}));
+  (order) => (dispatch) => {
+    dispatch(loadFeedbackList({ order: order }));
     return order;
   }
 );
 
 export const toggleSort = createAction(
   'FEEDBACK_TOGGLE_SORT',
-  (sort, dispatch) => {
-    dispatch(loadFeedbackList({sort: sort}));
+  (sort) => (dispatch) => {
+    dispatch(loadFeedbackList({ sort: sort }));
     return sort;
   }
 );
@@ -162,11 +162,11 @@ export const toggleSelectedAction = createAction(
 /** @ToDo migrate to Ampliflux v2 after FilterBy block design */
 export const setFilterValue = createAction(
   'FEEDBACK_SET_FILTER_VALUE',
-  (trigger, filter, value) => () => trigger({filter: filter, value: value})
+  (trigger, filter, value) => () => trigger({ filter: filter, value: value })
 );
 
 export const resetFilters = createAction(
   'FEEDBACK_RESET_FILTERS',
   (trigger, filterAlias, filterName) => {
-    trigger({alias: filterAlias, name: filterName, value: ''});
+    trigger({ alias: filterAlias, name: filterName, value: '' });
   });
