@@ -140,32 +140,16 @@ export function getHidden() {
   return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
 }
 
-/*
- * Store display fields to person setting
- * @return Promise
- */
-export function postDisplayFieldsToPersonSetting(settingName, displayFields) {
-  return DpApi.sendPost('DP_API/person_setting', {name: settingName, value: displayFields});
-}
-
-/*
- * Get display fields from person setting
- * @return Promise
- */
-export function getDisplayFieldsFromPersonSetting(settingName) {
-  return DpApi.sendGet('DP_API/person_setting/' + settingName);
-}
-
-/*
+/**
  * Get list of filtered feedback
- * @return Promise
+ * @return {object} Promise
  */
 export function getList(params) {
   return DpApi.sendGet('DP_API/feedback/?' + compileParams(params));
 }
-/*
+/**
  * Get values for chosen filter
- * @return Promise
+ * @return {object} Promise
  */
 export function getFilterValues(filterName) {
   return DpApi.sendGet('DP_API/feedback/filter?name=' + filterName);
