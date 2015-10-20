@@ -29,16 +29,26 @@ export const passwordChange = createAction(
 export const toggleRememberMe = createAction('LOGIN_TOGGLE_REMEMBER_ME');
 export const login = createAction(
   'LOGIN_SUBMIT_FORM',
-  params => dispatch => DpApi.sendPost('DP_API/get_session', params)
-    .success(() => {
-      dispatch(emailChange('admin@example.com'));
-      dispatch(passwordChange('password'));
-      dispatch(loadMe());
-      dispatch(setHasAuth(true));
-    })
-    .error(() => {
-      dispatch(passwordSetError('Looks like this isn\'t the correct password'));
-    })
+  params => dispatch => {
+    dispatch(emailChange(null));
+    dispatch(passwordChange(null));
+
+    DpApi.sendPost('DP_API/get_session', params)
+      .success(() => {
+        dispatch(emailChange(null));
+        dispatch(passwordChange(null));
+        dispatch(loadMe());
+        dispatch(setHasAuth(true));
+      })
+      .error((response, http) => {
+        const data = http.xhr.responseJSON;
+        if (data.code === 'bad_credentials') {
+          dispatch(passwordSetError('Looks like this isn\'t the correct password'));
+        } else if (data.code === 'no_person') {
+          dispatch(emailSetError('No such account was found'));
+        }
+      });
+  }
 );
 
 export const logout = createAction('LOGOUT');

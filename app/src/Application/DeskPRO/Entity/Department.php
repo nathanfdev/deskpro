@@ -35,6 +35,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity\Avatar\AvatarOwner;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
@@ -61,7 +62,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  * @property Department $children
  * @Serializer\ExclusionPolicy("ALL")
  */
-class Department extends DomainObject implements HasPhraseName, PersonList, Chatable
+class Department extends DomainObject implements HasPhraseName, PersonList, Chatable, AvatarOwner
 {
     /**
      * @var int
@@ -468,6 +469,14 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Chat
     public function getChatableType()
     {
         return Chatable::PARTICIPANT_TYPE_DEPARTMENT;
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getAvatarBlob()
+    {
+        return $this->avatar;
     }
 
     ############################################################################

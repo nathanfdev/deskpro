@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse\Event;
 
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;

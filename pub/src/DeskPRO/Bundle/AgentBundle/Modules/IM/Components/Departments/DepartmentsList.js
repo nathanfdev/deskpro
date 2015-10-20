@@ -1,13 +1,27 @@
 import React, {Component, PropTypes} from 'react';
 import { DepartmentsListItem } from './DepartmentsListItem';
+import { connect } from 'react-redux';
 
+// departmetns
+import { loadMyDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
+import { myDepartmentsSelector, myDepartmentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
+
+@connect(state => ({
+  departments: myDepartmentsSelector(state),
+  departmentsStatus: myDepartmentsStatusSelector(state)
+}))
 export class DepartmentsList extends Component {
 
   static propTypes = {
     departments: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired,
-    handleClickParticipant: PropTypes.func.isRequired
+    departmentsStatus: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired
   };
+
+  componentWillMount() {
+    const { dispatch } = this.props;
+    dispatch(loadMyDepartments());
+  }
 
   render() {
     return (
@@ -17,7 +31,6 @@ export class DepartmentsList extends Component {
             return (
               <DepartmentsListItem
                 dispatch={this.props.dispatch}
-                handleClickParticipant={this.props.handleClickParticipant}
                 key={index}
                 department={department}
               />);

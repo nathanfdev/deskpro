@@ -1,8 +1,6 @@
 import React, { PropTypes } from 'react';
 import { ChangeModeButton } from './ChangeModeButton';
 import { ColumnSlider } from './ColumnSlider';
-import jQuery from 'jquery';
-import slider from 'jquery-ui/slider';
 
 export class ColumnMode extends React.Component {
 

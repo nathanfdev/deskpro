@@ -2527,6 +2527,11 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $url;
     }
 
+    public function getRawGravatarUrl()
+    {
+        return $this->gravatar_url;
+    }
+
     public function getGravatarUrl($size = 80, $secure = null)
     {
         // Null means detect

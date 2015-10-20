@@ -5,6 +5,8 @@ import { DpApp } from './DpApp';
 import { DpAppLoading } from './DpAppLoading';
 import { WelcomeBack } from '../../Welcome/Components/WelcomeBack';
 import { meSelector, meStateSelector } from '../RecordStores/Selectors/meSelectors';
+import { IMContainer } from '../../IM/Components/IMContainer';
+import { PreferencesContainer } from './Preferences/PreferencesContainer';
 
 @connect(state => ({
   dpWindow: state.Application.dpWindow,
@@ -43,9 +45,16 @@ export class DpAppRouteContainer extends React.Component {
     }
 
     return (
-      <DpApp>
-        {children}
-      </DpApp>
+      <div>
+        <DpApp>
+          {children}
+        </DpApp>
+
+        {dpWindow.get('coverShown') ? (<div className="cover"></div>) : null}
+
+        <IMContainer/>
+        <PreferencesContainer positionTarget={document.body}/>
+      </div>
     );
   }
 }

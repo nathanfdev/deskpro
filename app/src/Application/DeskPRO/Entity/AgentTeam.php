@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Avatar\AvatarOwner;
 use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
 use DeskPRO\Bundle\AppBundle\Entity\PersonList;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -50,7 +51,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  *
  * @Serializer\ExclusionPolicy("ALL")
  */
-class AgentTeam extends DomainObject implements PersonList, Chatable
+class AgentTeam extends DomainObject implements PersonList, Chatable, AvatarOwner
 {
     /**
      * The unique ID.
@@ -138,6 +139,14 @@ class AgentTeam extends DomainObject implements PersonList, Chatable
     public function getChatableType()
     {
         return Chatable::PARTICIPANT_TYPE_TEAM;
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getAvatarBlob()
+    {
+        return $this->avatar;
     }
 
     ############################################################################
