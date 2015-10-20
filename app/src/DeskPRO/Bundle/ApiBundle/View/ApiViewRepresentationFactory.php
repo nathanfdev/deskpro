@@ -87,6 +87,9 @@ class ApiViewRepresentationFactory
             );
         }
 
+        $meta = $representation->getMeta();
+        $meta['!!WARNING!!'] = 'This result was returned via createRepresentation. This method is deprecated. You should use $this->dataSerialize() from within the controller.';
+
         return $representation;
     }
 
