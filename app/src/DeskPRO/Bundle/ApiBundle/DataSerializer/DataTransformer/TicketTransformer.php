@@ -67,15 +67,10 @@ class TicketTransformer extends AbstractDataSerializerTransformer
             'product',
             'person',
             'person_email',
-            'person_email_validating',
             'agent',
             'agent_team',
             'organization',
             'linked_chat',
-            'attachments',
-            'access_codes',
-            'messages',
-            'sms_messages',
             'custom_data',
             'labels',
             // 'sent_to_address',
@@ -114,9 +109,7 @@ class TicketTransformer extends AbstractDataSerializerTransformer
             'worst_sla_status',
             'waiting_times',
             'participants',
-            'charges',
             'ticket_slas',
-            'jira_issues',
         ];
     }
 
@@ -153,7 +146,13 @@ class TicketTransformer extends AbstractDataSerializerTransformer
             }
         }
 
-
+        if ($ticket->person_email) {
+            $props['person_email'] = $ticket->person_email->getEmail();
+        } else if ($ticket->person->getPrimaryEmail()) {
+            $props['person_email'] = $ticket->person->getPrimaryEmail()->getEmail();
+        } else {
+            $props['person_email'] = null;
+        }
 
         return $props;
     }
