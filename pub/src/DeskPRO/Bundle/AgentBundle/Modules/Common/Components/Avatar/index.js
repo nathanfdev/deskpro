@@ -1,9 +1,9 @@
-import { PersonAvatarContainer } from './PersonAvatarContainer';
-import { AgentTeamAvatarContainer } from './AgentTeamAvatarContainer';
-import { DepartmentAvatarContainer } from './DepartmentAvatarContainer';
+import { PersonAvatar } from './PersonAvatar';
+import { AgentTeamAvatar } from './AgentTeamAvatar';
+import { DepartmentAvatar } from './DepartmentAvatar';
 
 export {
-  PersonAvatarContainer,
-  AgentTeamAvatarContainer,
-  DepartmentAvatarContainer
+  PersonAvatar,
+  AgentTeamAvatar,
+  DepartmentAvatar
 };

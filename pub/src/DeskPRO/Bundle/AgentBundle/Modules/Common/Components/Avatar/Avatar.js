@@ -2,19 +2,18 @@ import React, { PropTypes } from 'react';
 
 export class Avatar extends React.Component {
   static propTypes = {
-    url: PropTypes.string,
     size: PropTypes.any.isRequired,
-    urlPattern: PropTypes.string,
-    gravatar: PropTypes.string,
-    isFallback: PropTypes.bool.isRequired,
     fallbackText: PropTypes.string.isRequired,
-    color: PropTypes.string
+    color: PropTypes.string,
+    urlPattern: PropTypes.string,
+    defaultUrlPattern: PropTypes.string,
+    gravatar: PropTypes.string,
   };
 
   render() {
     let result;
 
-    if (!this.props.isFallback) {
+    if (this.props.urlPattern) {
       result = this.renderImage();
     } else if (this.props.gravatar) {
       result = this.renderGravatar();
@@ -57,7 +56,7 @@ export class Avatar extends React.Component {
     gravatarStyle.left = '0';
     const gravatarContent = (<span className="user-photo gravatar" style={gravatarStyle} />);
 
-    return this.props.isFallback ? this.renderFallbackText(gravatarContent) : this.renderImage(gravatarContent);
+    return this.props.urlPattern ? this.renderImage(gravatarContent) : this.renderFallbackText(gravatarContent);
   }
 
   getStyle(backgroundImage) {
