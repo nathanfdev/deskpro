@@ -1,4 +1,4 @@
-import * as profileActions from '../Actions/profileActions';
+import * as profileActions from '../Actions/profilesActions';
 import { createReducer } from 'Ampliflux';
 import { createEmptyRecordStoreState, buildRecordStoreHandlers } from 'Ampliflux/common/record-store/handlers';
 

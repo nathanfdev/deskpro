@@ -10,7 +10,7 @@ export const setProfileRequest = createAction('SET_PROFILE', recordStoreActions.
 export const loadMyProfile = createAction(
   'LOAD_PROFILE',
   createRecordsRequest(
-    ['RecordStores', 'CRM', 'profile'],
+    ['RecordStores', 'CRM', 'profiles'],
     'my',
     () => new Promise((resolve, reject) =>
         DpApi.sendGet('DP_API/me/profile')
