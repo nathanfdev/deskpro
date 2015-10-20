@@ -23,12 +23,7 @@ export class ProfileForm extends React.Component {
     };
   }
 
-  onChangeEmails = (event) => {
-    const value = event.target.value;
-    const emails = value && value.split(',').map(function(email) {
-      return email && email.trim() || '';
-    }) || [];
-
+  onChangeEmails = (emails) => {
     this.setState({
       emails: emails
     });

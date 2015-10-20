@@ -10,6 +10,15 @@ export class Email extends React.Component {
     onChangePrimary: PropTypes.func.isRequired
   };
 
+  onChangeEmails = (event) => {
+    const value = event.target.value;
+    const emails = value && value.split(',').map(function(email) {
+      return email && email.trim() || '';
+    }) || [];
+
+    this.props.onChangeEmails(emails);
+  };
+
   renderSelectBox() {
     const { emails, onChangePrimary } = this.props;
 
@@ -35,11 +44,11 @@ export class Email extends React.Component {
   }
 
   render() {
-    const { emails, onChangeEmails } = this.props;
+    const { emails } = this.props;
 
     return (
       <div className="bucket-column">
-        <input type="text" placeholder="Your email" value={emails.join(', ')} onChange={onChangeEmails} />
+        <input type="text" placeholder="Your email" value={emails.join(', ')} onChange={this.onChangeEmails} />
         {this.renderSelectBox()}
       </div>
     );
