@@ -311,6 +311,16 @@
 		{% if log.details.value_after %}{{ phrase('agent.tickets.log_selected_option') }} {{ log.details.value_after }}
 		{% else %}{{ phrase('agent.tickets.log_unselected_option') }} {{ log.details.value_before }}
 		{% endif %}
+	{% elseif 'date' == log.details.type or 'datetime' == log.details.type %}
+		{% set format = 'date' == log.details.type ? 'full' : 'fulltime' %}
+		{{ phrase('agent.tickets.changed_from') }}
+		<span class="old-val">
+			{{ log.details.value_before ? log.details.value_before|date(format) : '(no value)' }}
+		</span>
+		{{ phrase('agent.tickets.changed_to') }}
+		<span class="new-val">
+			{{ log.details.value_after ? log.details.value_after|date(format) : '(no value)' }}
+		</span>
 	{% else %}
 		{{ phrase('agent.tickets.changed_from') }}
 		<span class="old-val">{{ log.details.value_before|default('(no value)')|raw }}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{ log.details.value_after|default('(no value)')|raw }}</span>

@@ -33,6 +33,7 @@
  */
 namespace Application\DeskPRO\Tickets\TicketLog;
 
+use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\ORM\StateChange\ChangeCollection;
@@ -682,6 +683,7 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
                 $value_before = null;
                 $value_after  = null;
 
+                /* @var $field CustomDefTicket */
                 if ($old && $old->field) {
                     $field = $old->field;
                 } elseif ($new && $new->field) {
@@ -722,6 +724,7 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
                 $log_data['value_before'] = $value_before;
                 $log_data['value_after']  = $value_after;
                 $log_data['is_choice']    = $is_choice;
+                $log_data['type']         = $field->getType();
 
                 return $log_data;
 
