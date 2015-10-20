@@ -69,8 +69,6 @@ class PersonTransformer extends AbstractDataSerializerTransformer
             'organization_position',
             'organization_manager',
             'timezone',
-            'primary_email',
-            'emails',
             'phone_numbers',
             'date_created',
             'date_last_login',
@@ -81,9 +79,27 @@ class PersonTransformer extends AbstractDataSerializerTransformer
 
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\Entity\TicketFilter $data */
-        $data = $transformation_request->getDataToBeTransformed();
+        /** @var \Application\DeskPRO\Entity\Person $person */
+        $person = $transformation_request->getDataToBeTransformed();
 
-        return [];
+        $ret = [
+            'emails'            => [],
+            'validating_emails' => [],
+            'primary_email'     => []
+        ];
+
+        foreach ($person->getEmails() as $email) {
+            if ($email->is_validated) {
+                $ret['emails'][] = $email->getEmail();
+            } else {
+                $ret['validating_emails'][] = $email->getEmail();
+            }
+        }
+
+        if ($email = $person->getPrimaryEmail()) {
+            $ret['primary_email'] = $email->getEmail();
+        }
+
+        return $ret;
     }
 }
