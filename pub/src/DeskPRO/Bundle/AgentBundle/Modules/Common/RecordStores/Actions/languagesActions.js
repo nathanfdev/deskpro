@@ -11,7 +11,7 @@ export const loadAll = createAction(
   'LOAD_LANGUAGES',
   createRecordsRequest(
     ['RecordStores', 'Common', 'languages'],
-    'my',
+    'all',
     () => new Promise((resolve, reject) =>
         DpApi.sendGet('DP_API/languages')
           .success(response => resolve(response.data))

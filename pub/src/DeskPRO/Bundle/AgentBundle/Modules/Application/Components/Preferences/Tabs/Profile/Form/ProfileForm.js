@@ -10,7 +10,8 @@ import { Password } from './Fields/Password';
 export class ProfileForm extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    languages: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -82,6 +83,8 @@ export class ProfileForm extends React.Component {
   };
 
   render() {
+    const { languages } = this.props;
+
     return (
       <form className="popup-form-default">
         <FieldWrapper label="Your name">
@@ -114,7 +117,7 @@ export class ProfileForm extends React.Component {
         <hr />
 
         <FieldWrapper label="Language">
-          <Language />
+          <Language languages={languages} />
         </FieldWrapper>
 
         <FieldWrapper label="Time Zone">
