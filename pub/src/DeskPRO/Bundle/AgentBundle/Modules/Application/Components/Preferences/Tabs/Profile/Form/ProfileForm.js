@@ -1,6 +1,7 @@
 import React from 'react';
-import { FieldWrapper } from './FieldWrapper';
-import { Password } from './Password';
+import { FieldWrapper } from './Fields/FieldWrapper';
+import { Email } from './Fields/Email';
+import { Password } from './Fields/Password';
 
 export class ProfileForm extends React.Component {
   render() {
@@ -31,12 +32,7 @@ export class ProfileForm extends React.Component {
         </div>
 
         <FieldWrapper label="Your email">
-          <div className="bucket-column-last">
-            <span className="meta"><a href="#">Add more emails</a></span>
-          </div>
-          <div className="bucket-column">
-            <input type="text" placeholder="Your email" value="dennis.schipper@deskpro.com" />
-          </div>
+          <Email />
         </FieldWrapper>
 
         <FieldWrapper label="Phone #">
