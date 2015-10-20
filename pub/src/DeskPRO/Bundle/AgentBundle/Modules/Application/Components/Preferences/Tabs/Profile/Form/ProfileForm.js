@@ -1,5 +1,6 @@
 import React from 'react';
 import { FieldWrapper } from './FieldWrapper';
+import { Password } from './Password';
 
 export class ProfileForm extends React.Component {
   render() {
@@ -60,12 +61,9 @@ export class ProfileForm extends React.Component {
 
         <hr />
 
-        <div className="bucket bucket-short">
-          <label className="label">Password:</label>
-          <div className="bucket-column">
-            <a href="#" className="button button-secondary button-short">Change Password</a>
-          </div>
-        </div>
+        <FieldWrapper label="Password">
+          <Password />
+        </FieldWrapper>
       </form>
     );
   }
