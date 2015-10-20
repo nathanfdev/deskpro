@@ -52,7 +52,7 @@ class TicketLayoutFactory
      */
     private $catpcha_decider;
 
-    public function __construct(EntityManager $entity_manager, CaptchaDecider $catpcha_decider)
+    public function __construct(EntityManager $entity_manager, CaptchaDecider $catpcha_decider = null)
     {
         $this->entity_manager  = $entity_manager;
         $this->catpcha_decider = $catpcha_decider;
@@ -175,6 +175,11 @@ class TicketLayoutFactory
      */
     private function checkAntiAbuseCaptcha(Layout $layout)
     {
+        if (!$this->catpcha_decider) {
+            // only in the PortalKernel will this service be set, ignore it all others.
+            return;
+        }
+
         if ($this->catpcha_decider->shouldRequireTicketCaptchaForCurrentPerson()) {
             $exists_in_layout = false;
             /** @var \Application\DeskPRO\TicketLayout\LayoutField $layout_field */
