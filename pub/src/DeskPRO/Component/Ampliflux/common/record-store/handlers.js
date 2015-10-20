@@ -1,6 +1,8 @@
 import { async, asyncIndicator, composeHandlers } from '../../reducers/handlers';
 import { MODE_SET } from './actions';
 import Immutable from 'immutable';
+import invariant from 'invariant';
+import warning from 'warning';
 
 /**
  * (Reducer builder) Runs cleanup of unused records
@@ -14,7 +16,7 @@ function gc(state) {
 
   let next = state;
   state.get('records').forEach((record, stringId) => {
-    const intId = Number(stringId)
+    const intId = Number(stringId);
     if (valid.indexOf(intId) === -1) {
       next = next.set('records', next.get('records').delete(stringId));
     }
@@ -33,6 +35,12 @@ function gc(state) {
  */
 export function releaseRecords() {
   return (state, payload) => {
+    invariant(
+      Immutable.Iterable.isIterable(state),
+      'releaseRecords() state must be an Immutable instance. Got %s',
+      state
+    );
+
     const next = state.setIn(
       ['requests', payload.requestId],
       state.getIn(['requests', payload.requestId]).filter(recordId => payload.ids.indexOf(recordId) === -1)
@@ -49,7 +57,15 @@ export function releaseRecords() {
  * @return {Function} reducer
  */
 export function releaseRequest() {
-  return (state, payload) => gc(state.deleteIn(['requests', payload.requestId]));
+  return (state, payload) => {
+    invariant(
+      Immutable.Iterable.isIterable(state),
+      'releaseRequest() state must be an Immutable instance, got %s',
+      state
+    );
+
+    return gc(state.deleteIn(['requests', payload.requestId]));
+  };
 }
 
 
@@ -88,13 +104,21 @@ function handleSetRequestRecords(state, requestId, setRecords, ids, mode) {
  * @return {Function} reducer
  */
 export function setRequestRecords() {
-  return (state, payload) => handleSetRequestRecords(
-    state,
-    payload.requestId,
-    payload.records,
-    payload.ids,
-    payload.mode
-  );
+  return (state, payload) => {
+    invariant(
+      Immutable.Iterable.isIterable(state),
+      'setRequestRecords() state must be an Immutable instance, got %s',
+      state
+    );
+
+    return handleSetRequestRecords(
+      state,
+      payload.requestId,
+      payload.records,
+      payload.ids,
+      payload.mode
+    );
+  };
 }
 
 
@@ -146,7 +170,9 @@ export function createEmptyRecordStoreState() {
  * @param {Object} actionTypes A map of type => action type constant
  * @return {Object} Handlers map
  */
-export function buildRecordStoreHandlers({ releaseRecordsAction, releaseRequestAction, setRequestRecordAction, requestRecordsAction }) {
+export function buildRecordStoreHandlers(actionTypes) {
+  const { releaseRecordsAction, releaseRequestAction, setRequestRecordAction, requestRecordsAction } = actionTypes;
+
   return {
     [releaseRecordsAction]: releaseRecords(),
     [releaseRequestAction]: releaseRequest(),
