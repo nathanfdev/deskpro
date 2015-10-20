@@ -12,31 +12,29 @@ export class Email extends React.Component {
 
   onChangeEmails = (event) => {
     const value = event.target.value;
-    const emails = value && value.split(',').map(function(email) {
-      return email && email.trim() || '';
-    }) || [];
+    const emails = value && value.split(',').map(email => email && email.trim() || '') || [];
 
     this.props.onChangeEmails(emails);
   };
 
+  onChangePrimary = (event) => {
+    const value = event.target.value;
+    this.props.onChangePrimary(value);
+  };
+
   renderSelectBox() {
-    const { emails, onChangePrimary } = this.props;
+    const { emails, primary } = this.props;
 
     if (emails && emails.length > 1) {
-      const options = emails.map(function(email) {
-        return {
-          value: email,
-          label: email
-        };
-      });
+      const options = emails.map(email => ({
+        value: email,
+        label: email
+      }));
 
       return (
-        <Select
-          name="form-field-name"
-          value="one"
-          options={options}
-          onChange={onChangePrimary}
-          searchable={false} />
+        <select value={primary} onChange={this.onChangePrimary}>
+          {options.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
+        </select>
       );
     }
 
