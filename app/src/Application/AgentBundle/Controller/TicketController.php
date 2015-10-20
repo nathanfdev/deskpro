@@ -2071,15 +2071,6 @@ class TicketController extends AbstractController
                         }
                         $this->em->flush();
                     }
-                    $post_custom_person_fields = $this->request->get('custom_person_fields', array());
-                    $person_field_manager->saveFormToObject($post_custom_person_fields, $ticket->person);
-                    $this->em->persist($ticket->person);
-
-                    $post_custom_org_fields = $this->request->get('custom_org_fields', array());
-                    if ($ticket->person->organization) {
-                        $org_field_manager->saveFormToObject($post_custom_org_fields, $ticket->person->organization);
-                        $this->em->persist($ticket->person->organization);
-                    }
 
                     if ($this->settings->get('core.problems.enabled')) {
                         if (isset($actions['problem_id'])) {
