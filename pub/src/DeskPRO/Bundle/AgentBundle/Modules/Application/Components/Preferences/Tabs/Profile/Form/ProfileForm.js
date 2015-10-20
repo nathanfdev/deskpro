@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { FieldWrapper } from './Fields/FieldWrapper';
 import { Name } from './Fields/Name';
 import { Email } from './Fields/Email';
+import { Phone } from './Fields/Phone';
 import { Password } from './Fields/Password';
 
 export class ProfileForm extends React.Component {
@@ -49,6 +50,12 @@ export class ProfileForm extends React.Component {
     });
   };
 
+  onChangePhone = (value) => {
+    this.setState({
+      phone: value
+    });
+  };
+
   submitForm = (event) => {
     event.preventDefault();
   };
@@ -86,9 +93,7 @@ export class ProfileForm extends React.Component {
         </FieldWrapper>
 
         <FieldWrapper label="Phone #">
-          <div className="bucket-column">
-            <input type="text" placeholder="Your phone number" />
-          </div>
+          <Phone value={this.state.phone} onChange={this.onChangePhone} />
         </FieldWrapper>
 
         <hr />
