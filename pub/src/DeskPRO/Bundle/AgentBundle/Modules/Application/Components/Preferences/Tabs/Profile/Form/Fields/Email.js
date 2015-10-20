@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import Select from 'react-select';
+import jQuery from 'jquery';
 
 export class Email extends React.Component {
 
@@ -26,7 +26,7 @@ export class Email extends React.Component {
     const { emails, primary } = this.props;
 
     if (emails && emails.length > 1) {
-      const options = emails.map(email => ({
+      const options = jQuery.unique(emails).map(email => ({
         value: email,
         label: email
       }));
