@@ -7,6 +7,7 @@ export default createReducer(
   buildRecordStoreHandlers({
     releaseRecordsAction: languagesActions.releaseLanguages,
     releaseRequestAction: languagesActions.releaseLanguagesRequest,
-    setRequestRecordAction: languagesActions.setLanguagesRequest
+    setRequestRecordAction: languagesActions.setLanguagesRequest,
+    requestRecordsAction: languagesActions.loadAll
   })
 );

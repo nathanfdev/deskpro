@@ -14,7 +14,7 @@ export const loadAll = createAction(
     'my',
     () => new Promise((resolve, reject) =>
         DpApi.sendGet('DP_API/languages')
-          .success(response => resolve(response))
+          .success(response => resolve(response.data))
           .error((data, response) => reject(response))
     )
   )
