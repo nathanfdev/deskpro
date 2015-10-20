@@ -6,7 +6,7 @@ export default createReducer(
   createEmptyRecordStoreState(),
   buildRecordStoreHandlers({
     releaseRecordsAction: peopleActions.releasePeople,
-    releaseRequestAction: peopleActions.releaseRequest,
+    releaseRequestAction: peopleActions.releasePeopleRequest,
     setRequestRecordAction: peopleActions.setPeopleRequest,
     requestRecordsAction: peopleActions.loadPeople
   })

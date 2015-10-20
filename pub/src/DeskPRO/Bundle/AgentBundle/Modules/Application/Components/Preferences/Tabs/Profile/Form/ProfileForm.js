@@ -64,6 +64,8 @@ export class ProfileForm extends React.Component {
         <FieldWrapper label="Password">
           <Password />
         </FieldWrapper>
+
+        <input type="submit" />
       </form>
     );
   }
