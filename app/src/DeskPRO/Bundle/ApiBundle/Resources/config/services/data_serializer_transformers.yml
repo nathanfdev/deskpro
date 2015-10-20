@@ -14,3 +14,14 @@ services:
       class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\TaskTransformer
       arguments:
         - @doctrine.dbal.default_connection
+
+    data_serializer.transformer.ticket:
+      class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\TicketTransformer
+      arguments:
+        - @doctrine.orm.default_entity_manager
+
+    data_serializer.transformer.person:
+      class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\PersonTransformer
+      arguments:
+        - @data_serializer
+        - @avatar_resolver

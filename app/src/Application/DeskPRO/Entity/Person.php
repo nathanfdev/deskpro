@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -2526,6 +2525,15 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         }
 
         return $url;
+    }
+
+    public function getRawGravatarUrl()
+    {
+        if ($this->primary_email) {
+            return rtrim($this->primary_email->getGravatarUrl(true), '?');
+        }
+
+        return;
     }
 
     public function getGravatarUrl($size = 80, $secure = null)

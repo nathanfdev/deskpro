@@ -50,7 +50,7 @@ class AgentGroupsController extends BaseController
         $service = $this->get('data.user_groups');
 
         return View::create(
-            $this->DataSerialize($service->loadAgentGroupsEnabled()),
+            $this->dataSerialize($service->loadAgentGroupsEnabled()),
             Response::HTTP_OK
         );
     }
@@ -63,7 +63,7 @@ class AgentGroupsController extends BaseController
         $service = $this->get('data.user_groups');
 
         return View::create(
-            $this->DataSerialize($service->loadSingleAgentGroupEnabled($id)),
+            $this->dataSerialize($service->loadSingleAgentGroupEnabled($id)),
             Response::HTTP_OK
         );
     }

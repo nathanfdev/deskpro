@@ -48,7 +48,7 @@ class LanguagesController extends BaseController
     public function cgetAction()
     {
         return View::create(
-            $this->DataSerialize($this->getEm()->getRepository('DeskPRO:Language')->findAll()),
+            $this->dataSerialize($this->getEm()->getRepository('DeskPRO:Language')->findAll()),
             Response::HTTP_OK
         );
     }
@@ -59,7 +59,7 @@ class LanguagesController extends BaseController
     public function getLanguageAction($id)
     {
         return View::create(
-            $this->DataSerialize($this->getEm()->getRepository('DeskPRO:Language')->findOneBy(['id' => $id])),
+            $this->dataSerialize($this->getEm()->getRepository('DeskPRO:Language')->findOneBy(['id' => $id])),
             Response::HTTP_OK
         );
     }

@@ -1,10 +1,11 @@
 import { createAction } from 'Ampliflux';
 import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
+import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSetting';
 import { loadPeople } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { loadEmails } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/emailsActions';
 import { loadFeedbackCommentsCounter } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCommentsActions';
 import { loadFeedbackStatuses } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackStatusesActions';
-import { sortingDataSelector, filterDataSelector } from '../Selectors/list';
+import { sortingDataSelector } from '../Selectors/list';
 
 /**
  * Used to identify requests within record stores
@@ -14,17 +15,19 @@ const recordStoresId = 'feedback';
 
 export const getAuthors = createAction(
   'FEEDBACK_GET_AUTHORS',
-    feedback => dispatch => {
-    const ids = [],
-      unique = {};
-    for (var i in feedback.data) {
-      if (typeof(unique[feedback.data[i].person_id]) === 'undefined') {
-        ids.push(feedback.data[i].person_id);
+  (feedback) => (dispatch) => {
+    const ids = [];
+    const unique = {};
+    for (var index in feedback.data) {
+      if (feedback.data.hasOwnProperty(index)) {
+        if (typeof(unique[feedback.data[index].person_id]) === 'undefined') {
+          ids.push(feedback.data[index].person_id);
+        }
+        unique[feedback.data[index].person_id] = 0;
       }
-      unique[feedback.data[i].person_id] = 0;
     }
-      dispatch(loadEmails(recordStoresId, ids));
-      return dispatch(loadPeople(recordStoresId, ids));
+    dispatch(loadEmails(recordStoresId, ids));
+    return dispatch(loadPeople(recordStoresId, ids));
   }
 );
 
@@ -47,13 +50,15 @@ export const loadFeedbackList = createAction(
       sort: sortingDataSelector(state).field,
       order: feedbackListState.order
     };
-    const params = {...currentParams, ...overwriteParams};
+    const params = { ...currentParams, ...overwriteParams };
 
     return () => Feedback.getList(params).then(promise => {
       const feedback = promise.getData();
       const ids = [];
-      for (var ind in feedback.data) {
-        ids.push(feedback.data[ind].id);
+      for (var index in feedback.data) {
+        if (feedback.data.hasOwnProperty(index)) {
+          ids.push(feedback.data[index].id);
+        }
       }
       dispatch(getAuthors(feedback));
       dispatch(getCommentsCounter(ids));
@@ -113,8 +118,8 @@ export const resetFilterValue = createAction(
 export const setTableSort = createAction(
   'FEEDBACK_SET_TABLE_SORT',
   (sort, order) => dispatch => {
-    dispatch(loadFeedbackList({sort: sort, order: order}));
-    return {sort, order};
+    dispatch(loadFeedbackList({ sort: sort, order: order }));
+    return { sort, order };
   });
 
 export const toggleViewMode = createAction(
@@ -124,16 +129,16 @@ export const toggleViewMode = createAction(
 
 export const toggleOrder = createAction(
   'FEEDBACK_TOGGLE_ORDER',
-    order => dispatch => {
-    dispatch(loadFeedbackList({order: order}));
+  (order) => (dispatch) => {
+    dispatch(loadFeedbackList({ order: order }));
     return order;
   }
 );
 
 export const toggleSort = createAction(
   'FEEDBACK_TOGGLE_SORT',
-    sort => dispatch => {
-    dispatch(loadFeedbackList({sort: sort}));
+  (sort) => (dispatch) => {
+    dispatch(loadFeedbackList({ sort: sort }));
     return sort;
   }
 );
@@ -141,12 +146,18 @@ export const toggleSort = createAction(
 export const storeDisplayFieldsToPersonSetting = createAction(
   'FEEDBACK_STORE_DISPLAY_FIELD_TO_PERSON_SETTING',
   (displayFields) =>
-    Feedback.postDisplayFieldsToPersonSetting('feedback_display_fields', displayFields).then(value => value.getData()));
+    PersonSetting.post('feedback_display_fields', displayFields).then(value => value.getData())
+);
+
+export const updateDisplayFieldsToPersonSetting = createAction(
+  'FEEDBACK_UPDATE_DISPLAY_FIELD_TO_PERSON_SETTING',
+  (displayFields) =>
+    PersonSetting.put('feedback_display_fields', displayFields).then(value => value.getData())
+);
 
 export const getDisplayFieldsFromPersonSetting = createAction(
   'FEEDBACK_GET_DISPLAY_FIELD_FROM_PERSON_SETTING',
-  () =>
-    Feedback.getDisplayFieldsFromPersonSetting('feedback_display_fields').then(value => value.getData()));
+  () => PersonSetting.get('feedback_display_fields').then(value => value.getData()));
 
 export const toggleMassAction = createAction(
   'FEEDBACK_TOGGLE_MASS_ACTION'
@@ -159,19 +170,11 @@ export const toggleSelectedAction = createAction(
 /** @ToDo migrate to Ampliflux v2 after FilterBy block design */
 export const setFilterValue = createAction(
   'FEEDBACK_SET_FILTER_VALUE',
-  (trigger, filter, value) => () => trigger({filter: filter, value: value})
+  (trigger, filter, value) => () => trigger({ filter: filter, value: value })
 );
-
-export const changeDisplayFieldsStatus = createAction(
-  'FEEDBACK_DISPLAY_FIELD_STATUS',
-  (trigger, type, field, status, query, sort, order, filters, listViewFields, tableViewFields) => {
-    trigger({type: type, field: field, status: status});
-    trigger(storeDisplayFieldsToPersonSetting([{listViewFields: listViewFields, tableViewFields: tableViewFields}]));
-    trigger(loadFeedbackList());
-  });
 
 export const resetFilters = createAction(
   'FEEDBACK_RESET_FILTERS',
   (trigger, filterAlias, filterName) => {
-    trigger({alias: filterAlias, name: filterName, value: ''});
+    trigger({ alias: filterAlias, name: filterName, value: '' });
   });

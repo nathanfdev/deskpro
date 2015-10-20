@@ -13,9 +13,10 @@ function gc(state) {
   state.get('requests').map(records => valid.push(...records));
 
   let next = state;
-  state.get('records').forEach((record, recordId) => {
-    if (valid.indexOf(recordId) === -1) {
-      next = next.deleteIn(['records', recordId]);
+  state.get('records').forEach((record, stringId) => {
+    const intId = Number(stringId)
+    if (valid.indexOf(intId) === -1) {
+      next = next.set('records', next.get('records').delete(stringId));
     }
   });
 

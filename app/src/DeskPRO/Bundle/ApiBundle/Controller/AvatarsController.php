@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
+use Doctrine\Common\Util\Inflector;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -58,7 +58,7 @@ class AvatarsController extends BaseController
      *     "/avatars/{target}",
      *     name="api_avatars_collection_get",
      *     requirements={
-     *         "target" = "person|organization",
+     *         "target" = "person|organization|agent_team|department",
      *         "id" = "\d+"
      *     }
      * )
@@ -82,26 +82,30 @@ class AvatarsController extends BaseController
 
     /**
      * @param string $target
-     * @param int    $personId
+     * @param int    $targetId
      *
      * @return array
      */
-    private function getAvatar($target, $personId)
+    private function getAvatar($target, $targetId)
     {
-        $targetEntity = $this->findOr404('DeskPRO:'.ucfirst($target), $personId, 'Target entity not found');
+        $targetEntity = $this->findOr404(
+            'DeskPRO:'.ucfirst(Inflector::camelize($target)),
+            $targetId,
+            'Target entity not found'
+        );
 
         /* @var \DeskPRO\Bundle\AppBundle\Content\AvatarResolver $avatarResolver */
         $avatarResolver = $this->get('avatar_resolver');
         $avatarResolver->setUseGravatar(false);
 
         $data = [
-            'id'          => $personId,
+            'id'          => $targetId,
             'url'         => $avatarResolver->getAvatar($targetEntity, self::DEFAULT_SIZE, $isFallback),
             'url_pattern' => $avatarResolver->getAvatarPattern($targetEntity, '{{IMG_SIZE}}'),
             'is_fallback' => $isFallback,
         ];
         if ($targetEntity instanceof Person) {
-            $data['gravatar'] = $targetEntity->getGravatarUrl();
+            $data['gravatar'] = $targetEntity->getRawGravatarUrl();
         }
 
         return $data;

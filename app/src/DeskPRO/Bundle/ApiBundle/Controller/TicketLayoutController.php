@@ -50,7 +50,7 @@ class TicketLayoutController extends BaseController
         $service = $this->get('data.ticket_layouts');
 
         return View::create(
-            $this->DataSerialize($service->loadAll()),
+            $this->dataSerialize($service->loadAll()),
             Response::HTTP_OK
         );
     }
@@ -63,7 +63,7 @@ class TicketLayoutController extends BaseController
         $service = $this->get('data.ticket_layouts');
 
         return View::create(
-            $this->DataSerialize($service->loadSingle($id)),
+            $this->dataSerialize($service->loadSingle($id)),
             Response::HTTP_OK
         );
     }
@@ -76,7 +76,7 @@ class TicketLayoutController extends BaseController
         $service = $this->get('data.ticket_layouts');
 
         return View::create(
-            $this->DataSerialize($service->loadForDepartment($dept_id)),
+            $this->dataSerialize($service->loadForDepartment($dept_id)),
             Response::HTTP_OK
         );
     }

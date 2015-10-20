@@ -17,10 +17,10 @@ api:
     # directly to the underscore version of the object name. For example, if
     # "DeskPRO\\Bundle\\AppBundle\\Entity\\SandboxWidget" is for type "sandbox_widget" then
     # it does NOT need to be in this map because the naming convention is the default.
-    #    types:
-    #        sandbox_widget:
-    #            classes:
-    #                - "DeskPRO\\Bundle\\AppBundle\\Entity\\SandboxWidget"
+        types:
+            avatar:
+                classes:
+                    - DeskPRO\Bundle\AppBundle\Content\Avatar
 
 framework:
     esi:             { enabled: true }

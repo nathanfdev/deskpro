@@ -13,13 +13,11 @@ export class PersonAvatarContainer extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     person: PropTypes.object.isRequired,
-    size: PropTypes.number,
+    size: PropTypes.any,
     avatars: PropTypes.object.isRequired
   };
 
   render() {
-    this.id = uuid();
-
     const { size, person, avatars } = this.props;
     const avatar = person && avatars.get(String(person.get('id'))) || Immutable.fromJS({});
 
@@ -29,7 +27,8 @@ export class PersonAvatarContainer extends React.Component {
       urlPattern: avatar.get('url_pattern'),
       gravatar: avatar.get('gravatar'),
       isFallback: avatar.get('is_fallback'),
-      fallbackText: this.getPersonFallbackText()
+      fallbackText: this.getPersonFallbackText(),
+      color: '#CDD2D4'
     };
 
     return (
@@ -41,6 +40,7 @@ export class PersonAvatarContainer extends React.Component {
     const { person, dispatch } = this.props;
 
     if (person && person.get('id')) {
+      this.id = 'person-' + person.get('id');
       dispatch(actions.loadPersonAvatars(this.id, [person.get('id')]));
     }
   }

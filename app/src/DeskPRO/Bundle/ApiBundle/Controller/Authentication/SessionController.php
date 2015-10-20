@@ -65,13 +65,20 @@ class SessionController extends BaseController
         $email    = $data['email'];
         $password = $data['password'];
 
+        // todo temporary controller
+        // todo just for agents for now
         $auth_result = $this->get('dp_authentication_manager.agent')->authenticateFormLogin($email, $password);
 
         if (!$auth_result->isValid()) {
-            // failed on agent usersources, revert to user
-            $auth_result = $this->get('dp_authentication_manager.user')->authenticateFormLogin($email, $password);
             if (!$auth_result->isValid()) {
-                $this->throwUnauthorized();
+                /** @var \Application\DeskPRO\EntityRepository\Person $person_repository */
+                $person_repository = $this->getRepository('DeskPRO:Person');
+                $person            = $person_repository->findOneByEmail($email);
+                if (!$person) {
+                    $this->throwNoPerson();
+                }
+
+                $this->throwBadCredentials();
             }
         }
 
@@ -79,14 +86,14 @@ class SessionController extends BaseController
         $person_id = $identity->getIdentity();
 
         if (!$person_id) {
-            $this->throwUnauthorized();
+            $this->throwNoPerson();
         }
 
         $em     = $this->get('doctrine.orm.default_entity_manager');
         $person = $em->getRepository('DeskPRO:Person')->find($person_id);
 
         if (!$person) {
-            $this->throwUnauthorized();
+            $this->throwNoPerson();
         }
 
         $session_code = $request->cookies->get('dpsid-agent');
@@ -111,7 +118,12 @@ class SessionController extends BaseController
         return View::create(null, Response::HTTP_OK);
     }
 
-    protected function throwUnauthorized()
+    protected function throwNoPerson()
+    {
+        throw new UnauthorizedHttpException(ApiAuthenticator::HTTP_REALM, ApiErrors::NO_PERSON);
+    }
+
+    protected function throwBadCredentials()
     {
         throw new UnauthorizedHttpException(ApiAuthenticator::HTTP_REALM, ApiErrors::BAD_CREDENTIALS);
     }
