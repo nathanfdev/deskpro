@@ -16,6 +16,7 @@ export class ProfileForm extends React.Component {
 
     this.state = {
       name: null,
+      overrideDefaultName: false,
       emails: [],
       primaryEmail: null,
       phone: null,
@@ -29,6 +30,12 @@ export class ProfileForm extends React.Component {
   onChangeName = (value) => {
     this.setState({
       name: value
+    });
+  };
+
+  onToggleOverrideDefaultName = () => {
+    this.setState({
+      overrideDefaultName: !this.state.overrideDefaultName
     });
   };
 
@@ -81,7 +88,13 @@ export class ProfileForm extends React.Component {
         </FieldWrapper>
 
         <div className="bucket short">
-          <label className="simple-label"><input type="checkbox" /> Override default name?</label>
+          <label className="simple-label">
+            <input type="checkbox"
+                   checked={this.state.overrideDefaultName}
+                   onChange={this.onToggleOverrideDefaultName} />
+
+            Override default name?
+          </label>
           <span className="small">(will be displayed to users instead of your real name.)</span>
         </div>
 
