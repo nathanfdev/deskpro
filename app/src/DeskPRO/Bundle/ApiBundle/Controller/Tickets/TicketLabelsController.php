@@ -58,7 +58,7 @@ class TicketLabelsController extends BaseController
         $labels = $this->get('data.ticketlabels');
 
         return View::create(
-            $this->DataSerialize(new PrimitiveArray($labels->getLabels())),
+            $this->dataSerialize(new PrimitiveArray($labels->getLabels())),
             Response::HTTP_OK
         );
     }
@@ -79,7 +79,7 @@ class TicketLabelsController extends BaseController
         }
 
         return View::create(
-            $this->DataSerialize(array_values($tickets)),
+            $this->dataSerialize(array_values($tickets)),
             Response::HTTP_OK
         );
     }

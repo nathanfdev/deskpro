@@ -50,7 +50,6 @@ export class NavContainer extends Component {
     dispatch(actions.feedbackClosedStatus());
     dispatch(actions.feedbackHiddenStatus());
     dispatch(actions.getFilterValues(currentFilterMode.name));
-    //dispatch(actions.getDisplayFieldsFromPersonSetting());
   }
 
   commentsView(group, event) {

@@ -26,7 +26,6 @@ export class OrderByContainer extends Component {
 
   render() {
     const { dispatch, expanded, sortOptions, order, currentSortMode, toggleDropdown, isComments } = this.props;
-
     return (
       <OrderBy
         sortOptions={sortOptions}

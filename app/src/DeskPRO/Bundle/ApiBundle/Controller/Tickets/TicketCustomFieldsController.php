@@ -51,7 +51,7 @@ class TicketCustomFieldsController extends BaseController
         $service = $this->get('data.ticket_custom_fields');
 
         return View::create(
-            $this->DataSerialize($service->getCustomFields()),
+            $this->dataSerialize($service->getCustomFields()),
             Response::HTTP_OK
         );
     }
@@ -66,7 +66,7 @@ class TicketCustomFieldsController extends BaseController
         $service = $this->get('data.ticket_custom_fields');
 
         return View::create(
-            $this->DataSerialize($service->getCustomFieldsForTicket($ticket_id))
+            $this->dataSerialize($service->getCustomFieldsForTicket($ticket_id))
         );
     }
 
@@ -80,7 +80,7 @@ class TicketCustomFieldsController extends BaseController
         $service = $this->get('data.ticket_custom_fields');
 
         return View::create(
-            $this->DataSerialize($service->getSingleCustomFieldForTicket($ticket_id, $field_id))
+            $this->dataSerialize($service->getSingleCustomFieldForTicket($ticket_id, $field_id))
         );
     }
 }

@@ -58,7 +58,7 @@ class TicketStatusesController extends BaseController
         $service = $this->get('data.ticketstatuses');
 
         return View::create(
-            $this->DataSerialize(new PrimitiveArray($service->getStatuses())),
+            $this->dataSerialize(new PrimitiveArray($service->getStatuses())),
             Response::HTTP_OK
         );
     }
@@ -73,7 +73,7 @@ class TicketStatusesController extends BaseController
         $service = $this->get('data.ticketstatuses');
 
         return View::create(
-            $this->DataSerialize($service->getAllTicketsForStatus($status)),
+            $this->dataSerialize($service->getAllTicketsForStatus($status)),
             Response::HTTP_OK
         );
     }

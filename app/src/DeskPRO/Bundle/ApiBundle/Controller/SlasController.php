@@ -50,7 +50,7 @@ class SlasController extends BaseController
         $service = $this->get('data.slas');
 
         return View::create(
-            $this->DataSerialize($service->loadAll()),
+            $this->dataSerialize($service->loadAll()),
             Response::HTTP_OK
         );
     }
@@ -63,7 +63,7 @@ class SlasController extends BaseController
         $service = $this->get('data.slas');
 
         return View::create(
-            $this->DataSerialize($service->loadSingle($sla_id)),
+            $this->dataSerialize($service->loadSingle($sla_id)),
             Response::HTTP_OK
         );
     }

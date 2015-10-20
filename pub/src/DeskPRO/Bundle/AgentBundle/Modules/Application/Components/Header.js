@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { HeaderWidget } from '../../IM/Components/HeaderWidget';
 import { WorkspaceContainer } from './Workspace/WorkspaceContainer';
-import { PersonAvatarContainer } from '../../Common/Components/Avatar/index';
+import { PersonAvatar } from '../../Common/Components/Avatar/index';
 import * as AppActions from '../Actions/AppActions';
 
 export class Header extends React.Component {
@@ -38,7 +38,7 @@ export class Header extends React.Component {
             </a>
 
             <a href="#" className="user-options-button" onClick={this.togglePreferences}>
-              <PersonAvatarContainer person={user} />
+              <PersonAvatar person={user} size="28" />
               <span className="title">Settings <i className="fa fa-angle-down"></i></span>
             </a>
           </div>

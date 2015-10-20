@@ -50,7 +50,7 @@ class TicketSlasController extends BaseController
         $service = $this->get('data.ticket_slas');
 
         return View::create(
-            $this->DataSerialize($service->loadForTicket($ticket_id)),
+            $this->dataSerialize($service->loadForTicket($ticket_id)),
             Response::HTTP_OK
         );
     }
@@ -63,7 +63,7 @@ class TicketSlasController extends BaseController
         $service = $this->get('data.ticket_slas');
 
         return View::create(
-            $this->DataSerialize($service->loadSingleForTicket($ticket_id, $sla_id)),
+            $this->dataSerialize($service->loadSingleForTicket($ticket_id, $sla_id)),
             Response::HTTP_OK
         );
     }

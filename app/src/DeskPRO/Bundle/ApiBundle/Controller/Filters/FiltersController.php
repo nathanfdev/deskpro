@@ -91,7 +91,7 @@ class FiltersController extends BaseController
         }
 
         return View::create(
-            $this->DataSerialize($pager),
+            $this->dataSerialize($pager),
             Response::HTTP_OK
         );
     }
@@ -127,7 +127,7 @@ class FiltersController extends BaseController
         }
 
         return View::create(
-            $this->DataSerialize($filter),
+            $this->dataSerialize($filter),
             Response::HTTP_OK
         );
     }
@@ -184,12 +184,12 @@ class FiltersController extends BaseController
             $view_factory = $this->get('api_view_representation_factory');
 
             return View::create(
-                $this->DataSerialize(new PrimitiveArray($tickets_query->fetchGroupedCount(), $view_factory::DATATYPE_GROUPED_COUNT)),
+                $this->dataSerialize(new PrimitiveArray($tickets_query->fetchGroupedCount(), $view_factory::DATATYPE_GROUPED_COUNT)),
                 Response::HTTP_OK
             );
         } else {
             return View::create(
-                $this->DataSerialize(new PrimitiveArray(array(
+                $this->dataSerialize(new PrimitiveArray(array(
                     'count' => $tickets_query->fetchCount(),
                 ))),
                 Response::HTTP_OK
@@ -254,7 +254,7 @@ class FiltersController extends BaseController
         $this->getEm()->flush();
 
         return View::create(
-            $this->DataSerialize($results),
+            $this->dataSerialize($results),
             Response::HTTP_OK
         );
     }
@@ -410,7 +410,7 @@ class FiltersController extends BaseController
             $this->getDoctrine()->getManager()->flush($filter);
 
             return View::create(
-                $this->DataSerialize($filter),
+                $this->dataSerialize($filter),
                 $status,
                 array(
                     'Location' => $this->generateUrl('api_ticket_filters_get', array('id' => $filter->getId())),

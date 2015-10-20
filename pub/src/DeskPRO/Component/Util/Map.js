@@ -2,6 +2,7 @@ import objGet from 'lodash/object/get';
 import isArray from 'lodash/lang/isArray';
 import isObject  from 'lodash/lang/isObject';
 import Immutable from 'immutable';
+import warning from 'warning';
 
 /**
  * Given an array of objects, create an object keyed by a property in one of the sub-arrays.
@@ -13,6 +14,7 @@ import Immutable from 'immutable';
  */
 export function mapKeyedFromArray(arrayVal, keyProp) {
   const isDeepKey = isArray(keyProp);
+
   // Already a Map
   if (Immutable.Map.isMap(arrayVal)) {
     return Immutable.Map().withMutations(map => {
@@ -20,6 +22,11 @@ export function mapKeyedFromArray(arrayVal, keyProp) {
         const k = isDeepKey ? v.getIn(keyProp) : v.get(keyProp);
         if (k !== null && typeof k !== 'undefined') {
           map.set(k, Immutable.fromJS(v));
+        } else {
+          if (__DEV__) {
+            warning(
+              true, 'mapKeyedFromArray() the key property %s doesn\'t exist in %s from %s', keyProp, v, arrayVal);
+          }
         }
       });
     });
@@ -32,6 +39,11 @@ export function mapKeyedFromArray(arrayVal, keyProp) {
         const k = isDeepKey ? objGet(v, keyProp) : v[keyProp];
         if (k !== null && typeof k !== 'undefined') {
           map.set(k, Immutable.fromJS(v));
+        } else {
+          if (__DEV__) {
+            warning(
+              true, 'mapKeyedFromArray() the key property %s doesn\'t exist in %s from %s', keyProp, v, arrayVal);
+          }
         }
       });
     });
@@ -43,6 +55,11 @@ export function mapKeyedFromArray(arrayVal, keyProp) {
         const k = isDeepKey ? objGet(v, keyProp) : v[keyProp];
         if (k !== null && typeof k !== 'undefined') {
           map.set(k, Immutable.fromJS(v));
+        } else {
+          if (__DEV__) {
+            warning(
+              true, 'mapKeyedFromArray() the key property %s doesn\'t exist in %s from %s', keyProp, v, arrayVal);
+          }
         }
       });
     });
@@ -58,7 +75,16 @@ export function mapKeyedFromArray(arrayVal, keyProp) {
  */
 export function reduceMapToProperty(property, map) {
   const reduced = {};
-  Object.keys(map).forEach(key => reduced[key] = map[key][property]);
+  Object.keys(map).forEach(key => {
+    if (__DEV__) {
+      warning(
+        !map[key][property],
+        'reduceMapToProperty() the key property %s doesn\'t exist in %s from %s',
+        property, map[key], map
+      );
+    }
+    reduced[key] = map[key][property];
+  });
 
   return reduced;
 }

@@ -29,10 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Content;
 
-use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Avatar\AvatarOwner;
 use Application\DeskPRO\Entity\Person;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -85,19 +84,57 @@ class AvatarResolver
 
                 return $this->getDefaultPersonAvatar($size);
             }
-        } elseif ($obj instanceof Organization) {
-            if ($custom = $this->getOrganizationAvatar($obj, $size)) {
+        } elseif ($obj instanceof AvatarOwner) {
+            if ($custom = $this->getCommonAvatar($obj, $size)) {
                 $returnedDefault = false;
 
-                return $this->getOrganizationAvatar($obj, $size);
+                return $this->getCommonAvatar($obj, $size);
             } else {
                 $returnedDefault = true;
 
-                return $this->getDefaultOrganizationAvatar($size);
+                return $this->getDefaultCommonAvatar($size);
             }
         } else {
             return;
         }
+    }
+
+    /**
+     * @param mixed $obj
+     *
+     * @return Avatar
+     */
+    public function getAvatarModel($obj)
+    {
+        $safeSizePlaceholder = '_____SAFE_PLACEHOLDER_____';
+
+        $url_pattern     = null;
+        $default_pattern = null;
+        $gravatar        = null;
+
+        if ($obj instanceof Person) {
+            if ($obj->picture_blob) {
+                $url_pattern = $this->getPersonAvatar($obj, $safeSizePlaceholder);
+            }
+            if ($this->use_gravatar) {
+                $gravatar = $obj->getRawGravatarUrl();
+            }
+            $default_pattern = $this->getDefaultPersonAvatar($safeSizePlaceholder);
+        } elseif ($obj instanceof AvatarOwner) {
+            if ($obj->getAvatarBlob()) {
+                $url_pattern = $this->getCommonAvatar($obj, $safeSizePlaceholder);
+            }
+            $default_pattern = $this->getDefaultCommonAvatar($safeSizePlaceholder);
+        }
+
+        if ($url_pattern) {
+            $url_pattern = str_replace($safeSizePlaceholder, '{{IMG_SIZE}}', $url_pattern);
+        }
+        if ($default_pattern) {
+            $default_pattern = str_replace($safeSizePlaceholder, '{{IMG_SIZE}}', $default_pattern);
+        }
+
+        return new Avatar($url_pattern, $default_pattern, $gravatar);
     }
 
     /**
@@ -139,13 +176,13 @@ class AvatarResolver
             $url = $person->primary_email->getGravatarUrl(true).'&s='.$size;
 
             if ($person->organization) {
-                $org_url = $this->getOrganizationAvatar($person->organization, $size);
+                $org_url = $this->getCommonAvatar($person->organization, $size);
                 if ($org_url) {
                     $url .= '&d='.urlencode($org_url);
                 }
             }
         } elseif ($person->organization) {
-            $url = $this->getOrganizationAvatar($person->organization, $size);
+            $url = $this->getCommonAvatar($person->organization, $size);
         }
 
         return $url;
@@ -153,6 +190,8 @@ class AvatarResolver
 
     /**
      * @param int $size
+     *
+     * @return string
      */
     public function getDefaultPersonAvatar($size = 80)
     {
@@ -165,14 +204,14 @@ class AvatarResolver
     }
 
     /**
-     * @param Organization $org
-     * @param int          $size
+     * @param AvatarOwner $org
+     * @param int         $size
      *
      * @return string|null
      */
-    public function getOrganizationAvatar(Organization $org, $size = 80)
+    public function getCommonAvatar(AvatarOwner $org, $size = 80)
     {
-        $blob = $org->picture_blob;
+        $blob = $org->getAvatarBlob();
         $url  = null;
 
         if ($blob && $blob->isImage()) {
@@ -188,8 +227,10 @@ class AvatarResolver
 
     /**
      * @param int $size
+     *
+     * @return string
      */
-    public function getDefaultOrganizationAvatar($size = 80)
+    public function getDefaultCommonAvatar($size = 80)
     {
         $url = $this->router->generate('serve_org_picture_default', array(
             's'        => $size,

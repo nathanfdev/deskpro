@@ -10,7 +10,7 @@ import ViewSwitcherDropdown from './ViewSwitcherDropdown';
 export class ViewSwitcherDropdownStatefulContainer extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    toggleDropdown: PropTypes.func.isRequired,
+    toggleDropdown: PropTypes.func.isRequired
   };
 
   toggleView(newView) {

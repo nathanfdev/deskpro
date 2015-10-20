@@ -1,6 +1,7 @@
 import React, {PropTypes} from 'react';
 import * as actions from '../../Actions/chatsActions';
 import { connect } from 'react-redux';
+import { PersonAvatar } from '../../../Common/Components/Avatar/index';
 
 @connect()
 export class AgentsListItem extends React.Component {
@@ -15,10 +16,6 @@ export class AgentsListItem extends React.Component {
   };
 
   render() {
-    const style = {
-      backgroundImage: 'url("' + this.props.agent.get('gravatar_url') + '")'
-    };
-
     let name = this.props.agent.get('name');
     if (this.props.highlight) {
       const escape = this.props.highlight.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
@@ -34,7 +31,7 @@ export class AgentsListItem extends React.Component {
         <a href="#"
            onClick={this.startChat.bind(null, this.props.agent.get('id'), 'agent')}
           >
-          <span className="chat-avatar" style={style}></span>
+          <PersonAvatar person={this.props.agent} size="22" />
           <span className="agent"><span dangerouslySetInnerHTML={{__html: name}}/><span
             className="datestamp">2d ago</span></span>
         </a>

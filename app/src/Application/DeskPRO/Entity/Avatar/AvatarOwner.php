@@ -28,43 +28,20 @@
 
 /**
  * DeskPRO.
+ *
+ * @category Entities
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller;
+namespace Application\DeskPRO\Entity\Avatar;
 
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Response;
+use Application\DeskPRO\Entity\Blob;
 
 /**
- * API access to languages.
+ * Interface AvatarOwner.
  */
-class AgentGroupsController extends BaseController
+interface AvatarOwner
 {
     /**
-     * Retrieve the list of custom fields available for tickets.
-     *
-     * @Get("/agent_groups", name="api_agent_groups")
+     * @return Blob
      */
-    public function cgetAction()
-    {
-        $service = $this->get('data.user_groups');
-
-        return View::create(
-            $this->dataSerialize($service->loadAgentGroupsEnabled()),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @Get("/agent_groups/{id}", name="api_single_agent_group")
-     */
-    public function getAgentGroup($id)
-    {
-        $service = $this->get('data.user_groups');
-
-        return View::create(
-            $this->dataSerialize($service->loadSingleAgentGroupEnabled($id)),
-            Response::HTTP_OK
-        );
-    }
+    public function getAvatarBlob();
 }

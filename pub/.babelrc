@@ -2,7 +2,7 @@
   "stage": 0,
   "env": {
     "development": {
-      "plugins": ["react-transform"],
+      "plugins": ["react-transform", "fbjs-scripts/babel/dev-expression"],
       "extra": {
         "react-transform": {
           "transforms": [

@@ -1,7 +1,6 @@
 import { createSelector } from 'reselect';
-import isArray from 'lodash/lang/isArray';
-import objGet from 'lodash/object/get';
 import Immutable from 'immutable';
+import invariant from 'invariant';
 
 /**
  * Creates a selector for the 'status' value on your store.
@@ -102,6 +101,10 @@ function createRecordsSelBuilder(recordsSelector) {
  * @return {Object} A map of selector creators
  */
 export function createRequestSelectorsBuilder({ statusSel, recordsSel, requestsSel }) {
+  invariant(typeof statusSel === 'function', 'statusSel must be a function, got %s', statusSel);
+  invariant(typeof recordsSel === 'function', 'recordsSel must be a function, got %s', recordsSel);
+  invariant(typeof requestsSel === 'function', 'requestsSel must be a function, got %s', requestsSel);
+
   return (requestId) => {
     const idsSel = createIdsSelBuilder(requestsSel)(requestId);
     return {
@@ -116,13 +119,24 @@ export function createRequestSelectorsBuilder({ statusSel, recordsSel, requestsS
 /**
  * Creates the common selectors for a given record store.
  *
- * @param {selector} storeSel The main, top-level selector which should select your record store from the main store.
+ * @param {function} storeSel The main, top-level selector which should select your record store from the main store.
  * @return {Object} A map of selectors
  */
 export function createStoreSelectors(storeSel) {
+  function storeSelWrapper(base) {
+    const store = storeSel(base);
+    invariant(
+      store,
+      'Record store reducer must exist. Check path and make sure reducer file exists and loaded. Selector: %s',
+      storeSel
+    );
+
+    return store;
+  }
+
   return {
-    statusSel: createStoreStatusSel(storeSel),
-    recordsSel: createStoreRecordsSel(storeSel),
-    requestsSel: createStoreRequestsSel(storeSel)
+    statusSel: createStoreStatusSel(storeSelWrapper),
+    recordsSel: createStoreRecordsSel(storeSelWrapper),
+    requestsSel: createStoreRequestsSel(storeSelWrapper)
   };
 }
