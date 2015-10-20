@@ -4,7 +4,9 @@ import { ProfileForm } from './Form/ProfileForm';
 export class Content extends React.Component {
   render() {
     return (
-      <ProfileForm />
+      <div>
+        <ProfileForm />
+      </div>
     );
   }
 }
