@@ -63,7 +63,6 @@ export class FeedbackListControlBar extends Component {
     }
     const {dispatch} = this.props;
     if (!this.state.viewOptionsIsExpanded) {
-      console.log('I was closed');
       // dispatch();
     }
     this.setState({

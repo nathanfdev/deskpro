@@ -12,6 +12,7 @@ import MenuFooterOptions from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Compone
 
 const FeedbackViewOptions = React.createClass({
   propTypes: {
+    dispatch: PropTypes.func.isRequired,
     toggleOptionsMenu: PropTypes.func.isRequired,
     currentViewMode: PropTypes.string.isRequired
   },
@@ -19,44 +20,38 @@ const FeedbackViewOptions = React.createClass({
   mixins: [require('react-onclickoutside')],
 
   getInitialState() {
-    return {};
+    return {
+      card: {
+        id: {isShown: true},
+        hidden_status: {isShown: true},
+        status_category: {isShown: true},
+        custom_category: {isShown: true},
+        date_created: {isShown: true},
+        total_rating: {isShown: true},
+        num_rating: {isShown: true},
+        num_comments: {isShown: true},
+        validating: {isShown: true}
+      }
+    };
   },
 
-  onClose: function onClose() {
-    console.log('onClose');
+  componentWillUnmount: function componentWillUnmount() {
+    console.log('Unmounted');
+    // dispatch();
   },
 
   handleClickOutside: function handleClickOutside() {
     this.props.toggleOptionsMenu();
-    this.onClose();
   },
 
-  componentWillUnmount: function() {
-    console.log('Unmounted');
-  },
-
-  changeState: function(type, field, checked) {
-    if (this.state && this.state.hasOwnProperty(type)) {
-      let existedProp = false;
-      const exists = this.state[type].map((obj)=> {
-        if (obj.field === field) {
-          obj.shown = checked;
-          existedProp = true;
-        }
-        return obj;
-      });
-      if (!existedProp) {
-        exists.push({field: field, shown: checked});
-      }
-      this.setState({[type]: exists});
-    } else {
-      this.setState({[type]: [{field: field, shown: checked}]});
-    }
+  changeState: function changeState(type, field, isChecked) {
+    const currentState = this.state[type];
+    currentState[field].isShown = isChecked;
+    this.setState({[type]: currentState});
   },
 
   render: function render() {
     const {currentViewMode} = this.props;
-    console.log('Now state is', this.state);
     return (
       <Menu widgetClass="dpw-navigation-dropdown-secondary">
         <Item discMarked
@@ -65,8 +60,12 @@ const FeedbackViewOptions = React.createClass({
               isActive={currentViewMode === constants.VIEW_MODE_CARD}
           >
           <ItemList>
-            <CardViewFieldsList currentViewMode={currentViewMode} ref="cardViewFields"
-                                changeState={this.changeState.bind(this, constants.VIEW_MODE_CARD)}/>
+            <CardViewFieldsList
+              currentViewMode={currentViewMode}
+              ref="cardViewFields"
+              changeState={this.changeState.bind(this, constants.VIEW_MODE_CARD)}
+              fields={this.state.card}
+              />
           </ItemList>
         </Item>
         <Item discMarked
