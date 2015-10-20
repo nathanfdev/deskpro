@@ -58,7 +58,7 @@ class TicketFlagsController extends BaseController
         $flags = $this->get('data.ticketflags');
 
         return View::create(
-            $this->DataSerialize(new PrimitiveArray($flags->getFlags())),
+            $this->dataSerialize(new PrimitiveArray($flags->getFlags())),
             Response::HTTP_OK
         );
     }
@@ -86,7 +86,7 @@ class TicketFlagsController extends BaseController
         }
 
         return View::create(
-            $this->DataSerialize(new PrimitiveArray($counts)),
+            $this->dataSerialize(new PrimitiveArray($counts)),
             Response::HTTP_OK
         );
     }
@@ -106,7 +106,7 @@ class TicketFlagsController extends BaseController
         $tickets = $this->get('data.ticketflags')->getAllRecordsForFlag($this->getUser()->getId(), $star);
 
         return View::create(
-            $this->DataSerialize(new PrimitiveArray([
+            $this->dataSerialize(new PrimitiveArray([
                 'count' => count($tickets),
             ])),
             Response::HTTP_OK
@@ -128,7 +128,7 @@ class TicketFlagsController extends BaseController
         $tickets = $this->get('data.ticketflags')->getAllTicketsForFlag($this->getUser()->getId(), $star);
 
         return View::create(
-            $this->DataSerialize($tickets),
+            $this->dataSerialize($tickets),
             Response::HTTP_OK
         );
     }

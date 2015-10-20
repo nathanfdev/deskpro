@@ -50,7 +50,7 @@ class TicketMacrosController extends BaseController
         $service = $this->get('data.ticket_macros');
 
         return View::create(
-            $this->DataSerialize($service->loadAll()),
+            $this->dataSerialize($service->loadAll()),
             Response::HTTP_OK
         );
     }
@@ -63,7 +63,7 @@ class TicketMacrosController extends BaseController
         $service = $this->get('data.ticket_macros');
 
         return View::create(
-            $this->DataSerialize($service->loadSingle($id)),
+            $this->dataSerialize($service->loadSingle($id)),
             Response::HTTP_OK
         );
     }
@@ -81,7 +81,7 @@ class TicketMacrosController extends BaseController
         $service = $this->get('data.ticket_macros');
 
         return View::create(
-            $this->DataSerialize($service->loadForPerson($user_id))
+            $this->dataSerialize($service->loadForPerson($user_id))
         );
     }
 }
