@@ -5,7 +5,7 @@ export class Email extends React.Component {
 
   static propTypes = {
     emails: PropTypes.array.isRequired,
-    primary: PropTypes.string.isRequired,
+    primary: PropTypes.string,
     onChangeEmails: PropTypes.func.isRequired,
     onChangePrimary: PropTypes.func.isRequired
   };
