@@ -185,7 +185,7 @@ class TicketLayoutFactory
             }
 
             if (!$exists_in_layout) {
-                $new = new LayoutField(FormFields::CAPTCHA);
+                $new = new LayoutField(FormFields::CAPTCHA, 'captcha_auto_added');
                 $new->enableOnNew();
                 $new->enableOnEdit();
                 $new->enableOnView();

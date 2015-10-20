@@ -143,7 +143,8 @@ class NewTicketController extends AbstractController
             'action'         => $this->generateUrl('portal_new_ticket'),
         ));
 
-        $layouts           = $this->container->getTicketLayoutManager()->getUserLayouts();
+        /** @var \Application\DeskPRO\TicketLayout\LayoutCollection $layouts */
+        $layouts           = $this->container->getTicketLayoutManager()->getUserLayouts(true);
         $ticket_display_js = 'window.DESKPRO_TICKET_DISPLAY = '.$layouts->compileJsObj().';';
 
         //

@@ -90,6 +90,8 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
         if ('portal_login_submit' == $request->attributes->get('_route')) {
             if ($response = $this->checkCaptcha($request)) {
+                $this->logLoginFailure($request->get('username'), $request->getClientIp());
+
                 return $response;
             }
 
@@ -386,5 +388,26 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
     protected function createTokenFromPerson(Person $person)
     {
         return new DpFormLoginToken($person, $person->getPassword(), array_merge(array('ROLE_USER'), $person->getRoles()));
+    }
+
+    private function logLoginFailure($email, $ip)
+    {
+        /** @var \Application\DeskPRO\EntityRepository\Person $person_repo */
+        $person_repo    = $this->container->get('doctrine.orm.default_entity_manager')->getRepository('DeskPRO:Person');
+        $attempt_person = $person_repo->findOneByEmail($email);
+        if ($attempt_person) {
+            $this->container->get('doctrine.dbal.default_connection')->insert(
+                'login_log',
+                array(
+                    'person_id'    => $attempt_person->getId(),
+                    'area'         => defined('DP_INTERFACE') ? DP_INTERFACE : 'unknown',
+                    'is_success'   => 0,
+                    'ip_address'   => $ip,
+                    'hostname'     => @gethostbyaddr($ip) ?: '',
+                    'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
+                    'date_created' => date('Y-m-d H:i:s'),
+                )
+            );
+        }
     }
 }
