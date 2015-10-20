@@ -505,9 +505,7 @@ class NewTicket
                 }
             }
         }
-        if (!empty($post_custom_person_fields)) {
-            $manager->saveFormToObject($post_custom_person_fields, $ticket->person);
-        }
+        $manager->saveFormToObject($post_custom_person_fields, $ticket->person);
 
         if ($ticket->person->organization) {
             $manager                = App::$container->getOrgFieldManager();
@@ -520,9 +518,8 @@ class NewTicket
                     }
                 }
             }
-            if (!empty($post_custom_org_fields)) {
-                $manager->saveFormToObject($post_custom_org_fields, $ticket->person->organization);
-            }
+
+            $manager->saveFormToObject($post_custom_org_fields, $ticket->person->organization);
         }
 
         foreach ($add_cc_people as $add_cc_person) {
