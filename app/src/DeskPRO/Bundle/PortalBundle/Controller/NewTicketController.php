@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Tickets\DuplicateTicketException;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\LoginRequiredException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -114,6 +115,8 @@ class NewTicketController extends AbstractController
                         }
                     }
 
+                    $this->submitNewTicketAbuseCheck($person, $request->getClientIp());
+
                     $ticket = $this->saveNewTicket($ticket, $person);
 
                     $this->addFlash('success', $this->phrase('portal.flashes.ticket_created'));
@@ -128,6 +131,8 @@ class NewTicketController extends AbstractController
                     return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
                 }
             }
+        } elseif ($form->isSubmitted()) {
+            $this->submitNewTicketAbuseCheck($person, $request->getClientIp());
         }
 
         $form_full = $this->createForm('ticket', $ticket, array(
@@ -157,6 +162,12 @@ class NewTicketController extends AbstractController
                 'page_title'        => $this->createPageTitle()->newticket(),
             )
         );
+    }
+
+    protected function submitNewTicketAbuseCheck($person, $ip)
+    {
+        $check = new SubmitTicketAbuseCheck($person, $ip);
+        $this->getAntiAbuseService()->check($check);
     }
 
     /**
@@ -194,7 +205,7 @@ class NewTicketController extends AbstractController
             $ticket_manager = $this->getTicketManager();
             // we handle this the new way (TicketManager), so disable the doctrine auto ticket process
             $ticket->disableAutoTicketProcess();
-            $context        = $ticket_manager->createUserExecutorContext($person, 'newticket', 'portal');
+            $context = $ticket_manager->createUserExecutorContext($person, 'newticket', 'portal');
 
             $ticket_manager->saveTicket($ticket, $context);
             $em->flush();

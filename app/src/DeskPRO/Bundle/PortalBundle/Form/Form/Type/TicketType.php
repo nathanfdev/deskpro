@@ -42,7 +42,6 @@ use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomFieldTicketContext;
 use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomPerFieldManager;
-use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use DeskPRO\Bundle\PortalBundle\Form\Form\TicketFormContext;
 use DeskPRO\Bundle\PortalBundle\Form\FormFields;
 use DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyGenerator;
@@ -90,11 +89,6 @@ class TicketType extends AbstractType
     private $language_manager;
 
     /**
-     * @var CaptchaDecider
-     */
-    private $captcha_decider;
-
-    /**
      * @var CustomPerFieldManager
      */
     private $custom_per_field_manager;
@@ -106,7 +100,6 @@ class TicketType extends AbstractType
         HierarchyGenerator $hierarchy_generator,
         EntityManager $em,
         LanguageManager $language_manager,
-        CaptchaDecider $captcha_decider,
         CustomPerFieldManager $custom_per_field_manager
     ) {
         $this->layout_differ            = $layout_differ;
@@ -115,7 +108,6 @@ class TicketType extends AbstractType
         $this->hierarchy_generator      = $hierarchy_generator;
         $this->em                       = $em;
         $this->language_manager         = $language_manager;
-        $this->captcha_decider          = $captcha_decider;
         $this->custom_per_field_manager = $custom_per_field_manager;
     }
 
@@ -754,9 +746,13 @@ class TicketType extends AbstractType
 
     private function addCaptcha(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
-        if (!$this->captcha_decider->shouldRequireTicketCaptchaForCurrentPerson()) {
+        // ensure captcha is only present once
+        if ($form_context->doesCaptchaExistOnForm()) {
             return;
         }
+
+        // NOTE: you may want to view TicketLayoutFactory where we can, at times, add a CAPTCHA to the ticket
+        // layout under certain circumstances (when anti-abuse is violated, for example).
 
         $options = array(
             'mapped'         => false,
@@ -771,6 +767,8 @@ class TicketType extends AbstractType
         }
 
         $form_context->getForm()->add($field->getId(), 'deskpro_captcha', $options);
+
+        $form_context->setCaptchaExistsOnForm(true);
     }
 
     private function addCc(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)

@@ -34,7 +34,9 @@ namespace DeskPRO\Bundle\AppBundle\Ticket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\TicketLayout\Layout;
+use Application\DeskPRO\TicketLayout\LayoutCollection;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use DeskPRO\Bundle\PortalBundle\Form\FormFields;
 use Doctrine\ORM\EntityManager;
 
@@ -45,9 +47,24 @@ class TicketLayoutFactory
      */
     private $entity_manager;
 
-    public function __construct(EntityManager $entity_manager)
+    /**
+     * @var CaptchaDecider
+     */
+    private $catpcha_decider;
+
+    public function __construct(EntityManager $entity_manager, CaptchaDecider $catpcha_decider)
     {
-        $this->entity_manager = $entity_manager;
+        $this->entity_manager  = $entity_manager;
+        $this->catpcha_decider = $catpcha_decider;
+    }
+
+    /**
+     * @return TicketLayout
+     */
+    public function getInitialLayout()
+    {
+        return $this->entity_manager->createQuery('SELECT l FROM DeskPRO:TicketLayout l WHERE l.department IS NULL')
+                                    ->getOneOrNullResult();
     }
 
     /**
@@ -71,8 +88,38 @@ class TicketLayoutFactory
         }
 
         // verify that the user layout has a subject, message, and user email
-        $this->verifyRequiredFields($layout->user_layout);
-        $this->verifyRequiredFields($layout->agent_layout);
+        $this->verifyRequiredFields($layout->getUserLayout());
+        $this->verifyRequiredFields($layout->getAgentLayout());
+        $this->checkAntiAbuseCaptcha($layout->getUserLayout());
+        //$this->checkAntiAbuseCaptcha($layout->getAgentLayout()); purposely not checking for agent interface
+
+        return $layout;
+    }
+
+    /**
+     * Gets a combination of all ticket layouts. This is used to output a 'full' form with every field,
+     * which is used by JS to dynamically update the UI as a user changes options.
+     *
+     * @return TicketLayout
+     */
+    public function getFullLayoutForTicketForm()
+    {
+        $layout = new TicketLayout();
+
+        /** @var TicketLayout[] $all_layouts */
+        $all_layouts = $this->entity_manager->createQuery('SELECT l FROM DeskPRO:TicketLayout l')->execute();
+
+        foreach ($all_layouts as $l) {
+            foreach ($l->getUserLayout()->all() as $f) {
+                $layout->getUserLayout()->add($f);
+            }
+            foreach ($l->getAgentLayout()->all() as $f) {
+                $layout->getAgentLayout()->add($f);
+            }
+        }
+
+        $this->checkAntiAbuseCaptcha($layout->getUserLayout());
+        //$this->checkAntiAbuseCaptcha($layout->getAgentLayout()); purposely not checking for agent interface
 
         return $layout;
     }
@@ -105,36 +152,45 @@ class TicketLayoutFactory
     }
 
     /**
-     * Gets a combination of all ticket layouts. This is used to output a 'full' form with every field,
-     * which is used by JS to dynamically update the UI as a user changes options.
+     * This is necessary for Application\DeskPRO\TicketLayout\TicketLayoutManager.
      *
-     * @return TicketLayout
+     * @param LayoutCollection $layouts
      */
-    public function getFullLayoutForTicketForm()
+    public function checkAntiAbuseCaptchaForMultipleLayouts(LayoutCollection $layouts)
     {
-        $layout = new TicketLayout();
-
-        /** @var TicketLayout[] $all_layouts */
-        $all_layouts = $this->entity_manager->createQuery('SELECT l FROM DeskPRO:TicketLayout l')->execute();
-
-        foreach ($all_layouts as $l) {
-            foreach ($l->user_layout->all() as $f) {
-                $layout->user_layout->add($f);
-            }
-            foreach ($l->agent_layout->all() as $f) {
-                $layout->agent_layout->add($f);
-            }
+        foreach ($layouts as $layout) {
+            $this->checkAntiAbuseCaptcha($layout);
         }
-
-        return $layout;
     }
 
     /**
-     * @return TicketLayout
+     * The admin has the ability to add a CAPTCHA field to the layout on their own.
+     * IF a captcha field is present in the layout definition it will always be rendered on the form.
+     *
+     * However, if captcha is NOT on the layout of the ticket, a CAPTCHA can still be rendered if
+     * anti-abuse settings are violated. This method will force-add CAPTCHA to the ticket layout
+     * in the event that anti-abuse is in effect.
+     *
+     * @param Layout $layout
      */
-    public function getInitialLayout()
+    private function checkAntiAbuseCaptcha(Layout $layout)
     {
-        return $this->entity_manager->createQuery('SELECT l FROM DeskPRO:TicketLayout l WHERE l.department IS NULL')
-            ->getOneOrNullResult();
+        if ($this->catpcha_decider->shouldRequireTicketCaptchaForCurrentPerson()) {
+            $exists_in_layout = false;
+            /** @var \Application\DeskPRO\TicketLayout\LayoutField $layout_field */
+            foreach ($layout as $layout_field) {
+                if ($layout_field->getFieldType() == FormFields::CAPTCHA) {
+                    $exists_in_layout = true;
+                }
+            }
+
+            if (!$exists_in_layout) {
+                $new = new LayoutField(FormFields::CAPTCHA);
+                $new->enableOnNew();
+                $new->enableOnEdit();
+                $new->enableOnView();
+                $layout->add($new);
+            }
+        }
     }
 }
