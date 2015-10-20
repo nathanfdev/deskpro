@@ -4,6 +4,7 @@ import { Name } from './Fields/Name';
 import { Avatar } from './Fields/Avatar';
 import { Email } from './Fields/Email';
 import { Phone } from './Fields/Phone';
+import { Language } from './Fields/Language';
 import { Password } from './Fields/Password';
 
 export class ProfileForm extends React.Component {
@@ -113,9 +114,7 @@ export class ProfileForm extends React.Component {
         <hr />
 
         <FieldWrapper label="Language">
-          <div className="bucket-column">
-            <a href="#" className="select">English <i className="fa fa-caret-down"></i></a>
-          </div>
+          <Language />
         </FieldWrapper>
 
         <FieldWrapper label="Time Zone">
