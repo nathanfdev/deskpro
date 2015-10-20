@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener;
 
 use Application\DeskPRO\Entity\Person;
@@ -40,6 +39,7 @@ use Application\DeskPRO\Service\RateLimit;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\AntiAbuseEvent;
 use Doctrine\ORM\EntityManager;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CaptchaEventListener implements EventSubscriberInterface
@@ -54,6 +54,11 @@ class CaptchaEventListener implements EventSubscriberInterface
      */
     private $settings_resolver;
 
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
     public static function getSubscribedEvents()
     {
         return [
@@ -61,10 +66,11 @@ class CaptchaEventListener implements EventSubscriberInterface
         ];
     }
 
-    public function __construct(EntityManager $em, SettingsResolver $settings_resolver)
+    public function __construct(EntityManager $em, SettingsResolver $settings_resolver, LoggerInterface $logger)
     {
         $this->em                = $em;
         $this->settings_resolver = $settings_resolver;
+        $this->logger            = $logger;
     }
 
     public function checkAntiAbuse(AntiAbuseEvent $event)
@@ -74,10 +80,14 @@ class CaptchaEventListener implements EventSubscriberInterface
         }
 
         if ($this->getSetting(AntiAbuse::SETTING_RATE_LIMIT_IS_DISABLED)) {
+            $this->logger->debug('[AntiAbuse->CaptchaEventListener] Rate Limit is disabled. Skipping.');
+
             return;
         }
 
         if ($this->isWhitelisted($event->getIp())) {
+            $this->logger->info('[AntiAbuse->CaptchaEventListener] Whitelist matched IP "'.$event->getIp().'"". Skipping rate limit checks.');
+
             return;
         }
 
@@ -86,6 +96,22 @@ class CaptchaEventListener implements EventSubscriberInterface
         }
 
         if ($this->isCaptchaRequired($event->getType(), $event->getPerson(), $event->getIp())) {
+            $person = $event->getPerson();
+            if ($person instanceof Person) {
+                $p = $person->isGuest() ? 'guest' : $person->getId();
+            } elseif (is_scalar($person)) {
+                $p = $person;
+            } else {
+                $p = 'unknown';
+            }
+            $this->logger->info(
+                sprintf(
+                    '[AntiAbuse->CaptchaEventListener] captcha is recommended for (IP=%s, Person=%s)',
+                    $event->getIp(),
+                    $p
+                )
+            );
+
             $event->markCaptchaRecommended();
         }
     }

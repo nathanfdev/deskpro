@@ -47,7 +47,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 /**
  * The general pattern here is that if the user is a guest, we determine showing a captcha or not via a setting
  * for the type of action the user is doing (ie. if user.registration_captcha is on and it's a guest, we show the
- * captcah). Sometimes this setting may be off. In those cases, we still check with the anti-abuse system to check vs .
+ * captcha). Sometimes this setting may be off. In those cases, we still check with the anti-abuse system to check vs .
  * IP. Therefore, it is always possible to see a captcha even if you disable it in settings, because the AntiAbuse system
  * has precedence.
  */
