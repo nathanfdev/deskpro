@@ -25,7 +25,7 @@ export class Email extends React.Component {
   renderSelectBox() {
     const { emails, primary } = this.props;
 
-    if (emails && emails.length > 1) {
+    if (emails && emails.length > 1 && emails[1]) {
       const options = jQuery.unique(emails).map(email => ({
         value: email,
         label: email
