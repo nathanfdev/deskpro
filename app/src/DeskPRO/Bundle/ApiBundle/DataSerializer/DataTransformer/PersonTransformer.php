@@ -31,30 +31,21 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializer;
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 
 class PersonTransformer extends AbstractDataSerializerTransformer
 {
     /**
-     * @var DataTransformer
-     */
-    private $serializer;
-
-    /**
      * @var AvatarResolver
      */
     private $avatar_resolver;
 
     /**
-     * @param DataTransformer $transformer
-     * @param AvatarResolver  $avatar_resolver
+     * @param AvatarResolver $avatar_resolver
      */
-    public function __construct(DataSerializer $serializer, AvatarResolver $avatar_resolver)
+    public function __construct(AvatarResolver $avatar_resolver)
     {
-        $this->serializer      = $serializer;
         $this->avatar_resolver = $avatar_resolver;
     }
 
@@ -133,12 +124,7 @@ class PersonTransformer extends AbstractDataSerializerTransformer
         #------------------------------
         # Avatar
         #------------------------------
-
-        $ava      = $this->avatar_resolver->getAvatarModel($person);
-        $ava_data = $this->serializer->serialize($ava);
-
-        // TODO whats the proper way to do this?
-        $ret['avatar'] = $ava_data['data'];
+        $ret['avatar'] = $this->avatar_resolver->getAvatarModel($person);
 
         return $ret;
     }
