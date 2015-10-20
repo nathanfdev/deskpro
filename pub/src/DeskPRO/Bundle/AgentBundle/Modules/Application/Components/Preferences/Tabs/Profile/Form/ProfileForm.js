@@ -1,9 +1,45 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { FieldWrapper } from './Fields/FieldWrapper';
 import { Email } from './Fields/Email';
 import { Password } from './Fields/Password';
 
 export class ProfileForm extends React.Component {
+
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired
+  };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      emails: [],
+      primaryEmail: null,
+      phone: null,
+      language: null,
+      timezone: null,
+      password: null,
+      confirmPassword: null
+    };
+  }
+
+  onChangeEmails = (event) => {
+    const value = event.target.value;
+    const emails = value && value.split(',').map(function(email) {
+      return email && email.trim() || '';
+    }) || [];
+
+    this.setState({
+      emails: emails
+    });
+  };
+
+  onChangePrimaryEmail = (value) => {
+    this.setState({
+      primaryEmail: value
+    });
+  };
+
   render() {
     return (
       <form className="popup-form-default">
@@ -32,7 +68,10 @@ export class ProfileForm extends React.Component {
         </div>
 
         <FieldWrapper label="Your email">
-          <Email />
+          <Email emails={this.state.emails}
+                 primary={this.state.primaryEmail}
+                 onChangeEmails={this.onChangeEmails}
+                 onChangePrimary={this.onChangePrimaryEmail} />
         </FieldWrapper>
 
         <FieldWrapper label="Phone #">
@@ -58,7 +97,7 @@ export class ProfileForm extends React.Component {
         <hr />
 
         <FieldWrapper label="Password">
-          <Password />
+          <Password value={this.state.password} confirmValue={this.state.confirmPassword} />
         </FieldWrapper>
 
         <input type="submit" />
