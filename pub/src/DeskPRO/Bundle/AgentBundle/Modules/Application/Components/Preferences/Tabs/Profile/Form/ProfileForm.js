@@ -82,9 +82,20 @@ export class ProfileForm extends React.Component {
     event.preventDefault();
   };
 
-  render() {
+  renderLanguageField() {
     const { languages } = this.props;
+    if (languages.size < 2) {
+      return null;
+    }
 
+    return (
+      <FieldWrapper label="Language">
+        <Language languages={languages} />
+      </FieldWrapper>
+    );
+  }
+
+  render() {
     return (
       <form className="popup-form-default">
         <FieldWrapper label="Your name">
@@ -116,9 +127,7 @@ export class ProfileForm extends React.Component {
 
         <hr />
 
-        <FieldWrapper label="Language">
-          <Language languages={languages} />
-        </FieldWrapper>
+        {this.renderLanguageField()}
 
         <FieldWrapper label="Time Zone">
           <div className="bucket-column">
