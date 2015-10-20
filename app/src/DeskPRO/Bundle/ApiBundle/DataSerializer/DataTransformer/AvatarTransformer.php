@@ -55,10 +55,11 @@ class AvatarTransformer extends AbstractDataSerializerTransformer
         $avatar = $request->getDataToBeTransformed();
 
         return [
-            'url'          => $avatar->getUrl(80),
-            'url_pattern'  => $avatar->getUrlPattern(),
-            'is_fallback'  => !$avatar->isCustom(),
-            'gravatar'     => $avatar->getBaseGravatarUrl(),
+            'url'                 => $avatar->getUrl(80),
+            'url_pattern'         => $avatar->getUrlPattern(),
+            'default_url'         => $avatar->getDefaultUrl(80),
+            'default_url_pattern' => $avatar->getDefaultUrlPattern(),
+            'gravatar'            => $avatar->getBaseGravatarUrl(),
         ];
     }
 }

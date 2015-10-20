@@ -44,12 +44,12 @@ class Avatar
     /**
      * @var string
      */
-    private $url_pattern;
+    private $default_url_pattern;
 
     /**
-     * @var bool
+     * @var string
      */
-    private $url_is_custom;
+    private $url_pattern;
 
     /**
      * @var string
@@ -57,43 +57,17 @@ class Avatar
     private $base_gravatar;
 
     /**
-     * Create an avatar that represents a custom avatar.
-     *
-     * @param string $url_pattern
-     * @param string $base_gravatar
-     *
-     * @return Avatar
-     */
-    public static function createCustomAvatar($url_pattern, $base_gravatar = null)
-    {
-        return new self($url_pattern, true, $base_gravatar);
-    }
-
-    /**
-     * Create an avatar that represents a default avatar.
-     *
-     * @param string $default_url_pattern
-     * @param string $base_gravatar
-     *
-     * @return Avatar
-     */
-    public static function createDefaultAvatar($default_url_pattern, $base_gravatar = null)
-    {
-        return new self($default_url_pattern, false, $base_gravatar);
-    }
-
-    /**
      * Avatar constructor.
      *
-     * @param string $url_pattern   A pattern with {IMG_SIZE} placeholder
-     * @param string $url_is_custom If $url_pattern is a custom image instead of a default image
-     * @param string $base_gravatar Gravatar base URL (no options on it)
+     * @param string|null $url_pattern
+     * @param string|null $default_url_pattern
+     * @param string|null $base_gravatar
      */
-    private function __construct($url_pattern, $url_is_custom, $base_gravatar = null)
+    public function __construct($url_pattern, $default_url_pattern, $base_gravatar)
     {
-        $this->url_pattern   = $url_pattern;
-        $this->url_is_custom = $url_is_custom;
-        $this->base_gravatar = $base_gravatar;
+        $this->url_pattern         = $url_pattern;
+        $this->default_url_pattern = $default_url_pattern;
+        $this->base_gravatar       = $base_gravatar;
     }
 
     /**
@@ -103,6 +77,10 @@ class Avatar
      */
     public function getUrl($size = 80)
     {
+        if (!$this->url_pattern) {
+            return;
+        }
+
         return str_replace('{{IMG_SIZE}}', $size, $this->url_pattern);
     }
 
@@ -111,15 +89,37 @@ class Avatar
      */
     public function getUrlPattern()
     {
+        if (!$this->url_pattern) {
+            return;
+        }
+
         return $this->url_pattern;
     }
 
     /**
-     * @return bool
+     * @param int $size
+     *
+     * @return mixed
      */
-    public function isCustom()
+    public function getDefaultUrl($size = 80)
     {
-        return $this->url_is_custom;
+        if (!$this->default_url_pattern) {
+            return;
+        }
+
+        return str_replace('{{IMG_SIZE}}', $size, $this->default_url_pattern);
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultUrlPattern()
+    {
+        if (!$this->default_url_pattern) {
+            return;
+        }
+
+        return $this->default_url_pattern;
     }
 
     /**

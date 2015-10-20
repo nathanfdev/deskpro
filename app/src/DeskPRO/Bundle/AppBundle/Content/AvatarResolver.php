@@ -108,26 +108,33 @@ class AvatarResolver
     {
         $safeSizePlaceholder = '_____SAFE_PLACEHOLDER_____';
 
-        $isDefault = false;
-        $pattern   = $this->getAvatar($obj, $safeSizePlaceholder, $isDefault);
-        $pattern   = str_replace($safeSizePlaceholder, '{{IMG_SIZE}}', $pattern);
+        $url_pattern     = null;
+        $default_pattern = null;
+        $gravatar        = null;
 
-        $grav = null;
         if ($obj instanceof Person) {
-            $grav = $obj->getRawGravatarUrl();
-
-            // 'fix' for getAvatar on person
-            if (!$obj->picture_blob) {
-                $pattern = $this->getDefaultPersonAvatar($safeSizePlaceholder);
-                $pattern = str_replace($safeSizePlaceholder, '{{IMG_SIZE}}', $pattern);
+            if ($obj->picture_blob) {
+                $url_pattern = $this->getPersonAvatar($obj, $safeSizePlaceholder);
             }
+            if ($this->use_gravatar) {
+                $gravatar = $obj->getRawGravatarUrl();
+            }
+            $default_pattern = $this->getDefaultPersonAvatar($safeSizePlaceholder);
+        } elseif ($obj instanceof AvatarOwner) {
+            if ($obj->getAvatarBlob()) {
+                $url_pattern = $this->getCommonAvatar($obj, $safeSizePlaceholder);
+            }
+            $default_pattern = $this->getDefaultCommonAvatar($safeSizePlaceholder);
         }
 
-        if ($isDefault) {
-            return Avatar::createDefaultAvatar($pattern, $grav);
-        } else {
-            return Avatar::createCustomAvatar($pattern, $grav);
+        if ($url_pattern) {
+            $url_pattern = str_replace($safeSizePlaceholder, '{{IMG_SIZE}}', $url_pattern);
         }
+        if ($default_pattern) {
+            $default_pattern = str_replace($safeSizePlaceholder, '{{IMG_SIZE}}', $default_pattern);
+        }
+
+        return new Avatar($url_pattern, $default_pattern, $gravatar);
     }
 
     /**
