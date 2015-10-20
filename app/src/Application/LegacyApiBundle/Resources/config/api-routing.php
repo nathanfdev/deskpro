@@ -3447,7 +3447,7 @@ $collection->create(
     'api_settings_portal_general',
     array(
         'path'       => '/settings/portal/general',
-        'controller' => 'LegacyApiBundle:Settings:generalPortalSettings',
+        'controller' => 'LegacyApiBundle:Settings:portalSettings',
         'methods'    => array('GET'),
     )
 );
@@ -3456,7 +3456,7 @@ $collection->create(
     'api_settings_portal_general_save',
     array(
         'path'       => '/settings/portal/general',
-        'controller' => 'LegacyApiBundle:Settings:saveGeneralPortalSettings',
+        'controller' => 'LegacyApiBundle:Settings:savePortalSettings',
         'methods'    => array('POST'),
     )
 );
