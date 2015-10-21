@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import Select from 'react-select';
 
 export class Language extends React.Component {
 
@@ -8,19 +9,20 @@ export class Language extends React.Component {
     onChange: PropTypes.func.isRequired
   };
 
-  onChange = (event) => {
-    this.props.onChange(event.target.value);
-  };
-
   render() {
-    const { languages } = this.props;
+    const { value, languages, onChange } = this.props;
+    const options = languages.map(language => ({
+      value: language.get('title'),
+      label: language.get('title')
+    })).toArray();
 
     return (
       <div className="bucket-column">
-        <a href="#" className="select">English <i className="fa fa-caret-down"></i></a>
-        <select>
-          {languages.map(language => <option key={language.get('id')} value={language.get('id')}>{language.get('title')}</option>)}
-        </select>
+        <Select
+          name="form-field-name"
+          value={value}
+          options={options}
+          onChange={onChange} />
       </div>
     );
   }
