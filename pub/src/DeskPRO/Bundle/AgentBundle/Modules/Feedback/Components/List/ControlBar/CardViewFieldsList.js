@@ -20,6 +20,7 @@ export class CardViewFieldsList extends Component {
         <ViewField value="type" label="Type" isShown fixed/>
         <ViewField value="content" label="Content" isShown fixed/>
         <ViewField value="author_name" label="Submitter" isShown fixed/>
+        <ViewField value="num_comments" label="Comments" isShown fixed/>
         <li>
           <hr/>
         </li>
@@ -33,9 +34,7 @@ export class CardViewFieldsList extends Component {
         <ViewField value="date_created" label="Created" isShown={fields.date_created.isShown}
                    changeState={changeState}/>
         <ViewField value="total_rating" label="Rating" isShown={fields.total_rating.isShown} changeState={changeState}/>
-        <ViewField value="num_rating" label="Votes" isShown={fields.num_rating.isShown} changeState={changeState}/>
-        <ViewField value="num_comments" label="Comments" isShown={fields.num_comments.isShown}
-                   changeState={changeState}/>
+        <ViewField value="num_ratings" label="Votes" isShown={fields.num_ratings.isShown} changeState={changeState}/>
         <ViewField value="validating" label="Validating" isShown={fields.validating.isShown} changeState={changeState}/>
       </div>
     );
