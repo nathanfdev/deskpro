@@ -39,11 +39,15 @@ use Application\DeskPRO\NewSettings\Loader\DbGlobalSettingsTableLoader;
 use Application\DeskPRO\NewSettings\Loader\GlobalsArrayLoader;
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DpTestSrc\TestBundle\NewSettings\TestSettingsResolver;
 
 class SettingsResolverService
 {
     public static function create(DeskproContainer $container)
     {
+        // we use a different class in the "test" env so that we can easily manipulate the settings on the fly for test purposes
+        $env = $container->getParameter('kernel.environment');
+
         /** @var \Application\DeskPRO\Cache\Adapter\SimpleArrayCache $simple_array_cache */
         $simple_array_cache = $container->get('cache.simple_array');
 
@@ -55,11 +59,19 @@ class SettingsResolverService
         );
 
         // brand settings loader is a special loader, injected directly
-        $resolver = new SettingsResolver(
-            $loaders,
-            $simple_array_cache,
-            new BrandSettingsLoader($container->getEm()->getConnection(), $simple_array_cache)
-        );
+        if ($env === 'test') {
+            $resolver = new TestSettingsResolver(
+                $loaders,
+                $simple_array_cache,
+                new BrandSettingsLoader($container->getEm()->getConnection(), $simple_array_cache)
+            );
+        } else {
+            $resolver = new SettingsResolver(
+                $loaders,
+                $simple_array_cache,
+                new BrandSettingsLoader($container->getEm()->getConnection(), $simple_array_cache)
+            );
+        }
 
         // virtual settings
         $resolver->setVirtual(

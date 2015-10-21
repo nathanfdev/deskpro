@@ -6,37 +6,14 @@ export const passwordSetError = createAction('LOGIN_PASSWORD_SET_ERROR');
 export const setHasAuth = createAction('LOGIN_SET_HAS_AUTH');
 import { loadMe } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Actions/meActions';
 
-export const emailChange = createAction(
-  'LOGIN_EMAIL_CHANGE',
-  value => dispatch => {
-    dispatch(emailSetError(null));
-    dispatch(passwordSetError(null));
-
-    return value;
-  }
-);
-
-export const passwordChange = createAction(
-  'LOGIN_PASSWORD_CHANGE',
-  value => dispatch => {
-    dispatch(emailSetError(null));
-    dispatch(passwordSetError(null));
-
-    return value;
-  }
-);
-
-export const toggleRememberMe = createAction('LOGIN_TOGGLE_REMEMBER_ME');
 export const login = createAction(
   'LOGIN_SUBMIT_FORM',
   params => dispatch => {
-    dispatch(emailChange(null));
-    dispatch(passwordChange(null));
+    dispatch(emailSetError(null));
+    dispatch(passwordSetError(null));
 
     DpApi.sendPost('DP_API/get_session', params)
       .success(() => {
-        dispatch(emailChange(null));
-        dispatch(passwordChange(null));
         dispatch(loadMe());
         dispatch(setHasAuth(true));
       })

@@ -32,6 +32,13 @@
             </div>
         {% endif %}
 
+        {% if login_captcha_failed %}
+            <div class="error"
+                 style="border: 2px solid black; background-color: firebrick;  color:black; font-weight:bold; display: block; padding:5px; margin: 8px;">
+                {{ phrase('portal.account.login-captcha-failed') }}
+            </div>
+        {% endif %}
+
         {% if saved_form %}
             <div class="error"
                  style="border: 2px solid black; background-color: firebrick;  color:black; font-weight:bold; display: block; padding:5px; margin: 8px;">
@@ -60,6 +67,10 @@
                         <input type="password" tabindex="1" placeholder="Your password" name="password">
                     </div>
                 </div>
+
+                {% if captcha_form is not null %}
+                    {{ form_widget(captcha_form) }}
+                {% endif %}
 
                 {% if auth_manager.isRememberMeEnabled %}
                     <div class="column-full">

@@ -630,7 +630,27 @@ function dp_get_user_ip_address()
         } elseif (!empty($_ENV['REMOVE_ADDR'])) {
             return $_ENV['REMOTE_ADDR'];
         } else {
-            return '127.0.0.1';
+            try {
+                // last ditch effort to try using the request_stack
+                return dp_get_request_stack_ip_address();
+            } catch (\Exception $e) {
+                return '127.0.0.1';
+            }
         }
     }
+}
+
+/**
+ * This is a variation of the "dp_get_user_ip_address" function, except instead of a global variable that is expected to
+ * hold the request object, we call on the request_stack directly to get the master request.
+ */
+function dp_get_request_stack_ip_address()
+{
+    $request_stack = \Application\DeskPRO\App::get('request_stack');
+
+    if (!$request_stack instanceof \Symfony\Component\HttpFoundation\RequestStack) {
+        return '127.0.0.1';
+    }
+
+    return $request_stack->getMasterRequest()->getClientIp();
 }

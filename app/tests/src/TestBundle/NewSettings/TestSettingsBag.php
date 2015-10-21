@@ -29,22 +29,14 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\AntiAbuse\Event;
+namespace DpTestSrc\TestBundle\NewSettings;
 
-use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
+use Application\DeskPRO\NewSettings\SettingsBag;
 
-/**
- * Fire this with the AntiAbuse service to log a login attempt and
- * get recommendations about what to do if abuse is detected.
- *
- * NOTE: if you are checking for LOCKOUT, then a person object IS required
- *       in otherwords, LOCKOUT functionality is only checked if the email
- *       the user provides is actually a Person.
- */
-class LoginAbuseCheck extends AntiAbuseEvent
+class TestSettingsBag extends SettingsBag
 {
-    public function getType()
+    public function set($setting_name, $value)
     {
-        return AntiAbuse::ACTION_LOGIN;
+        $this->settings[$setting_name] = $value;
     }
 }

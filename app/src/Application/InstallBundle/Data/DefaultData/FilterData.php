@@ -54,169 +54,116 @@ class FilterData extends AbstractDefaultData
 
     private function newFilterInstall()
     {
+        $status_agent = new TicketStatusTerm(['status' => [Ticket::STATUS_AWAITING_AGENT]], TermInterface::OP_IS);
+        $status_user  = new TicketStatusTerm(['status'  => [Ticket::STATUS_AWAITING_USER]], TermInterface::OP_IS);
+
         #------------------------------
-        # Define filters
+        # Inbox
         #------------------------------
 
         $filter_set = new TicketFilterSet();
-        $filter_set->setTitle('Awaiting Agent');
+        $filter_set->setTitle('Inbox');
         $filter_set->setIsDefault(true);
+        $filter_set->setDisplayOrder(10);
+        $this->getEm()->persist($filter_set);
 
         // my tickets
-        $term = new CompositeTerm(array(), TermInterface::OP_AND);
-        $term->addTerm(
-            new AgentTerm(
-                array(
-                    'agent_ids' => array(AgentTerm::ID_ME),
-                ),
-                TermInterface::OP_IS
-            )
-        );
-        $term->addTerm(
-            new TicketStatusTerm(
-                array(
-                    'status' => array(Ticket::STATUS_AWAITING_AGENT),
-                ),
-                TermInterface::OP_IS
-            )
-        );
+        $term = new CompositeTerm([], TermInterface::OP_AND);
+        $term->addTerm(new AgentTerm(['agent_ids' => [AgentTerm::ID_ME]], TermInterface::OP_IS));
+        $term->addTerm($status_agent);
         $this->saveFilter('My Tickets', $term, $filter_set);
 
         // my team's tickets
-        $term = new CompositeTerm(array(), TermInterface::OP_AND);
-        $term->addTerm(
-            new AgentTeamTerm(
-                array(
-                    'agent_team_ids' => array(AgentTeamTerm::TEAM_ID_ME),
-                ),
-                TermInterface::OP_IS
-            )
-        );
-        $term->addTerm(
-            new TicketStatusTerm(
-                array(
-                    'status' => array(Ticket::STATUS_AWAITING_AGENT),
-                ),
-                TermInterface::OP_IS
-            )
-        );
+        $term = new CompositeTerm([], TermInterface::OP_AND);
+        $term->addTerm(new AgentTeamTerm(['agent_team_ids' => [AgentTeamTerm::TEAM_ID_ME]], TermInterface::OP_IS));
+        $term->addTerm($status_agent);
         $this->saveFilter('My Team\'s Tickets', $term, $filter_set);
 
         // tickets I follow
-        $term = new CompositeTerm(array(), TermInterface::OP_AND);
-        $term->addTerm(
-            new TicketParticipantTerm(
-                array(
-                    'person_ids' => array(TicketParticipantTerm::ID_ME),
-                ),
-                TermInterface::OP_IS
-            )
-        );
-        $term->addTerm(
-            new TicketStatusTerm(
-                array(
-                    'status' => array(Ticket::STATUS_AWAITING_AGENT),
-                ),
-                TermInterface::OP_IS
-            )
-        );
+        $term = new CompositeTerm([], TermInterface::OP_AND);
+        $term->addTerm(new TicketParticipantTerm(['person_ids' => [TicketParticipantTerm::ID_ME]], TermInterface::OP_IS));
+        $term->addTerm($status_agent);
         $this->saveFilter('Tickets I Follow', $term, $filter_set);
 
         // unassigned tickets
-        $term = new CompositeTerm(array(), TermInterface::OP_AND);
-        $term->addTerm(
-            new AgentTerm(
-                array(
-                    'agent_ids' => array(0),
-                ),
-                TermInterface::OP_IS
-            )
-        );
-        $term->addTerm(
-            new AgentTeamTerm(
-                array(
-                    'agent_team_ids' => array(0),
-                ),
-                TermInterface::OP_IS
-            )
-        );
-        $term->addTerm(
-            new TicketStatusTerm(
-                array(
-                    'status' => array(Ticket::STATUS_AWAITING_AGENT),
-                ),
-                TermInterface::OP_IS
-            )
-        );
+        $term = new CompositeTerm([], TermInterface::OP_AND);
+        $term->addTerm(new AgentTerm(['agent_ids'          => [0]], TermInterface::OP_IS));
+        $term->addTerm(new AgentTeamTerm(['agent_team_ids' => [0]], TermInterface::OP_IS));
+        $term->addTerm($status_agent);
         $this->saveFilter('Unassigned', $term, $filter_set);
 
         // all tickets (awaiting agent)
-        $term = new TicketStatusTerm(
-            array(
-                'status' => array(Ticket::STATUS_AWAITING_AGENT),
-            ),
-            TermInterface::OP_IS
-        );
+        $term = new TicketStatusTerm(['status' => [Ticket::STATUS_AWAITING_AGENT]], TermInterface::OP_IS);
         $this->saveFilter('All', $term, $filter_set);
 
-        // all tickets (awaiting user)
-        $term = new TicketStatusTerm(
-            array(
-                'status' => array(Ticket::STATUS_AWAITING_USER),
-            ),
-            TermInterface::OP_IS
-        );
-        $this->saveFilter('Awaiting User', $term, $filter_set);
+        #------------------------------
+        # All Tickets
+        #------------------------------
+
+        $filter_set = new TicketFilterSet();
+        $filter_set->setTitle('All Tickets');
+        $filter_set->setIsDefault(true);
+        $filter_set->setDisplayOrder(20);
+        $this->getEm()->persist($filter_set);
+
+        // mine on hold
+        // TODO correct the term
+        $term = $status_agent;
+        $this->saveFilter('Mine On Hold', $term, $filter_set);
+
+        // all on hold
+        // TODO correct the term
+        $term = $status_agent;
+        $this->saveFilter('All On Hold', $term, $filter_set);
+
+        // my recent activity
+        // TODO correct the term
+        $term = $status_agent;
+        $this->saveFilter('My Recent Activity', $term, $filter_set);
+
+        // aging
+        // TODO correct the term
+        $term = $status_agent;
+        $this->saveFilter('Aging', $term, $filter_set);
+
+        // my recent activity
+        // TODO correct the term
+        $term = $status_agent;
+        $this->saveFilter('New (opened today)', $term, $filter_set);
+
+        // my awaiting user
+        $term = new CompositeTerm([], TermInterface::OP_AND);
+        $term->addTerm(new AgentTerm(['agent_ids' => [AgentTerm::ID_ME]], TermInterface::OP_IS));
+        $term->addTerm($status_user);
+        $this->saveFilter('My Awaiting User', $term, $filter_set);
+
+        // all awaiting user
+        $term = $status_user;
+        $this->saveFilter('All Awaiting User', $term, $filter_set);
 
         // resolved
-        $term = new TicketStatusTerm(
-            array(
-                'status' => array(Ticket::STATUS_RESOLVED),
-            ),
-            TermInterface::OP_IS
-        );
+        $term = new TicketStatusTerm(['status' => [Ticket::STATUS_RESOLVED]], TermInterface::OP_IS);
         $this->saveFilter('Resolved', $term, $filter_set);
 
         // archived
-        $term = new TicketStatusTerm(
-            array(
-                'status' => array(Ticket::STATUS_ARCHIVED),
-            ),
-            TermInterface::OP_IS
-        );
+        $term = new TicketStatusTerm(['status' => [Ticket::STATUS_ARCHIVED]], TermInterface::OP_IS);
         $this->saveFilter('Archived', $term, $filter_set);
 
-        // awaiting validation
-        $term = new TicketStatusTerm(
-            array(
-                'status' => array(Ticket::HIDDEN_STATUS_VALIDATING),
-            ),
-            TermInterface::OP_IS
-        );
-        $this->saveFilter('Awaiting Validation', $term, $filter_set);
-
         // spam
-        $term = new TicketStatusTerm(
-            array(
-                'status' => array(Ticket::HIDDEN_STATUS_SPAM),
-            ),
-            TermInterface::OP_IS
-        );
+        $term = new TicketStatusTerm(['status' => [Ticket::HIDDEN_STATUS_SPAM]], TermInterface::OP_IS);
         $this->saveFilter('Spam', $term, $filter_set);
 
         // deleted
-        $term = new TicketStatusTerm(
-            array(
-                'status' => array(Ticket::HIDDEN_STATUS_DELETED),
-            ),
-            TermInterface::OP_IS
-        );
+        $term = new TicketStatusTerm(['status' => [Ticket::HIDDEN_STATUS_DELETED]], TermInterface::OP_IS);
         $this->saveFilter('Deleted', $term, $filter_set);
+
+        // awaiting validation
+        $term = new TicketStatusTerm(['status' => [Ticket::HIDDEN_STATUS_VALIDATING]], TermInterface::OP_IS);
+        $this->saveFilter('Awaiting Validation', $term, $filter_set);
 
         /////////
         // save
 
-        $this->getEm()->persist($filter_set);
         $this->getEm()->flush();
     }
 
@@ -226,7 +173,7 @@ class FilterData extends AbstractDefaultData
         # Define filters
         #------------------------------
 
-        $filters = array();
+        $filters = [];
 
         $filters[] = array(
             'title'    => 'My Tickets',

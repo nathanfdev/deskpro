@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\AntiAbuseEvent;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -99,12 +99,18 @@ class AntiAbuse
 
     private function ensureEventHasAPersonObject(AntiAbuseEvent $event)
     {
+        // we allow emails to be used in place of a person object so we resolve that here
         if (!$event->getPerson() instanceof Person) {
             /** @var \Application\DeskPRO\EntityRepository\Person $person_repo */
             $person_repo = $this->em->getRepository('DeskPRO:Person');
             if ($person = $person_repo->findOneByEmail($event->getEmail())) {
                 $event->setPerson($person);
             }
+        }
+
+        // still no person object? make it a guest.
+        if (!$event->getPerson() instanceof Person) {
+            $event->setPerson(new PersonGuest());
         }
     }
 }

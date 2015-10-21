@@ -39,7 +39,7 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
     /**
      * @var array
      */
-    private $settings;
+    protected $settings;
 
     public function __construct(array $settings = array())
     {

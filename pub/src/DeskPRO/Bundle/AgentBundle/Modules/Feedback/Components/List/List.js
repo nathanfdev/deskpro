@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { FeedbackListControlBar } from './ControlBar/FeedbackListControlBar';
-import { FeedbackList } from './View/List/FeedbackList';
+import { FeedbackCardsContainer } from './View/List/FeedbackCardsContainer';
 import { FeedbackCommentList } from './View/List/FeedbackCommentList';
 import { FeedbackTableContainer } from './View/Table/FeedbackTableContainer';
 import { FeedbackCommentTableContainer } from './View/Table/FeedbackCommentTableContainer';
@@ -18,9 +18,6 @@ export class List extends Component {
     selected: PropTypes.array.isRequired,
     feedbackFromStore: PropTypes.array.isRequired,
     feedbackStatuses: PropTypes.object.isRequired,
-    feedbackTypes: PropTypes.array.isRequired,
-    feedbackComments: PropTypes.array.isRequired,
-    feedbackLabels: PropTypes.array.isRequired,
     dispatch: PropTypes.func.isRequired,
     toggleSelected: PropTypes.func.isRequired,
     comments: PropTypes.array.isRequired,
@@ -37,33 +34,17 @@ export class List extends Component {
   }
 
   renderFeedback() {
-    const {
-      currentViewMode, feedback, selected, toggleSelected, people, feedbackTypes, massAction, feedbackLabels,
-      feedbackComments, feedbackStatuses } = this.props;
+    const { currentViewMode, toggleSelected } = this.props;
 
     if (currentViewMode === constants.VIEW_MODE_CARD) {
       return (
-        <FeedbackList
-          elements={feedback}
-          selected={selected}
+        <FeedbackCardsContainer
           toggleSelected={toggleSelected}
-          people={people}
-          feedbackLabels={feedbackLabels}
-          feedbackTypes={feedbackTypes}
-          feedbackComments={feedbackComments}
-          feedbackStatuses={feedbackStatuses}
-          massAction={massAction}
           />
       );
     }
     return (
-      <FeedbackTableContainer
-        elements={feedback}
-        selected={selected}
-        toggleSelected={toggleSelected}
-        feedbackStatuses={feedbackStatuses}
-        people={people}
-        />
+      <FeedbackTableContainer/>
     );
   }
 
@@ -92,11 +73,11 @@ export class List extends Component {
   }
 
   render() {
-    const {dispatch} = this.props;
+    const {dispatch, feedback} = this.props;
     return (
       <ListFrameContainer>
         <FeedbackListControlBar
-          count={this.props.feedback ? this.props.feedback.size : 0}
+          count={feedback ? feedback.size : 0}
           dispatch={dispatch}
           />
         <ListFrameContents>

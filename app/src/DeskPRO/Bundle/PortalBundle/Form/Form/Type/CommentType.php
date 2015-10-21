@@ -32,7 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\People\PersonGuest;
-use DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidCaptcha;
+use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -43,6 +43,16 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class CommentType extends AbstractType
 {
+    /**
+     * @var CaptchaDecider
+     */
+    private $captcha_decider;
+
+    public function __construct(CaptchaDecider $captcha_decider)
+    {
+        $this->captcha_decider = $captcha_decider;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('content_real', 'textarea', array(
@@ -71,13 +81,10 @@ class CommentType extends AbstractType
                         new Email(),
                     ),
                 ));
-                $form->add('captcha', 'deskpro_captcha', array(
-                    'mapped'         => false,
-                    'error_bubbling' => false,
-                    'constraints'    => array(
-                        new ValidCaptcha(),
-                    ),
-                ));
+            }
+
+            if ($this->captcha_decider->shouldRequireCommentCaptchaForCurrentPerson()) {
+                $form->add('captcha', 'deskpro_captcha');
             }
         });
     }

@@ -1,19 +1,23 @@
 import React, {Component, PropTypes} from 'react';
+import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardUser, CardLabel, CardComments, CardStatusBar }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 import jQuery from 'jquery';
 import Immutable from 'immutable';
 
+@injectIntl
 export class FeedbackCard extends Component {
 
   static propTypes = {
+    intl: intlShape.isRequired,
     feedback: PropTypes.object.isRequired,
+    viewFields: PropTypes.object.isRequired,
     selected: PropTypes.bool.isRequired,
     toggleSelected: PropTypes.func.isRequired,
     author: PropTypes.object.isRequired,
     type: PropTypes.object.isRequired,
     feedbackLabels: PropTypes.object.isRequired,
-    feedbackStatus: PropTypes.string.isRequired,
+    feedbackStatus: PropTypes.object.isRequired,
     feedbackComments: PropTypes.object.isRequired
   };
 
@@ -38,7 +42,40 @@ export class FeedbackCard extends Component {
     } else {
       realStatus = status.get('hidden_status');
     }
-    return <CardLineItem>{realStatus}</CardLineItem>;
+    return (
+      <CardLineItem>{realStatus}</CardLineItem>
+    );
+  }
+
+  renderId(id) {
+    return (
+      <CardLineItem>ID: { id }</CardLineItem>
+    );
+  }
+
+  renderDate(date) {
+    return (
+      <CardLineItem><CardDisc/><FormattedRelative value={date}/></CardLineItem>
+    );
+  }
+
+  renderOptionalFields() {
+    const { feedback, viewFields } = this.props;
+    const optionalFields = viewFields.card;
+    let output = [];
+    if (optionalFields.id.isShown) {
+      output = output.concat(this.renderId(feedback.id));
+    }
+    if (optionalFields.date_created.isShown) {
+      output = output.concat(this.renderDate(feedback.date_created));
+    }
+    return (
+      <CardLine>
+        <CardLineLeft>
+          { output }
+        </CardLineLeft>
+      </CardLine>
+    );
   }
 
   render() {
@@ -88,6 +125,8 @@ export class FeedbackCard extends Component {
             <CardComments commentsCounter={comments}/>
           </CardLineRight>
         </CardLine>
+
+        { this.renderOptionalFields() }
       </Card>
     );
   }

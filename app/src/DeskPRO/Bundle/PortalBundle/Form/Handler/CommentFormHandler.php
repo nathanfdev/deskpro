@@ -33,8 +33,11 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Handler;
 
 use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\ContentAbstract;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
 use DeskPRO\Bundle\PortalBundle\Person\LoginRequiredException;
 use DeskPRO\Bundle\PortalBundle\Person\PersonFactory;
 use DeskPRO\Bundle\PortalBundle\SavedForm\FormSaver;
@@ -71,25 +74,32 @@ class CommentFormHandler
      */
     private $token_storage;
 
+    /**
+     * @var AntiAbuse
+     */
+    private $anti_abuse;
+
     public function __construct(
         FormSaver $saver,
         EntityManager $em,
         PersonFactory $person_factory,
         FormFactory $form_factory,
-        TokenStorage $token_storage
+        TokenStorage $token_storage,
+        AntiAbuse $anti_abuse
     ) {
         $this->saver          = $saver;
         $this->em             = $em;
         $this->person_factory = $person_factory;
         $this->form_factory   = $form_factory;
         $this->token_storage  = $token_storage;
+        $this->anti_abuse     = $anti_abuse;
     }
 
     public function handle(FormInterface $form, Request $request, ContentAbstract $content, CommentAbstract $comment)
     {
         $comment->setObject($content);
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $person = $comment->getPerson();
             if ($person instanceof PersonGuest) {
                 // we are dealing with a guest...
@@ -101,19 +111,27 @@ class CommentFormHandler
                     // turn the guest into a contact or a person
                     $person = $this->person_factory->createPersonFromGuest($person);
                     $comment->setPerson($person);
+                    $this->informAntiAbuse($person, $request);
                 } catch (LoginRequiredException $e) {
                     // oops! A login is required. This "guest" cannot post a comment until logged in.
                     $person = $e->getPerson();
+                    $this->informAntiAbuse($person, $request);
 
                     // return the redirect response
                     return $this->saver->saveFormForPerson($person, $form, $request);
                 }
+            } else {
+                $this->informAntiAbuse($person, $request);
             }
             $content->addComment($comment);
             $this->em->persist($comment);
             $this->em->flush(array($comment, $content));
 
             return true;
+        } elseif ($form->isSubmitted()) {
+            $this->informAntiAbuse(null, $request);
+
+            return false;
         }
 
         return false;
@@ -149,5 +167,11 @@ class CommentFormHandler
         }
 
         return $user;
+    }
+
+    private function informAntiAbuse($person = null, Request $request)
+    {
+        $check = new SubmitCommentAbuseCheck($person, $request->getClientIp());
+        $this->anti_abuse->check($check);
     }
 }

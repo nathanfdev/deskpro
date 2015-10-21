@@ -8,8 +8,8 @@ import { connect } from 'react-redux';
 
 @connect(state => {
   return ({
-    massAction: state.Feedback.list.get('massAction'),
     feedback: state.Feedback.list.get('feedback'),
+    massAction: state.Feedback.list.get('massAction'),
     selected: state.Feedback.list.get('selected'),
     comments: state.Feedback.list.get('comments'),
     currentViewMode: currentViewModeSelector(state),
@@ -26,12 +26,12 @@ import { connect } from 'react-redux';
 export class ListContainer extends Component {
 
   static propTypes = {
+    feedback: PropTypes.array.isRequired,
     currentViewMode: PropTypes.string.isRequired,
     comments: PropTypes.array.isRequired,
     dispatch: PropTypes.func.isRequired,
     people: PropTypes.array.isRequired,
     emails: PropTypes.array.isRequired,
-    feedback: PropTypes.array.isRequired,
     feedbackTypes: PropTypes.array.isRequired,
     feedbackLabels: PropTypes.array.isRequired,
     feedbackComments: PropTypes.array.isRequired,

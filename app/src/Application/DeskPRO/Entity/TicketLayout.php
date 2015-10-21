@@ -98,6 +98,16 @@ class TicketLayout extends DomainObject
         }
     }
 
+    public function getUserLayout()
+    {
+        return $this->user_layout;
+    }
+
+    public function getAgentLayout()
+    {
+        return $this->agent_layout;
+    }
+
     /**
      * Enable the layout.
      */
