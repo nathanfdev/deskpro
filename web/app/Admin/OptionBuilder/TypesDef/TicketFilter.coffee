@@ -170,6 +170,25 @@ define [
           })
 
       #------------------------------
+      # Org Fields
+      #------------------------------
+
+      if @options_data?.org_fields
+        options = []
+
+        for f in @options_data.org_fields
+          options.push({
+            title: f.title,
+            value: @initFieldGetter('FilterOrgField', f)
+          })
+
+        if options.length
+          set_options.push({
+            title: 'Organization Fields',
+            subOptions: options
+          })
+
+      #------------------------------
       # Person
       #------------------------------
 
