@@ -37,6 +37,8 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class FollowRedirectListener implements EventSubscriberInterface
 {
+    const FOLLOW_REDIRECT_PARAMETER = 'follow_redirect';
+
     public static function getSubscribedEvents()
     {
         return array(
@@ -49,7 +51,7 @@ class FollowRedirectListener implements EventSubscriberInterface
         $request  = $event->getRequest();
         $response = $event->getResponse();
         if ($response->getStatusCode() === Response::HTTP_FOUND
-            && $request->get('follow_redirect', false)) {
+            && $request->get(self::FOLLOW_REDIRECT_PARAMETER, false)) {
             $response = $this->getNewResponse($event);
             $event->setResponse($response);
         }
@@ -58,7 +60,11 @@ class FollowRedirectListener implements EventSubscriberInterface
     private function getNewResponse(FilterResponseEvent $event)
     {
         $response = $event->getResponse();
-        $location = $response->headers->get('Location');
+        $location = $response->headers->get('Location', false);
+        if (!$location) {
+            // TODO possibly we have to throw some kind of exception in this case
+            return $response;
+        }
         $request  = $this->createSubRequest($event->getRequest(), $location);
         $response = $event->getKernel()->handle($request, HttpKernelInterface::SUB_REQUEST);
 
@@ -71,7 +77,7 @@ class FollowRedirectListener implements EventSubscriberInterface
         $clone->server->set('REQUEST_URI', $location);
         $clone->server->set('REQUEST_METHOD', Request::METHOD_GET);
         $query = $clone->query;
-        $query->remove('follow_redirect');
+        $query->remove(self::FOLLOW_REDIRECT_PARAMETER);
         $query   = $query->all();
         $cookies = $clone->cookies->all();
         $server  = $clone->server->all();
