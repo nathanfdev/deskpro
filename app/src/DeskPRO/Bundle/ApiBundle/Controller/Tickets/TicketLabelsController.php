@@ -55,10 +55,23 @@ class TicketLabelsController extends BaseController
      */
     public function cgetAction()
     {
-        $labels = $this->get('data.ticketlabels');
+        $labels = $this->get('data.ticketlabels')->getLabels();
+
+        // TODO remove this when db has real sample data
+        if (!$labels) {
+            $labels = ['test', 'test2', 'test3'];
+        }
+
+        // TODO colors need to come from labels_def table
+        $labels = array_map(function ($l) {
+            return [
+                'label' => $l,
+                'color' => '#999'
+            ];
+        }, $labels);
 
         return View::create(
-            $this->dataSerialize(new PrimitiveArray($labels->getLabels())),
+            $this->dataSerialize(new PrimitiveArray($labels)),
             Response::HTTP_OK
         );
     }
