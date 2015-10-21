@@ -8,8 +8,39 @@ import { CardViewFieldsList } from './CardViewFieldsList';
 import ItemGroup from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemGroup';
 import MenuFooter from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooter';
 import MenuFooterOptions from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterOptions';
-import { storeDisplayFieldsToPersonSetting, updateDisplayFieldsToPersonSetting } from '../../../Actions/FeedbackListActions';
+import { storeDisplayFieldsToPersonSetting, updateDisplayFieldsToPersonSetting, getDisplayFieldsFromPersonSetting } from '../../../Actions/FeedbackListActions';
 // import MenuFooterLink from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterLink';
+
+
+const defaultCardFields = {
+  id: { isShown: true },
+  hidden_status: { isShown: true },
+  status_category: { isShown: true },
+  custom_category: { isShown: true },
+  type: { isShown: true },
+  date_created: { isShown: true },
+  total_rating: { isShown: true },
+  num_ratings: { isShown: true },
+  num_comments: { isShown: true },
+  validating: { isShown: true }
+};
+
+const defaultTableFields = {
+  id: { isShown: true },
+  num_ratings: { isShown: true },
+  title: { isShown: true },
+  content: { isShown: true },
+  hidden_status: { isShown: true },
+  status_category: { isShown: true },
+  type: { isShown: true },
+  custom_category: { isShown: true },
+  labels: { isShown: true },
+  author_name: { isShown: true },
+  num_comments: { isShown: true },
+  date_created: { isShown: true },
+  total_rating: { isShown: true },
+  validating: { isShown: true }
+};
 
 const FeedbackViewOptions = React.createClass({
   propTypes: {
@@ -23,38 +54,12 @@ const FeedbackViewOptions = React.createClass({
 
   getInitialState() {
     const { viewFields } = this.props;
-    const defaultCardState = {
-      id: { isShown: true },
-      hidden_status: { isShown: true },
-      status_category: { isShown: true },
-      custom_category: { isShown: true },
-      type: { isShown: true },
-      date_created: { isShown: true },
-      total_rating: { isShown: true },
-      num_rating: { isShown: true },
-      num_comments: { isShown: true },
-      validating: { isShown: true }
-    };
-    const defaultTableState = {
-      id: { isShown: true },
-      num_rating: { isShown: true },
-      title: { isShown: true },
-      hidden_status: { isShown: true },
-      status_category: { isShown: true },
-      type: { isShown: true },
-      custom_category: { isShown: true },
-      labels: { isShown: true },
-      author_name: { isShown: true },
-      num_comments: { isShown: true },
-      date_created: { isShown: true },
-      total_rating: { isShown: true },
-      validating: { isShown: true }
-    };
+
     return {
       isStored: false,
       isChanged: false,
-      card: (viewFields && viewFields.card) ? viewFields.card : defaultCardState,
-      table: (viewFields && viewFields.table) ? viewFields.table : defaultTableState
+      card: (viewFields && viewFields.card) ? viewFields.card : defaultCardFields,
+      table: (viewFields && viewFields.table) ? viewFields.table : defaultTableFields
     };
   },
 
@@ -67,6 +72,7 @@ const FeedbackViewOptions = React.createClass({
         dispatch(storeDisplayFieldsToPersonSetting(this.state));
         this.setState({ isStored: true });
       }
+      dispatch(getDisplayFieldsFromPersonSetting());
     }
   },
 
@@ -151,4 +157,6 @@ const FeedbackViewOptions = React.createClass({
   }
 });
 
-module.exports = FeedbackViewOptions;
+module.exports.FeedbackViewOptions = FeedbackViewOptions;
+module.exports.defaultCardFields = defaultCardFields;
+module.exports.defaultTableFields = defaultTableFields;

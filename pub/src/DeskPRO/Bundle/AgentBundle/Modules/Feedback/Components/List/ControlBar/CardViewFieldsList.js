@@ -34,7 +34,7 @@ export class CardViewFieldsList extends Component {
         <ViewField value="date_created" label="Created" isShown={fields.date_created.isShown}
                    changeState={changeState}/>
         <ViewField value="total_rating" label="Rating" isShown={fields.total_rating.isShown} changeState={changeState}/>
-        <ViewField value="num_rating" label="Votes" isShown={fields.num_rating.isShown} changeState={changeState}/>
+        <ViewField value="num_ratings" label="Votes" isShown={fields.num_ratings.isShown} changeState={changeState}/>
         <ViewField value="validating" label="Validating" isShown={fields.validating.isShown} changeState={changeState}/>
       </div>
     );

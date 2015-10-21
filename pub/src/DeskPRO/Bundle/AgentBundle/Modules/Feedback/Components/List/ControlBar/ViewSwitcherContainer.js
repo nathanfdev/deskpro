@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import { ViewModeSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { ViewSwitcherDropdownStatefulContainer } from './ViewSwitcherDropdownStatefulContainer';
-import FeedbackViewOptions from './FeedbackViewOptions';
+import { FeedbackViewOptions } from './FeedbackViewOptions';
 import { VIEW_MODE_TABLE, VIEW_MODE_CARD } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { currentViewModeSelector } from '../../../Selectors/list';
 import { getDisplayFieldsFromPersonSetting } from '../../../Actions/FeedbackListActions';

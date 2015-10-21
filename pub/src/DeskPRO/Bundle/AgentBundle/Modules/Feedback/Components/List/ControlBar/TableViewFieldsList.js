@@ -21,7 +21,8 @@ export class TableViewFieldsList extends Component {
         <ViewField value="hidden_status" label="Hidden status" isShown={fields.hidden_status.isShown}
                    changeState={changeState}/>
         <ViewField value="title" label="Title" isShown={fields.title.isShown} changeState={changeState}/>
-        <ViewField value="status_category" label="Status category" isShown={fields.status_category.isShown}
+        <ViewField value="content" label="Content" isShown={fields.content.isShown} changeState={changeState}/>
+        <ViewField value="status_category" label="Status" isShown={fields.status_category.isShown}
                    changeState={changeState}/>
         <ViewField value="custom_category" label="Category" isShown={fields.custom_category.isShown}
                    changeState={changeState}/>
@@ -30,7 +31,7 @@ export class TableViewFieldsList extends Component {
         <ViewField value="date_created" label="Created" isShown={fields.date_created.isShown}
                    changeState={changeState}/>
         <ViewField value="total_rating" label="Rating" isShown={fields.total_rating.isShown} changeState={changeState}/>
-        <ViewField value="num_rating" label="Votes" isShown={fields.num_rating.isShown} changeState={changeState}/>
+        <ViewField value="num_ratings" label="Votes" isShown={fields.num_ratings.isShown} changeState={changeState}/>
         <ViewField value="num_comments" label="Comments" isShown={fields.num_comments.isShown}
                    changeState={changeState}/>
         <ViewField value="validating" label="Validating" isShown={fields.validating.isShown} changeState={changeState}/>
