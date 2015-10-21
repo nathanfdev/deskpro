@@ -5,15 +5,18 @@ export class Content extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    languages: PropTypes.object.isRequired
+    languages: PropTypes.object.isRequired,
+    timezones: PropTypes.object.isRequired
   };
 
   render() {
-    const { dispatch, languages } = this.props;
+    const { dispatch, languages, timezones } = this.props;
 
     return (
       <div>
-        <ProfileForm dispatch={dispatch} languages={languages} />
+        <ProfileForm dispatch={dispatch}
+                     languages={languages}
+                     timezones={timezones} />
       </div>
     );
   }

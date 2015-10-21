@@ -11,7 +11,8 @@ export class ProfileForm extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    languages: PropTypes.object.isRequired
+    languages: PropTypes.object.isRequired,
+    timezones: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -139,6 +140,9 @@ export class ProfileForm extends React.Component {
   }
 
   renderTimezoneField() {
+    const { timezones } = this.props;
+    console.log(timezones);
+
     return (
       <FieldWrapper label="Time Zone">
         <div className="bucket-column">
