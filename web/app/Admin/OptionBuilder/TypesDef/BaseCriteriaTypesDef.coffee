@@ -150,8 +150,8 @@ define [
         getDataFormatter: ->
           return {
             getViewValue: (value = {}, data) ->
-              if value.options.custom_fields? && options.field_id?
-                val = value.options.custom_fields['field_' + options.field_id]
+              if value.options?.custom_fields? && options.field_id?
+                val = value.options?.custom_fields['field_' + options.field_id]
               else
                 val = value.options?[prop_name] || null
 
@@ -171,8 +171,8 @@ define [
               value.op = model.op
               value.options = {}
               if options.field_id?
-                value.options.custom_fields = {}
-                value.options.custom_fields['field_' + options.field_id] = model.value
+                value.options?.custom_fields = {}
+                value.options?.custom_fields['field_' + options.field_id] = model.value
               else
                 value.options[prop_name] = model.value
               return value
@@ -237,8 +237,8 @@ define [
             getViewValue: (value = {}, data) ->
               console.info value
 
-              if value.options.custom_fields? && options.field_id?
-                val = value.options.custom_fields['field_' + options.field_id]
+              if value.options?.custom_fields? && options.field_id?
+                val = value.options?.custom_fields['field_' + options.field_id]
               else
                 val = value.options?[prop_name] || ''
               if Util.isArray(val) then val = val.join(',')
@@ -264,8 +264,8 @@ define [
               value.op = model.op
               value.options = {}
               if options.field_id?
-                value.options.custom_fields = {}
-                value.options.custom_fields['field_' + options.field_id] = val
+                value.options?.custom_fields = {}
+                value.options?.custom_fields['field_' + options.field_id] = val
               else
                 value.options[prop_name] = val
 
