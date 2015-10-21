@@ -41,18 +41,14 @@ export class Password extends React.Component {
 
     return (
       <div>
-        <p>
           <input type="password"
                  placeholder="Password"
                  value={value}
                  onChange={this.onChangeValue} />
-        </p>
-        <p>
           <input type="password"
                  placeholder="Confirm password"
                  value={confirmValue}
                  onChange={this.onChangeConfirmValue} />
-        </p>
       </div>
     );
   }
