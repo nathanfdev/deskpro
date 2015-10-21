@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
+use Application\DeskPRO\Entity\TicketFlagged;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -41,7 +42,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Provides API access to the ticket flags.
  */
-class TicketFlagsController extends BaseController
+class TicketStarsController extends BaseController
 {
     /**
      * @ApiDoc(
@@ -55,10 +56,15 @@ class TicketFlagsController extends BaseController
      */
     public function cgetAction()
     {
-        $flags = $this->get('data.ticketflags');
+        $stars = [];
+
+        for ($i = 1; $i <= 7; $i++) {
+            // todo: color should be a hex code
+            $stars[] = ['id' => $i, 'name' => ucfirst(TicketFlagged::idToColorName($i)), 'color' => TicketFlagged::idToColorName($i)];
+        }
 
         return View::create(
-            $this->dataSerialize(new PrimitiveArray($flags->getFlags())),
+            $this->dataSerialize(new PrimitiveArray($stars)),
             Response::HTTP_OK
         );
     }
