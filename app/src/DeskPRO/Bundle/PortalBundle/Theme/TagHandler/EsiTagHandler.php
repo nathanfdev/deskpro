@@ -39,6 +39,7 @@ use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use DeskPRO\Bundle\PortalBundle\Theme\Tag;
 use DeskPRO\Bundle\PortalBundle\Theme\TagHandlerInterface;
+use DeskPRO\Component\Util\EntityUtils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpKernel\Controller\ControllerReference;
@@ -124,7 +125,7 @@ class EsiTagHandler implements TagHandlerInterface
                 if (!($val instanceof DomainObject || $val instanceof EntityInterface)) {
                     continue;
                 }
-                $val = $val->getId();
+                $val = EntityUtils::getIdentifier($val);
             }
             $new_params[$key] = $val;
         }

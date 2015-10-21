@@ -35,6 +35,7 @@ use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
+use DeskPRO\Component\Util\EntityUtils;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -80,7 +81,7 @@ class TagRequestFactory
         $new_args = array();
         foreach ($arguments as $key => $value) {
             if ($value instanceof DomainObject || $value instanceof EntityInterface) {
-                $value = $value->getId();
+                $value = EntityUtils::getIdentifier($value);
             }
 
             if (is_object($value)) {

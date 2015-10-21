@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Helper;
 
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
+use DeskPRO\Component\Util\EntityUtils;
 use Doctrine\Common\Proxy\Proxy;
 
 /**
@@ -77,7 +78,7 @@ class ArbitraryHasher
                 'getId'
             )
         ) {
-            return $input->getId();
+            return EntityUtils::getIdentifier($input);
         }
 
         if ((is_array($input) || $input instanceof \ArrayAccess) && isset($input['id'])) {
