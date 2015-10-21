@@ -39,7 +39,13 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 interface EntityInterface
 {
     /**
-     * A unique identifier for this entity.
+     * A unique identifier for this entity. Usually an integer, but can also be an array for a composite ID.
+     * The contract here is that it must return a unique value per entity implementation and it cannot an empty
+     * value or boolean. More explicitly, the following ID values are invalid:
+     *  - boolean
+     *  - empty string
+     *  - empty array
+     *  - null.
      *
      * @return mixed
      */
