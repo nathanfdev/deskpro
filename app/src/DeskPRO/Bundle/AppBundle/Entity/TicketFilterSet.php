@@ -66,7 +66,11 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var TicketFilter[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilter", mappedBy="filter_set")
+     * @ORM\OneToMany(
+     *     targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilter",
+     *     mappedBy="filter_set",
+     *     cascade={"remove"}
+     * )
      * @ORM\OrderBy({"display_order" = "ASC"})
      * @Serializer\Exclude()
      */
@@ -102,7 +106,7 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var Person
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person", cascade={"remove"})
      * @ORM\JoinColumn(name="person_id")
      */
     protected $private_agent;

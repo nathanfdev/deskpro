@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -421,8 +420,7 @@ class ApiDb extends AbstractDbSet
 
 
         // Labels endpoints test data ----------------------------------------------------------------------------------
-        $this->getDb()->exec(
-            "
+        $this->getDb()->exec("
             INSERT INTO `label_defs`
                 (`label_type`, `label`, `color`, `total`)
             VALUES
@@ -432,10 +430,12 @@ class ApiDb extends AbstractDbSet
                 ('feedback', 'barfoo', 'white', 0),
                 ('organization', 'organization label #1', 'red', 42),
                 ('person', 'person label #1', 'white', 1),
-                ('person', 'person label #2', 'red', 3)
+                ('person', 'person label #2', 'red', 3),
+                ('ticket', 'ticket label #1', 'white', 1),
+                ('ticket', 'ticket label #2', 'red', 3),
+                ('ticket', 'ticket label #3', 'green', 13)
             ;
-        "
-        );
+        ");
         // end of labels endpoints
 
         // "/user_groups" endpoint and its' children test data ---------------------------------------------------------

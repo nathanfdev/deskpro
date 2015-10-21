@@ -38,7 +38,7 @@ class TicketLabelsDataService extends AbstractDataService
     /**
      * Get the list of available ticket labels.
      *
-     * @return Doctrine\ORM\Query the list of all ticket flag names
+     * @return string[]
      */
     public function getLabels()
     {

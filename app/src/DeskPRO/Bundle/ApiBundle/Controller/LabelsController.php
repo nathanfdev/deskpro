@@ -54,7 +54,7 @@ class LabelsController extends BaseController
      *     "/{type}_labels",
      *     name="api_person_labels_list",
      *     requirements={
-     *         "type"="person|organization|feedback"
+     *         "type"="person|organization|feedback|ticket"
      *     }
      * )
      *

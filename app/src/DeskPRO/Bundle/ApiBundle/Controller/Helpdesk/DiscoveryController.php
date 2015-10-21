@@ -29,42 +29,48 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Helpdesk;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * API access to ticket labels.
- */
-class TicketLabelsController extends BaseController
+class DiscoveryController extends BaseController
 {
     /**
-     * Retrieve the tickets with the given label.
-     *
-     * @Get("/ticket_labels/{name}/tickets", name="api_ticket_labels_tickets")
+     * @ApiDoc(
+     *      description="Used by apps to detect that this is a real helpdesk",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     * @Get("/helpdesk/discover", name="api_helpdesk_discover")
      */
-    public function getLabelTicketsAction($name)
+    public function discoverAction(Request $request)
     {
-        $repo   = $this->getEm()->getRepository('DeskPRO:LabelTicket');
-        $labels = $repo->findBy(['label' => $name]);
+        //$brand = $this->get('brand_stack')->getActive();
+        //$helpdesk_url = rtrim($brand->getSetting('core.deskpro_url'), '/') . '/';
 
-        $tickets = [];
-        foreach ($labels as $label) {
-            $tickets[$label->ticket->getId()] = $label->ticket;
-        }
+        $s = $this->get('deskpro.core.settings');
+        $helpdesk_url = rtrim($s->get('core.deskpro_url'), '/') . '/';
+
+        $base_api_url = $helpdesk_url . 'api/v2/';
+
+        $ret = [
+            'is_deskpro'   => true,
+            'helpdesk_url' => $helpdesk_url,
+            'base_api_url' => $base_api_url,
+            'build'        => DP_BUILD_TIME,
+        ];
 
         return View::create(
-            $this->dataSerialize(array_values($tickets)),
+            $this->dataSerialize(new PrimitiveArray($ret)),
             Response::HTTP_OK
         );
-    }
-
-    // A bit of comfort.
-    protected function getEm()
-    {
-        return $this->getDoctrine()->getManager();
     }
 }

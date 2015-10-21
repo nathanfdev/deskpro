@@ -32,8 +32,6 @@
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
-use Pagerfanta\Pagerfanta;
 
 class FiltersDataService extends AbstractDataService
 {
@@ -70,32 +68,23 @@ class FiltersDataService extends AbstractDataService
     }
 
     /**
-     * @param $page
-     * @param $count
-     *
-     * @return PagerFanta
+     * @return array
      */
-    public function getFiltersPager($page, $count)
+    public function getFilters()
     {
         $em = $this->em;
 
         return $this->generateAndCache(
             array(
                 'getFiltersPager',
-                $page,
-                $count,
             ),
-            function () use ($em, $page, $count) {
+            function () use ($em) {
                 $qb = $em->createQueryBuilder();
 
                 $qb->select('f')
                     ->from('App:TicketFilter', 'f');
 
-                $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
-                $pager->setMaxPerPage($count);
-                $pager->setCurrentPage($page);
-
-                return $pager;
+                return $qb->getQuery()->getResult();
             }
         );
     }

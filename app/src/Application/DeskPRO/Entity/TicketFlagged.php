@@ -88,7 +88,7 @@ class TicketFlagged extends \Application\DeskPRO\Domain\DomainObject
      *
      * @return string
      */
-    public static function idToColor($id)
+    public static function idToColorName($id)
     {
         if (!isset(self::$id_color_map[$id])) {
             throw new \InvalidArgumentException();

@@ -97,7 +97,7 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
 
     /**
      * @var TicketFilterView[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterView", mappedBy="filter")
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterView", mappedBy="filter", cascade={"remove"})
      */
     protected $filter_views;
 

@@ -64,7 +64,7 @@ class TicketFilterPreference implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var Person
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person", cascade={"remove"})
      * @ORM\JoinColumn(name="person_id")
      */
     protected $agent;
