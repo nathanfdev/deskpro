@@ -40,12 +40,16 @@ interface EntityInterface
 {
     /**
      * A unique identifier for this entity. Usually an integer, but can also be an array for a composite ID.
-     * The contract here is that it must return a unique value per entity implementation and it cannot an empty
-     * value or boolean. More explicitly, the following ID values are invalid:
-     *  - boolean
+     *
+     * Empty or bolean values are all considered to be equal, and can safely be interpreted as "null". For instance all
+     * of these values would be considered to be a "null" id:
+     *  - boolean (true or false)
      *  - empty string
      *  - empty array
-     *  - null.
+     *  - null
+     *  - an array of the above values.
+     *
+     * It is important to note that the integer zero is NOT considered null, and is a valid ID.
      *
      * @return mixed
      */
