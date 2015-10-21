@@ -1544,3 +1544,24 @@ foreach (array('default', 'foo', 'bar', 'baz') as $type) {
 }
 
 $em->flush();
+
+################################################################################
+# TEMPORARY TEST DATA: Labels
+################################################################################
+
+$em->getConnection()->executeUpdate("
+    INSERT INTO `label_defs`
+        (`label_type`, `label`, `color`, `total`)
+    VALUES
+        ('feedback', 'foo', 'red', 0),
+        ('feedback', 'bar', 'white', 0),
+        ('feedback', 'foobar', 'red', 0),
+        ('feedback', 'barfoo', 'white', 0),
+        ('organization', 'organization label #1', 'red', 42),
+        ('person', 'person label #1', 'white', 1),
+        ('person', 'person label #2', 'red', 3),
+        ('ticket', 'ticket label #1', 'white', 1),
+        ('ticket', 'ticket label #2', 'red', 3),
+        ('ticket', 'ticket label #3', 'green', 13)
+    ;
+");
