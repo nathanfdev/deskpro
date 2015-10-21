@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\Filters;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Filters;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
@@ -353,7 +353,7 @@ class TicketFilterSetsController extends BaseController
     {
         $status = $set->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
-        $form   = $this->get('form.factory')
+        $form = $this->get('form.factory')
             ->createNamedBuilder(null, 'filter_set', $set)
             ->getForm();
 

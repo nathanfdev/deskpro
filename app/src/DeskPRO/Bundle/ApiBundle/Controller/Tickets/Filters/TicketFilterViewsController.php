@@ -29,14 +29,12 @@
 /**
  * DeskPRO.
  */
-
-namespace DeskPRO\Bundle\ApiBundle\Controller\Filters;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Filters;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
-use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
@@ -51,53 +49,31 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class FiltersController extends BaseController
+class TicketFilterViewsController extends BaseController
 {
     /**
      * @ApiDoc(
-     *      description="get a list of filters",
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
+     *      description="get a list of public filters views",
      *      statusCodes={
      *          200="Success"
      *      }
      * )
      *
-     * @Get("/ticket_filters", name="api_ticket_filters")
+     * @Get("/ticket_filter_views", name="api_ticket_filter_views")
      */
     public function cgetAction(Request $request)
     {
-        $page  = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
-
-        $pager = $this->get('data.filters')->getFiltersPager($page, $count);
-
-        if (!$pager) {
-            throw $this->createNotFoundException();
-        }
+        $service = $this->get('data.ticket_filter_views');
+        $views   = $service->getUnassignedFilterViews();
 
         return View::create(
-            $this->dataSerialize($pager),
+            $this->dataSerialize($views),
             Response::HTTP_OK
         );
     }
 
     /**
-     * @Get("/ticket_filters/{id}", name="get_ticket_filters")
+     * @Get("/ticket_filter_views/{id}", name="get_ticket_filter_views")
      *
      * @ApiDoc(
      *      description="get a filter",
@@ -116,7 +92,7 @@ class FiltersController extends BaseController
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
      *
-     * @Get("/ticket_filters/{id}", name="api_ticket_filters_get")
+     * @Get("/ticket_filter_views/{id}", name="api_ticket_filter_views_get")
      */
     public function getAction($id)
     {
@@ -133,30 +109,7 @@ class FiltersController extends BaseController
     }
 
     /**
-     * @ApiDoc(
-     *      description="get a filter's count",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the filter",
-     *              "dataType"="integer"
-     *          },
-     *          {
-     *              "name"="group_by",
-     *              "requirement"=".+",
-     *              "description"="the grouping order you want",
-     *              "dataType"="string",
-     *              "required"=false
-     *          },
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
-     * )
-     * @Get("/ticket_filters/{id}/count")
+     * @Get("/ticket_filter_views/{id}/count")
      */
     public function getTicketsCountAction(Request $request, $id)
     {
@@ -168,7 +121,7 @@ class FiltersController extends BaseController
         }
 
         // Let's retrieve the tickets for this filter.
-        $engine = $this->get('term_engine.dbal_ticket_filters.engine');
+        $engine = $this->get('term_engine.dbal_ticket_filter_views.engine');
         $conn   = $this->get('database_connection');
 
         $context = new TermEngineContext($this->getUser());
@@ -184,21 +137,21 @@ class FiltersController extends BaseController
             $view_factory = $this->get('api_view_representation_factory');
 
             return View::create(
-                $this->dataSerialize(new PrimitiveArray($tickets_query->fetchGroupedCount(), $view_factory::DATATYPE_GROUPED_COUNT)),
+                $view_factory->dataSerialize($tickets_query->fetchGroupedCount(), $view_factory::DATATYPE_GROUPED_COUNT),
                 Response::HTTP_OK
             );
         } else {
             return View::create(
-                $this->dataSerialize(new PrimitiveArray(array(
+                $this->dataSerialize(array(
                     'count' => $tickets_query->fetchCount(),
-                ))),
+                )),
                 Response::HTTP_OK
             );
         }
     }
 
     /**
-     * @Post("/ticket_filters", name="post_ticket_filters")
+     * @Post("/ticket_filter_views", name="post_ticket_filter_views")
      *
      * @ApiDoc(
      *      description="create a filter",
@@ -210,7 +163,7 @@ class FiltersController extends BaseController
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
      *
-     * @Post("/ticket_filters", name="api_ticket_filters_post")
+     * @Post("/ticket_filter_views", name="api_ticket_filter_views_post")
      */
     public function postAction(Request $request)
     {
@@ -228,7 +181,7 @@ class FiltersController extends BaseController
      *      }
      * )
      *
-     * @Post("/ticket_filters/display_order", name="api_ticket_filters_display_order_post")
+     * @Post("/ticket_filter_views/display_order", name="api_ticket_filter_views_display_order_post")
      */
     public function postReorderAction(Request $request)
     {
@@ -260,7 +213,7 @@ class FiltersController extends BaseController
     }
 
     /**
-     * @Put("/ticket_filters/{id}", name="put_ticket_filters")
+     * @Put("/ticket_filter_views/{id}", name="put_ticket_filter_views")
      *
      * @ApiDoc(
      *      description="modify a filter",
@@ -281,7 +234,7 @@ class FiltersController extends BaseController
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
      *
-     * @Put("/ticket_filters/{id}", name="api_ticket_filters_put")
+     * @Put("/ticket_filter_views/{id}", name="api_ticket_filter_views_put")
      */
     public function putAction(Request $request, $id)
     {
@@ -295,58 +248,7 @@ class FiltersController extends BaseController
     }
 
     /**
-     * @ApiDoc(
-     *      description="get a list of filters",
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     *
-     * @Get("/ticket_filters/{id}/tickets", name="api_ticket_filter_tickets_get")
-     */
-    public function getTicketFilterTickets(Request $request, $id)
-    {
-        $filters = $this->get('data.filters');
-        $filter  = $filters->getFilter($id);
-
-        if (!$filter) {
-            throw $this->createNotFoundException();
-        }
-
-        // Let's retrieve the tickets for this filter.
-        $engine        = $this->get('term_engine.dbal_ticket_filters.engine');
-        $context       = new TermEngineContext($this->getUser());
-        $tickets_query = $engine->evaluate($filter, $context);
-
-        $tickets_query->setCount($request->query->get('count', 10));
-        $tickets_query->setPage($request->query->get('page', 1));
-        $ticket_ids = $tickets_query->fetchIds();
-        $tickets    = $this->getEm()->getRepository('DeskPRO:Ticket')->findBy(['id' => $ticket_ids]);
-
-        return View::create(
-            $this->dataSerialize($tickets),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @Delete("/ticket_filters/{id}")
+     * @Delete("/ticket_filter_views/{id}")
      *
      * @ApiDoc(
      *      description="delete a filter",
@@ -364,7 +266,7 @@ class FiltersController extends BaseController
      *      }
      * )
      *
-     * @Delete("/ticket_filters/{id}", name="api_ticket_filters_delete")
+     * @Delete("/ticket_filter_views/{id}", name="api_ticket_filter_views_delete")
      */
     public function deleteAction($id)
     {
@@ -413,7 +315,7 @@ class FiltersController extends BaseController
                 $this->dataSerialize($filter),
                 $status,
                 array(
-                    'Location' => $this->generateUrl('api_ticket_filters_get', array('id' => $filter->getId())),
+                    'Location' => $this->generateUrl('api_ticket_filter_views_get', array('id' => $filter->getId())),
                 )
             );
         }
