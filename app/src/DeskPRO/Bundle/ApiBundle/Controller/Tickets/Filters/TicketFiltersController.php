@@ -35,7 +35,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
-use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
@@ -168,20 +168,25 @@ class TicketFiltersController extends BaseController
             $context->addGroupByFromString($groupby);
         }
 
+        /** @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery $tickets_query */
         $tickets_query = $engine->evaluate($filter, $context);
 
         if ($groupby) {
-            $view_factory = $this->get('api_view_representation_factory');
+            $total  = 0;
+            $nested = $tickets_query->fetchGroupedCount();
+            $nested = array_map(function ($count) use ($total) {
+                $total += $count['count'];
+
+                return Count::fromValueAndGroup($count['count'], $count['department']);
+            }, $nested);
 
             return View::create(
-                $this->dataSerialize(new PrimitiveArray($tickets_query->fetchGroupedCount(), $view_factory::DATATYPE_GROUPED_COUNT)),
+                $this->createRepresentation(Count::create($total, null, $nested, $groupby)),
                 Response::HTTP_OK
             );
         } else {
             return View::create(
-                $this->dataSerialize(new PrimitiveArray(array(
-                    'count' => $tickets_query->fetchCount(),
-                ))),
+                $this->createRepresentation(Count::fromValue($tickets_query->fetchCount())),
                 Response::HTTP_OK
             );
         }
