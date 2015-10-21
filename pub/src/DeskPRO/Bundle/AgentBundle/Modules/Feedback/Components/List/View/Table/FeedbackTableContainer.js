@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { peopleSelector, emailsSelector, feedbackTypesSelector } from '../../../../Selectors/list';
+import { peopleSelector, emailsSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackStatusesSelector } from '../../../../Selectors/list';
 import { setTableSort } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { TableView, TableHeader, Th, TableBody, Row, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { defaultTableFields } from '../../../List/ControlBar/FeedbackViewOptions';
@@ -10,6 +10,8 @@ import { connect } from 'react-redux';
   feedback: state.Feedback.list.get('feedback'),
   viewFields: state.Feedback.list.get('viewFields'),
   feedbackTypes: feedbackTypesSelector(state),
+  feedbackComments: feedbackCommentsSelector(state),
+  feedbackStatuses: feedbackStatusesSelector(state),
   people: peopleSelector(state),
   emails: emailsSelector(state)
 }))
@@ -30,8 +32,8 @@ export class FeedbackTableContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      order: false,
-      sort: false
+      order: '',
+      sort: ''
     };
   }
 
@@ -52,14 +54,22 @@ export class FeedbackTableContainer extends Component {
   }
 
   renderStatus(id) {
-    const {feedbackStatuses} = this.props;
+    const { feedbackStatuses } = this.props;
     if (feedbackStatuses) {
       return feedbackStatuses.get(id) ? feedbackStatuses.get(id).get('title') : null;
     }
   }
 
+  renderCommentsCounter(id) {
+    const { feedbackComments } = this.props;
+    if (feedbackComments.get(id)) {
+      return feedbackComments.get(id).get('counter');
+    }
+    return 0;
+  }
+
   render() {
-    const {feedback, viewFields, people, emails, feedbackTypes} = this.props;
+    const { feedback, viewFields, people, emails, feedbackTypes } = this.props;
     const tableFields = (viewFields && viewFields.table) ? viewFields.table : defaultTableFields;
     // filteredFields.sort((prev, next) => prev.priority - next.priority);
 
@@ -76,9 +86,7 @@ export class FeedbackTableContainer extends Component {
                   className="sortable" sortTable={this.sortTable.bind(this)}/> : null }
             {tableFields.content.isShown ? <Th value="content" label="Content"/> : null }
             {tableFields.status_category.isShown ?
-              <Th value="status_category" label="Status" className="sortable"
-                  order={this.state.sort === 'status_category' ? this.state.order : false}
-                  sortTable={this.sortTable.bind(this)}/> : null }
+              <Th value="status_category" label="Status"/> : null }
             {tableFields.author_name.isShown ?
               <Th value="author_name" label="Author"/> : null }
             {tableFields.type.isShown ?
@@ -90,9 +98,7 @@ export class FeedbackTableContainer extends Component {
                   order={this.state.sort === 'num_ratings' ? this.state.order : false}
                   sortTable={this.sortTable.bind(this)}/> : null }
             {tableFields.num_comments.isShown ?
-              <Th value="num_comments" label="Comments" className="sortable"
-                  order={this.state.sort === 'num_comments' ? this.state.order : false}
-                  sortTable={this.sortTable.bind(this)}/> : null }
+              <Th value="num_comments" label="Comments"/> : null }
             {tableFields.date_created.isShown ?
               <Th value="date_created" label="Created" className="sortable"
                   order={this.state.sort === 'date_created' ? this.state.order : false}
@@ -125,7 +131,7 @@ export class FeedbackTableContainer extends Component {
                 {tableFields.num_ratings.isShown ?
                   <Td>{element.num_ratings}</Td> : null }
                 {tableFields.num_comments.isShown ?
-                  <Td>{element.num_comments}</Td> : null }
+                  <Td>{this.renderCommentsCounter(element.id)}</Td> : null }
                 {tableFields.date_created.isShown ?
                   <Td>
                     <div className="dpw--timer"><FormattedRelative value={element.date_created}/></div>
