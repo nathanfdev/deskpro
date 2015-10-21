@@ -4329,6 +4329,15 @@ $collection->create(
 ########################################################################################################################
 
 $collection->create(
+    'api_ticket_fields',
+    array(
+        'path'       => '/ticket_fields',
+        'controller' => 'LegacyApiBundle:TicketFields:list',
+        'methods'    => array('GET'),
+    )
+);
+
+$collection->create(
     'api_ticket_fields_get',
     array(
         'path'         => '/ticket_fields/{id}',
@@ -4365,15 +4374,6 @@ $collection->create(
         'controller'   => 'LegacyApiBundle:TicketFields:deleteCustomField',
         'requirements' => array('id' => '\\d+'),
         'methods'      => array('DELETE'),
-    )
-);
-
-$collection->create(
-    'api_ticket_fields',
-    array(
-        'path'       => '/ticket_fields',
-        'controller' => 'LegacyApiBundle:TicketFields:list',
-        'methods'    => array('GET'),
     )
 );
 

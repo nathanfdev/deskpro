@@ -134,26 +134,41 @@ class EntityUtilsTest extends DeskProTestCase
         );
     }
 
-    public function getInvalidIdValues()
+    public function getExampleNullIds()
     {
         return [
-            [true],
-            [false],
-            [''],
-            [null],
-            [[]],
+            [true, 'true bool'],
+            [false, 'false bool'],
+            [null, 'null'],
+            ['', 'empty string'],
+            [[], 'empty array'],
+            [[true], 'array of bool true'],
+            [[true, false], 'array of bools'],
+            [[false], 'array of bool false'],
+            [[''], 'array of emptry string'],
+            [['', ''], 'empty strings'],
+            [[null], 'array of nulls'],
+            [[null, null], 'array of nulls'],
+            [[[]], 'array of an empty array'],
+            [[[], []], 'array of empty arrays'],
+            [[false, [], false, true, '', null, null, []], 'array of a bunch of null values'],
         ];
     }
 
     /**
-     * @dataProvider getInvalidIdValues
-     * @expectedException \InvalidArgumentException
+     * @dataProvider getExampleNullIds
      */
-    public function testGetIdentifierThrowsExceptionForInvalidIdValues($id)
+    public function testGetIdentifierThrowsExceptionForInvalidIdValues($id, $what)
     {
         $string_entity = $this->prophesize(EntityInterface::class);
         $string_entity->getId()->willReturn($id);
-        EntityUtils::getIdentifier($string_entity->reveal());
+        $this->assertNull(EntityUtils::getIdentifier($string_entity->reveal()),
+            'EntityInterface null id if id is ('.$what.')');
+
+        $string_entity = $this->prophesize(MockDomainObject::class);
+        $string_entity->getId()->willReturn($id);
+        $this->assertNull(EntityUtils::getIdentifier($string_entity->reveal()),
+            'DomainObject null id if id is ('.$what.')');
     }
 }
 

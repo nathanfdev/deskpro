@@ -58,24 +58,38 @@ class EntityUtils
 
         $id = $entity->getId();
 
-        if (is_scalar($id) && !self::isInvalidIdValue($id)) {
-            return $id;
-        } elseif (is_array($id) && !self::isInvalidIdValue($id)) {
-            return implode('|', $id);
+        if (!self::isNullIdValue($id)) {
+            if (is_scalar($id)) {
+                return $id;
+            } elseif (is_array($id)) {
+                return implode('|', $id);
+            } else {
+                throw new \Exception('Logic error in EntityUtils::getIdentifier. This should be impossible to reach. The ID given is not supported in this iteration of EntityUtils::getIdentifier, and needs to be updated to support it.');
+            }
         }
 
-        throw new \InvalidArgumentException(
-            sprintf(
-                'EntityUtils::getIdentifier expects IDs to be non-empty scalars and arrays with scalars. To support this ID this class needs an update! ID="%s"',
-                self::parseIdForException($id)
-            )
-        );
+        return;
     }
 
-    protected static function isInvalidIdValue($id)
+    protected static function isNullIdValue($id)
     {
-        // 0 is considered empty but is still a valid ID
-        return (empty($id) && $id !== 0) || is_bool($id);
+        $empty_or_bool = is_bool($id) || empty($id);
+
+        if ($empty_or_bool && $id !== 0) {
+            return true;
+        }
+
+        if (is_array($id)) {
+            foreach ($id as $array_val) {
+                if (!self::isNullIdValue($array_val)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     /**

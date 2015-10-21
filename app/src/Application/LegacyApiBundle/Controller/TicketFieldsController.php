@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TicketCategory;
@@ -45,7 +44,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * Operations about Ticket fields.
  *
- * @SWG\Resource(
+ * SWG\Resource(
  *    resourcePath="/ticket_fields",
  *    description="Operations about Ticket fields",
  *    basePath="/api"
@@ -114,7 +113,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      * @return Response
      *
      *
-     * @SWG\Api(
+     * SWG\Api(
      *    path="/ticket_fields/{id}",
      * 	@SWG\Operation(
      *        method="GET",
@@ -161,7 +160,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      * @return Response
      *
      *
-     * @SWG\Api(
+     * SWG\Api(
      *    path="/ticket_fields/{id}",
      * 	@SWG\Operation(
      *        method="POST",
@@ -179,7 +178,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      *      )
      *  )
      * )
-     * @SWG\Api(
+     * SWG\Api(
      *    path="/ticket_fields",
      * 	@SWG\Operation(
      *        method="PUT",
@@ -236,7 +235,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      * @return Response
      *
      *
-     * @SWG\Api(
+     * SWG\Api(
      *    path="/ticket_fields/{id}",
      * 	@SWG\Operation(
      *        method="DELETE",
@@ -278,7 +277,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      *
      * @return Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      *    path="/ticket_fields/set-enabled/{field_id}/{is_enabled}",
      * 	@SWG\Operation(
      *        method="POST",
