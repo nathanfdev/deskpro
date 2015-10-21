@@ -5,6 +5,7 @@ import * as TaskActions from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Actions/T
 import { connect } from 'react-redux';
 import { createTicketRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/RecordStores/Selectors/ticketSelectors';
 import { allProjectsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/projectSelectors';
+import { createTaskListRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/taskListSelectors';
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
 import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
@@ -15,12 +16,14 @@ import Immutable from 'immutable';
 
 const requestId = 'taskListFrame';
 const ticketsSelector = createTicketRequestSelectors(requestId);
+const listsSelector = createTaskListRequestSelectors(requestId);
 
 @connect(state => ({
-  projects: allProjectsSelector(state),
   agents: agentsSelector(state),
-  teams: agentTeamsSelector(state),
   departments: allDepartmentsSelector(state),
+  lists: listsSelector.recordsSel(state),
+  projects: allProjectsSelector(state),
+  teams: agentTeamsSelector(state),
   tickets: ticketsSelector.recordsSel(state),
   ticketsStatus: ticketsSelector.statusSel(state)
 }))
@@ -30,8 +33,9 @@ export default class TaskViewConnector extends React.Component {
     children: React.PropTypes.any,
     departments: React.PropTypes.object,
     dispatch: React.PropTypes.func,
-    projects: React.PropTypes.object,
+    lists: React.PropTypes.object,
     order: React.PropTypes.string,
+    projects: React.PropTypes.object,
     tasks: React.PropTypes.object,
     teams: React.PropTypes.object,
     tickets: React.PropTypes.object,
@@ -39,6 +43,12 @@ export default class TaskViewConnector extends React.Component {
   };
 
   componentDidMount() {
+    if (this.props.projectId) {
+      this.props.dispatch(TaskActions.loadLists(this.props.projectId));
+    } else {
+      console.log('No project found');
+    }
+
     Promise.all([
       this.loadTaskLinkedTickets()
     ]).then(() => {
@@ -81,7 +91,7 @@ export default class TaskViewConnector extends React.Component {
 
   render() {
     const tasks = [];
-    const grouping = new TaskGrouping(this.props.projects, this.props.departments, this.props.teams, this.props.agents, {}, this.props.tickets);
+    const grouping = new TaskGrouping(this.props.projects, this.props.departments, this.props.teams, this.props.agents, this.props.lists, this.props.tickets);
     const columnField = this.props.order;
     const rawGroupings = grouping.getRawGroupings(columnField, this.props.direction);
 

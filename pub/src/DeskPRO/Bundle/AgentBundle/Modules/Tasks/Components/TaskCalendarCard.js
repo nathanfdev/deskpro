@@ -2,12 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Moment from 'moment';
 import { DragSource } from 'react-dnd';
-import $ from 'jquery';
+import jQuery from 'jquery';
 import DragTypes from '../../../Services/DragTypes.js';
 
 const cardSource = {
   beginDrag(props, monitor, component) {
-    const width = $(ReactDOM.findDOMNode(component)).width();
+    const width = jQuery(ReactDOM.findDOMNode(component)).width();
 
     return {
       id: props.task.get('id'),
@@ -18,14 +18,14 @@ const cardSource = {
   }
 };
 
-function collect(connect, monitor) {
-  return {
-    connectDragSource: connect.dragSource(),
-    connectDragPreview: connect.dragPreview()
-  };
-}
-
 const TaskCalendarCard = React.createClass({
+  propTypes: {
+    closeHover: React.PropTypes.func,
+    connectDragSource: React.PropTypes.func,
+    openHover: React.PropTypes.func,
+    task: React.PropTypes.object
+  },
+
   openHover: function(task, event) {
     const position = {x: event.clientX, y: event.clientY};
     this.props.openHover(task, position);

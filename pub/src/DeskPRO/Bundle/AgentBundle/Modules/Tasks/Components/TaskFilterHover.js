@@ -1,14 +1,22 @@
-import React from "react";
+import React from 'react';
 import ReactDOM from 'react-dom';
-import Formsy from "formsy-react";
-import FRC from "../../../../../Component/FormComponents/main.js";
-import Picker from "anytime";
-import Moment from "moment";
-import $ from 'jquery';
-
-import * as TaskActions from "../Actions/TaskListActions";
+import Formsy from 'formsy-react';
+import FRC from '../../../../../Component/FormComponents/main.js';
+import Picker from 'anytime';
+import Moment from 'moment';
 
 const TaskFilterHover = React.createClass({
+
+  propTypes: {
+    applyFilter: React.PropTypes.func,
+    closeWindow: React.PropTypes.func,
+    taskFilter: React.PropTypes.object,
+    agents: React.PropTypes.object,
+    departments: React.PropTypes.object,
+    teams: React.PropTypes.object,
+    labels: React.PropTypes.object,
+    projects: React.PropTypes.object,
+  },
 
   mixins: [
     require('react-onclickoutside')
@@ -18,24 +26,6 @@ const TaskFilterHover = React.createClass({
     return {
       filterDates: {}
     };
-  },
-
-  handleClickOutside: function(evt) {
-    this.props.closeWindow();
-  },
-
-  applyFilter: function(model) {
-    let filtered = model;
-    if (this.state.filterDates) {
-      Object.keys(this.state.filterDates).forEach((key) => {
-        if (key.substring(0, 7) === 'filter_' && this.state.filterDates[key] && Moment.isMoment(this.state.filterDates[key])) {
-          filtered[key.substring(7)] = this.state.filterDates[key].format();
-        }
-      });
-    }
-
-    // Merge model and state
-    this.props.applyFilter(filtered);
   },
 
   componentDidMount: function() {
@@ -48,27 +38,25 @@ const TaskFilterHover = React.createClass({
       'filter_done_before'
     ];
 
-    let pickers = [];
+    const pickers = [];
 
     const pickerOptions = {
-      format: "HH:mm, MMMM D, YYYY"
+      format: 'HH:mm, MMMM D, YYYY'
     };
 
     dateFields.forEach((field) => {
-      let options = pickerOptions;
+      const options = pickerOptions;
       options.input = ReactDOM.findDOMNode(this.refs[field + '_value']);
       options.button = ReactDOM.findDOMNode(this.refs[field + '_button']);
       options.offset = 16;
 
       // Create the picker
-      let picker = new Picker(options);
+      const picker = new Picker(options);
       picker.render();
 
       // Change the component state and submit the edit when the date is changed
       picker.on('change', (newDate) => {
-        let updated = newDate ? Moment(newDate).format() : null;
-
-        let dates = this.state.filterDates;
+        const dates = this.state.filterDates;
         dates[field.replace(/-/g, '_')] = newDate ? Moment(newDate) : null;
 
         this.setState({
@@ -80,6 +68,24 @@ const TaskFilterHover = React.createClass({
 
       pickers.push(picker);
     });
+  },
+
+  handleClickOutside: function() {
+    this.props.closeWindow();
+  },
+
+  applyFilter: function(model) {
+    const filtered = model;
+    if (this.state.filterDates) {
+      Object.keys(this.state.filterDates).forEach((key) => {
+        if (key.substring(0, 7) === 'filter_' && this.state.filterDates[key] && Moment.isMoment(this.state.filterDates[key])) {
+          filtered[key.substring(7)] = this.state.filterDates[key].format();
+        }
+      });
+    }
+
+    // Merge model and state
+    this.props.applyFilter(filtered);
   },
 
   render: function() {
@@ -105,37 +111,37 @@ const TaskFilterHover = React.createClass({
     const labels = [];
 
     if (typeof this.props.departments !== 'undefined' && this.props.departments !== null) {
-      this.props.departments.forEach(function(object) {
-        departments.push({value: object.id, label:object.title});
+      this.props.departments.map((object) => {
+        departments.push({value: object.get('id'), label: object.get('title')});
       });
     }
 
     if (typeof this.props.teams !== 'undefined' && this.props.teams !== null) {
-      this.props.teams.forEach(function(object) {
-        teams.push({value: object.id, label:object.name});
+      this.props.teams.map((object) => {
+        teams.push({value: object.get('id'), label: object.get('name')});
       });
     }
 
     if (typeof this.props.agents !== 'undefined' && this.props.agents !== null) {
-      this.props.agents.forEach(function(object) {
-        let label = (<span>
-          {object.picture_blob ? <span className="chat-avatar" style={{backgroundImage: 'url(' + object.picture_blob.download_url + ')'}}/> : '' }
-            {object.name}
+      this.props.agents.map((object) => {
+        const label = (<span>
+          {object.get('picture_blob') ? <span className="chat-avatar" style={{backgroundImage: 'url(' + object.get('picture_blob').download_url + ')'}}/> : '' }
+            {object.get('name')}
                 </span>
         );
-        agents.push({value: object.id, label:label});
+        agents.push({value: object.get('id'), label: label});
       });
     }
 
     if (typeof this.props.projects !== 'undefined' && this.props.projects !== null) {
-      this.props.projects.forEach(function(object){
-        projects.push({value: object.id, label: object.title});
+      this.props.projects.map((object) => {
+        projects.push({value: object.get('id'), label: object.get('title')});
       });
     }
 
     if (typeof this.props.labels !== 'undefined' && this.props.labels !== null) {
-      this.props.labels.forEach(function(object){
-        labels.push({value: object.label, label: object.label});
+      this.props.labels.map((object) => {
+        labels.push({value: object.get('label'), label: object.get('label')});
       });
     }
 

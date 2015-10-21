@@ -2,6 +2,7 @@ import { createAction } from 'Ampliflux';
 import * as Tasks from 'DeskPRO/Bundle/AgentBundle/Services/Api/Tasks';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import * as RecordStoreTaskActions from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Actions/taskActions';
+import * as RecordStoreTaskListActions from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Actions/taskListActions';
 import * as RecordStoreTicketActions from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/RecordStores/Actions/ticketActions';
 import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 
@@ -108,7 +109,12 @@ export const loadLists = createAction(
   'TASKS_LOAD_LISTS',
   (data) => {
     return Tasks.loadLists(data).then(
-      (value) => value.getData()
+      value => dispatch => {
+        const requestId = 'taskListFrame';
+        const result = value.getData();
+        dispatch(RecordStoreTaskListActions.setTaskListRequest(requestId, mapKeyedFromArray(result.data, 'id'), false, 'append'));
+        return result;
+      }
     );
   }
 );
@@ -153,6 +159,11 @@ const getFieldIds = (field, tasks) => {
   return [...new Set(fieldIds)];
 };
 
+export const setSource = createAction(
+  'TASKS_SET_SOURCE',
+  data => data
+);
+
 export const loadTaskList = createAction(
   'TASKS_LOAD_TASK_LIST',
   (params) => dispatch => {
@@ -165,6 +176,7 @@ export const loadTaskList = createAction(
 
       dispatch(RecordStoreTaskActions.setTaskRequest(requestId, mapKeyedFromArray(result.data, 'id'), false, 'append'));
       const ticketIds = getFieldIds('linked_tickets', result.data);
+      dispatch(setSource(params));
       return dispatch(RecordStoreTicketActions.loadTickets(requestId, ticketIds));
     });
 
@@ -288,7 +300,7 @@ export const createTask = createAction(
 
 export const editTask = createAction(
   'TASKS_EDIT_TASK',
-  (data, source = 'nowhere') => {
+  (data, source = 'tasks') => {
     const taskId = data.taskId;
     delete data.taskId;
     return Tasks.editTask(taskId, data).then(
@@ -304,7 +316,7 @@ export const editTask = createAction(
 
 export const massEditTasks = createAction(
   'TASKS_MASS_EDIT_TASKS',
-  (data, source = 'nowhere') => {
+  (data, source = 'tasks') => {
     return Tasks.massEditTasks(data).then(
       value => dispatch => {
         const output = value.getData();

@@ -1,8 +1,18 @@
 import React from 'react';
 import Moment from 'moment';
-import Card from '../../Common/Components/ListFrame/Card';
+import Card from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 
 export default class TaskCardGeneric extends React.Component {
+
+  static propTypes = {
+    agents: React.PropTypes.object,
+    departments: React.PropTypes.object,
+    linkedItems: React.PropTypes.object,
+    projects: React.PropTypes.object,
+    task: React.PropTypes.object,
+    teams: React.PropTypes.object,
+    tickets: React.PropTypes.object
+  }
 
   dueIndicator(due) {
     const dueMoment = new Moment(due);
@@ -62,7 +72,7 @@ export default class TaskCardGeneric extends React.Component {
 
     return (
       <Card statusBars
-            type="float"
+            type="floating"
             task={task} >
         <div className="dpw--card-line">
           <div className="dpw--card-line-left card-title">

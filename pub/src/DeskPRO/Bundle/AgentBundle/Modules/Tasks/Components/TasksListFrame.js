@@ -47,6 +47,7 @@ const linkedItemsSelector = createLinkedItemRequestSelectors(requestId);
   taskFilter: state.Tasks.taskFilter,
   taskFrameList: state.Tasks.taskFrameList,
   tasks: taskListSelector(state),
+  taskSource: state.Tasks.taskSource,
   tickets: ticketsSelector.recordsSel(state)
 }))
 
@@ -64,6 +65,7 @@ export class TasksListFrame extends React.Component {
     taskFilter: React.PropTypes.object,
     taskFrameList: React.PropTypes.object,
     tasks: React.PropTypes.object,
+    taskSource: React.PropTypes.object,
     tickets: React.PropTypes.object
   }
 
@@ -85,9 +87,6 @@ export class TasksListFrame extends React.Component {
     };
     this.intl = IntlMixin;
     this.lastGrouping = '';
-
-    // Temp project ID
-    props.dispatch(TaskActions.loadLists(1));
   }
 
   setSortOrder(modifier) {
@@ -269,7 +268,7 @@ export class TasksListFrame extends React.Component {
       task.taskId = assignee.id;
       this.closeAssignWindow();
 
-      const source = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameSource') : null;
+      const source = this.props.taskSource ? this.props.taskSource.get('taskSource', '') : '';
 
       this.editTask(source, task);
     }
@@ -315,7 +314,7 @@ export class TasksListFrame extends React.Component {
     // Used to set the state of the column
     callback(cards);
 
-    const source = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameSource', {}) : {};
+    const source = this.props.taskSource ? this.props.taskSource.get('taskSource', '') : '';
 
     this.editTask(
       source,
@@ -337,6 +336,12 @@ export class TasksListFrame extends React.Component {
     const {taskFilter} = this.props;
 
     const sectionClass = this.state.view !== 'list' ? 'task-list-frame dp-list-frame kanban' : 'task-list-frame dp-list-frame';
+    const source = this.props.taskSource ? this.props.taskSource.get('taskSource', '') : '';
+
+    // Grab the project ID
+    const regex = /[?&]project=([0-9]+)/g;
+    const match = regex.exec(source);
+    const projectId = source && match ? match[1] : false;
 
     let totalPages = 1;
 
@@ -382,7 +387,8 @@ export class TasksListFrame extends React.Component {
             <ListFrameContents>
               {this.state.view === 'card' ?
                 <TaskViewConnector tasks={this.props.tasks}
-                                   order={this.state.order}>
+                                   order={this.state.order}
+                                   projectId={projectId}>
                   <ListView direction={this.state.direction}
                             view={this.state.view}
                             toggleDone={this.toggleDone.bind(this)}
@@ -390,13 +396,15 @@ export class TasksListFrame extends React.Component {
                             updateMassActions={this.updateMassActions.bind(this)}
                             actionable={this.state.actionable}
                             toggleAssignWindow={this.toggleAssignWindow.bind(this)}
-                            moveCard={this.moveCard.bind(this)} />
+                            moveCard={this.moveCard.bind(this)}
+                            source={source} />
                 </TaskViewConnector>
               : '' }
 
               {this.state.view === 'kanban' ?
                 <TaskViewConnector tasks={this.props.tasks}
-                                   order={this.state.order}>
+                                   order={this.state.order}
+                                   projectId={projectId}>
                   <KanbanView direction={this.state.direction}
                             view={this.state.view}
                             toggleDone={this.toggleDone.bind(this)}
@@ -404,13 +412,15 @@ export class TasksListFrame extends React.Component {
                             updateMassActions={this.updateMassActions.bind(this)}
                             actionable={this.state.actionable}
                             toggleAssignWindow={this.toggleAssignWindow.bind(this)}
-                            moveCard={this.moveCard.bind(this)} />
+                            moveCard={this.moveCard.bind(this)}
+                            source={source} />
                 </TaskViewConnector>
               : '' }
 
               {this.state.view === 'condensed' ?
                 <TaskViewConnector tasks={this.props.tasks}
-                                   order={this.state.order}>
+                                   order={this.state.order}
+                                   projectId={projectId}>
                   <CondensedView direction={this.state.direction}
                             view={this.state.view}
                             toggleDone={this.toggleDone.bind(this)}
@@ -419,13 +429,15 @@ export class TasksListFrame extends React.Component {
                             actionable={this.state.actionable}
                             toggleAssignWindow={this.toggleAssignWindow.bind(this)}
                             toggleOrder={this.toggleOrder.bind(this)}
-                            moveCard={this.moveCard.bind(this)} />
+                            moveCard={this.moveCard.bind(this)}
+                            source={source} />
                 </TaskViewConnector>
               : '' }
 
               {this.state.view === 'calendar' ?
                 <TaskViewConnector tasks={this.props.tasks}
-                                   order={this.state.order}>
+                                   order={this.state.order}
+                                   projectId={projectId}>
                   <CalendarView direction={this.state.direction}
                             view={this.state.view}
                             toggleDone={this.toggleDone.bind(this)}
@@ -434,7 +446,8 @@ export class TasksListFrame extends React.Component {
                             actionable={this.state.actionable}
                             toggleAssignWindow={this.toggleAssignWindow.bind(this)}
                             toggleOrder={this.toggleOrder.bind(this)}
-                            moveCard={this.moveCard.bind(this)} />
+                            moveCard={this.moveCard.bind(this)}
+                            source={source} />
                 </TaskViewConnector>
               : '' }
             </ListFrameContents>

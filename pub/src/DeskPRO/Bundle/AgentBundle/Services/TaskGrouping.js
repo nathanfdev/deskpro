@@ -137,11 +137,11 @@ export default class TaskGrouping {
       case 'project':
         this.projects.forEach((project) => {
           returnGroups.push({
-            id: project.id,
-            title: project.title,
+            id: project.get('id'),
+            title: project.get('title'),
             updateField: 'project',
-            updateValue: project.id,
-            key: 'project_' + project.id
+            updateValue: project.get('id'),
+            key: 'project_' + project.get('id')
           });
         });
         returnGroups.sort((first, second) => {
@@ -178,29 +178,29 @@ export default class TaskGrouping {
       case 'assignee':
         this.departments.forEach((department) => {
           returnGroups.push({
-            id: 'department_' + department.id.toString(),
-            title: department.title,
+            id: 'department_' + department.get('id').toString(),
+            title: department.get('title'),
             updateField: 'departments',
-            updateValue: [department.id],
-            key: 'department_' + department.id
+            updateValue: [department.get('id')],
+            key: 'department_' + department.get('id')
           });
         });
         this.teams.forEach((team) => {
           returnGroups.push({
-            id: 'team_' + team.id.toString(),
-            title: team.name,
+            id: 'team_' + team.get('id').toString(),
+            title: team.get('name'),
             updateField: 'teams',
-            updateValue: [team.id],
-            key: 'team_' + team.id
+            updateValue: [team.get('id')],
+            key: 'team_' + team.get('id')
           });
         });
         this.agents.forEach((agent) => {
           returnGroups.push({
-            id: 'agent_' + agent.id.toString(),
-            title: agent.name,
+            id: 'agent_' + agent.get('id').toString(),
+            title: agent.get('name'),
             updateField: 'agents',
-            updateValue: [agent.id],
-            key: 'agent_' + agent.id
+            updateValue: [agent.get('id')],
+            key: 'agent_' + agent.get('id')
           });
         });
 
@@ -214,13 +214,13 @@ export default class TaskGrouping {
         break;
       case 'list':
       default:
-        this.lists.forEach((listObject) => {
+        this.lists.map((listObject) => {
           returnGroups.push({
-            id: listObject.id,
-            title: listObject.title,
+            id: listObject.get('id'),
+            title: listObject.get('title'),
             updateField: 'list',
-            updateValue: listObject.id,
-            key: 'list_' + listObject.id
+            updateValue: listObject.get('id'),
+            key: 'list_' + listObject.get('id')
           });
         });
 
@@ -345,11 +345,11 @@ export default class TaskGrouping {
   getAssigneeDivider(object) {
     let assignee = false;
     if (object.get('agents').length > 0) {
-      assignee = 'agent_' + object.get('agents')[0].toString();
+      assignee = 'agent_' + object.get('agents').get(0).toString();
     } else if (object.get('teams').length > 0) {
-      assignee = 'team_' + object.get('teams')[0].toString();
+      assignee = 'team_' + object.get('teams').get(0).toString();
     } else if (object.get('departments').length > 0) {
-      assignee = 'department_' + object.get('departments')[0].toString();
+      assignee = 'department_' + object.get('departments').get(0).toString();
     }
 
     if (assignee === false) {
@@ -365,16 +365,11 @@ export default class TaskGrouping {
    * @return string
    */
   getProjectDivider(object) {
-    let project = false;
     if (object.get('project')) {
-      project = this.projects[object.get('project')].title;
+      return this.projects[object.get('project')].title;
     }
 
-    if (project === false) {
-      return 'none';
-    }
-
-    return project;
+    return 'none';
   }
 
   /*
@@ -383,17 +378,11 @@ export default class TaskGrouping {
    * @return string
    */
   getListDivider(object) {
-    let listTitle = false;
-
     if (object.get('list') && this.lists[object.get('list')]) {
-      listTitle = this.lists[object.get('list')].title;
+      return this.lists[object.get('list')].title;
     }
 
-    if (listTitle === false) {
-      return 'none';
-    }
-
-    return listTitle;
+    return 'none';
   }
 
   /*
@@ -402,17 +391,11 @@ export default class TaskGrouping {
    * @return string
    */
   getCreatorDivider(object) {
-    let creator = false;
-
-    if (object.get('creator') && this.agents[object.get('creator')]) {
-      creator = this.agents[object.get('creator')].name;
+    if (object.get('creator') && this.agents.get(object.get('creator'))) {
+      return this.agents.get(object.get('creator')).get('name');
     }
 
-    if (creator === false) {
-      return 'none';
-    }
-
-    return creator;
+    return 'none';
   }
 
   /*
@@ -466,21 +449,15 @@ export default class TaskGrouping {
    * @return string
    */
   getLabelDivider(object) {
-    let labelsDivider = false;
-
     if (object.get('labels') && object.get('labels').length > 0) {
       const labels = object.get('labels');
       labels.sort((first, second) => {
         return first.toLowerCase().localeCompare(second.toLowerCase());
       });
-      labelsDivider = labels.join(', ');
+      return labels.join(', ');
     }
 
-    if (labelsDivider === false) {
-      return 'none';
-    }
-
-    return labelsDivider;
+    return 'none';
   }
 
   /*
@@ -490,19 +467,16 @@ export default class TaskGrouping {
    * @return string
    */
   getTicketDivider(object) {
-    let ticketDivider = false;
     if (object.get('linked_tickets') && object.get('linked_tickets').length > 0) {
+      let ticketDivider = false;
       object.get('linked_tickets').forEach((item) => {
         if (this.tickets.has(item)) {
           ticketDivider = this.tickets.get(item).get('subject');
         }
       });
+      return ticketDivider;
     }
 
-    if (ticketDivider === false) {
-      return 'none';
-    }
-
-    return ticketDivider;
+    return 'none';
   }
 }

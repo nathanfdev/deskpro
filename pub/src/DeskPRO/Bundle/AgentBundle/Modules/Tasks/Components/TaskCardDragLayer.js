@@ -55,8 +55,9 @@ export default class TaskCardDragLayer extends React.Component {
         let ticketLink = undefined;
         let ticketTitle = 'Linked ticket';
 
-        if (item.details.get('tickets') && item.details.get('tickets').size > 0) {
-          ticketTitle = item.details.get('tickets')[0].subject;
+        if (item.details.get('tickets') && item.details.get('tickets').size > 0 && item.details.get('tickets').get(0)) {
+          const ticketId = item.details.get('tickets').get(0);
+          ticketTitle = item.tickets.get(ticketId).get('subject');
           ticketLink = '#';
         }
 
@@ -109,7 +110,6 @@ export default class TaskCardDragLayer extends React.Component {
           </div>
 
           <div className="dpw--card-line-right">
-
             {item.details.get('is_done') ?
              <div className="dpw--card-expand">
                <a href="#">Expand <i className="fa fa-navicon"/></a>
@@ -130,10 +130,10 @@ export default class TaskCardDragLayer extends React.Component {
                 <i className="fa fa-calendar-o"/> Due: {item.details.get('date_due') ? this.dueIndicator(item.details.get('date_due')) : 'N/A'}
               </span>
 
-             {item.details.get('project') && item.projects[item.details.get('project')] ? <span>
+             {item.details.get('project') && item.projects.get(item.details.get('project')) ? <span>
                 <span className="dpw--card-disc"/>
                 <span className="dpwd--card-line-item">
-                  <i className="fa fa-book"/> {item.projects[item.details.get('project')].title}
+                  <i className="fa fa-book"/> {item.projects.get(item.details.get('project')).get('title')}
                 </span>
               </span>
                : ''}
@@ -161,8 +161,7 @@ export default class TaskCardDragLayer extends React.Component {
            </div>
          </div>
           : '' }
-      </Card>);
-        break;
+        </Card>);
       case 'kanban':
         let assigneeName = '';
 
@@ -218,8 +217,8 @@ export default class TaskCardDragLayer extends React.Component {
               </div>
             </div>
           </div>);
-        default:
-          return;
+      default:
+        return null;
     }
   }
 
