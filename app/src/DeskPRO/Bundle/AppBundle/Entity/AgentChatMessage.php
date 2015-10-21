@@ -33,8 +33,8 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
-use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\Person;
+use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -46,8 +46,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
  * @ORM\InheritanceType("NONE")
  */
-class AgentChatMessage extends DomainObject
+class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
 {
+    use NotifyPropertyChangedTrait;
+
     /**
      * @var int
      * @ORM\Id()

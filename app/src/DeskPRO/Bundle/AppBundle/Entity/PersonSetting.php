@@ -34,7 +34,7 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
+use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -42,8 +42,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity()
  * @ORM\Table(name="person_settings")
  */
-class PersonSetting extends NotifyPropertyChangeEntity
+class PersonSetting implements EntityInterface, NotifyPropertyChanged
 {
+    use NotifyPropertyChangedTrait;
+
     /**
      * @var Person
      * @ORM\Id()
@@ -70,6 +72,11 @@ class PersonSetting extends NotifyPropertyChangeEntity
     {
         $this->person = $person;
         $this->name   = $name;
+    }
+
+    public function getId()
+    {
+        return $this->person->getId();
     }
 
     public function getPerson()

@@ -31,9 +31,9 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
-use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use Hateoas\Configuration\Annotation as Hateoas;
 use JMS\Serializer\Annotation as Serializer;
@@ -53,8 +53,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      href=@Hateoas\Route("api_ticket_filters_get", parameters={"id" = "expr(object.getId())"})
  * )
  */
-class TicketFilter extends NotifyPropertyChangeEntity implements FilterInterface
+class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyChanged
 {
+    use NotifyPropertyChangedTrait;
+
     /**
      * @ORM\Id()
      * @ORM\Column(type="integer")

@@ -32,7 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
+use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 
@@ -40,8 +40,10 @@ use JMS\Serializer\Annotation as Serializer;
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterViewRepository")
  * @ORM\Table(name="ticket_filter_views")
  */
-class TicketFilterView extends NotifyPropertyChangeEntity
+class TicketFilterView implements EntityInterface, NotifyPropertyChanged
 {
+    use NotifyPropertyChangedTrait;
+
     const TYPE_LIST  = 'list';
     const TYPE_TABLE = 'table';
 
@@ -74,7 +76,7 @@ class TicketFilterView extends NotifyPropertyChangeEntity
     /**
      * Returns the filter.
      *
-     * @return in the filter ID attached.
+     * @return int the filter ID attached.
      *
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("filter")

@@ -33,7 +33,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
-use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
+use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use Hateoas\Configuration\Annotation as Hateoas;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -47,8 +47,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      href=@Hateoas\Route("api_task_labels_get", parameters={"id" = "expr(object.getId())"})
  * )
  */
-class LabelTask extends NotifyPropertyChangeEntity
+class LabelTask implements EntityInterface, NotifyPropertyChanged
 {
+    use NotifyPropertyChangedTrait;
+
     /**
      * @var int
      * @ORM\Id()

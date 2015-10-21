@@ -32,7 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer;
 
 use Application\DeskPRO\Domain\DomainObject;
-use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
+use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Component\Hierarchy\HierarchyNode;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
@@ -102,11 +102,11 @@ class HierarchyNodeTransformer implements DataTransformerInterface
             }
 
             $data = $choice->getData();
-            if ($data instanceof DomainObject || $data instanceof NotifyPropertyChangeEntity) {
+            if ($data instanceof DomainObject || $data instanceof EntityInterface) {
                 $data = $data->getId();
             }
 
-            if ($value instanceof DomainObject || $value instanceof NotifyPropertyChangeEntity) {
+            if ($value instanceof DomainObject || $value instanceof EntityInterface) {
                 $value = $value->getId();
             }
 

@@ -29,7 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Helper;
 
 use Application\DeskPRO\Domain\DomainObject;
-use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
+use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use Doctrine\Common\Proxy\Proxy;
 
 /**
@@ -72,7 +72,7 @@ class ArbitraryHasher
             return $input;
         }
 
-        if ($input instanceof DomainObject || $input instanceof NotifyPropertyChangeEntity || $input instanceof Proxy || method_exists(
+        if ($input instanceof DomainObject || $input instanceof EntityInterface || $input instanceof Proxy || method_exists(
                 $input,
                 'getId'
             )

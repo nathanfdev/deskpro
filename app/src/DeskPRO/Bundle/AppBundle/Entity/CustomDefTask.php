@@ -34,7 +34,7 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AppInstance;
-use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
+use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -43,8 +43,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="custom_def_task")
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
-class CustomDefTask extends NotifyPropertyChangeEntity
+class CustomDefTask implements EntityInterface, NotifyPropertyChanged
 {
+    use NotifyPropertyChangedTrait;
+
     /**
      * @var int
      * @ORM\Id()

@@ -32,7 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Theme\TagHandler;
 
 use Application\DeskPRO\Domain\DomainObject;
-use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
+use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\PortalBundle\HttpCache\PortalCacheHelper;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
@@ -121,7 +121,7 @@ class EsiTagHandler implements TagHandlerInterface
             }
 
             if (is_object($val)) {
-                if (!($val instanceof DomainObject || $val instanceof NotifyPropertyChangeEntity)) {
+                if (!($val instanceof DomainObject || $val instanceof EntityInterface)) {
                     continue;
                 }
                 $val = $val->getId();
