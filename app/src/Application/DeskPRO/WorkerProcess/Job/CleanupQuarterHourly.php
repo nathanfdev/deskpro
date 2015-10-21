@@ -78,43 +78,64 @@ class CleanupQuarterHourly extends AbstractJob
             ));
         }
 
-        // Fetch in agent context
-        $filters = App::getOrm()->createQuery("
-			SELECT f
-			FROM DeskPRO:TicketFilter f
-			WHERE f.sys_name LIKE 'archive_%' AND f.sys_name != 'archive_resolved' AND f.sys_name != 'archive_awaiting_user'
-		")->execute();
+        $did_per_agent_filters = false;
 
-        $inserts = array();
+        // - We only do per-agent numbers on archive filters if we
+        // have fewer than 1m tickets total. More than that, exact
+        // numbers are unlikely to matter anyway, but it may get slow.
+        // - We also ignore per-agent numbers if we have lots of agents,
+        // just so we dont run so many useless queries at once.
 
-        foreach (App::getContainer()->getAgentData()->getAgents() as $agent) {
-            $agent->loadHelper('Agent');
-            $agent->loadHelper('AgentTeam');
-            $agent->loadHelper('AgentPermissions');
-            $agent->loadHelper('PermissionsManager');
-            $agent->loadHelper('HelpMessages');
-            $agent->loadHelper('AgentPrefs');
+        // If this is skipped, the UI will simply use the normal global counts above
 
-            foreach ($filters as $filter) {
-                /* @var \Application\DeskPRO\Entity\TicketFilter $filter*/
-                $searcher = $filter->getSearcher();
-                $searcher->setPersonContext($agent);
+        if ($counts['tickets'] < 1000000) {
+            $all_agents = App::getContainer()->getAgentData()->getAgents();
+            if (count($all_agents) < 250) {
+                $did_per_agent_filters = true;
 
-                $count = $searcher->getCount();
+                // Fetch in agent context
+                $filters = App::getOrm()->createQuery("
+                    SELECT f
+                    FROM DeskPRO:TicketFilter f
+                    WHERE f.sys_name LIKE 'archive_%' AND f.sys_name != 'archive_resolved' AND f.sys_name != 'archive_awaiting_user'
+                ")->execute();
 
-                $inserts[] = array(
-                    'person_id'   => $agent->id,
-                    'name'        => "ticket_counts.{$filter->sys_name}",
-                    'value_str'   => $count,
-                    'value_array' => null,
-                    'date_expire' => null,
-                );
+                $inserts = array();
+
+                foreach ($all_agents as $agent) {
+                    $agent->loadHelper('Agent');
+                    $agent->loadHelper('AgentTeam');
+                    $agent->loadHelper('AgentPermissions');
+                    $agent->loadHelper('PermissionsManager');
+                    $agent->loadHelper('HelpMessages');
+                    $agent->loadHelper('AgentPrefs');
+
+                    foreach ($filters as $filter) {
+                        /* @var \Application\DeskPRO\Entity\TicketFilter $filter*/
+                        $searcher = $filter->getSearcher();
+                        $searcher->setPersonContext($agent);
+
+                        $count = $searcher->getCount();
+
+                        $inserts[] = array(
+                            'person_id'   => $agent->id,
+                            'name'        => "ticket_counts.{$filter->sys_name}",
+                            'value_str'   => $count,
+                            'value_array' => null,
+                            'date_expire' => null,
+                        );
+                    }
+                }
+
+                if ($inserts) {
+                    App::getDb()->executeUpdate("DELETE FROM people_prefs WHERE name LIKE 'ticket_counts.%'");
+                    App::getDb()->batchInsert('people_prefs', $inserts, true);
+                }
             }
         }
 
-        if ($inserts) {
+        if (!$did_per_agent_filters) {
             App::getDb()->executeUpdate("DELETE FROM people_prefs WHERE name LIKE 'ticket_counts.%'");
-            App::getDb()->batchInsert('people_prefs', $inserts, true);
         }
     }
 }
