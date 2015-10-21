@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
-use DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidCaptcha;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -125,15 +124,8 @@ class PersonRegistrationType extends AbstractType
                 );
             }
 
-            if ($captcha_decider->shouldRequireRegistrationCaptchaForCurrentUser()) {
-                $event->getForm()->add('captcha', 'deskpro_captcha', array(
-                    'mapped'         => false,
-                    'error_bubbling' => false,
-                    'label'          => false,
-                    'constraints'    => array(
-                        new ValidCaptcha(),
-                    ),
-                ));
+            if ($captcha_decider->shouldRequireRegistrationCaptchaForCurrentPerson()) {
+                $event->getForm()->add('captcha', 'deskpro_captcha');
             }
         });
 

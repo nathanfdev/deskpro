@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonEmailValidating;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\RegistrationAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
@@ -77,6 +78,8 @@ class ProfileController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
+            $event = new RegistrationAbuseCheck($this->getCurrentPerson(), $request->getClientIp());
+            $this->getAntiAbuseService()->check($event);
             // check if the person already has an account (or is a contact)
             if ($email = $person->getEmailAddress()) {
                 if ($person_check = $this->get('data.person')->getPersonForEmail($email)) {

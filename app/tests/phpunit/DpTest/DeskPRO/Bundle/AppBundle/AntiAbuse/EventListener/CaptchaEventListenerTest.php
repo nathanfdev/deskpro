@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTest\DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener;
 
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
@@ -96,6 +95,35 @@ class CaptchaEventListenerTest extends PortalTestCase
 
         // on the next check, we will hit the limit, and there should be a captcha recommended
         $this->get('anti_abuse')->check($event);
-        $this->assertTrue($event->isCaptchaRecommended());
+        $this->assertTrue($event->isCaptchaRecommended(), 'rate limit applies if IP is NOT whitelisted');
+    }
+
+    public function testRateLimitWhitelistWontShowCaptcha()
+    {
+        $this->installDataSet('fresh', true);
+        $person = $this->get('test_factory.person')
+                       ->createNewInvalidUser('foo@bar.com', 'Foo Bar', 'password123');
+
+        $ip           = '255.50.70.10';
+        $person_email = 'foo@bar.com';
+        $event        = new LoginAbuseCheck($person_email, $ip);
+
+        // this IP will be whitelisted in settings
+        $this->get('settings_resolver')->setSetting(AntiAbuse::SETTING_IP_WHITELIST, json_encode([
+            $ip,
+        ]));
+
+        $lessThanMaxAttempts = $this->getRateLimitMaxAttempts(AntiAbuse::ACTION_LOGIN) - 1;
+        for ($i = 0; $i < $lessThanMaxAttempts; ++$i) {
+            // should not be recommending anything
+            $this->get('anti_abuse')->check($event);
+
+            // no recommendations should be made (we are always under limit here)
+            $this->assertFalse($event->isCaptchaRecommended());
+        }
+
+        // on the next check, we will hit the limit, and there should be a captcha recommended
+        $this->get('anti_abuse')->check($event);
+        $this->assertFalse($event->isCaptchaRecommended(), 'rate limit does not apply if IP is whitelisted');
     }
 }

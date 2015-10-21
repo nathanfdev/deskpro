@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -71,15 +72,26 @@ class PortalController extends AbstractController
             $saved_form_message = $this->getFormSaver()->getMessage($saved_form);
         }
 
+        $captcha_form  = null;
+        $last_username = $this->getSession()->get('last_username');
+        $abuse_check   = new LoginAbuseCheck($last_username, $request->getClientIp());
+        $abuse_check->markAsCheckOnly();
+        $this->getAntiAbuseService()->check($abuse_check);
+        if ($abuse_check->isCaptchaRecommended()) {
+            $captcha_form = $this->createForm('deskpro_captcha');
+        }
+
         return $this->renderThemeView(
             'Theme:Portal:User/login.html.twig',
             array(
                 'auth_manager'         => $this->get('dp_authentication_manager.user'),
+                'login_captcha_failed' => $request->get('retry') == 'captcha',
                 'login_error'          => $request->get('retry') == 'auth',
                 'lockout_error'        => $request->get('lockout') == 'auth',
                 'saved_form'           => $saved_form,
                 'saved_form_message'   => $saved_form_message,
-                'last_username'        => $this->getSession()->get('last_username'),
+                'captcha_form'         => $captcha_form ? $captcha_form->createView() : null,
+                'last_username'        => $last_username,
                 'reset_success'        => $request->get('reset_success', 0),
                 'set_password_success' => $request->get('set_password_success', 0),
                 'breadcrumbs'          => $this->getBreadcrumbGenerator()->buildLogin(),

@@ -93,6 +93,11 @@ class TicketFormContext
     private $ticket_message;
 
     /**
+     * @var bool keeps track of if we have already added a captcha to the form or not
+     */
+    private $captcha_exists_on_form;
+
+    /**
      * @param FormInterface $form
      * @param Person        $person
      * @param Ticket        $ticket
@@ -103,14 +108,15 @@ class TicketFormContext
      */
     public function __construct(FormInterface $form, Ticket $ticket, TicketMessage $ticket_message = null, Person $person, TicketLayout $layout, $view_context, $visibility)
     {
-        $this->form            = $form;
-        $this->ticket          = $ticket;
-        $this->person          = $person;
-        $this->layout          = $layout;
-        $this->previous_layout = $layout;
-        $this->view_context    = $view_context;
-        $this->visibility      = $visibility;
-        $this->ticket_message  = $ticket_message;
+        $this->form                   = $form;
+        $this->ticket                 = $ticket;
+        $this->person                 = $person;
+        $this->layout                 = $layout;
+        $this->previous_layout        = $layout;
+        $this->view_context           = $view_context;
+        $this->visibility             = $visibility;
+        $this->ticket_message         = $ticket_message;
+        $this->captcha_exists_on_form = false;
     }
 
     /**
@@ -240,5 +246,21 @@ class TicketFormContext
     public function setPreviousLayout(TicketLayout $previous_layout)
     {
         $this->previous_layout = $previous_layout;
+    }
+
+    /**
+     * @return bool
+     */
+    public function doesCaptchaExistOnForm()
+    {
+        return $this->captcha_exists_on_form;
+    }
+
+    /**
+     * @param bool $bool
+     */
+    public function setCaptchaExistsOnForm($bool)
+    {
+        $this->captcha_exists_on_form = (bool) $bool;
     }
 }

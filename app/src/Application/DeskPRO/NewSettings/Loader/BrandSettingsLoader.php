@@ -64,7 +64,7 @@ class BrandSettingsLoader implements SettingsLoaderInterface
      */
     public function load($force = false, $brand_id = null)
     {
-        // NOTE: when you use the main SettingsResolver->getBrandSettings() it
+        // NOTE: when you use the main TestSettingsResolver->getBrandSettings() it
         // will first load the global settings and use these brand specific settings on top of that
         // in short: don't use this class by itself
         if (!$brand_id) {
