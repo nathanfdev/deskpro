@@ -48,8 +48,8 @@ class TimezonesController extends BaseController
         $timezones = [];
         foreach (\DateTimeZone::listIdentifiers() as $num => $timezone) {
             $timezones[] = [
-                'id'   => $num,
-                'name' => $timezone,
+                'id'    => $num,
+                'title' => $timezone,
             ];
         }
 

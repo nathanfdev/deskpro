@@ -5,6 +5,7 @@ import { Avatar } from './Fields/Avatar';
 import { Email } from './Fields/Email';
 import { Phone } from './Fields/Phone';
 import { Language } from './Fields/Language';
+import { Timezone } from './Fields/Timezone';
 import { Password } from './Fields/Password';
 
 export class ProfileForm extends React.Component {
@@ -141,13 +142,10 @@ export class ProfileForm extends React.Component {
 
   renderTimezoneField() {
     const { timezones } = this.props;
-    console.log(timezones);
 
     return (
       <FieldWrapper label="Time Zone">
-        <div className="bucket-column">
-          <a href="#" className="select">Europe/London (0 GMT) <i className="fa fa-caret-down"></i></a>
-        </div>
+        <Timezone timezones={timezones} />
       </FieldWrapper>
     );
   }
