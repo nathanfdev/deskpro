@@ -76,7 +76,7 @@ class PersonSetting implements EntityInterface, NotifyPropertyChanged
 
     public function getId()
     {
-        return $this->person->getId();
+        return [$this->person->getId(), $this->getName()];
     }
 
     public function getPerson()

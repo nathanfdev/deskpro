@@ -215,4 +215,36 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
 
         return $this;
     }
+
+    /**
+     * @return int
+     */
+    public function getAgentChatId()
+    {
+        return $this->agent_chat_id;
+    }
+
+    /**
+     * @param int $agent_chat_id
+     */
+    public function setAgentChatId($agent_chat_id)
+    {
+        $this->setModelField('agent_chat_id', $agent_chat_id);
+    }
+
+    /**
+     * @return int
+     */
+    public function getPersonId()
+    {
+        return $this->person_id;
+    }
+
+    /**
+     * @param int $person_id
+     */
+    public function setPersonId($person_id)
+    {
+        $this->setModelField('person_id', $person_id);
+    }
 }
