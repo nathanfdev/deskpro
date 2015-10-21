@@ -74,7 +74,8 @@ class EntityUtils
 
     protected static function isInvalidIdValue($id)
     {
-        return empty($id) || is_bool($id);
+        // 0 is considered empty but is still a valid ID
+        return (empty($id) && $id !== 0) || is_bool($id);
     }
 
     /**

@@ -66,12 +66,20 @@ class EntityUtilsTest extends DeskProTestCase
         $this->assertSame(101, EntityUtils::getIdentifier(new MockDomainObject()), 'getIdentifier DomainObject works with ints');
 
         $string_entity = $this->prophesize(EntityInterface::class);
+        $string_entity->getId()->willReturn(0);
+        $this->assertSame(0, EntityUtils::getIdentifier($string_entity->reveal()), 'getIdentifier EntityInterface 0 is a valid id');
+
+        $string_entity = $this->prophesize(MockDomainObject::class);
+        $string_entity->getId()->willReturn(0);
+        $this->assertSame(0, EntityUtils::getIdentifier($string_entity->reveal()), 'getIdentifier DomainObject 0 is a valid id');
+
+        $string_entity = $this->prophesize(EntityInterface::class);
         $string_entity->getId()->willReturn('string_id');
         $this->assertSame('string_id', EntityUtils::getIdentifier($string_entity->reveal()), 'getIdentifier EntityInterface works with strings');
 
-        $string_domain_object = $this->prophesize(Ticket::class);
+        $string_domain_object = $this->prophesize(MockDomainObject::class);
         $string_domain_object->getId()->willReturn('string_id_2');
-        $this->assertSame('string_id_2', EntityUtils::getIdentifier($string_domain_object->reveal()), 'getIdentifier EntityInterface works with strings');
+        $this->assertSame('string_id_2', EntityUtils::getIdentifier($string_domain_object->reveal()), 'getIdentifier DomainObject works with strings');
     }
 
     public function getScalarArrays()
