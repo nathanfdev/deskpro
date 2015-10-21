@@ -21,8 +21,7 @@ const defaultCardFields = {
   date_created: { isShown: true },
   total_rating: { isShown: true },
   num_ratings: { isShown: true },
-  num_comments: { isShown: true },
-  validating: { isShown: true }
+  num_comments: { isShown: true }
 };
 
 const defaultTableFields = {
@@ -70,10 +69,10 @@ const FeedbackViewOptions = React.createClass({
         dispatch(updateDisplayFieldsToPersonSetting(this.state));
       } else {
         dispatch(storeDisplayFieldsToPersonSetting(this.state));
-        this.setState({ isStored: true });
       }
-      dispatch(getDisplayFieldsFromPersonSetting());
+      this.setState({ isStored: true });
     }
+    dispatch(getDisplayFieldsFromPersonSetting());
   },
 
   handleClickOutside: function handleClickOutside() {
@@ -85,6 +84,7 @@ const FeedbackViewOptions = React.createClass({
     currentState[field].isShown = isChecked;
     this.setState({ [type]: currentState });
     this.setState({ isChanged: true });
+    console.log('Changed state', this.state);
   },
 
   render: function render() {
