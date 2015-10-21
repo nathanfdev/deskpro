@@ -36,6 +36,7 @@ use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
+use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
@@ -148,6 +149,33 @@ class TicketFilterSetsController extends BaseController
         } else {
             return $this->handleFormSubmission($request, $set);
         }
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="delete a filter set",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the filter set",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Deleted",
+     *          404="Not Found"
+     *      }
+     * )
+     *
+     * @Delete("/ticket_filter_sets/{id}", name="api_ticket_filter_sets_delete")
+     */
+    public function deleteAction($id)
+    {
+        $this->getDoctrine()->getManager()->remove($this->findOr404('App:TicketFilterSet', $id));
+        $this->getDoctrine()->getManager()->flush();
+
+        return View::create([], Response::HTTP_OK);
     }
 
     /**
