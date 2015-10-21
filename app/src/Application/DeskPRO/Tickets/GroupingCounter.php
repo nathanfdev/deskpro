@@ -650,6 +650,8 @@ class GroupingCounter
             default:
 
                 if ($f = $this->getCustomDefField($field)) {
+                    $this->grouping_summary = $f->title;
+
                     if ($f->isChoiceType()) {
                         $titles = array('0' => 'None');
                         foreach (App::getSystemService('TicketFieldsManager')->getFieldChildren($f) as $subf) {
