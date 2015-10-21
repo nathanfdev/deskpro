@@ -17,24 +17,58 @@ export class LeftPanelContainer extends React.Component {
     dispatch: PropTypes.func.isRequired
   };
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      email: null,
+      password: null,
+      rememberMe: null
+    };
+  }
+
   onChangeEmail = (event) => {
-    this.props.dispatch(loginActions.emailChange(event.target.value));
+    this.resetErrorWarnings();
+    this.setState({
+      email: event.target.value
+    });
   };
 
   onChangePassword = (event) => {
-    this.props.dispatch(loginActions.passwordChange(event.target.value));
+    this.resetErrorWarnings();
+    this.setState({
+      password: event.target.value
+    });
   };
 
   onChangeRememberMe = () => {
-    this.props.dispatch(loginActions.toggleRememberMe());
+    this.setState({
+      rememberMe: !this.state.rememberMe
+    });
   };
+
+  hasError() {
+    const { loginState } = this.props;
+    return loginState.get('emailError') || loginState.get('passwordError');
+  }
+
+  resetErrorWarnings() {
+    if (!this.hasError()) {
+      return;
+    }
+
+    const { dispatch } = this.props;
+
+    dispatch(loginActions.emailSetError(null));
+    dispatch(loginActions.passwordSetError(null));
+  }
 
   submitForm = (event) => {
     event.preventDefault();
 
-    const { dispatch, loginState } = this.props;
-    const email = loginState.get('email');
-    const password = loginState.get('password');
+    const { dispatch } = this.props;
+    const email = this.state.email;
+    const password = this.state.password;
 
     if (!email) {
       dispatch(loginActions.emailSetError('Email is empty'));
@@ -55,7 +89,7 @@ export class LeftPanelContainer extends React.Component {
     const { loginState } = this.props;
 
     const loginClassNames = ['dpw-login'];
-    if (loginState.get('emailError') || loginState.get('passwordError')) {
+    if (this.hasError()) {
       loginClassNames.push('error');
     }
 
@@ -77,15 +111,15 @@ export class LeftPanelContainer extends React.Component {
 
           <div className="dpw-login-form">
             <form>
-              <Email value={loginState.get('email')}
+              <Email value={this.state.email}
                      errorMessage={loginState.get('emailError')}
                      onChange={this.onChangeEmail} />
 
-              <Password value={loginState.get('password')}
+              <Password value={this.state.password}
                         errorMessage={loginState.get('passwordError')}
                         onChange={this.onChangePassword} />
 
-              <Options checked={loginState.get('rememberMe')}
+              <Options checked={this.state.rememberMe}
                        onChange={this.onChangeRememberMe} />
 
               <input type="submit" value="Log in to DeskPRO" onClick={this.submitForm} />
