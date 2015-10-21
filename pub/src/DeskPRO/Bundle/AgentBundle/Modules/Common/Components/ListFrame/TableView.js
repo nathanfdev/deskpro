@@ -1,23 +1,40 @@
 import React, {Component, PropTypes} from 'react';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import classNames from 'classnames';
+import { Scrollable } from '../Scrollable';
+import jQuery from 'jquery';
 
 export class TableView extends Component {
+  static propTypes = {
+    children: PropTypes.any.isRequired
+  };
 
   render() {
     return (
       <div className="dpmw--items-table-list">
-        <table>
-          {this.props.children}
-        </table>
+        <Scrollable
+          vertical
+          horizontal
+          style={{height: this.getHeight() + 'px'}}
+          contentStyle={{display: 'inline-block'}}
+        >
+          <table>
+            {this.props.children}
+          </table>
+        </Scrollable>
       </div>
     );
+  }
+
+  // Scrollable area height equal to the window height reduced
+  // by height of the list control bar and header top bar
+  getHeight() {
+    return jQuery(window).height() - 93;
   }
 }
 
 
 export class TableHeader extends Component {
-
   static propTypes = {
     children: PropTypes.any.isRequired
   };
@@ -35,25 +52,30 @@ export class TableHeader extends Component {
 export class Th extends Component {
 
   static propTypes = {
-    field: PropTypes.object.isRequired,
-    sortable: PropTypes.bool,
-    sortTable: PropTypes.func.isRequired
+    label: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired,
+    order: PropTypes.string,
+    className: PropTypes.string,
+    isShown: PropTypes.any,
+    sortTable: PropTypes.func
   };
 
   handleClick(param, event) {
     event.preventDefault();
     event.stopPropagation();
-    const {sortTable, field} = this.props;
-    const order = field.order === constants.ORDER_ASC ? constants.ORDER_DESC : constants.ORDER_ASC;
-    sortTable(param, order);
-    this.setState({'order': order});
+    const { sortTable, order } = this.props;
+    if (sortTable) {
+      const newOrder = order === constants.ORDER_ASC ? constants.ORDER_DESC : constants.ORDER_ASC;
+      sortTable(param, newOrder);
+    }
   }
 
-  renderCaret(field) {
-    if (field.order) {
+  renderCaret() {
+    const { order } = this.props;
+    if (order) {
       var classes = classNames('fa', {
-        'fa-caret-down': field.order === constants.ORDER_DESC,
-        'fa-caret-up': field.order === constants.ORDER_ASC
+        'fa-caret-down': order === constants.ORDER_DESC,
+        'fa-caret-up': order === constants.ORDER_ASC
       });
       return (
         <span className="sort-direction"><i className={classes}></i></span>
@@ -62,14 +84,11 @@ export class Th extends Component {
   }
 
   render() {
-    const { field, sortable } = this.props;
-    const classes = classNames(field.className, {'sortable': sortable});
-    const callback = sortable ? this.handleClick.bind(this, field.name) : ()=> {
-    };
+    const { value, label, className } = this.props;
     return (
-      <th className={classes} onClick={callback}>
-        {field.label}
-        {this.renderCaret(field)}
+      <th className={className} onClick={this.handleClick.bind(this, value)}>
+        {label}
+        { this.renderCaret() }
       </th>
     );
   }
@@ -107,7 +126,8 @@ export class Row extends Component {
 export class Td extends Component {
 
   static propTypes = {
-    className: PropTypes.string
+    className: PropTypes.string,
+    children: PropTypes.any.isRequired
   };
 
   render() {

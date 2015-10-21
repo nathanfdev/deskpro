@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import * as AppActions from '../../../Application/Actions/AppActions';
 import { connect } from 'react-redux';
+import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
 
 @connect(state => ({
   dpWindow: state.Application.dpWindow
@@ -72,7 +73,9 @@ export class NavFrame extends React.Component {
               <span className="disc"/>
             </span>
             <aside className="sidebar has-tabs" id="sidebar">
-              {inner}
+              <Scrollable vertical>
+                {inner}
+              </Scrollable>
             </aside>
           </div>
         </section>
