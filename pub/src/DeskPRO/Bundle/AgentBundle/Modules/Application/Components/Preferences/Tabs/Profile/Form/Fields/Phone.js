@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { PhoneNumber } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/PhoneNumber';
 
 export class Phone extends React.Component {
 
@@ -7,14 +8,12 @@ export class Phone extends React.Component {
     onChange: PropTypes.func.isRequired
   };
 
-  onChange = (event) => {
-    this.props.onChange(event.target.value);
-  };
-
   render() {
+    const { value, onChange } = this.props;
+
     return (
       <div className="bucket-column">
-        <input type="text" placeholder="Your phone number" value={this.props.value} />
+        <PhoneNumber value={value} onChange={onChange} />
       </div>
     );
   }
