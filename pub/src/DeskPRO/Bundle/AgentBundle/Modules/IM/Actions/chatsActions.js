@@ -9,10 +9,9 @@ export const startChat = createAction(
     dispatch(openChat(targetId, targetType));
     return new Promise(
       (resolve, reject) => {
-        const pr = IM.startChat(targetId, targetType)
+        return IM.startChat(targetId, targetType)
           .success(response => resolve(response.data))
           .error(response => reject(response));
-        return pr;
       }
     );
   }
