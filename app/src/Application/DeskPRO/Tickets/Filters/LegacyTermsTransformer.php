@@ -178,7 +178,7 @@ class LegacyTermsTransformer
                 return array(
                     'type'    => 'organization',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('organization' => $options['org_ids']),
+                    'options' => array('organization' => implode(',', (array) @$options['org_ids'] ?: array())),
                 );
 
             case 'FilterOrgLabels':
@@ -581,7 +581,7 @@ class LegacyTermsTransformer
             case 'organization':
                 $ids = @$options['organization'] ?: array();
                 if (!is_array($ids)) {
-                    $ids = array($ids);
+                    $ids = explode(',', $ids);
                 }
 
                 return new Terms\FilterOrgId($op, array(
@@ -817,13 +817,13 @@ class LegacyTermsTransformer
                 return new Terms\FilterTicketField($op, $new_opts);
 
             case 'person_field':
-                $new_opts             = $options;
+                $new_opts             = array();
                 $new_opts['field_id'] = $type_id;
 
                 return new Terms\FilterUserField($op, $new_opts);
 
             case 'org_field':
-                $new_opts             = $options;
+                $new_opts             = array();
                 $new_opts['field_id'] = $type_id;
 
                 return new Terms\FilterOrgField($op, $new_opts);
