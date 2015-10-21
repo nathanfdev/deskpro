@@ -14,7 +14,6 @@ import { recentChatsSelector, recentChatsStatusSelector } from '../../RecordStor
 import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { meSelector, meStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
-import { loadMe } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Actions/meActions';
 
 // teams
 import { loadMyAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions';
@@ -67,9 +66,15 @@ export class List extends React.Component {
 
   renderList = () => {
     const { agents, teams, departments, recentChats, me } = this.props;
+    const sortedChats = recentChats.sort((first, second) => {
+      const fDate = Date.parse(first.get('date_last_message'));
+      const sDate = Date.parse(second.get('date_last_message'));
+      if (fDate === sDate) return 0;
+      return sDate - fDate;
+    });
     return (
     <span>
-      { recentChats.map((chat, index) => <Item startChat={this.startChat} me={me} key={index} chat={chat} teams={teams} agents={agents} departments={departments}/>) }
+      { sortedChats.map((chat, index) => <Item startChat={this.startChat} me={me} key={index} chat={chat} teams={teams} agents={agents} departments={departments}/>) }
     </span>);
   };
 
