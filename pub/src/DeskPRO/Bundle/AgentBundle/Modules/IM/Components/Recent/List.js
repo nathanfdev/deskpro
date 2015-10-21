@@ -71,7 +71,7 @@ export class List extends React.Component {
       const sDate = Date.parse(second.get('date_last_message'));
       if (fDate === sDate) return 0;
       return sDate - fDate;
-    });
+    }).slice(0, 5);
     return (
     <span>
       { sortedChats.map((chat, index) => <Item startChat={this.startChat} me={me} key={index} chat={chat} teams={teams} agents={agents} departments={departments}/>) }
