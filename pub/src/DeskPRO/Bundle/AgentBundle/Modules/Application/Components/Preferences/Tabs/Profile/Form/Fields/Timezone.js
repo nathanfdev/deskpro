@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import Select from 'react-select';
 
 export class Timezone extends React.Component {
 
@@ -8,19 +9,20 @@ export class Timezone extends React.Component {
     onChange: PropTypes.func.isRequired
   };
 
-  onChange = (event) => {
-    this.props.onChange(event.target.value);
-  };
-
   render() {
-    const { timezones } = this.props;
+    const { value, timezones, onChange } = this.props;
+    const options = timezones.map(timezone => ({
+      value: timezone.get('title'),
+      label: timezone.get('title')
+    })).toArray();
 
     return (
       <div className="bucket-column">
-        <a href="#" className="select">Europe/London (0 GMT) <i className="fa fa-caret-down"></i></a>
-        <select>
-          {timezones.map(timezone => <option key={timezone.get('id')} value={timezone.get('id')}>{timezone.get('title')}</option>)}
-        </select>
+        <Select
+          name="form-field-name"
+          value={value}
+          options={options}
+          onChange={onChange} />
       </div>
     );
   }

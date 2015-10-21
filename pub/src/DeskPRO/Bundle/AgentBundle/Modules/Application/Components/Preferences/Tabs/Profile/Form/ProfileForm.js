@@ -26,7 +26,7 @@ export class ProfileForm extends React.Component {
       primaryEmail: null,
       phone: null,
       language: null,
-      timezone: null,
+      timezone: 'UTC',
       password: null,
       confirmPassword: null
     };
@@ -65,6 +65,12 @@ export class ProfileForm extends React.Component {
   onChangePhone = (value) => {
     this.setState({
       phone: value
+    });
+  };
+
+  onChangeTimezone = (value) => {
+    this.setState({
+      timezone: value
     });
   };
 
@@ -144,7 +150,9 @@ export class ProfileForm extends React.Component {
 
     return (
       <FieldWrapper label="Time Zone">
-        <Timezone timezones={timezones} />
+        <Timezone timezones={timezones}
+                  value={this.state.timezone}
+                  onChange={this.onChangeTimezone} />
       </FieldWrapper>
     );
   }
