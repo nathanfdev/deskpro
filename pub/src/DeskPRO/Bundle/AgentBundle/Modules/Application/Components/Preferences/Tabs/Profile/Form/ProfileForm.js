@@ -84,10 +84,9 @@ export class ProfileForm extends React.Component {
     event.preventDefault();
   };
 
-  renderNameAvatarField() {
+  renderNameField() {
     return (
       <FieldWrapper label="Your name">
-        <Avatar />
         <Name value={this.state.name} onChange={this.onChangeName} />
       </FieldWrapper>
     );
@@ -165,7 +164,7 @@ export class ProfileForm extends React.Component {
   render() {
     return (
       <form className="popup-form-default">
-        {this.renderNameAvatarField()}
+        {this.renderNameField()}
         {this.renderOverrideDefaultNameField()}
         {this.renderEmailField()}
         {this.renderPhoneField()}
