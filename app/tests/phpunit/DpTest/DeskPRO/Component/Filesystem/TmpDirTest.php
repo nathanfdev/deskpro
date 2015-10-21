@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DpTest\DeskPRO\Component\Util\ListUtils;
+namespace DpTest\DeskPRO\Component\Filesystem;
 
 use DeskPRO\Component\Filesystem\TmpDir;
 use DpTest\DeskProTestCase;
