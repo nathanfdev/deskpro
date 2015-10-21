@@ -78,19 +78,10 @@ class TicketFiltersController extends BaseController
      *
      * @Get("/ticket_filters", name="api_ticket_filters")
      */
-    public function cgetAction(Request $request)
+    public function getAllAction()
     {
-        $page  = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
-
-        $pager = $this->get('data.filters')->getFiltersPager($page, $count);
-
-        if (!$pager) {
-            throw $this->createNotFoundException();
-        }
-
         return View::create(
-            $this->dataSerialize($pager),
+            $this->dataSerialize($this->get('data.filters')->getFilters()),
             Response::HTTP_OK
         );
     }
