@@ -84,6 +84,7 @@ class AccountReader implements ReaderInterface
                 WHERE
                   account_type = 'tickets'
                   AND is_read_active = 0 AND (date_last_incoming IS NULL OR date_last_incoming <= ?)
+                  AND is_enabled = 1
                 ORDER BY date_read_start ASC
                 LIMIT 1
             ", array($date_cut->format('Y-m-d H:i:s')));
@@ -94,6 +95,7 @@ class AccountReader implements ReaderInterface
                 WHERE
                   account_type = 'tickets'
                   AND is_read_active = 0
+                  AND is_enabled = 1
                 ORDER BY date_read_start ASC
                 LIMIT 1
             ");
