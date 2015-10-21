@@ -22,6 +22,7 @@ export class Language extends React.Component {
           name="form-field-name"
           value={value}
           options={options}
+          clearable={false}
           onChange={onChange} />
       </div>
     );

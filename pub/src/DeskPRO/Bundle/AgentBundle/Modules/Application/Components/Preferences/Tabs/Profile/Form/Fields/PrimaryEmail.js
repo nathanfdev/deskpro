@@ -1,20 +1,22 @@
 import React, { PropTypes } from 'react';
 import Select from 'react-select';
+import jQuery from 'jquery';
 
-export class Timezone extends React.Component {
+export class PrimaryEmail extends React.Component {
 
   static propTypes = {
-    timezones: PropTypes.object.isRequired,
+    emails: PropTypes.array.isRequired,
     value: PropTypes.string,
     onChange: PropTypes.func.isRequired
   };
 
   render() {
-    const { value, timezones, onChange } = this.props;
-    const options = timezones.map(timezone => ({
-      value: timezone.get('title'),
-      label: timezone.get('title')
-    })).toArray();
+    const { emails, value, onChange } = this.props;
+
+    const options = jQuery.unique(emails).map(email => ({
+      value: email,
+      label: email
+    }));
 
     return (
       <div className="bucket-column">
@@ -22,6 +24,7 @@ export class Timezone extends React.Component {
           name="form-field-name"
           value={value}
           options={options}
+          searchable={false}
           clearable={false}
           onChange={onChange} />
       </div>

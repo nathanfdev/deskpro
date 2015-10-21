@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { FieldWrapper } from './Fields/FieldWrapper';
 import { Name } from './Fields/Name';
-import { Avatar } from './Fields/Avatar';
 import { Email } from './Fields/Email';
+import { PrimaryEmail } from './Fields/PrimaryEmail';
 import { Phone } from './Fields/Phone';
 import { Language } from './Fields/Language';
 import { Timezone } from './Fields/Timezone';
@@ -49,7 +49,7 @@ export class ProfileForm extends React.Component {
       emails: emails
     });
 
-    if (emails.length === 1) {
+    if (emails.length) {
       this.setState({
         primaryEmail: emails[0]
       });
@@ -117,11 +117,25 @@ export class ProfileForm extends React.Component {
     return (
       <FieldWrapper label="Your email">
         <Email emails={this.state.emails}
-               primary={this.state.primaryEmail}
-               onChangeEmails={this.onChangeEmails}
-               onChangePrimary={this.onChangePrimaryEmail} />
+               onChange={this.onChangeEmails} />
       </FieldWrapper>
     );
+  }
+
+  renderPrimaryEmailField() {
+    const emails = this.state.emails;
+
+    if (emails && emails.length > 1 && emails[1]) {
+      return (
+        <FieldWrapper label="Primary email">
+          <PrimaryEmail emails={this.state.emails}
+                        value={this.state.primaryEmail}
+                        onChange={this.onChangePrimaryEmail} />
+        </FieldWrapper>
+      );
+    }
+
+    return null;
   }
 
   renderPhoneField() {
@@ -175,6 +189,7 @@ export class ProfileForm extends React.Component {
         {this.renderNameField()}
         {this.renderOverrideDefaultNameField()}
         {this.renderEmailField()}
+        {this.renderPrimaryEmailField()}
         {this.renderPhoneField()}
 
         <hr />
