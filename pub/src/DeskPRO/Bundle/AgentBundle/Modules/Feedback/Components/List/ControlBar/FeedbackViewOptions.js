@@ -15,39 +15,54 @@ const FeedbackViewOptions = React.createClass({
   propTypes: {
     dispatch: PropTypes.func.isRequired,
     toggleOptionsMenu: PropTypes.func.isRequired,
-    feedbackViewFields: PropTypes.object.isRequired,
+    viewFields: PropTypes.object.isRequired,
     currentViewMode: PropTypes.string.isRequired
   },
 
   mixins: [require('react-onclickoutside')],
 
   getInitialState() {
-    const {dispatch, feedbackViewFields} = this.props;
+    const { viewFields } = this.props;
     const defaultCardState = {
       id: { isShown: true },
       hidden_status: { isShown: true },
       status_category: { isShown: true },
       custom_category: { isShown: true },
+      type: { isShown: true },
       date_created: { isShown: true },
       total_rating: { isShown: true },
       num_rating: { isShown: true },
       num_comments: { isShown: true },
       validating: { isShown: true }
     };
-    console.log(feedbackViewFields);
+    const defaultTableState = {
+      id: { isShown: true },
+      num_rating: { isShown: true },
+      title: { isShown: true },
+      hidden_status: { isShown: true },
+      status_category: { isShown: true },
+      type: { isShown: true },
+      custom_category: { isShown: true },
+      labels: { isShown: true },
+      author_name: { isShown: true },
+      num_comments: { isShown: true },
+      date_created: { isShown: true },
+      total_rating: { isShown: true },
+      validating: { isShown: true }
+    };
     return {
       isStored: false,
       isChanged: false,
-      card: feedbackViewFields ? feedbackViewFields : defaultCardState
+      card: (viewFields && viewFields.card) ? viewFields.card : defaultCardState,
+      table: (viewFields && viewFields.table) ? viewFields.table : defaultTableState
     };
   },
 
   componentWillUnmount: function componentWillUnmount() {
-    const {dispatch, feedbackViewFields} = this.props;
+    const {dispatch, viewFields} = this.props;
     if (this.state.isChanged) {
-      if (this.state.isStored || feedbackViewFields) {
-        console.log('Want update');
-         dispatch(updateDisplayFieldsToPersonSetting(this.state));
+      if (this.state.isStored || viewFields) {
+        dispatch(updateDisplayFieldsToPersonSetting(this.state));
       } else {
         dispatch(storeDisplayFieldsToPersonSetting(this.state));
         this.setState({ isStored: true });
@@ -78,7 +93,6 @@ const FeedbackViewOptions = React.createClass({
           <ItemList>
             <CardViewFieldsList
               currentViewMode={currentViewMode}
-              ref="cardViewFields"
               changeState={this.changeState.bind(this, constants.VIEW_MODE_CARD)}
               fields={this.state.card}
               />
@@ -90,7 +104,11 @@ const FeedbackViewOptions = React.createClass({
               isActive={currentViewMode === constants.VIEW_MODE_TABLE}
           >
           <ItemList>
-            <TableViewFieldsList currentViewMode={currentViewMode}/>
+            <TableViewFieldsList
+              currentViewMode={currentViewMode}
+              changeState={this.changeState.bind(this, constants.VIEW_MODE_TABLE)}
+              fields={this.state.table}
+              />
           </ItemList>
         </Item>
         <Item keepOpen label="Hello!">

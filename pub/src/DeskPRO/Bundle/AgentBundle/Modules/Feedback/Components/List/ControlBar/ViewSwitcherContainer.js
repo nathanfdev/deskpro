@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 @connect(state => ({
   order: state.Feedback.list.get('order'),
   filters: state.Feedback.list.get('filters'),
-  feedbackViewFields: state.Feedback.list.get('cardViewFields'),
+  viewFields: state.Feedback.list.get('viewFields'),
   tableViewFields: state.Feedback.list.get('tableViewFields'),
   listViewFields: state.Feedback.list.get('listViewFields'),
   currentViewMode: currentViewModeSelector(state)
@@ -24,7 +24,7 @@ export class ViewSwitcherContainer extends Component {
     menuExpanded: PropTypes.bool.isRequired,
     optionsExpanded: PropTypes.bool.isRequired,
     currentViewMode: PropTypes.string.isRequired,
-    feedbackViewFields: PropTypes.object.isRequired,
+    viewFields: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     toggleDropdown: PropTypes.func.isRequired,
     toggleOptionsMenu: PropTypes.func.isRequired
@@ -37,7 +37,7 @@ export class ViewSwitcherContainer extends Component {
   }
 
   render() {
-    const { dispatch, menuExpanded, optionsExpanded, currentViewMode, toggleDropdown, toggleOptionsMenu, feedbackViewFields } = this.props;
+    const { dispatch, menuExpanded, optionsExpanded, currentViewMode, toggleDropdown, toggleOptionsMenu, viewFields } = this.props;
     const viewModesData = {
       [VIEW_MODE_TABLE]: { label: 'Table view', icon: 'table' },
       [VIEW_MODE_CARD]: { label: 'Card view', icon: 'list' }
@@ -62,7 +62,7 @@ export class ViewSwitcherContainer extends Component {
                     positionAt="left bottom"
                     positionTarget={this.refs.viewModeButton}>
           <FeedbackViewOptions
-            feedbackViewFields={feedbackViewFields}
+            viewFields={viewFields}
             currentViewMode={currentViewMode}
             dispatch={dispatch}
             toggleOptionsMenu={toggleOptionsMenu}

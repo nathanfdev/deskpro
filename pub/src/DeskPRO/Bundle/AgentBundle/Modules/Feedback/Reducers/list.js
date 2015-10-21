@@ -143,7 +143,7 @@ export default createReducer(initialState, {
   [actions.toggleOrder]: setFullPayload('order'),
   [actions.getDisplayFieldsFromPersonSetting]: async({
     success: (state, payload) =>
-      state.setIn(['cardViewFields'], payload.data.value.card)
+      state.setIn(['viewFields'], payload.data.value)
   }),
   [commentsActions.commentsToggleOrder]: setFullPayload('order'),
   [commentsActions.setTableSort]: (state, payload) => {
