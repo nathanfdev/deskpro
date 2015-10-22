@@ -54,20 +54,20 @@ class Avatar
     /**
      * @var string
      */
-    private $base_gravatar;
+    private $base_gravatar_url;
 
     /**
      * Avatar constructor.
      *
      * @param string|null $url_pattern
      * @param string|null $default_url_pattern
-     * @param string|null $base_gravatar
+     * @param string|null $base_gravatar_url
      */
-    public function __construct($url_pattern, $default_url_pattern, $base_gravatar)
+    public function __construct($url_pattern, $default_url_pattern, $base_gravatar_url)
     {
         $this->url_pattern         = $url_pattern;
         $this->default_url_pattern = $default_url_pattern;
-        $this->base_gravatar       = $base_gravatar;
+        $this->base_gravatar_url   = $base_gravatar_url;
     }
 
     /**
@@ -129,11 +129,11 @@ class Avatar
      */
     public function getGravatarUrl($size = 80, $default = self::GRAVATAR_DEFAULT_BLANK)
     {
-        if (!$this->base_gravatar) {
+        if (!$this->base_gravatar_url) {
             return;
         }
 
-        return $this->base_gravatar."?s={$size}&d=$default";
+        return $this->base_gravatar_url."?s={$size}&d=$default";
     }
 
     /**
@@ -141,6 +141,6 @@ class Avatar
      */
     public function getBaseGravatarUrl()
     {
-        return $this->base_gravatar;
+        return $this->base_gravatar_url;
     }
 }

@@ -60,7 +60,7 @@ class CustomFeedbackType extends AbstractType
                     'custom_data_field' => $field_def,
                     'property_path'     => sprintf('[%s]', $field_def->getId()),
                     'agent_interface'   => $options['agent_interface'],
-                    'label'             => false,
+                    'label'             => $field_def->title,
                 )
             );
         }

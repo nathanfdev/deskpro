@@ -318,6 +318,14 @@ class AbstractController extends BaseController
     }
 
     /**
+     * @return \DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse
+     */
+    public function getAntiAbuseService()
+    {
+        return $this->get('anti_abuse');
+    }
+
+    /**
      * @return \DeskPRO\Bundle\AppBundle\DataService\EmailDataService
      */
     public function getEmailDataService()

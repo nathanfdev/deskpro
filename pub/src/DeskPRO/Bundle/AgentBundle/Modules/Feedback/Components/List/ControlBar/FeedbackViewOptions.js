@@ -8,51 +8,71 @@ import { CardViewFieldsList } from './CardViewFieldsList';
 import ItemGroup from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemGroup';
 import MenuFooter from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooter';
 import MenuFooterOptions from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterOptions';
-import { storeDisplayFieldsToPersonSetting, updateDisplayFieldsToPersonSetting } from '../../../Actions/FeedbackListActions';
+import { storeDisplayFieldsToPersonSetting, updateDisplayFieldsToPersonSetting, getDisplayFieldsFromPersonSetting } from '../../../Actions/FeedbackListActions';
 // import MenuFooterLink from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterLink';
+
+
+const defaultCardFields = {
+  id: { isShown: true },
+  hidden_status: { isShown: true },
+  status_category: { isShown: true },
+  custom_category: { isShown: true },
+  type: { isShown: true },
+  date_created: { isShown: true },
+  total_rating: { isShown: true },
+  num_ratings: { isShown: true },
+  num_comments: { isShown: true }
+};
+
+const defaultTableFields = {
+  id: { isShown: true },
+  num_ratings: { isShown: true },
+  title: { isShown: true },
+  content: { isShown: true },
+  hidden_status: { isShown: true },
+  status_category: { isShown: true },
+  type: { isShown: true },
+  custom_category: { isShown: true },
+  labels: { isShown: true },
+  author_name: { isShown: true },
+  num_comments: { isShown: true },
+  date_created: { isShown: true },
+  total_rating: { isShown: true },
+  validating: { isShown: true }
+};
 
 const FeedbackViewOptions = React.createClass({
   propTypes: {
     dispatch: PropTypes.func.isRequired,
     toggleOptionsMenu: PropTypes.func.isRequired,
-    feedbackViewFields: PropTypes.object.isRequired,
+    viewFields: PropTypes.object.isRequired,
     currentViewMode: PropTypes.string.isRequired
   },
 
   mixins: [require('react-onclickoutside')],
 
   getInitialState() {
-    const {dispatch, feedbackViewFields} = this.props;
-    const defaultCardState = {
-      id: { isShown: true },
-      hidden_status: { isShown: true },
-      status_category: { isShown: true },
-      custom_category: { isShown: true },
-      date_created: { isShown: true },
-      total_rating: { isShown: true },
-      num_rating: { isShown: true },
-      num_comments: { isShown: true },
-      validating: { isShown: true }
-    };
-    console.log(feedbackViewFields);
+    const { viewFields } = this.props;
+
     return {
       isStored: false,
       isChanged: false,
-      card: feedbackViewFields ? feedbackViewFields : defaultCardState
+      card: (viewFields && viewFields.card) ? viewFields.card : defaultCardFields,
+      table: (viewFields && viewFields.table) ? viewFields.table : defaultTableFields
     };
   },
 
   componentWillUnmount: function componentWillUnmount() {
-    const {dispatch, feedbackViewFields} = this.props;
+    const {dispatch, viewFields} = this.props;
     if (this.state.isChanged) {
-      if (this.state.isStored || feedbackViewFields) {
-        console.log('Want update');
-         dispatch(updateDisplayFieldsToPersonSetting(this.state));
+      if (this.state.isStored || viewFields) {
+        dispatch(updateDisplayFieldsToPersonSetting(this.state));
       } else {
         dispatch(storeDisplayFieldsToPersonSetting(this.state));
-        this.setState({ isStored: true });
       }
+      this.setState({ isStored: true });
     }
+    dispatch(getDisplayFieldsFromPersonSetting());
   },
 
   handleClickOutside: function handleClickOutside() {
@@ -64,6 +84,7 @@ const FeedbackViewOptions = React.createClass({
     currentState[field].isShown = isChecked;
     this.setState({ [type]: currentState });
     this.setState({ isChanged: true });
+    console.log('Changed state', this.state);
   },
 
   render: function render() {
@@ -78,7 +99,6 @@ const FeedbackViewOptions = React.createClass({
           <ItemList>
             <CardViewFieldsList
               currentViewMode={currentViewMode}
-              ref="cardViewFields"
               changeState={this.changeState.bind(this, constants.VIEW_MODE_CARD)}
               fields={this.state.card}
               />
@@ -90,7 +110,11 @@ const FeedbackViewOptions = React.createClass({
               isActive={currentViewMode === constants.VIEW_MODE_TABLE}
           >
           <ItemList>
-            <TableViewFieldsList currentViewMode={currentViewMode}/>
+            <TableViewFieldsList
+              currentViewMode={currentViewMode}
+              changeState={this.changeState.bind(this, constants.VIEW_MODE_TABLE)}
+              fields={this.state.table}
+              />
           </ItemList>
         </Item>
         <Item keepOpen label="Hello!">
@@ -133,4 +157,6 @@ const FeedbackViewOptions = React.createClass({
   }
 });
 
-module.exports = FeedbackViewOptions;
+module.exports.FeedbackViewOptions = FeedbackViewOptions;
+module.exports.defaultCardFields = defaultCardFields;
+module.exports.defaultTableFields = defaultTableFields;

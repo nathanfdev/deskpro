@@ -32,8 +32,8 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 
@@ -41,8 +41,10 @@ use JMS\Serializer\Annotation as Serializer;
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterSetRepository")
  * @ORM\Table(name="ticket_filter_sets")
  */
-class TicketFilterSet extends NotifyPropertyChangeEntity
+class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
 {
+    use NotifyPropertyChangedTrait;
+
     /**
      * @ORM\Id()
      * @ORM\Column(type="integer")
@@ -64,7 +66,11 @@ class TicketFilterSet extends NotifyPropertyChangeEntity
 
     /**
      * @var TicketFilter[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilter", mappedBy="filter_set")
+     * @ORM\OneToMany(
+     *     targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilter",
+     *     mappedBy="filter_set",
+     *     cascade={"remove"}
+     * )
      * @ORM\OrderBy({"display_order" = "ASC"})
      * @Serializer\Exclude()
      */
@@ -100,7 +106,7 @@ class TicketFilterSet extends NotifyPropertyChangeEntity
 
     /**
      * @var Person
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person", cascade={"remove"})
      * @ORM\JoinColumn(name="person_id")
      */
     protected $private_agent;

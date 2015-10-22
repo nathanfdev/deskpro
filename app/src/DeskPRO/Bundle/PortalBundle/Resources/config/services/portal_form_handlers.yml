@@ -8,3 +8,4 @@ services:
       - @person_factory
       - @form.factory
       - @security.token_storage
+      - @anti_abuse

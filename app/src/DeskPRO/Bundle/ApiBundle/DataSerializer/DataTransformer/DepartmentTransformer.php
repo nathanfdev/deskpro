@@ -32,9 +32,23 @@
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
+use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 
 class DepartmentTransformer extends AbstractDataSerializerTransformer
 {
+    /**
+     * @var AvatarResolver
+     */
+    private $avatar_resolver;
+
+    /**
+     * @param AvatarResolver $avatar_resolver
+     */
+    public function __construct(AvatarResolver $avatar_resolver)
+    {
+        $this->avatar_resolver = $avatar_resolver;
+    }
+
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
         return [
@@ -50,9 +64,8 @@ class DepartmentTransformer extends AbstractDataSerializerTransformer
 
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\Entity\TicketFilter $data */
-        $data = $transformation_request->getDataToBeTransformed();
-
-        return [];
+        return [
+            'avatar' => $this->avatar_resolver->getAvatarModel($transformation_request->getDataToBeTransformed()),
+        ];
     }
 }

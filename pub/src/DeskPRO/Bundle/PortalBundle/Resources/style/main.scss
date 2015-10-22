@@ -938,6 +938,14 @@ textarea {
     }
   }
 
+  div {
+    &.show-error {
+      border: 1px solid $red;
+      border-top-right-radius: 0;
+      background: #fff0ec;
+    }
+  }
+
   input[type="text"], input[type="email"], input[type="password"], textarea {
     border: 1px solid $form-border-color;
     border-radius: 2px;

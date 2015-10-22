@@ -5,6 +5,9 @@ import { createEmptyRecordStoreState, buildRecordStoreHandlers } from 'Ampliflux
 export default createReducer(
   createEmptyRecordStoreState(),
   buildRecordStoreHandlers({
-    requestRecordsAction: actions.loadChats
+    requestRecordsAction: actions.loadChats,
+    setRequestRecordAction: actions.setChatsRequest,
+    releaseRecordsAction: actions.releaseChats,
+    releaseRequestAction: actions.releaseRequest
   })
 );

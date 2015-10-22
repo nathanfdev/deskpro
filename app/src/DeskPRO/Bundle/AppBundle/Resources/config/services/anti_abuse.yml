@@ -8,11 +8,11 @@ services:
   # AntiAbuse listeners
   anti_abuse.listener.lockout:
     class: DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener\LockoutEventListener
-    arguments: [@doctrine.orm.default_entity_manager, @settings_resolver, @router]
+    arguments: [@doctrine.orm.default_entity_manager, @settings_resolver, @router, @logger]
     tags:
       - { name: kernel.event_subscriber }
   anti_abuse.listener.rate_limit:
     class: DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener\CaptchaEventListener
-    arguments: [@doctrine.orm.default_entity_manager, @settings_resolver]
+    arguments: [@doctrine.orm.default_entity_manager, @settings_resolver, @logger]
     tags:
       - { name: kernel.event_subscriber }

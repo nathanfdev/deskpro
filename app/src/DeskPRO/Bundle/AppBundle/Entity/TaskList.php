@@ -33,9 +33,9 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
-use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject as Project;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -43,8 +43,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity
  * @ORM\Table(name="task_lists")
  */
-class TaskList extends NotifyPropertyChangeEntity
+class TaskList implements EntityInterface, NotifyPropertyChanged
 {
+    use NotifyPropertyChangedTrait;
+
     /**
      * @var int
      * @ORM\Id()

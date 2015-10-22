@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DpTest\DeskPRO\Component\Util\ListUtils;
+namespace DpTest\DeskPRO\Component\SassCompiler;
 
 use DeskPRO\Component\SassCompiler\Compiler\ScssPhpCompiler;
 use DeskPRO\Component\SassCompiler\SassProject;

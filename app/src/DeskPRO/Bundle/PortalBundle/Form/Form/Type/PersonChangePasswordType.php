@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -41,6 +42,16 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class PersonChangePasswordType extends AbstractType
 {
+    /**
+     * @var CaptchaDecider
+     */
+    private $captcha_decider;
+
+    public function __construct(CaptchaDecider $captcha_decider)
+    {
+        $this->captcha_decider = $captcha_decider;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($options['require_current_password']) {
@@ -65,6 +76,12 @@ class PersonChangePasswordType extends AbstractType
             ),
             'mapped' => false,
         ));
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            if ($this->captcha_decider->shouldRequireCommentCaptchaForCurrentPerson()) {
+                $event->getForm()->add('captcha', 'deskpro_captcha');
+            }
+        });
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
             $event->getData()->setPassword($event->getForm()->get('new_password')->getData());

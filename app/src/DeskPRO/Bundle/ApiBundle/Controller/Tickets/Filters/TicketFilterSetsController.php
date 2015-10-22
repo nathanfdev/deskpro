@@ -29,13 +29,15 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\Filters;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Filters;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
+use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
@@ -152,6 +154,33 @@ class TicketFilterSetsController extends BaseController
 
     /**
      * @ApiDoc(
+     *      description="delete a filter set",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the filter set",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Deleted",
+     *          404="Not Found"
+     *      }
+     * )
+     *
+     * @Delete("/ticket_filter_sets/{id}", name="api_ticket_filter_sets_delete")
+     */
+    public function deleteAction($id)
+    {
+        $this->getDoctrine()->getManager()->remove($this->findOr404('App:TicketFilterSet', $id));
+        $this->getDoctrine()->getManager()->flush();
+
+        return View::create([], Response::HTTP_OK);
+    }
+
+    /**
+     * @ApiDoc(
      *      description="Reorder filter sets.",
      *      input={"Array"},
      *      statusCodes={
@@ -216,18 +245,11 @@ class TicketFilterSetsController extends BaseController
             $tickets_query = $engine->evaluate($filter, $context);
             $filter_counts = $tickets_query->fetchGroupedCount();
 
-            $counts[] = [
-                'filter' => $filter->getId(),
-                'count'  => (int) $filter_counts[0]['count'],
-            ];
+            $counts[] = Count::fromValueAndGroup((int) $filter_counts[0]['count'], $filter->getId());
             $total += $filter_counts[0]['count'];
         }
 
-        return [
-            'filter_set' => $set->getId(),
-            'count'      => $total,
-            'filters'    => $counts,
-        ];
+        return Count::create($total, $set->getId(), $counts, $groupby);
     }
 
     /**
@@ -268,7 +290,7 @@ class TicketFilterSetsController extends BaseController
         $filter_set_count = $this->getFilterSetTicketsCount($set, $groupby);
 
         return View::create(
-            $this->dataSerialize(new PrimitiveArray($filter_set_count)),
+            $this->createRepresentation($filter_set_count),
             Response::HTTP_OK
         );
     }
@@ -353,7 +375,7 @@ class TicketFilterSetsController extends BaseController
     {
         $status = $set->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
-        $form   = $this->get('form.factory')
+        $form = $this->get('form.factory')
             ->createNamedBuilder(null, 'filter_set', $set)
             ->getForm();
 

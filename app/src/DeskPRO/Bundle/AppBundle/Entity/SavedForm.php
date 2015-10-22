@@ -32,7 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
+use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
@@ -41,8 +41,10 @@ use Orb\Util\Strings;
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\SavedFormRepository")
  * @ORM\Table(name="saved_forms")
  */
-class SavedForm extends NotifyPropertyChangeEntity
+class SavedForm implements EntityInterface, NotifyPropertyChanged
 {
+    use NotifyPropertyChangedTrait;
+
     /**
      * @ORM\Id()
      * @ORM\Column(type="integer")

@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitFeedbackAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\Helper\FeedbackFilterUriHelper;
@@ -105,6 +106,7 @@ class FeedbackController extends AbstractController
         ));
 
         $form->handleRequest($request);
+
         if ($form->isValid()) {
             if (
                 !$rerendering_saved // if we are rerendering dont pass this condition
@@ -143,10 +145,14 @@ class FeedbackController extends AbstractController
                     }
                 }
 
+                $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp());
+
                 $this->persistAndFlushEntity($new_feedback);
 
                 return $this->redirectToRoute('portal_feedback_view', array('slug' => $new_feedback->getSlug()));
             }
+        } elseif ($form->isSubmitted()) {
+            $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp());
         }
 
         $form_was_submitted = false;
@@ -200,6 +206,12 @@ class FeedbackController extends AbstractController
                 'filter_js'          => $filter_js,
             )
         );
+    }
+
+    public function submitNewFeedbackAbuseCheck($person, $ip)
+    {
+        $check = new SubmitFeedbackAbuseCheck($person, $ip);
+        $this->getAntiAbuseService()->check($check);
     }
 
     /**

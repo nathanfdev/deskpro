@@ -31,12 +31,14 @@
  */
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\LoginLog;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use Application\DeskPRO\Settings\LoginRateLimitSettings;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\AntiAbuseEvent;
 use Doctrine\ORM\EntityManager;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -58,6 +60,11 @@ class LockoutEventListener implements EventSubscriberInterface
      */
     private $url_generator;
 
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
     public static function getSubscribedEvents()
     {
         return [
@@ -68,11 +75,13 @@ class LockoutEventListener implements EventSubscriberInterface
     public function __construct(
         EntityManager $em,
         SettingsResolver $settings_resolver,
-        UrlGeneratorInterface $url_generator
+        UrlGeneratorInterface $url_generator,
+        LoggerInterface $logger
     ) {
         $this->em                = $em;
         $this->settings_resolver = $settings_resolver;
         $this->url_generator     = $url_generator;
+        $this->logger            = $logger;
     }
 
     public function checkAntiAbuse(AntiAbuseEvent $event)
@@ -81,14 +90,21 @@ class LockoutEventListener implements EventSubscriberInterface
             return;
         }
 
-        // TODO: UserBundle/LoginController:465 - make sure all of our failed logins insert this log
+        $person = $event->getPerson();
 
-        $person          = $event->getPerson();
+        if (!$person instanceof Person) {
+            // we cannot check because we require a person object for this listener
+            // we cannot throw an exception, because other listeners may not need a Person to do their job
+            return;
+        }
+
         $context         = $person->isAgent() ? 'agent' : 'user';
         $settings        = $this->settings_resolver->getGlobalSettings();
         $settings_prefix = $context.'.'.LoginRateLimitSettings::KEY;
 
         if (!$settings->get($settings_prefix.'.enabled')) {
+            $this->logger->debug('[AntiAbuse->LockoutEventListener] Lockout is disabled. Skipping.');
+
             return;
         }
 
@@ -102,6 +118,23 @@ class LockoutEventListener implements EventSubscriberInterface
         $lockout_time = $rep->getLoginLockoutTime($person, $max_attempts, $check_time, $lock_time);
 
         if ($lockout_time > 0) {
+            $person = $event->getPerson();
+            if ($person instanceof Person) {
+                $p = $person->isGuest() ? 'guest' : $person->getId();
+            } elseif (is_scalar($person)) {
+                $p = $person;
+            } else {
+                $p = 'unknown';
+            }
+            $this->logger->info(
+                sprintf(
+                    '[AntiAbuse->LockoutEventListener] lockout is required for (IP=%s, Person=%s, Lockout Time=%s)',
+                    $event->getIp(),
+                    $p,
+                    $lockout_time
+                )
+            );
+
             $event->setResponse(new RedirectResponse($this->url_generator->generate('portal_login', ['lockout' => 'auth'], UrlGeneratorInterface::ABSOLUTE_PATH)));
             $event->markLockoutRecommended();
             $event->markResponseRequired();

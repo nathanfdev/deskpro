@@ -8,16 +8,16 @@ Feature: /*_labels endpoints
     Given I install the api data set
     And my request is authenticated
 
-  Scenario: I get person labels
-    When I send a GET request to "/api/v2/person_labels"
+  Scenario Outline: I get person labels
+    When I send a GET request to "/api/v2/<target>_labels"
     Then the response should be in JSON
     And the response status code should be 200
-    And the JSON node "data" should have 2 elements
-    And the JSON node "data[1]" should be equal to "person label #2"
+    And the JSON node "meta.count" should exist
+    And the JSON node "data[0]" should be equal to "<label>"
 
-  Scenario: I get organization labels
-    When I send a GET request to "/api/v2/organization_labels"
-    Then the response should be in JSON
-    And the response status code should be 200
-    And the JSON node "data" should have 1 element
-    And the JSON node "data[0]" should be equal to "organization label #1"
+    Examples:
+      | target       | label                 |
+      | person       | person label #1       |
+      | organization | organization label #1 |
+#      | ticket       | ticket label #1       |
+      | feedback     | bar                   |

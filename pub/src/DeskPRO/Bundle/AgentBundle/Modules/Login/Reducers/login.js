@@ -2,29 +2,17 @@ import * as actions from '../Actions/loginActions';
 import { createReducer } from 'Ampliflux';
 
 const initialState = {
-  email: null,
   emailError: null,
-  password: null,
   passwordError: null,
-  rememberMe: true,
   hasAuth: false
 };
 
 export default createReducer(initialState, {
-  [actions.emailChange]: (state, payload) => {
-    return state.set('email', payload);
-  },
   [actions.emailSetError]: (state, payload) => {
     return state.set('emailError', payload);
   },
-  [actions.passwordChange]: (state, payload) => {
-    return state.set('password', payload);
-  },
   [actions.passwordSetError]: (state, payload) => {
     return state.set('passwordError', payload);
-  },
-  [actions.toggleRememberMe]: state => {
-    return state.set('rememberMe', !state.get('rememberMe'));
   },
   [actions.setHasAuth]: (state, payload) => {
     return state.set('hasAuth', payload);

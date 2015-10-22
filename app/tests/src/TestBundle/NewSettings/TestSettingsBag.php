@@ -29,37 +29,14 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
+namespace DpTestSrc\TestBundle\NewSettings;
 
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
+use Application\DeskPRO\NewSettings\SettingsBag;
 
-/**
- * Class ArticleTransformer.
- */
-class AvatarTransformer extends AbstractDataSerializerTransformer
+class TestSettingsBag extends SettingsBag
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getAutomaticProperties(DataTransformerRequest $request)
+    public function set($setting_name, $value)
     {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCustomProperties(DataTransformerRequest $request)
-    {
-        /** @var \DeskPRO\Bundle\AppBundle\Content\Avatar $avatar */
-        $avatar = $request->getDataToBeTransformed();
-
-        return [
-            'url'                 => $avatar->getUrl(80),
-            'url_pattern'         => $avatar->getUrlPattern(),
-            'default_url'         => $avatar->getDefaultUrl(80),
-            'default_url_pattern' => $avatar->getDefaultUrlPattern(),
-            'gravatar'            => $avatar->getBaseGravatarUrl(),
-        ];
+        $this->settings[$setting_name] = $value;
     }
 }

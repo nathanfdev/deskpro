@@ -41,6 +41,62 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class TicketFlagged extends \Application\DeskPRO\Domain\DomainObject
 {
+    const STAR_BLUE   = 1;
+    const STAR_GREEN  = 2;
+    const STAR_ORANGE = 3;
+    const STAR_PINK   = 4;
+    const STAR_PURPLE = 5;
+    const STAR_RED    = 6;
+    const STAR_YELLOW = 7;
+
+    private static $id_color_map = array(
+        self::STAR_BLUE   => 'blue',
+        self::STAR_GREEN  => 'green',
+        self::STAR_ORANGE => 'orange',
+        self::STAR_PINK   => 'pink',
+        self::STAR_PURPLE => 'purple',
+        self::STAR_RED    => 'red',
+        self::STAR_YELLOW => 'yellow',
+    );
+
+    private static $color_map = array(
+        'blue'   => self::STAR_BLUE,
+        'green'  => self::STAR_GREEN,
+        'orange' => self::STAR_ORANGE,
+        'pink'   => self::STAR_PINK,
+        'purple' => self::STAR_PURPLE,
+        'red'    => self::STAR_RED,
+        'yellow' => self::STAR_YELLOW,
+    );
+
+    /**
+     * @param string $color
+     *
+     * @return int
+     */
+    public static function colorToId($color)
+    {
+        if (!isset(self::$color_map[$color])) {
+            throw new \InvalidArgumentException();
+        }
+
+        return self::$color_map[$color];
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return string
+     */
+    public static function idToColorName($id)
+    {
+        if (!isset(self::$id_color_map[$id])) {
+            throw new \InvalidArgumentException();
+        }
+
+        return self::$id_color_map[$id];
+    }
+
     /**
      * @var int
      */

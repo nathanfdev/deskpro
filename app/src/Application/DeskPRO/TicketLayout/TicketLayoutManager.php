@@ -33,6 +33,8 @@
  */
 namespace Application\DeskPRO\TicketLayout;
 
+use Application\DeskPRO\App;
+
 class TicketLayoutManager
 {
     /**
@@ -114,8 +116,13 @@ class TicketLayoutManager
     /**
      * @return LayoutCollection
      */
-    public function getUserLayouts()
+    public function getUserLayouts($ensure_antiabuse_check = false)
     {
+        // this is a bit of a hack for now. we should deprecate this service in favor of TicketLayoutFactory in portal.
+        if ($ensure_antiabuse_check) {
+            App::$container->get('ticket_layout_factory')->checkAntiAbuseCaptchaForMultipleLayouts($this->user_layouts);
+        }
+
         return $this->user_layouts;
     }
 

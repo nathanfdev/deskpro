@@ -94,6 +94,7 @@ abstract class AntiAbuseEvent extends Event
         $this->recommend_lockout  = false;
         $this->recommend_response = null;
         $this->require_response   = false;
+        $this->check_only         = false;
     }
 
     /**

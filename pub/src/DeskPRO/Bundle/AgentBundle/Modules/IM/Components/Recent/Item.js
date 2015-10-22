@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-
+import { DepartmentAvatar, PersonAvatar, AgentTeamAvatar } from '../../../Common/Components/Avatar/index';
 import { connect } from 'react-redux';
 
 @connect()
@@ -23,7 +23,7 @@ export class Item extends React.Component {
         const notMe = chat.get('agents').filter((agent) => agent !== me.get('id'));
         const agent = agents.get(notMe.get(0));
         entity = {
-          picture_url: agent.get('gravatar_url'),
+          avatar: this.renderPersonAvatar(agent),
           name: agent.get('name'),
           id: agent.get('id'),
           type: chat.get('chat_type'),
@@ -33,7 +33,7 @@ export class Item extends React.Component {
       case 'team':
         const team = teams.get(chat.getIn(['agent_teams', 0]));
         entity = {
-          picture_url: 'http://lorempixel.com/20/20/animals',
+          avatar: this.renderTeamAvatar(team),
           name: team.get('name'),
           id: team.get('id'),
           type: chat.get('chat_type'),
@@ -43,7 +43,7 @@ export class Item extends React.Component {
       case 'department':
         const department = departments.get(chat.getIn(['departments', 0]));
         entity = {
-          picture_url: 'http://lorempixel.com/20/20/people',
+          avatar: this.renderDepartmentAvatar(department),
           name: department.get('title'),
           id: department.get('id'),
           type: chat.get('chat_type'),
@@ -56,21 +56,30 @@ export class Item extends React.Component {
     return entity;
   };
 
+  renderPersonAvatar(person) {
+    return <PersonAvatar person={person} size="22" />
+  }
+
+  renderTeamAvatar(team) {
+      return <AgentTeamAvatar agentTeam={team} size="22" />
+  }
+
+  renderDepartmentAvatar(department) {
+    return <DepartmentAvatar department={department} size="22" />
+  }
 
 
   render() {
     const entity = this.getEntity();
-    const style = {
-      backgroundImage: 'url("' + entity.picture_url + '")'
-    };
+
     return (
       <a
         id={entity.elementId}
         href="#"
         title={entity.name}
         onClick={this.props.startChat.bind(null, entity.id, entity.type)}
-        className="chat-avatar"
-        style={style}>
+        className="chat-avatar">
+        {entity.avatar}
       </a>
     );
   }
