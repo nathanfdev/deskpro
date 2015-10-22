@@ -35,11 +35,18 @@ const TaskCalendarCard = React.createClass({
     const {task, connectDragSource} = this.props;
     const dueDate = new Moment(task.get('date_due'));
     const overdueClass = dueDate.isBefore() ? 'urgent' : '';
-    return connectDragSource(<li className={overdueClass}
+
+    const response = (<li className={overdueClass}
       onMouseEnter={this.openHover.bind(this, task)}
       onMouseLeave={this.props.closeHover.bind(this)}>
       <a href="#">{task.get('title')}</a>
     </li>);
+
+    if (connectDragSource) {
+      return connectDragSource(response);
+    }
+
+    return response;
   }
 });
 
@@ -48,3 +55,4 @@ module.exports = DragSource(DragTypes.TASK, cardSource, (connect, monitor) => ({
   connectDragPreview: connect.dragPreview(),
   isDragging: monitor.isDragging()
 }))(TaskCalendarCard);
+// module.exports = TaskCalendarCard;

@@ -2,11 +2,18 @@ import React from 'react';
 import TaskCalendarCard from '../Components/TaskCalendarCard';
 
 const TaskCalendarList = React.createClass({
+  propTypes: {
+    closeWindow: React.PropTypes.func,
+    dayDate: React.PropTypes.object,
+    position: React.PropTypes.object,
+    tasks: React.PropTypes.object
+  },
+
   mixins: [
     require('react-onclickoutside')
   ],
 
-  handleClickOutside: function(evt) {
+  handleClickOutside: function() {
     this.props.closeWindow();
   },
 

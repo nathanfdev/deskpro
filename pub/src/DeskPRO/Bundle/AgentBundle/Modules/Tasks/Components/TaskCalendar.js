@@ -6,12 +6,22 @@ import TaskCardGeneric from '../Components/TaskCardGeneric';
 import TaskCalendarYearsDropdown from '../Components/TaskCalendarYearsDropdown';
 import Calendar from '../../../Services/Calendar';
 import ComponentRootWrapper from 'DeskPRO/Component/ComponentRootWrapper';
-import $ from 'jquery';
+import jQuery from 'jquery';
 
 export default class TaskCalendar extends React.Component {
   static propTypes = {
+    agents: React.PropTypes.object,
+    departments: React.PropTypes.object,
+    dispatch: React.PropTypes.func,
+    linkedItems: React.PropTypes.object,
     moment: React.PropTypes.object,
-    tasks: React.PropTypes.object
+    nextMonth: React.PropTypes.func,
+    prevMonth: React.PropTypes.func,
+    projects: React.PropTypes.object,
+    setYear: React.PropTypes.func,
+    tasks: React.PropTypes.object,
+    teams: React.PropTypes.object,
+    tickets: React.PropTypes.object
   }
 
   constructor(props) {
@@ -52,16 +62,14 @@ export default class TaskCalendar extends React.Component {
             validYears.indexOf(due.year()) !== -1);
   }
 
-  openCalendarList(tasks, date, element) {
-    const target = $(element);
-
+  openCalendarList(tasks, date, boundingBox) {
     this.setState({
       tasks: tasks,
       dayDate: date,
       showWindow: true,
       position: {
-        x: target[0].getBoundingClientRect().left,
-        y: target[0].getBoundingClientRect().bottom + 10
+        x: boundingBox.left,
+        y: boundingBox.bottom + 10
       }
     });
   }
@@ -78,7 +86,7 @@ export default class TaskCalendar extends React.Component {
   }
 
   openYearDropdown(element) {
-    const target = $(element);
+    const target = jQuery(element);
 
     this.setState({
       showYearDropdown: true,
@@ -251,7 +259,7 @@ export default class TaskCalendar extends React.Component {
 
       <div>
         <ComponentRootWrapper open={this.state.showWindow}>
-          {this.props.tasks && this.state.tasks && this.state.tasks.size > 0 ?
+
           <TaskCalendarList tasks={this.state.tasks}
                             dayDate={this.state.dayDate}
                             position={this.state.position}
@@ -259,7 +267,7 @@ export default class TaskCalendar extends React.Component {
                             openHover={this.openHover.bind(this)}
                             closeHover={this.closeHover.bind(this)}
                             dispatch={this.props.dispatch.bind(this)} />
-          : <div /> }
+
         </ComponentRootWrapper>
       </div>
 
