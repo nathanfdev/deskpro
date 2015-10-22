@@ -1,4 +1,6 @@
 import React, { PropTypes } from 'react';
+import jQuery from 'jquery';
+import intlTelInput from 'intl-tel-input';
 
 export class PhoneNumber extends React.Component {
 
@@ -7,13 +9,17 @@ export class PhoneNumber extends React.Component {
     onChange: PropTypes.func.isRequired
   };
 
+  componentDidMount() {
+    jQuery(this.refs.phone).intlTelInput();
+  }
+
   onChange = (event) => {
     this.props.onChange(event.target.value);
   };
 
   render() {
     return (
-      <input type="text" placeholder="Your phone number" value={this.props.value} onChange={this.onChange} />
+      <input ref="phone" type="text" placeholder="Your phone number" value={this.props.value} onChange={this.onChange} />
     );
   }
 }
