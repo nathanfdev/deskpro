@@ -112,6 +112,12 @@ $popup-background: #f5f6f7;
     font-size: 1em;
   }
 
+  .intl-tel-input {
+    input {
+      padding: 10px 5px 10px 48px;
+    }
+  }
+
   .button {
     background: $top-bar-blue;
     border: 1px solid $top-bar-blue;
