@@ -1,9 +1,9 @@
 import { createAction } from 'Ampliflux';
 import * as Tasks from 'DeskPRO/Bundle/AgentBundle/Services/Api/Tasks';
-import * as People from 'DeskPRO/Bundle/AgentBundle/Services/Api/People';
-import * as AgentTeams from 'DeskPRO/Bundle/AgentBundle/Services/Api/AgentTeams';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import * as RecordStoreTaskActions from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Actions/taskActions';
+import * as RecordStoreTaskListActions from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Actions/taskListActions';
+import * as RecordStoreTicketActions from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/RecordStores/Actions/ticketActions';
 import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 
 export const loadTasks = createAction(
@@ -109,7 +109,12 @@ export const loadLists = createAction(
   'TASKS_LOAD_LISTS',
   (data) => {
     return Tasks.loadLists(data).then(
-      (value) => value.getData()
+      value => dispatch => {
+        const requestId = 'taskListFrame';
+        const result = value.getData();
+        dispatch(RecordStoreTaskListActions.setTaskListRequest(requestId, mapKeyedFromArray(result.data, 'id'), false, 'append'));
+        return result;
+      }
     );
   }
 );
@@ -143,97 +148,39 @@ export const editProject = createAction(
   }
 );
 
+const getFieldIds = (field, tasks) => {
+  let fieldIds = [];
+
+  tasks.map((task) => {
+    fieldIds = [...fieldIds, ...task[field]];
+  });
+
+  // Awesome one-liner to reduce an array to unique values
+  return [...new Set(fieldIds)];
+};
+
+export const setSource = createAction(
+  'TASKS_SET_SOURCE',
+  data => data
+);
+
 export const loadTaskList = createAction(
   'TASKS_LOAD_TASK_LIST',
-  (data) => {
-    return Tasks.loadAddress(data).then(
-      value => dispatch => {
-        const requestId = 'loadTaskList';
+  (params) => dispatch => {
+    const requestId = 'loadTaskList';
+    dispatch(RecordStoreTaskActions.releaseTaskRequest(requestId));
+    dispatch(RecordStoreTicketActions.releaseTicketRequest(requestId));
 
-        dispatch(RecordStoreTaskActions.releaseTaskRequest(requestId));
+    const promise1 = Tasks.loadAddress(params).then((value) => {
+      const result = value.getData();
 
-        const result = value.getData();
+      dispatch(RecordStoreTaskActions.setTaskRequest(requestId, mapKeyedFromArray(result.data, 'id'), false, 'append'));
+      const ticketIds = getFieldIds('linked_tickets', result.data);
+      dispatch(setSource(params));
+      return dispatch(RecordStoreTicketActions.loadTickets(requestId, ticketIds));
+    });
 
-        // This can all be deleted eventually
-        const output = result;
-
-        const projects = [];
-        const linkedItems = [];
-        const people = [];
-        const departments = [];
-        const teams = [];
-
-        result.data.forEach((task) => {
-          if (task.project !== null && projects.indexOf(task.project) === -1) {
-            projects.push(task.project);
-          }
-
-          if (task.linked_items !== null && linkedItems.indexOf(task.linked_items.id) === -1) {
-            linkedItems.push(task.linked_items.id);
-          }
-
-          if (task.agents !== null && typeof task.agents.forEach === 'function') {
-            task.agents.forEach((agent) => {
-              if (people.indexOf(agent) === -1) {
-                people.push(agent);
-              }
-            });
-          }
-
-          if (task.departments !== null && typeof task.departments.forEach === 'function') {
-            task.departments.forEach((department) => {
-              if (departments.indexOf(department) === -1) {
-                departments.push(department);
-              }
-            });
-          }
-
-          if (task.teams !== null && typeof task.teams.forEach === 'function') {
-            task.teams.forEach((team) => {
-              if (teams.indexOf(team) === -1) {
-                teams.push(team);
-              }
-            });
-          }
-        });
-
-        // Load all the relevant data
-        const tasks = Promise.all([
-          Tasks.loadProjects({ids: projects.join(',')}),
-          Tasks.loadLinks({ids: linkedItems.join(',')}),
-          People.loadPeople({ids: people.join(',')}),
-          Tasks.loadDepartments({ids: departments.join(',')}),
-          AgentTeams.loadAgentTeams({ids: teams.join(',')})
-        ]).then((ps) => {
-          output.projects = ps[0].getData().data;
-          output.linked_items = ps[1].getData().data;
-          output.people = ps[2].getData().data;
-          output.departments = ps[3].getData().data;
-          output.teams = ps[4].getData().data;
-
-          output.source = data;
-        }).then(() => {
-          const linkedTickets = [];
-          output.linked_items.forEach((item) => {
-            if (item.ticket) {
-              linkedTickets.push(item.ticket);
-            }
-          });
-
-          return Tasks.loadLinkedTickets({
-            ids: linkedTickets.join(',')
-          }).then((ticket) => {
-            output.tickets = ticket.getData().data;
-            return output;
-          });
-        });
-        // Stop deleting things!
-
-        dispatch(RecordStoreTaskActions.setTaskRequest(requestId, mapKeyedFromArray(result.data, 'id'), false, 'append'));
-
-        return tasks;
-      }
-    );
+    return Promise.all([promise1]);
   }
 );
 
@@ -353,7 +300,7 @@ export const createTask = createAction(
 
 export const editTask = createAction(
   'TASKS_EDIT_TASK',
-  (data, source = 'nowhere') => {
+  (data, source = 'tasks') => {
     const taskId = data.taskId;
     delete data.taskId;
     return Tasks.editTask(taskId, data).then(
@@ -369,7 +316,7 @@ export const editTask = createAction(
 
 export const massEditTasks = createAction(
   'TASKS_MASS_EDIT_TASKS',
-  (data, source = 'nowhere') => {
+  (data, source = 'tasks') => {
     return Tasks.massEditTasks(data).then(
       value => dispatch => {
         const output = value.getData();

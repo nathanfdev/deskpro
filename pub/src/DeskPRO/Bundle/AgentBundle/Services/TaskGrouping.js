@@ -1,13 +1,12 @@
 import Moment from 'moment';
 
 export default class TaskGrouping {
-  constructor(projects = [], departments = [], teams = [], agents = [], lists = [], links = [], tickets = []) {
+  constructor(projects = [], departments = [], teams = [], agents = [], lists = [], tickets = []) {
     this.projects = projects;
     this.departments = departments;
     this.teams = teams;
     this.agents = agents;
     this.lists = lists;
-    this.links = links;
     this.tickets = tickets;
 
     this.futureDates = [
@@ -36,7 +35,7 @@ export default class TaskGrouping {
     ];
   }
 
-  /**
+  /*
    * Get the divider to return according to the grouping type
    * @param object object
    * @param grouping string
@@ -80,7 +79,7 @@ export default class TaskGrouping {
     return results;
   }
 
-  /**
+  /*
    * Returns an ID for the column / group
    * @param object
    * @param grouping
@@ -124,7 +123,7 @@ export default class TaskGrouping {
     return result;
   }
 
-  /**
+  /*
    * Get the details of the groupings according to the type to group by
    * Returns and array of objects, each object containing ID, a title, a field to update, and a value to update with
    * @param type
@@ -135,49 +134,22 @@ export default class TaskGrouping {
     const returnGroups = [];
     const reverse = 'desc';
     switch (type) {
-      case 'list':
-        this.lists.forEach((listObject) => {
-          returnGroups.push({
-            id: listObject.id,
-            title: listObject.title,
-            updateField: 'list',
-            updateValue: listObject.id,
-            key: 'list_' + listObject.id
-          });
-        });
-
-        returnGroups.sort((a, b) => {
-          if (a.display_order === b.display_order) {
-            return 0;
-          }
-
-          return a.display_order > b.display_order ? 1 : -1;
-        });
-
-        returnGroups.push({
-          id: 'none',
-          title: 'Tasks not in any list',
-          updateField: 'list',
-          updateValue: false,
-          key: 'none'
-        });
-        break;
       case 'project':
         this.projects.forEach((project) => {
           returnGroups.push({
-            id: project.id,
-            title: project.title,
+            id: project.get('id'),
+            title: project.get('title'),
             updateField: 'project',
-            updateValue: project.id,
-            key: 'project_' + project.id
+            updateValue: project.get('id'),
+            key: 'project_' + project.get('id')
           });
         });
-        returnGroups.sort((a, b) => {
-          if (a.title === b.title) {
+        returnGroups.sort((first, second) => {
+          if (first.title === second.title) {
             return 0;
           }
 
-          return a.title > b.title ? 1 : -1;
+          return first.title > second.title ? 1 : -1;
         });
         break;
       case 'due':
@@ -206,36 +178,64 @@ export default class TaskGrouping {
       case 'assignee':
         this.departments.forEach((department) => {
           returnGroups.push({
-            id: 'department_' + department.id.toString(),
-            title: department.title,
+            id: 'department_' + department.get('id').toString(),
+            title: department.get('title'),
             updateField: 'departments',
-            updateValue: [department.id],
-            key: 'department_' + department.id
-          })
+            updateValue: [department.get('id')],
+            key: 'department_' + department.get('id')
+          });
         });
         this.teams.forEach((team) => {
           returnGroups.push({
-            id: 'team_' + team.id.toString(),
-            title: team.name,
+            id: 'team_' + team.get('id').toString(),
+            title: team.get('name'),
             updateField: 'teams',
-            updateValue: [team.id],
-            key: 'team_' + team.id
-          })
+            updateValue: [team.get('id')],
+            key: 'team_' + team.get('id')
+          });
         });
         this.agents.forEach((agent) => {
           returnGroups.push({
-            id: 'agent_' + agent.id.toString(),
-            title: agent.name,
+            id: 'agent_' + agent.get('id').toString(),
+            title: agent.get('name'),
             updateField: 'agents',
-            updateValue: [agent.id],
-            key: 'agent_' + agent.id
-          })
+            updateValue: [agent.get('id')],
+            key: 'agent_' + agent.get('id')
+          });
         });
 
         returnGroups.unshift({
           id: 'none',
           title: 'Unassigned',
           updateField: 'agents',
+          updateValue: false,
+          key: 'none'
+        });
+        break;
+      case 'list':
+      default:
+        this.lists.map((listObject) => {
+          returnGroups.push({
+            id: listObject.get('id'),
+            title: listObject.get('title'),
+            updateField: 'list',
+            updateValue: listObject.get('id'),
+            key: 'list_' + listObject.get('id')
+          });
+        });
+
+        returnGroups.sort((first, second) => {
+          if (first.display_order === second.display_order) {
+            return 0;
+          }
+
+          return first.display_order > second.display_order ? 1 : -1;
+        });
+
+        returnGroups.push({
+          id: 'none',
+          title: 'Tasks not in any list',
+          updateField: 'list',
           updateValue: false,
           key: 'none'
         });
@@ -249,7 +249,7 @@ export default class TaskGrouping {
     return returnGroups;
   }
 
-  /**
+  /*
    * Get the divider to use when grouping by due date
    * @param object
    * @return string
@@ -295,7 +295,7 @@ export default class TaskGrouping {
     return objectDivider;
   }
 
-  /**
+  /*
    * Get divider to use when grouping by created date
    * @param object
    * @return string
@@ -337,7 +337,7 @@ export default class TaskGrouping {
     return objectDivider;
   }
 
-  /**
+  /*
    * Get divider to use when grouping by assignee
    * @param object
    * @return string
@@ -345,11 +345,11 @@ export default class TaskGrouping {
   getAssigneeDivider(object) {
     let assignee = false;
     if (object.get('agents').length > 0) {
-      assignee = 'agent_' + object.get('agents')[0].toString();
+      assignee = 'agent_' + object.get('agents').get(0).toString();
     } else if (object.get('teams').length > 0) {
-      assignee = 'team_' + object.get('teams')[0].toString();
+      assignee = 'team_' + object.get('teams').get(0).toString();
     } else if (object.get('departments').length > 0) {
-      assignee = 'department_' + object.get('departments')[0].toString();
+      assignee = 'department_' + object.get('departments').get(0).toString();
     }
 
     if (assignee === false) {
@@ -359,63 +359,46 @@ export default class TaskGrouping {
     return assignee;
   }
 
-  /**
+  /*
    * Get divider to use when grouping by assignee
    * @param object
    * @return string
    */
   getProjectDivider(object) {
-    let project = false;
     if (object.get('project')) {
-      project = this.projects[object.get('project')].title;
+      return this.projects[object.get('project')].title;
     }
 
-    if (project === false) {
-      return 'none';
-    }
-
-    return project;
+    return 'none';
   }
 
-  /**
+  /*
    * Get the divider to use when grouping by list
    * @param object
    * @return string
    */
   getListDivider(object) {
-    let listTitle = false;
-
     if (object.get('list') && this.lists[object.get('list')]) {
-      listTitle = this.lists[object.get('list')].title;
+      return this.lists[object.get('list')].title;
     }
 
-    if (listTitle === false) {
-      return 'none';
-    }
-
-    return listTitle;
+    return 'none';
   }
 
-  /**
+  /*
    * Get the divider to use when grouping by creator
    * @param object
    * @return string
    */
   getCreatorDivider(object) {
-    let creator = false;
-
-    if (object.get('creator') && this.agents[object.get('creator')]) {
-      creator = this.agents[object.get('creator')].name;
+    if (object.get('creator') && this.agents.get(object.get('creator'))) {
+      return this.agents.get(object.get('creator')).get('name');
     }
 
-    if (creator === false) {
-      return 'none';
-    }
-
-    return creator;
+    return 'none';
   }
 
-  /**
+  /*
    * Get the divider to use when grouping by done date
    * @param object
    * @return string
@@ -460,48 +443,40 @@ export default class TaskGrouping {
     return objectDivider;
   }
 
-  /**
+  /*
    * Get the divider to use when grouping by labels
    * @param object
    * @return string
    */
   getLabelDivider(object) {
-    let labelsDivider = false;
-
     if (object.get('labels') && object.get('labels').length > 0) {
       const labels = object.get('labels');
       labels.sort((first, second) => {
         return first.toLowerCase().localeCompare(second.toLowerCase());
       });
-      labelsDivider = labels.join(', ');
+      return labels.join(', ');
     }
 
-    if (labelsDivider === false) {
-      return 'none';
-    }
-
-    return labelsDivider;
+    return 'none';
   }
 
-  /**
+  /*
    * Get the divider to use when grouping by linked ticket
+   *
    * @param object
    * @return string
    */
   getTicketDivider(object) {
-    let ticketDivider = false;
-    if (object.get('linked_items') && object.get('linked_items').length > 0) {
-      object.get('linked_items').forEach((item) => {
-        if (this.links[item] && this.links[item].ticket && ticketDivider === false) {
-          ticketDivider = this.tickets[this.links[item].ticket].subject;
+    if (object.get('linked_tickets') && object.get('linked_tickets').length > 0) {
+      let ticketDivider = false;
+      object.get('linked_tickets').forEach((item) => {
+        if (this.tickets.has(item)) {
+          ticketDivider = this.tickets.get(item).get('subject');
         }
       });
+      return ticketDivider;
     }
 
-    if (ticketDivider === false) {
-      return 'none';
-    }
-
-    return ticketDivider;
+    return 'none';
   }
 }

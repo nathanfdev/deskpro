@@ -3,80 +3,71 @@ import { connect } from 'react-redux';
 import jQuery from 'jquery';
 import * as TaskActions from '../Actions/TaskListActions';
 import { IntlMixin } from 'react-intl';
-import Formsy from 'formsy-react';
-import FRC from '../../../../../Component/FormComponents/main.js';
 import TaskControls from '../Components/TaskControls';
-import TaskCardGroup from '../Components/TaskCardGroup';
-import TaskCalendar from '../Components/TaskCalendar';
-import TaskCardCondensedGroup from '../Components/TaskCardCondensedGroup';
-import KanbanColumn from '../Components/KanbanColumn';
+import ListView from '../Components/Views/List/ListView';
+import KanbanView from '../Components/Views/Kanban/KanbanView';
+import CondensedView from '../Components/Views/Condensed/CondensedView';
+import CalendarView from '../Components/Views/Calendar/CalendarView';
 import Moment from 'moment';
-import TaskGrouping from '../../../Services/TaskGrouping';
 import * as AppActions from '../../Application/Actions/AppActions';
 import * as constants from '../../../Constants/Constants';
 import ReactPaginate from '../../Common/Components/Pagination/deskpro-react-paginate';
 import ComponentRootWrapper from 'DeskPRO/Component/ComponentRootWrapper';
 import AssignHover from '../Components/AssignHover';
+import TaskViewConnector from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/Views/TaskViewConnector';
 
 import TaskMassActions from '../Components/TaskMassActions';
 import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
-import { loadLinkedItems } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Actions/linkedItemActions';
-
-import { filteredTasksSelector, statusFilteredTasksSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/taskSelectors';
+// import { filteredTasksSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/taskSelectors';
 import { allProjectsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/projectSelectors';
 import { createLinkedItemRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/linkedItemSelectors';
 import { createTicketRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/RecordStores/Selectors/ticketSelectors';
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
 import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
-
+import { allTaskLabelsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/taskLabelSelectors';
+import { taskListSelector, statusFilteredTasksSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Selectors/taskSelectors';
 
 const requestId = 'taskListFrame';
 const ticketsSelector = createTicketRequestSelectors(requestId);
 const linkedItemsSelector = createLinkedItemRequestSelectors(requestId);
 
 @connect(state => ({
-  taskFrameList: state.Tasks.taskFrameList,
-  taskListList: state.Tasks.taskListList,
-  projectList: state.Tasks.projectList,
-  taskFilter: state.Tasks.taskFilter,
-  labelList: state.Tasks.labelList,
-  agentList: state.Tasks.agentList,
-  teamList: state.Tasks.teamList,
-  departmentList: state.Tasks.departmentList,
-  dpWindow: state.Application.dpWindow,
-  tasks: filteredTasksSelector(state),
-  status: statusFilteredTasksSelector(state),
-  projects: allProjectsSelector(state),
   agents: agentsSelector(state),
   agentTeams: agentTeamsSelector(state),
   departments: allDepartmentsSelector(state),
-  tickets: ticketsSelector.recordsSel(state),
-  linkedItems: linkedItemsSelector.recordsSel(state)
+  dpWindow: state.Application.dpWindow,
+  labels: allTaskLabelsSelector(state),
+  linkedItems: linkedItemsSelector.recordsSel(state),
+  linkedItemsStatus: linkedItemsSelector.statusSel(state),
+  projects: allProjectsSelector(state),
+  status: statusFilteredTasksSelector(state),
+  taskFilter: state.Tasks.taskFilter,
+  taskFrameList: state.Tasks.taskFrameList,
+  tasks: taskListSelector(state),
+  taskSource: state.Tasks.taskSource,
+  tickets: ticketsSelector.recordsSel(state)
 }))
 
 export class TasksListFrame extends React.Component {
   static propTypes = {
-    dispatch: React.PropTypes.func,
-    taskFrameList: React.PropTypes.object,
-    taskListList: React.PropTypes.object,
-    projectList: React.PropTypes.object,
-    taskFilter: React.PropTypes.object,
-    labelList: React.PropTypes.object,
-    agentList: React.PropTypes.object,
-    teamList: React.PropTypes.object,
-    departmentList: React.PropTypes.object,
-    dpWindow: React.PropTypes.object,
-    tasks: React.PropTypes.object,
-    status: React.PropTypes.object,
-    projects: React.PropTypes.object,
     agents: React.PropTypes.object,
     agentTeams: React.PropTypes.object,
     departments: React.PropTypes.object,
-    tickets: React.PropTypes.object,
-    linkedItems: React.PropTypes.object
+    dispatch: React.PropTypes.func,
+    dndBackend: React.PropTypes.func,
+    dpWindow: React.PropTypes.object,
+    labels: React.PropTypes.object,
+    linkedItems: React.PropTypes.object,
+    projects: React.PropTypes.object,
+    status: React.PropTypes.object,
+    taskFilter: React.PropTypes.object,
+    taskFrameList: React.PropTypes.object,
+    tasks: React.PropTypes.object,
+    taskSource: React.PropTypes.object,
+    tickets: React.PropTypes.object
   }
 
   constructor(props) {
@@ -84,58 +75,19 @@ export class TasksListFrame extends React.Component {
 
     this.state = {
       actionable: [],
-      view: constants.VIEW_MODE_CARD,
       changeView: false,
-      order: 'due',
       direction: constants.ORDER_ASC,
       filter: {},
+      massActionable: {},
       moment: new Moment(),
-      showAssignWindow: false,
+      order: 'due',
       position: {},
+      showAssignWindow: false,
       taskData: {},
-      massActionable: {}
+      view: constants.VIEW_MODE_CARD
     };
     this.intl = IntlMixin;
     this.lastGrouping = '';
-    this.agents = [];
-    this.teams = [];
-    this.departments = [];
-    this.projects = [];
-
-    // Temp project ID
-    props.dispatch(TaskActions.loadLists(1));
-
-    // Demo get linked items
-    if (props.tasks.size > 0) {
-      const linkedItemIds = [];
-      const filteredLinkedItemIds = [];
-      props.tasks.map(task => {
-        if (task.get('linked_items')) {
-          linkedItemIds.concat('linked_items');
-        }
-      });
-
-      if (linkedItemIds.length > 0) {
-        linkedItemIds.map((itemId) => {
-          if (filteredLinkedItemIds.indexOf(itemId) < 0) {
-            filteredLinkedItemIds.push(itemId);
-          }
-        });
-      }
-
-      if (linkedItemIds.length > 0) {
-        props.dispatch(loadLinkedItems(requestId, filteredLinkedItemIds));
-      }
-    }
-  }
-
-  setYear(year) {
-    const moment = this.state.moment;
-    moment.year(year);
-
-    this.setState({
-      moment: moment
-    });
   }
 
   setSortOrder(modifier) {
@@ -202,22 +154,6 @@ export class TasksListFrame extends React.Component {
     filter.page = page;
 
     this.props.dispatch(TaskActions.setFilter(filter));
-  }
-
-  nextMonth() {
-    const moment = this.state.moment.add(1, 'months');
-
-    this.setState({
-      moment: moment
-    });
-  }
-
-  prevMonth() {
-    const moment = this.state.moment.subtract(1, 'months');
-
-    this.setState({
-      moment: moment
-    });
   }
 
   toggleView() {
@@ -316,21 +252,6 @@ export class TasksListFrame extends React.Component {
     this.props.dispatch(TaskActions.editTask(model, source));
   }
 
-  createTask(source, model) {
-    this.props.dispatch(TaskActions.createTask({
-      title: model.title
-    }, source));
-  }
-
-  massEdit(data) {
-    const source = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameSource') : null;
-
-    this.props.dispatch(TaskActions.massEditTasks(
-      data,
-      source
-    ));
-  }
-
   handleAssigneeChange(assignee) {
     const task = {};
     const assignment = assignee.value;
@@ -348,7 +269,7 @@ export class TasksListFrame extends React.Component {
       task.taskId = assignee.id;
       this.closeAssignWindow();
 
-      const source = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameSource') : null;
+      const source = this.props.taskSource ? this.props.taskSource.get('taskSource', '') : '';
 
       this.editTask(source, task);
     }
@@ -394,7 +315,7 @@ export class TasksListFrame extends React.Component {
     // Used to set the state of the column
     callback(cards);
 
-    const source = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameSource', {}) : {};
+    const source = this.props.taskSource ? this.props.taskSource.get('taskSource', '') : '';
 
     this.editTask(
       source,
@@ -415,101 +336,13 @@ export class TasksListFrame extends React.Component {
   render() {
     const {taskFilter} = this.props;
 
-    const _this = this;
-    const linkedItems = {};
-    const lists = {};
-    const labels = [];
-    const tickets = {};
-
-    const projects = this.props.projectList ? this.props.projectList.get('projectList', []) : [];
-    const source = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameSource', '') : '';
-
-    // Attach IDs to the projects
-    if (projects && typeof projects.forEach === 'function') {
-      projects.forEach((project) => {
-        this.projects[project.id.toString()] = project;
-      });
-    }
-
-    const taskFrameLinks = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameLinks', {}) : {};
-
-    // Attach IDs to the linked item
-    if (taskFrameLinks && typeof taskFrameLinks.forEach === 'function') {
-      taskFrameLinks.forEach((link) => {
-        linkedItems[link.id.toString()] = link;
-      });
-    }
-
-    const agentList = this.props.agentList ? this.props.agentList.get('agentList', {}) : {};
-    const teamList = this.props.teamList ? this.props.teamList.get('teamList', {}) : {};
-    const departmentList = this.props.departmentList ? this.props.departmentList.get('departmentList', {}) : {};
-
-    // Attach assignments
-    if (agentList && typeof agentList.forEach === 'function') {
-      agentList.forEach((agent) => {
-        this.agents[agent.id.toString()] = agent;
-      });
-    }
-    if (teamList && typeof teamList.forEach === 'function') {
-      teamList.forEach((team) => {
-        this.teams[team.id.toString()] = team;
-      });
-    }
-    if (departmentList && typeof departmentList.forEach === 'function') {
-      departmentList.forEach((department) => {
-        this.departments[department.id.toString()] = department;
-      });
-    }
-
-    const taskFrameTickets = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameTickets', []) : [];
-
-    // Attach tickets
-    if (taskFrameTickets && typeof taskFrameTickets.forEach === 'function') {
-      taskFrameTickets.forEach((ticket) => {
-        tickets[ticket.id.toString()] = ticket;
-      });
-    }
-
-    const taskList = this.props.taskListList ? this.props.taskListList.get('taskList', []) : [];
-
-    if (taskList && typeof taskList.forEach === 'function') {
-      taskList.forEach((listObject) => {
-        lists[listObject.id.toString()] = listObject;
-      });
-    }
-
-    const labelList = this.props.labelList ? this.props.labelList.get('labelList', []) : [];
-    const labelCharacters = this.props.labelList ? this.props.labelList.get('labelCharacters', []) : [];
-
-    if (labelList && typeof labelCharacters.forEach === 'function') {
-      labelCharacters.forEach((character) => {
-        labelList[character].forEach((label) => {
-          labels[label.id.toString()] = label;
-        });
-      });
-    }
-
-    const grouping = new TaskGrouping(this.projects, this.departments, this.teams, this.agents, lists, linkedItems, tickets);
-    const columnField = this.state.order;
-    const rawGroupings = grouping.getRawGroupings(columnField, this.state.direction);
     const sectionClass = this.state.view !== 'list' ? 'task-list-frame dp-list-frame kanban' : 'task-list-frame dp-list-frame';
+    const source = this.props.taskSource ? this.props.taskSource.get('taskSource', '') : '';
 
-    const tasks = [];
-
-    const taskFrameList = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameList', []) : [];
-
-    // Split tasks up into the appropriate kanban columns
-    if (taskFrameList && taskFrameList.size > 0) {
-      taskFrameList.forEach((object) => {
-        const columnId = grouping.getGroup(object, columnField);
-
-        if (typeof tasks[columnId] === 'undefined') {
-          tasks[columnId] = [];
-        }
-
-        tasks[columnId].push(object);
-      });
-    }
+    // Grab the project ID
+    const regex = /[?&]project=([0-9]+)/g;
+    const match = regex.exec(source);
+    const projectId = source && match ? match[1] : false;
 
     let totalPages = 1;
 
@@ -524,19 +357,19 @@ export class TasksListFrame extends React.Component {
         <ComponentRootWrapper open={this.state.showAssignWindow}>
           <AssignHover position={this.state.position}
                        assignTask={this.handleAssigneeChange.bind(this)}
-                       agents={this.agents}
-                       teams={this.teams}
-                       departments={this.departments}
+                       agents={this.props.agents}
+                       teams={this.props.agentTeams}
+                       departments={this.props.departments}
                        taskData={this.state.taskData}
                        closeWindow={this.closeAssignWindow.bind(this)}/>
         </ComponentRootWrapper>
         <TaskControls toggleView={this.toggleView.bind(this)}
                       changeView={this.state.changeView}
-                      agents={this.agents}
-                      teams={this.teams}
-                      departments={this.departments}
-                      projects={this.projects}
-                      labels={labels}
+                      agents={this.props.agents}
+                      teams={this.props.agentTeams}
+                      departments={this.props.departments}
+                      projects={this.props.projects}
+                      labels={this.props.labels}
                       applyFilter={this.applyFilter.bind(this)}
                       taskFilter={taskFilter}
                       windowProps={this.props.dpWindow}
@@ -549,125 +382,79 @@ export class TasksListFrame extends React.Component {
           />
 
         <TaskMassActions hideMassActionControls={this.hideMassActionControls.bind(this)}
-                         projects={this.projects}/>
+                         projects={this.props.projects}/>
+        <div>
+          { this.props.tasks && this.props.tasks.size > 0 ?
+            <ListFrameContents>
+              {this.state.view === 'card' ?
+                <TaskViewConnector tasks={this.props.tasks}
+                                   order={this.state.order}
+                                   projectId={projectId}>
+                  <ListView direction={this.state.direction}
+                            view={this.state.view}
+                            toggleDone={this.toggleDone.bind(this)}
+                            editTask={this.editTask.bind(this)}
+                            updateMassActions={this.updateMassActions.bind(this)}
+                            actionable={this.state.actionable}
+                            toggleAssignWindow={this.toggleAssignWindow.bind(this)}
+                            moveCard={this.moveCard.bind(this)}
+                            source={source} />
+                </TaskViewConnector>
+              : '' }
 
+              {this.state.view === 'kanban' ?
+                <TaskViewConnector tasks={this.props.tasks}
+                                   order={this.state.order}
+                                   projectId={projectId}>
+                  <KanbanView direction={this.state.direction}
+                            view={this.state.view}
+                            toggleDone={this.toggleDone.bind(this)}
+                            editTask={this.editTask.bind(this)}
+                            updateMassActions={this.updateMassActions.bind(this)}
+                            actionable={this.state.actionable}
+                            toggleAssignWindow={this.toggleAssignWindow.bind(this)}
+                            moveCard={this.moveCard.bind(this)}
+                            source={source} />
+                </TaskViewConnector>
+              : '' }
 
-        <ListFrameContents>
-          {this.state.view === 'kanban' ?
-           <div className="kanban-columns">
-             {rawGroupings ? rawGroupings.map((group) => {
-               return (<KanbanColumn projects={this.projects} agents={this.agents} teams={this.teams}
-                                     departments={this.departments}
-                                     tasks={tasks[group.key]} key={group.id} taskList={group}
-                                     dispatch={_this.props.dispatch.bind(_this)}
-                                     columnField={columnField}
-                                     updateField={group.updateField}
-                                     updateValue={group.updateValue}
-                                     source={source}
-                                     updateMassActions={_this.updateMassActions.bind(_this)}
-                                     moveCard={this.moveCard.bind(this)}
-                                     massEdit={this.massEdit.bind(this)}
-                                     actionable={_this.state.actionable}
-                                     order={this.state.order}
-                                     editTask={_this.editTask.bind(_this)}/>);
-             }) : '' }
-           </div>
-            : (this.state.view === 'condensed') ?
-              <div>
-                <table cellSpacing="0" className="condensed-task-list">
-                  <thead>
-                  <tr>
-                    <th>Title</th>
-                    <th className="clickable-column" onClick={this.toggleOrder.bind(this, 'project')}>
-                      Project {this.state.order === 'project' ?
-                               this.state.direction === 'desc' ? <i className="fa fa-caret-down"/> : <i
-                                 className="fa fa-caret-up"/>
-                      : ''}</th>
-                    <th className="clickable-column" onClick={this.toggleOrder.bind(this, 'due')}>
-                      Due {this.state.order === 'due' ?
-                           this.state.direction === 'desc' ? <i className="fa fa-caret-down"/> : <i
-                             className="fa fa-caret-up"/>
-                      : ''}</th>
-                    <th className="clickable-column" onClick={this.toggleOrder.bind(this, 'assignee')}>
-                      Assignee {this.state.order === 'assignee' ?
-                                this.state.direction === 'desc' ? <i className="fa fa-caret-down"/> : <i
-                                  className="fa fa-caret-up"/>
-                      : ''}</th>
-                  </tr>
-                  </thead>
-                  {rawGroupings ? rawGroupings.map((group) => {
-                    if (tasks[group.key]) {
-                      return (<TaskCardCondensedGroup tasks={tasks[group.key]} key={group.id}
-                                                      columnField={columnField}
-                                                      source={source}
-                                                      dispatch={_this.props.dispatch.bind(_this)}
-                                                      updateField={group.updateField}
-                                                      updateValue={group.updateValue}
-                                                      teams={this.teams} projects={this.projects}
-                                                      linked_items={linkedItems}
-                                                      departments={this.departments}
-                                                      agents={this.agents} tickets={tickets}
-                                                      toggleDone={this.toggleDone.bind(this)}
-                                                      editTask={_this.editTask.bind(_this)}
-                                                      updateMassActions={_this.updateMassActions.bind(_this)}
-                                                      actionable={_this.state.actionable}
-                                                      order={this.state.order}
-                                                      divider={group.title}
-                                                      moveCard={this.moveCard.bind(this)}/>);
-                    }
-                  }) : '' }
-                </table>
-                <Formsy.Form onSubmit={_this.createTask.bind(_this, source)}>
-                  <FRC.Input name="title" type="text"/>
-                  <button type="submit" value="Save" className="button">Add</button>
-                </Formsy.Form>
-              </div>
-             : (this.state.view === 'calendar') ?
-               <div>
-                 <TaskCalendar tasks={taskFrameList}
-                               moment={this.state.moment}
-                               nextMonth={this.nextMonth.bind(this)}
-                               prevMonth={this.prevMonth.bind(this)}
-                               dispatch={_this.props.dispatch.bind(_this)}
-                               tickets={tickets}
-                               teams={this.teams}
-                               projects={this.projects}
-                               linked_items={linkedItems}
-                               departments={this.departments}
-                               agents={this.agents}
-                               setYear={this.setYear.bind(this)}/>
-               </div>
-                :
-               <div>
-                 <Formsy.Form onSubmit={_this.createTask.bind(_this, source)}>
-                   <FRC.Input name="title" type="text"/>
-                   <button type="submit" value="Save" className="button">Add</button>
-                 </Formsy.Form>
+              {this.state.view === 'condensed' ?
+                <TaskViewConnector tasks={this.props.tasks}
+                                   order={this.state.order}
+                                   projectId={projectId}>
+                  <CondensedView direction={this.state.direction}
+                            view={this.state.view}
+                            toggleDone={this.toggleDone.bind(this)}
+                            editTask={this.editTask.bind(this)}
+                            updateMassActions={this.updateMassActions.bind(this)}
+                            actionable={this.state.actionable}
+                            toggleAssignWindow={this.toggleAssignWindow.bind(this)}
+                            toggleOrder={this.toggleOrder.bind(this)}
+                            moveCard={this.moveCard.bind(this)}
+                            source={source} />
+                </TaskViewConnector>
+              : '' }
 
-                 {rawGroupings ? rawGroupings.map((group) => {
-                   return (<TaskCardGroup tasks={tasks[group.key]} key={group.id}
-                                          columnField={columnField}
-                                          source={source}
-                                          dispatch={_this.props.dispatch.bind(_this)}
-                                          updateField={group.updateField}
-                                          updateValue={group.updateValue}
-                                          teams={this.teams} projects={this.projects}
-                                          linked_items={linkedItems}
-                                          departments={this.departments} agents={this.agents}
-                                          tickets={tickets}
-                                          toggleDone={this.toggleDone.bind(this)}
-                                          editTask={_this.editTask.bind(_this)}
-                                          updateMassActions={_this.updateMassActions.bind(_this)}
-                                          actionable={_this.state.actionable}
-                                          divider={group.title}
-                                          order={this.state.order}
-                                          toggleAssignWindow={_this.toggleAssignWindow.bind(_this)}
-                                          moveCard={this.moveCard.bind(this)}/>);
-                 }) : '' }
-
-               </div>
-          }
-        </ListFrameContents>
+              {this.state.view === 'calendar' ?
+                <TaskViewConnector tasks={this.props.tasks}
+                                   order={this.state.order}
+                                   projectId={projectId}>
+                  <CalendarView direction={this.state.direction}
+                            dndBackend={this.props.dndBackend}
+                            view={this.state.view}
+                            toggleDone={this.toggleDone.bind(this)}
+                            editTask={this.editTask.bind(this)}
+                            updateMassActions={this.updateMassActions.bind(this)}
+                            actionable={this.state.actionable}
+                            toggleAssignWindow={this.toggleAssignWindow.bind(this)}
+                            toggleOrder={this.toggleOrder.bind(this)}
+                            moveCard={this.moveCard.bind(this)}
+                            source={source} />
+                </TaskViewConnector>
+              : '' }
+            </ListFrameContents>
+          : '' }
+        </div>
         {
           // pageNum: The total number of pages
           // pageRangeDisplayed: Number of pages to display in the center

@@ -9,6 +9,7 @@ import TaskCardDragLayer from './TaskCardDragLayer';
 import TasksNavFrame from './TasksNavFrame';
 import { TasksListFrame } from './TasksListFrame';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
+const dndBackend = HTML5Backend;
 
 @connect(state => ({
   user: meSelector(state),
@@ -16,10 +17,11 @@ import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Recor
 }))
 class TasksApp extends React.Component {
   render() {
+
     return (
       <AppContainer thisAppId="tasks" {...this.props}>
         <TasksNavFrame {...this.props} />
-        <TasksListFrame {...this.props} />
+        <TasksListFrame dndBackend={dndBackend} {...this.props} />
         <TaskCardDragLayer />
       </AppContainer>
     );

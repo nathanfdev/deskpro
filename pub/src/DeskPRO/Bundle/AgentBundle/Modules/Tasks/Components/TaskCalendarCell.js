@@ -30,8 +30,10 @@ const listTarget = {
 
 @DropTarget(DragTypes.TASK, listTarget, collect)
 export default class TaskCalendarCell extends React.Component {
-  openCalendarList(tasks, date) {
-    this.props.openCalendarList(tasks, date, event.target);
+  openCalendarList(tasks, date, event) {
+    const boundingBox = event.target.getBoundingClientRect();
+
+    this.props.openCalendarList(tasks, date, boundingBox);
   }
 
   render() {

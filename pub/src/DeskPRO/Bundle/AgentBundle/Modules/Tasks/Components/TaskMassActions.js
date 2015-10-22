@@ -9,7 +9,7 @@ import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item
 export default class TaskMassActions extends React.Component {
   static propTypes = {
     hideMassActionControls: React.PropTypes.func,
-    projects: React.PropTypes.array
+    projects: React.PropTypes.object
   };
 
   constructor(props) {

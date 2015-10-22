@@ -6,6 +6,7 @@ import Immutable from 'immutable';
 export class Card extends Component {
 
   static propTypes = {
+    children: PropTypes.any,
     type: PropTypes.string.isRequired,
     moving: PropTypes.bool,
     minimized: PropTypes.bool,
@@ -15,7 +16,7 @@ export class Card extends Component {
 
   render() {
     const {type, moving, minimized, width, additionalClasses} = this.props;
-    var classes = classNames('dpmw--single-card', additionalClasses, {
+    const classes = classNames('dpmw--single-card', additionalClasses, {
       'dpmw--single-task-card': type === 'task',
       'floating': type === 'float',
       'minimized': minimized,
@@ -25,6 +26,7 @@ export class Card extends Component {
     if (width) {
       styles.width = width + 'px';
     }
+
     return (
       <div className={classes} style={styles}>
         {this.props.children}
