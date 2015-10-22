@@ -380,8 +380,10 @@ export class TasksListFrame extends React.Component {
                       toggleAllMassActions={this.toggleAllMassActions.bind(this)}
           />
 
-        <TaskMassActions hideMassActionControls={this.hideMassActionControls.bind(this)}
-                         projects={this.props.projects}/>
+        { this.state.actionable.length > 0 ?
+          <TaskMassActions hideMassActionControls={this.hideMassActionControls.bind(this)}
+                           projects={this.props.projects}/> : ''
+        }
         <div>
           { this.props.tasks && this.props.tasks.size > 0 ?
             <ListFrameContents>
