@@ -29,12 +29,12 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\View\Representation\StandardRepresentation;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class BaseController extends FOSRestController
 {
@@ -135,5 +135,15 @@ class BaseController extends FOSRestController
     protected function getRepository($class)
     {
         return $this->getManager()->getRepository($class);
+    }
+
+    /**
+     * @param string $message
+     *
+     * @return BadRequestHttpException
+     */
+    protected function createBadRequestException($message)
+    {
+        return new BadRequestHttpException($message);
     }
 }

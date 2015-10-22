@@ -61,11 +61,17 @@ class CrudController extends BaseController
     public static $type;
 
     /**
-     * @var array|null List of exposed action names e.g. ['get', 'list'], if not defined all are exposed
+     * @var array|null Array of exposed action names e.g. ['get', 'list'], if not defined all are exposed
      */
     public static $exposeOnly = null;
-    public static $listSort   = 'id';
-    public static $listOrder  = 'desc';
+
+    /**
+     * @var array|null Map of sortable entity fields: [request_param_name => entity_filed_name]
+     */
+    public static $sortOptions = null;
+
+    public static $listSort  = 'id';
+    public static $listOrder = 'desc';
 
     /**
      * @ApiDoc(
@@ -109,10 +115,10 @@ class CrudController extends BaseController
         $qb = $this->getManager()->createQueryBuilder();
         $qb
             ->select('e')
-            ->from(static::$entity, 'e')
-            ->orderBy('e.'.static::$listSort, static::$listOrder);
+            ->from(static::$entity, 'e');
 
         $this->applyListFilters($qb, 'e', $request);
+        $this->applySorting($qb, 'e', $request);
 
         $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
@@ -174,6 +180,36 @@ class CrudController extends BaseController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
+    }
+
+    /**
+     * Apply 'sort' and 'order' depending on static::$sortOptions.
+     *
+     * @param QueryBuilder $qb
+     * @param string       $alias
+     * @param Request      $request
+     */
+    protected function applySorting(QueryBuilder $qb, $alias, Request $request)
+    {
+        $sort  = static::$listSort;
+        $order = static::$listOrder;
+
+        if (is_array(static::$sortOptions)) {
+            $sortParam = strtolower($request->get('sort'));
+            if ($sortParam && !array_key_exists($sortParam, static::$sortOptions)) {
+                throw $this->createBadRequestException('Unknown sort field');
+            }
+            $sort = isset(static::$sortOptions[$sortParam])
+                  ? static::$sortOptions[$sortParam]
+                  : static::$listSort;
+
+            $order = strtolower($request->get('order'));
+            if ($order && !in_array($order, ['asc', 'desc'])) {
+                throw $this->createBadRequestException('Unknown order value');
+            }
+        }
+
+        $qb->orderBy($alias.'.'.$sort, $order);
     }
 
     /**
