@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
+use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
@@ -58,8 +59,13 @@ class CrudController extends BaseController
 {
     public static $entity;
     public static $type;
-    public static $listSort  = 'id';
-    public static $listOrder = 'desc';
+
+    /**
+     * @var array|null List of exposed action names e.g. ['get', 'list'], if not defined all are exposed
+     */
+    public static $exposeOnly = null;
+    public static $listSort   = 'id';
+    public static $listOrder  = 'desc';
 
     /**
      * @ApiDoc(
@@ -81,6 +87,8 @@ class CrudController extends BaseController
      */
     public function getAction($id)
     {
+        $this->checkExposed(__METHOD__);
+
         $entity = $this->getDoctrine()->getRepository(static::$entity)->find($id);
 
         if (!$entity) {
@@ -95,12 +103,16 @@ class CrudController extends BaseController
      */
     public function listAction(Request $request)
     {
+        $this->checkExposed(__METHOD__);
+
         /** @var \Doctrine\ORM\QueryBuilder $qb */
         $qb = $this->getManager()->createQueryBuilder();
         $qb
             ->select('e')
             ->from(static::$entity, 'e')
             ->orderBy('e.'.static::$listSort, static::$listOrder);
+
+        $this->applyListFilters($qb, 'e', $request);
 
         $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
@@ -120,6 +132,8 @@ class CrudController extends BaseController
      */
     public function postAction(Request $request)
     {
+        $this->checkExposed(__METHOD__);
+
         return $this->handleForm(new static::$entity(), $request);
     }
 
@@ -128,6 +142,8 @@ class CrudController extends BaseController
      */
     public function putAction($id, Request $request)
     {
+        $this->checkExposed(__METHOD__);
+
         return $this->handleForm($this->findOr404(static::$entity, $id), $request);
     }
 
@@ -136,6 +152,8 @@ class CrudController extends BaseController
      */
     public function deleteAction($id)
     {
+        $this->checkExposed(__METHOD__);
+
         $entity = $this->findOr404(static::$entity, $id);
 
         $em = $this->getManager();
@@ -143,6 +161,19 @@ class CrudController extends BaseController
         $em->flush();
 
         return View::create([], Response::HTTP_OK);
+    }
+
+    /**
+     * Applies list action filters to a QueryBuilder instance.
+     *
+     * Does nothing by default, may be redefined in children to implement list filtering.
+     *
+     * @param QueryBuilder $qb
+     * @param string       $alias
+     * @param Request      $request
+     */
+    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    {
     }
 
     /**
@@ -179,5 +210,30 @@ class CrudController extends BaseController
         }
 
         throw new InvalidFormException($form);
+    }
+
+    /**
+     * @param string $actionMethodName
+     */
+    private function checkExposed($actionMethodName)
+    {
+        // return of $exposeOnly config is not used
+        if (!is_array(static::$exposeOnly)) {
+            return;
+        }
+
+        // remove class name if __METHOD__ was passed
+        if (strpos($actionMethodName, '::')) {
+            $actionMethodName = explode('::', $actionMethodName)[1];
+        }
+
+        // remove 'Action' postfix to get the short action name in case if __METHOD__ or __FUNCTION__ is passed
+        $action = strpos($actionMethodName, 'Action') === strlen($actionMethodName) - strlen('Action')
+                ? substr($actionMethodName, 0, strlen($actionMethodName) - strlen('Action'))
+                : $actionMethodName;
+
+        if (!in_array($action, static::$exposeOnly)) {
+            throw $this->createAccessDeniedException('Action is restricted');
+        }
     }
 }

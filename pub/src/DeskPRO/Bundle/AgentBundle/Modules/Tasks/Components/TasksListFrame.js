@@ -57,7 +57,6 @@ export class TasksListFrame extends React.Component {
     agentTeams: React.PropTypes.object,
     departments: React.PropTypes.object,
     dispatch: React.PropTypes.func,
-    dndBackend: React.PropTypes.func,
     dpWindow: React.PropTypes.object,
     labels: React.PropTypes.object,
     linkedItems: React.PropTypes.object,
@@ -440,7 +439,6 @@ export class TasksListFrame extends React.Component {
                                    order={this.state.order}
                                    projectId={projectId}>
                   <CalendarView direction={this.state.direction}
-                            dndBackend={this.props.dndBackend}
                             view={this.state.view}
                             toggleDone={this.toggleDone.bind(this)}
                             editTask={this.editTask.bind(this)}
