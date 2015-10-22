@@ -7,6 +7,7 @@ import { Phone } from './Fields/Phone';
 import { Language } from './Fields/Language';
 import { Timezone } from './Fields/Timezone';
 import { Password } from './Fields/Password';
+import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 
 export class ProfileForm extends React.Component {
 
@@ -95,6 +96,8 @@ export class ProfileForm extends React.Component {
   submitForm = (event) => {
     event.preventDefault();
     console.log(this.state);
+
+    DpApi.sendPut('DP_API/me/profile', this.state);
   };
 
   renderNameField() {
