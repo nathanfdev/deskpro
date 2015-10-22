@@ -239,7 +239,7 @@
     {% if widget == 'single_text' %}
         {{- block('form_widget_simple') -}}
     {% else -%}
-        <div {{ block('widget_container_attributes') }}>
+        <div class="deskpro-date-widget" {{ block('widget_container_attributes') }}>
             {{- form_errors(form.date) -}}
             {{- form_errors(form.time) -}}
             {{- form_widget(form.date) -}}
@@ -255,7 +255,7 @@
     {% if widget == 'single_text' %}
         {{- block('form_widget_simple') -}}
     {% else -%}
-        <div {{ block('widget_container_attributes') }}>
+        <div class="deskpro-date-widget" {{ block('widget_container_attributes') }}>
             {{- date_pattern|replace({
             '{{ year }}':  form_widget(form.year),
             '{{ month }}': form_widget(form.month),
@@ -267,6 +267,17 @@
         <small class="help">{{ form.vars.help }}</small>
     {% endif %}
 {%- endblock date_widget %}
+
+{%- block time_widget -%}
+    {%- if widget == 'single_text' -%}
+        {{ block('form_widget_simple') }}
+    {%- else -%}
+        {%- set vars = widget == 'text' ? { 'attr': { 'size': 1 }} : {} -%}
+        <div class="deskpro-date-widget" {{ block('widget_container_attributes') }}>
+            {{ form_widget(form.hour, vars) }}{% if with_minutes %}:{{ form_widget(form.minute, vars) }}{% endif %}{% if with_seconds %}:{{ form_widget(form.second, vars) }}{% endif %}
+        </div>
+    {%- endif -%}
+{%- endblock time_widget -%}
 
 
 {# DISPLAY HTML #}
@@ -392,13 +403,12 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
     {% endif %}
 {% endblock %}
 
-
 {% block deskpro_custom_field_choice_widget_expanded -%}
     <div {{ block('widget_container_attributes') }}>
         <div class="deskpro-choice-widget">
             {%- for child in form %}
-                {% if form.vars.choices[loop.index0] is defined %}
-                    {% if form.vars.choices[loop.index0].data|length == 0 %}
+                {% if form.vars.choices[child.vars.value] is defined %}
+                    {% if form.vars.choices[child.vars.value].data|length == 0 %}
                     {{- form_widget(child) -}}
                     {{- form_label(child) -}}
                     <br>
