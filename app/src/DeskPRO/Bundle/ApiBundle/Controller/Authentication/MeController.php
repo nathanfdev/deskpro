@@ -33,12 +33,18 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Model\Me;
-use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
+use DeskPRO\Bundle\ApiBundle\Model\PersonProfile;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
 use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class MeController.
+ */
 class MeController extends BaseController
 {
     /**
@@ -55,13 +61,12 @@ class MeController extends BaseController
     public function meAction()
     {
         /** @var \DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken $token */
-        $token = $this->get('security.token_storage')->getToken();
-
+        $token  = $this->get('security.token_storage')->getToken();
         $person = $token->getUser();
 
         $me              = new Me();
-        $me->auth_method = $this->makeAuthMethodString($token);
-        $me->person_id   = $token->getUser()->getId();
+        $me->auth_method = $token->getName();
+        $me->person_id   = $person->getId();
         $me->person      = $person->toApiData(); //TODO
 
         if ($token instanceof AgentSessionSecurityToken) {
@@ -76,8 +81,23 @@ class MeController extends BaseController
         );
     }
 
-    protected function makeAuthMethodString(AbstractApiSecurityToken $token)
+    /**
+     * @Get("/me/profile", name="get_my_profile")
+     */
+    public function getProfileAction()
     {
-        return $token->getName();
+        return View::create(
+            $this->dataSerialize(new PersonProfile($this->getUser())),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @Post("/me/profile", name="post_my_profile")
+     *
+     * @param Request $request
+     */
+    public function postProfileAction(Request $request)
+    {
     }
 }
