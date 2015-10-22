@@ -106,6 +106,7 @@ class TaskFilterBuilder
         // NB We don't want to throw an exception if it's not in the list, as some other part of the API might use it
         // So we just ignore it instead
         $allowedFilters = [
+            'ids'                 => ['field' => 'id'],
             'assigned'            => ['field' => 'person', 'table' => ['t.assigned', 'a']],
             'assigned_team'       => ['field' => 'team', 'table' => ['t.assigned', 'a']],
             'assigned_department' => ['field' => 'department', 'table' => ['t.assigned', 'a']],

@@ -8,7 +8,7 @@ export class Header extends React.Component {
 
   static propTypes = {
     user: PropTypes.object.isRequired,
-    dispatch: PropTypes.object.isRequired
+    dispatch: PropTypes.func.isRequired
   };
 
   toggleWorkspace = () => {

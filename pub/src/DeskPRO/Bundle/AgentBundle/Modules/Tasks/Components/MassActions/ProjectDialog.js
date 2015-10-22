@@ -2,7 +2,7 @@ import React from 'react';
 
 export default class ProjectDialog extends React.Component {
   static propTypes = {
-    projects: React.PropTypes.array,
+    projects: React.PropTypes.object,
     massActionable: React.PropTypes.object,
     setMassActionProject: React.PropTypes.func
   }
@@ -22,7 +22,7 @@ export default class ProjectDialog extends React.Component {
     if (filter) {
       this.setState({
         projects: this.props.projects.filter((project) => {
-          return project.title.toLowerCase().indexOf(filter.toLowerCase()) > -1;
+          return project.get('title').toLowerCase().indexOf(filter.toLowerCase()) > -1;
         }),
         filterValue: filter
       });
@@ -60,13 +60,13 @@ export default class ProjectDialog extends React.Component {
                   <ul>
                     {this.state.projects ? this.state.projects.map((project) => {
                       let className = 'dpw--popup-item-box';
-                      if (this.props.massActionable && this.props.massActionable.project && project.id === this.props.massActionable.project) {
+                      if (this.props.massActionable && this.props.massActionable.project && project.get('id') === this.props.massActionable.project) {
                         className += ' selected';
                       }
 
-                      return (<li key={project.id} onClick={this.props.setMassActionProject.bind(this, project.id)}>
+                      return (<li key={project.get('id')} onClick={this.props.setMassActionProject.bind(this, project.get('id'))}>
                                 <div className={className}>
-                                  <span className="dpw-popup-item-collection-name">{project.title}</span>
+                                  <span className="dpw-popup-item-collection-name">{project.get('title')}</span>
                                 </div>
                               </li>);
                     }) : ''}

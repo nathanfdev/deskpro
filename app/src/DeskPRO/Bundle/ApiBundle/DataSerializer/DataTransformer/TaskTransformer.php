@@ -125,11 +125,12 @@ class TaskTransformer extends AbstractDataSerializerTransformer
         $this->count_ids[] = $id;
 
         return [
-            'departments'   => $grouped['departments'],
-            'teams'         => $grouped['teams'],
-            'agents'        => $grouped['agents'],
-            'labels'        => $labels,
-            'comment_count' => new CallbackDeferredProperty(
+            'departments'    => $grouped['departments'],
+            'teams'          => $grouped['teams'],
+            'agents'         => $grouped['agents'],
+            'labels'         => $labels,
+            'linked_tickets' => $this->getLinkedTickets($data),
+            'comment_count'  => new CallbackDeferredProperty(
                 [$this, 'getCommentCount'],
                 [$id]
             ),
@@ -235,5 +236,32 @@ class TaskTransformer extends AbstractDataSerializerTransformer
                 ];
             }
         }
+    }
+
+    /**
+     * Retrieve the IDs of linked tickets.
+     *
+     * @param \DeskPRO\Bundle\AppBundle\Entity\Task $data The task
+     *
+     * @return array
+     */
+    private function getLinkedTickets($data)
+    {
+        $tickets = [];
+
+        $linkedItems = $data->getLinkedItems();
+
+        // NB The below may be overkill as we're unlikely to have more than one
+        // ticket assigned to a task, and there should be no duplicate links
+        if ($linkedItems) {
+            foreach ($linkedItems as $linkedItem) {
+                $ticket = $linkedItem->getTicket();
+                if ($ticket && !in_array($ticket->getId(), $tickets)) {
+                    $tickets[] = $ticket->getId();
+                }
+            }
+        }
+
+        return $tickets;
     }
 }

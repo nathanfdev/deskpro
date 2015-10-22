@@ -2,11 +2,11 @@ import { createReducer } from 'Ampliflux';
 import * as TaskListActions from '../Actions/TaskListActions';
 
 const initialState = {
-  projectList: {},
+  taskSource: null
 };
 
 export default createReducer(initialState, {
-  [TaskListActions.loadProjects]: (state, payload) => {
-    return state.set('projectList', payload.data);
+  [TaskListActions.setSource]: (state, payload) => {
+    return state.set('taskSource', payload);
   }
 });
