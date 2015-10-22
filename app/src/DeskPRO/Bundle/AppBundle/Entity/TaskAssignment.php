@@ -36,7 +36,7 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 use Application\DeskPRO\Entity\AgentTeam as Team;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
+use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -44,8 +44,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity
  * @ORM\Table(name="task_assignments")
  */
-class TaskAssignment extends NotifyPropertyChangeEntity
+class TaskAssignment implements EntityInterface, NotifyPropertyChanged
 {
+    use NotifyPropertyChangedTrait;
+
     /**
      * @var int
      * @ORM\Id()

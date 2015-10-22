@@ -35,7 +35,6 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -44,21 +43,27 @@ use Symfony\Component\HttpFoundation\Response;
 class TicketLabelsController extends BaseController
 {
     /**
-     * @ApiDoc(
-     *      description="get all available labels for tickets, sorted alphabetically",
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     *
      * @Get("/ticket_labels", name="api_ticket_labels")
      */
     public function cgetAction()
     {
-        $labels = $this->get('data.ticketlabels');
+        $labels = $this->get('data.ticketlabels')->getLabels();
+
+        // TODO remove this when db has real sample data
+        if (!$labels) {
+            $labels = ['test', 'test2', 'test3'];
+        }
+
+        // TODO colors need to come from labels_def table
+        $labels = array_map(function ($l) {
+            return [
+                'label' => $l,
+                'color' => '#999'
+            ];
+        }, $labels);
 
         return View::create(
-            $this->dataSerialize(new PrimitiveArray($labels->getLabels())),
+            $this->dataSerialize(new PrimitiveArray($labels)),
             Response::HTTP_OK
         );
     }

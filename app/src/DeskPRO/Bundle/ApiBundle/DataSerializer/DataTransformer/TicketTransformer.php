@@ -104,6 +104,7 @@ class TicketTransformer extends AbstractDataSerializerTransformer
             'subject',
             'original_subject',
             'properties',
+            'problems',
             'count_agent_replies',
             'count_user_replies',
             'worst_sla_status',
@@ -119,7 +120,7 @@ class TicketTransformer extends AbstractDataSerializerTransformer
         $ticket = $transformation_request->getDataToBeTransformed();
 
         $props = [
-            'sent_to_address' => $ticket->getSentToAddresses()
+            'sent_to_address' => $ticket->getSentToAddresses(),
         ];
 
         $includes = $transformation_request->getSerializerContext()->getRequestedIncludes();
@@ -148,7 +149,7 @@ class TicketTransformer extends AbstractDataSerializerTransformer
 
         if ($ticket->person_email) {
             $props['person_email'] = $ticket->person_email->getEmail();
-        } else if ($ticket->person->getPrimaryEmail()) {
+        } elseif ($ticket->getPerson() && $ticket->getPerson()->getPrimaryEmail()) {
             $props['person_email'] = $ticket->person->getPrimaryEmail()->getEmail();
         } else {
             $props['person_email'] = null;

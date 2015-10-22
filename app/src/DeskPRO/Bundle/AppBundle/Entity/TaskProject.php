@@ -36,8 +36,8 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use Hateoas\Configuration\Annotation as Hateoas;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -51,8 +51,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      href=@Hateoas\Route("api_projects_get", parameters={"id" = "expr(object.getId())"})
  * )
  */
-class TaskProject extends NotifyPropertyChangeEntity
+class TaskProject implements EntityInterface, NotifyPropertyChanged
 {
+    use NotifyPropertyChangedTrait;
+
     /**
      * @var int
      * @ORM\Id()

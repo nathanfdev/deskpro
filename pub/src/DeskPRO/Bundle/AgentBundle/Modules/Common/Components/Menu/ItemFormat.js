@@ -4,7 +4,9 @@ import classNames from 'classnames';
 export default class ItemFormat extends React.Component {
   static propTypes = {
     icon: React.PropTypes.string,
+    format: React.PropTypes.string,
     itemType: React.PropTypes.string,
+    filterType: React.PropTypes.string,
     widgetClass: React.PropTypes.string,
     checked: React.PropTypes.bool,
     isActive: React.PropTypes.bool,
@@ -13,6 +15,7 @@ export default class ItemFormat extends React.Component {
     listItem: React.PropTypes.bool,
     hasMenu: React.PropTypes.bool,
     hasItemList: React.PropTypes.bool,
+    resetFilter: React.PropTypes.func,
     toggleInnerList: React.PropTypes.func
   };
 
@@ -56,7 +59,7 @@ export default class ItemFormat extends React.Component {
       return (
         <span className="dpw-navigation-dropdown-item-status">
             <i className="fa fa-check"/>
-          </span>
+        </span>
       );
     }
   }
@@ -66,7 +69,18 @@ export default class ItemFormat extends React.Component {
       return (
         <span className="dpw-navigation-dropdown-item-expand" onClick={this.props.toggleInnerList}>
             <i className="fa fa-caret-down"/>
-          </span>
+        </span>
+      );
+    }
+  }
+
+  renderFilterClear() {
+    const { isActive, format, resetFilter, filterType} = this.props;
+    if (isActive && format === 'filter') {
+      return (
+        <span className="dpw-navigation-dropdown-item-clear" onClick={resetFilter.bind(null, filterType)}>
+          <i className="fa fa-times"></i>
+        </span>
       );
     }
   }
@@ -112,6 +126,7 @@ export default class ItemFormat extends React.Component {
       {this.renderSubmenuCaret()}
       {this.renderCheckedMark()}
       {this.renderInnerListSwitcher()}
+      {this.renderFilterClear()}
     </div>);
   }
 }

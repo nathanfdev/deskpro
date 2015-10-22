@@ -31,8 +31,10 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
+use Application\DeskPRO\Entity\TicketFlagged;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -41,7 +43,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Provides API access to the ticket flags.
  */
-class TicketFlagsController extends BaseController
+class TicketStarsController extends BaseController
 {
     /**
      * @ApiDoc(
@@ -55,10 +57,15 @@ class TicketFlagsController extends BaseController
      */
     public function cgetAction()
     {
-        $flags = $this->get('data.ticketflags');
+        $stars = [];
+
+        for ($i = 1; $i <= 7; ++$i) {
+            // todo: color should be a hex code
+            $stars[] = ['id' => $i, 'name' => ucfirst(TicketFlagged::idToColorName($i)), 'color' => TicketFlagged::idToColorName($i)];
+        }
 
         return View::create(
-            $this->dataSerialize(new PrimitiveArray($flags->getFlags())),
+            $this->dataSerialize(new PrimitiveArray($stars)),
             Response::HTTP_OK
         );
     }
@@ -71,24 +78,21 @@ class TicketFlagsController extends BaseController
      *      }
      * )
      *
-     * @Get("/ticket_stars/all/counts", name="api_ticket_flag_all_counts")
+     * @Get("/ticket_stars_count", name="api_ticket_flag_all_counts")
      */
     public function getTicketFlagsCounts()
     {
         $flags_service = $this->get('data.ticketflags');
 
-        $counts = [];
-        foreach ($flags_service->getFlags() as $flag) {
-            $counts[] = [
-                'star'  => $flag,
-                'count' => count($flags_service->getAllRecordsForFlag($this->getUser()->getId(), $flag)),
-            ];
+        $count = Count::fromValue(0);
+        foreach ($flags_service->getFlags() as $i => $color) {
+            $flag_id = $i + 1;
+
+            $flag_count = count($flags_service->getAllRecordsForFlag($this->getUser()->getId(), $flag_id));
+            $count->addNested($flag_count, $flag_id, true);
         }
 
-        return View::create(
-            $this->dataSerialize(new PrimitiveArray($counts)),
-            Response::HTTP_OK
-        );
+        return View::create($this->createRepresentation($count), Response::HTTP_OK);
     }
 
     /**
@@ -105,12 +109,7 @@ class TicketFlagsController extends BaseController
     {
         $tickets = $this->get('data.ticketflags')->getAllRecordsForFlag($this->getUser()->getId(), $star);
 
-        return View::create(
-            $this->dataSerialize(new PrimitiveArray([
-                'count' => count($tickets),
-            ])),
-            Response::HTTP_OK
-        );
+        return View::create($this->createRepresentation(Count::fromValue(count($tickets))), Response::HTTP_OK);
     }
 
     /**
@@ -125,7 +124,9 @@ class TicketFlagsController extends BaseController
      */
     public function getTicketFlagTickets($star)
     {
-        $tickets = $this->get('data.ticketflags')->getAllTicketsForFlag($this->getUser()->getId(), $star);
+        /** @var \DeskPRO\Bundle\AppBundle\Model\TicketFlags $service */
+        $service = $this->get('data.ticketflags');
+        $tickets = $service->getAllTicketsForFlag($this->getUser()->getId(), $star);
 
         return View::create(
             $this->dataSerialize($tickets),

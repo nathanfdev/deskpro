@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DpTest\DeskPRO\Component\Util\ListUtils;
+namespace DpTest\DeskPRO\Component\Util;
 
 use DeskPRO\Component\Util\ListUtils;
 use DpTest\DeskProTestCase;

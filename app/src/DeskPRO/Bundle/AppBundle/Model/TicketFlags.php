@@ -91,20 +91,20 @@ class TicketFlags
      * Gets all the tickets matching a flag.
      *
      * @param int $person_id is the ID of the person whos has the flag.
-     * @param string the flag name.
+     * @param int $flag_id   the flag ID.
      *
      * @throws UnknownTicketFlagException
      *
      * @return a list of tickets.
      */
-    public function getAllRecordsForFlag($person_id, $flag_name)
+    public function getAllRecordsForFlag($person_id, $flag_id)
     {
-        if (!$this->flagIsValid($flag_name)) {
+        if (!$flag = $this->getFlag($flag_id)) {
             throw new UnknownTicketFlagException();
         }
 
         return $this->getEm()->getRepository('DeskPRO:TicketFlagged')->findBy(array(
-            'color'     => $flag_name,
+            'color'     => $flag,
             'person_id' => $person_id,
         ));
     }
@@ -113,19 +113,19 @@ class TicketFlags
      * Gets all the tickets matching a flag.
      *
      * @param int $person_id is the ID of the person whos has the flag.
-     * @param string the flag name.
+     * @param int $flag_id   The flag name.
      *
      * @throws UnknownTicketFlagException
      *
-     * @return a list of tickets.
+     * @return array List of tickets.
      */
-    public function getAllTicketsForFlag($person_id, $flag_name)
+    public function getAllTicketsForFlag($person_id, $flag_id)
     {
-        if (!$this->flagIsValid($flag_name)) {
+        if (!$this->getFlag($flag_id)) {
             throw new UnknownTicketFlagException();
         }
 
-        $records      = $this->getAllRecordsForFlag($person_id, $flag_name);
+        $records      = $this->getAllRecordsForFlag($person_id, $flag_id);
         $tickets_repo = $this->getEm()->getRepository('DeskPRO:Ticket');
         $tickets      = [];
         foreach ($records as $record) {
@@ -133,5 +133,17 @@ class TicketFlags
         }
 
         return $tickets;
+    }
+
+    /**
+     * @param int $id Flag id
+     *
+     * @return TicketFlag|null
+     */
+    private function getFlag($id)
+    {
+        $id = (int) $id - 1;
+
+        return isset($this->flags[$id]) ? $this->flags[$id] : null;
     }
 }

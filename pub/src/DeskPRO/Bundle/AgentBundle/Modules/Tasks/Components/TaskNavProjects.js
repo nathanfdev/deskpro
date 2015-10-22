@@ -38,14 +38,16 @@ export default class TasksNavProjects extends React.Component {
     };
   }
 
-  toggleWindow(project = {}, event) {
+  toggleWindow(project = false, event) {
     this.setState({
       projectData: Immutable.Map()
     });
 
+    const projectData = project ? project : Immutable.Map();
+
     if (this.state.showWindow === false) {
       this.setState({
-        projectData: project
+        projectData: projectData
       });
     }
 

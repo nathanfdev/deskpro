@@ -33,8 +33,8 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
-use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\Person;
+use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -46,8 +46,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
  * @ORM\InheritanceType("NONE")
  */
-class AgentChatMessage extends DomainObject
+class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
 {
+    use NotifyPropertyChangedTrait;
+
     /**
      * @var int
      * @ORM\Id()
@@ -212,5 +214,37 @@ class AgentChatMessage extends DomainObject
         $this->metadata = $metadata;
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAgentChatId()
+    {
+        return $this->agent_chat_id;
+    }
+
+    /**
+     * @param int $agent_chat_id
+     */
+    public function setAgentChatId($agent_chat_id)
+    {
+        $this->setModelField('agent_chat_id', $agent_chat_id);
+    }
+
+    /**
+     * @return int
+     */
+    public function getPersonId()
+    {
+        return $this->person_id;
+    }
+
+    /**
+     * @param int $person_id
+     */
+    public function setPersonId($person_id)
+    {
+        $this->setModelField('person_id', $person_id);
     }
 }

@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import Moment from 'moment';
 import { DragSource, DropTarget } from 'react-dnd';
 import DragTypes from '../../../Services/DragTypes.js';
-import $ from 'jquery';
-import { getEmptyImage } from 'react-dnd/modules/backends/HTML5';
+import jQuery from 'jquery';
+import { getEmptyImage } from 'react-dnd-html5-backend';
 
 const cardTarget = {
   drop(props, monitor) {
@@ -17,7 +17,7 @@ const cardTarget = {
 
 const listCardSource = {
   beginDrag(props, monitor, component) {
-    const width = $(ReactDOM.findDOMNode(component)).width();
+    const width = jQuery(ReactDOM.findDOMNode(component)).width();
 
     return {
       id: props.task.get('id'),
@@ -39,9 +39,9 @@ const TaskKanbanCard = React.createClass({
   propTypes: {
     updateMassActions: React.PropTypes.func,
     task: React.PropTypes.object,
-    agents: React.PropTypes.array,
-    teams: React.PropTypes.array,
-    departments: React.PropTypes.array,
+    agents: React.PropTypes.object,
+    teams: React.PropTypes.object,
+    departments: React.PropTypes.object,
     connectDragPreview: React.PropTypes.func,
     connectDragSource: React.PropTypes.func,
     connectDropTarget: React.PropTypes.func,
@@ -66,11 +66,11 @@ const TaskKanbanCard = React.createClass({
     let assigneeName = '';
 
     if (this.props.task.get('agents') && this.props.task.get('agents').size > 0) {
-      assigneeName = this.props.agents[this.props.task.get('agents').get(0)].name;
+      assigneeName = this.props.agents.get(this.props.task.get('agents').get(0)).get('name');
     } else if (this.props.task.get('teams') && this.props.task.get('teams').size > 0) {
-      assigneeName = this.props.teams[this.props.task.get('teams').get(0)].name;
+      assigneeName = this.props.teams.get(this.props.task.get('teams').get(0)).get('name');
     } else if (this.props.task.get('departments') && this.props.task.get('departments').size > 0) {
-      assigneeName = this.props.departments[this.props.task.get('departments').get(0)].title;
+      assigneeName = this.props.departments.get(this.props.task.get('departments').get(0)).get('title');
     }
 
     const placeHolder = this.props.isOver ? 'placeholder is-over' : 'placeholder';

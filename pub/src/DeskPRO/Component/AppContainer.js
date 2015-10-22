@@ -8,8 +8,8 @@ export class AppContainer extends React.Component {
 
   static propTypes = {
     dpWindow: PropTypes.object.isRequired,
-    thisAppId: PropTypes.func.isRequired,
-    children: PropTypes.object.isRequired
+    thisAppId: PropTypes.string.isRequired,
+    children: PropTypes.any.isRequired
   };
 
   render() {

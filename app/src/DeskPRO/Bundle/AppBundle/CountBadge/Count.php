@@ -105,6 +105,25 @@ class Count
     }
 
     /**
+     * @param int    $value
+     * @param string $group
+     * @param array  $nested
+     * @param string $grouped_by
+     *
+     * @return Count
+     */
+    public static function create($value, $group, array $nested, $grouped_by)
+    {
+        $count = new self();
+        $count->setCount($value);
+        $count->setGroup($group);
+        $count->setNested($nested);
+        $count->setGroupedBy($grouped_by);
+
+        return $count;
+    }
+
+    /**
      * @return int
      */
     public function getCount()
@@ -171,22 +190,30 @@ class Count
     /**
      * @param int    $value
      * @param string $group
+     * @param bool   $sum_to_value If need to increase $this->value by nested count value
      */
-    public function addNested($value, $group)
+    public function addNested($value, $group, $sum_to_value = false)
     {
         $count = new self();
         $count->setCount($value);
         $count->setGroup($group);
-
         $this->nested[] = $count;
+
+        if ($sum_to_value) {
+            $this->add($value);
+        }
     }
 
     /**
      * @param Count $instance
+     * @param bool  $sum_to_value If need to increase $this->value by nested count value
      */
-    public function addNestedInstance(Count $instance)
+    public function addNestedInstance(Count $instance, $sum_to_value = false)
     {
         $this->nested[] = $instance;
+        if ($sum_to_value) {
+            $this->add($instance->getCount());
+        }
     }
 
     /**

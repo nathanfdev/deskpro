@@ -31,16 +31,15 @@
  *
  * @category Entities
  */
-
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
-use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\AgentChat\Exceptions\WrongChatableTypeException;
 use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
 use Hateoas\Configuration\Annotation as Hateoas;
@@ -57,8 +56,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      href=@Hateoas\Route("get_agent_chats", parameters={"id" = "expr(object.getId())"})
  * )
  */
-class AgentChat extends DomainObject implements PersonList
+class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
 {
+    use NotifyPropertyChangedTrait;
+
     /**
      * @var int
      * @ORM\Id()

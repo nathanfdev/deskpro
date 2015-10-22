@@ -36,7 +36,7 @@ use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTypeMap;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\DeferredPropertyInterface;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\PropertyTransformationContext;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\PropertyTransformerInterface;
-use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
+use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Component\DoctrineAssociation\DoctrineAssociationManager;
 use Doctrine\Common\Collections\Collection;
 
@@ -66,7 +66,7 @@ class DoctrinePropertyTransformer implements PropertyTransformerInterface
         $serializer_context = $property_context->getSerializerContext();
 
         $new_val = null;
-        if ($val instanceof DomainObject || $val instanceof NotifyPropertyChangeEntity) {
+        if ($val instanceof DomainObject || $val instanceof EntityInterface) {
             $type              = $this->getType($data, $property_name);
             $doctrine_deferred = $this->assoc_manager->deferAssociationIds($data, $property_name);
             $new_val           = new DoctrineDeferredProperty($doctrine_deferred, $type);

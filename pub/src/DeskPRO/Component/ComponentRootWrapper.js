@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import $ from 'jquery';
+import jQuery from 'jquery';
 
 export default class ComponentRootWrapper extends React.Component {
 
   componentDidMount() {
     this.node = ReactDOM.findDOMNode(this);
-    $(this.node).detach();
-    $('body').append(this.node);
+    jQuery(this.node).detach();
+    jQuery('body').append(this.node);
 
     // Manipulate the DOM here
     this.renderDialogContent();
@@ -21,21 +21,21 @@ export default class ComponentRootWrapper extends React.Component {
 
   componentWillUnmount() {
     // Clean up the DOM when the component is umounted
-    React.unmountComponentAtNode(this.node);
-    $(this.node).remove();
+    ReactDOM.unmountComponentAtNode(this.node);
+    jQuery(this.node).remove();
   }
 
   renderDialogContent(props) {
-    props = props || this.props;
+    const componentProps = props || this.props;
 
     // Render the component with react
-    ReactDOM.render(props.children, this.node);
+    ReactDOM.render(componentProps.children, this.node);
 
     // Can show and hide a node depending on the open property
-    if (props.open) {
-      $(this.node).show();
+    if (componentProps.open) {
+      jQuery(this.node).show();
     } else {
-      $(this.node).hide();
+      jQuery(this.node).hide();
     }
   }
 

@@ -1,6 +1,5 @@
 import { createReducer } from 'Ampliflux';
 import * as TaskListActions from '../Actions/TaskListActions';
-import Immutable from 'immutable';
 
 const initialState = {
   projectList: {},

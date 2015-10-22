@@ -29,16 +29,11 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Doctrine;
+namespace DeskPRO\Bundle\AppBundle\Entity;
 
-use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\PropertyChangedListener;
-use JMS\Serializer\Annotation as Serializer;
 
-/**
- * @Serializer\ExclusionPolicy("ALL")
- */
-class NotifyPropertyChangeEntity implements NotifyPropertyChanged
+trait NotifyPropertyChangedTrait
 {
     /**
      * @var PropertyChangedListener[]

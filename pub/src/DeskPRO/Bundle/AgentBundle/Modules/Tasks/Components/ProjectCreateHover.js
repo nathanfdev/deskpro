@@ -7,12 +7,15 @@ import Immutable from 'immutable';
 const ProjectCreateHover = React.createClass({
 
   propTypes: {
-    projectData: React.PropTypes.object,
     agentList: React.PropTypes.array,
+    closeWindow: React.PropTypes.func,
     createdProject: React.PropTypes.object,
-    user: React.PropTypes.object,
+    createProject: React.PropTypes.func,
+    departmentList: React.PropTypes.array,
     position: React.PropTypes.object,
-    closeWindow: React.PropTypes.func
+    projectData: React.PropTypes.object,
+    teamList: React.PropTypes.array,
+    user: React.PropTypes.object
   },
 
   mixins: [
@@ -37,9 +40,9 @@ const ProjectCreateHover = React.createClass({
 
     if (this.state.selected === null && Object.keys(this.props.projectData).length > 0) {
       state.selected = {
-        departments: this.props.projectData.get('departments'),
-        teams: this.props.projectData.get('teams'),
-        agents: this.props.projectData.get('agents')
+        departments: this.props.projectData.get('departments') ? this.props.projectData.get('departments').toArray() : [],
+        teams: this.props.projectData.get('teams') ? this.props.projectData.get('teams').toArray() : [],
+        agents: this.props.projectData.get('agents') ? this.props.projectData.get('agents').toArray() : []
       };
     }
 
@@ -190,7 +193,7 @@ const ProjectCreateHover = React.createClass({
   },
 
   render: function() {
-    const project = this.props.projectData ? this.props.projectData : Immutable.Map();
+    const project = this.props.projectData && typeof this.props.projectData.has === 'function' ? this.props.projectData : Immutable.Map();
     const positionY = (this.props.position.y - 20);
     const maxY = window.innerHeight - 400;
     let overshotY = false;
@@ -201,6 +204,11 @@ const ProjectCreateHover = React.createClass({
       overshotY = true;
       top = maxY + 'px';
     }
+
+    console.log('this.state');
+    console.log(this.state);
+    console.log('this.props');
+    console.log(this.props);
 
     return (<div style={{top: top}} className={overshotY ? 'sidebar-hover hide-indicator' : 'sidebar-hover'}>
         <div className="dpmw--popup-main">

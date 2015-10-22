@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { DragSource, DropTarget } from 'react-dnd';
-import $ from 'jquery';
+import jQuery from 'jquery';
 import Formsy from 'formsy-react';
 import FRC from 'DeskPRO/Component/FormComponents/main.js';
 import DragTypes from '../../../Services/DragTypes.js';
 import Picker from 'anytime';
 import Moment from 'moment';
-import { getEmptyImage } from 'react-dnd/modules/backends/HTML5';
+import { getEmptyImage } from 'react-dnd-html5-backend';
 
 import { Card } from '../../Common/Components/ListFrame/Card';
 
@@ -22,7 +22,7 @@ const cardTarget = {
 
 const cardSource = {
   beginDrag(props, monitor, component) {
-    const width = $(ReactDOM.findDOMNode(component)).width();
+    const width = jQuery(ReactDOM.findDOMNode(component)).width();
 
     return {
       id: props.task.get('id'),
@@ -40,36 +40,30 @@ const cardSource = {
   }
 };
 
-function collect(connector, monitor) {
-  return {
-    connectDragSource: connector.dragSource(),
-    connectDragPreview: connector.dragPreview()
-  };
-}
-
 const TaskCard = React.createClass({
   mixins: [
     require('react-onclickoutside')
   ],
 
   propTypes: {
-    task: React.PropTypes.object,
-    projects: React.PropTypes.array,
-    linked_items: React.PropTypes.object,
-    departments: React.PropTypes.array,
-    teams: React.PropTypes.array,
-    tickets: React.PropTypes.object,
-    agents: React.PropTypes.array,
-    source: React.PropTypes.string,
+    agents: React.PropTypes.object,
+    connectDragPreview: React.PropTypes.func,
     connectDragSource: React.PropTypes.func,
     connectDropTarget: React.PropTypes.func,
-    connectDragPreview: React.PropTypes.func,
-    updateMassActions: React.PropTypes.func,
+    departments: React.PropTypes.object,
     editTask: React.PropTypes.func,
+    isOver: React.PropTypes.bool,
+    linked_items: React.PropTypes.object,
+    order: React.PropTypes.string,
+    projects: React.PropTypes.object,
+    selected: React.PropTypes.bool,
+    source: React.PropTypes.string,
+    task: React.PropTypes.object,
+    teams: React.PropTypes.object,
+    tickets: React.PropTypes.object,
     toggleAssignWindow: React.PropTypes.func,
     toggleDone: React.PropTypes.func,
-    selected: React.PropTypes.bool,
-    isOver: React.PropTypes.bool
+    updateMassActions: React.PropTypes.func
   },
 
   handleClickOutside: function() {
@@ -191,7 +185,7 @@ const TaskCard = React.createClass({
   render: function() {
     const { task,
             projects,
-            linked_items,
+            tickets,
             departments,
             teams,
             agents,
@@ -207,11 +201,11 @@ const TaskCard = React.createClass({
     let ticketLink = undefined;
     let ticketTitle = 'Linked ticket';
 
-    if (task.has('linked_items') && task.get('linked_items').size > 0) {
-      task.get('linked_items').forEach((item) => {
-        if (typeof linked_items[item].ticket !== 'undefined' && linked_items[item].ticket !== null) {
-          ticketLink = '#' + linked_items[item].ticket;
-          ticketTitle = this.props.tickets[linked_items[item].ticket].subject;
+    if (task.has('linked_tickets') && task.get('linked_tickets').size > 0) {
+      task.get('linked_tickets').forEach((item) => {
+        if (typeof tickets.get(item) !== 'undefined' && tickets.get(item) !== null) {
+          ticketLink = '#' + item;
+          ticketTitle = tickets.get(item).get('subject');
         }
       });
     }
@@ -221,13 +215,13 @@ const TaskCard = React.createClass({
     if (task.has('agents') && task.get('agents').size > 0) {
       // We assume one assignment for now, though we will need to support more later
       const agentId = task.get('agents')[0];
-      assignee = agents[agentId];
+      assignee = agents.get(agentId);
     } else if (task.has('teams') && task.get('teams').size > 0) {
       const teamId = task.get('teams')[0];
-      assignee = teams[teamId];
+      assignee = teams.get(teamId);
     } else if (task.has('departments') && task.get('departments').size > 0) {
       const departmentId = task.get('departments')[0];
-      assignee = departments[departmentId];
+      assignee = departments.get(departmentId);
     }
 
     const titleClass = task.get('is_done', false) ? 'dpwd--card-title strikethrough' : 'dpwd--card-title';
@@ -297,10 +291,10 @@ const TaskCard = React.createClass({
                 <input type="text" name="due-date" className="due-date-field" ref={dueField} disabled="disabled"/>
               </span>
 
-             {task.get('project') && projects[task.get('project')] ? <span>
+             {task.get('project') && projects.has(task.get('project')) ? <span>
                 <span className="dpw--card-disc"/>
                 <span className="dpwd--card-line-item">
-                  <i className="fa fa-book"/> {projects[task.get('project')].title}
+                  <i className="fa fa-book"/> {projects.get(task.get('project')).get('title')}
                 </span>
               </span>
                : ''}

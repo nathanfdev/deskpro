@@ -1,3 +1,5 @@
+import { createSelector } from 'reselect';
+import { reduceMapToProperty } from 'DeskPRO/Component/Util/Map';
 import { createStoreSelectors, createRequestSelectorsBuilder } from 'Ampliflux/common/record-store/selectors';
 
 // You need to define this top-level
@@ -13,3 +15,8 @@ export const ticketStateSelector = createStoreSelectors(appTicketStateSel);
 
 // This create a number of useful selectors that your client-code will find useful
 export const createTicketRequestSelectors = createRequestSelectorsBuilder(ticketStateSelector);
+
+export const ticketNamesSelector = createSelector(
+  createTicketRequestSelectors('tickets').recordsSel,
+  tickets => reduceMapToProperty('subject', tickets.toJS())
+);

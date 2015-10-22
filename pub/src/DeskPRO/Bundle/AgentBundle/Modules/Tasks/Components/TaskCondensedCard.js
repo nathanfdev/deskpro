@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { DragSource, DropTarget } from 'react-dnd';
-import $ from 'jquery';
+import jQuery from 'jquery';
 import DragTypes from '../../../Services/DragTypes.js';
 import Picker from 'anytime';
 import Moment from 'moment';
-import { getEmptyImage } from 'react-dnd/modules/backends/HTML5';
+import { getEmptyImage } from 'react-dnd-html5-backend';
 
 const cardTarget = {
   drop(props, monitor) {
@@ -18,7 +18,7 @@ const cardTarget = {
 
 const cardSource = {
   beginDrag(props, monitor, component) {
-    const width = $(ReactDOM.findDOMNode(component)).width();
+    const width = jQuery(ReactDOM.findDOMNode(component)).width();
 
     return {
       id: props.task.get('id'),
@@ -47,11 +47,11 @@ const TaskCondensedCard = React.createClass({
     updateMassActions: React.PropTypes.func,
     source: React.PropTypes.string,
     order: React.PropTypes.string,
-    projects: React.PropTypes.array,
+    projects: React.PropTypes.object,
     linked_items: React.PropTypes.object,
-    departments: React.PropTypes.array,
-    teams: React.PropTypes.array,
-    agents: React.PropTypes.array,
+    departments: React.PropTypes.object,
+    teams: React.PropTypes.object,
+    agents: React.PropTypes.object,
     selected: React.PropTypes.bool,
     isOver: React.PropTypes.bool,
     connectDragPreview: React.PropTypes.func,
@@ -190,11 +190,11 @@ const TaskCondensedCard = React.createClass({
     let assignee = null;
 
     if (task.has('agents') && task.get('agents').size > 0) {
-      assignee = this.props.agents[task.get('agents').get(0)].name;
+      assignee = this.props.agents.get(task.get('agents').get(0)).get('name');
     } else if (task.has('teams') && task.get('teams').size > 0) {
-      assignee = this.props.teams[task.get('teams').get(0)].name;
+      assignee = this.props.teams.get(task.get('teams').get(0)).get('name');
     } else if (task.has('departments') && task.get('departments').size > 0) {
-      assignee = this.props.departments[task.get('departments').get(0)].title;
+      assignee = this.props.departments.get(task.get('departments').get(0)).get('title');
     }
 
     let taskClass = task.get('is_done') ? 'ticket done' : 'ticket';
@@ -207,7 +207,7 @@ const TaskCondensedCard = React.createClass({
             </span>
             <a href="#">{task.get('title')}</a>
           </td>
-          <td>{task.get('project') && projects[task.get('project')] ? projects[task.get('project')].title : ''}</td>
+          <td>{task.get('project') && projects.has(task.get('project')) ? projects.get(task.get('project')).get('title') : ''}</td>
           <td>{task.get('date_due') ? Moment(task.get('date_due')).format('DD/MM/YY') : '' }</td>
           <td>{assignee}</td>
         </tr>);

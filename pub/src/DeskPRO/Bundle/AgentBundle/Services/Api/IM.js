@@ -4,8 +4,8 @@ export function loadRecentChats() {
   return DpApi.sendGet('DP_API/agent_chats/recent');
 }
 
-export function loadChats() {
-  return DpApi.sendGet('DP_API/agent_chats/recent');
+export function loadChats(missingIds) {
+  return DpApi.sendGet('DP_API/agent_chats/?ids=' + missingIds.toArray().join(','));
 }
 
 export function loadMessages(chatId, searchQuery = '') {
@@ -13,7 +13,7 @@ export function loadMessages(chatId, searchQuery = '') {
 }
 
 export function startChat(entityId, type) {
-  return DpApi.sendPost('DP_API/agent_chats/start', {type: type, id: entityId});
+  return DpApi.sendPost('DP_API/agent_chats/start?follow_redirect', {type: type, id: entityId});
 }
 
 export function addMessage(chatId, message) {

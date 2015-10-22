@@ -10,7 +10,7 @@ export default class Abstract extends React.Component {
    * @type {Object}
    */
   static propTypes = {
-    isOpen: React.PropTypes.bool.isRequired,
+    isOpen: React.PropTypes.bool,
     positionCalc: React.PropTypes.func,
     position: React.PropTypes.object,
     positionAt: React.PropTypes.string,
@@ -101,10 +101,11 @@ export default class Abstract extends React.Component {
    * @return {bool} Whether the function should run
    */
   shouldFire() {
-    const fire = (this.props.isOpen === this.state.isOpen);
+    const isOpen = this.props.isOpen || false;
+    const fire = (isOpen === this.state.isOpen);
 
     this.setState({
-      isOpen: this.props.isOpen
+      isOpen: isOpen
     });
 
     return fire;
@@ -115,8 +116,10 @@ export default class Abstract extends React.Component {
    * @return {void}
    */
   renderContent() {
+    const isOpen = this.props.isOpen || false;
+
     // Render the component with react, or don't if the prop changes
-    if (this.props.isOpen) {
+    if (isOpen) {
       // Put the element inside a div that we can position
       ReactDOM.render(<div className="positioned-element">{this.props.children}</div>, this.node);
       this.updatePosition();

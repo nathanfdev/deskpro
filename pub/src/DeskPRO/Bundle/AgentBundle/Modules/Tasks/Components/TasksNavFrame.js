@@ -7,7 +7,7 @@ import TaskNavProjects from '../Components/TaskNavProjects';
 import TaskNavPeople from '../Components/TaskNavPeople';
 import TaskNavLabels from '../Components/TaskNavLabels';
 import { NavFrameHeader, NavFrame } from '../../Common/Components/NavFrame/index';
-import $ from 'jquery';
+import jQuery from 'jquery';
 
 import { loadAllAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions';
 import { loadAllDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
@@ -82,8 +82,8 @@ export default class TasksNavFrame extends React.Component {
 
   filterTasks(filter, event) {
     this.props.dispatch(TaskActions.setFilter(filter));
-    $('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
-    $(event.target).closest('a').addClass('active');
+    jQuery('.sidebar-list a.item, .sidebar-list a.item-label').removeClass('active');
+    jQuery(event.target).closest('a').addClass('active');
   }
 
   render() {

@@ -31,6 +31,9 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer;
 
+use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
+use DeskPRO\Component\Util\EntityUtils;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class DataTypeIdFinder
@@ -47,6 +50,10 @@ class DataTypeIdFinder
 
     public function findDataId($data)
     {
+        if ($data instanceof EntityInterface || $data instanceof DomainObject) {
+            return EntityUtils::getIdentifier($data);
+        }
+
         if (is_object($data)) {
             $path = 'id';
         } elseif (is_array($data)) {

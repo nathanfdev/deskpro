@@ -1,3 +1,5 @@
+import HTML5Backend from 'react-dnd-html5-backend';
+
 export default {
   VIEW_MODE_CARD: 'card',
   VIEW_MODE_TABLE: 'table',
@@ -15,5 +17,5 @@ export default {
   STATUS_NEW: 'new',
   STATUS_VISIBLE: 'visible',
   STATUS_ACTIVE: 'active',
-  STATUS_CLOSED: 'closed',
+  STATUS_CLOSED: 'closed'
 };

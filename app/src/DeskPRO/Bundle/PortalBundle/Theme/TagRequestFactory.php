@@ -32,9 +32,10 @@
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use Application\DeskPRO\Domain\DomainObject;
-use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
+use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
+use DeskPRO\Component\Util\EntityUtils;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -52,7 +53,7 @@ class TagRequestFactory
 
     public function __construct(RequestStack $stack, LanguageManager $language_manager)
     {
-        $this->stack = $stack;
+        $this->stack            = $stack;
         $this->language_manager = $language_manager;
     }
 
@@ -79,8 +80,8 @@ class TagRequestFactory
     {
         $new_args = array();
         foreach ($arguments as $key => $value) {
-            if ($value instanceof DomainObject || $value instanceof NotifyPropertyChangeEntity) {
-                $value = $value->getId();
+            if ($value instanceof DomainObject || $value instanceof EntityInterface) {
+                $value = EntityUtils::getIdentifier($value);
             }
 
             if (is_object($value)) {

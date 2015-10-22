@@ -4,13 +4,13 @@ import $ from 'jquery';
 const AssignHover = React.createClass({
 
   propTypes: {
-    agents: React.PropTypes.array,
+    agents: React.PropTypes.object,
     assignTask: React.PropTypes.func,
     closeWindow: React.PropTypes.func,
-    departments: React.PropTypes.array,
+    departments: React.PropTypes.object,
     taskData: React.PropTypes.object,
     position: React.PropTypes.object,
-    teams: React.PropTypes.array
+    teams: React.PropTypes.object
   },
 
   mixins: [

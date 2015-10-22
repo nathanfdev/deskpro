@@ -6,16 +6,17 @@ import Immutable from 'immutable';
 export class Card extends Component {
 
   static propTypes = {
-    type: PropTypes.string.isRequired,
-    moving: PropTypes.bool,
-    minimized: PropTypes.bool,
     additionalClasses: PropTypes.string,
+    children: PropTypes.any,
+    minimized: PropTypes.bool,
+    moving: PropTypes.bool,
+    type: PropTypes.string.isRequired,
     width: PropTypes.number
   };
 
   render() {
     const {type, moving, minimized, width, additionalClasses} = this.props;
-    var classes = classNames('dpmw--single-card', additionalClasses, {
+    const classes = classNames('dpmw--single-card', additionalClasses, {
       'dpmw--single-task-card': type === 'task',
       'floating': type === 'float',
       'minimized': minimized,
@@ -25,6 +26,7 @@ export class Card extends Component {
     if (width) {
       styles.width = width + 'px';
     }
+
     return (
       <div className={classes} style={styles}>
         {this.props.children}
@@ -34,6 +36,10 @@ export class Card extends Component {
 }
 
 export class CardLine extends Component {
+
+  static propTypes = {
+    children: PropTypes.any
+  }
 
   render() {
     return (
@@ -46,6 +52,10 @@ export class CardLine extends Component {
 
 export class CardLineLeft extends Component {
 
+  static propTypes = {
+    children: PropTypes.any
+  }
+
   render() {
     return (
       <div className="dpw--card-line-left">
@@ -56,6 +66,10 @@ export class CardLineLeft extends Component {
 }
 
 export class CardLineRight extends Component {
+
+  static propTypes = {
+    children: PropTypes.any
+  }
 
   render() {
     return (
@@ -68,6 +82,10 @@ export class CardLineRight extends Component {
 
 export class CardLineFull extends Component {
 
+  static propTypes = {
+    children: PropTypes.any
+  }
+
   render() {
     return (
       <div className="dpw--card-line-full">
@@ -78,6 +96,10 @@ export class CardLineFull extends Component {
 }
 
 export class CardContentText extends Component {
+
+  static propTypes = {
+    children: PropTypes.any
+  }
 
   render() {
     return (
@@ -91,14 +113,18 @@ export class CardContentText extends Component {
 export class CardLineItem extends Component {
 
   static propTypes = {
+    children: PropTypes.any,
     icon: PropTypes.string
   };
 
   render() {
     const {icon} = this.props;
+    let classes = '';
+
     if (icon) {
-      var classes = classNames('fa', icon);
+      classes = classNames('fa', icon);
     }
+
     return (
       <span className="dpwd--card-line-item">
          {icon ? <i className={classes}/> : ''} {this.props.children}
@@ -110,9 +136,14 @@ export class CardLineItem extends Component {
 
 export class CardCheckbox extends Component {
 
+  static propTypes = {
+    onClick: PropTypes.func,
+    selected: PropTypes.bool
+  }
+
   render() {
     const { selected, onClick } = this.props;
-    var classes = classNames('fa', {'fa-check': selected});
+    const classes = classNames('fa', {'fa-check': selected});
 
     return (
       <div className="dpm--card-checkbox" onClick={onClick}>
@@ -234,7 +265,7 @@ export class CardComments extends Component {
     const {commentsCounter} = this.props;
 
     return (
-      <CardLineItem>{commentsCounter} <i className="fa fa-comments-o"></i></CardLineItem>
+      <CardLineItem>{commentsCounter} <i className="fa fa-comments-o" /></CardLineItem>
     );
   }
 }

@@ -1,5 +1,4 @@
 import { createAction } from 'Ampliflux';
-import { requestRecords } from 'Ampliflux/common/record-store/actions';
 import * as rsa from 'Ampliflux/common/record-store/actions';
 
 import * as IM from 'DeskPRO/Bundle/AgentBundle/Services/Api/IM';
@@ -10,12 +9,11 @@ export const releaseRequest = createAction('IM_RELEASE_CHATS_REQUEST', rsa.relea
 export const setChatsRequest = createAction('IM_SET_CHATS', rsa.setRequestRecords());
 export const loadChats = createAction(
   'IM_LOAD_CHATS',
-  rsa.createRecordsRequest(
+  rsa.requestRecords(
     ['RecordStores', 'IM', 'chats'],
-    'all',
-    () => new Promise(
+    (missingIds) => new Promise(
       (resolve, reject) =>
-        IM.loadChats()
+        IM.loadChats(missingIds)
           .success(response => resolve(response.data))
           .error(response => reject(response))
     )
