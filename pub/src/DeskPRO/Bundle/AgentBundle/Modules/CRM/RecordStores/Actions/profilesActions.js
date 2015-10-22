@@ -7,7 +7,7 @@ export const releaseProfile = createAction('RELEASE_PROFILE', recordStoreActions
 export const releaseProfileRequest = createAction('RELEASE_PROFILE_REQUEST', recordStoreActions.releaseRequest());
 export const setProfileRequest = createAction('SET_PROFILE', recordStoreActions.setRequestRecords());
 
-export const loadMyProfile = createAction(
+export const loadMy = createAction(
   'LOAD_PROFILE',
   createRecordsRequest(
     ['RecordStores', 'CRM', 'profiles'],
