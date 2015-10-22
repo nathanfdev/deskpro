@@ -62,7 +62,7 @@ const FeedbackViewOptions = React.createClass({
     };
   },
 
-  componentWillUnmount: function componentWillUnmount() {
+  componentWillUnmount() {
     const {dispatch, viewFields} = this.props;
     if (this.state.isChanged) {
       if (this.state.isStored || viewFields) {
@@ -75,11 +75,11 @@ const FeedbackViewOptions = React.createClass({
     dispatch(getDisplayFieldsFromPersonSetting());
   },
 
-  handleClickOutside: function handleClickOutside() {
+  handleClickOutside() {
     this.props.toggleOptionsMenu();
   },
 
-  changeState: function changeState(type, field, isChecked) {
+  changeState(type, field, isChecked) {
     const currentState = this.state[type];
     currentState[field].isShown = isChecked;
     this.setState({ [type]: currentState });
@@ -87,7 +87,7 @@ const FeedbackViewOptions = React.createClass({
     console.log('Changed state', this.state);
   },
 
-  render: function render() {
+  render() {
     const {currentViewMode} = this.props;
     return (
       <Menu widgetClass="dpw-navigation-dropdown-secondary">

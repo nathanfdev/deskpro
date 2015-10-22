@@ -22,7 +22,6 @@ Feature: /feedback/ endpoint
   Scenario: I GET list of feedback with hidden_status set to validating and pagination set to 2 results per page
     When I send a GET request to "/api/v2/feedback/?awaiting_validation=1&count=2"
     Then the response should be in JSON
-#    And print last JSON response
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data" should have 2 elements
