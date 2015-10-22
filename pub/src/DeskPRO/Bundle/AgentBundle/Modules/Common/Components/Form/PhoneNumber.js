@@ -19,12 +19,10 @@ export class PhoneNumber extends React.Component {
       allowExtensions: true,
       nationalMode: true
     });
-    $input.intlTelInput('utilsLoaded');
-  }
 
-  onChange = (event) => {
-    this.props.onChange(event.target.value);
-  };
+    $input.intlTelInput('utilsLoaded');
+    $input.bind('change keyup', () => this.props.onChange($input.val()));
+  }
 
   render() {
     return (

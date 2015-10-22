@@ -16,11 +16,11 @@ export class Password extends React.Component {
     };
   }
 
-  onChangeValue = () => {
+  onChangeValue = (event) => {
     this.props.onChangeValue(event.target.value);
   };
 
-  onChangeConfirmValue = () => {
+  onChangeConfirmValue = (event) => {
     this.props.onChangeConfirmValue(event.target.value);
   };
 

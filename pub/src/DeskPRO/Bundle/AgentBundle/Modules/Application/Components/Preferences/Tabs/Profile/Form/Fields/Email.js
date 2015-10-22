@@ -19,7 +19,10 @@ export class Email extends React.Component {
 
     return (
       <div className="bucket-column">
-        <input type="text" placeholder="Your email" value={emails.join(',')} onChange={this.onChange} />
+        <input type="text"
+               placeholder="Your email"
+               value={emails.join(',')}
+               onChange={this.onChange} />
       </div>
     );
   }

@@ -68,6 +68,12 @@ export class ProfileForm extends React.Component {
     });
   };
 
+  onChangeLanguage = (value) => {
+    this.setState({
+      language: value
+    });
+  };
+
   onChangeTimezone = (value) => {
     this.setState({
       timezone: value
@@ -88,6 +94,7 @@ export class ProfileForm extends React.Component {
 
   submitForm = (event) => {
     event.preventDefault();
+    console.log(this.state);
   };
 
   renderNameField() {
@@ -154,7 +161,9 @@ export class ProfileForm extends React.Component {
 
     return (
       <FieldWrapper label="Language">
-        <Language languages={languages} />
+        <Language languages={languages}
+                  value={this.state.language}
+                  onChange={this.onChangeLanguage} />
       </FieldWrapper>
     );
   }

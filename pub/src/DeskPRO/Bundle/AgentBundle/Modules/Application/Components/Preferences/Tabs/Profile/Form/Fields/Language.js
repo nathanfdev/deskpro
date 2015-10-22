@@ -12,7 +12,7 @@ export class Language extends React.Component {
   render() {
     const { value, languages, onChange } = this.props;
     const options = languages.map(language => ({
-      value: language.get('title'),
+      value: language.get('lang_code'),
       label: language.get('title')
     })).toArray();
 
