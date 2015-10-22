@@ -200,6 +200,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
     config.entry['DeskPRO_PortalBundle_style'] = ["./src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.scss"];
   }
   if (mode == 'all' || mode == 'agent') {
+    config.entry['phonenumber_utils']         = ["./node_modules/intl-tel-input/lib/libphonenumber/build/utils"];
     config.entry['DeskPRO_AgentBundle']       = ["./src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentBundle"];
     config.entry['DeskPRO_AgentBundle_style'] = ["./src/DeskPRO/Bundle/AgentBundle/Resources/style/agent-style.scss"];
   }

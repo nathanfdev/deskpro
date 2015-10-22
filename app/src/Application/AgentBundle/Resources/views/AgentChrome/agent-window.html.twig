@@ -8,6 +8,7 @@
   <script type="text/javascript">
     window.DP_BASE_URL =  '{{ app.request.getSchemeAndHttpHost() ~ app.request.getBaseUrl() }}';
     window.DP_BASE_URL_RELATIVE = '{{ app.request.getBaseUrl() }}';
+    window.DP_BUILD_PATH = '{{ app.getConfig('pub_asset_urls')['pub/build'] }}';
   </script>
   <link type="text/css" rel="stylesheet" href="{{ asset('DeskPRO_AgentBundle_style.css', 'app_assets') }}" />
   <link href='http://fonts.googleapis.com/css?family=Lato:400,700,100,300' rel='stylesheet' type='text/css'>

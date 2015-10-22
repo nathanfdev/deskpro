@@ -10,7 +10,16 @@ export class PhoneNumber extends React.Component {
   };
 
   componentDidMount() {
-    jQuery(this.refs.phone).intlTelInput();
+    const $input = jQuery(this.refs.phone);
+
+    $input.intlTelInput({
+      utilsScript: `${DP_BUILD_PATH}/phonenumber_utils.js`,
+      autoPlaceholder: true,
+      autoFormat: true,
+      allowExtensions: true,
+      nationalMode: true
+    });
+    $input.intlTelInput('utilsLoaded');
   }
 
   onChange = (event) => {
@@ -19,7 +28,11 @@ export class PhoneNumber extends React.Component {
 
   render() {
     return (
-      <input ref="phone" type="text" placeholder="Your phone number" value={this.props.value} onChange={this.onChange} />
+      <input ref="phone"
+             type="text"
+             placeholder="Your phone number"
+             value={this.props.value}
+             onChange={this.onChange} />
     );
   }
 }
