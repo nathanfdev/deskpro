@@ -115,13 +115,13 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      *
      * SWG\Api(
      *    path="/ticket_fields/{id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      *        method="GET",
      *        summary="Get custom ticket field by Id",
      *        notes="",
      *        type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *                name="id",
      *                description="Custom field id",
      *                paramType="path",
@@ -162,13 +162,13 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      *
      * SWG\Api(
      *    path="/ticket_fields/{id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      *        method="POST",
      *        summary="Save custom ticket field by ID",
      *        notes="All you will pass in this query will be saved",
      *        type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *                name="id",
      *                description="Custom field id",
      *                paramType="path",
@@ -180,7 +180,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      * )
      * SWG\Api(
      *    path="/ticket_fields",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      *        method="PUT",
      *        summary="Create custom ticket field",
      *        notes="All you will pass in this query will be saved",
@@ -237,13 +237,13 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      *
      * SWG\Api(
      *    path="/ticket_fields/{id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      *        method="DELETE",
      *        summary="Delete custom field by ID",
      *        notes="",
      *        type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *                name="id",
      *                description="Custom field ID",
      *                paramType="path",
@@ -279,20 +279,20 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      *
      * SWG\Api(
      *    path="/ticket_fields/set-enabled/{field_id}/{is_enabled}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      *        method="POST",
      *        summary="Set custom field enabled/disabled",
      *        notes="",
      *        type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *                name="id",
      *                description="Custom field ID",
      *                paramType="path",
      *                required=true,
      *                type="integer",
      *            ),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *                name="is_enabled",
      *                description="Enabled marker",
      *                paramType="path",
