@@ -235,6 +235,11 @@ $right-bucket: 200px;
     .small {
       font-size: 0.85em;
       opacity: 0.5;
+
+      &.field-note {
+        display: block;
+        margin-top: 5px;
+      }
     }
 
     .bucket-column {

@@ -23,6 +23,8 @@ export class Email extends React.Component {
                placeholder="Your email"
                value={emails.join(',')}
                onChange={this.onChange} />
+
+        <span className="small field-note">Separate multiple email addresses with a comma.</span>
       </div>
     );
   }
