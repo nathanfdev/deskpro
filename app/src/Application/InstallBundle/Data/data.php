@@ -214,7 +214,6 @@ INSERT INTO `feedback_comments` (`id`, `feedback_id`, `person_id`, `ip_address`,
 "
 );
 
-
 ################################################################################
 # Person Setting
 ################################################################################
@@ -1577,4 +1576,50 @@ $em->getConnection()->executeUpdate("
         ('ticket', 'ticket label #2', 'red', 3),
         ('ticket', 'ticket label #3', 'green', 13)
     ;
+");
+
+################################################################################
+# TEMPORARY TEST DATA: Tickets problems, stars, messages
+################################################################################
+
+$em->getConnection()->executeUpdate("
+    SET FOREIGN_KEY_CHECKS=0;
+
+    INSERT INTO
+        `tickets_flagged` (`person_id`, `ticket_id`, `color`)
+    VALUES
+        (1, 260, 'pink'),
+        (1, 261, 'blue'),
+        (1, 262, 'blue'),
+        (2, 272, 'blue')
+    ;
+
+    INSERT INTO
+        `problems` (`id`, `person_id`, `title`, `created`, `is_open`)
+    VALUES
+        (1, 1, 'Problem #1', '2015-10-01 00:00:00', 1),
+        (2, 1, 'Problem #2', '2015-10-25 00:00:00', 1),
+        (3, 1, 'Problem #3', '2015-10-16 00:00:00', 0),
+        (4, 2, 'Problem #4', '2015-10-23 00:00:00', 1)
+    ;
+
+    INSERT INTO
+        `problem2tickets` (`ticket_id`, `problem_id`)
+    VALUES
+        (260, 1),
+        (260, 1),
+        (260, 3),
+        (261, 4)
+    ;
+
+    INSERT INTO
+        `tickets_messages` (`id`, `ticket_id`, `person_id`, `email_source_id`, `message_translated_id`, `date_created`, `is_agent_note`, `creation_system`, `ip_address`, `hostname`, `geo_country`, `email`, `message_hash`, `message`, `message_full`, `message_raw`, `lang_code`, `show_full_hint`, `visitor_id`)
+    VALUES
+        (1, 260, 1, NULL, NULL, '2015-10-01 00:00:00', 0, 'web', '1.1.1.1', 'dp.lo', NULL, 'w1@w.ww', 'hash1', 'Lorem ipsum', NULL, NULL, NULL, 1, NULL),
+        (2, 260, 2, NULL, NULL, '2015-11-01 00:00:00', 1, 'web', '1.1.1.1', 'dp.lo', NULL, 'w1@w.ww', 'hash2', 'Sit amet', NULL, NULL, NULL, 1, NULL),
+        (3, 260, 2, NULL, NULL, '0000-00-00 00:00:00', 0, 'web', '1.1.1.1', 'dp.lo', NULL, 'w2@w.ww', 'hash3', 'Hello', NULL, NULL, NULL, 1, NULL),
+        (4, 261, 1, NULL, NULL, '2015-10-01 00:00:00', 0, 'web', '1.1.1.1', 'dp.lo', NULL, 'w3@w.ww', 'hash4', 'Ololo!', NULL, NULL, NULL, 1, NULL)
+    ;
+
+    SET FOREIGN_KEY_CHECKS=1;
 ");
