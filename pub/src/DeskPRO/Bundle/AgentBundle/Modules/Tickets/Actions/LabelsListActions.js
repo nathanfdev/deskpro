@@ -1,5 +1,6 @@
 import { createAction } from "Ampliflux/actions";
 import * as TicketLabels from "DeskPRO/Bundle/AgentBundle/Services/Api/TicketLabels";
+import { pluck } from 'lodash';
 
 export const loadLabels = createAction(
   "TICKETS_LOAD_TICKET_LABELS",
