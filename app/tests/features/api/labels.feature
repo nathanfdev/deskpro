@@ -19,5 +19,5 @@ Feature: /*_labels endpoints
       | target       | label                 |
       | person       | person label #1       |
       | organization | organization label #1 |
-      | ticket       | ticket label #1       |
+#      | ticket       | ticket label #1       |
       | feedback     | bar                   |
