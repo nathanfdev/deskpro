@@ -1,15 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { AppContainer } from 'DeskPRO/Component/AppContainer';
-import HTML5Backend from 'react-dnd/modules/backends/HTML5';
+import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
 import TaskCardDragLayer from './TaskCardDragLayer';
 
-// import TasksSidebarHoverFrame from './TasksSidebarHoverFrame';
 import TasksNavFrame from './TasksNavFrame';
 import { TasksListFrame } from './TasksListFrame';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
-const dndBackend = HTML5Backend;
 
 @connect(state => ({
   user: meSelector(state),
@@ -17,11 +15,10 @@ const dndBackend = HTML5Backend;
 }))
 class TasksApp extends React.Component {
   render() {
-
     return (
       <AppContainer thisAppId="tasks" {...this.props}>
         <TasksNavFrame {...this.props} />
-        <TasksListFrame dndBackend={dndBackend} {...this.props} />
+        <TasksListFrame {...this.props} />
         <TaskCardDragLayer />
       </AppContainer>
     );

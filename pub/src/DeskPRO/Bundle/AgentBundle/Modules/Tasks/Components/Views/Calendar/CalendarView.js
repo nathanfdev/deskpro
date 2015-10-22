@@ -10,7 +10,6 @@ export default class CalendarView extends React.Component {
     departments: React.PropTypes.object,
     direction: React.PropTypes.string,
     dispatch: React.PropTypes.func,
-    dndBackend: React.PropTypes.func,
     editTask: React.PropTypes.func,
     groupedTasks: React.PropTypes.array,
     moveCard: React.PropTypes.func,
@@ -82,8 +81,7 @@ export default class CalendarView extends React.Component {
                     projects={this.props.projects}
                     departments={this.props.departments}
                     agents={this.props.agents}
-                    setYear={this.setYear.bind(this)}
-                    dndBackend={this.props.dndBackend} />
+                    setYear={this.setYear.bind(this)} />
     </div>);
   }
 }

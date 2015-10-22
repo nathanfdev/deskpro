@@ -7,7 +7,7 @@ import FRC from 'DeskPRO/Component/FormComponents/main.js';
 import DragTypes from '../../../Services/DragTypes.js';
 import Picker from 'anytime';
 import Moment from 'moment';
-import { getEmptyImage } from 'react-dnd/modules/backends/HTML5';
+import { getEmptyImage } from 'react-dnd-html5-backend';
 
 import { Card } from '../../Common/Components/ListFrame/Card';
 
@@ -46,23 +46,24 @@ const TaskCard = React.createClass({
   ],
 
   propTypes: {
-    task: React.PropTypes.object,
-    projects: React.PropTypes.object,
-    linked_items: React.PropTypes.object,
-    departments: React.PropTypes.object,
-    teams: React.PropTypes.object,
-    tickets: React.PropTypes.object,
     agents: React.PropTypes.object,
-    source: React.PropTypes.string,
+    connectDragPreview: React.PropTypes.func,
     connectDragSource: React.PropTypes.func,
     connectDropTarget: React.PropTypes.func,
-    connectDragPreview: React.PropTypes.func,
-    updateMassActions: React.PropTypes.func,
+    departments: React.PropTypes.object,
     editTask: React.PropTypes.func,
+    isOver: React.PropTypes.bool,
+    linked_items: React.PropTypes.object,
+    order: React.PropTypes.string,
+    projects: React.PropTypes.object,
+    selected: React.PropTypes.bool,
+    source: React.PropTypes.string,
+    task: React.PropTypes.object,
+    teams: React.PropTypes.object,
+    tickets: React.PropTypes.object,
     toggleAssignWindow: React.PropTypes.func,
     toggleDone: React.PropTypes.func,
-    selected: React.PropTypes.bool,
-    isOver: React.PropTypes.bool
+    updateMassActions: React.PropTypes.func
   },
 
   handleClickOutside: function() {

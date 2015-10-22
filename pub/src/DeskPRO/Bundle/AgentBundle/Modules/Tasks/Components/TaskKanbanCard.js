@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import Moment from 'moment';
 import { DragSource, DropTarget } from 'react-dnd';
 import DragTypes from '../../../Services/DragTypes.js';
-import $ from 'jquery';
-import { getEmptyImage } from 'react-dnd/modules/backends/HTML5';
+import jQuery from 'jquery';
+import { getEmptyImage } from 'react-dnd-html5-backend';
 
 const cardTarget = {
   drop(props, monitor) {
@@ -17,7 +17,7 @@ const cardTarget = {
 
 const listCardSource = {
   beginDrag(props, monitor, component) {
-    const width = $(ReactDOM.findDOMNode(component)).width();
+    const width = jQuery(ReactDOM.findDOMNode(component)).width();
 
     return {
       id: props.task.get('id'),
