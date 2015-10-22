@@ -256,11 +256,9 @@
         {{- block('form_widget_simple') -}}
     {% else -%}
         <div class="deskpro-date-widget" {{ block('widget_container_attributes') }}>
-            {{- date_pattern|replace({
-            '{{ year }}':  form_widget(form.year),
-            '{{ month }}': form_widget(form.month),
-            '{{ day }}':   form_widget(form.day),
-            })|raw -}}
+            {{ form_widget(form.month) }}
+            {{ form_widget(form.day) }}
+            {{ form_widget(form.year) }}
         </div>
     {%- endif %}
     {% if form.vars.help %}
@@ -274,7 +272,7 @@
     {%- else -%}
         {%- set vars = widget == 'text' ? { 'attr': { 'size': 1 }} : {} -%}
         <div class="deskpro-date-widget" {{ block('widget_container_attributes') }}>
-            {{ form_widget(form.hour, vars) }}{% if with_minutes %}:{{ form_widget(form.minute, vars) }}{% endif %}{% if with_seconds %}:{{ form_widget(form.second, vars) }}{% endif %}
+            {{ form_widget(form.hour, vars) }}{% if with_minutes %}{{ form_widget(form.minute, vars) }}{% endif %}{% if with_seconds %}{{ form_widget(form.second, vars) }}{% endif %}
         </div>
     {%- endif -%}
 {%- endblock time_widget -%}
