@@ -32,11 +32,13 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\ApiBundle\Form\Type\PersonProfileType;
 use DeskPRO\Bundle\ApiBundle\Model\Me;
 use DeskPRO\Bundle\ApiBundle\Model\PersonProfile;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
 use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
+use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
@@ -93,11 +95,31 @@ class MeController extends BaseController
     }
 
     /**
-     * @Post("/me/profile", name="post_my_profile")
+     * @Put("/me/profile", name="put_my_profile")
      *
      * @param Request $request
+     *
+     * @return View
      */
-    public function postProfileAction(Request $request)
+    public function putProfileAction(Request $request)
     {
+        $person = $this->getUser();
+
+        $form = $this->createForm(new PersonProfileType(), $person);
+        $form->submit($request->request->all());
+
+        if (!$form->isValid()) {
+            $err = $form->getErrorsAsString();
+            throw new InvalidFormException($form);
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($person);
+        $em->flush();
+
+        return View::create(
+            $this->dataSerialize(new PersonProfile($person)),
+            Response::HTTP_CREATED
+        );
     }
 }

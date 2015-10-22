@@ -2149,6 +2149,13 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $email;
     }
 
+    public function getEmail()
+    {
+        $email = $this->getPrimaryEmail();
+
+        return $email ? $email->getEmail() : null;
+    }
+
     /**
      * Get email addresses that are validated.
      *
@@ -2195,7 +2202,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
-     * Adds an emaila ddress string. This is same as addEmailAddress except
+     * Adds an email address string. This is same as addEmailAddress except
      * we take care of creating the PersonEmail object here.
      *
      * @param string $email
