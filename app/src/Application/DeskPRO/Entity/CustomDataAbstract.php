@@ -114,8 +114,6 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 
         switch ($type) {
             case 'toggle':
-            case 'date':
-            case 'datetime':
                 return $this->value;
             default:
                 return $this->value ? $this->value : $this->input;
