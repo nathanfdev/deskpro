@@ -21,7 +21,7 @@ const BaseItem = React.createClass({
     onMouseOver: React.PropTypes.func,
     onMouseOut: React.PropTypes.func,
     subMenuMode: React.PropTypes.string,
-    parentMenuLevel:  React.PropTypes.number,
+    parentMenuLevel: React.PropTypes.number,
     disabled: React.PropTypes.bool,
     condensed: React.PropTypes.bool,
     format: React.PropTypes.string,
@@ -36,18 +36,12 @@ const BaseItem = React.createClass({
    * Mixins
    * @type {Array}
    */
-  mixins: [
-    require('react-onclickoutside')
-  ],
+  mixins: [require('react-onclickoutside')],
 
-  /**
-   * Constructor
-   * @return {void}
-   */
-  getInitialState: function() {
+  getInitialState() {
     return {
       openMenu: false,
-      openInnerList: false,
+      openInnerList: false
     };
   },
 
@@ -76,6 +70,9 @@ const BaseItem = React.createClass({
     if (this.props.setActiveItem) {
       this.props.setActiveItem(this);
     }
+    this.setState({
+      openMenu: true
+    });
   },
 
   /**
@@ -86,6 +83,9 @@ const BaseItem = React.createClass({
     if (this.props.setActiveItem) {
       this.props.setActiveItem({});
     }
+    this.setState({
+      openMenu: false
+    });
   },
 
   /**
@@ -108,9 +108,11 @@ const BaseItem = React.createClass({
    * @return {void}
    */
   toggleMenu: function() {
-    this.setState({
-      openMenu: !this.state.openMenu
-    });
+    if (!this.state.openMenu) {
+      this.openMenu();
+    } else {
+      this.closeMenu();
+    }
   },
 
   /**
@@ -133,14 +135,22 @@ const BaseItem = React.createClass({
    * @return {mixed} output       The formatted output
    */
   formatOutput: function(output, hasMenu = false, hasItemList = false) {
-    if (this.props.format && this.props.format === 'item') {
-      return (
-        <ItemFormat {...this.props} hasMenu={hasMenu} hasItemList={hasItemList} toggleInnerList={this.toggleInnerList}>
-          {output}
-        </ItemFormat>
-      );
+    if (this.props.format) {
+      if (this.props.format === 'item') {
+        return (
+          <ItemFormat {...this.props} hasMenu={hasMenu} hasItemList={hasItemList}
+                                      toggleInnerList={this.toggleInnerList}>
+            {output}
+          </ItemFormat>
+        );
+      } else if (this.props.format === 'filter') {
+        return (
+          <ItemFormat {...this.props}>
+            {output}
+          </ItemFormat>
+        );
+      }
     }
-
     return output;
   },
 
@@ -157,7 +167,7 @@ const BaseItem = React.createClass({
     return hasMenu;
   },
 
-  checkIfItemListExists: function() {
+  checkIfItemListExists() {
     let hasItemList = false;
     if (this.props.children) {
       React.Children.map(this.props.children,
@@ -170,7 +180,7 @@ const BaseItem = React.createClass({
     return hasItemList;
   },
 
-  renderLabel: function(hasMenu, hasItemList) {
+  renderLabel(hasMenu, hasItemList) {
     const {label} = this.props;
     if (label) {
       const onMouseOverAction = this.props.onMouseOver ? this.props.onMouseOver : () => {
@@ -186,15 +196,17 @@ const BaseItem = React.createClass({
       });
 
       return (
-        <div className={this.props.widgetClass}><a className={divClasses} href="#" onClick={this.onClickAction}
-                onMouseOver={onMouseOverAction} onMouseOut={onMouseOutAction}>
-          {this.formatOutput(label, hasMenu, hasItemList)}
-        </a></div>
+        <div className={this.props.widgetClass}>
+          <a href="#" className={divClasses}
+             onClick={this.onClickAction} onMouseOver={onMouseOverAction} onMouseOut={onMouseOutAction}>
+            {this.formatOutput(label, hasMenu, hasItemList)}
+          </a>
+        </div>
       );
     }
   },
 
-  renderMenu: function(hasMenu) {
+  renderMenu(hasMenu) {
     if (hasMenu) {
       return React.Children.map(this.props.children, (child) => {
         if (child.type && child.type.displayName === 'Menu') {
@@ -216,7 +228,7 @@ const BaseItem = React.createClass({
     }
   },
 
-  renderItemList: function(hasItemList) {
+  renderItemList(hasItemList) {
     if (hasItemList) {
       return React.Children.map(this.props.children, (child) => {
         if (child.type && child.type.displayName === 'ItemList' && this.state.openInnerList) {

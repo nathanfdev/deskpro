@@ -21,11 +21,11 @@ const OrderByDropdown = React.createClass({
     require('react-onclickoutside')
   ],
 
-  handleClickOutside: function handleClickOutside() {
+  handleClickOutside() {
     this.props.toggleDropdown();
   },
 
-  toggleListOrder: function toggleListOrder(order) {
+  toggleListOrder(order) {
     const { dispatch, isComments, toggleDropdown } = this.props;
     if (isComments) {
       dispatch(commentsToggleOrder(order));
@@ -36,7 +36,7 @@ const OrderByDropdown = React.createClass({
   },
 
   /* Change sort option (Order By ...)*/
-  toggleListSort: function toggleListSort(option) {
+  toggleListSort(option) {
     console.log(option);
     const { dispatch, isComments, toggleDropdown } = this.props;
     if (!isComments) {
@@ -45,7 +45,7 @@ const OrderByDropdown = React.createClass({
     toggleDropdown();
   },
 
-  renderOptions: function renderOptions() {
+  renderOptions() {
     const { isComments, toggleDropdown, currentSortMode, sortOptions } = this.props;
     if (isComments) {
       return (
@@ -70,7 +70,7 @@ const OrderByDropdown = React.createClass({
     );
   },
 
-  render: function render() {
+  render() {
     const { order } = this.props;
 
     return (
