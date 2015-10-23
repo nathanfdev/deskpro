@@ -393,8 +393,8 @@ class ApiDb extends AbstractDbSet
             VALUES
               (1, 1, 1, NULL, 0, 'Windows'),
               (2, 2, 1, NULL, 0, 'Linux'),
-              (3, 1, 1, NULL, 0, 'Linux'),
-              (4, 1, 1, NULL, 0, 'Mac')
+              (3, 3, 1, NULL, 0, 'Linux'),
+              (4, 4, 1, NULL, 0, 'Mac')
             ;
         "
         );
