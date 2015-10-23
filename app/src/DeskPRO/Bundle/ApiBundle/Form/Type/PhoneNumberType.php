@@ -30,19 +30,19 @@ namespace DeskPRO\Bundle\ApiBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
- * Class PersonProfileType.
+ * Class PhoneNumberType.
  */
-class PersonProfileType extends AbstractType
+class PhoneNumberType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
-        return 'person_profile';
+        return 'phone_number';
     }
 
     /**
@@ -51,39 +51,17 @@ class PersonProfileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'text')
-            ->add('display_name', 'text', [
-                'property_path' => 'override_display_name',
+            ->add('number', 'hidden', [
+                'required'    => false,
+                'label'       => false,
+                'constraints' => [
+                    new NotBlank(['message' => 'Phone number is invalid.']),
+                ],
             ])
-            ->add('primary_email', 'email', [
-                'property_path' => 'email',
-            ])
-            ->add('phone', new PhoneNumberType(), [
-                'property_path' => 'primaryPhoneNumber',
-            ])
-            ->add('language_id', 'entity', [
-                'class'         => 'DeskPRO:Language',
-                'property_path' => 'language',
-            ])
-            ->add('timezone', 'text')
-            ->add('password', 'repeated', [
-                'type'            => 'password',
-                'invalid_message' => 'The password fields must match.',
-                'required'        => false,
+            ->add('extension', 'hidden', [
+                'required' => false,
+                'label'    => false,
             ])
         ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults([
-            'csrf_protection' => false,
-
-            // todo for debug
-            'allow_extra_fields' => true,
-        ]);
     }
 }
