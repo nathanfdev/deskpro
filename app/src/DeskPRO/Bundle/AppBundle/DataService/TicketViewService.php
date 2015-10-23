@@ -31,6 +31,14 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
+use Application\DeskPRO\CustomFields\Handler\Choice;
+use Application\DeskPRO\CustomFields\Handler\Date;
+use Application\DeskPRO\CustomFields\Handler\DateTime;
+use Application\DeskPRO\CustomFields\Handler\Display;
+use Application\DeskPRO\CustomFields\Handler\Hidden;
+use Application\DeskPRO\CustomFields\Handler\Text;
+use Application\DeskPRO\CustomFields\Handler\Textarea;
+use Application\DeskPRO\CustomFields\Handler\Toggle;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Ticket;
@@ -41,6 +49,7 @@ use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomFieldTicketContext;
 use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomPerFieldManager;
 use DeskPRO\Bundle\PortalBundle\Form\FormFields;
+use Doctrine\ORM\EntityManager;
 
 class TicketViewService extends AbstractDataService
 {
@@ -65,11 +74,13 @@ class TicketViewService extends AbstractDataService
     private $custom_per_field_manager;
 
     public function __construct(
+        EntityManager $em,
         FormFieldManager $form_field_manager,
         TicketLayoutFactory $ticket_layout_factory,
         Translate $translate,
         CustomPerFieldManager $custom_per_field_manager
     ) {
+        parent::__construct($em);
         $this->form_field_manager       = $form_field_manager;
         $this->ticket_layout_factory    = $ticket_layout_factory;
         $this->translate                = $translate;
@@ -85,27 +96,28 @@ class TicketViewService extends AbstractDataService
         $view->ticket = $ticket;
 
         $display_attributes = array();
-        $layout             = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->department)->user_layout;
+        $full_layout        = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->getDepartment());
+        $layout             = $full_layout->getUserLayout();
 
         /** @var \Application\DeskPro\TicketLayout\LayoutField $layout_field */
         foreach ($layout as $layout_field) {
             switch ($layout_field->getFieldType()) {
                 case FormFields::DEPARTMENT:
-                    $view->attribute_list[$this->translate->phrase('user.tickets.fields_department')] = (string) $ticket->department;
+                    $view->attribute_list[$this->translate->phrase('user.tickets.fields_department')] = (string) $ticket->getDepartment();
                     break;
                 case FormFields::CATEGORY:
-                    if ($ticket->category) {
-                        $view->attribute_list[$this->translate->phrase('user.tickets.fields_category')] = (string) $ticket->category;
+                    if ($ticket->getCategory()) {
+                        $view->attribute_list[$this->translate->phrase('user.tickets.fields_category')] = (string) $ticket->getCategory();
                     }
                     break;
                 case FormFields::PRODUCT:
-                    if ($ticket->product) {
-                        $view->attribute_list[$this->translate->phrase('user.tickets.fields_product')] = (string) $ticket->product;
+                    if ($ticket->getProduct()) {
+                        $view->attribute_list[$this->translate->phrase('user.tickets.fields_product')] = (string) $ticket->getProduct();
                     }
                     break;
                 case FormFields::PRIORITY:
-                    if ($ticket->priority) {
-                        $view->attribute_list[$this->translate->phrase('user.tickets.fields_priority')] = (string) $ticket->priority;
+                    if ($ticket->getPriority()) {
+                        $view->attribute_list[$this->translate->phrase('user.tickets.fields_priority')] = (string) $ticket->getPriority();
                     }
                     break;
                 case FormFields::TICKET_FIELD:
@@ -114,8 +126,10 @@ class TicketViewService extends AbstractDataService
                         $field_def = $this->form_field_manager->getCustomTicketFieldById($layout_field->getFieldId());
                         /* @var \Application\DeskPRO\Entity\CustomDataTicket $data */
                         if ($data = $ticket->getCustomDataForField($field_def)) {
-                            $value                                        = $this->getValueForCustomFormField($field_def, $data);
-                            $view->attribute_list[$field_def->getTitle()] = $value;
+                            $value = $this->getValueForCustomFormField($field_def, $data);
+                            if ($value !== null) {
+                                $view->attribute_list[$field_def->getTitle()] = $value;
+                            }
                         }
                     }
                     break;
@@ -129,8 +143,10 @@ class TicketViewService extends AbstractDataService
                         $field_def = $this->form_field_manager->getCustomOrganizationFieldById($layout_field->getFieldId());
                         /* @var \Application\DeskPRO\Entity\CustomDataOrganization $data */
                         if ($data = $ticket->getOrganization()->getCustomDataForField($field_def)) {
-                            $value                                        = $this->getValueForCustomFormField($field_def, $data);
-                            $view->attribute_list[$field_def->getTitle()] = $value;
+                            $value = $this->getValueForCustomFormField($field_def, $data);
+                            if ($value !== null) {
+                                $view->attribute_list[$field_def->getTitle()] = $value;
+                            }
                         }
                     }
                     break;
@@ -140,8 +156,10 @@ class TicketViewService extends AbstractDataService
                         $field_def = $this->form_field_manager->getCustomPersonFieldById($layout_field->getFieldId());
                         /* @var \Application\DeskPRO\Entity\CustomDataPerson $data */
                         if ($data = $ticket->person->getCustomDataForField($field_def)) {
-                            $value                                        = $this->getValueForCustomFormField($field_def, $data);
-                            $view->attribute_list[$field_def->getTitle()] = $value;
+                            $value = $this->getValueForCustomFormField($field_def, $data);
+                            if ($value !== null) {
+                                $view->attribute_list[$field_def->getTitle()] = $value;
+                            }
                         }
                     }
                     break;
@@ -188,7 +206,7 @@ class TicketViewService extends AbstractDataService
     {
         $value = '';
         switch ($field_def->getHandlerClass()) {
-            case 'Application\\DeskPRO\\CustomFields\\Handler\\Date':
+            case Date::class:
                 try {
                     $datetime = new \DateTime($data->getData());
                     $value    = date('F j, Y', $datetime->getTimestamp());
@@ -196,7 +214,7 @@ class TicketViewService extends AbstractDataService
                     $value = '';
                 }
                 break;
-            case 'Application\\DeskPRO\\CustomFields\\Handler\\DateTime':
+            case DateTime::class:
                 try {
                     $datetime = new \DateTime($data->getData());
                     $value    = date('F j, Y, g:i a', $datetime->getTimestamp());
@@ -204,18 +222,18 @@ class TicketViewService extends AbstractDataService
                     $value = '';
                 }
                 break;
-            case 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle':
+            case Toggle::class:
                 if ($data->getData() == 1) {
                     $value = $field_def->getOption('label_text') ?: 'Checked';
                 } else {
                     $value = 'None';
                 }
                 break;
-            case 'Application\\DeskPRO\\CustomFields\\Handler\\Text':
-            case 'Application\\DeskPRO\\CustomFields\\Handler\\TextArea':
+            case Text::class:
+            case Textarea::class:
                 $value = $data->getData();
                 break;
-            case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
+            case Choice::class:
                 if (!$data->value) {
                     $ids = explode(',', $data->input);
                 } else {
@@ -224,15 +242,15 @@ class TicketViewService extends AbstractDataService
                 $selected = array();
                 foreach ($ids as $id) {
                     if ($selected_field = $field_def->getChildById($id)) {
-                    $selected[]     = $selected_field->title;
-                }
+                        $selected[] = $selected_field->title;
+                    }
                 }
                 $value = implode(', ', $selected);
                 break;
-            case 'Application\\DeskPRO\\CustomFields\\Handler\\Hidden':
-            case 'Application\\DeskPRO\\CustomFields\\Handler\\Display':
+            case Hidden::class:
+            case Display::class:
             default:
-                $value = '';
+                $value = null;
                 break;
         }
 
@@ -258,11 +276,11 @@ class TicketViewService extends AbstractDataService
             });
         } else {
             $value = $data->value;
-        foreach ($choices as $choice_def) {
+            foreach ($choices as $choice_def) {
                 if ($choice_def->id == $value) {
-                return $choice_def;
+                    return $choice_def;
+                }
             }
         }
     }
-}
 }

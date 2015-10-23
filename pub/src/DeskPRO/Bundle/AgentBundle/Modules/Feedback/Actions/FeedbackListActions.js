@@ -1,4 +1,5 @@
 import { createAction } from 'Ampliflux';
+import { pluck } from 'lodash';
 import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
 import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSetting';
 import { loadPeople } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
@@ -83,7 +84,12 @@ export const feedbackLabels = createAction(
 
 export const feedbackTypes = createAction(
   'FEEDBACK_TYPES',
-  () => Feedback.getTypes().then(promise => promise.getData()));
+  () => Feedback.getTypes().then(promise => {
+    const response = promise.getData();
+    response.data = pluck(response.data, 'label');
+
+    return response;
+  }));
 
 export const feedbackCustomCategories = createAction(
   'FEEDBACK_CUSTOM_CATEGORIES',

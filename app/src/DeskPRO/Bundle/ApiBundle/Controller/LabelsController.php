@@ -54,7 +54,7 @@ class LabelsController extends BaseController
      *     "/{type}_labels",
      *     name="api_person_labels_list",
      *     requirements={
-     *         "type"="person|organization|feedback"
+     *         "type"="ticket|person|organization|feedback"
      *     }
      * )
      *
@@ -73,7 +73,8 @@ class LabelsController extends BaseController
             ->select('l')
             ->from('DeskPRO:LabelDef', 'l')
             ->where('l.label_type = :type')
-            ->setParameter('type', $type);
+            ->setParameter('type', $type)
+            ->orderBy('l.label', 'asc');
         $term = $request->get('term');
         if (null !== $term) {
             $qb
@@ -81,21 +82,10 @@ class LabelsController extends BaseController
                 ->setParameter('term', $term.'%');
         }
         $definitions = $qb->getQuery()->getResult();
-        $labels      = array_map([$this, 'labelDefinitionToString'], $definitions);
 
         return View::create(
-            $this->createRepresentation($labels),
+            $this->createRepresentation($definitions),
             Response::HTTP_OK
         );
-    }
-
-    /**
-     * @param LabelDef $def
-     *
-     * @return string
-     */
-    private function labelDefinitionToString(LabelDef $def)
-    {
-        return $def->getLabel();
     }
 }

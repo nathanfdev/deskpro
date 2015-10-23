@@ -1,4 +1,5 @@
 import { createAction } from 'Ampliflux/actions';
+import { pluck } from 'lodash';
 import * as People from 'DeskPRO/Bundle/AgentBundle/Services/Api/People';
 import * as UserGroups from 'DeskPRO/Bundle/AgentBundle/Services/Api/UserGroups';
 import * as Organizations from 'DeskPRO/Bundle/AgentBundle/Services/Api/Organizations';
@@ -32,10 +33,10 @@ export const loadTeamsCounts = createAction(
 
 export const loadPersonLabels = createAction(
   'CRM_NAV_LOAD_PERSON_LABELS',
-  trigger => Labels.loadPersonLabels().then(promise => trigger(promise.getData().data))
+  trigger => Labels.loadPersonLabels().then(promise => trigger(pluck(promise.getData().data, 'label')))
 );
 
 export const loadOrganizationLabels = createAction(
   'CRM_NAV_LOAD_ORGANIZATION_LABELS',
-  trigger => Labels.loadOrganizationLabels().then(promise => trigger(promise.getData().data))
+  trigger => Labels.loadOrganizationLabels().then(promise => trigger(pluck(promise.getData().data, 'label')))
 );

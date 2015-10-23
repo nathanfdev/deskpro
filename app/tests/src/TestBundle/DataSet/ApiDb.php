@@ -104,14 +104,14 @@ class ApiDb extends AbstractDbSet
 
         // this will be refactored into a better "entity creator" once the api data set needs more elaborate data
         // we need a brand and some deps, and some other entities
-        $dep1 = new Department();
-        $dep1->title = 'sales';
-        $dep2 = new Department();
-        $dep2->title = 'support';
-        $brand = new Brand();
-        $team = new AgentTeam();
-        $team->name = 'test team';
-        $ticket_def = new CustomDefTicket();
+        $dep1              = new Department();
+        $dep1->title       = 'sales';
+        $dep2              = new Department();
+        $dep2->title       = 'support';
+        $brand             = new Brand();
+        $team              = new AgentTeam();
+        $team->name        = 'test team';
+        $ticket_def        = new CustomDefTicket();
         $ticket_def->title = 'def';
 
         // Create a basic task
@@ -125,15 +125,15 @@ class ApiDb extends AbstractDbSet
         $unassignedTask->setTitle('An unassigned task');
 
         // Create a new knowledge base article
-        $article = new Article();
-        $article->slug = 'test';
-        $article->title = 'A test article';
-        $article->content = 'This is a test article';
-        $article->view_count = 0;
+        $article               = new Article();
+        $article->slug         = 'test';
+        $article->title        = 'A test article';
+        $article->content      = 'This is a test article';
+        $article->view_count   = 0;
         $article->total_rating = 0;
         $article->num_comments = 0;
-        $article->num_ratings = 0;
-        $article->status = 'published';
+        $article->num_ratings  = 0;
+        $article->status       = 'published';
         $article->date_created = new \DateTime();
 
         // Persist them in the entity manager
@@ -152,13 +152,13 @@ class ApiDb extends AbstractDbSet
 
         $types = array('user', 'agent');
         foreach ($types as $type) {
-            $deskProUsers = new Usersource();
-            $deskProUsers->type = $type;
-            $deskProUsers->source_type = 'Application\\DeskPRO\\Usersource\\Adapter\\DeskPRO';
-            $deskProUsers->is_enabled = true;
+            $deskProUsers                = new Usersource();
+            $deskProUsers->type          = $type;
+            $deskProUsers->source_type   = 'Application\\DeskPRO\\Usersource\\Adapter\\DeskPRO';
+            $deskProUsers->is_enabled    = true;
             $deskProUsers->display_order = -10; // ensure #1 order (initially!)
-            $deskProUsers->title = 'DeskPRO';
-            $deskProUsers->options = array();
+            $deskProUsers->title         = 'DeskPRO';
+            $deskProUsers->options       = array();
             $this->getEm()->persist($deskProUsers);
         }
 
@@ -202,8 +202,8 @@ class ApiDb extends AbstractDbSet
                 1,
                 1,
                 0,
-                '" . date('Y-m-d H:i:s') . "',
-                '" . date('Y-m-d H:i:s') . "',
+                '".date('Y-m-d H:i:s')."',
+                '".date('Y-m-d H:i:s')."',
                 0,
                 0,
                 0,
@@ -222,26 +222,26 @@ class ApiDb extends AbstractDbSet
                 ('core.cron_logreport.cli-phperr.log', '1380716762'),
                 ('core.default_from_email', 'noreply@example.com'),
                 ('core.default_timezone', 'UTC'),
-                ('core.deskpro_build', '" . time() . "'),
+                ('core.deskpro_build', '".time()."'),
                 ('core.deskpro_build_num', '0'),
                 ('core.deskpro_url', 'http://localhost:8888/'),
                 ('core.deskpro_version', '20131002122551'),
                 ('core.done_data_initializer', '1'),
-                ('core.done_rewrite_urls_check', '" . time() . "'),
-                ('core.install_build', '" . time() . "'),
+                ('core.done_rewrite_urls_check', '".time()."'),
+                ('core.install_build', '".time()."'),
                 ('core.install_key', '6S7X77ZAR2CYSDT4GJCJ'),
-                ('core.install_timestamp', '" . time() . "'),
+                ('core.install_timestamp', '".time()."'),
                 ('core.install_token', 'PUGYIA9E82Z8JCPKO0NKGC957HITHNZRFHY4CQ3V1380214398'),
-                ('core.last_cron_run', '" . time() . "'),
-                ('core.last_cron_start', '" . time() . "'),
+                ('core.last_cron_run', '".time()."'),
+                ('core.last_cron_start', '".time()."'),
                 ('core.license', 'TlZNVi0wMTEyLUZVVVNFVEJHVFJNRU9KQlNHVlJNUVNTUgERC3\r\nlkZGRncEQKPwB2IyU+LiJjOgZ9FhE8ARdRIQ4OCR8seUR0ZRUZ\r\nJi9+cQB4eTF5ZjQ3P2J5TXYxdREHWzB/a1xiVQ0KeQdqMS5Qf1\r\nYtWXwZagd5DX9OCxASXzAzNGJmGTE7HhAKEBBnODZiGyYGAXVt\r\nLh8TKxcMQyFbKiAhP08aEFoECSM4TQkmMS8mEXJ1UQQINRcsAG\r\noHPBBxZxcFP1l7Uw8TJwseDn1IXAI5WwxLfVQoASkUClloBy93\r\nUEF2XFMQCwYFSC9aewFYHwJVeV0RAAonCEkhIzkjHn8WWSkRPn\r\ncpVyxrMQw6fARnIk8TDQcQCGcZRSombUhedVMENwhxUmpTLUIV\r\nZHRUflZ5UAhnAVs0CyhTZgspTkUIfQVdNWA'),
                 ('core.rewrite_urls', '1'),
                 ('core.setup_initial', '1'),
-                ('core.task_completed_add_ticketfield', '" . time() . "'),
-                ('core.twitter_last_cleanup', '" . time() . "'),
+                ('core.task_completed_add_ticketfield', '".time()."'),
+                ('core.twitter_last_cleanup', '".time()."'),
                 ('core.use_agent_team', '1'),
                 ('core_tickets.enable_like_search_auto', '1'),
-                ('user.kb_subscriptions_last', '" . time() . "');
+                ('user.kb_subscriptions_last', '".time()."');
         "
         );
 
@@ -425,16 +425,18 @@ class ApiDb extends AbstractDbSet
             INSERT INTO `label_defs`
                 (`label_type`, `label`, `color`, `total`)
             VALUES
-                ('feedback', 'foo', 'red', 0),
-                ('feedback', 'bar', 'white', 0),
-                ('feedback', 'foobar', 'red', 0),
-                ('feedback', 'barfoo', 'white', 0),
-                ('organization', 'organization label #1', 'red', 42),
-                ('person', 'person label #1', 'white', 1),
-                ('person', 'person label #2', 'red', 3),
-                ('ticket', 'ticket label #1', 'white', 1),
-                ('ticket', 'ticket label #2', 'red', 3),
-                ('ticket', 'ticket label #3', 'green', 13)
+                ('feedback', 'First feedback label', 'red', 0),
+                ('feedback', 'Second feedback label', 'white', 0),
+                ('feedback', 'Third feedback label', 'red', 0),
+                ('organization', 'First organization label', 'red', 1),
+                ('organization', 'Second organization label', 'blue', 2),
+                ('organization', 'Third organization label', 'green', 42),
+                ('person', 'First person label', 'white', 1),
+                ('person', 'Second person label', 'red', 3),
+                ('person', 'Third person label', 'yellow', 3),
+                ('ticket', 'First ticket label', 'white', 1),
+                ('ticket', 'Second ticket label', 'red', 3),
+                ('ticket', 'Third ticket label', 'green', 13)
             ;
         "
         );
