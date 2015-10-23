@@ -143,21 +143,31 @@ export const toggleSort = createAction(
   }
 );
 
+export const getDisplayFieldsFromPersonSetting = createAction(
+  'FEEDBACK_GET_DISPLAY_FIELD_FROM_PERSON_SETTING',
+  () => PersonSetting.get('feedback_display_fields').then(value => value.getData()));
+
 export const storeDisplayFieldsToPersonSetting = createAction(
   'FEEDBACK_STORE_DISPLAY_FIELD_TO_PERSON_SETTING',
-  (displayFields) =>
-    PersonSetting.post('feedback_display_fields', displayFields).then(value => value.getData())
+  (displayFields) => (dispatch) =>
+    PersonSetting
+      .post('feedback_display_fields', displayFields)
+      .then(value => {
+        dispatch(getDisplayFieldsFromPersonSetting());
+        return value.getData();
+      })
 );
 
 export const updateDisplayFieldsToPersonSetting = createAction(
   'FEEDBACK_UPDATE_DISPLAY_FIELD_TO_PERSON_SETTING',
-  (displayFields) =>
-    PersonSetting.put('feedback_display_fields', displayFields).then(value => value.getData())
+  (displayFields) => (dispatch) =>
+    PersonSetting
+      .put('feedback_display_fields', displayFields)
+      .then(value => {
+        dispatch(getDisplayFieldsFromPersonSetting());
+        return value.getData();
+      })
 );
-
-export const getDisplayFieldsFromPersonSetting = createAction(
-  'FEEDBACK_GET_DISPLAY_FIELD_FROM_PERSON_SETTING',
-  () => PersonSetting.get('feedback_display_fields').then(value => value.getData()));
 
 export const toggleMassAction = createAction(
   'FEEDBACK_TOGGLE_MASS_ACTION'

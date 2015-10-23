@@ -72,7 +72,6 @@ const FeedbackViewOptions = React.createClass({
       }
       this.setState({ isStored: true });
     }
-    dispatch(getDisplayFieldsFromPersonSetting());
   },
 
   handleClickOutside() {
@@ -84,7 +83,6 @@ const FeedbackViewOptions = React.createClass({
     currentState[field].isShown = isChecked;
     this.setState({ [type]: currentState });
     this.setState({ isChanged: true });
-    console.log('Changed state', this.state);
   },
 
   render() {
