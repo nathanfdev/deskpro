@@ -9,7 +9,8 @@ import { Language } from './Fields/Language';
 import { Timezone } from './Fields/Timezone';
 import { Password } from './Fields/Password';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
-import * as AppActions from '../../../../../Actions/AppActions';
+import * as AppActions from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/AppActions';
+import * as ProfilesActions from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/profilesActions';
 
 export class ProfileForm extends React.Component {
 
@@ -104,10 +105,15 @@ export class ProfileForm extends React.Component {
 
   submitForm = (event) => {
     event.preventDefault();
+    const { dispatch } = this.props;
+
     console.log(this.state);
 
     DpApi.sendPut('DP_API/me/profile', this.state)
-      .success(() => this.props.dispatch(AppActions.closePreferences()));
+      .success(() => {
+        dispatch(AppActions.closePreferences());
+        dispatch(ProfilesActions.loadMy());
+      });
   };
 
   renderNameField() {
