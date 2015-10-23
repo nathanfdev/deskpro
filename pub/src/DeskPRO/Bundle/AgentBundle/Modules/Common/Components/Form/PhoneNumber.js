@@ -7,8 +7,7 @@ export class PhoneNumber extends React.Component {
   static propTypes = {
     number: PropTypes.string,
     extension: PropTypes.string,
-    onChangeNumber: PropTypes.func.isRequired,
-    onChangeExtension: PropTypes.func.isRequired
+    onChange: PropTypes.func.isRequired
   };
 
   componentDidMount() {
@@ -24,8 +23,7 @@ export class PhoneNumber extends React.Component {
 
     $input.intlTelInput('utilsLoaded');
     $input.bind('change keyup', () => {
-      this.props.onChangeNumber($input.intlTelInput('getNumber'));
-      this.props.onChangeExtension($input.intlTelInput('getExtension'));
+      this.props.onChange($input.intlTelInput('getNumber'), $input.intlTelInput('getExtension'));
     });
 
 

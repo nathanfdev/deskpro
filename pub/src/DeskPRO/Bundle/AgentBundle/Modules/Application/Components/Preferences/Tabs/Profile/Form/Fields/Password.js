@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 export class Password extends React.Component {
 
   static propTypes = {
-    value: PropTypes.string,
+    value: PropTypes.object,
     onChange: PropTypes.func.isRequired
   };
 

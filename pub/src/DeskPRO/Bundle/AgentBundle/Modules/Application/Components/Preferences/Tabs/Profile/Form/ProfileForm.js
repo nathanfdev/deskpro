@@ -72,20 +72,11 @@ export class ProfileForm extends React.Component {
     });
   };
 
-  onChangePhoneNumber = (value) => {
+  onChangePhone = (number, extension) => {
     this.setState({
       phone: {
-        number: value,
-        extension: this.state.phone.extension
-      }
-    });
-  };
-
-  onChangePhoneExtension = (value) => {
-    this.setState({
-      phone: {
-        number: this.state.phone.number,
-        extension: value
+        number: number,
+        extension: extension
       }
     });
   };
@@ -163,10 +154,8 @@ export class ProfileForm extends React.Component {
   renderPhoneField() {
     return (
       <FieldWrapper label="Phone #">
-        <Phone number={this.state.phone.number}
-               extension={this.state.phone.extension}
-               onChangeNumber={this.onChangePhoneNumber}
-               onChangeExtension={this.onChangePhoneExtension} />
+        <Phone value={this.state.phone}
+               onChange={this.onChangePhone} />
       </FieldWrapper>
     );
   }
