@@ -5,6 +5,7 @@ import { loadPeople } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/
 import { loadEmails } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/emailsActions';
 import { loadFeedbackCommentsCounter } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCommentsActions';
 import { loadFeedbackStatuses } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackStatusesActions';
+import { loadFeedbackCategories } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';
 import { sortingDataSelector } from '../Selectors/list';
 
 /**
@@ -41,6 +42,11 @@ export const getStatuses = createAction(
     ids => dispatch => dispatch(loadFeedbackStatuses(recordStoresId, ids))
 );
 
+export const getCategories = createAction(
+  'FEEDBACK_GET_CATEGORIES',
+    ids => dispatch => dispatch(loadFeedbackCategories(recordStoresId, ids))
+);
+
 export const loadFeedbackList = createAction(
   'FEEDBACK_LIST',
   (overwriteParams = {}) => (dispatch, getState)=> {
@@ -63,6 +69,7 @@ export const loadFeedbackList = createAction(
       dispatch(getAuthors(feedback));
       dispatch(getCommentsCounter(ids));
       dispatch(getStatuses(ids));
+      dispatch(getCategories(ids));
       return feedback;
     });
   }

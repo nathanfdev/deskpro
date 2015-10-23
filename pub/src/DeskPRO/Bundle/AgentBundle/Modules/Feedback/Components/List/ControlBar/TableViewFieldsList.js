@@ -34,7 +34,6 @@ export class TableViewFieldsList extends Component {
         <ViewField value="num_ratings" label="Votes" isShown={fields.num_ratings.isShown} changeState={changeState}/>
         <ViewField value="num_comments" label="Comments" isShown={fields.num_comments.isShown}
                    changeState={changeState}/>
-        <ViewField value="validating" label="Validating" isShown={fields.validating.isShown} changeState={changeState}/>
       </div>
     );
   }

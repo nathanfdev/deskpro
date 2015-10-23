@@ -14,14 +14,8 @@ import { storeDisplayFieldsToPersonSetting, updateDisplayFieldsToPersonSetting, 
 
 const defaultCardFields = {
   id: { isShown: true },
-  hidden_status: { isShown: true },
-  status_category: { isShown: true },
   custom_category: { isShown: true },
-  type: { isShown: true },
-  date_created: { isShown: true },
-  total_rating: { isShown: true },
-  num_ratings: { isShown: true },
-  num_comments: { isShown: true }
+  date_created: { isShown: true }
 };
 
 const defaultTableFields = {
@@ -37,8 +31,7 @@ const defaultTableFields = {
   author_name: { isShown: true },
   num_comments: { isShown: true },
   date_created: { isShown: true },
-  total_rating: { isShown: true },
-  validating: { isShown: true }
+  total_rating: { isShown: true }
 };
 
 const FeedbackViewOptions = React.createClass({

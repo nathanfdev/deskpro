@@ -19,6 +19,7 @@ export class FeedbackCard extends Component {
     type: PropTypes.object.isRequired,
     feedbackLabels: PropTypes.object.isRequired,
     feedbackStatus: PropTypes.object.isRequired,
+    feedbackCategory: PropTypes.object.isRequired,
     feedbackComments: PropTypes.object.isRequired
   };
 
@@ -60,6 +61,15 @@ export class FeedbackCard extends Component {
     );
   }
 
+  renderCategory() {
+    const { feedbackCategory } = this.props;
+    if (feedbackCategory) {
+      return (
+        <CardLineItem><CardDisc/>{ feedbackCategory.get('input') }</CardLineItem>
+      );
+    }
+  }
+
   renderOptionalFields() {
     const { feedback, viewFields } = this.props;
     const optionalFields = (viewFields && viewFields.card) ? viewFields.card : defaultCardFields;
@@ -69,6 +79,9 @@ export class FeedbackCard extends Component {
     }
     if (optionalFields.date_created.isShown) {
       output = output.concat(this.renderDate(feedback.date_created));
+    }
+    if (optionalFields.custom_category.isShown) {
+      output = output.concat(this.renderCategory());
     }
     return (
       <CardLine>
