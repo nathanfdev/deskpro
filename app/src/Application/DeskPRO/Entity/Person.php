@@ -2129,26 +2129,38 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     /**
      * Sets the primary email address on the account.
      *
-     * @param $email_address
+     * @param string $email_address
+     * @param bool   $validated
      *
      * @return PersonEmail
      */
     public function setEmail($email_address, $validated = false)
     {
-        $email          = new PersonEmail();
-        $email['email'] = $email_address;
-
-        if ($validated) {
-            $email['is_validated'] = true;
+        $email = null;
+        foreach ($this->emails as $existing_email) {
+            if ($existing_email->getEmail() === $email_address) {
+                $email = $existing_email;
+            }
         }
 
-        $this->addEmailAddress($email);
+        if (!$email) {
+            $email = new PersonEmail();
+            $email->setEmail($email_address);
+
+            $this->addEmailAddress($email);
+        }
+        if ($validated) {
+            $email->setIsValidated(true);
+        }
 
         $this->setModelField('primary_email', $email);
 
         return $email;
     }
 
+    /**
+     * @return null|string
+     */
     public function getEmail()
     {
         $email = $this->getPrimaryEmail();

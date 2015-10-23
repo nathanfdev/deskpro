@@ -55,7 +55,9 @@ class PersonProfileType extends AbstractType
             ->add('display_name', 'text', [
                 'property_path' => 'override_display_name',
             ])
-//            ->add('primary_email', 'email')
+            ->add('primary_email', 'email', [
+                'property_path' => 'email',
+            ])
 //            ->add('phone_number', 'text')
             ->add('language_id', 'entity', [
                 'class'         => 'DeskPRO:Language',
