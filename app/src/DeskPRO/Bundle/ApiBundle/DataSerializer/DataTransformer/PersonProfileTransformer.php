@@ -53,13 +53,14 @@ class PersonProfileTransformer extends AbstractDataSerializerTransformer
         $data = $transformation_request->getDataToBeTransformed();
 
         return [
-            'id'                    => $data->getId(),
-            'name'                  => $data->getName(),
-            'override_display_name' => $data->getOverrideDisplayName(),
-            'emails'                => $data->getEmails(),
-            'phone_number'          => $data->getPhoneNumber(),
-            'language_id'           => $data->getLanguageId(),
-            'timezone'              => $data->getTimezone(),
+            'id'            => $data->getId(),
+            'name'          => $data->getName(),
+            'display_name'  => $data->getOverrideDisplayName(),
+            'primary_email' => $data->getPrimaryEmail(),
+            'emails'        => $data->getEmails(),
+            'phone_number'  => $data->getPhoneNumber(),
+            'language_id'   => $data->getLanguageId(),
+            'timezone'      => $data->getTimezone(),
         ];
     }
 }

@@ -52,9 +52,9 @@ class PersonProfileType extends AbstractType
     {
         $builder
             ->add('name', 'text')
-            ->add('override_display_name', 'text')
-            ->add('email', 'email')
-            ->add('primary_phone_number', 'text')
+            ->add('display_name', 'text')
+            ->add('primary_email', 'email')
+            ->add('phone_number', 'text')
             ->add('language_id', 'text')
             ->add('timezone', 'text')
             ->add('password', 'repeated', [

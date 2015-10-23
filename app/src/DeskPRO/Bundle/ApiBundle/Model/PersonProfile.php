@@ -77,6 +77,16 @@ class PersonProfile
     }
 
     /**
+     * @return null|string
+     */
+    public function getPrimaryEmail()
+    {
+        $email = $this->person->getPrimaryEmail();
+
+        return $email ? $email->getEmail() : null;
+    }
+
+    /**
      * @return array
      */
     public function getEmails()
