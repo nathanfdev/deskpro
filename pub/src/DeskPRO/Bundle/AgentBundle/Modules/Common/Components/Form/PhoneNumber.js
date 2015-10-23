@@ -12,6 +12,7 @@ export class PhoneNumber extends React.Component {
 
   componentDidMount() {
     const $input = jQuery(this.refs.phone);
+    const { number, extension } = this.props;
 
     $input.intlTelInput({
       utilsScript: `${DP_BUILD_PATH}/phonenumber_utils.js`,
@@ -26,9 +27,12 @@ export class PhoneNumber extends React.Component {
       this.props.onChange($input.intlTelInput('getNumber'), $input.intlTelInput('getExtension'));
     });
 
+    let displayNumber = number;
+    if (extension) {
+      displayNumber += ' ext. ' + extension;
+    }
 
-    $input.intlTelInput('setNumber', this.props.number || '');
-    $input.intlTelInput('setExtension', this.props.extension || '');
+    $input.intlTelInput('setNumber', displayNumber || '');
   }
 
   render() {

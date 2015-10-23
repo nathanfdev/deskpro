@@ -59,8 +59,9 @@ class PhoneNumberType extends AbstractType
                 ],
             ])
             ->add('extension', 'hidden', [
-                'required' => false,
-                'label'    => false,
+                'required'      => false,
+                'label'         => false,
+                'property_path' => 'ext',
             ])
         ;
     }
