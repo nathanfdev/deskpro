@@ -4,7 +4,7 @@ import Immutable from 'immutable';
 import { createStoreSelectors, createRequestSelectorsBuilder } from 'Ampliflux/common/record-store/selectors';
 
 function profileStateSel(state) {
-  return state.RecordStores.CRM.profile;
+  return state.RecordStores.CRM.profiles;
 }
 
 export const profileStateSelector = createStoreSelectors(profileStateSel);

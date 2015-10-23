@@ -3,12 +3,12 @@ import * as recordStoreActions from 'Ampliflux/common/record-store/actions';
 import { createRecordsRequest } from 'Ampliflux/common/record-store/actions';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 
-export const releaseProfile = createAction('RELEASE_PROFILE', recordStoreActions.releaseRecords());
-export const releaseProfileRequest = createAction('RELEASE_PROFILE_REQUEST', recordStoreActions.releaseRequest());
-export const setProfileRequest = createAction('SET_PROFILE', recordStoreActions.setRequestRecords());
+export const releaseProfile = createAction('RELEASE_PROFILES', recordStoreActions.releaseRecords());
+export const releaseProfileRequest = createAction('RELEASE_PROFILES_REQUEST', recordStoreActions.releaseRequest());
+export const setProfileRequest = createAction('SET_PROFILES', recordStoreActions.setRequestRecords());
 
 export const loadMy = createAction(
-  'LOAD_PROFILE',
+  'LOAD_PROFILES',
   createRecordsRequest(
     ['RecordStores', 'CRM', 'profiles'],
     'my',

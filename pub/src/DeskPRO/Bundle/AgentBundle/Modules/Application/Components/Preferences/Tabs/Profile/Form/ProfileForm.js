@@ -14,20 +14,22 @@ export class ProfileForm extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     languages: PropTypes.object.isRequired,
-    timezones: PropTypes.object.isRequired
+    timezones: PropTypes.object.isRequired,
+    profile: PropTypes.object.isRequired
   };
 
   constructor(props) {
     super(props);
+    const profile = props.profile;
 
     this.state = {
-      name: null,
-      overrideDefaultName: false,
-      emails: [],
-      primaryEmail: null,
-      phone: null,
-      language: null,
-      timezone: 'UTC',
+      name: profile.get('name'),
+      overrideDefaultName: profile.get('overrideDefaultName'),
+      emails: profile.get('emails') || [],
+      primaryEmail: profile.get('primary_email'),
+      phone: profile.get('phone_number'),
+      language: profile.get('language_id'),
+      timezone: profile.get('timezone') || 'UTC',
       password: null,
       confirmPassword: null
     };
