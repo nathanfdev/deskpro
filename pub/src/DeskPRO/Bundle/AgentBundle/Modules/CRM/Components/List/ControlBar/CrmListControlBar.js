@@ -1,20 +1,18 @@
 import React from 'react';
-import { ControlBar, ControlButtonsRow } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameMenu';
 import { OrderByContainer } from './OrderByContainer';
 import { ViewSwitcherContainer } from './ViewSwitcherContainer';
 
 export class CrmListControlBar extends React.Component {
   render() {
     return (
-      <ControlBar>
-        <ControlButtonsRow>
+      <ListFrameMenu>
           <OrderByContainer />
           <li>
             <hr/>
           </li>
           <ViewSwitcherContainer />
-        </ControlButtonsRow>
-      </ControlBar>
+      </ListFrameMenu>
     );
   }
 }

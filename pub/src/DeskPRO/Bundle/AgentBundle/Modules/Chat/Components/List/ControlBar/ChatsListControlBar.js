@@ -1,5 +1,5 @@
 import React from 'react';
-import { ControlBar, ControlButtonsRow } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameMenu';
 import { OrderByContainer } from './OrderByContainer';
 import { ViewSwitcherContainer } from './ViewSwitcherContainer';
 import { OrderByDropdownContainer } from './OrderByDropdownContainer';
@@ -12,42 +12,9 @@ export class ChatsListControlBar extends React.Component {
     this.state = {
       orderByDropdownIsExpanded: false,
       viewModeDropdownIsExpanded: false,
-      dropdownOffset: {left: 0, top: 0}
-    }
+      dropdownOffset: { left: 0, top: 0 }
+    };
   }
-
-  render() {
-    return (
-      <ControlBar>
-        <ControlButtonsRow>
-          <OrderByContainer toggleDropdown={this.toggleOrderByDropdown} />
-          <li>
-            <hr/>
-          </li>
-          <ViewSwitcherContainer toggleDropdown={this.toggleViewModeDropdown} />
-        </ControlButtonsRow>
-        {this.renderOrderByDropdown()}
-        {this.renderViewModeDropdown()}
-      </ControlBar>
-    );
-  }
-
-  renderOrderByDropdown() {
-    if (this.state.orderByDropdownIsExpanded) {
-      return (
-        <OrderByDropdownContainer offset={this.state.dropdownOffset}/>
-      );
-    }
-  }
-
-  renderViewModeDropdown() {
-    if (this.state.viewModeDropdownIsExpanded) {
-      return (
-        <ViewSwitcherDropdownContainer offset={this.state.dropdownOffset}/>
-      );
-    }
-  }
-
 
   toggleOrderByDropdown = (offset) => {
     this.setState({
@@ -66,4 +33,35 @@ export class ChatsListControlBar extends React.Component {
       dropdownOffset: offset
     });
   };
+
+  renderOrderByDropdown() {
+    if (this.state.orderByDropdownIsExpanded) {
+      return (
+        <OrderByDropdownContainer offset={this.state.dropdownOffset}/>
+      );
+    }
+  }
+
+  renderViewModeDropdown() {
+    if (this.state.viewModeDropdownIsExpanded) {
+      return (
+        <ViewSwitcherDropdownContainer offset={this.state.dropdownOffset}/>
+      );
+    }
+  }
+
+  render() {
+    return (
+      <ListFrameMenu>
+        <OrderByContainer toggleDropdown={this.toggleOrderByDropdown}/>
+        <li>
+          <hr/>
+        </li>
+        <ViewSwitcherContainer toggleDropdown={this.toggleViewModeDropdown}/>
+        {this.renderOrderByDropdown()}
+        {this.renderViewModeDropdown()}
+      </ListFrameMenu>
+
+    );
+  }
 }

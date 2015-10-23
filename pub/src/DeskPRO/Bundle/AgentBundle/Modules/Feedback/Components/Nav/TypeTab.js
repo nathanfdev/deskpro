@@ -8,7 +8,6 @@ export class TypeTab extends Component {
 
   render() {
     const { types } = this.props;
-    console.log('Type tab: ', types.toJS());
     return (
       <ul>
         {types.map((item, index) =>

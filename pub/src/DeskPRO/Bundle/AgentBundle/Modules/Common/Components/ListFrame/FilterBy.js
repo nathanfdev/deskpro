@@ -1,9 +1,10 @@
 import React, {Component, PropTypes} from 'react';
-import { ControlButton } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar';
+import { ControlButton } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameMenu';
 
 export class FilterBy extends Component {
 
   static propTypes = {
+    children: PropTypes.any,
     currentFilterMode: PropTypes.object.isRequired,
     toggleDropdown: PropTypes.func.isRequired
   };

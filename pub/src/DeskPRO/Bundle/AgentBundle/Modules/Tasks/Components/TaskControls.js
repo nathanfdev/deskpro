@@ -3,9 +3,9 @@ import TaskFilterHover from '../Components/TaskFilterHover';
 import TaskOrderHover from '../Components/TaskOrderHover';
 import ComponentRootWrapper from 'DeskPRO/Component/ComponentRootWrapper';
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
-import ListFrameMenu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameMenu';
+import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameMenu';
 import TaskControlsViewSwitcher from '../Components/TaskControlsViewSwitcher';
-import $ from 'jquery';
+import jQuery from 'jquery';
 
 export default class TaskControls extends React.Component {
   constructor(props) {
@@ -48,7 +48,7 @@ export default class TaskControls extends React.Component {
 
   render() {
     const taskView = this.props.windowProps.get('taskView');
-    const viewSwitcherPosition = $('.task-list-view-switcher');
+    const viewSwitcherPosition = jQuery('.task-list-view-switcher');
 
     const {actionable, toggleAllMassActions, setView} = this.props;
     return (
