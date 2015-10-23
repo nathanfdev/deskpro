@@ -209,7 +209,11 @@ export class ProfileForm extends React.Component {
 
         {this.renderPasswordField()}
 
-        <input type="submit" onClick={this.submitForm} />
+        <div className="bucket">
+          <div className="bucket-column-last">
+            <input type="submit" onClick={this.submitForm} />
+          </div>
+        </div>
       </form>
     );
   }

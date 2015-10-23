@@ -19,7 +19,7 @@ $popup-background: #f5f6f7;
   width: 100%;// Some responsiveness (although content will break for now)
   max-width: 950px;
   min-width: 820px;
-  max-height: 600px;
+  max-height: 700px;
   min-height: 400px;
   display: block;
   background: $popup-background;
@@ -173,7 +173,7 @@ $right-bucket: 200px;
 
 .popup-content {
   @include clearfix;
-  padding: 10px 10px 5px $popup-sidebar + 10px;
+  padding: 10px 10px 10px $popup-sidebar + 10px;
 
   // Remove the padding from top & right side for popup content that needs to span the whole panel
   // See notification settings for an example (the right side sidebar needs to be stuck to the right and top - and padding was messing with that)
