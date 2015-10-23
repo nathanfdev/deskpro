@@ -102,20 +102,11 @@ export class ProfileForm extends React.Component {
     });
   };
 
-  onChangePassword = (value) => {
+  onChangePassword = (first, second) => {
     this.setState({
       password: {
-        first: value,
-        second: this.state.password.second
-      }
-    });
-  };
-
-  onChangeConfirmPassword = (value) => {
-    this.setState({
-      password: {
-        first: this.state.password.first,
-        second: value
+        first: first,
+        second: second
       }
     });
   };
@@ -211,10 +202,8 @@ export class ProfileForm extends React.Component {
     return (
       <FieldWrapper label="Password">
         <Password
-          value={this.state.password.first}
-          confirmValue={this.state.password.second}
-          onChangeValue={this.onChangePassword}
-          onChangeConfirmValue={this.onChangeConfirmPassword} />
+          value={this.state.password}
+          onChange={this.onChangePassword} />
       </FieldWrapper>
     );
   }

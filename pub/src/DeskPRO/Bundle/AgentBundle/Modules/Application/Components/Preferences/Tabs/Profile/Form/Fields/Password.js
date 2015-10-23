@@ -4,9 +4,7 @@ export class Password extends React.Component {
 
   static propTypes = {
     value: PropTypes.string,
-    confirmValue: PropTypes.string,
-    onChangeValue: PropTypes.func.isRequired,
-    onChangeConfirmValue: PropTypes.func.isRequired
+    onChange: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -17,11 +15,11 @@ export class Password extends React.Component {
   }
 
   onChangeValue = (event) => {
-    this.props.onChangeValue(event.target.value);
+    this.props.onChange(event.target.value, this.props.value.second);
   };
 
   onChangeConfirmValue = (event) => {
-    this.props.onChangeConfirmValue(event.target.value);
+    this.props.onChange(this.props.value.first, event.target.value);
   };
 
   open = () => {
@@ -37,17 +35,17 @@ export class Password extends React.Component {
   }
 
   renderFields() {
-    const { value, confirmValue } = this.props;
+    const { value } = this.props;
 
     return (
       <div>
           <input type="password"
                  placeholder="Password"
-                 value={value}
+                 value={value.first}
                  onChange={this.onChangeValue} />
           <input type="password"
                  placeholder="Confirm password"
-                 value={confirmValue}
+                 value={value.second}
                  onChange={this.onChangeConfirmValue} />
       </div>
     );
