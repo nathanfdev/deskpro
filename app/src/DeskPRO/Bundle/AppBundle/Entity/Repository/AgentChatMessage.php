@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat as AgentChatEntity;
@@ -42,7 +43,7 @@ class AgentChatMessage extends EntityRepository
     public function searchString(AgentChatEntity $chat, $searchString)
     {
         $qb = $this->createQueryBuilder('acm');
-        $qb->where('acm.agent_chat_id = :agent_chat_id')
+        $qb->where('acm.chat = :agent_chat_id')
             ->setParameter('agent_chat_id', $chat->getId());
         if ($searchString) {
             $qb->andWhere('acm.message LIKE :message')
