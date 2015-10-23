@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import classNames from 'classnames';
-import { Scrollable } from '../Scrollable';
 import jQuery from 'jquery';
 
 export class TableView extends Component {
@@ -12,24 +11,11 @@ export class TableView extends Component {
   render() {
     return (
       <div className="dpmw--items-table-list">
-        <Scrollable
-          vertical
-          horizontal
-          style={{height: this.getHeight() + 'px'}}
-          contentStyle={{display: 'inline-block'}}
-        >
-          <table>
-            {this.props.children}
-          </table>
-        </Scrollable>
+        <table>
+          {this.props.children}
+        </table>
       </div>
     );
-  }
-
-  // Scrollable area height equal to the window height reduced
-  // by height of the list control bar and header top bar
-  getHeight() {
-    return jQuery(window).height() - 93;
   }
 }
 

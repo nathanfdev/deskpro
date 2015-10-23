@@ -61,21 +61,9 @@ export class NavFrame extends React.Component {
                  onMouseEnter={this.onMouseEnter}
                  onMouseLeave={this.onMouseLeave}>
 
-          <div className={className.join(' ')} id="sidebar-wrapper">
-            <a className="collapse-button" href="#">
-              <i className="fa fa-angle-right"/>
-            </a>
-            <span className="collapse-controls">
-              <span className="disc"/>
-              <span className="disc"/>
-              <i className="fa fa-caret-right"/>
-              <span className="disc"/>
-              <span className="disc"/>
-            </span>
-            <aside className="sidebar has-tabs" id="sidebar">
-              <Scrollable vertical>
+          <div className={className.join(' ')}>
+            <aside className="sidebar has-tabs">
                 {inner}
-              </Scrollable>
             </aside>
           </div>
         </section>
@@ -105,6 +93,22 @@ export class NavFrameHeader extends React.Component {
           </div>
         </div>
         <span className="dpw-sidebar-main-title-footer"></span>
+      </div>
+    );
+  }
+}
+
+export class NavFrameBody extends React.Component {
+  static propTypes = {
+    children: PropTypes.any.isRequired
+  };
+
+  render() {
+    return (
+      <div className="dp-nav-frame-body">
+        <Scrollable vertical>
+          {this.props.children}
+        </Scrollable>
       </div>
     );
   }

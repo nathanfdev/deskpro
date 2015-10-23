@@ -1,9 +1,14 @@
+$control-bar-height: 50px;
+
 // Top control bar (to be renamed)
 .control-bar {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   border-bottom: 1px solid #dbddde;
   //padding-left: 21px;
-  height: 50px;
+  height: $control-bar-height;
   background: #fff;
 
   z-index: 100;

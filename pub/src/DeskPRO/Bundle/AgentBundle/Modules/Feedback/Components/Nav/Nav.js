@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { NavFrame, NavFrameHeader, TabsPaneStatefulContainer, Tab, LabelsDictionary }
+import { NavFrame, NavFrameHeader, NavFrameBody, TabsPaneStatefulContainer, Tab, LabelsDictionary }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { Pending } from './Pending';
 import { StatusTab } from './StatusTab';
@@ -29,28 +29,29 @@ export class Nav extends Component {
         <NavFrameHeader icon="icon-dp-streamline-hand-like-2">
           <FormattedMessage id="feedback.nav.title"/>
         </NavFrameHeader>
+        <NavFrameBody>
+          <Pending
+            toValidateCount={toValidateCount}
+            commentsToReviewCount={commentsToReviewCount}
+            commentsView={commentsView.bind(this)}
+          />
 
-        <Pending
-          toValidateCount={toValidateCount}
-          commentsToReviewCount={commentsToReviewCount}
-          commentsView={commentsView.bind(this)}
-        />
+          <TabsPaneStatefulContainer id="tab">
+            <Tab title={this.props.intl.formatMessage({id: 'feedback.nav.tabs.status'})}>
+              <StatusTab statuses={statuses} />
+            </Tab>
 
-        <TabsPaneStatefulContainer id="tab">
-          <Tab title={this.props.intl.formatMessage({id: 'feedback.nav.tabs.status'})}>
-            <StatusTab statuses={statuses} />
-          </Tab>
-
-          <Tab title="Labels">
-            <LabelsDictionary labels={labels} />
-          </Tab>
-          <Tab title="Type">
-            <TypeTab types={types} />
-          </Tab>
-          <Tab title="Category">
-            <CategoryTab customCategories={customCategories} />
-          </Tab>
-        </TabsPaneStatefulContainer>
+            <Tab title="Labels">
+              <LabelsDictionary labels={labels} />
+            </Tab>
+            <Tab title="Type">
+              <TypeTab types={types} />
+            </Tab>
+            <Tab title="Category">
+              <CategoryTab customCategories={customCategories} />
+            </Tab>
+          </TabsPaneStatefulContainer>
+        </NavFrameBody>
       </NavFrame>
     );
   }
