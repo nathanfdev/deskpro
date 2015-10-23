@@ -31,8 +31,10 @@ export class ProfileForm extends React.Component {
       phone_number: profile.get('phone_number'),
       language_id: profile.get('language_id'),
       timezone: profile.get('timezone') || 'UTC',
-      password: null,
-      confirm_password: null
+      password: {
+        first: null,
+        second: null
+      }
     };
   }
 
@@ -86,13 +88,19 @@ export class ProfileForm extends React.Component {
 
   onChangePassword = (value) => {
     this.setState({
-      password: value
+      password: {
+        first: value,
+        second: this.state.password.second
+      }
     });
   };
 
   onChangeConfirmPassword = (value) => {
     this.setState({
-      confirm_password: value
+      password: {
+        first: this.state.password.first,
+        second: value
+      }
     });
   };
 
@@ -183,8 +191,8 @@ export class ProfileForm extends React.Component {
     return (
       <FieldWrapper label="Password">
         <Password
-          value={this.state.password}
-          confirmValue={this.state.confirm_password}
+          value={this.state.password.first}
+          confirmValue={this.state.password.second}
           onChangeValue={this.onChangePassword}
           onChangeConfirmValue={this.onChangeConfirmPassword} />
       </FieldWrapper>

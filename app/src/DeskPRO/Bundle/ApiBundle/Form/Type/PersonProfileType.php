@@ -64,13 +64,11 @@ class PersonProfileType extends AbstractType
                 'property_path' => 'language',
             ])
             ->add('timezone', 'text')
-//            ->add('password', 'repeated', [
-//                'type'            => 'password',
-//                'invalid_message' => 'The password fields must match.',
-//                'first_name'      => 'password',
-//                'second_name'     => 'confirm_password',
-//                'required'        => false,
-//            ])
+            ->add('password', 'repeated', [
+                'type'            => 'password',
+                'invalid_message' => 'The password fields must match.',
+                'required'        => false,
+            ])
         ;
     }
 

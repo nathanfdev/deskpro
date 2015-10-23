@@ -109,7 +109,6 @@ class MeController extends BaseController
         $form->submit($request->request->all());
 
         if (!$form->isValid()) {
-            $err = $form->getErrorsAsString();
             throw new InvalidFormException($form);
         }
 
