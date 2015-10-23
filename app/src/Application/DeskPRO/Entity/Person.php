@@ -1928,7 +1928,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     /**
      * returns the number that this person marked as his/her primary number.
      *
-     * @return string
+     * @return PhoneNumber
      */
     public function getPrimaryPhoneNumber()
     {
