@@ -83,15 +83,22 @@ class ArticlesController extends AbstractController
             return new Response(''); // nothing to display here
         }
 
-        $breadcrumbs = $this->getBreadcrumbGenerator()->buildKb();
+        // the cat list might want details on the total # of articles, and we need a pager because it
+        // takes into account permissions
+        $category_pager           = $this->getArticlesDataService()->getArticlesPager($category, 1, 1, $person);
+        $category_children_pagers = [];
+        foreach ($category_children as $child_cat) {
+            $category_children_pagers[$child_cat->getId()] = $this->getArticlesDataService()->getArticlesPager($child_cat, 1, 1, $person);
+        }
 
         return $this->renderThemeView(
             sprintf('Theme:Articles:CategoryList/%s.html.twig', $options['style']),
             array(
-                'category'          => $category,
-                'category_children' => $category_children,
-                'articles_options'  => $options['articles_options'],
-                'breadcrumbs'       => $breadcrumbs,
+                'category'                 => $category,
+                'category_pager'           => $category_pager,
+                'category_children'        => $category_children,
+                'category_children_pagers' => $category_children_pagers,
+                'articles_options'         => $options['articles_options'],
             )
         );
     }

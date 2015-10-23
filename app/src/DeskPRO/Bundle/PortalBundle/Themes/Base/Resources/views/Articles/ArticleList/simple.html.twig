@@ -4,7 +4,10 @@
     <ul class="content-list">
       {% for article in pager %}
         <li>
-          <a href="{{ portal_path(article) }}">{{ article.realTitle }}</a>
+          <a href="{{ portal_path(article) }}">
+            <i class="fa fa-file-text-o"></i>
+            {{ article.realTitle }}
+          </a>
         </li>
       {% endfor %}
     </ul>
