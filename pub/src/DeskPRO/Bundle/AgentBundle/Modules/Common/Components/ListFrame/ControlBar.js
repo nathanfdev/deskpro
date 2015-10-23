@@ -26,7 +26,6 @@ export class ControlButton extends Component {
       </a>
     );
   }
-
 }
 
 export class MassActionCheckbox extends Component {
@@ -62,5 +61,4 @@ export class MassActionCheckbox extends Component {
       </div>
     );
   }
-
 }

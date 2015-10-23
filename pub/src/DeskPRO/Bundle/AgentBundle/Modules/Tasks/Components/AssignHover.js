@@ -1,5 +1,8 @@
 import React from 'react';
-import $ from 'jquery';
+import jQuery from 'jquery';
+import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
+import { AgentTeamAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/AgentTeamAvatar';
+import { DepartmentAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/DepartmentAvatar';
 
 const AssignHover = React.createClass({
 
@@ -26,6 +29,14 @@ const AssignHover = React.createClass({
     };
   },
 
+  componentWillReceiveProps: function(newProps) {
+    this.setState({
+      agents: newProps.agents,
+      teams: newProps.teams,
+      departments: newProps.departments,
+    });
+  },
+
   handleClickOutside: function() {
     this.props.closeWindow();
   },
@@ -46,20 +57,20 @@ const AssignHover = React.createClass({
   },
 
   quickFilter: function(event) {
-    const value = $(event.target).val().toLowerCase();
+    const value = jQuery(event.target).val().toLowerCase();
     let agents = this.props.agents;
     let teams = this.props.teams;
     let departments = this.props.departments;
 
     if (value) {
       agents = agents.filter((agent) => {
-        return agent.name.toLowerCase().indexOf(value) > -1;
+        return agent.get('name').toLowerCase().indexOf(value) > -1;
       });
       teams = teams.filter((team) => {
-        return team.name.toLowerCase().indexOf(value) > -1;
+        return team.get('name').toLowerCase().indexOf(value) > -1;
       });
       departments = departments.filter((department) => {
-        return department.title.toLowerCase().indexOf(value) > -1;
+        return department.get('title').toLowerCase().indexOf(value) > -1;
       });
     }
 
@@ -116,14 +127,13 @@ const AssignHover = React.createClass({
                 <div className="dpw--popup-item-collection">
                   <ul>
                     {this.state.agents ? this.state.agents.map((agent) => {
-                      const avatarImage = agent.picture_blob ? {backgroundImage: 'url(' + agent.picture_blob.download_url + ')'} : {};
-                      const lineClass = this.props.taskData.agents && this.props.taskData.agents[0] === agent.id ? 'dpw--popup-item-person selected' : 'dpw--popup-item-person';
-                      return (<li key={agent.id}>
+                      const lineClass = this.props.taskData.has && this.props.taskData.has('agents') && this.props.taskData.get('agents').first() === agent.get('id') ? 'dpw--popup-item-person selected' : 'dpw--popup-item-person';
+                      return (<li key={agent.get('id')}>
                                 <div className={lineClass} onClick={this.handleAssignment.bind(this, {
                                   id: taskId,
-                                  value: 'agents-' + agent.id
+                                  value: 'agents-' + agent.get('id')
                                 })}>
-                                  <span className="dpw--avatar-face" style={avatarImage}/> <span className="dpw-popup-item-collection-name">{agent.name}</span>
+                                  <span style={{position: 'relative'}}><PersonAvatar person={agent} size="16" /></span> <span className="dpw-popup-item-collection-name">{agent.get('name')}</span>
                                 </div>
                               </li>);
                     }) : ''}
@@ -136,14 +146,13 @@ const AssignHover = React.createClass({
                 <div className="dpw--popup-item-collection">
                   <ul>
                     {this.state.teams ? this.state.teams.map((team) => {
-                      const avatarImage = team.picture_blob ? {backgroundImage: 'url(' + team.picture_blob.download_url + ')'} : {};
-                      const lineClass = this.props.taskData.teams && this.props.taskData.teams[0] === team.id ? 'dpw--popup-item-person selected' : 'dpw--popup-item-person';
-                      return (<li key={team.id}>
+                      const lineClass = this.props.taskData.has && this.props.taskData.has('teams') && this.props.taskData.get('teams').first() === team.get('id') ? 'dpw--popup-item-person selected' : 'dpw--popup-item-person';
+                      return (<li key={team.get('id')}>
                                 <div className={lineClass} onClick={this.handleAssignment.bind(this, {
                                   id: taskId,
-                                  value: 'teams-' + team.id
+                                  value: 'teams-' + team.get('id')
                                 })}>
-                                  <span className="dpw--avatar-face" style={avatarImage}/> <span className="dpw-popup-item-collection-name">{team.name}</span>
+                                  <span style={{position: 'relative'}}><AgentTeamAvatar agentTeam={team} size="16" /></span> <span className="dpw-popup-item-collection-name">{team.get('name')}</span>
                                 </div>
                               </li>);
                     }) : ''}
@@ -156,14 +165,13 @@ const AssignHover = React.createClass({
                 <div className="dpw--popup-item-collection">
                   <ul>
                     {this.state.departments ? this.state.departments.map((department) => {
-                      const avatarImage = department.picture_blob ? {backgroundImage: 'url(' + department.picture_blob.download_url + ')'} : {};
-                      const lineClass = this.props.taskData.departments && this.props.taskData.departments[0] === department.id ? 'dpw--popup-item-person selected' : 'dpw--popup-item-person';
-                      return (<li key={department.id}>
+                      const lineClass = this.props.taskData.has && this.props.taskData.has('departments') && this.props.taskData.get('departments').first() === department.get('id') ? 'dpw--popup-item-person selected' : 'dpw--popup-item-person';
+                      return (<li key={department.get('id')}>
                                 <div className={lineClass} onClick={this.handleAssignment.bind(this, {
                                   id: taskId,
-                                  value: 'departments-' + department.id
+                                  value: 'departments-' + department.get('id')
                                 })}>
-                                  <span className="dpw--avatar-face" style={avatarImage}/> <span className="dpw-popup-item-collection-name">{department.title}</span>
+                                  <span style={{position: 'relative'}}><DepartmentAvatar department={department} size="16" /></span> <span className="dpw-popup-item-collection-name">{department.get('title')}</span>
                                 </div>
                               </li>);
                     }) : '' }

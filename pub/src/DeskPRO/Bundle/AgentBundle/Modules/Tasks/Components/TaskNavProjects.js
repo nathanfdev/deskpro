@@ -3,7 +3,8 @@ import ProjectCreateHover from '../Components/ProjectCreateHover';
 import TaskNavItemProject from '../Components/TaskNavItemProject';
 import ComponentRootWrapper from 'DeskPRO/Component/ComponentRootWrapper';
 import { connect } from 'react-redux';
-import $ from 'jquery';
+import jQuery from 'jquery';
+import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 
 import Immutable from 'immutable';
 
@@ -51,11 +52,11 @@ export default class TasksNavProjects extends React.Component {
       });
     }
 
-    let target = $(event.target).closest('li.project-list-item');
+    let target = jQuery(event.target).closest('li.project-list-item');
     let modifier = 12;
 
     if (typeof target[0] === 'undefined') {
-      target = $(event.target).closest('.list-sidebar-title');
+      target = jQuery(event.target).closest('.list-sidebar-title');
       modifier = 13;
     }
 
@@ -76,7 +77,7 @@ export default class TasksNavProjects extends React.Component {
   }
 
   createProject(model) {
-    if (typeof model.projectId !== 'undefined') {
+    if (typeof model.projectId !== 'undefined' && model.projectId !== false) {
       this.props.dispatch(TaskActions.editProject({
         projectId: model.projectId,
         title: model.title,
@@ -124,7 +125,7 @@ export default class TasksNavProjects extends React.Component {
     if (typeof agentList !== 'undefined' && agentList !== null) {
       agentList.map((object) => {
         const label = (<span>
-                      {object.get('picture_blob') ? <span className="chat-avatar" style={{backgroundImage: 'url(' + object.get('picture_blob') + ')'}}/> : '' }
+                      <span style={{position: 'relative'}}><PersonAvatar person={object} size="16" /></span>
                       {object.get('name')}
                     </span>
         );

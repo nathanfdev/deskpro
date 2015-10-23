@@ -162,15 +162,15 @@ export class TasksListFrame extends React.Component {
   }
 
   toggleAllMassActions() {
-    const taskFrameList = this.props.taskFrameList ? this.props.taskFrameList.get('taskFrameList', []) : [];
+    const tasks = this.props.tasks ? this.props.tasks : {};
 
-    if (this.state.actionable.length === taskFrameList.length) {
+    if (!tasks || this.state.actionable.length === tasks.size) {
       this.hideMassActionControls();
     } else {
       const actionable = [];
 
-      taskFrameList.map((object) => {
-        actionable.push(object.id);
+      tasks.map((object) => {
+        actionable.push(object.get('id'));
       });
 
       this.setState({
@@ -275,19 +275,13 @@ export class TasksListFrame extends React.Component {
   }
 
   toggleAssignWindow(task, event) {
-    let target = jQuery(event.target).closest('div.top-right-box');
-    let modifier = 12;
-
-    if (typeof target[0] === 'undefined') {
-      target = jQuery(event.target).closest('.list-sidebar-title');
-      modifier = 13;
-    }
+    const target = jQuery(event.target).closest('.dpw--avatar-face');
 
     this.setState({
       showAssignWindow: !this.state.showAssignWindow,
       position: {
-        x: target[0].getBoundingClientRect().right,
-        y: target[0].getBoundingClientRect().top + modifier
+        x: target[0].getBoundingClientRect().right + 20,
+        y: target[0].getBoundingClientRect().top + 12
       },
       taskData: this.state.showAssignWindow ? {} : task
     });
@@ -380,10 +374,6 @@ export class TasksListFrame extends React.Component {
                       toggleAllMassActions={this.toggleAllMassActions.bind(this)}
           />
 
-        { this.state.actionable.length > 0 ?
-          <TaskMassActions hideMassActionControls={this.hideMassActionControls.bind(this)}
-                           projects={this.props.projects}/> : ''
-        }
         <div>
           { this.props.tasks && this.props.tasks.size > 0 ?
             <ListFrameContents>
@@ -408,14 +398,14 @@ export class TasksListFrame extends React.Component {
                                    order={this.state.order}
                                    projectId={projectId}>
                   <KanbanView direction={this.state.direction}
-                            view={this.state.view}
-                            toggleDone={this.toggleDone.bind(this)}
-                            editTask={this.editTask.bind(this)}
-                            updateMassActions={this.updateMassActions.bind(this)}
-                            actionable={this.state.actionable}
-                            toggleAssignWindow={this.toggleAssignWindow.bind(this)}
-                            moveCard={this.moveCard.bind(this)}
-                            source={source} />
+                              view={this.state.view}
+                              toggleDone={this.toggleDone.bind(this)}
+                              editTask={this.editTask.bind(this)}
+                              updateMassActions={this.updateMassActions.bind(this)}
+                              actionable={this.state.actionable}
+                              toggleAssignWindow={this.toggleAssignWindow.bind(this)}
+                              moveCard={this.moveCard.bind(this)}
+                              source={source} />
                 </TaskViewConnector>
               : '' }
 

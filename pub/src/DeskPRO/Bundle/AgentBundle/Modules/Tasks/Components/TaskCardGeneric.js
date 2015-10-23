@@ -1,6 +1,9 @@
 import React from 'react';
 import Moment from 'moment';
 import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
+import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
+import { AgentTeamAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/AgentTeamAvatar';
+import { DepartmentAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/DepartmentAvatar';
 
 export default class TaskCardGeneric extends React.Component {
 
@@ -55,21 +58,25 @@ export default class TaskCardGeneric extends React.Component {
     }
 
     let assignee = null;
+    let assigneeAvatar = null;
 
     if (task.has('agents') && task.get('agents').size > 0) {
       // We assume one assignment for now, though we will need to support more later
       const agentId = task.get('agents').first();
       assignee = agents.get(agentId);
+      assigneeAvatar = (<PersonAvatar person={assignee} size="16" />);
     } else if (task.has('teams') && task.get('teams').size > 0) {
       const teamId = task.get('teams').first();
       assignee = teams.get(teamId);
+      assigneeAvatar = (<AgentTeamAvatar agentTeam={assignee} size="16" />);
     } else if (task.has('departments') && task.get('departments').size > 0) {
       const departmentId = task.get('departments').first();
       assignee = departments.get(departmentId);
+      assigneeAvatar = (<DepartmentAvatar department={assignee} size="16" />);
     }
 
     return (<Card statusBars={false}
-            type="floating">
+                  type="floating">
       <div className="dpw--card-line">
         <div className="dpw--card-line-left card-title">
           <div className={titleClass}>
@@ -77,10 +84,10 @@ export default class TaskCardGeneric extends React.Component {
           </div>
         </div>
 
-        { assignee && assignee.has('picture_blob') && assignee.get('picture_blob') ?
+        { assignee ?
         <div className="dpw--card-line-right">
           <div className="dpwd--card-assigned">
-            <span className="dpw--avatar-face" style={{backgroundImage: 'url(' + assignee.get('picture_blob').get('download_url') + ')'}} />
+            <div className="dpw--avatar-face" style={{position: 'relative'}}>{assigneeAvatar}</div>
           </div>
         </div> : '' }
       </div>
