@@ -52,13 +52,22 @@ class PersonProfileTransformer extends AbstractDataSerializerTransformer
         /** @var PersonProfile $data */
         $data = $transformation_request->getDataToBeTransformed();
 
+        $phone_number     = $data->getPhoneNumber();
+        $phone_serialized = null;
+        if ($phone_number) {
+            $phone_serialized = [
+                'number'    => $phone_number->getNumberFormatted(),
+                'extension' => $phone_number->getExt(),
+            ];
+        }
+
         return [
             'id'            => $data->getId(),
             'name'          => $data->getName(),
             'display_name'  => $data->getOverrideDisplayName(),
             'primary_email' => $data->getPrimaryEmail(),
             'emails'        => $data->getEmails(),
-            'phone_number'  => $data->getPhoneNumber(),
+            'phone'         => $phone_serialized,
             'language_id'   => $data->getLanguageId(),
             'timezone'      => $data->getTimezone(),
         ];

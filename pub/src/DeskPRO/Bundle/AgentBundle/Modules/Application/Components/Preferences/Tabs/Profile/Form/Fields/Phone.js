@@ -4,16 +4,21 @@ import { PhoneNumber } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Component
 export class Phone extends React.Component {
 
   static propTypes = {
-    value: PropTypes.string,
-    onChange: PropTypes.func.isRequired
+    number: PropTypes.string,
+    extension: PropTypes.string,
+    onChangeNumber: PropTypes.func.isRequired,
+    onChangeExtension: PropTypes.func.isRequired
   };
 
   render() {
-    const { value, onChange } = this.props;
+    const { number, extension, onChangeNumber, onChangeExtension } = this.props;
 
     return (
       <div className="bucket-column">
-        <PhoneNumber value={value} onChange={onChange} />
+        <PhoneNumber number={number}
+                     extension={extension}
+                     onChangeNumber={onChangeNumber}
+                     onChangeExtension={onChangeExtension}/>
       </div>
     );
   }

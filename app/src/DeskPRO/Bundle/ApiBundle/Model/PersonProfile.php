@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Model;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PhoneNumber;
 
 /**
  * User profile settings.
@@ -95,13 +96,11 @@ class PersonProfile
     }
 
     /**
-     * @return string
+     * @return PhoneNumber|null
      */
     public function getPhoneNumber()
     {
-        $phone_number = $this->person->getPrimaryPhoneNumber();
-
-        return $phone_number ? $phone_number->getNumberFormatted() : null;
+        return $this->person->getPrimaryPhoneNumber();
     }
 
     /**

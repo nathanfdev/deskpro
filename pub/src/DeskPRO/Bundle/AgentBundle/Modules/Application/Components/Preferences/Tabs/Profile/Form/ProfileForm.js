@@ -29,7 +29,10 @@ export class ProfileForm extends React.Component {
       display_name: profile.get('display_name'),
       emails: profile.get('emails').toArray() || [],
       primary_email: profile.get('primary_email'),
-      phone_number: profile.get('phone_number'),
+      phone: {
+        number: profile.get('phone').get('number'),
+        extension: profile.get('phone').get('extension')
+      },
       language_id: profile.get('language_id'),
       timezone: profile.get('timezone') || 'UTC',
       password: {
@@ -71,7 +74,19 @@ export class ProfileForm extends React.Component {
 
   onChangePhoneNumber = (value) => {
     this.setState({
-      phone_number: value
+      phone: {
+        number: value,
+        extension: this.state.phone.extension
+      }
+    });
+  };
+
+  onChangePhoneExtension = (value) => {
+    this.setState({
+      phone: {
+        number: this.state.phone.number,
+        extension: value
+      }
     });
   };
 
@@ -157,7 +172,10 @@ export class ProfileForm extends React.Component {
   renderPhoneField() {
     return (
       <FieldWrapper label="Phone #">
-        <Phone value={this.state.phone_number} onChange={this.onChangePhoneNumber} />
+        <Phone number={this.state.phone.number}
+               extension={this.state.phone.extension}
+               onChangeNumber={this.onChangePhoneNumber}
+               onChangeExtension={this.onChangePhoneExtension} />
       </FieldWrapper>
     );
   }
