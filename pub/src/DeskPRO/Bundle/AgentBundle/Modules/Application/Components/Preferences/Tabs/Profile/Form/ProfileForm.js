@@ -25,14 +25,14 @@ export class ProfileForm extends React.Component {
 
     this.state = {
       name: profile.get('name'),
-      displayName: profile.get('displayName'),
+      display_name: profile.get('displayName'),
       emails: profile.get('emails') || [],
-      primaryEmail: profile.get('primary_email'),
-      phone: profile.get('phone_number'),
-      language: profile.get('language_id'),
+      primary_email: profile.get('primary_email'),
+      phone_number: profile.get('phone_number'),
+      language_id: profile.get('language_id'),
       timezone: profile.get('timezone') || 'UTC',
       password: null,
-      confirmPassword: null
+      confirm_password: null
     };
   }
 
@@ -44,7 +44,7 @@ export class ProfileForm extends React.Component {
 
   onChangeDisplayName = (value) => {
     this.setState({
-      displayName: value
+      display_name: value
     });
   };
 
@@ -55,26 +55,26 @@ export class ProfileForm extends React.Component {
 
     if (emails.length) {
       this.setState({
-        primaryEmail: emails[0]
+        primary_email: emails[0]
       });
     }
   };
 
   onChangePrimaryEmail = (value) => {
     this.setState({
-      primaryEmail: value
+      primary_email: value
     });
   };
 
-  onChangePhone = (value) => {
+  onChangePhoneNumber = (value) => {
     this.setState({
-      phone: value
+      phone_number: value
     });
   };
 
   onChangeLanguage = (value) => {
     this.setState({
-      language: value
+      language_id: value
     });
   };
 
@@ -92,7 +92,7 @@ export class ProfileForm extends React.Component {
 
   onChangeConfirmPassword = (value) => {
     this.setState({
-      confirmPassword: value
+      confirm_password: value
     });
   };
 
@@ -114,7 +114,7 @@ export class ProfileForm extends React.Component {
 
   renderDisplayNameField() {
     return (
-      <DisplayName value={this.state.displayName}
+      <DisplayName value={this.state.display_name}
                    onChange={this.onChangeDisplayName} />
     );
   }
@@ -135,7 +135,7 @@ export class ProfileForm extends React.Component {
       return (
         <FieldWrapper label="Primary email">
           <PrimaryEmail emails={this.state.emails}
-                        value={this.state.primaryEmail}
+                        value={this.state.primary_email}
                         onChange={this.onChangePrimaryEmail} />
         </FieldWrapper>
       );
@@ -147,7 +147,7 @@ export class ProfileForm extends React.Component {
   renderPhoneField() {
     return (
       <FieldWrapper label="Phone #">
-        <Phone value={this.state.phone} onChange={this.onChangePhone} />
+        <Phone value={this.state.phone_number} onChange={this.onChangePhoneNumber} />
       </FieldWrapper>
     );
   }
@@ -161,7 +161,7 @@ export class ProfileForm extends React.Component {
     return (
       <FieldWrapper label="Language">
         <Language languages={languages}
-                  value={this.state.language}
+                  value={this.state.language_id}
                   onChange={this.onChangeLanguage} />
       </FieldWrapper>
     );
@@ -184,7 +184,7 @@ export class ProfileForm extends React.Component {
       <FieldWrapper label="Password">
         <Password
           value={this.state.password}
-          confirmValue={this.state.confirmPassword}
+          confirmValue={this.state.confirm_password}
           onChangeValue={this.onChangePassword}
           onChangeConfirmValue={this.onChangeConfirmPassword} />
       </FieldWrapper>
