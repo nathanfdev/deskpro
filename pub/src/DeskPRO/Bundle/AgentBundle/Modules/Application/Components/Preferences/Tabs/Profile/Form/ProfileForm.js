@@ -110,10 +110,18 @@ export class ProfileForm extends React.Component {
     console.log(this.state);
 
     DpApi.sendPut('DP_API/me/profile', this.state)
-      .success(() => {
+      .success(response => {
+        const records = {};
+        records[response.data.id] = response.data;
+
+        dispatch(ProfilesActions.releaseProfiles('my'));
+        dispatch(ProfilesActions.setProfilesRequest('my', records, [response.data.id]));
         dispatch(AppActions.closePreferences());
-        dispatch(ProfilesActions.loadMy());
-      });
+      })
+      .catch((data, http) => {
+        console.log(data, http);
+      })
+    ;
   };
 
   renderNameField() {

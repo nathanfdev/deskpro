@@ -5,9 +5,9 @@ import { createEmptyRecordStoreState, buildRecordStoreHandlers } from 'Ampliflux
 export default createReducer(
   createEmptyRecordStoreState(),
   buildRecordStoreHandlers({
-    releaseRecordsAction: profileActions.releaseProfile,
-    releaseRequestAction: profileActions.releaseProfileRequest,
-    setRequestRecordAction: profileActions.setProfileRequest,
+    releaseRecordsAction: profileActions.releaseProfiles,
+    releaseRequestAction: profileActions.releaseProfilesRequest,
+    setRequestRecordAction: profileActions.setProfilesRequest,
     requestRecordsAction: profileActions.loadMy
   })
 );
