@@ -1,5 +1,4 @@
 import { ListFrameContainer } from './frame';
-import { ControlBar, ControlButton, ControlButtonsRow } from './ControlBar';
 import { ViewModeSwitcher } from './ViewModeSwitcher';
 import { OrderBy } from './OrderBy';
 import { OrderSwitcher } from './OrderSwitcher';
@@ -10,7 +9,6 @@ import { Pagination } from './Pagination';
 
 export default {
   ListFrameContainer,
-  ControlBar, ControlButton, ControlButtonsRow,
   ViewModeSwitcher,
   TableView, TableBody, TableHeader, Th, Row, Td, IdContainer, PersonInTable,
   OrderBy, OrderSwitcher,

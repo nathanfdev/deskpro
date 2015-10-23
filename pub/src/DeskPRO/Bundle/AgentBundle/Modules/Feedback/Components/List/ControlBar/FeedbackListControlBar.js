@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import ListFrameMenu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameMenu';
+import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameMenu';
 import { OrderByContainer } from './OrderByContainer';
 import { FilterContainer } from './FilterContainer';
 import { ViewSwitcherContainer } from './ViewSwitcherContainer';
@@ -60,10 +60,6 @@ export class FeedbackListControlBar extends Component {
   toggleOptionsMenu = (event) => {
     if (event) {
       event.preventDefault();
-    }
-    const {dispatch} = this.props;
-    if (!this.state.viewOptionsIsExpanded) {
-      // dispatch();
     }
     this.setState({
       viewOptionsIsExpanded: !this.state.viewOptionsIsExpanded,

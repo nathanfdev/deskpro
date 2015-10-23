@@ -7,26 +7,30 @@ import { updateRoutingState } from '../../../Application/Actions/routingActions'
 
 class BaseList extends Component {
   renderCount(count, active) {
-    if ((count !== 0) && !count) {
-      return;
-    }
-    var classes = classNames('list-counter', {'active': active});
+    if (count >= 0) {
+      const classes = classNames('list-counter', { 'active': active });
 
-    return (
-      <div className="list-counter-bucket">
-        <a className={classes} href="#">{count}</a>
-      </div>
-    );
+      return (
+        <div className="list-counter-bucket">
+          <a className={classes} href="#">{count}</a>
+        </div>
+      );
+    }
   }
 }
 
 export class ListSection extends Component {
+
+  static propTypes = {
+    children: PropTypes.any
+  };
+
   render() {
     return (
       <section className="sidebar-list">
         {this.props.children}
       </section>
-    )
+    );
   }
 }
 
@@ -42,7 +46,7 @@ export class ListItem extends BaseList {
 
   render() {
     const { children, count, active, onClick } = this.props;
-    const classes = classNames('item', {'active': active});
+    const classes = classNames('item', { 'active': active });
 
     let label = this.props.label;
     let nested = children;
@@ -70,7 +74,7 @@ export class ListItem extends BaseList {
   }
 }
 
-@connect(state => ({state: state.Application.routing.get('hash')}))
+@connect(state => ({ state: state.Application.routing.get('hash') }))
 export class ListItemStatefulContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -109,40 +113,12 @@ export class NestedList extends BaseList {
     alwaysExpanded: PropTypes.bool
   };
 
-  // nested list rendering recursion max depth
-  static maxDepth = 10;
-
   constructor(props) {
     super(props);
 
     this.state = {
       expanded: []
     };
-  }
-
-  render() {
-    const depth     = this.props.depth || 1;
-    const className = depth > 1
-      ? 'with-connectors depth-' + (depth - 1)
-      : '';
-
-    return (
-      <ul className={className}>
-        {this.props.items.map(item => this.renderListItem(item, depth))}
-      </ul>
-    );
-  }
-
-  renderListItem({nested, group, count}, depth) {
-    this.ensureValidDepth(depth);
-    const parts = this.getListItemParts(nested, group, depth);
-
-    return (
-      <ListItem key={group} count={count} onClick={this.toggleExpanded(group)}>
-        <div part="label">{parts.label}</div>
-        <div part="nested">{parts.nested}</div>
-      </ListItem>
-    );
   }
 
   getListItemParts(nested, group, depth) {
@@ -166,24 +142,12 @@ export class NestedList extends BaseList {
     return parts;
   }
 
-  renderNested(nested, group, depth) {
-    const hasNested  = nested && nested.length;
-    const isExpanded = this.props.alwaysExpanded || this.state.expanded.indexOf(group) > -1;
-
-    if (!hasNested || !isExpanded) {
-      return;
-    }
-
-    return (
-      <ul className={'with-connectors depth-' + depth}>
-        {nested.map(item => this.renderListItem(item, depth + 1))}
-      </ul>
-    );
-  }
+  // nested list rendering recursion max depth
+  static maxDepth = 10;
 
   toggleExpanded(group) {
-    return e => {
-      e.preventDefault();
+    return event => {
+      event.preventDefault();
 
       if (this.props.alwaysExpanded) {
         return;
@@ -191,9 +155,9 @@ export class NestedList extends BaseList {
 
       const expanded = [...this.state.expanded];
 
-      const i = expanded.indexOf(group);
-      if (i > -1) {
-        expanded.splice(i, 1);
+      const index = expanded.indexOf(group);
+      if (index > -1) {
+        expanded.splice(index, 1);
       } else {
         expanded.push(group);
 
@@ -203,7 +167,7 @@ export class NestedList extends BaseList {
         }
       }
 
-      this.setState({expanded});
+      this.setState({ expanded });
     };
   }
 
@@ -211,5 +175,44 @@ export class NestedList extends BaseList {
     if (depth > NestedList.maxDepth) {
       throw new Error(`NestedList maximum recursion depth ${NestedList.maxDepth} exceeded`);
     }
+  }
+
+  renderNested(nested, group, depth) {
+    const hasNested = nested && nested.length;
+    const isExpanded = this.props.alwaysExpanded || this.state.expanded.indexOf(group) > -1;
+
+    if (hasNested && isExpanded) {
+      return (
+        <ul className={'with-connectors depth-' + depth}>
+          {nested.map(item => this.renderListItem(item, depth + 1))}
+        </ul>
+      );
+    }
+  }
+
+  renderListItem({nested, group, count}, depth) {
+    this.ensureValidDepth(depth);
+    const parts = this.getListItemParts(nested, group, depth);
+
+    return (
+      <ListItem key={group} count={count} onClick={this.toggleExpanded(group)}>
+        <div part="label">{parts.label}</div>
+        <div part="nested">{parts.nested}</div>
+      </ListItem>
+    );
+  }
+
+  render() {
+    console.log('Status items: ', this.props.items);
+    const depth = this.props.depth || 1;
+    const className = depth > 1
+      ? 'with-connectors depth-' + (depth - 1)
+      : '';
+
+    return (
+      <ul className={className}>
+        {this.props.items.map(item => this.renderListItem(item, depth))}
+      </ul>
+    );
   }
 }
