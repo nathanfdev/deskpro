@@ -25,7 +25,7 @@ export class ProfileForm extends React.Component {
 
     this.state = {
       name: profile.get('name'),
-      display_name: profile.get('displayName'),
+      display_name: profile.get('display_name'),
       emails: profile.get('emails').toArray() || [],
       primary_email: profile.get('primary_email'),
       phone_number: profile.get('phone_number'),
