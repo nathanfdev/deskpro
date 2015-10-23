@@ -53,12 +53,12 @@ class BrandData extends AbstractDefaultData
 
     private function installDefaultBrand()
     {
-        $num_brands = $this->getDb()->query('select count(*) from brands')->fetchColumn();
+        //$num_brands = $this->getDb()->query('select count(*) from brands')->fetchColumn();
+        //
+        //if ($num_brands > 0) {
+        //    return;
+        //}
 
-        if ($num_brands > 0) {
-            return;
-        }
-
-        $this->getDb()->exec("INSERT INTO brands (name, theme_id) VALUES ('Default Brand', 'standard')");
+        //$this->getDb()->exec("INSERT INTO brands (name, theme_id) VALUES ('Default Brand', 'standard')");
     }
 }
