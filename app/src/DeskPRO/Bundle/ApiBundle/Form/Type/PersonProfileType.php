@@ -57,7 +57,10 @@ class PersonProfileType extends AbstractType
             ])
 //            ->add('primary_email', 'email')
 //            ->add('phone_number', 'text')
-//            ->add('language_id', 'text')
+            ->add('language_id', 'entity', [
+                'class'         => 'DeskPRO:Language',
+                'property_path' => 'language',
+            ])
 //            ->add('timezone', 'text')
 //            ->add('password', 'repeated', [
 //                'type'            => 'password',
