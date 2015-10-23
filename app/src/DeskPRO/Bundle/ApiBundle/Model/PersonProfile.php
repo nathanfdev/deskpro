@@ -89,7 +89,9 @@ class PersonProfile
      */
     public function getPhoneNumber()
     {
-        return $this->person->getPrimaryPhoneNumber();
+        $phone_number = $this->person->getPrimaryPhoneNumber();
+
+        return $phone_number ? $phone_number->getNumberFormatted() : null;
     }
 
     /**
