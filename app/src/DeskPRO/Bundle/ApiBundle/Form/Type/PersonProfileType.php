@@ -61,7 +61,7 @@ class PersonProfileType extends AbstractType
                 'class'         => 'DeskPRO:Language',
                 'property_path' => 'language',
             ])
-//            ->add('timezone', 'text')
+            ->add('timezone', 'text')
 //            ->add('password', 'repeated', [
 //                'type'            => 'password',
 //                'invalid_message' => 'The password fields must match.',
