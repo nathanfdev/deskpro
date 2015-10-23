@@ -52,18 +52,20 @@ class PersonProfileType extends AbstractType
     {
         $builder
             ->add('name', 'text')
-            ->add('display_name', 'text')
-            ->add('primary_email', 'email')
-            ->add('phone_number', 'text')
-            ->add('language_id', 'text')
-            ->add('timezone', 'text')
-            ->add('password', 'repeated', [
-                'type'            => 'password',
-                'invalid_message' => 'The password fields must match.',
-                'first_name'      => 'password',
-                'second_name'     => 'confirm_password',
-                'required'        => false,
+            ->add('display_name', 'text', [
+                'property_path' => 'override_display_name',
             ])
+//            ->add('primary_email', 'email')
+//            ->add('phone_number', 'text')
+//            ->add('language_id', 'text')
+//            ->add('timezone', 'text')
+//            ->add('password', 'repeated', [
+//                'type'            => 'password',
+//                'invalid_message' => 'The password fields must match.',
+//                'first_name'      => 'password',
+//                'second_name'     => 'confirm_password',
+//                'required'        => false,
+//            ])
         ;
     }
 
@@ -74,6 +76,9 @@ class PersonProfileType extends AbstractType
     {
         $resolver->setDefaults([
             'csrf_protection' => false,
+
+            // todo for debug
+            'allow_extra_fields' => true,
         ]);
     }
 }
