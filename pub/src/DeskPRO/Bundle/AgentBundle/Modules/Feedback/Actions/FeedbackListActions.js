@@ -6,6 +6,7 @@ import { loadPeople } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/
 import { loadEmails } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/emailsActions';
 import { loadFeedbackCommentsCounter } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCommentsActions';
 import { loadFeedbackStatuses } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackStatusesActions';
+import { loadFeedbackCategories } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';
 import { sortingDataSelector } from '../Selectors/list';
 
 /**
@@ -42,6 +43,11 @@ export const getStatuses = createAction(
     ids => dispatch => dispatch(loadFeedbackStatuses(recordStoresId, ids))
 );
 
+export const getCategories = createAction(
+  'FEEDBACK_GET_CATEGORIES',
+    ids => dispatch => dispatch(loadFeedbackCategories(recordStoresId, ids))
+);
+
 export const loadFeedbackList = createAction(
   'FEEDBACK_LIST',
   (overwriteParams = {}) => (dispatch, getState)=> {
@@ -64,6 +70,7 @@ export const loadFeedbackList = createAction(
       dispatch(getAuthors(feedback));
       dispatch(getCommentsCounter(ids));
       dispatch(getStatuses(ids));
+      dispatch(getCategories(ids));
       return feedback;
     });
   }
@@ -149,21 +156,31 @@ export const toggleSort = createAction(
   }
 );
 
+export const getDisplayFieldsFromPersonSetting = createAction(
+  'FEEDBACK_GET_DISPLAY_FIELD_FROM_PERSON_SETTING',
+  () => PersonSetting.get('feedback_display_fields').then(value => value.getData()));
+
 export const storeDisplayFieldsToPersonSetting = createAction(
   'FEEDBACK_STORE_DISPLAY_FIELD_TO_PERSON_SETTING',
-  (displayFields) =>
-    PersonSetting.post('feedback_display_fields', displayFields).then(value => value.getData())
+  (displayFields) => (dispatch) =>
+    PersonSetting
+      .post('feedback_display_fields', displayFields)
+      .then(value => {
+        dispatch(getDisplayFieldsFromPersonSetting());
+        return value.getData();
+      })
 );
 
 export const updateDisplayFieldsToPersonSetting = createAction(
   'FEEDBACK_UPDATE_DISPLAY_FIELD_TO_PERSON_SETTING',
-  (displayFields) =>
-    PersonSetting.put('feedback_display_fields', displayFields).then(value => value.getData())
+  (displayFields) => (dispatch) =>
+    PersonSetting
+      .put('feedback_display_fields', displayFields)
+      .then(value => {
+        dispatch(getDisplayFieldsFromPersonSetting());
+        return value.getData();
+      })
 );
-
-export const getDisplayFieldsFromPersonSetting = createAction(
-  'FEEDBACK_GET_DISPLAY_FIELD_FROM_PERSON_SETTING',
-  () => PersonSetting.get('feedback_display_fields').then(value => value.getData()));
 
 export const toggleMassAction = createAction(
   'FEEDBACK_TOGGLE_MASS_ACTION'

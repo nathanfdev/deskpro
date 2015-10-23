@@ -127,7 +127,7 @@ export class Td extends Component {
 
   static propTypes = {
     className: PropTypes.string,
-    children: PropTypes.any.isRequired
+    children: PropTypes.any
   };
 
   render() {
