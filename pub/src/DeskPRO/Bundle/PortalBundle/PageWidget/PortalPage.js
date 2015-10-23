@@ -3,6 +3,7 @@ import NewTicketForm from "DeskPRO/Bundle/PortalBundle/PageWidget/NewTicketForm"
 import EditTicketForm from "DeskPRO/Bundle/PortalBundle/PageWidget/EditTicketForm";
 import TicketView from "DeskPRO/Bundle/PortalBundle/PageWidget/TicketView";
 import FeedbackPage from "DeskPRO/Bundle/PortalBundle/PageWidget/FeedbackPage";
+import ClickAwayDropdownWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/ClickAwayDropdownWidget";
 import HTmlLinkToPostWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/HtmlLinkToPostWidget";
 import OmniSearchWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/OmniSearchWidget";
 import LanguageChangerWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/LanguageChangerWidget";
@@ -21,6 +22,7 @@ export default class PortalPage extends PageWidget {
     this.addWidgetDef(FeedbackPage, "#feedback_page");
     this.addWidgetDef(HTmlLinkToPostWidget, "body");
     this.addWidgetDef(CustomPerFieldEdit, ".form-custom-per-field");
+    this.addWidgetDef(ClickAwayDropdownWidget, ".clickaway-dropdown");
     return new Promise((resolve) => {
       $(document).ready(resolve);
       if (window.DP_LOAD_FN && window.DP_LOAD_FN.length) {

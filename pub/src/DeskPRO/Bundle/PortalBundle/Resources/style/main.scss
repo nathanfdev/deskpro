@@ -2706,11 +2706,11 @@ header {
   }
 }
 
-.dropdown-group:hover .active-button-dropdown {
+.dropdown-group:hover .active-button-dropdown .auto {
   display: block;
 }
 
-.dropdown-group .active-button-dropdown:hover {
+.dropdown-group .active-button-dropdown:hover .auto {
   display: block;
 }
 
