@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { FieldWrapper } from './Fields/FieldWrapper';
 import { Name } from './Fields/Name';
+import { DisplayName } from './Fields/DisplayName';
 import { Email } from './Fields/Email';
 import { PrimaryEmail } from './Fields/PrimaryEmail';
 import { Phone } from './Fields/Phone';
@@ -24,7 +25,7 @@ export class ProfileForm extends React.Component {
 
     this.state = {
       name: profile.get('name'),
-      overrideDefaultName: profile.get('overrideDefaultName'),
+      displayName: profile.get('displayName'),
       emails: profile.get('emails') || [],
       primaryEmail: profile.get('primary_email'),
       phone: profile.get('phone_number'),
@@ -41,9 +42,9 @@ export class ProfileForm extends React.Component {
     });
   };
 
-  onToggleOverrideDefaultName = () => {
+  onChangeDisplayName = (value) => {
     this.setState({
-      overrideDefaultName: !this.state.overrideDefaultName
+      displayName: value
     });
   };
 
@@ -105,23 +106,16 @@ export class ProfileForm extends React.Component {
   renderNameField() {
     return (
       <FieldWrapper label="Your name">
-        <Name value={this.state.name} onChange={this.onChangeName} />
+        <Name value={this.state.name}
+              onChange={this.onChangeName} />
       </FieldWrapper>
     );
   }
 
-  renderOverrideDefaultNameField() {
+  renderDisplayNameField() {
     return (
-      <div className="bucket short">
-        <label className="simple-label">
-          <input type="checkbox"
-                 checked={this.state.overrideDefaultName}
-                 onChange={this.onToggleOverrideDefaultName} />
-
-          Override default name?
-        </label>
-        <span className="small">(will be displayed to users instead of your real name.)</span>
-      </div>
+      <DisplayName value={this.state.displayName}
+                   onChange={this.onChangeDisplayName} />
     );
   }
 
@@ -201,7 +195,7 @@ export class ProfileForm extends React.Component {
     return (
       <form className="popup-form-default">
         {this.renderNameField()}
-        {this.renderOverrideDefaultNameField()}
+        {this.renderDisplayNameField()}
         {this.renderEmailField()}
         {this.renderPrimaryEmailField()}
         {this.renderPhoneField()}
