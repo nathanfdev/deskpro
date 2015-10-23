@@ -1565,16 +1565,18 @@ $em->getConnection()->executeUpdate("
     INSERT INTO `label_defs`
         (`label_type`, `label`, `color`, `total`)
     VALUES
-        ('feedback', 'foo', 'red', 0),
-        ('feedback', 'bar', 'white', 0),
-        ('feedback', 'foobar', 'red', 0),
-        ('feedback', 'barfoo', 'white', 0),
-        ('organization', 'organization label #1', 'red', 42),
-        ('person', 'person label #1', 'white', 1),
-        ('person', 'person label #2', 'red', 3),
-        ('ticket', 'ticket label #1', 'white', 1),
-        ('ticket', 'ticket label #2', 'red', 3),
-        ('ticket', 'ticket label #3', 'green', 13)
+        ('feedback', 'First feedback label', 'red', 0),
+        ('feedback', 'Second feedback label', 'white', 0),
+        ('feedback', 'Third feedback label', 'red', 0),
+        ('organization', 'First organization label', 'red', 1),
+        ('organization', 'Second organization label', 'blue', 2),
+        ('organization', 'Third organization label', 'green', 42),
+        ('person', 'First person label', 'white', 1),
+        ('person', 'Second person label', 'red', 3),
+        ('person', 'Third person label', 'yellow', 3),
+        ('ticket', 'First ticket label', 'white', 1),
+        ('ticket', 'Second ticket label', 'red', 3),
+        ('ticket', 'Third ticket label', 'green', 13)
     ;
 ");
 

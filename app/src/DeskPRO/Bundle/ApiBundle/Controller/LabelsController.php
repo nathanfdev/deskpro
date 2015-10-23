@@ -73,7 +73,8 @@ class LabelsController extends BaseController
             ->select('l')
             ->from('DeskPRO:LabelDef', 'l')
             ->where('l.label_type = :type')
-            ->setParameter('type', $type);
+            ->setParameter('type', $type)
+            ->orderBy('l.label', 'asc');
         $term = $request->get('term');
         if (null !== $term) {
             $qb
