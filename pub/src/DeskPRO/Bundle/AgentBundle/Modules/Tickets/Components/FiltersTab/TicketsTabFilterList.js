@@ -31,7 +31,7 @@ export default class TicketsTabFilterList extends React.Component {
     let filterItems = filtersList.map((filter) => {
       let count = 0;
       for(let k in filterCounts) {
-        if(filterCounts[k].filter == filter.id) {
+        if(filterCounts[k].group == filter.id) {
           count = filterCounts[k].count;
           break;
         }

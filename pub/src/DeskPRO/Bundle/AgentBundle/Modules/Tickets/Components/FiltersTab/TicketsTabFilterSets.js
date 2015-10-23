@@ -11,9 +11,9 @@ export default class TicketsTabFilterSets extends React.Component {
       let my_filter_counts = null;
       if(typeof filterSetsCounts.FilterSetsCounts !== 'undefined') {
         for(let k in filterSetsCounts.FilterSetsCounts) {
-          if(filterSetsCounts.FilterSetsCounts[k].filter_set == filter_set.id) {
+          if(filterSetsCounts.FilterSetsCounts[k].group == filter_set.id) {
             total = filterSetsCounts.FilterSetsCounts[k].count;
-            my_filter_counts = filterSetsCounts.FilterSetsCounts[k].filters;
+            my_filter_counts = filterSetsCounts.FilterSetsCounts[k].nested;
             break;
           }
         }
