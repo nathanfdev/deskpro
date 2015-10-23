@@ -87,20 +87,22 @@ export const commentsToReview = createAction(
 
 export const feedbackLabels = createAction(
   'FEEDBACK_LABELS',
-  () => Feedback.getLabels().then(promise => promise.getData()));
-
-export const feedbackTypes = createAction(
-  'FEEDBACK_TYPES',
-  () => Feedback.getTypes().then(promise => {
+  () => Feedback.getLabels().then(promise => {
     const response = promise.getData();
     response.data = pluck(response.data, 'label');
 
     return response;
   }));
 
+export const feedbackTypes = createAction(
+  'FEEDBACK_TYPES',
+  () => Feedback.getTypes().then(promise => promise.getData())
+);
+
 export const feedbackCustomCategories = createAction(
   'FEEDBACK_CUSTOM_CATEGORIES',
-  () => Feedback.getCustomCategories().then(promise => promise.getData()));
+  () => Feedback.getCustomCategories().then(promise => promise.getData())
+);
 
 export const feedbackNew = createAction(
   'FEEDBACK_NEW_STATUS',
