@@ -14,7 +14,9 @@ $world-padding: 20px;
 //-------------------------
 
 $page-background: #fff;
-$fonts: "Helvetica Neue", Helvetica, Arial, sans-serif;
+/* $fonts: "Helvetica Neue", Helvetica, Arial, sans-serif; */
+$fonts: "Ubuntu", helvetica, verdana, sans-serif;
+
 $divider-color: rgba(0, 0, 0, 0.1);
 $universal-left-padding: 10px;
 $main-color: #3575bd;
@@ -47,14 +49,19 @@ $color-facebook: #4c6fab;
 $text-faded: #d4d4d4;
 
 // Buttons
-$button-color: $main-color;// Blue
-$button-text: $page-background;// #fff
-$button-color-secondary: #93d06e;// Green
+$button-color: $main-color;
+// Blue
+$button-text: $page-background;
+// #fff
+$button-color-secondary: #93d06e;
+// Green
 $button-color-secondary-darker: darken($button-color-secondary, 15%);
 
 // Secondary surface colors
-$surface-main: #f2f2ec;// Grey to yellow-ish
-$surface-secondary: #f6f6f6;// Grey
+$surface-main: #f2f2ec;
+// Grey to yellow-ish
+$surface-secondary: #f6f6f6;
+// Grey
 
 // Generic use cases
 $button-grey: #e8e8e8;
@@ -62,8 +69,10 @@ $button-text: $page-background;
 $popup-background: #f5f6f7;
 
 // Forms
-$form-input: lighten($page-background, 5%); //#f7f7f7;
-$form-border-color: #c0c0c0;// Could follow from $divider-color for a lot of cases
+$form-input: lighten($page-background, 5%);
+//#f7f7f7;
+$form-border-color: #c0c0c0;
+// Could follow from $divider-color for a lot of cases
 
 // This is the marked text when filtering stuff
 $marked-search: #ffe47f;
