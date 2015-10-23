@@ -55,6 +55,14 @@ class PersonProfileType extends AbstractType
             ->add('display_name', 'text', [
                 'property_path' => 'override_display_name',
             ])
+            ->add('emails', 'collection', [
+                'type'            => 'email',
+                'allow_add'       => true,
+                'allow_delete'    => true,
+                'invalid_message' => 'Invalid Email.',
+                'by_reference'    => true,
+                'property_path'   => 'emailAddresses',
+            ])
             ->add('primary_email', 'email', [
                 'property_path' => 'email',
             ])
