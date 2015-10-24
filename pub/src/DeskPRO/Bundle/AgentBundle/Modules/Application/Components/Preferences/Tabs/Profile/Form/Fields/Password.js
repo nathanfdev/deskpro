@@ -35,17 +35,17 @@ export class Password extends React.Component {
   }
 
   renderFields() {
-    const { value } = this.props;
+    const { first, second } = this.props.value;
 
     return (
       <div>
           <input type="password"
                  placeholder="Password"
-                 value={value.first}
+                 value={first}
                  onChange={this.onChangeValue} />
           <input type="password"
                  placeholder="Confirm password"
-                 value={value.second}
+                 value={second}
                  onChange={this.onChangeConfirmValue} />
       </div>
     );
