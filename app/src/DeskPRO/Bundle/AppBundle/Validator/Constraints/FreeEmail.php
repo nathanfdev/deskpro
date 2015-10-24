@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
+use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use Symfony\Component\Validator\Constraint;
 
 /**
@@ -35,6 +36,10 @@ use Symfony\Component\Validator\Constraint;
  */
 class FreeEmail extends Constraint
 {
+    public $message = ApiErrors::DUPE_EMAIL;
+
+    public $property = 'email';
+
     /**
      * {@inheritdoc}
      */

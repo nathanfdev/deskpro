@@ -328,6 +328,11 @@ class Person extends AbstractEntityRepository
         return $person;
     }
 
+    /**
+     * @param array $emails
+     *
+     * @return PersonEntity[]
+     */
     public function findByEmails(array $emails)
     {
         if (!$emails) {

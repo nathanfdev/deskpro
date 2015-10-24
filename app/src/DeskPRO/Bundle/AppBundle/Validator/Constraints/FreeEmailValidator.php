@@ -28,7 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
-use Application\DeskPRO\EntityRepository\Person;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\EntityRepository;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -39,16 +40,16 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 class FreeEmailValidator extends ConstraintValidator
 {
     /**
-     * @var Person
+     * @var EntityRepository\Person
      */
     private $person_repository;
 
     /**
      * Constructor.
      *
-     * @param Person $person_repository
+     * @param EntityRepository\Person $person_repository
      */
-    public function __construct(Person $person_repository)
+    public function __construct(EntityRepository\Person $person_repository)
     {
         $this->person_repository = $person_repository;
     }
@@ -62,28 +63,28 @@ class FreeEmailValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\FreeEmail');
         }
 
-//        $existPersons = $this->person_repository->findByEmails($set_emails);
-//        $agent        = reset($existPersons);
-//
-//        // we have a dupe email error
-//        // not yet
-//        $dupe =
-//            ($id && $agent && $agent['id'] != $id) // update an agent (or user to agent)
-//            ||
-//            (!$id && $agent && $agent['is_agent']); // insert an agent
-//
-//        if ($dupe) {
-//            $error_info = array('existing' => array());
-//
-//            foreach ($existPersons as $person) {
-//                $error_info['existing'][] = array(
-//                    'person_id'   => $person['id'],
-//                    'person_name' => $person['display_name'],
-//                    'email'       => implode(', ', $person->getEmailAddresses()),
-//                );
-//            }
-//
-//            return $this->createApiErrorInfoResponse('dupe_email', 'One or more email addresses are already in use by other users', $error_info);
-//        }
+        if (!$value instanceof Entity\Person) {
+            throw new UnexpectedTypeException($value, 'Application\DeskPRO\Entity\Person');
+        }
+
+        $exist_persons = $this->person_repository->findByEmails($value->getEmailAddresses());
+        $exist_emails  = [];
+        foreach ($exist_persons as $exist_person) {
+            if ($exist_person->getId() === $value->getId()) {
+                continue;
+            }
+
+            $exist_emails = array_merge($exist_emails, $exist_person->getEmailAddresses());
+        }
+
+        $exist_emails = array_unique($exist_emails);
+        if (count($exist_emails) > 0) {
+            $this
+                ->buildViolation($constraint->message)
+                ->setParameter('emails', implode(', ', $exist_emails))
+                ->atPath($constraint->property)
+                ->addViolation()
+            ;
+        }
     }
 }

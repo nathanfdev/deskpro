@@ -71,9 +71,9 @@ class PersonProfileType extends AbstractType
                 'invalid_message' => 'Invalid Email.',
                 'by_reference'    => true,
                 'property_path'   => 'emailAddresses',
+                'error_bubbling'  => false,
                 'constraints'     => [
                     new NotSystemEmail(),
-                    new FreeEmail(),
                 ],
             ])
             ->add('primary_email', 'email', [
@@ -81,7 +81,6 @@ class PersonProfileType extends AbstractType
                 'constraints'   => [
                     new Email(),
                     new NotSystemEmail(),
-                    new FreeEmail(),
                 ],
             ])
             ->add('phone', new PhoneNumberType(), [
@@ -115,6 +114,9 @@ class PersonProfileType extends AbstractType
     {
         $resolver->setDefaults([
             'csrf_protection' => false,
+            'constraints'     => [
+                new FreeEmail(['property' => 'emailAddresses']),
+            ],
         ]);
     }
 }
