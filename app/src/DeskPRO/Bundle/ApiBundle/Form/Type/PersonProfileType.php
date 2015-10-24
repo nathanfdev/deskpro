@@ -28,9 +28,13 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\FreeEmail;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\NotSystemEmail;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\PhoneNumber;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
@@ -67,12 +71,24 @@ class PersonProfileType extends AbstractType
                 'invalid_message' => 'Invalid Email.',
                 'by_reference'    => true,
                 'property_path'   => 'emailAddresses',
+                'constraints'     => [
+                    new NotSystemEmail(),
+                    new FreeEmail(),
+                ],
             ])
             ->add('primary_email', 'email', [
                 'property_path' => 'email',
+                'constraints'   => [
+                    new Email(),
+                    new NotSystemEmail(),
+                    new FreeEmail(),
+                ],
             ])
             ->add('phone', new PhoneNumberType(), [
                 'property_path' => 'primaryPhoneNumber',
+                'constraints'   => [
+                    new PhoneNumber(),
+                ],
             ])
             ->add('language_id', 'entity', [
                 'class'         => 'DeskPRO:Language',
@@ -84,7 +100,9 @@ class PersonProfileType extends AbstractType
                 'invalid_message' => 'The password fields must match.',
                 'required'        => false,
                 'error_bubbling'  => false,
-                'first_options'   => ['error_bubbling' => true],
+                'first_options'   => [
+                    'error_bubbling' => true,
+                ],
             ])
         ;
     }
