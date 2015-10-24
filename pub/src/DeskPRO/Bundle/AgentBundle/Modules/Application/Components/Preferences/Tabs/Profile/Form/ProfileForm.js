@@ -135,10 +135,9 @@ export class ProfileForm extends React.Component {
         changeSubmitStatus(false);
       })
       .catch(http => {
-        console.log(http);
         changeSubmitStatus(false);
         this.setState({
-          errors: {name: ['Sample error']}
+          errors: http.xhr.responseJSON.errors ? http.xhr.responseJSON.errors.fields : {}
         });
       })
     ;

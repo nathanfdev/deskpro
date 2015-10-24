@@ -78,6 +78,8 @@ class PersonProfileType extends AbstractType
                 'type'            => 'password',
                 'invalid_message' => 'The password fields must match.',
                 'required'        => false,
+                'error_bubbling'  => false,
+                'first_options'   => ['error_bubbling' => true],
             ])
         ;
     }
@@ -89,9 +91,6 @@ class PersonProfileType extends AbstractType
     {
         $resolver->setDefaults([
             'csrf_protection' => false,
-
-            // todo for debug
-            'allow_extra_fields' => true,
         ]);
     }
 }
