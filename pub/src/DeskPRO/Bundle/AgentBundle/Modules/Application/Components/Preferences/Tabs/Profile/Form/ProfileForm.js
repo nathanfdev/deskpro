@@ -141,7 +141,7 @@ export class ProfileForm extends React.Component {
 
   renderNameField() {
     return (
-      <FieldWrapper label="Your name">
+      <FieldWrapper label="Your name" errors={['Field could not be empty.']}>
         <Name value={this.state.data.name}
               onChange={this.onChangeName} />
       </FieldWrapper>
@@ -150,14 +150,16 @@ export class ProfileForm extends React.Component {
 
   renderDisplayNameField() {
     return (
-      <DisplayName value={this.state.data.display_name}
-                   onChange={this.onChangeDisplayName} />
+      <FieldWrapper errors={['Field could not be empty.']}>
+        <DisplayName value={this.state.data.display_name}
+                     onChange={this.onChangeDisplayName} />
+      </FieldWrapper>
     );
   }
 
   renderEmailField() {
     return (
-      <FieldWrapper label="Your email">
+      <FieldWrapper label="Your email" errors={['Field could not be empty.']}>
         <Email emails={this.state.data.emails}
                onChange={this.onChangeEmails} />
       </FieldWrapper>
@@ -169,7 +171,7 @@ export class ProfileForm extends React.Component {
 
     if (emails && emails.length > 1 && emails[1]) {
       return (
-        <FieldWrapper label="Primary email">
+        <FieldWrapper label="Primary email" errors={['Field could not be empty.']}>
           <PrimaryEmail emails={emails}
                         value={this.state.data.primary_email}
                         onChange={this.onChangePrimaryEmail} />
@@ -182,7 +184,7 @@ export class ProfileForm extends React.Component {
 
   renderPhoneField() {
     return (
-      <FieldWrapper label="Phone #">
+      <FieldWrapper label="Phone #" errors={['Field could not be empty.']}>
         <Phone value={this.state.data.phone}
                onChange={this.onChangePhone} />
       </FieldWrapper>
@@ -196,7 +198,7 @@ export class ProfileForm extends React.Component {
     }
 
     return (
-      <FieldWrapper label="Language">
+      <FieldWrapper label="Language" errors={['Field could not be empty.', 'One more error has occured.']}>
         <Language languages={languages}
                   value={this.state.data.language_id}
                   onChange={this.onChangeLanguage} />
@@ -208,7 +210,7 @@ export class ProfileForm extends React.Component {
     const { timezones } = this.props;
 
     return (
-      <FieldWrapper label="Time Zone">
+      <FieldWrapper label="Time Zone" errors={['Field could not be empty.']}>
         <Timezone timezones={timezones}
                   value={this.state.data.timezone}
                   onChange={this.onChangeTimezone} />
@@ -218,7 +220,7 @@ export class ProfileForm extends React.Component {
 
   renderPasswordField() {
     return (
-      <FieldWrapper label="Password">
+      <FieldWrapper label="Password" errors={['Field could not be empty.']}>
         <Password
           value={this.state.data.password}
           onChange={this.onChangePassword} />

@@ -19,7 +19,7 @@ $popup-background: #f5f6f7;
   width: 100%;// Some responsiveness (although content will break for now)
   max-width: 950px;
   min-width: 820px;
-  max-height: 700px;
+  max-height: 800px;
   min-height: 400px;
   display: block;
   background: $popup-background;
@@ -243,6 +243,20 @@ $right-bucket: 200px;
       position: relative;
       padding-left: 150px;
       padding-right: $right-bucket;
+
+      ul {
+        &.error {
+          margin: 5px 0 0 0;
+          padding: 0;
+          list-style-type: none;
+
+          li {
+            font-size: 0.85em;
+            opacity: 0.5;
+            color: #ff0000;
+          }
+        }
+      }
     }
 
     .bucket-column.bucket-column-full {

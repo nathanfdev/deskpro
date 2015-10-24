@@ -30,13 +30,11 @@ export class DisplayName extends React.Component {
 
   renderInput() {
     return (
-      <div className="bucket">
-        <div className="bucket-column">
-          <input type="text"
-                 placeholder="Your display name"
-                 value={this.props.value}
-                 onChange={this.onChange} />
-        </div>
+      <div className="bucket-column">
+        <input type="text"
+               placeholder="Your display name"
+               value={this.props.value}
+               onChange={this.onChange} />
       </div>
     );
   }
