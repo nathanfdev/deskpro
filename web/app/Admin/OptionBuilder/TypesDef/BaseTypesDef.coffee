@@ -88,7 +88,8 @@ define ['DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Util, Arrays) ->
             inputOptions =
               dropdownAutoWidth: true
               minimumInputLength: 1
-              initSelection: (item) -> item[prop_name]
+              multiple: options.isMulti
+              initSelection: (item) -> item
               ajax:
                 data: (term, page) -> { query: term }
                 quietMillis: 200
@@ -99,14 +100,20 @@ define ['DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Util, Arrays) ->
             value.options = value.options || {}
 
             ret =
-              value: {}
               valueString: value.options[prop_name] || ''
               op: value.op || _.first(data.operators)
               inputOptions: inputOptions
 
-            value.options[prop_name] && me.Api.sendGet(options.url + '/' + value.options[prop_name]).then (res) ->
-              return if !options.map
-              ret.value = options.map res.data
+            if options.isMulti
+              ret.value = []
+              value.options[prop_name]?.map? && value.options[prop_name]?.map (org) ->
+                me.Api.sendGet(options.url + '/' + org).then (res) ->
+                  return ret.value.push res.data if !options.map
+                  ret.value.push options.map res.data
+            else
+              value.options[prop_name] && me.Api.sendGet(options.url + '/' + value.options[prop_name]).then (res) ->
+                return res.data if !options.map
+                ret.value = options.map res.data
             ret
 
           getValue: (model = {}, data) ->
@@ -116,8 +123,10 @@ define ['DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Util, Arrays) ->
             value.options = {}
 
             if model.op == 'is' || model.op == 'not'
-              value.options[prop_name] = model.value?.id || ''
-              value.options.info = model.value
+              if options.isMulti
+                value.options[prop_name] = model.value?.map (item) -> item.id
+              else
+                value.options[prop_name] = model.value?.id || ''
             else
               value.options[prop_name] = model.valueString
               value.options.info = model.valueString

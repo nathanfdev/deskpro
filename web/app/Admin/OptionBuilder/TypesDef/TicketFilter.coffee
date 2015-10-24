@@ -170,6 +170,25 @@ define [
           })
 
       #------------------------------
+      # Org Fields
+      #------------------------------
+
+      if @options_data?.org_fields
+        options = []
+
+        for f in @options_data.org_fields
+          options.push({
+            title: f.title,
+            value: @initFieldGetter('FilterOrgField', f)
+          })
+
+        if options.length
+          set_options.push({
+            title: 'Organization Fields',
+            subOptions: options
+          })
+
+      #------------------------------
       # Person
       #------------------------------
 
@@ -662,15 +681,15 @@ define [
       options.propName = 'org_ids'
       options.operators = ['is', 'not']
       options.url = '/organizations'
-      options.map = (data) ->
-        id: data.organization?.id
-        name: data.organization?.name
+      options.isMulti = true
+      options.map = (data) -> {id: data.organization.id, name: data.organization.name}
       format = (item) -> item['name']
       options.inputOptions =
         formatResult: format
         formatSelection: format
         ajax:
           data: (term, page) -> { query: term, limit: 10 }
+          results: (data, page) -> { results: data.data.map (item) -> {id: item.id, name: item.name }}
       @getRemoteInput options
 
     getFilterOrgName: (options = {}) ->

@@ -648,6 +648,8 @@ class GroupingCounter
             default:
 
                 if ($f = $this->getCustomDefField($field)) {
+                    $this->grouping_summary = $f->title;
+
                     if ($f->isChoiceType()) {
                         $titles = array('0' => 'None');
                         foreach (App::getSystemService('TicketFieldsManager')->getFieldChildren($f) as $subf) {
@@ -662,7 +664,7 @@ class GroupingCounter
                             $isDateTime = $h instanceof DateTime;
 
                             if ($isDate || $isDateTime) {
-                                $timezone        = App::getCurrentPerson()->getTimezone();
+                                $timezone        = App::getCurrentPerson()->getDateTimezone();
                                 $date_format     = App::getSetting('core.date_full');
                                 $datetime_format = App::getSetting('core.date_fulltime');
 

@@ -135,9 +135,9 @@ class TaskType extends AbstractType implements EventSubscriberInterface
 
         // hardcoded date override
         $timezone = $form->getConfig()->getOption('timezone');
-        if ($date = $event->getForm()->get('date_due')->getData()) {
-            /* @var $person Person */
-            if (!$person = $event->getForm()->get('person')->getData()) {
+        if ($date = $form->get('date_due')->getData()) {
+            /** @var $person Person */
+            if ((!$person = $form->get('person')->getData()) && !$timezone) {
                 return;
             }
 

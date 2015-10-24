@@ -257,6 +257,10 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 									var el = $('[name$="'+this.makeArrayName(k_name,true)+'"]', new_row);
 									if (el.is('select')) {
 										el.find('[value="' + v + '"]').prop('selected', true);
+									} else if (el.is(':checkbox')) {
+										el.each(function(){
+											if(v === $(this).val()) $(this).prop('checked', true);
+										});
 									}
 								}, this);
 							} else {

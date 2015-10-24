@@ -65,6 +65,10 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      */
     public function preAction($action, $arguments = null)
     {
+        if (dp_get_config('disabled_reports_message')) {
+            return $this->createResponse(dp_get_config('disabled_reports_message'));
+        }
+
         if (!$this->_userHasPermissions()) {
             if ($this->request->isXmlHttpRequest()) {
                 $data = array('error' => 'session_expired');

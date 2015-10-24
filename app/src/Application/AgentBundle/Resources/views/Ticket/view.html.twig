@@ -907,11 +907,11 @@ pageMeta.lang = {{ {
 			<input type="text" class="label-input macro-filter" placeholder="Filter" />
 			<ul class="macro-list">
 				{% import _self as metpl %}
-				{% macro macroRow(item) %}
+				{% macro macroRow(item, ticket) %}
 					{% import _self as metpl %}
 					{% if item.type == 'item' %}
 						{% set macro = item.item %}
-						<li class="res-ticketmacro-{{ macro.id }}" data-type="macro:{{ macro.id }}" data-macro-id="{{ macro.id }}" data-label="{{ phrase('agent.tickets.send_newticket_and_apply_x', {name: macro.title}) }}" data-get-macro-url="{{ path('agent_ticket_ajax_get_macro', {ticket_id: '0', macro_id: macro.id, macro_reply_context: 1 }) }}">
+						<li class="res-ticketmacro-{{ macro.id }}" data-type="macro:{{ macro.id }}" data-macro-id="{{ macro.id }}" data-label="{{ phrase('agent.tickets.send_newticket_and_apply_x', {name: macro.title}) }}" data-get-macro-url="{{ path('agent_ticket_ajax_get_macro', {ticket_id: ticket.id|default(0), macro_id: macro.id, macro_reply_context: 1 }) }}">
 							<div class="on-icon"><i class="icon-ok"></i></div>
 							<span class="macro-title">{{ item.title }}</span>
 						</li>
@@ -924,7 +924,7 @@ pageMeta.lang = {{ {
 										<input type="text" class="label-input macro-filter" placeholder="{{ phrase('agent.tickets.reply_and_apply_macro') }}" />
 										<ul class="macro-list">
 											{% for sub_item in item.items %}
-												{{ metpl.macroRow(sub_item) }}
+												{{ metpl.macroRow(sub_item, ticket) }}
 											{% endfor %}
 										</ul>
 									</div>
@@ -934,7 +934,7 @@ pageMeta.lang = {{ {
 					{% endif %}
 				{% endmacro %}
 				{% for item in app.user.getHelper('Agent').getMacrosStructured() %}
-					{{ metpl.macroRow(item) }}
+					{{ metpl.macroRow(item, ticket) }}
 				{% endfor %}
 			</ul>
 		</div>

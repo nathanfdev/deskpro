@@ -165,7 +165,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             if ($check) {
                 $date     = (int) $check;
                 $date_cut = time() - 900;
-                $diff     = \Orb\Util\Dates::secsToReadable(time() - $date_cut, 5);
+                $diff     = \Orb\Util\Dates::secsToReadable(time() - $date, 5);
 
                 if ($date_cut < $date) {
                     if ($input->getOption('verbose')) {
