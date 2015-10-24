@@ -78,7 +78,7 @@ class FreeEmailValidator extends ConstraintValidator
         }
 
         $exist_emails = array_unique($exist_emails);
-        if (count($exist_emails) > 0) {
+        if ($exist_emails) {
             $this
                 ->buildViolation($constraint->message)
                 ->setParameter('emails', implode(', ', $exist_emails))

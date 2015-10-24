@@ -62,16 +62,14 @@ class NotSystemEmailValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\NotSystemEmail');
         }
 
-//        $system_addresses = array_filter($set_emails, function ($e) use ($email_account_manager) {
-//            return $email_account_manager->findAccountForEmailAddress($e);
-//        });
-//
-//        if ($system_addresses) {
-//            return $this->createApiErrorInfoResponse(
-//                'system_email_addresses',
-//                'One or more email addresses you entered are already being used as email accounts.',
-//                array('emails' => array_values($system_addresses))
-//            );
-//        }
+        $emails = (array) $value;
+
+        $system_addresses = array_filter($emails, function ($email) {
+            return $this->email_account_manager->findAccountForEmailAddress($email);
+        });
+
+        if ($system_addresses) {
+            $this->context->addViolation($constraint->message, ['emails' => implode(', ', $system_addresses)]);
+        }
     }
 }

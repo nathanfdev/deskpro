@@ -72,6 +72,7 @@ class ApiErrors
     const RESOURCE_NOT_FOUND   = 'resource_not_found';
     const INVALID_PHONE_NUMBER = 'invalid_phone_number_format';
     const DUPE_EMAIL           = 'dupe_email';
+    const SYSTEM_EMAIL         = 'system_email';
 
     /** Term Engine Specific */
     const TERM_TYPE_DOES_NOT_EXIST = 'term_type_does_not_exist';
