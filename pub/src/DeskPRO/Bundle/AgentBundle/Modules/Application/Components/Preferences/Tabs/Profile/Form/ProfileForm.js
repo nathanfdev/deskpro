@@ -9,7 +9,6 @@ import { Language } from './Fields/Language';
 import { Timezone } from './Fields/Timezone';
 import { Password } from './Fields/Password';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
-import * as AppActions from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/AppActions';
 import * as ProfilesActions from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/profilesActions';
 
 export class ProfileForm extends React.Component {
@@ -41,7 +40,8 @@ export class ProfileForm extends React.Component {
           first: null,
           second: null
         }
-      }
+      },
+      submit: false
     };
   }
 
@@ -116,6 +116,11 @@ export class ProfileForm extends React.Component {
     const { dispatch } = this.props;
 
     console.log(this.state);
+    const changeSubmitStatus = isSubmit => this.setState({
+      submit: isSubmit
+    });
+
+    changeSubmitStatus(true);
 
     DpApi.sendPut('DP_API/me/profile', this.state.data)
       .success(response => {
@@ -124,10 +129,12 @@ export class ProfileForm extends React.Component {
 
         dispatch(ProfilesActions.releaseProfiles('my'));
         dispatch(ProfilesActions.setProfilesRequest('my', records, [response.data.id]));
-        dispatch(AppActions.closePreferences());
+
+        changeSubmitStatus(false);
       })
-      .catch((data, http) => {
-        console.log(data, http);
+      .catch(http => {
+        console.log(http);
+        changeSubmitStatus(false);
       })
     ;
   };
@@ -219,6 +226,14 @@ export class ProfileForm extends React.Component {
     );
   }
 
+  static renderSubmitIcon() {
+    return (
+      <div>
+        Saving...
+      </div>
+    );
+  }
+
   render() {
     return (
       <form className="popup-form-default">
@@ -239,6 +254,7 @@ export class ProfileForm extends React.Component {
 
         <div className="bucket">
           <div className="bucket-column-last">
+            {this.state.submit ? ProfileForm.renderSubmitIcon() : null}
             <input type="submit" onClick={this.submitForm} />
           </div>
         </div>
