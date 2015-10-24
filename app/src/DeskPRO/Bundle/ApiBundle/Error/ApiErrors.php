@@ -64,12 +64,13 @@ class ApiErrors
     const NO_PERSON                      = 'no_person';
 
     /** Validator/Constraint specific error codes */
-    const NOT_NULL           = 'required';
-    const NOT_BLANK          = 'required';
-    const WRONG_LENGTH       = 'wrong_length';
-    const BAD_CHOICE         = 'bad_choice';
-    const INVALID_EMAIL      = 'invalid_email';
-    const RESOURCE_NOT_FOUND = 'resource_not_found';
+    const NOT_NULL             = 'required';
+    const NOT_BLANK            = 'required';
+    const WRONG_LENGTH         = 'wrong_length';
+    const BAD_CHOICE           = 'bad_choice';
+    const INVALID_EMAIL        = 'invalid_email';
+    const RESOURCE_NOT_FOUND   = 'resource_not_found';
+    const INVALID_PHONE_NUMBER = 'invalid_phone_number_format';
 
     /** Term Engine Specific */
     const TERM_TYPE_DOES_NOT_EXIST = 'term_type_does_not_exist';

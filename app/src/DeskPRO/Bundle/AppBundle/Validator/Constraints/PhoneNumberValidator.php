@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
+use Application\DeskPRO\Entity;
 use Orb\Util\PhoneNumbers;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -47,15 +48,13 @@ class PhoneNumberValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\PhoneNumber');
         }
 
-//        if (isset($agent_postdata['primary_phone']['number'])) {
-//            $phone_number = $agent_postdata['primary_phone']['number'];
-//            if (!PhoneNumbers::looksEmpty($phone_number)) {
-//                if (!PhoneNumbers::isValid($phone_number)) {
-//                    return $this->createApiErrorInfoResponse('invalid_phone_number',
-//                        'Invalid phone number format.',
-//                        array('primary_phone' => $phone_number));
-//                }
-//            }
-//        }
+        if ($value) {
+            if ($value instanceof Entity\PhoneNumber) {
+                $value = $value->getNumberFormatted();
+            }
+            if (!PhoneNumbers::isValid($value)) {
+                $this->context->addViolation($constraint->message);
+            }
+        }
     }
 }

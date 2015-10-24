@@ -85,8 +85,9 @@ class PersonProfileType extends AbstractType
                 ],
             ])
             ->add('phone', new PhoneNumberType(), [
-                'property_path' => 'primaryPhoneNumber',
-                'constraints'   => [
+                'property_path'  => 'primaryPhoneNumber',
+                'error_bubbling' => false,
+                'constraints'    => [
                     new PhoneNumber(),
                 ],
             ])

@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
+use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use Symfony\Component\Validator\Constraint;
 
 /**
@@ -35,6 +36,8 @@ use Symfony\Component\Validator\Constraint;
  */
 class PhoneNumber extends Constraint
 {
+    public $message = ApiErrors::INVALID_PHONE_NUMBER;
+
     /**
      * {@inheritdoc}
      */
