@@ -257,6 +257,10 @@ $right-bucket: 200px;
           }
         }
       }
+
+      &.submit {
+        text-align: center;
+      }
     }
 
     .bucket-column.bucket-column-full {

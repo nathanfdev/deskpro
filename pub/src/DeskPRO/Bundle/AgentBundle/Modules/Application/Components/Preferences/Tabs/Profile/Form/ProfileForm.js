@@ -228,10 +228,21 @@ export class ProfileForm extends React.Component {
     );
   }
 
-  static renderSubmitIcon() {
-    return (
+  renderSubmitButton() {
+    const saveIcon = (
       <div>
         Saving...
+      </div>
+    );
+
+    return (
+      <div className="bucket">
+        <div className="bucket-column submit">
+          {this.state.submit ? saveIcon : null}
+          <input type="submit"
+                 value="Save"
+                 onClick={this.submitForm} />
+        </div>
       </div>
     );
   }
@@ -253,13 +264,7 @@ export class ProfileForm extends React.Component {
         <hr />
 
         {this.renderPasswordField()}
-
-        <div className="bucket">
-          <div className="bucket-column-last">
-            {this.state.submit ? ProfileForm.renderSubmitIcon() : null}
-            <input type="submit" onClick={this.submitForm} />
-          </div>
-        </div>
+        {this.renderSubmitButton()}
       </form>
     );
   }
