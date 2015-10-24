@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\ApiBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * Class PersonProfileType.
@@ -51,7 +52,11 @@ class PersonProfileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'text')
+            ->add('name', 'text', [
+                'constraints' => [
+                    new NotBlank(),
+                ],
+            ])
             ->add('display_name', 'text', [
                 'property_path' => 'override_display_name',
             ])
