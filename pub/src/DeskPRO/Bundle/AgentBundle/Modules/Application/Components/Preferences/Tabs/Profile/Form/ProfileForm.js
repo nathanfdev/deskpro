@@ -41,6 +41,7 @@ export class ProfileForm extends React.Component {
           second: null
         }
       },
+      errors: {},
       submit: false
     };
   }
@@ -117,7 +118,8 @@ export class ProfileForm extends React.Component {
 
     console.log(this.state);
     const changeSubmitStatus = isSubmit => this.setState({
-      submit: isSubmit
+      submit: isSubmit,
+      errors: {}
     });
 
     changeSubmitStatus(true);
@@ -135,13 +137,16 @@ export class ProfileForm extends React.Component {
       .catch(http => {
         console.log(http);
         changeSubmitStatus(false);
+        this.setState({
+          errors: {name: ['Sample error']}
+        });
       })
     ;
   };
 
   renderNameField() {
     return (
-      <FieldWrapper label="Your name" errors={['Field could not be empty.']}>
+      <FieldWrapper label="Your name" errors={this.state.errors.name}>
         <Name value={this.state.data.name}
               onChange={this.onChangeName} />
       </FieldWrapper>
@@ -150,7 +155,7 @@ export class ProfileForm extends React.Component {
 
   renderDisplayNameField() {
     return (
-      <FieldWrapper errors={['Field could not be empty.']}>
+      <FieldWrapper errors={this.state.errors.display_name}>
         <DisplayName value={this.state.data.display_name}
                      onChange={this.onChangeDisplayName} />
       </FieldWrapper>
@@ -159,7 +164,7 @@ export class ProfileForm extends React.Component {
 
   renderEmailField() {
     return (
-      <FieldWrapper label="Your email" errors={['Field could not be empty.']}>
+      <FieldWrapper label="Your email" errors={this.state.errors.emails}>
         <Email emails={this.state.data.emails}
                onChange={this.onChangeEmails} />
       </FieldWrapper>
@@ -171,7 +176,7 @@ export class ProfileForm extends React.Component {
 
     if (emails && emails.length > 1 && emails[1]) {
       return (
-        <FieldWrapper label="Primary email" errors={['Field could not be empty.']}>
+        <FieldWrapper label="Primary email">
           <PrimaryEmail emails={emails}
                         value={this.state.data.primary_email}
                         onChange={this.onChangePrimaryEmail} />
@@ -184,7 +189,7 @@ export class ProfileForm extends React.Component {
 
   renderPhoneField() {
     return (
-      <FieldWrapper label="Phone #" errors={['Field could not be empty.']}>
+      <FieldWrapper label="Phone #" errors={this.state.errors.phone}>
         <Phone value={this.state.data.phone}
                onChange={this.onChangePhone} />
       </FieldWrapper>
@@ -198,7 +203,7 @@ export class ProfileForm extends React.Component {
     }
 
     return (
-      <FieldWrapper label="Language" errors={['Field could not be empty.', 'One more error has occured.']}>
+      <FieldWrapper label="Language" errors={this.state.errors.language_id}>
         <Language languages={languages}
                   value={this.state.data.language_id}
                   onChange={this.onChangeLanguage} />
@@ -210,7 +215,7 @@ export class ProfileForm extends React.Component {
     const { timezones } = this.props;
 
     return (
-      <FieldWrapper label="Time Zone" errors={['Field could not be empty.']}>
+      <FieldWrapper label="Time Zone" errors={this.state.errors.timezone}>
         <Timezone timezones={timezones}
                   value={this.state.data.timezone}
                   onChange={this.onChangeTimezone} />
@@ -220,7 +225,7 @@ export class ProfileForm extends React.Component {
 
   renderPasswordField() {
     return (
-      <FieldWrapper label="Password" errors={['Field could not be empty.']}>
+      <FieldWrapper label="Password" errors={this.state.errors.password}>
         <Password
           value={this.state.data.password}
           onChange={this.onChangePassword} />
