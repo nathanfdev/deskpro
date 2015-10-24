@@ -26,55 +26,56 @@ export class ProfileForm extends React.Component {
     const profile = props.profile;
 
     this.state = {
-      name: profile.get('name'),
-      display_name: profile.get('display_name'),
-      emails: profile.get('emails').toArray() || [],
-      primary_email: profile.get('primary_email'),
-      phone: {
-        number: profile.get('phone').get('number'),
-        extension: profile.get('phone').get('extension')
-      },
-      language_id: profile.get('language_id'),
-      timezone: profile.get('timezone') || 'UTC',
-      password: {
-        first: null,
-        second: null
+      data: {
+        name: profile.get('name'),
+        display_name: profile.get('display_name'),
+        emails: profile.get('emails').toArray() || [],
+        primary_email: profile.get('primary_email'),
+        phone: {
+          number: profile.get('phone').get('number'),
+          extension: profile.get('phone').get('extension')
+        },
+        language_id: profile.get('language_id'),
+        timezone: profile.get('timezone') || 'UTC',
+        password: {
+          first: null,
+          second: null
+        }
       }
     };
   }
 
   onChangeName = (value) => {
-    this.setState({
+    this.updateData({
       name: value
     });
   };
 
   onChangeDisplayName = (value) => {
-    this.setState({
+    this.updateData({
       display_name: value
     });
   };
 
   onChangeEmails = (emails) => {
-    this.setState({
+    const diff = {
       emails: emails
-    });
-
+    };
     if (emails.length) {
-      this.setState({
-        primary_email: emails[0]
-      });
+      diff.primary_email = emails[0];
     }
+
+    this.updateData(diff);
   };
 
   onChangePrimaryEmail = (value) => {
-    this.setState({
+    this.updateData({
       primary_email: value
     });
   };
 
   onChangePhone = (number, extension) => {
-    this.setState({
+    this.updateData({
       phone: {
         number: number,
         extension: extension
@@ -83,19 +84,19 @@ export class ProfileForm extends React.Component {
   };
 
   onChangeLanguage = (value) => {
-    this.setState({
+    this.updateData({
       language_id: value
     });
   };
 
   onChangeTimezone = (value) => {
-    this.setState({
+    this.updateData({
       timezone: value
     });
   };
 
   onChangePassword = (first, second) => {
-    this.setState({
+    this.updateData({
       password: {
         first: first,
         second: second
@@ -103,13 +104,20 @@ export class ProfileForm extends React.Component {
     });
   };
 
+  updateData(diff) {
+    const oldData = this.state.data;
+    this.setState({
+      data: {...oldData, ...diff}
+    });
+  }
+
   submitForm = (event) => {
     event.preventDefault();
     const { dispatch } = this.props;
 
     console.log(this.state);
 
-    DpApi.sendPut('DP_API/me/profile', this.state)
+    DpApi.sendPut('DP_API/me/profile', this.state.data)
       .success(response => {
         const records = {};
         records[response.data.id] = response.data;
@@ -127,7 +135,7 @@ export class ProfileForm extends React.Component {
   renderNameField() {
     return (
       <FieldWrapper label="Your name">
-        <Name value={this.state.name}
+        <Name value={this.state.data.name}
               onChange={this.onChangeName} />
       </FieldWrapper>
     );
@@ -135,7 +143,7 @@ export class ProfileForm extends React.Component {
 
   renderDisplayNameField() {
     return (
-      <DisplayName value={this.state.display_name}
+      <DisplayName value={this.state.data.display_name}
                    onChange={this.onChangeDisplayName} />
     );
   }
@@ -143,20 +151,20 @@ export class ProfileForm extends React.Component {
   renderEmailField() {
     return (
       <FieldWrapper label="Your email">
-        <Email emails={this.state.emails}
+        <Email emails={this.state.data.emails}
                onChange={this.onChangeEmails} />
       </FieldWrapper>
     );
   }
 
   renderPrimaryEmailField() {
-    const emails = this.state.emails;
+    const emails = this.state.data.emails;
 
     if (emails && emails.length > 1 && emails[1]) {
       return (
         <FieldWrapper label="Primary email">
-          <PrimaryEmail emails={this.state.emails}
-                        value={this.state.primary_email}
+          <PrimaryEmail emails={emails}
+                        value={this.state.data.primary_email}
                         onChange={this.onChangePrimaryEmail} />
         </FieldWrapper>
       );
@@ -168,7 +176,7 @@ export class ProfileForm extends React.Component {
   renderPhoneField() {
     return (
       <FieldWrapper label="Phone #">
-        <Phone value={this.state.phone}
+        <Phone value={this.state.data.phone}
                onChange={this.onChangePhone} />
       </FieldWrapper>
     );
@@ -183,7 +191,7 @@ export class ProfileForm extends React.Component {
     return (
       <FieldWrapper label="Language">
         <Language languages={languages}
-                  value={this.state.language_id}
+                  value={this.state.data.language_id}
                   onChange={this.onChangeLanguage} />
       </FieldWrapper>
     );
@@ -195,7 +203,7 @@ export class ProfileForm extends React.Component {
     return (
       <FieldWrapper label="Time Zone">
         <Timezone timezones={timezones}
-                  value={this.state.timezone}
+                  value={this.state.data.timezone}
                   onChange={this.onChangeTimezone} />
       </FieldWrapper>
     );
@@ -205,7 +213,7 @@ export class ProfileForm extends React.Component {
     return (
       <FieldWrapper label="Password">
         <Password
-          value={this.state.password}
+          value={this.state.data.password}
           onChange={this.onChangePassword} />
       </FieldWrapper>
     );
