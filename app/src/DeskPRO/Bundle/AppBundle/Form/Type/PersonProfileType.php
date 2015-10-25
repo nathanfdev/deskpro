@@ -28,14 +28,11 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\FreeEmail;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\NotBannedEmail;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\NotSystemEmail;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\PhoneNumber;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppConstraints;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints;
 
 /**
  * Class PersonProfileType.
@@ -58,7 +55,7 @@ class PersonProfileType extends AbstractType
         $builder
             ->add('name', 'text', [
                 'constraints' => [
-                    new NotBlank(),
+                    new Constraints\NotBlank(),
                 ],
             ])
             ->add('display_name', 'text', [
@@ -73,22 +70,29 @@ class PersonProfileType extends AbstractType
                 'property_path'   => 'emailAddresses',
                 'error_bubbling'  => false,
                 'constraints'     => [
-                    new NotSystemEmail(),
-                    new NotBannedEmail(),
+                    new Constraints\All([
+                        new Constraints\Email(),
+                    ]),
+                    new AppConstraints\NotSystemEmail(),
+                    new AppConstraints\NotBannedEmail(),
+                ],
+                'options' => [
+                    'error_bubbling' => true,
                 ],
             ])
             ->add('primary_email', 'email', [
                 'property_path' => 'email',
                 'constraints'   => [
-                    new NotSystemEmail(),
-                    new NotBannedEmail(),
+                    new Constraints\Email(),
+                    new AppConstraints\NotSystemEmail(),
+                    new AppConstraints\NotBannedEmail(),
                 ],
             ])
             ->add('phone', new PhoneNumberType(), [
                 'property_path'  => 'primaryPhoneNumber',
                 'error_bubbling' => false,
                 'constraints'    => [
-                    new PhoneNumber(),
+                    new AppConstraints\PhoneNumber(),
                 ],
             ])
             ->add('language_id', 'entity', [
@@ -116,7 +120,7 @@ class PersonProfileType extends AbstractType
         $resolver->setDefaults([
             'csrf_protection' => false,
             'constraints'     => [
-                new FreeEmail([
+                new AppConstraints\FreeEmail([
                     'property' => 'emailAddresses',
                 ]),
             ],

@@ -175,7 +175,7 @@ export class ProfileForm extends React.Component {
 
     if (emails && emails.length > 1 && emails[1]) {
       return (
-        <FieldWrapper label="Primary email">
+        <FieldWrapper label="Primary email" errors={this.state.errors.primary_email}>
           <PrimaryEmail emails={emails}
                         value={this.state.data.primary_email}
                         onChange={this.onChangePrimaryEmail} />
