@@ -29,12 +29,14 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\FreeEmail;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\NotBannedEmail;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\NotSystemEmail;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\PhoneNumber;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
@@ -74,13 +76,14 @@ class PersonProfileType extends AbstractType
                 'error_bubbling'  => false,
                 'constraints'     => [
                     new NotSystemEmail(),
+                    new NotBannedEmail(),
                 ],
             ])
             ->add('primary_email', 'email', [
                 'property_path' => 'email',
                 'constraints'   => [
-                    new Email(),
                     new NotSystemEmail(),
+                    new NotBannedEmail(),
                 ],
             ])
             ->add('phone', new PhoneNumberType(), [
@@ -104,6 +107,9 @@ class PersonProfileType extends AbstractType
                     'error_bubbling' => true,
                 ],
             ])
+            ->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+                $a = $event;
+            })
         ;
     }
 

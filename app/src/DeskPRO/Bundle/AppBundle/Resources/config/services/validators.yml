@@ -27,3 +27,10 @@ services:
         - @email.email_account_manager
       tags:
         - { name: validator.constraint_validator, alias: 'not_system_email_validator' }
+
+  validator.not_banned_email:
+      class: DeskPRO\Bundle\AppBundle\Validator\Constraints\NotBannedEmailValidator
+      arguments:
+        - @=service('doctrine.orm.default_entity_manager').getRepository('DeskPRO:BanEmail')
+      tags:
+        - { name: validator.constraint_validator, alias: 'not_banned_email_validator' }

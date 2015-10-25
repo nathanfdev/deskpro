@@ -28,29 +28,29 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
-use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
+use Application\DeskPRO\EntityRepository;
+use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 /**
- * Class NotSystemEmailValidator.
+ * Class NotBannedEmailValidator.
  */
-class NotSystemEmailValidator extends ConstraintValidator
+class NotBannedEmailValidator extends ConstraintValidator
 {
     /**
-     * @var EmailAccountManager
+     * @var EntityRepository\BanEmail
      */
-    private $email_account_manager;
+    private $ban_email_repository;
 
     /**
      * Constructor.
      *
-     * @param EmailAccountManager $email_account_manager
+     * @param EntityRepository\BanEmail $ban_email_repository
      */
-    public function __construct(EmailAccountManager $email_account_manager)
+    public function __construct(EntityRepository\BanEmail $ban_email_repository)
     {
-        $this->email_account_manager = $email_account_manager;
+        $this->ban_email_repository = $ban_email_repository;
     }
 
     /**
@@ -58,17 +58,17 @@ class NotSystemEmailValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
-        if (!$constraint instanceof NotSystemEmail) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\NotSystemEmail');
+        if (!$constraint instanceof NotBannedEmail) {
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\NotBannedEmail');
         }
 
-        $emails           = (array) $value;
-        $system_addresses = array_filter($emails, function ($email) {
-            return $this->email_account_manager->findAccountForEmailAddress($email);
+        $emails        = (array) $value;
+        $banned_emails = array_filter($emails, function ($email) {
+            return $this->ban_email_repository->isEmailBanned($email);
         });
 
-        if ($system_addresses) {
-            $this->context->addViolation($constraint->message, ['emails' => implode(', ', $system_addresses)]);
+        if ($banned_emails) {
+            $this->context->addViolation($constraint->message, ['emails' => implode(', ', $banned_emails)]);
         }
     }
 }

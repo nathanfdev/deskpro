@@ -28,47 +28,21 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
-use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
+use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\ConstraintValidator;
-use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 /**
- * Class NotSystemEmailValidator.
+ * Class NotBannedEmail.
  */
-class NotSystemEmailValidator extends ConstraintValidator
+class NotBannedEmail extends Constraint
 {
-    /**
-     * @var EmailAccountManager
-     */
-    private $email_account_manager;
-
-    /**
-     * Constructor.
-     *
-     * @param EmailAccountManager $email_account_manager
-     */
-    public function __construct(EmailAccountManager $email_account_manager)
-    {
-        $this->email_account_manager = $email_account_manager;
-    }
+    public $message = ApiErrors::BANNED_EMAIL;
 
     /**
      * {@inheritdoc}
      */
-    public function validate($value, Constraint $constraint)
+    public function validatedBy()
     {
-        if (!$constraint instanceof NotSystemEmail) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\NotSystemEmail');
-        }
-
-        $emails           = (array) $value;
-        $system_addresses = array_filter($emails, function ($email) {
-            return $this->email_account_manager->findAccountForEmailAddress($email);
-        });
-
-        if ($system_addresses) {
-            $this->context->addViolation($constraint->message, ['emails' => implode(', ', $system_addresses)]);
-        }
+        return 'not_banned_email_validator';
     }
 }
