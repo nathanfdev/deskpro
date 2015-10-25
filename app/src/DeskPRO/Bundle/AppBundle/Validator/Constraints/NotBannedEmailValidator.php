@@ -67,8 +67,10 @@ class NotBannedEmailValidator extends ConstraintValidator
             return $this->ban_email_repository->isEmailBanned($email);
         });
 
-        if ($banned_emails) {
-            $this->context->addViolation($constraint->message, ['emails' => implode(', ', $banned_emails)]);
+        foreach ($banned_emails as $email) {
+            $this->context->addViolation($constraint->message, [
+                'email' => $email,
+            ]);
         }
     }
 }

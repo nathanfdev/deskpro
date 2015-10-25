@@ -75,9 +75,9 @@ class PersonProfileType extends AbstractType
                 'constraints'     => [
                     new Constraints\All([
                         new Constraints\Email(),
+                        new AppConstraints\NotSystemEmail(),
+                        new AppConstraints\NotBannedEmail(),
                     ]),
-                    new AppConstraints\NotSystemEmail(),
-                    new AppConstraints\NotBannedEmail(),
                 ],
                 'options' => [
                     'error_bubbling' => true,

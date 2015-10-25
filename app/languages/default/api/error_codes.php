@@ -57,9 +57,11 @@ return array(
     # NotNull/NotBlank
     'api.error_codes.required' => 'This value should not be blank.',
     # Forms
-    'api.error_codes.bad_choice'         => 'One or more of the given values is invalid.',
-    'api.error_codes.invalid_email'      => 'This value is not a valid email address.',
-    'api.error_codes.resource_not_found' => 'The value was not found.',
+    'api.error_codes.bad_choice'                  => 'One or more of the given values is invalid.',
+    'api.error_codes.invalid_email'               => 'This value "{{ value }}" is not a valid email address.',
+    'api.error_codes.resource_not_found'          => 'The value was not found.',
+    'api.error_codes.invalid_phone_number_format' => 'Invalid phone number format.',
+    'api.error_codes.banned_email'                => 'Email "{{ email }}" is banned.',
     # Term Engine Specific
     'api.error_codes.op_not_supported'         => 'Op "{{ op }}" not supported. Supported ops are: {{ ops }}',
     'api.error_codes.term_type_does_not_exist' => 'You tried to create a term with the type code "{{ type }}", but it does not exist. Please check your term types.',
