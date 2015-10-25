@@ -78,10 +78,10 @@ class FreeEmailValidator extends ConstraintValidator
         }
 
         $exist_emails = array_unique($exist_emails);
-        if ($exist_emails) {
+        foreach ($exist_emails as $email) {
             $this
                 ->buildViolation($constraint->message)
-                ->setParameter('emails', implode(', ', $exist_emails))
+                ->setParameter('email', $email)
                 ->atPath($constraint->property)
                 ->addViolation()
             ;
