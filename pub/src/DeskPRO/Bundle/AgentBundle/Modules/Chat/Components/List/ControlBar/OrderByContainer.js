@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 @connect(state => ({
   sortOptions: state.Chat.list.get('sortOptions').toJS(),
   order:       state.Chat.list.get('order'),
-  currentSortMode: currentSortOptionSelector(state)
+  currentSortOption: currentSortOptionSelector(state)
 }))
 export class OrderByContainer extends React.Component {
 

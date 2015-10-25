@@ -203,7 +203,6 @@ export class NestedList extends BaseList {
   }
 
   render() {
-    console.log('Status items: ', this.props.items);
     const depth = this.props.depth || 1;
     const className = depth > 1
       ? 'with-connectors depth-' + (depth - 1)

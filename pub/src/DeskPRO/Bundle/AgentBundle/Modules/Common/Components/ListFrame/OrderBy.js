@@ -4,20 +4,20 @@ import { ControlButton } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Compone
 export class OrderBy extends Component {
 
   static propTypes = {
-    currentSortMode: PropTypes.object.isRequired,
+    currentSortOption: PropTypes.object.isRequired,
     toggleDropdown: PropTypes.func.isRequired,
     children: PropTypes.any.isRequired,
     order: PropTypes.string.isRequired
   };
 
   render() {
-    const { order, currentSortMode, toggleDropdown } = this.props;
-    const label = `${currentSortMode.label} (${order})`;
+    const { order, currentSortOption, toggleDropdown } = this.props;
+    const label = `${currentSortOption.label} (${order})`;
     return (
       <li>
         <ControlButton
           title="Order by:"
-          icon={currentSortMode.icon}
+          icon={currentSortOption.icon}
           label={label}
           toggleDropdown={toggleDropdown}
           />

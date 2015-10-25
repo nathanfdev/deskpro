@@ -8,7 +8,7 @@ import { currentSortOptionSelector } from '../../../Selectors/list';
 @connect(state => ({
   sortOptions: state.Chat.list.get('sortOptions').toJS(),
   order: state.Chat.list.get('order'),
-  currentSortMode: currentSortOptionSelector(state)
+  currentSortOption: currentSortOptionSelector(state)
 }))
 export class OrderByDropdownContainer extends Component {
 
@@ -17,12 +17,12 @@ export class OrderByDropdownContainer extends Component {
   };
 
   render() {
-    const { sortOptions, order, currentSortMode, offset } = this.props;
+    const { sortOptions, order, currentSortOption, offset } = this.props;
 
     return (
       <DropdownMenu offset={offset}>
         {sortOptions.map((option, index)=>
-            <Option key={index} active={currentSortMode.field === option.field}
+            <Option key={index} active={currentSortOption.field === option.field}
                     callback={this.toggleListSort.bind(this)}
                     option={option}/>
         )}

@@ -11,12 +11,13 @@ const initialState = {
   feedback: [],
   selected: [], // array of IDs
   comments: [],
-  order: constants.ORDER_DESC, /* Asc, Desc */
-  sortOptions: [
-    {field: 'date_created', label: 'Date', icon: 'calendar', current: true},
-    {field: 'total_rating', label: 'Rating', icon: 'calendar-o', current: false},
-    {field: 'num_ratings', label: 'Votes', icon: 'calendar', current: false}
-  ],
+
+  // currently viewed list GET parameters map
+  currentListParams: {
+    sort: 'date_created',
+    order: constants.ORDER_DESC
+  },
+
   filterOptions: [
     {field: 'category', label: 'Type', icon: 'fa-calendar-o', value: '', current: true},
     {field: 'status', label: 'Status', icon: 'fa-calendar-o', value: '', current: false},
@@ -81,10 +82,10 @@ export default createReducer(initialState, {
   }),
 
   [actions.loadFeedbackList]: async({
-    success: (state, payload) => {
-      return state.set('feedback', payload.data);
-    }
+    success: (state, payload) => state.set('feedback', payload.data)
   }),
+
+  [actions.setCurrentListParams]: (state, payload) => state.set('currentListParams', Immutable.fromJS(payload)),
 
   [commentsActions.loadCommentsList]: async({
     success: (state, payload) => state.set('comments', payload.data)
@@ -117,16 +118,6 @@ export default createReducer(initialState, {
 
     return state.set('selected', selected);
   },
-  [actions.toggleSort]: (state, payload) => {
-    const sortOptions = [];
-    state.get('sortOptions').toJS().forEach(obj=> {
-      console.log(obj.field);
-      const nextObj = {...obj};
-      nextObj.current = obj.field === payload;
-      sortOptions.push(nextObj);
-    });
-    return state.set('sortOptions', Immutable.fromJS(sortOptions));
-  },
   [actions.setTableSort]: (state, payload) => {
     const tableViewFields = [];
     state.get('tableViewFields').toJS().forEach(obj=> {
@@ -136,7 +127,6 @@ export default createReducer(initialState, {
     });
     return state.set('tableViewFields', Immutable.fromJS(tableViewFields));
   },
-  [actions.toggleOrder]: setFullPayload('order'),
   [actions.getDisplayFieldsFromPersonSetting]: async({
     success: (state, payload) =>
       state.setIn(['viewFields'], payload.data.value)

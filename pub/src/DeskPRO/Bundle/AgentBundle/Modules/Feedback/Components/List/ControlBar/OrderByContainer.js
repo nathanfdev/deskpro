@@ -1,35 +1,40 @@
 import React, {Component, PropTypes} from 'react';
 import { OrderBy } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import OrderByDropdown from './OrderByDropdown';
-import { sortingDataSelector, isCommentsSelector } from '../../../Selectors/list';
+import { currentListSortSelector, currentListOrderSelector, isCommentsSelector } from '../../../Selectors/list';
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
-
 import { connect } from 'react-redux';
+
+const sortOptions = [
+  {field: 'date_created', label: 'Date', icon: 'calendar'},
+  {field: 'total_rating', label: 'Rating', icon: 'calendar-o'},
+  {field: 'num_ratings', label: 'Votes', icon: 'calendar'}
+];
+
 @connect(state => ({
-  sortOptions: state.Feedback.list.get('sortOptions').toJS(),
-  order: state.Feedback.list.get('order'),
-  currentSortMode: sortingDataSelector(state),
+  sort: currentListSortSelector(state),
+  order: currentListOrderSelector(state),
   isComments: isCommentsSelector(state)
 }))
-
 export class OrderByContainer extends Component {
 
   static propTypes = {
     order: PropTypes.string.isRequired,
     expanded: PropTypes.bool.isRequired,
-    currentSortMode: PropTypes.object.isRequired,
-    sortOptions: PropTypes.object.isRequired,
+    sort: PropTypes.object.isRequired,
     toggleDropdown: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     isComments: PropTypes.bool.isRequired
   };
 
   render() {
-    const { dispatch, expanded, sortOptions, order, currentSortMode, toggleDropdown, isComments } = this.props;
+    const { dispatch, expanded, order, sort, toggleDropdown, isComments } = this.props;
+    const currentSortOption = sortOptions.find(option => option.field === sort);
+
     return (
       <OrderBy
         sortOptions={sortOptions}
-        currentSortMode={currentSortMode}
+        currentSortOption={currentSortOption}
         order={order}
         toggleDropdown={toggleDropdown}
         ref="orderButton"
@@ -41,7 +46,7 @@ export class OrderByContainer extends Component {
             order={order}
             toggleDropdown={toggleDropdown}
             sortOptions={sortOptions}
-            currentSortMode={currentSortMode}
+            currentSortOption={currentSortOption}
             dispatch={dispatch}
             isComments={isComments}
           />
