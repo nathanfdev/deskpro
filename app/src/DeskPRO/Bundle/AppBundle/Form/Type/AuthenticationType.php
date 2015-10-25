@@ -26,26 +26,24 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
-use Orb\Util\PhoneNumbers;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 /**
- * Class PhoneNumberType.
+ * Class AuthenticationType.
  */
-class PhoneNumberType extends AbstractType
+class AuthenticationType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
-        return 'phone_number';
+        return 'login';
     }
 
     /**
@@ -54,34 +52,22 @@ class PhoneNumberType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('number', 'hidden', [
-                'required'    => false,
-                'label'       => false,
-                'constraints' => [
-                    new NotBlank(['message' => 'Phone number is invalid.']),
-                ],
+            ->add('email', 'email', [
+                'constraints' => new NotNull(),
             ])
-            ->add('extension', 'hidden', [
-                'required'      => false,
-                'label'         => false,
-                'property_path' => 'ext',
+            ->add('password', 'password', [
+                'constraints' => new NotNull(),
             ])
         ;
+    }
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-            $data = $event->getForm()->getData();
-
-            /*
-             * moved from PhoneNumber entity:
-             * We do logic here (with the help of Google's libphonenumber) to
-             * get the region code, and validate/format the number.
-             */
-
-            if ($data && $data['number']) {
-                $number = $data['number'];
-                $data['region'] = PhoneNumbers::getRegionForNumber($number);
-                $data['guessed_type'] = PhoneNumbers::getTypeCode($number);
-            }
-        });
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'csrf_protection' => false,
+        ]);
     }
 }

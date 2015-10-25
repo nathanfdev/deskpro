@@ -33,10 +33,10 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\ApiBundle\Form\Type\PersonProfileType;
 use DeskPRO\Bundle\ApiBundle\Model\Me;
 use DeskPRO\Bundle\ApiBundle\Model\PersonProfile;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
+use DeskPRO\Bundle\AppBundle\Form\Type\PersonProfileType;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\View\View;

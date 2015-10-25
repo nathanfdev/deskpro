@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\FreeEmail;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\NotSystemEmail;
@@ -115,7 +115,9 @@ class PersonProfileType extends AbstractType
         $resolver->setDefaults([
             'csrf_protection' => false,
             'constraints'     => [
-                new FreeEmail(['property' => 'emailAddresses']),
+                new FreeEmail([
+                    'property' => 'emailAddresses',
+                ]),
             ],
         ]);
     }
