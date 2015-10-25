@@ -5,16 +5,16 @@ export class FieldWrapper extends React.Component {
   static propTypes = {
     label: PropTypes.string.isRequired,
     children: PropTypes.any.isRequired,
-    errors: PropTypes.object
+    errors: PropTypes.array
   };
 
   renderErrors() {
     const { errors } = this.props;
-    if (errors && errors.errors) {
+    if (errors) {
       return (
         <div className="bucket-column">
           <ul className="error">
-            {errors.errors.map(error => (<li>{error.message}</li>))}
+            {errors.map(error => (<li>{error.message}</li>))}
           </ul>
         </div>
       );

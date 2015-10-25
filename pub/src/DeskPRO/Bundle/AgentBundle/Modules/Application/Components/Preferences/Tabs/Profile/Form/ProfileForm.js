@@ -10,6 +10,7 @@ import { Timezone } from './Fields/Timezone';
 import { Password } from './Fields/Password';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import * as ProfilesActions from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/profilesActions';
+import Immutable from 'immutable';
 
 export class ProfileForm extends React.Component {
 
@@ -136,8 +137,9 @@ export class ProfileForm extends React.Component {
       })
       .catch(http => {
         changeSubmitStatus(false);
+        const fieldsErrors = Immutable.fromJS(http.xhr.responseJSON.errors ? http.xhr.responseJSON.errors.fields : {});
         this.setState({
-          errors: http.xhr.responseJSON.errors ? http.xhr.responseJSON.errors.fields : {}
+          errors: fieldsErrors.map(fieldErrors => fieldErrors.get('errors')).toJS()
         });
       })
     ;
