@@ -45,6 +45,8 @@ use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Pagerfanta\Adapter\FixedAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -368,13 +370,23 @@ class TicketFiltersController extends BaseController
         $context       = new TermEngineContext($this->getUser());
         $tickets_query = $engine->evaluate($filter, $context);
 
-        $tickets_query->setCount($request->query->get('count', 10));
-        $tickets_query->setPage($request->query->get('page', 1));
+        $currentPage = $request->query->get('page', 1);
+        $maxPerPage  = $request->query->get('count', 10);
+
+        $tickets_query->setCount($maxPerPage);
+        $tickets_query->setPage($currentPage);
         $ticket_ids = $tickets_query->fetchIds();
         $tickets    = $this->getEm()->getRepository('DeskPRO:Ticket')->findBy(['id' => $ticket_ids]);
 
+        // retrieve total count and wrap results in Pagerfanta
+        $total        = $this->getTicketFilterCount($filter)->getCount();
+        $pagerAdapter = new FixedAdapter($total, $tickets);
+        $pager        = new Pagerfanta($pagerAdapter);
+        $pager->setCurrentPage($currentPage);
+        $pager->setMaxPerPage($maxPerPage);
+
         return View::create(
-            $this->dataSerialize($tickets),
+            $this->dataSerialize($pager),
             Response::HTTP_OK
         );
     }
