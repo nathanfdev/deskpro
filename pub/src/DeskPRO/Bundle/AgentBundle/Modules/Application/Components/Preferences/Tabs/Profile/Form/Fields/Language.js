@@ -5,7 +5,7 @@ export class Language extends React.Component {
 
   static propTypes = {
     languages: PropTypes.object.isRequired,
-    value: PropTypes.string,
+    value: PropTypes.number,
     onChange: PropTypes.func.isRequired
   };
 

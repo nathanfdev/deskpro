@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 export class FieldWrapper extends React.Component {
 
   static propTypes = {
-    label: PropTypes.string.isRequired,
+    label: PropTypes.string,
     children: PropTypes.any.isRequired,
     errors: PropTypes.array
   };
