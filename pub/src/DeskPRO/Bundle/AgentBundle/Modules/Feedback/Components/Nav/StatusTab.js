@@ -13,6 +13,7 @@ export class StatusTab extends Component {
     const { active, closed, hidden } = this.props.statuses;
 
     // @todo Turn it in form of NestedList in the reducer
+    // @todo Rename 'new' within statuses
     const items = [
       {...active, group: 'active'},
       {...closed, group: 'closed'},
