@@ -63,6 +63,7 @@ return array(
     'api.error_codes.invalid_phone_number_format' => 'Invalid phone number format.',
     'api.error_codes.banned_email'                => 'Email "{{ email }}" is banned.',
     'api.error_codes.dupe_email'                  => 'Email "{{ email }}" is already in use by other user.',
+    'api.error_codes.system_email'                => 'Email "{{ email }}" is already being used as email account.',
     # Term Engine Specific
     'api.error_codes.op_not_supported'         => 'Op "{{ op }}" not supported. Supported ops are: {{ ops }}',
     'api.error_codes.term_type_does_not_exist' => 'You tried to create a term with the type code "{{ type }}", but it does not exist. Please check your term types.',

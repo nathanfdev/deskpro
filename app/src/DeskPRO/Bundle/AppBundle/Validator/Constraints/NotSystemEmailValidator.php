@@ -62,13 +62,15 @@ class NotSystemEmailValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\NotSystemEmail');
         }
 
-        $emails           = (array) $value;
-        $system_addresses = array_filter($emails, function ($email) {
+        $emails        = (array) $value;
+        $system_emails = array_filter($emails, function ($email) {
             return $this->email_account_manager->findAccountForEmailAddress($email);
         });
 
-        if ($system_addresses) {
-            $this->context->addViolation($constraint->message, ['emails' => implode(', ', $system_addresses)]);
+        foreach ($system_emails as $email) {
+            $this->context->addViolation($constraint->message, [
+                'email' => $email,
+            ]);
         }
     }
 }
