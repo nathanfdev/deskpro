@@ -7,8 +7,11 @@ export class NestedList extends BaseNestedList {
     this.ensureValidDepth(depth);
     const label = group[0].toUpperCase() + group.slice(1);
 
+    // 1st level menu items set 'status' filtering option, all other set 'status_category'
+    const listOptions = (depth === 1) ? {status: group} : {status_category: group}
+
     return (
-      <ListItemContainer key={group} label={label} count={count} listOptions={{'status_category': group}}>
+      <ListItemContainer key={group} label={label} count={count} listOptions={listOptions}>
         {this.renderNested(nested, group, depth)}
       </ListItemContainer>
     );

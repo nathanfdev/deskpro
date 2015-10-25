@@ -24,7 +24,7 @@ export class StatusTab extends Component {
         <ListItemContainer
           label="New"
           count={this.props.statuses.new}
-          listOptions={{status: 'new'}}
+          listOptions={{status_category: 'new'}}
         />
         <NestedList items={items} alwaysExpanded />
       </ul>
