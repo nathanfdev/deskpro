@@ -41,9 +41,10 @@ export function releaseRecords() {
       state
     );
 
+    const ids = payload.ids || state.getIn(['requests', payload.requestId]).toArray();
     const next = state.setIn(
       ['requests', payload.requestId],
-      state.getIn(['requests', payload.requestId]).filter(recordId => payload.ids.indexOf(recordId) === -1)
+      state.getIn(['requests', payload.requestId]).filter(recordId => ids.indexOf(recordId) === -1)
     );
 
     return gc(next);

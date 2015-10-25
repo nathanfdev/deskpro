@@ -38,6 +38,7 @@ class LanguageTransformer extends AbstractDataSerializerTransformer
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
         return [
+            'id',
             'sys_name',
             'lang_code',
             'title',

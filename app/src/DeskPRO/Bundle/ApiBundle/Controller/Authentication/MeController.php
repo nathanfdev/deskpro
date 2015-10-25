@@ -32,13 +32,20 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Model\Me;
-use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
+use DeskPRO\Bundle\ApiBundle\Model\PersonProfile;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
 use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class MeController.
+ */
 class MeController extends BaseController
 {
     /**
@@ -55,13 +62,12 @@ class MeController extends BaseController
     public function meAction()
     {
         /** @var \DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken $token */
-        $token = $this->get('security.token_storage')->getToken();
-
+        $token  = $this->get('security.token_storage')->getToken();
         $person = $token->getUser();
 
         $me              = new Me();
-        $me->auth_method = $this->makeAuthMethodString($token);
-        $me->person_id   = $token->getUser()->getId();
+        $me->auth_method = $token->getName();
+        $me->person_id   = $person->getId();
         $me->person      = $person->toApiData(); //TODO
 
         if ($token instanceof AgentSessionSecurityToken) {
@@ -76,8 +82,42 @@ class MeController extends BaseController
         );
     }
 
-    protected function makeAuthMethodString(AbstractApiSecurityToken $token)
+    /**
+     * @Get("/me/profile", name="get_my_profile")
+     */
+    public function getProfileAction()
     {
-        return $token->getName();
+        return View::create(
+            $this->dataSerialize(new PersonProfile($this->getUser())),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @Put("/me/profile", name="put_my_profile")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function putProfileAction(Request $request)
+    {
+        $person = $this->getUser();
+
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'person_profile', $person)->getForm();
+        $form->submit($request->request->all());
+
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($person);
+        $em->flush();
+
+        return View::create(
+            $this->dataSerialize(new PersonProfile($person)),
+            Response::HTTP_CREATED
+        );
     }
 }

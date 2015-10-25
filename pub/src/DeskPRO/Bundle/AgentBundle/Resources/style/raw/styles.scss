@@ -2,9 +2,11 @@
 // temporarily remove them from the @import list below and link them directly on the html (so running sass --watch ./ doesnt render the externaly linked files through styles.css but creates a new css file for it )
 
 $fa-font-path: "../../../../../../node_modules/font-awesome/fonts";
+$flagsImagePath: "../../../../../../node_modules/intl-tel-input/build/img/";
 @import "../../../../../../../node_modules/font-awesome/scss/font-awesome";
 @import "../../../../../../../node_modules/node-bourbon/node_modules/bourbon/app/assets/stylesheets/bourbon";
 @import "../../../../../../../node_modules/node-neat/node_modules/bourbon-neat/app/assets/stylesheets/neat";
+@import "../../../../../../../node_modules/intl-tel-input/src/css/intlTelInput";
 //@import "../fonts/font-awesome/css/font-awesome.min.css";
 
 // // http://bourbon.io

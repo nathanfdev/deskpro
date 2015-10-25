@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -52,9 +52,12 @@ class AuthenticationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('email', 'email', ['constraints' => new NotNull()])
-            ->add('password', 'password', ['constraints' => new NotNull()])
-            ->getForm()
+            ->add('email', 'email', [
+                'constraints' => new NotNull(),
+            ])
+            ->add('password', 'password', [
+                'constraints' => new NotNull(),
+            ])
         ;
     }
 

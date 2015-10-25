@@ -5,8 +5,8 @@ $item-padding: 9px 10px;
   position: fixed;
   width: 100%;
   height: 100%;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   background: rgba(0, 0, 0, 0.7);
   z-index: 998;
 }
@@ -19,12 +19,12 @@ $popup-background: #f5f6f7;
   width: 100%;// Some responsiveness (although content will break for now)
   max-width: 950px;
   min-width: 820px;
-  max-height: 600px;
+  max-height: 800px;
   min-height: 400px;
   display: block;
   background: $popup-background;
   z-index: 999;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   color: $text-color;
   border-top: 4px solid #4681b2;
   // Place it in the middle of the screen
@@ -38,7 +38,7 @@ $popup-background: #f5f6f7;
   padding-bottom: 76px;
   // If we don't use a footer
 
-  &.no-footer { padding-bottom: 0px; }
+  &.no-footer { padding-bottom: 0; }
 
   // Popup title
   header {
@@ -84,8 +84,8 @@ $popup-background: #f5f6f7;
   // Full width footer content
   footer {
     position: absolute;
-    bottom: 0px;
-    left: 0px;
+    bottom: 0;
+    left: 0;
     width: 100%;
     background: #f5f6f7;
     border-top: 1px solid rgba(0, 0, 0, 0.1);
@@ -110,6 +110,14 @@ $popup-background: #f5f6f7;
     text-decoration: none;
     display: inline-block;
     font-size: 1em;
+  }
+
+  .intl-tel-input {
+    display: block;
+
+    input {
+      padding: 10px 5px 10px 48px;
+    }
   }
 
   .button {
@@ -167,31 +175,27 @@ $right-bucket: 200px;
 
 .popup-content {
   @include clearfix;
-  padding-left: $popup-sidebar + 10px;
-  padding-right: 10px;
-  padding-top: 10px;
-  padding-bottom: 5px;
+  padding: 10px 10px 10px $popup-sidebar + 10px;
 
   // Remove the padding from top & right side for popup content that needs to span the whole panel
   // See notification settings for an example (the right side sidebar needs to be stuck to the right and top - and padding was messing with that)
   // Don't forget to add a padding-top to the immediate content container so things remain aligned
   &.no-border {
-    padding-top: 0px;
-    padding-right: 0px;
-    padding-bottom: 0px;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
   }
 
   h1 {
     font-weight: 300;
     color: #333;
-    margin: 10px 0px;
+    margin: 10px 0;
   }
 
 }
 
 .popup-content.blank {
-  padding: 0px;
-  padding-left: $popup-sidebar + 10px;
+  padding: 0 0 0 $popup-sidebar + 10px;
 }
 
 .popup {
@@ -202,16 +206,19 @@ $right-bucket: 200px;
   // bucket-column-last: extra info - not needed if there's no content for it
   // bucket-column.bucket-column-full if we need to take over the width of column-last too
   .bucket {
-    padding: 5px 0px;
+    padding: 5px 0;
     vertical-align: top;
 
     &.bucket.short {
-      padding: 0px;
-      padding-left: 150px;
+      padding: 0 0 0 150px;
 
       label {
-        margin: 0;
+        margin: 0 5px 0 0;
         display: inline-block;
+      }
+
+      input {
+        margin: 5px;
       }
     }
 
@@ -225,16 +232,39 @@ $right-bucket: 200px;
     .small {
       font-size: 0.85em;
       opacity: 0.5;
+
+      &.field-note {
+        display: block;
+        margin-top: 5px;
+      }
     }
 
     .bucket-column {
       position: relative;
       padding-left: 150px;
       padding-right: $right-bucket;
+
+      ul {
+        &.error {
+          margin: 5px 0 0 0;
+          padding: 0;
+          list-style-type: none;
+
+          li {
+            font-size: 0.85em;
+            opacity: 0.5;
+            color: #ff0000;
+          }
+        }
+      }
+
+      &.submit {
+        text-align: center;
+      }
     }
 
     .bucket-column.bucket-column-full {
-      padding-right: 0px;
+      padding-right: 0;
     }
 
     .bucket-column-last {
@@ -258,7 +288,7 @@ $right-bucket: 200px;
   .label {
     text-align: right;
     padding: $item-padding;
-    &.single-line { padding-top: 0px; }// Titles for the checkbox lines
+    &.single-line { padding-top: 0; }// Titles for the checkbox lines
     font-size: 1em;
     border: 1px solid rgba(0, 0, 0, 0);
     margin: 0;
@@ -327,7 +357,7 @@ $right-bucket: 200px;
   .checkboxes {
     div {
       margin-bottom: 15px;
-      &:last-child { margin-bottom: 0px; }
+      &:last-child { margin-bottom: 0; }
     }
 
     [type="checkbox"] {
@@ -337,15 +367,19 @@ $right-bucket: 200px;
 
     .focus { font-weight: 600; }
   }
+
+  .Select {
+    padding: 0;
+    border: 0;
+    width: 100%;
+  }
 }
 
 
 
 // Sidebar vertical navigation
 .popup-sidebar-content {
-  padding: 10px;
-  padding-right: 0px;
-  padding-bottom: 0px;
+  padding: 10px 0 0 10px;
 
   ul {
     @extend %flat-list;
@@ -373,9 +407,12 @@ $right-bucket: 200px;
       border: 1px solid rgba(0, 0, 0, 0);
       border-bottom: 1px solid #dcddde;
 
-      > a {
-        padding: 10px;
-        font-weight: 400;
+      > div {
+
+        > a {
+          padding: 10px;
+          font-weight: 400;
+        }
       }
     }
 
@@ -417,14 +454,6 @@ $right-bucket: 200px;
     }
   }
 }
-
-
-
-
-
-
-
-
 
 
 // Report styles
@@ -472,9 +501,8 @@ $right-bucket: 200px;
       font-size: 0.8em;
 
       td {
-        border-left: 0px;
-        padding: 5px;
-        padding-top: 0px;
+        border-left: 0;
+        padding: 0 5px 5px;
         color: #ababab;
       }
     }
@@ -490,14 +518,13 @@ $right-bucket: 200px;
       text-align: left;
       color: #707070;
       width: 70%;
-      border-left: 0px;
+      border-left: 0;
 
       .avatar {
         display: inline-block;
         width: 26px;
         height: 26px;
         border-radius: 4px;
-        margin-right: 5px;
         background-size: cover;
         background-repeat: no-repeat;
         vertical-align: middle;
@@ -517,15 +544,6 @@ $right-bucket: 200px;
     }
   }
 }
-
-
-
-
-
-
-
-
-
 
 
 .popup-breadcrumbs {
@@ -548,12 +566,6 @@ $right-bucket: 200px;
     &:hover { opacity: 1; }
   }
 }
-
-
-
-
-
-
 
 
 // Tables for popups | Specific styles for each table on the separate scss files for each popup
@@ -584,45 +596,328 @@ $right-bucket: 200px;
   }
 }
 
+/**
+ * React Select
+*/
+.Select {
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 
+  div, input, span {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
 
+  &.is-disabled > .Select-control {
+    background-color: #f6f6f6;
+  }
 
+  &.is-disabled .Select-arrow-zone {
+    cursor: default;
+    pointer-events: none;
+  }
+}
 
+.Select-control {
+  background-color: #fff;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  color: #333;
+  cursor: default;
+  display: table;
+  height: 36px;
+  outline: none;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
 
+  &:hover {
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+  }
+}
+.is-searchable.is-open > .Select-control {
+  cursor: text;
+}
+.is-open > .Select-control {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  background: #fff;
+  border-color: #b3b3b3 #ccc #d9d9d9;
+}
+.is-open > .Select-control > .Select-arrow {
+  border-color: transparent transparent #999;
+  border-width: 0 5px 5px;
+}
+.is-searchable.is-focused:not(.is-open) > .Select-control {
+  cursor: text;
+}
+.is-focused:not(.is-open) > .Select-control {
+  border-color: #007eff #1a8bff #1a8bff;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 5px -1px rgba(0, 126, 255, 0.5);
+}
+.Select-placeholder {
+  bottom: 0;
+  color: #aaa;
+  left: 0;
+  line-height: 34px;
+  padding-left: 10px;
+  padding-right: 10px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.has-value > .Select-control > .Select-placeholder {
+  color: #333;
+}
+.Select-value {
+  color: #aaa;
+  left: 0;
+  padding: 8px 52px 8px 10px;
+  position: absolute;
+  right: -15px;
+  top: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.has-value > .Select-control > .Select-value {
+  color: #333;
+}
+.Select-input {
+  height: 34px;
+  padding-left: 10px;
+  padding-right: 10px;
+  vertical-align: middle;
+}
+.Select-input > input {
+  background: none transparent;
+  border: 0 none;
+  box-shadow: none;
+  cursor: default;
+  display: inline-block;
+  font-family: inherit;
+  font-size: inherit;
+  height: 34px;
+  margin: 0;
+  outline: none;
+  padding: 0;
+  -webkit-appearance: none;
+}
+.is-focused .Select-input > input {
+  cursor: text;
+}
+.Select-control:not(.is-searchable) > .Select-input {
+  outline: none;
+}
+.Select-loading-zone {
+  cursor: pointer;
+  display: table-cell;
+  position: relative;
+  text-align: center;
+  vertical-align: middle;
+  width: 16px;
+}
+.Select-loading {
+  -webkit-animation: Select-animation-spin 400ms infinite linear;
+  -o-animation: Select-animation-spin 400ms infinite linear;
+  animation: Select-animation-spin 400ms infinite linear;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  border-right-color: #333;
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
+}
+.Select-clear-zone {
+  -webkit-animation: Select-animation-fadeIn 200ms;
+  -o-animation: Select-animation-fadeIn 200ms;
+  animation: Select-animation-fadeIn 200ms;
+  color: #999;
+  cursor: pointer;
+  display: table-cell;
+  position: relative;
+  text-align: center;
+  vertical-align: middle;
+  width: 17px;
+}
+.Select-clear-zone:hover {
+  color: #D0021B;
+}
+.Select-clear {
+  display: inline-block;
+  font-size: 18px;
+  line-height: 1;
+}
+.Select--multi .Select-clear-zone {
+  width: 17px;
+}
+.Select-arrow-zone {
+  cursor: pointer;
+  display: table-cell;
+  position: relative;
+  text-align: center;
+  vertical-align: middle;
+  width: 25px;
+  padding-right: 5px;
+}
+.Select-arrow {
+  border-color: #999 transparent transparent;
+  border-style: solid;
+  border-width: 5px 5px 2.5px;
+  display: inline-block;
+  height: 0;
+  width: 0;
+}
+.is-open .Select-arrow,
+.Select-arrow-zone:hover > .Select-arrow {
+  border-top-color: #666;
+}
+@-webkit-keyframes Select-animation-fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes Select-animation-fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.Select-menu-outer {
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-top-color: #e6e6e6;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+  box-sizing: border-box;
+  margin-top: -1px;
+  max-height: 200px;
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  z-index: 1000;
+  -webkit-overflow-scrolling: touch;
+}
+.Select-menu {
+  max-height: 198px;
+  overflow-y: auto;
+}
+.Select-option {
+  box-sizing: border-box;
+  color: #666666;
+  cursor: pointer;
+  display: block;
+  padding: 8px 10px;
+}
+.Select-option:last-child {
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+.Select-option.is-focused {
+  background-color: rgba(0, 126, 255, 0.08);
+  color: #333;
+}
+.Select-option.is-disabled {
+  color: #cccccc;
+  cursor: not-allowed;
+}
+.Select-noresults,
+.Select-search-prompt,
+.Select-searching {
+  box-sizing: border-box;
+  color: #999999;
+  cursor: default;
+  display: block;
+  padding: 8px 10px;
+}
+.Select--multi .Select-input {
+  vertical-align: middle;
+  margin-left: 10px;
+  padding: 0;
+}
+.Select--multi.has-value .Select-input {
+  margin-left: 5px;
+}
+.Select-item {
+  background-color: rgba(0, 126, 255, 0.08);
+  border-radius: 2px;
+  border: 1px solid rgba(0, 126, 255, 0.24);
+  color: #007eff;
+  display: inline-block;
+  font-size: 0.9em;
+  margin-left: 5px;
+  margin-top: 5px;
+  vertical-align: top;
+}
+.Select-item-icon,
+.Select-item-label {
+  display: inline-block;
+  vertical-align: middle;
+}
+.Select-item-label {
+  border-bottom-right-radius: 2px;
+  border-top-right-radius: 2px;
+  cursor: default;
+  padding: 2px 5px;
+}
+.Select-item-label .Select-item-label__a {
+  color: #007eff;
+  cursor: pointer;
+}
+.Select-item-icon {
+  cursor: pointer;
+  border-bottom-left-radius: 2px;
+  border-top-left-radius: 2px;
+  border-right: 1px solid rgba(0, 126, 255, 0.24);
+  padding: 1px 5px 3px;
+}
+.Select-item-icon:hover,
+.Select-item-icon:focus {
+  background-color: rgba(0, 113, 230, 0.08);
+  color: #0071e6;
+}
+.Select-item-icon:active {
+  background-color: rgba(0, 126, 255, 0.24);
+}
+.Select--multi.is-disabled .Select-item {
+  background-color: #f2f2f2;
+  border: 1px solid #d9d9d9;
+  color: #888;
+}
+.Select--multi.is-disabled .Select-item-icon {
+  cursor: not-allowed;
+  border-right: 1px solid #d9d9d9;
+}
+.Select--multi.is-disabled .Select-item-icon:hover,
+.Select--multi.is-disabled .Select-item-icon:focus,
+.Select--multi.is-disabled .Select-item-icon:active {
+  background-color: #f2f2f2;
+}
+@keyframes Select-animation-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+@-webkit-keyframes Select-animation-spin {
+  to {
+    -webkit-transform: rotate(1turn);
+  }
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//

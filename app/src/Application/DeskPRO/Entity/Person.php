@@ -97,7 +97,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property string $password_scheme
  * @property string $salt
  * @property PersonEmail $primary_email
- * @property PersonEmail[] $emails
+ * @property PersonEmail[]|ArrayCollection $emails
  * @property PhoneNumber[] $phone_numbers
  * @property ArrayCollection|LabelPerson[] $labels
  * @property ArrayCollection|CustomDataPerson[] $custom_data
@@ -1928,7 +1928,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     /**
      * returns the number that this person marked as his/her primary number.
      *
-     * @return string
+     * @return PhoneNumber
      */
     public function getPrimaryPhoneNumber()
     {
@@ -2070,6 +2070,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
+     * @param bool $skipPrimary
+     *
      * @return array
      */
     public function getEmailAddresses($skipPrimary = false)
@@ -2085,6 +2087,50 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         }
 
         return $arr;
+    }
+
+    /**
+     * @param array $emails
+     *
+     * @return $this
+     */
+    public function setEmailAddresses(array $emails)
+    {
+        $set_emails = array_map(
+            function ($email_address) {
+                return strtolower($email_address);
+            },
+            $emails
+        );
+        $have_emails = array_map(
+            function (PersonEmail $email) {
+                return strtolower($email->getEmail());
+            },
+            $this->emails->toArray()
+        );
+
+        $add_emails = array_diff($set_emails, $have_emails);
+        $del_emails = array_diff($have_emails, $set_emails);
+
+        foreach ($add_emails as $email_address) {
+            $email = new PersonEmail();
+            $email
+                ->setPerson($this)
+                ->setEmail($email_address)
+                ->setIsValidated(true)
+            ;
+
+            $this->addEmailAddress($email);
+        }
+
+        foreach ($del_emails as $email_address) {
+            $email = $this->findEmailAddress($email_address);
+            if ($email) {
+                $this->removeEmailAddressId($email->getId());
+            }
+        }
+
+        return $this;
     }
 
     /**
@@ -2129,24 +2175,43 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     /**
      * Sets the primary email address on the account.
      *
-     * @param $email_address
+     * @param string $email_address
+     * @param bool   $validated
      *
      * @return PersonEmail
      */
     public function setEmail($email_address, $validated = false)
     {
-        $email          = new PersonEmail();
-        $email['email'] = $email_address;
-
-        if ($validated) {
-            $email['is_validated'] = true;
+        $email = null;
+        foreach ($this->emails as $existing_email) {
+            if ($existing_email->getEmail() === $email_address) {
+                $email = $existing_email;
+            }
         }
 
-        $this->addEmailAddress($email);
+        if (!$email) {
+            $email = new PersonEmail();
+            $email->setEmail($email_address);
+
+            $this->addEmailAddress($email);
+        }
+        if ($validated) {
+            $email->setIsValidated(true);
+        }
 
         $this->setModelField('primary_email', $email);
 
         return $email;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getEmail()
+    {
+        $email = $this->getPrimaryEmail();
+
+        return $email ? $email->getEmail() : null;
     }
 
     /**
@@ -2195,7 +2260,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
-     * Adds an emaila ddress string. This is same as addEmailAddress except
+     * Adds an email address string. This is same as addEmailAddress except
      * we take care of creating the PersonEmail object here.
      *
      * @param string $email
@@ -2304,7 +2369,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     /**
      * Get the email record for a specific address.
      *
-     * @return Email
+     * @return PersonEmail
      */
     public function findEmailAddress($email_address)
     {

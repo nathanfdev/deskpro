@@ -113,17 +113,17 @@ function getWebpackConfig(mode, isDevServer, isProd) {
     cache: true,
     entry: {},
     output: {
-      path: path.join(__dirname, "build/"),
-      publicPath: "/pub/build/",
-      filename: "[name].js",
-      sourceMapFilename: "[name].map"
+      path: path.join(__dirname, 'build/'),
+      publicPath: '/pub/build/',
+      filename: '[name].js',
+      sourceMapFilename: '[name].map'
     },
     resolve: {
       root: [
-        path.join(__dirname, "src"),
-        path.join(__dirname, "src/DeskPRO/Component"),
-        path.join(__dirname, "src/DeskPRO/Dev"),
-        path.join(__dirname, "built-tools"),
+        path.join(__dirname, 'src'),
+        path.join(__dirname, 'src/DeskPRO/Component'),
+        path.join(__dirname, 'src/DeskPRO/Dev'),
+        path.join(__dirname, 'built-tools')
       ],
       alias: {
         'invariant': 'fbjs/lib/invariant',
@@ -131,48 +131,49 @@ function getWebpackConfig(mode, isDevServer, isProd) {
       }
     },
     resolveLoader: {
-      modulesDirectories: ["web_loaders", "web_modules", "node_loaders", "node_modules", "build-tools"]
+      modulesDirectories: ['web_loaders', 'web_modules', 'node_loaders', 'node_modules', 'build-tools']
     },
-    devtool: "eval",
+    devtool: 'eval',
     module: {
       preLoaders: [
         {
           test: /\/Reducers\/.*?\.js$/,
           include: [
-            path.resolve(__dirname, "src/DeskPRO/Bundle/AgentBundle/Modules")
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Modules')
           ],
-          loader: "app-reducer-gen"
+          loader: 'app-reducer-gen'
         }
       ],
       loaders: [
         {
           test: /\.js$/,
           include: [
-            path.resolve(__dirname, "src/DeskPRO"),
-            path.resolve(__dirname, "node_modules/formsy-react")
+            path.resolve(__dirname, 'src/DeskPRO'),
+            path.resolve(__dirname, 'node_modules/formsy-react')
           ],
-          loader: "babel-loader?stage=0"
+          loader: 'babel-loader?stage=0'
         },
         {
           test: /\.(png|gif|jpg|jpeg|woff|woff2|ttf|eot|svg)(\?|$)/,
-          loader: "file-loader?context=src&name=[path][name].[ext]",
+          loader: 'file-loader?context=src&name=[path][name].[ext]',
           include: [
-            path.resolve(__dirname, "src/DeskPRO"),
-            path.resolve(__dirname, "node_modules/node-bourbon"),
-            path.resolve(__dirname, "node_modules/node-neat"),
-            path.resolve(__dirname, "node_modules/font-awesome"),
-          ],
+            path.resolve(__dirname, 'src/DeskPRO'),
+            path.resolve(__dirname, 'node_modules/node-bourbon'),
+            path.resolve(__dirname, 'node_modules/node-neat'),
+            path.resolve(__dirname, 'node_modules/font-awesome'),
+            path.resolve(__dirname, 'node_modules/intl-tel-input')
+          ]
         },
         {
           test: /\.scss$/,
           include: [
-            path.resolve(__dirname, "src/DeskPRO")
+            path.resolve(__dirname, 'src/DeskPRO')
           ],
-          loader: ExtractTextPlugin.extract("style-loader",
-            "css-loader?sourceMap!sass-loader?sourceMap&outputStyle=expanded&" +
-            "includePaths[]=" + (path.resolve(__dirname, "./bower_components")) + "&" +
-            "includePaths[]=" + (path.resolve(__dirname, "./node_modules")),
-            { "publicPath": "./" }
+          loader: ExtractTextPlugin.extract('style-loader',
+            'css-loader?sourceMap!sass-loader?sourceMap&outputStyle=expanded&' +
+            'includePaths[]=' + (path.resolve(__dirname, './bower_components')) + '&' +
+            'includePaths[]=' + (path.resolve(__dirname, './node_modules')),
+            { "publicPath": './' }
           )
         }
       ],
@@ -199,6 +200,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
     config.entry['DeskPRO_PortalBundle_style'] = ["./src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.scss"];
   }
   if (mode == 'all' || mode == 'agent') {
+    config.entry['phonenumber_utils']         = ["./node_modules/intl-tel-input/lib/libphonenumber/build/utils"];
     config.entry['DeskPRO_AgentBundle']       = ["./src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentBundle"];
     config.entry['DeskPRO_AgentBundle_style'] = ["./src/DeskPRO/Bundle/AgentBundle/Resources/style/agent-style.scss"];
   }
