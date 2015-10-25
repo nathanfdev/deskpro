@@ -139,3 +139,8 @@ services:
       class: DeskPRO\Bundle\AppBundle\Form\Type\FeedbackCommentType
       tags:
           - { name: form.type, alias: feedback_comment }
+
+  form.person_profile:
+      class: DeskPRO\Bundle\AppBundle\Form\Type\PersonProfileType
+      tags:
+          - { name: form.type, alias: person_profile }

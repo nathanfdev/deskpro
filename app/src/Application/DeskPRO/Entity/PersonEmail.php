@@ -223,12 +223,10 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
         $email_domain = null;
 
         if ($email) {
-            if (!strpos($email, '@')) {
-                throw new \InvalidArgumentException('Email address is invalid');
+            if (strpos($email, '@')) {
+                $this->setModelField('email', strtolower($email));
+                list(, $email_domain) = explode('@', $email, 2);
             }
-
-            $this->setModelField('email', strtolower($email));
-            list(, $email_domain) = explode('@', $email, 2);
         } else {
             $email = null;
         }

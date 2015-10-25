@@ -36,7 +36,6 @@ use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Model\Me;
 use DeskPRO\Bundle\ApiBundle\Model\PersonProfile;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
-use DeskPRO\Bundle\AppBundle\Form\Type\PersonProfileType;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\View\View;
@@ -105,7 +104,7 @@ class MeController extends BaseController
     {
         $person = $this->getUser();
 
-        $form = $this->createForm(new PersonProfileType(), $person);
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'person_profile', $person)->getForm();
         $form->submit($request->request->all());
 
         if (!$form->isValid()) {
