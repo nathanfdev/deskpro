@@ -29,8 +29,11 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppConstraints;
+use Orb\Util\Arrays;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints;
 
@@ -109,6 +112,12 @@ class PersonProfileType extends AbstractType
                     'error_bubbling' => true,
                 ],
             ])
+            ->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+                $data = $event->getData();
+                $data['emails'] = Arrays::removeFalsey($data['emails']);
+
+                $event->setData($data);
+            })
         ;
     }
 
