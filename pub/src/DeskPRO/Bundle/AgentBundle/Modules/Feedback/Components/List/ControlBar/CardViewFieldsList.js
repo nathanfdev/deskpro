@@ -27,10 +27,6 @@ export class CardViewFieldsList extends Component {
           <hr/>
         </li>
         <ViewField value="id" label="ID" isShown={fields.id.isShown} changeState={changeState}/>
-        <ViewField value="hidden_status" label="Hidden status" isShown={fields.hidden_status.isShown}
-                   changeState={changeState}/>
-        <ViewField value="status_category" label="Status category" isShown={fields.status_category.isShown}
-                   changeState={changeState}/>
         <ViewField value="custom_category" label="Category" isShown={fields.custom_category.isShown}
                    changeState={changeState}/>
         <ViewField value="date_created" label="Created" isShown={fields.date_created.isShown}

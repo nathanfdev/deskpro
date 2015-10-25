@@ -23,6 +23,7 @@ export default class OmniSearch extends React.Component {
     this.state = {
       doSpin: false,
       $input: $(props.input),
+      $close: $(props.close),
       data: {
         pageinfo: {
           total_results: 0,
@@ -45,6 +46,10 @@ export default class OmniSearch extends React.Component {
       this.doSearch({ q: e.target.value });
     }, 250);
     this.state.$input.on('keyup', throttleChanges);
+    this.state.$close.click(() => {
+      this.state.$input.val('');
+      this.doSearch({ q: '' }); // reset/close search
+    });
   }
   doSearch(query_modifications) {
     const last_query = this.state.search_query || {};
@@ -76,32 +81,69 @@ export default class OmniSearch extends React.Component {
   changePage(page) {
     this.doSearch({page: page});
   }
-  toggleType(type) {
-    const types = _.map(this.state.types, (t) => {
-      if (t.type === type) {
-        t.active = !t.active;
-      }
-      return t;
-    });
-
-    this.setState({
-      types
-    });
-
-    const new_types = _.map(
-      _.filter(types, (type) => {
-        return type.active;
-      }),
-
-      (type) => {
-        return type.type;
-      });
-
-    this.doSearch({ types: new_types.join(',') });
-  }
 	render() {
     let data = this.state.data;
     let total = _.parseInt(data.pageinfo.total_results);
+      return (
+        <div className="expanded-search-results" style={{display: this.state.search_query.q.length > 0 ? "block" : "none"}}>
+          <div className="search-result-collection">
+            <h1><i className="fa fa-file-text-o"></i> Knowledge base</h1>
+            <ul>
+              <li><a href="#">Keep Files On Your Users (Literally)</a></li>
+              <li><a href="#">Can I keep my existing support email address?</a></li>
+              <li><a href="#">Quick Start Guide for new agents</a></li>
+              <li><a href="#">Keeping read mail on the POP3 server</a></li>
+            </ul>
+            <a href="#" className="search-results-show-more">10 More <i className="fa fa-angle-double-down"></i></a>
+          </div>
+
+          <div className="search-result-collection">
+            <h1><i className="fa fa-download"></i> Downloads</h1>
+            <ul>
+              <li><a href="#">New Feature: Keep Files On Your Users (Literally)</a></li>
+              <li><a href="#">Can I keep my existing support email address?</a></li>
+            </ul>
+            <a href="#" className="search-results-show-more">10 More <i className="fa fa-angle-double-down"></i></a>
+          </div>
+
+          <div className="search-result-collection">
+            <h1><i className="fa fa-file-text-o"></i> News</h1>
+            <ul>
+              <li><a href="#"><span className="date-mark"><i className="fa fa-calendar-o"></i> 10 days ago</span> New Feature:
+                Keep <span className="search-match-mark">Files On Your</span> Users (Literally)</a></li>
+              <li><a href="#"><span className="date-mark"><i className="fa fa-calendar-o"></i> 10 days ago</span> Can I keep my
+                existing support email address?</a></li>
+            </ul>
+            <a href="#" className="search-results-show-more">10 More <i className="fa fa-angle-double-down"></i></a>
+          </div>
+
+          <div className="search-result-collection">
+            <h1><i className="fa fa-comments"></i> Feedback</h1>
+            <ul>
+              <li><a href="#"><span className="feedback-mark"><i className="fa fa-thumbs-up"></i> +12</span> New Feature: Keep
+                Files On Your Users (Literally)</a></li>
+              <li><a href="#"><span className="feedback-mark"><i className="fa fa-thumbs-up"></i> +12</span> Can I keep my
+                existing support email address?</a></li>
+            </ul>
+            <a href="#" className="search-results-show-more">10 More <i className="fa fa-angle-double-down"></i></a>
+          </div>
+
+          <div className="search-results-footer">
+            <a href={PortalUrlGenerator.path('/new-ticket')}>
+              <i className="fa fa-comment"></i>
+              <span>Contact Us</span>
+            </a>
+            <a href={PortalUrlGenerator.path('/feedback')}>
+              <i className="fa fa-list"></i>
+              <span>Submit Feedback</span>
+            </a>
+            <a href="#">
+              <i className="fa fa-comments"></i>
+              <span>Start Chat Session</span>
+            </a>
+          </div>
+        </div>
+      );
       return (
         <div className={"live-results-container" + (this.state.search_query.q.length > 0 ? " show" : "")}>
           <div className="search-box-results">

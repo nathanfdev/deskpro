@@ -7,6 +7,9 @@ import ReactDOM from "react-dom"
 export default class OmniSearchWidget extends PageWidget {
   renderWidget() {
     this.$rElement = $('<div class="dp-react-widget"></div>').appendTo(this.$element);
-    ReactDOM.render(React.createElement(OmniSearch, { input: this.$element.find('input') }), this.$rElement.get(0));
+    ReactDOM.render(React.createElement(OmniSearch, {
+      input: this.$element.find('input'),
+      close: this.$element.find('.search-clear')
+    }), this.$rElement.get(0));
   }
 }

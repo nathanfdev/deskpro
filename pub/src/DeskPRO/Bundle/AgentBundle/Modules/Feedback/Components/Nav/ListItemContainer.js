@@ -23,6 +23,20 @@ export class ListItemContainer extends Component {
     this.itemId = urlSanitize(props.label);
   }
 
+  componentDidMount() {
+    if (this.props.activeItemId === this.itemId) {
+      this.props.dispatch(actions.loadFeedbackList(this.props.listOptions));
+    }
+  }
+
+  loadList(options) {
+    return (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      this.props.dispatch(actions.loadFeedbackList(options));
+    };
+  }
+
   render() {
     const props = {
       groupId: 'nav',
@@ -36,19 +50,5 @@ export class ListItemContainer extends Component {
     return (
       <ListItemStatefulContainer {...props} />
     );
-  }
-
-  componentDidMount() {
-    if (this.props.activeItemId === this.itemId) {
-      this.props.dispatch(actions.loadFeedbackList(this.props.listOptions));
-    }
-  }
-
-  loadList(options) {
-    return (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      this.props.dispatch(actions.loadFeedbackList(options));
-    };
   }
 }

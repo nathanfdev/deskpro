@@ -3,11 +3,20 @@ import TaskFilterHover from '../Components/TaskFilterHover';
 import TaskOrderHover from '../Components/TaskOrderHover';
 import ComponentRootWrapper from 'DeskPRO/Component/ComponentRootWrapper';
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
-import ListFrameMenu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameMenu';
+import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameMenu';
 import TaskControlsViewSwitcher from '../Components/TaskControlsViewSwitcher';
-import $ from 'jquery';
+import jQuery from 'jquery';
+import { MassActionCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar';
 
 export default class TaskControls extends React.Component {
+  static propTypes = {
+    actionable: React.PropTypes.array,
+    applyFilter: React.PropTypes.func,
+    setView: React.PropTypes.func,
+    toggleAllMassActions: React.PropTypes.func,
+    windowProps: React.PropTypes.func,
+  }
+
   constructor(props) {
     super(props);
 
@@ -48,23 +57,16 @@ export default class TaskControls extends React.Component {
 
   render() {
     const taskView = this.props.windowProps.get('taskView');
-    const viewSwitcherPosition = $('.task-list-view-switcher');
+    const viewSwitcherPosition = jQuery('.task-list-view-switcher');
 
     const {actionable, toggleAllMassActions, setView} = this.props;
+
+    const count = actionable > 0 ? actionable.toString() : '';
+
     return (
       <ListFrameMenu ref="ticketControlBar">
-        <div className="dpwd-navigation-top-row-mass-action-checkbox-container">
-          <div className="dpwd-navigation-top-row-mass-action-checkbox">
-            <a href="#" onClick={toggleAllMassActions.bind(this)}>
-                <span className="checkbox">
-                  {actionable > 0 ? <i className="fa fa-check"/> : ''}
-                </span>
-            </a>
-              <span className="count" style={actionable > 0 ? {} : {display: 'none'}}>
-                <span>{actionable}</span>
-              </span>
-          </div>
-        </div>
+
+        <MassActionCheckbox count={count} massAction={(actionable > 0)} onClick={toggleAllMassActions.bind(this)}/>
 
         <li>
           <a href="#" ref="orderButton" className="dpwd-navigation-dropdown-top-row-button"

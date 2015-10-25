@@ -8,6 +8,9 @@ import DragTypes from '../../../Services/DragTypes.js';
 import Picker from 'anytime';
 import Moment from 'moment';
 import { getEmptyImage } from 'react-dnd-html5-backend';
+import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
+import { AgentTeamAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/AgentTeamAvatar';
+import { DepartmentAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/DepartmentAvatar';
 
 import { Card } from '../../Common/Components/ListFrame/Card';
 
@@ -211,17 +214,21 @@ const TaskCard = React.createClass({
     }
 
     let assignee = null;
+    let assigneeAvatar = null;
 
     if (task.has('agents') && task.get('agents').size > 0) {
       // We assume one assignment for now, though we will need to support more later
-      const agentId = task.get('agents')[0];
+      const agentId = task.get('agents').first();
       assignee = agents.get(agentId);
+      assigneeAvatar = (<PersonAvatar person={assignee} size="16" />);
     } else if (task.has('teams') && task.get('teams').size > 0) {
-      const teamId = task.get('teams')[0];
+      const teamId = task.get('teams').first();
       assignee = teams.get(teamId);
+      assigneeAvatar = (<AgentTeamAvatar agentTeam={assignee} size="16" />);
     } else if (task.has('departments') && task.get('departments').size > 0) {
-      const departmentId = task.get('departments')[0];
+      const departmentId = task.get('departments').first();
       assignee = departments.get(departmentId);
+      assigneeAvatar = (<DepartmentAvatar department={assignee} size="16" />);
     }
 
     const titleClass = task.get('is_done', false) ? 'dpwd--card-title strikethrough' : 'dpwd--card-title';
@@ -248,10 +255,6 @@ const TaskCard = React.createClass({
             <span>Mark Done</span>
           </div>
         }
-        <span>
-            <div className="dpw--card-status-bar dpw--status-bar-left level-5"/>
-            <div className="dpw--card-status-bar dpw--status-bar-right level-5"/>
-        </span>
 
         <div className="dpm--card-checkbox" onClick={this.toggleMassAction}>
           {selected ? <i className="fa fa-check"/> : '' }
@@ -271,27 +274,26 @@ const TaskCard = React.createClass({
 
           <div className="dpw--card-line-right">
             {task.get('is_done', false) ?
-             <div className="dpw--card-expand">
-               <a href="#" onClick={this.toggleDetails}>{detailsButtonText} <i className="fa fa-navicon"/></a>
-             </div>
+              <div className="dpw--card-expand">
+                <a href="#" onClick={this.toggleDetails}>{detailsButtonText} <i className="fa fa-navicon"/></a>
+              </div>
               :
-             assignee && assignee.picture_blob ?
-             <div className="dpwd--card-assigned" onClick={this.props.toggleAssignWindow.bind(this, task)}>
-               <span className="dpw--avatar-face"
-                     style={{backgroundImage: 'url(' + assignee.picture_blob.download_url + ')'}}/>
-             </div> : '' }
+              assignee ?
+              <div className="dpwd--card-assigned" onClick={this.props.toggleAssignWindow.bind(this, task)}>
+                <div className="dpw--avatar-face" style={{position: 'relative'}}>{assigneeAvatar}</div>
+              </div> : '' }
           </div>
         </div>
 
         {!task.get('is_done', false) || this.state.expanded ?
-         <div className="dpw--card-line">
-           <div className="dpw--card-line-left">
+          <div className="dpw--card-line">
+            <div className="dpw--card-line-left">
               <span className={overdue ? 'overdue dpwd--card-line-item' : 'dpwd--card-line-item'} ref={dueButton}>
                 <i className="fa fa-calendar-o"/> Due: {task.get('date_due') ? this.dueIndicator(task.get('date_due')) : 'N/A'}
                 <input type="text" name="due-date" className="due-date-field" ref={dueField} disabled="disabled"/>
               </span>
 
-             {task.get('project') && projects.has(task.get('project')) ? <span>
+              {task.get('project') && projects.has(task.get('project')) ? <span>
                 <span className="dpw--card-disc"/>
                 <span className="dpwd--card-line-item">
                   <i className="fa fa-book"/> {projects.get(task.get('project')).get('title')}
@@ -299,7 +301,7 @@ const TaskCard = React.createClass({
               </span>
                : ''}
 
-             {ticketLink ? <span>
+              {ticketLink ? <span>
                 <span className="dpw--card-disc"/>
 
                 <span className="dpwd--card-line-item">
@@ -308,19 +310,19 @@ const TaskCard = React.createClass({
               </span> : ''}
            </div>
 
-           <div className="dpw--card-line-right">
+            <div className="dpw--card-line-right">
               <span className="dpwd--card-line-item">
                 {task.get('comment_count', 0)} <i className="fa fa-comment"/>
               </span>
 
-             {task.get('subtasks_total', 0) > 0 ?
-              <span className="dpwd--card-line-item">
+              {task.get('subtasks_total', 0) > 0 ?
+                <span className="dpwd--card-line-item">
                   <div><span className="dpw--card-disc"/> {task.get('subtasks_done', 0)}/{task.get('subtasks_total', 0)} <i
                     className="fa fa-folder-open"/></div>
                 </span>
                : ''}
-           </div>
-         </div>
+            </div>
+          </div>
           : '' }
       </Card>
 

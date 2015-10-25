@@ -3,6 +3,9 @@ import { DragLayer } from 'react-dnd';
 import Moment from 'moment';
 import { FormattedDate } from 'react-intl';
 import { Card } from '../../Common/Components/ListFrame/Card';
+import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
+import { AgentTeamAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/AgentTeamAvatar';
+import { DepartmentAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/DepartmentAvatar';
 
 const layerStyles = {
   position: 'fixed',
@@ -64,18 +67,21 @@ export default class TaskCardDragLayer extends React.Component {
         const titleClass = item.details.get('is_done') ? 'dpwd--card-title strikethrough' : 'dpwd--card-title';
 
         let assignee = null;
+        let assigneeAvatar = null;
 
-        if (item.details.get('agents') && item.details.get('agents').size > 0) {
+        if (item.details.has('agents') && item.details.get('agents').size > 0) {
           // We assume one assignment for now, though we will need to support more later
-          const agentId = item.details.get('agents')[0];
-
-          assignee = item.agents[agentId];
-        } else if (item.details.get('teams') && item.details.get('teams').size > 0) {
-          const teamId = item.details.get('teams')[0];
-          assignee = item.teams[teamId];
-        } else if (item.details.get('departments') && item.details.get('departments').size > 0) {
-          const departmentId = item.details.get('departments')[0];
-          assignee = item.departments[departmentId];
+          const agentId = item.details.get('agents').first();
+          assignee = item.agents.get(agentId);
+          assigneeAvatar = (<PersonAvatar person={assignee} size="16" />);
+        } else if (item.details.has('teams') && item.details.get('teams').size > 0) {
+          const teamId = item.details.get('teams').first();
+          assignee = item.teams.get(teamId);
+          assigneeAvatar = (<AgentTeamAvatar agentTeam={assignee} size="16" />);
+        } else if (item.details.has('departments') && item.details.get('departments').size > 0) {
+          const departmentId = item.details.get('departments').first();
+          assignee = item.departments.get(departmentId);
+          assigneeAvatar = (<DepartmentAvatar department={assignee} size="16" />);
         }
 
         const overdue = Moment(item.details.get('date_due')).isBefore();
@@ -93,10 +99,6 @@ export default class TaskCardDragLayer extends React.Component {
             <span>Mark Done</span>
           </div>
         }
-        <span>
-          <div className="dpw--card-status-bar dpw--status-bar-left level-5"/>
-          <div className="dpw--card-status-bar dpw--status-bar-right level-5"/>
-        </span>
 
         <div className="dpm--card-checkbox">
           <i className="fa fa-check"/>
@@ -111,15 +113,14 @@ export default class TaskCardDragLayer extends React.Component {
 
           <div className="dpw--card-line-right">
             {item.details.get('is_done') ?
-             <div className="dpw--card-expand">
-               <a href="#">Expand <i className="fa fa-navicon"/></a>
-             </div>
+              <div className="dpw--card-expand">
+                <a href="#">Expand <i className="fa fa-navicon"/></a>
+              </div>
               :
-             assignee && assignee.picture_blob ?
-             <div className="dpwd--card-assigned">
-               <span className="dpw--avatar-face"
-                     style={{backgroundImage: 'url(' + assignee.picture_blob.download_url + ')'}}/>
-             </div> : '' }
+              assignee ?
+              <div className="dpwd--card-assigned">
+                <div className="dpw--avatar-face" style={{position: 'relative'}}>{assigneeAvatar}</div>
+              </div> : '' }
           </div>
         </div>
 
@@ -130,7 +131,7 @@ export default class TaskCardDragLayer extends React.Component {
                 <i className="fa fa-calendar-o"/> Due: {item.details.get('date_due') ? this.dueIndicator(item.details.get('date_due')) : 'N/A'}
               </span>
 
-             {item.details.get('project') && item.projects.get(item.details.get('project')) ? <span>
+              {item.details.get('project') && item.projects.get(item.details.get('project')) ? <span>
                 <span className="dpw--card-disc"/>
                 <span className="dpwd--card-line-item">
                   <i className="fa fa-book"/> {item.projects.get(item.details.get('project')).get('title')}
@@ -138,7 +139,7 @@ export default class TaskCardDragLayer extends React.Component {
               </span>
                : ''}
 
-             {ticketLink ? <span>
+              {ticketLink ? <span>
                 <span className="dpw--card-disc"/>
 
                 <span className="dpwd--card-line-item">
@@ -152,7 +153,7 @@ export default class TaskCardDragLayer extends React.Component {
                 {item.details.get('comment_count')} <i className="fa fa-comment"/>
               </span>
 
-             {item.details.get('subtasks_total') > 0 ?
+              {item.details.get('subtasks_total') > 0 ?
               <span className="dpwd--card-line-item">
                   <div><span className="dpw--card-disc"/> {item.details.get('subtasks_done')}/{item.details.get('subtasks_total')} <i
                     className="fa fa-folder-open"/></div>

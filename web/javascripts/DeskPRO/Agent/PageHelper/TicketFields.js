@@ -317,13 +317,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		});
 
 		var customFieldData = this.display.find('.custom-field input, .custom-field textarea, .custom-field select').serializeArray();
-
-		this.display.find('input[type="checkbox"][value="1"]').not(':checked').each(function() {
-			customFieldData.push({
-				name: $(this).attr('name'),
-				value: '0'
-			});
-		});
+		customFieldData.unshift({name: 'custom_fields[]', value: ''});
 
 		changeManager.saveChanges(customFieldData, (function(data) {
 			this.updateDisplay();

@@ -8,6 +8,15 @@ export class PersonAvatar extends React.Component {
     size: PropTypes.any
   };
 
+  getPersonFallbackText() {
+    const person = this.props.person || Immutable.fromJS({});
+    const first = person.get('first_name');
+    const last = person.get('last_name');
+    const initials = (first && first.length ? first[0] : '') + (last && last.length ? last[0] : '');
+
+    return initials ? initials : '?';
+  }
+
   render() {
     const { size, person } = this.props;
     const avatar = person.get('avatar') || Immutable.fromJS({});
@@ -23,14 +32,5 @@ export class PersonAvatar extends React.Component {
     return (
       <Avatar {...props} />
     );
-  }
-
-  getPersonFallbackText() {
-    const person = this.props.person || Immutable.fromJS({});
-    const first = person.get('first_name');
-    const last = person.get('last_name');
-    const initials = (first && first.length ? first[0] : '') + (last && last.length ? last[0] : '');
-
-    return initials ? initials : '?';
   }
 }

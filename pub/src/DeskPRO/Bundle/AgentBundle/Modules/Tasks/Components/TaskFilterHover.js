@@ -4,6 +4,7 @@ import Formsy from 'formsy-react';
 import FRC from '../../../../../Component/FormComponents/main.js';
 import Picker from 'anytime';
 import Moment from 'moment';
+import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 
 const TaskFilterHover = React.createClass({
 
@@ -125,9 +126,9 @@ const TaskFilterHover = React.createClass({
     if (typeof this.props.agents !== 'undefined' && this.props.agents !== null) {
       this.props.agents.map((object) => {
         const label = (<span>
-          {object.get('picture_blob') ? <span className="chat-avatar" style={{backgroundImage: 'url(' + object.get('picture_blob').download_url + ')'}}/> : '' }
+          <span style={{position: 'relative'}}><PersonAvatar person={object} size="16" /></span>
             {object.get('name')}
-                </span>
+          </span>
         );
         agents.push({value: object.get('id'), label: label});
       });

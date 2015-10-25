@@ -39,36 +39,6 @@ use Application\DeskPRO\Form\Type\CriteriaFilterField\DateTimeType;
  */
 class DateTime extends Date
 {
-    public function renderHtml($data = null, array $template_vars = array())
-    {
-        if ($data === null) {
-            return '';
-        }
-
-        if (!ctype_digit($data['value'])) {
-            $data['value'] = time();
-        }
-
-        $data['value'] = new \DateTime('@'.$data['value']);
-
-        return parent::renderText($data, $template_vars);
-    }
-
-    public function renderText($data = null, array $template_vars = array())
-    {
-        if ($data === null) {
-            return '';
-        }
-
-        if (!ctype_digit($data['value'])) {
-            $data['value'] = time();
-        }
-
-        $data['value'] = new \DateTime('@'.$data['value']);
-
-        return  parent::renderText($data, $template_vars);
-    }
-
     public function getDataFromForm(array $form_data)
     {
         $name = $this->getFormFieldName();

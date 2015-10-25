@@ -178,7 +178,7 @@ class LegacyTermsTransformer
                 return array(
                     'type'    => 'organization',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('organization' => $options['org_ids']),
+                    'options' => array('organization' => implode(',', (array) @$options['org_ids'] ?: array())),
                 );
 
             case 'FilterOrgLabels':
@@ -581,7 +581,7 @@ class LegacyTermsTransformer
             case 'organization':
                 $ids = @$options['organization'] ?: array();
                 if (!is_array($ids)) {
-                    $ids = array($ids);
+                    $ids = explode(',', $ids);
                 }
 
                 return new Terms\FilterOrgId($op, array(

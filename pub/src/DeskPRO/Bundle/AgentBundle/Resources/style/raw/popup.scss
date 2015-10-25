@@ -187,7 +187,6 @@
       cursor: pointer;
 
       span {
-        display: inline-block;
         vertical-align: middle;
       }
 
@@ -218,6 +217,10 @@
   display: inline-block;
   border-radius: 2px;
   padding: 1px;
+
+  span {
+    display: inline;
+  }
 }
 
 .dpw--popup-item-person.selected {// When someone is selected and we need a sticky green bg

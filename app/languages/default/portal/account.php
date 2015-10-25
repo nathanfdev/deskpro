@@ -43,7 +43,7 @@ return array(
     'portal.account.login-captcha-failed'              => 'You have entered an invalid captcha code. Please try again.',
     'portal.account.login-saved-form'                  => 'Your {{ type }} has not been submitted yet. Please login to continue.',
     'portal.account.login-external'                    => 'Login with an external service',
-    'portal.account.login-register-header'             => 'Create a new account',
+    'portal.account.login-register-header'             => 'Register',
     'portal.account.login-register-btn'                => 'Register',
     'portal.account.section-title-profile'             => 'Profile',
     'portal.account.section-title-emails'              => 'Emails',

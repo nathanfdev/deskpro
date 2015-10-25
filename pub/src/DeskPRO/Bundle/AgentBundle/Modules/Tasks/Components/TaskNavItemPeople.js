@@ -1,6 +1,7 @@
 import React from 'react';
 import { DropTarget } from 'react-dnd';
 import DragTypes from '../../../Services/DragTypes.js';
+import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 
 import * as TaskActions from '../Actions/TaskListActions';
 
@@ -25,10 +26,6 @@ function collect(connector, monitor) {
 
 @DropTarget(DragTypes.TASK, personTarget, collect)
 export default class TaskNavItemPeople extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const { agent, connectDropTarget, isOver, filterTasks } = this.props;
 
@@ -37,11 +34,9 @@ export default class TaskNavItemPeople extends React.Component {
         <a className="list-counter" href="#">{agent.get('assigned_tasks', 0).size}</a>
       </div>
       <a href="#" className="item" onClick={filterTasks.bind(this, {agents: [agent.get('id')]})}>
-        {agent.has('picture_blob') ?
-          <span className="list-icon">
-            <span
-              style={{backgroundImage: 'url(' + agent.get('picture_blob') + ')'}} className="avatar"/>
-          </span> : '' }
+        <span className="list-icon">
+          <PersonAvatar person={agent} size="16" />
+        </span>
         {agent.get('name')}
       </a>
     </li>);

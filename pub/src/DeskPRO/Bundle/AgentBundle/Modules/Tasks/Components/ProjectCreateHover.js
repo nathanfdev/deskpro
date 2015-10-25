@@ -36,19 +36,20 @@ const ProjectCreateHover = React.createClass({
   },
 
   componentWillReceiveProps: function() {
-    const state = {};
+    if (this.state.projectTitle === null || (this.props.projectData.get && this.state.projectTitle !== this.props.projectData.get('title'))) {
+      this.resetSelected();
+    }
+  },
 
-    if (this.state.selected === null && Object.keys(this.props.projectData).length > 0) {
-      state.selected = {
+  resetSelected: function() {
+    this.setState({
+      selected: {
         departments: this.props.projectData.get('departments') ? this.props.projectData.get('departments').toArray() : [],
         teams: this.props.projectData.get('teams') ? this.props.projectData.get('teams').toArray() : [],
         agents: this.props.projectData.get('agents') ? this.props.projectData.get('agents').toArray() : []
-      };
-    }
-
-    if (Object.keys(state).length > 0) {
-      this.setState(state);
-    }
+      },
+      projectTitle: this.props.projectData.get('title')
+    });
   },
 
   handleClickOutside: function() {
@@ -205,11 +206,6 @@ const ProjectCreateHover = React.createClass({
       top = maxY + 'px';
     }
 
-    console.log('this.state');
-    console.log(this.state);
-    console.log('this.props');
-    console.log(this.props);
-
     return (<div style={{top: top}} className={overshotY ? 'sidebar-hover hide-indicator' : 'sidebar-hover'}>
         <div className="dpmw--popup-main">
           <div className="dpmw--popup-header">
@@ -231,7 +227,7 @@ const ProjectCreateHover = React.createClass({
                 <div className="dpw--popup-content-left">
                   <div className="dpw-quick-filter">
                     <div className="dpw-quick-filter-container">
-                      <div className="dpw-quick-filter-icon"><i className="fa fa-filter"></i></div>
+                      <div className="dpw-quick-filter-icon"><i className="fa fa-filter" /></div>
                       <input type="text" placeholder="Quick Filter" value={this.state.filterValue} onChange={this.quickFilter} />
                       <span className="dpw-quick-filter-clear-link" onClick={this.clearFilter}><i className="fa fa-times-circle"></i></span>
                     </div>

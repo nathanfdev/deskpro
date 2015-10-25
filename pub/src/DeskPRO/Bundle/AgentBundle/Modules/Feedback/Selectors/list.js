@@ -7,6 +7,7 @@ import { createFeedbackTypesRequestSelectors } from '../RecordStores/Selectors/f
 import { createFeedbackLabelsRequestSelectors } from '../RecordStores/Selectors/feedbackLabelsSelectors';
 import { createFeedbackCommentsRequestSelectors } from '../RecordStores/Selectors/feedbackCommentsSelectors';
 import { createFeedbackStatusesRequestSelectors } from '../RecordStores/Selectors/feedbackStatusesSelectors';
+import { createFeedbackCategoriesRequestSelectors } from '../RecordStores/Selectors/feedbackCategoriesSelectors';
 import { createFeedbackRequestSelectors } from '../RecordStores/Selectors/feedbackSelectors';
 import { hashStateSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
 
@@ -55,6 +56,11 @@ export const feedbackCommentsSelector = createSelector(
 export const feedbackStatusesSelector = createSelector(
   createFeedbackStatusesRequestSelectors('feedback').recordsSel,
     statuses => statuses
+);
+
+export const feedbackCategoriesSelector = createSelector(
+  createFeedbackCategoriesRequestSelectors('feedback').recordsSel,
+    categories => categories
 );
 
 export const feedbackSelector = createSelector(

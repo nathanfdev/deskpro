@@ -8,15 +8,14 @@ export class TypeTab extends Component {
 
   render() {
     const { types } = this.props;
-
     return (
       <ul>
         {types.map((item, index) =>
           <ListItemContainer
             key={index}
-            count={item.value}
-            label={item.title}
-            listOptions={{category: item.title}}
+            count={item.get('value')}
+            label={item.get('title')}
+            listOptions={{category: item.get('title')}}
           />
         )}
       </ul>

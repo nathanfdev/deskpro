@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -38,7 +39,6 @@ use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class AgentChatParticipant.
@@ -59,31 +59,6 @@ class AgentChatParticipant implements EntityInterface, NotifyPropertyChanged
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
-
-    /**
-     * @var int
-     * @ORM\Column(type="integer", nullable=false)
-     * @Assert\NotNull();
-     */
-    protected $agent_chat_id;
-
-    /**
-     * @var int
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    protected $person_id;
-
-    /**
-     * @var int
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    protected $agent_team_id;
-
-    /**
-     * @var int
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    protected $department_id;
 
     /**
      * @var AgentChat
@@ -213,24 +188,13 @@ class AgentChatParticipant implements EntityInterface, NotifyPropertyChanged
 
         return $this;
     }
-    /**
-     * @param bool $is_admin
-     *
-     * @return $this
-     */
-    public function setAdmin($is_admin = false)
-    {
-        $this->is_admin = $is_admin;
-
-        return $this;
-    }
 
     /**
      * @return int
      */
     public function getPersonId()
     {
-        return $this->person_id;
+        return ($this->getPerson()) ? $this->getPerson()->getId() : null;
     }
 
     /**
@@ -238,7 +202,7 @@ class AgentChatParticipant implements EntityInterface, NotifyPropertyChanged
      */
     public function getTeamId()
     {
-        return $this->agent_team_id;
+        return ($this->getTeam()) ? $this->getTeam()->getId() : null;
     }
 
     /**
@@ -246,6 +210,6 @@ class AgentChatParticipant implements EntityInterface, NotifyPropertyChanged
      */
     public function getDepartmentId()
     {
-        return $this->department_id;
+        return ($this->getDepartment()) ? $this->getDepartment()->getId() : null;
     }
 }

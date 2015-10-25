@@ -1,22 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import classNames from 'classnames';
 
-export class ControlBar extends Component {
-  render() {
-    return (
-      <div className="control-bar">
-        <div className="ticket-controls-bulk-editing">
-          <div className="dpwd-navigation-dropdown-top-row">
-            <ul className="dpwd-navigation-dropdown-top-row-main-list">
-              {this.props.children}
-            </ul>
-          </div>
-        </div>
-      </div>
-    );
-  }
-}
-
 export class ControlButton extends Component {
 
   static propTypes = {
@@ -42,7 +26,6 @@ export class ControlButton extends Component {
       </a>
     );
   }
-
 }
 
 export class MassActionCheckbox extends Component {
@@ -78,5 +61,4 @@ export class MassActionCheckbox extends Component {
       </div>
     );
   }
-
 }

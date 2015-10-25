@@ -299,7 +299,7 @@ class PersonController extends AbstractController
 
         $changelog = $this->em->getRepository('DeskPRO:LogEvent')->findBy(
             array('subject' => 'Person', 'subject_id' => $person['id'], 'parent' => null),
-            array('id'      => 'DESC')
+            array('id' => 'DESC')
         );
 
         return $this->render('AgentBundle:Person:view.html.twig', array(
@@ -762,9 +762,7 @@ class PersonController extends AbstractController
         }
         $manager->flush($form);
 
-        if (!empty($custom_fields)) {
-            $field_manager->saveFormToObject($custom_fields, $person);
-        }
+        $field_manager->saveFormToObject($custom_fields, $person);
 
         if ($timezone) {
             $person->timezone = $timezone;
@@ -777,8 +775,8 @@ class PersonController extends AbstractController
         $custom_fields = $field_manager->getDisplayArrayForObject($person);
 
         return $this->createJsonResponse(array(
-            'success'                       => true,
-            'tpl'                           => $this->renderView('AgentBundle:Person:view-customfields-rendered-rows.html.twig', array(
+            'success' => true,
+            'tpl'     => $this->renderView('AgentBundle:Person:view-customfields-rendered-rows.html.twig', array(
                 'timezone_options'          => $timezone_options,
                 'person'                    => $person,
                 'custom_fields'             => $custom_fields,

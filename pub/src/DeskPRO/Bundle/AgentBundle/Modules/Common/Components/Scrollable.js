@@ -1,13 +1,20 @@
 import React, { PropTypes } from 'react';
 import ScrollArea from 'react-scrollbar';
+import classNames from 'classnames';
+
+// NOTE
+// - <Scrollable> can only be used when the parent
+// element is positioned and has dimentions. Scrollable will fill the parent
+// entirely.
+// - So you must set width/height and at least position:relative.
 
 export class Scrollable extends React.Component {
   static propTypes = {
     children: PropTypes.node,
+    both: PropTypes.bool,
     horizontal: PropTypes.bool,
     vertical: PropTypes.bool,
-    style: PropTypes.object,
-    contentStyle: PropTypes.object,
+    className: PropTypes.string
   };
 
   render() {
@@ -20,29 +27,31 @@ export class Scrollable extends React.Component {
   }
 
   renderWithScrollbars() {
-    const defaultStyle = {height: '100%', width: '100%'};
-    const customStyle = this.props.style;
-    const style = {...defaultStyle, ...customStyle};
-
-    const defaultContentStyle = {height: 'auto', width: 'auto'};
-    const customContentStyle = this.props.contentStyle;
-    const contentStyle = {...defaultContentStyle, ...customContentStyle};
-
+    const className = classNames('dp-scrollable', 'as-js-scrollbar', {
+      'as-horizontal': this.props.horizontal || this.props.both,
+      'as-vertical': this.props.vertical || this.props.both
+    }, this.props.className);
     return (
-      <ScrollArea
-        style={style}
-        contentStyle={contentStyle}
-        horizontal={this.props.horizontal || false}
-        vertical={this.props.vertical || false}
-      >
-        {this.props.children}
-      </ScrollArea>
+      <div className={className}>
+        <ScrollArea
+          className="dpscrollarea"
+          contentClassName="dpscrollarea"
+          horizontal={this.props.horizontal || this.props.both}
+          vertical={this.props.vertical || this.props.both}
+        >
+          {this.props.children}
+        </ScrollArea>
+      </div>
     );
   }
 
   renderWithoutScrollbars() {
+    const className = classNames('dp-scrollable', 'as-native-scrollbar', {
+      'as-horizontal': this.props.horizontal || this.props.both,
+      'as-vertical': this.props.vertical || this.props.both
+    }, this.props.className);
     return (
-      <div>{this.props.children}</div>
+      <div className={className}>{this.props.children}</div>
     );
   }
 }

@@ -1,28 +1,67 @@
 <div class="content">
-  <div class="search-and-ticket">
-    <div class="search-form">
-      <form action="{{ path('portal_search') }}" id="omnisearch">
-        <div class="input-wrap">
-          <i class="fa fa-search"></i>
-          <input type="text" name="q" placeholder="{{ phrase('portal.general.search_btn') }}...">
+    <div class="search-and-ticket">
+        <div class="search-form">
+            <form action="{{ path('portal_search') }}" id="omnisearch">
+                <div class="input-wrap">
+                    <i class="fa fa-search"></i>
+                    <a href="#" class="search-clear"><i class="fa fa-times"></i></a>
+                    <input type="text" name="q" placeholder="{{ phrase('portal.general.search_btn') }}...">
+                    <!-- .active on this if we need it active -->
+                </div>
+                <button type="submit">{{ phrase('portal.general.search_btn') }}</button>
+            </form>
         </div>
-        <button type="submit">{{ phrase('portal.general.search_btn') }}</button>
-      </form>
-    </div>
 
-    <div class="search-or-ticket">
-      <span>{{ phrase('portal.general.or') }}</span>
-    </div>
+        <div class="search-or-ticket">
+            <span>{{ phrase('portal.general.or') }}</span>
+        </div>
 
-    <div class="search-and-ticket-dropdown">
-      <a href="{{ path('portal_new_ticket') }}">
-         <span class="button select-action">
-          <i class="fa fa-comments"></i> {{ phrase('portal.general.nav-newticket') }}
-          <span class="select-action-dropdown">
-            <i class="fa fa-caret-down"></i>
-          </span>
-        </span>
-      </a>
+        <div class="search-and-ticket-dropdown">
+            <a href="{{ path('portal_new_ticket') }}" class="clickaway-dropdown"
+               data-clickaway-target="top-contactus-dropdown">
+               <span class="button select-action">
+                 <i class="fa fa-comments"></i>
+                 {{ phrase('portal.general.nav-newticket') }}
+                 <span class="select-action-dropdown">
+                  <i class="fa fa-caret-down"></i>
+                 </span>
+                </span>
+            </a>
+
+            <div class="dropdown-content" id="top-contactus-dropdown" style="display: none;">
+                <ul>
+                    <li>
+                        <a href="{{ path('portal_new_ticket') }}">
+                            <i class="fa fa-comments"></i>
+
+                            <h1>{{ phrase('portal.general.get-in-touch') }}</h1>
+
+                            <p>With this excellent form</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href={{ path('portal_feedback') }}>
+                            <i class="fa fa-list-alt"></i>
+
+                            <h1>{{ phrase('portal.general.submit-feedback') }}</h1>
+
+                            <p>An excellent feedback system</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-comment"></i>
+
+                            <h1>{{ phrase('portal.general.start-chat') }}</h1>
+
+                            <p><span class="online-disc"></span> 3 Agents Available</p>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
-  </div>
+    <div class="search-form-suggestions">
+        For example: "<a href="#">lorel ipsum</a>", "<a href="#">lorel ipsum</a>", "<a href="#">lorel ipsum</a>"
+    </div>
 </div>

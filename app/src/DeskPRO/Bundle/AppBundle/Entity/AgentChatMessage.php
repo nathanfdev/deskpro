@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
@@ -59,13 +60,6 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
     protected $id;
 
     /**
-     * @var int
-     * @ORM\Column(type="integer", nullable=false)
-     * @Assert\NotNull()
-     */
-    protected $agent_chat_id;
-
-    /**
      * @var AgentChat
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AgentChat", inversedBy="messages")
      * @ORM\JoinColumn(name="agent_chat_id", referencedColumnName="id", onDelete="CASCADE")
@@ -73,14 +67,7 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
     protected $chat;
 
     /**
-     * @var int
-     * @ORM\Column(type="integer", nullable=false)
-     * @Assert\NotNull()
-     */
-    protected $person_id;
-
-    /**
-     * @var Person|null
+     * @var Person
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
      */
@@ -221,15 +208,7 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
      */
     public function getAgentChatId()
     {
-        return $this->agent_chat_id;
-    }
-
-    /**
-     * @param int $agent_chat_id
-     */
-    public function setAgentChatId($agent_chat_id)
-    {
-        $this->setModelField('agent_chat_id', $agent_chat_id);
+        return $this->getChat()->getId();
     }
 
     /**
@@ -237,14 +216,6 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
      */
     public function getPersonId()
     {
-        return $this->person_id;
-    }
-
-    /**
-     * @param int $person_id
-     */
-    public function setPersonId($person_id)
-    {
-        $this->setModelField('person_id', $person_id);
+        return $this->getPerson()->getId();
     }
 }

@@ -9,6 +9,14 @@ export class AgentTeamAvatar extends React.Component {
     size: PropTypes.any
   };
 
+  getAgentTeamFallbackText() {
+    const agentTeam = this.props.agentTeam || Immutable.fromJS({});
+    const name = agentTeam.get('name');
+    const text = (name && name.length ? name[0] : '');
+
+    return text ? text : '?';
+  }
+
   render() {
     const { size } = this.props;
     const agentTeam = this.props.agentTeam || Immutable.fromJS({});
@@ -25,13 +33,5 @@ export class AgentTeamAvatar extends React.Component {
     return (
       <Avatar {...props} />
     );
-  }
-
-  getAgentTeamFallbackText() {
-    const agentTeam = this.props.agentTeam || Immutable.fromJS({});
-    const name = agentTeam.get('name');
-    const text = (name && name.length ? name[0] : '');
-
-    return text ? text : '?';
   }
 }

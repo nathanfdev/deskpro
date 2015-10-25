@@ -123,7 +123,7 @@ class KernelErrorHandler
                     echo "\n(Refer to ".self::$wrote_log_file." for details)\n";
                 }
                 if (self::$wrote_php_log) {
-                    echo "\n(Refer to the PHP erorr log for details)\n";
+                    echo "\n(Refer to the PHP error log for details)\n";
                 }
             }
         }
@@ -181,7 +181,7 @@ class KernelErrorHandler
                 if (self::$wrote_log_file) {
                     echo "\n(Refer to ".self::$wrote_log_file." for details)\n";
                 } else {
-                    echo "\n(Refer to the PHP erorr log for details)\n";
+                    echo "\n(Refer to the PHP error log for details)\n";
                 }
             }
         }
@@ -935,7 +935,7 @@ class KernelErrorHandler
             $no_send_error = true;
         }
 
-        // Log but dont report erorrs about writing chat available trigger
+        // Log but dont report errors about writing chat available trigger
         if (strpos($errstr, 'chat_is_available.trigger') !== false) {
             $no_send_error = true;
         }

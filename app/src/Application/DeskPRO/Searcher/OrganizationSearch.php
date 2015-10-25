@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
@@ -380,6 +379,12 @@ class OrganizationSearch extends SearcherAbstract
                         $isDate = isset($choice['date1']) || isset($choice['date1_relative']);
                         if (is_array($choice) && isset($choice['value']) && !$isDate) {
                             $choice = $choice['value'];
+                        }
+                        if (is_array($choice) && isset($choice['custom_fields'])) {
+                            $choice = $choice['custom_fields'];
+                        }
+                        if (is_array($choice) && isset($choice['field_'.$field->getId()])) {
+                            $choice = $choice['field_'.$field->getId()];
                         }
 
                         switch ($search_type) {

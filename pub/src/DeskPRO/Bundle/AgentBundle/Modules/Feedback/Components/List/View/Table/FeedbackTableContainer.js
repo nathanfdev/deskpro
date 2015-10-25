@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { peopleSelector, emailsSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackStatusesSelector } from '../../../../Selectors/list';
+import { peopleSelector, emailsSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackStatusesSelector, feedbackCategoriesSelector }
+  from '../../../../Selectors/list';
 import { setTableSort } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { TableView, TableHeader, Th, TableBody, Row, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { defaultTableFields } from '../../../List/ControlBar/FeedbackViewOptions';
@@ -12,6 +13,7 @@ import { connect } from 'react-redux';
   feedbackTypes: feedbackTypesSelector(state),
   feedbackComments: feedbackCommentsSelector(state),
   feedbackStatuses: feedbackStatusesSelector(state),
+  feedbackCategories: feedbackCategoriesSelector(state),
   people: peopleSelector(state),
   emails: emailsSelector(state)
 }))
@@ -25,6 +27,9 @@ export class FeedbackTableContainer extends Component {
     emails: PropTypes.object.isRequired,
     feedback: PropTypes.array.isRequired,
     feedbackStatuses: PropTypes.object.isRequired,
+    feedbackComments: PropTypes.object.isRequired,
+    feedbackCategories: PropTypes.object.isRequired,
+    feedbackTypes: PropTypes.object.isRequired,
     viewFields: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
   };
@@ -60,6 +65,13 @@ export class FeedbackTableContainer extends Component {
     }
   }
 
+  renderCategory(id) {
+    const { feedbackCategories } = this.props;
+    if (feedbackCategories) {
+      return feedbackCategories.get(id) ? feedbackCategories.get(id).get('input') : null;
+    }
+  }
+
   renderCommentsCounter(id) {
     const { feedbackComments } = this.props;
     if (feedbackComments.get(id)) {
@@ -69,7 +81,7 @@ export class FeedbackTableContainer extends Component {
   }
 
   render() {
-    const { feedback, viewFields, people, emails, feedbackTypes } = this.props;
+    const { feedback, viewFields, people, emails, feedbackTypes, feedbackCategories } = this.props;
     const tableFields = (viewFields && viewFields.table) ? viewFields.table : defaultTableFields;
     // filteredFields.sort((prev, next) => prev.priority - next.priority);
 
@@ -87,6 +99,8 @@ export class FeedbackTableContainer extends Component {
             {tableFields.content.isShown ? <Th value="content" label="Content"/> : null }
             {tableFields.status_category.isShown ?
               <Th value="status_category" label="Status"/> : null }
+            {tableFields.hidden_status.isShown ?
+              <Th value="hidden_status" label="Hidden"/> : null }
             {tableFields.author_name.isShown ?
               <Th value="author_name" label="Author"/> : null }
             {tableFields.type.isShown ?
@@ -116,6 +130,8 @@ export class FeedbackTableContainer extends Component {
                   <Td className="item-title">{this.renderLongString(element.content)}</Td> : null }
                 {tableFields.status_category.isShown ?
                   <Td>{this.renderStatus(element.id)}</Td> : null }
+                {tableFields.hidden_status.isShown ?
+                  <Td>{element.hidden_status}</Td> : null }
                 {tableFields.author_name.isShown ?
                   <Td>
                     <PersonInTable
@@ -127,7 +143,7 @@ export class FeedbackTableContainer extends Component {
                 {tableFields.type.isShown ?
                   <Td>{feedbackTypes.get(element.category_id).get('title')}</Td> : null }
                 {tableFields.custom_category.isShown ?
-                  <Td>{element.custom_category}</Td> : null }
+                  <Td>{this.renderCategory(element.id)}</Td> : null }
                 {tableFields.num_ratings.isShown ?
                   <Td>{element.num_ratings}</Td> : null }
                 {tableFields.num_comments.isShown ?

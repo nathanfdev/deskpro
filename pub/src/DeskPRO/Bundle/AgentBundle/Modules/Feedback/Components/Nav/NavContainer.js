@@ -12,7 +12,7 @@ import { loadFeedbackLabels } from '../../RecordStores/Actions/feedbackLabelsAct
     toValidateCount: state.Feedback.nav.get('toValidateCount'),
     commentsToReviewCount: state.Feedback.nav.get('commentsToReviewCount'),
     statuses: state.Feedback.nav.get('statuses').toJS(),
-    types: state.Feedback.nav.get('types').toJS(),
+    types: state.Feedback.nav.get('types'),
     labels: state.Feedback.nav.get('labels'),
     customCategories: state.Feedback.nav.get('customCategories').toJS(),
     currentFilterMode: filterDataSelector(state),
@@ -63,7 +63,6 @@ export class NavContainer extends Component {
 
   render() {
     const {statuses, toValidateCount, commentsToReviewCount, dispatch, labels, types, customCategories, dpWindow} = this.props;
-
     return (
       <Nav
         toValidateCount={toValidateCount}
@@ -75,7 +74,7 @@ export class NavContainer extends Component {
         customCategories={customCategories}
         commentsView={this.commentsView.bind(this)}
         dpWindow={dpWindow}
-      />
+        />
     );
   }
 }

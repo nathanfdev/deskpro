@@ -1,5 +1,6 @@
 @import "normalize.css";
 @import "raw/styles";
+@import "include";
 @import "loading/login";
 @import "global-widgets/table-view", "global-widgets/id-container", "global-widgets/timer", "global-widgets/pagination", "global-widgets/control-bar", "global-widgets/radio", "global-widgets/cards", "global-widgets/fonts";
 @import "global-widgets/navigation-dropdown/navigation-dropdowns";
@@ -24,6 +25,7 @@ $window-header-height: 44px;
 $app-switcher-width: 55px;
 $app-switcher-expanded-width: 150px;
 $nav-frame-width: 220px;
+$nav-frame-header-height: 48px;
 $nav-collapsed-width: 15px;
 
 // $list-frame-width: 450px;
@@ -31,6 +33,22 @@ $list-frame-width: 800px;
 $tab-frame-width: 100%;
 
 $kanban-frame-width: 800px;
+
+// Scrollable elements MUST be within a positioned container.
+// In common cases such as the main panes, we use CSS to override the
+// top/bottom px positions here to take into account other things like headers, etc
+.dp-scrollable {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: visible;
+
+  &.as-native-scrollbar { overflow: hidden; }
+  &.as-native-scrollbar.as-horizontal { overflow-x: auto; }
+  &.as-native-scrollbar.as-vertical   { overflow-y: auto; }
+}
 
 .dp-window {
   .dp-window-header {
@@ -131,6 +149,28 @@ $kanban-frame-width: 800px;
     }
   }
 
+  .dpw-sidebar-main-title-footer {
+    position: absolute;
+    top: $nav-frame-header-height;
+    height: 10px;
+    z-index: 2;
+    border-bottom: none;
+    background: transparent;
+  }
+
+  .list-sidebar-title:first-child {
+    margin-top: 0;
+  }
+
+  .dp-nav-frame-body {
+    position: absolute;
+    top: $nav-frame-header-height;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+  }
+
   .dp-content-outer-frame {
     position: absolute;
     top: $window-header-height;
@@ -161,8 +201,11 @@ $kanban-frame-width: 800px;
   }
 
   .dp-list-frame-contents {
-    //padding-top: 50px;
-    overflow: auto;
+    position: absolute;
+    top: $control-bar-height + 1px;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
 
   .dp-tab-frame {
@@ -232,5 +275,5 @@ $kanban-frame-width: 800px;
   position: absolute;
   top: 0;
   left: 0;
-  visibility: none;
+  visibility: hidden;
 }

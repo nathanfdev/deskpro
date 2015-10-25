@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
@@ -2037,6 +2036,8 @@ class TicketSearch extends SearcherAbstract
                             break;
                         }
 
+                        $field = $field_def;
+
                         $this->affected_fields[] = 'ticket.custom_data_ticket_'.$field_def['id'];
 
                         $search_type = $field_def->getHandler()->getSearchType();
@@ -2044,6 +2045,12 @@ class TicketSearch extends SearcherAbstract
                         $isDate = isset($choice['date1']) || isset($choice['date1_relative']);
                         if (is_array($choice) && isset($choice['value']) && !$isDate) {
                             $choice = $choice['value'];
+                        }
+                        if (is_array($choice) && isset($choice['custom_fields'])) {
+                            $choice = $choice['custom_fields'];
+                        }
+                        if (is_array($choice) && isset($choice['field_'.$field->getId()])) {
+                            $choice = $choice['field_'.$field->getId()];
                         }
 
                         switch ($search_type) {

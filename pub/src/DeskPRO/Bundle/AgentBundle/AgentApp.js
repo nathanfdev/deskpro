@@ -61,18 +61,11 @@ export default class AgentApp {
     const makeStore = compose(middleware)(createStore);
     const store = makeStore(reducer);
 
-    const intlData = {
-      'locales': 'en-US',
-      'messages': {
-        'foobar': 'Tickets'
-      }
-    };
-
     ReactDOM.render(
       <div>
         <Provider store={store}>
           <IntlProvider locale={window.DP_LOCALE} messages={window.DP_LANG}>
-            <DpAppContainer {...intlData} history={createBrowserHistory()} />
+            <DpAppContainer history={createBrowserHistory()} />
           </IntlProvider>
         </Provider>
       </div>,

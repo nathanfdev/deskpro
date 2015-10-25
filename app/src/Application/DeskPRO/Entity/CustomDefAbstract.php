@@ -751,6 +751,11 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         }
     }
 
+    public function getType()
+    {
+        return strtolower(substr($this->handler_class, strrpos($this->handler_class, '\\') + 1));
+    }
+
     /**
      * @param string $property
      *

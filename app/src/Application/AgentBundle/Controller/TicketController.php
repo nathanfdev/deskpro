@@ -371,7 +371,7 @@ class TicketController extends AbstractController
         if ($this->person->hasPerm('agent_problems.view')) {
             $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
                 array('is_open' => true),
-                array('title'   => 'asc')
+                array('title' => 'asc')
             );
 
             if ($problem = $ticket->problems->first()) {
@@ -1792,9 +1792,9 @@ class TicketController extends AbstractController
             $hidden_data = $this->_getHiddenBarData($ticket);
 
             return $this->createJsonResponse(array(
-                'success'              => true,
-                'ticket_deleted'       => true,
-                'hidden_html'          => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', array(
+                'success'        => true,
+                'ticket_deleted' => true,
+                'hidden_html'    => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', array(
                     'ticket'           => $ticket,
                     'ticket_perms'     => $this->_getTicketPerms($ticket),
                     'ticket_deleted'   => $hidden_data['ticket_deleted'],
@@ -1924,8 +1924,8 @@ class TicketController extends AbstractController
         $this->container->getBlobStorage()->deleteBlobRecord($blob);
 
         return $this->createJsonResponse(array(
-            'success'                        => true,
-            'message_html'                   => $this->renderView('AgentBundle:Ticket:ticket-message.html.twig', array(
+            'success'      => true,
+            'message_html' => $this->renderView('AgentBundle:Ticket:ticket-message.html.twig', array(
                 'message'                    => $message,
                 'ticket_message_attachments' => $ticket_message_attachments,
                 'ticket_attachments'         => $ticket_attachments,
@@ -2054,12 +2054,10 @@ class TicketController extends AbstractController
                 }
 
                 if ($this->person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
-                    if (!empty($_POST['custom_fields'])) {
-                        $post_custom_fields = $this->request->request->get('custom_fields', array());
-                        if (!empty($post_custom_fields)) {
-                            $field_manager->saveFormToObject($post_custom_fields, $ticket);
-                            $this->em->persist($ticket);
-                        }
+                    if ($this->request->request->has('custom_fields')) {
+                        $post_custom_fields = $this->request->get('custom_fields', array());
+                        $field_manager->saveFormToObject($post_custom_fields, $ticket);
+                        $this->em->persist($ticket);
 
                         $new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $layout, array('allow_edit' => true));
                         if ($org = $ticket->person->organization) {
@@ -2067,21 +2065,11 @@ class TicketController extends AbstractController
                                 $ticket, $org, $layout, array('allow_edit' => true)
                             ));
                         }
-                        $new_custom_fields->handleRequest($this->get('request'));
+                        $new_custom_fields->handleRequest($this->request);
                         if ($new_custom_fields->isValid()) {
                             $new_field_manager->flush($new_custom_fields);
                         }
                         $this->em->flush();
-                    }
-                    $post_custom_person_fields = $this->request->request->get('custom_person_fields', array());
-                    if (!empty($post_custom_person_fields)) {
-                        $person_field_manager->saveFormToObject($post_custom_person_fields, $ticket->person);
-                        $this->em->persist($ticket->person);
-                    }
-                    $post_custom_org_fields = $this->request->request->get('custom_org_fields', array());
-                    if (!empty($post_custom_org_fields) && $this->person->organization) {
-                        $org_field_manager->saveFormToObject($post_custom_org_fields, $ticket->person->organization);
-                        $this->em->persist($ticket->person->organization);
                     }
 
                     if ($this->settings->get('core.problems.enabled')) {
@@ -2154,7 +2142,7 @@ class TicketController extends AbstractController
         if ($this->person->hasPerm('agent_problems.view')) {
             $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
                 array('is_open' => true),
-                array('title'   => 'asc')
+                array('title' => 'asc')
             );
 
             if ($problem = $ticket->problems->first()) {
@@ -2673,8 +2661,8 @@ class TicketController extends AbstractController
         $this->em->flush();
 
         return $this->createJsonResponse(array(
-            'inserted'           => true,
-            'html'               => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
+            'inserted' => true,
+            'html'     => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
                 'ticket_perms'   => $this->_getTicketPerms($ticket),
                 'ticket'         => $ticket,
                 'charge'         => $charge,
@@ -2775,10 +2763,8 @@ class TicketController extends AbstractController
             $details['new_time'] = $charge->charge_time;
         }
 
-        if (!empty($custom_fields)) {
-            $field_manager->saveFormToObject($custom_fields, $charge);
-            $changes = $charge->getStateChangeRecorder()->getChanges();
-
+        $field_manager->saveFormToObject($custom_fields, $charge);
+        if ($changes = $charge->getStateChangeRecorder()->getChanges()) {
             $class      = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
             $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
             $obj        = unserialize($serialized);
@@ -2803,8 +2789,8 @@ class TicketController extends AbstractController
         $billing_fields[$charge['id']] = $field_manager->getDisplayArrayForObject($charge);
 
         return $this->createJsonResponse(array(
-            'updated'            => true,
-            'html'               => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
+            'updated' => true,
+            'html'    => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
                 'ticket'         => $ticket,
                 'charge'         => $charge,
                 'billing_fields' => $billing_fields,
@@ -2899,8 +2885,8 @@ class TicketController extends AbstractController
             $tm->saveTicket($ticket, $context);
 
             $data = array(
-                'inserted'         => true,
-                'html'             => $this->renderView('AgentBundle:Ticket:view-sla-row.html.twig', array(
+                'inserted' => true,
+                'html'     => $this->renderView('AgentBundle:Ticket:view-sla-row.html.twig', array(
                     'ticket'       => $ticket,
                     'ticket_sla'   => $ticket_sla,
                     'ticket_perms' => $this->_getTicketPerms($ticket),
@@ -3025,9 +3011,9 @@ class TicketController extends AbstractController
         $hidden_data = $this->_getHiddenBarData($ticket);
 
         return $this->createJsonResponse(array(
-            'success'              => true,
-            'banned'               => $this->in->getBool('ban'),
-            'hidden_html'          => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', array(
+            'success'     => true,
+            'banned'      => $this->in->getBool('ban'),
+            'hidden_html' => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', array(
                 'ticket'           => $ticket,
                 'ticket_perms'     => $this->_getTicketPerms($ticket),
                 'ticket_deleted'   => $hidden_data['ticket_deleted'],
@@ -3070,8 +3056,8 @@ class TicketController extends AbstractController
         $hidden_data = $this->_getHiddenBarData($ticket);
 
         return $this->createJsonResponse(array(
-            'success'              => true,
-            'hidden_html'          => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', array(
+            'success'     => true,
+            'hidden_html' => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', array(
                 'ticket'           => $ticket,
                 'ticket_perms'     => $this->_getTicketPerms($ticket),
                 'ticket_deleted'   => $hidden_data['ticket_deleted'],
@@ -3815,7 +3801,7 @@ class TicketController extends AbstractController
 
         $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
             array('is_open' => true),
-            array('title'   => 'asc')
+            array('title' => 'asc')
         );
 
         $agent_map = array();

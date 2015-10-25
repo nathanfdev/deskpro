@@ -1,6 +1,11 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
+import classNames from 'classnames';
 
-export default class ListFrameMenu extends React.Component {
+export class ListFrameMenu extends React.Component {
+
+  static propTypes = {
+    children: PropTypes.any.isRequired
+  };
 
   render() {
     return (
@@ -15,4 +20,69 @@ export default class ListFrameMenu extends React.Component {
       </div>
     );
   }
+}
+
+
+export class ControlButton extends Component {
+
+  static propTypes = {
+    toggleDropdown: PropTypes.func.isRequired,
+    title: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    icon: PropTypes.string.isRequired
+  };
+
+  render() {
+    const {toggleDropdown, title, label, icon } = this.props;
+    var classes = classNames('fa', icon);
+
+    return (
+      <a href="#" className="dpwd-navigation-dropdown-top-row-button" onClick={toggleDropdown}>
+        <span
+          className="dpwd-navigation-dropdown-top-row-button-text dpwd-navigation-dropdown-top-row-button-text-grey">
+          {title}
+        </span>
+        <span className="dpwd-navigation-dropdown-top-row-button-icon"><i className={classes}></i></span>
+        <span className="dpwd-navigation-dropdown-top-row-button-text">{label}</span>
+        <span className="dpwd-navigation-dropdown-top-row-button-icon"><i className="fa fa-caret-down"></i></span>
+      </a>
+    );
+  }
+
+}
+
+export class MassActionCheckbox extends Component {
+
+  static propTypes = {
+    onClick: PropTypes.func.isRequired,
+    massAction: PropTypes.bool.isRequired,
+    count: PropTypes.string
+  };
+
+  renderCount(count) {
+    if (count) {
+      return (
+        <div className="dpwd-navigation-top-row-mass-action-checkbox-count">
+          <span>{count}</span>
+        </div>
+      );
+    }
+  }
+
+  render() {
+    const {count, massAction, onClick} = this.props;
+
+    var divClasses = classNames('dpwd-navigation-top-row-mass-action-checkbox', {'active': massAction === true});
+    var checkboxClasses = classNames('fa', {'fa-check': massAction === true});
+
+    return (
+      <div className="dpwd-navigation-top-row-mass-action-checkbox-container">
+        <div className={divClasses} onClick={onClick}>
+          <i className={checkboxClasses}></i>
+        </div>
+        {this.renderCount(count)}
+      </div>
+    );
+  }
+
 }

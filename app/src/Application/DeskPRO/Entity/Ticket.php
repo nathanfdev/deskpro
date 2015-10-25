@@ -1730,6 +1730,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     public function renderCustomField($field_id, $context = 'html')
     {
         $f_def = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($field_id);
+        if (!$f_def) {
+            return '';
+        }
 
         $data_structured = App::getApi('custom_fields.util')->createDataHierarchy($this->custom_data, array($f_def));
 
