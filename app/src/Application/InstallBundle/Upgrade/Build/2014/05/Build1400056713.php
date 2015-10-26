@@ -44,6 +44,9 @@ class Build1400056713 extends AbstractBuild
         $db = $this->container->getDb();
         $em = $this->container->getEm();
 
+        // table modified by later script
+        $this->execMutateSql('ALTER TABLE email_accounts ADD is_read_active TINYINT(1) NOT NULL', true);
+
         // Reset table
         $db->exec('DELETE FROM email_accounts');
         $db->exec('ALTER TABLE email_accounts AUTO_INCREMENT = 1');
