@@ -61,22 +61,21 @@ class AgentChatMessage extends EntityRepository
     }
 
     /**
-     * @param \DateTime $last_check
-     * @param Person    $user
+     * @param Person $user
      * @param $chats
      *
      * @return array
      */
-    public function countMessages(\DateTime $last_check, Person $user, $chats)
+    public function countMessages(Person $user, $chats)
     {
         $qb = $this->createQueryBuilder('acm');
         $qb->select('IDENTITY(acm.chat) as chat_id, COUNT(acm.id) as cnt')
             ->where('acm.chat IN (:chats)')
-            ->andWhere('acm.date_created > :date_created')
+            ->andWhere('acm.status < :status')
             ->andWhere('acm.person != :person')
             ->groupBy('acm.chat')
             ->setParameter('chats', $chats)
-            ->setParameter('date_created', $last_check)
+            ->setParameter('status', 1)
             ->setParameter('person', $user);
 
         return $qb->getQuery()->getResult(AbstractQuery::HYDRATE_SCALAR);

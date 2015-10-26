@@ -42,7 +42,6 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MessagesController extends AbstractController
@@ -124,27 +123,42 @@ class MessagesController extends AbstractController
     }
 
     /**
-     * @param Request $request
-     *
-     * @throws BadRequestHttpException
-     *
      * @return View
      * @Annotations\Get("/agent_chats/messages/count", name="agent_chats_messages_count")
      */
-    public function countsAction(Request $request)
+    public function countsAction()
     {
-        $last_check = $request->query->get('last_check');
-        if (!$last_check) {
-            throw new BadRequestHttpException();
-        }
-        $last_check = new \DateTime($last_check);
         /** @var History $searchService */
         $searchService = $this->get('deskpro.agentchat.history');
-        $count         = $searchService->countMessages($last_check, $this->getUser());
+        $count         = $searchService->countMessages($this->getUser());
+        $data          = [];
+        foreach ($count as $cnt) {
+            $data[$cnt['chat_id']] = $cnt;
+        }
 
         return View::create(
-            $this->createRepresentation($count),
+            $this->createRepresentation($data),
             Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return View
+     * @Annotations\Patch("/agent_chats/messages/mark", name="agent_chats_messages_mark")
+     */
+    public function markAction(Request $request)
+    {
+        $status = Response::HTTP_ACCEPTED;
+        $ids    = $request->request->get('ids');
+        /** @var Messenger $messenger */
+        $messenger = $this->get('deskpro.agentchat.messenger');
+        $messenger->markAsRead($ids, $this->getUser());
+
+        return View::create(
+            $this->createRepresentation([]),
+            $status
         );
     }
 }

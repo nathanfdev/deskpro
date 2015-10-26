@@ -43,6 +43,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChat as AgentChatRepository;
+use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatMessage as AgentChatMessageRepository;
 use Doctrine\ORM\PersistentCollection;
 
 class Messenger
@@ -277,5 +278,26 @@ class Messenger
         }
 
         return false;
+    }
+
+    /**
+     * @param array  $ids
+     * @param Person $user
+     */
+    public function markAsRead(array $ids, Person $user)
+    {
+        /** @var AgentChatMessageRepository $repo */
+        $repo = $this->em->getRepository('App:AgentChatMessage');
+        if ($messages = $repo->findBy(['id' => $ids])) {
+            foreach ($messages as $message) {
+                /** @var AgentChatMessage $message */
+                if ($this->isPersonInvolvedInChat($user, $message->getChat())) {
+                    $message->setStatus(AgentChatMessage::STATUS_READ);
+                    $this->em->persist($message);
+                }
+                // TODO handle not-mine access violation
+            }
+        }
+        $this->em->flush();
     }
 }

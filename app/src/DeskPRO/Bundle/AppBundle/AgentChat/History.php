@@ -158,18 +158,17 @@ class History
     }
 
     /**
-     * @param \DateTime $last_check
-     * @param Person    $user
+     * @param Person $user
      *
      * @return array
      */
-    public function countMessages(\DateTime $last_check, Person $user)
+    public function countMessages(Person $user)
     {
         $chats = $this->findChats($user);
         /** @var AgentChatMessageRepository $repo */
         $repo = $this->em->getRepository('App:AgentChatMessage');
 
-        return $repo->countMessages($last_check, $user, $chats);
+        return $repo->countMessages($user, $chats);
     }
 
     /**
