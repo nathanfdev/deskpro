@@ -31,10 +31,10 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
+use Application\DeskPRO\Entity\TicketFlagged;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\Entity\TicketStar;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -60,11 +60,8 @@ class TicketStarsController extends BaseController
         $stars = [];
 
         for ($i = 1; $i <= 7; ++$i) {
-            $stars[] = [
-                'id'    => $i,
-                'name'  => TicketStar::idToColorName($i),
-                'color' => TicketStar::idToColorCode($i),
-            ];
+            // todo: color should be a hex code
+            $stars[] = ['id' => $i, 'name' => ucfirst(TicketFlagged::idToColorName($i)), 'color' => TicketFlagged::idToColorName($i)];
         }
 
         return View::create(
