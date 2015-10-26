@@ -33,11 +33,16 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\TicketFlagged;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
+use DeskPRO\Bundle\AppBundle\Form\Type\TaskStarType;
 use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -45,6 +50,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class TicketStarsController extends BaseController
 {
+    const CUSTOM_STAR_NAME_SETTING_PREFIX = 'agent.ticket_stars.name.';
+
     /**
      * @ApiDoc(
      *      description="get a list of ticket flags",
@@ -59,15 +66,61 @@ class TicketStarsController extends BaseController
     {
         $stars = [];
 
+        // Retrieve custom stars name PersonalSetting instances
+        $customNameSettings = $this->getRepository(PersonSetting::class)
+            ->createQueryBuilder('ps')
+            ->where('ps.name LIKE :name')
+            ->andWhere('ps.person = :person')
+            ->setParameter('name', self::CUSTOM_STAR_NAME_SETTING_PREFIX.'%')
+            ->setParameter('person', $this->getUser())
+            ->getQuery()
+            ->getResult();
+        $customNames = [];
+        foreach ($customNameSettings as $customNameSetting) {
+            $starId               = (int) str_replace(self::CUSTOM_STAR_NAME_SETTING_PREFIX, '', $customNameSetting->getName());
+            $customNames[$starId] = $customNameSetting->getValue();
+        }
+
         for ($i = 1; $i <= 7; ++$i) {
-            // todo: color should be a hex code
-            $stars[] = ['id' => $i, 'name' => ucfirst(TicketFlagged::idToColorName($i)), 'color' => TicketFlagged::idToColorName($i)];
+            $name    = array_key_exists($i, $customNames) ? $customNames[$i] : ucfirst(TicketFlagged::idToColorName($i));
+            $stars[] = [
+                'id'    => $i,
+                'name'  => $name,
+                'color' => TicketFlagged::idToColorName($i),
+            ];
         }
 
         return View::create(
             $this->dataSerialize(new PrimitiveArray($stars)),
             Response::HTTP_OK
         );
+    }
+
+    /**
+     * @Put("/ticket_stars/{id}", requirements={"id"="\d+"})
+     */
+    public function putAction($id, Request $request)
+    {
+        $content = json_decode($request->getContent(), true);
+        if (!array_key_exists('name', $content) || !$content['name']) {
+            $this->removeStarNamePersonSetting($id);
+
+            return new Response(null, Response::HTTP_NO_CONTENT);
+        }
+
+        $model = $this->findOrCreateStarNamePersonSetting($id);
+        $form  = $this->createForm(new TaskStarType(), $model);
+        $form->submit($content, true);
+
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($model);
+            $em->flush();
+
+            return new Response(null, Response::HTTP_NO_CONTENT);
+        }
+
+        throw new InvalidFormException($form);
     }
 
     /**
@@ -132,5 +185,38 @@ class TicketStarsController extends BaseController
             $this->dataSerialize($tickets),
             Response::HTTP_OK
         );
+    }
+
+    /**
+     * @param int $starId
+     *
+     * @return PersonSetting
+     */
+    private function findOrCreateStarNamePersonSetting($starId)
+    {
+        $settingName = self::CUSTOM_STAR_NAME_SETTING_PREFIX.$starId;
+        $person      = $this->getUser();
+
+        $personSetting = $this->getManager()->find(PersonSetting::class, ['person' => $person, 'name' => $settingName]);
+        if (!$personSetting) {
+            $personSetting = new PersonSetting($person, $settingName);
+        }
+
+        return $personSetting;
+    }
+
+    /**
+     * @param $starId
+     */
+    private function removeStarNamePersonSetting($starId)
+    {
+        $settingName = self::CUSTOM_STAR_NAME_SETTING_PREFIX.$starId;
+        $person      = $this->getUser();
+
+        $personSetting = $this->getManager()->find(PersonSetting::class, ['person' => $person, 'name' => $settingName]);
+        if ($personSetting) {
+            $this->getManager()->remove($personSetting);
+            $this->getManager()->flush();
+        }
     }
 }
