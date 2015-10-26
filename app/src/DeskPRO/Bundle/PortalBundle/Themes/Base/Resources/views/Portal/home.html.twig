@@ -2,6 +2,7 @@
 
 {% block page_content %}
 
+{% block content_header %}
 <section class="welcome-news">
     {# Uncomment this section to show a title/welcome message
 
@@ -23,6 +24,7 @@
 
     {% show section nav_buttons_big %}
 </section>
+{% endblock content_header %}
 
 {% if can_use_news() %}
     <section>
