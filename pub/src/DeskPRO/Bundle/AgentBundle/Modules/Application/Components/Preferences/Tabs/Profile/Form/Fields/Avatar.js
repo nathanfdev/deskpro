@@ -4,9 +4,39 @@ import DropzoneComponent from 'react-dropzone-component';
 
 export class Avatar extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      tmpFile: null,
+      tmpFilePath: null
+    };
+  }
+
+  onThumbnail = file => {
+    if (file.cropped) {
+      return;
+    }
+
+    const dropzone = this.refs.dropzoneComponent.dropzone;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      this.setState({
+        tmpFilePath: reader.result
+      });
+    };
+
+    dropzone.removeFile(file);
+    reader.readAsDataURL(file);
+
+    this.setState({
+      tmpFile: file
+    });
+  };
+
   render() {
     const djsConfig = {
       addRemoveLinks: true,
+      maxFiles: 1,
       params: {
         myParameter: "I'm a parameter!"
       }
@@ -20,17 +50,20 @@ export class Avatar extends React.Component {
 
     return (
       <div>
-        <Cropper
+        {this.state.tmpFilePath && (<Cropper
           ref="cropper"
-          src="http://fengyuanchen.github.io/cropper/img/picture.jpg"
+          src={this.state.tmpFilePath}
           style={{height: 400, width: '100%'}}
           // Cropper.js options
           aspectRatio={16 / 9}
           guides={false}
-          crop={this._crop} />
+          crop={this._crop} />)}
 
-        <DropzoneComponent config={componentConfig}
-                           eventHandlers={[]}
+        <DropzoneComponent ref="dropzoneComponent"
+                           config={componentConfig}
+                           eventHandlers={{
+                             thumbnail: this.onThumbnail
+                           }}
                            djsConfig={djsConfig} />
         </div>
     );
