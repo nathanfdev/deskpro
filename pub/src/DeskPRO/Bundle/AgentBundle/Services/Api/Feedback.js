@@ -146,13 +146,8 @@ export function getHidden() {
  * @return {object} Promise
  */
 export function getList(params) {
-  const {navItem} = params;
-  if (navItem) {
-    delete params.navItem;
-  }
-  const queryParams = Object.assign({ ...params, ...navItem });
-  // console.log('DP_API/feedback/?' + compileParams(queryParams));
-  return DpApi.sendGet('DP_API/feedback/?' + compileParams(queryParams));
+  console.log('DP_API/feedback/?' + compileParams(params));
+  return DpApi.sendGet('DP_API/feedback/?' + compileParams(params));
 }
 
 /**
