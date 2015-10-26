@@ -11,10 +11,22 @@ import { MassActionCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Co
 export default class TaskControls extends React.Component {
   static propTypes = {
     actionable: React.PropTypes.array,
+    agents: React.PropTypes.object,
     applyFilter: React.PropTypes.func,
+    changeView: React.PropTypes.bool,
+    departments: React.PropTypes.object,
+    direction: React.PropTypes.string,
+    labels: React.PropTypes.object,
+    order: React.PropTypes.string,
+    projects: React.PropTypes.object,
+    setSortOrder: React.PropTypes.func,
     setView: React.PropTypes.func,
+    taskFilter: React.PropTypes.object,
+    teams: React.PropTypes.object,
     toggleAllMassActions: React.PropTypes.func,
-    windowProps: React.PropTypes.func,
+    toggleView: React.PropTypes.func,
+    view: React.PropTypes.string,
+    windowProps: React.PropTypes.func
   }
 
   constructor(props) {
@@ -71,10 +83,12 @@ export default class TaskControls extends React.Component {
         <li>
           <a href="#" ref="orderButton" className="dpwd-navigation-dropdown-top-row-button"
              onClick={this.toggleShowOrder.bind(this)}>
-            <span className="title">Order by:</span>
-            <span className="focus">{ this.props.order.charAt(0).toUpperCase() + this.props.order.slice(1) }</span>
-            <span className="down">{ this.props.direction.charAt(0).toUpperCase() + this.props.direction.slice(1) } <i
-              className="fa fa-caret-down"/></span>
+            <span className="dpwd-navigation-dropdown-top-row-button-text dpwd-navigation-dropdown-top-row-button-text-grey">Order by:</span>
+            <span className="dpwd-navigation-dropdown-top-row-button-text">&nbsp;
+              <span className="focus">{ this.props.order.charAt(0).toUpperCase() + this.props.order.slice(1) }</span>
+              <span className="down"> ({ this.props.direction.charAt(0).toUpperCase() + this.props.direction.slice(1) }) <i
+                className="fa fa-caret-down"/></span>
+            </span>
           </a>
 
           <Positioned isOpen={this.state.changeOrder}
@@ -94,9 +108,11 @@ export default class TaskControls extends React.Component {
         </li>
         <li>
           <a href="#" className="dpwd-navigation-dropdown-top-row-button" onClick={this.toggleWindow.bind(this)}>
-            <span className="title">Filter by:</span>
-            <span className="focus">12</span>
-            <span className="down">Completed <i className="fa fa-caret-down"/></span>
+            <span className="dpwd-navigation-dropdown-top-row-button-text dpwd-navigation-dropdown-top-row-button-text-grey">Filter by:</span>
+            <span className="dpwd-navigation-dropdown-top-row-button-text">&nbsp;
+              <span className="focus">12</span>
+              <span className="down"> Completed <i className="fa fa-caret-down"/></span>
+            </span>
           </a>
 
           <ComponentRootWrapper open={this.state.showWindow}>
@@ -118,10 +134,12 @@ export default class TaskControls extends React.Component {
         </li>
         <li>
           <a href="#" className="dpwd-navigation-dropdown-top-row-button" onClick={this.props.toggleView.bind(this)}>
-            <span className="title">View:</span>
-            <span className="multi task-list-view-switcher">
-              { taskView.charAt(0).toUpperCase() + taskView.slice(1) }
-              <span className="multi-down"><i className="fa fa-caret-down"/></span>
+            <span className="dpwd-navigation-dropdown-top-row-button-text dpwd-navigation-dropdown-top-row-button-text-grey">View:</span>
+            <span className="dpwd-navigation-dropdown-top-row-button-text">&nbsp;
+              <span className="multi task-list-view-switcher">
+                { taskView.charAt(0).toUpperCase() + taskView.slice(1) }
+                <span className="multi-down"> <i className="fa fa-caret-down"/></span>
+              </span>
             </span>
           </a>
 
@@ -130,7 +148,7 @@ export default class TaskControls extends React.Component {
                       positionTarget={viewSwitcherPosition}>
             <TaskControlsViewSwitcher
               setView={setView.bind(this)}
-              view={this.state.view}
+              view={this.props.view}
               />
           </Positioned>
         </li>

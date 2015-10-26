@@ -6,7 +6,7 @@ const TaskCalendarList = React.createClass({
     closeWindow: React.PropTypes.func,
     dayDate: React.PropTypes.object,
     position: React.PropTypes.object,
-    tasks: React.PropTypes.object
+    tasks: React.PropTypes.array
   },
 
   mixins: [

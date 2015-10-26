@@ -370,6 +370,7 @@ export class TasksListFrame extends React.Component {
                       direction={this.state.direction}
                       setSortOrder={this.setSortOrder.bind(this)}
                       setView={this.setView.bind(this)}
+                      view={this.state.view}
                       actionable={this.state.actionable.length}
                       toggleAllMassActions={this.toggleAllMassActions.bind(this)}
           />
@@ -380,9 +381,9 @@ export class TasksListFrame extends React.Component {
               {this.state.view === 'card' ?
                 <TaskViewConnector tasks={this.props.tasks}
                                    order={this.state.order}
+                                   direction={this.state.direction}
                                    projectId={projectId}>
-                  <ListView direction={this.state.direction}
-                            view={this.state.view}
+                  <ListView view={this.state.view}
                             toggleDone={this.toggleDone.bind(this)}
                             editTask={this.editTask.bind(this)}
                             updateMassActions={this.updateMassActions.bind(this)}
@@ -396,9 +397,9 @@ export class TasksListFrame extends React.Component {
               {this.state.view === 'kanban' ?
                 <TaskViewConnector tasks={this.props.tasks}
                                    order={this.state.order}
+                                   direction={this.state.direction}
                                    projectId={projectId}>
-                  <KanbanView direction={this.state.direction}
-                              view={this.state.view}
+                  <KanbanView view={this.state.view}
                               toggleDone={this.toggleDone.bind(this)}
                               editTask={this.editTask.bind(this)}
                               updateMassActions={this.updateMassActions.bind(this)}
@@ -412,9 +413,9 @@ export class TasksListFrame extends React.Component {
               {this.state.view === 'condensed' ?
                 <TaskViewConnector tasks={this.props.tasks}
                                    order={this.state.order}
+                                   direction={this.state.direction}
                                    projectId={projectId}>
-                  <CondensedView direction={this.state.direction}
-                            view={this.state.view}
+                  <CondensedView view={this.state.view}
                             toggleDone={this.toggleDone.bind(this)}
                             editTask={this.editTask.bind(this)}
                             updateMassActions={this.updateMassActions.bind(this)}
@@ -429,9 +430,9 @@ export class TasksListFrame extends React.Component {
               {this.state.view === 'calendar' ?
                 <TaskViewConnector tasks={this.props.tasks}
                                    order={this.state.order}
+                                   direction={this.state.direction}
                                    projectId={projectId}>
-                  <CalendarView direction={this.state.direction}
-                            view={this.state.view}
+                  <CalendarView view={this.state.view}
                             toggleDone={this.toggleDone.bind(this)}
                             editTask={this.editTask.bind(this)}
                             updateMassActions={this.updateMassActions.bind(this)}
