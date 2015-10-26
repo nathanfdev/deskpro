@@ -16,7 +16,7 @@ export default class OmniSearchWidget extends PageWidget {
     $('.omnisearch-link').each(function(){
         $(this).click(function(e){
             e.preventDefault();
-            $input.val($(this).text()).change();
+            $input.val($(this).text()).change().focus();
         });
     });
     setInterval(() => {
