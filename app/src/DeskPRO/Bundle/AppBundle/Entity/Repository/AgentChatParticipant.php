@@ -44,10 +44,10 @@ class AgentChatParticipant extends EntityRepository
     {
         /* @var AgentTeamRepository $teamRepo */
         $qb = $this->createQueryBuilder('acp')
-            ->select('acp.agent_chat_id')
-            ->andWhere('acp.person_id = :person')
-            ->orWhere('acp.agent_team_id IN (:agent_team_id)')
-            ->orWhere('acp.department_id IN (:department_id)')
+            ->select('IDENTITY(acp.chat) as agent_chat_id')
+            ->andWhere('acp.person = :person')
+            ->orWhere('acp.team IN (:agent_team_id)')
+            ->orWhere('acp.department IN (:department_id)')
             ->setParameters(
                 [
                     'person'        => $person->getId(),

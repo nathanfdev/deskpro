@@ -42,6 +42,7 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MessagesController extends AbstractController
@@ -119,6 +120,31 @@ class MessagesController extends AbstractController
         return View::create(
             $this->dataSerialize($message),
             Response::HTTP_CREATED
+        );
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @throws BadRequestHttpException
+     *
+     * @return View
+     * @Annotations\Get("/agent_chats/messages/count", name="agent_chats_messages_count")
+     */
+    public function countsAction(Request $request)
+    {
+        $last_check = $request->query->get('last_check');
+        if (!$last_check) {
+            throw new BadRequestHttpException();
+        }
+        $last_check = new \DateTime($last_check);
+        /** @var History $searchService */
+        $searchService = $this->get('deskpro.agentchat.history');
+        $count         = $searchService->countMessages($last_check, $this->getUser());
+
+        return View::create(
+            $this->createRepresentation($count),
+            Response::HTTP_OK
         );
     }
 }
