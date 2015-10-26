@@ -1,6 +1,7 @@
-import React from "react"
-import _ from "lodash"
-import PortalHttp from "DeskPRO/Bundle/PortalBundle/Http/PortalHttp"
+import React from "react";
+import _ from "lodash";
+import moment from "moment";
+import PortalHttp from "DeskPRO/Bundle/PortalBundle/Http/PortalHttp";
 
 class SearchResultCollection {
   constructor() {
@@ -146,9 +147,10 @@ export default class OmniSearchResultSection extends React.Component {
           {_.map(this.state.items.getNum(this.state.currently_displaying), (item) => {
             let t = item.name;
             if (this.state.nameApi === 'news') {
-              t = (<span><span className="date-mark"><i className="fa fa-calendar-o"></i> 10 days ago</span>{item.name}</span>);
+              t = (<span><span className="date-mark"><i className="fa fa-calendar-o"></i> {moment(item.date).fromNow()}</span>{item.name}</span>);
             } else if (this.state.nameApi === 'feedback') {
-              t = (<span><span className="feedback-mark"><i className="fa fa-thumbs-up"></i>+12</span>{item.name}</span>);
+              let sign = item.rating < 0 ? '-' : '+';
+              t = (<span><span className="feedback-mark"><i className="fa fa-thumbs-up"></i>{sign + item.rating}</span>{item.name}</span>);
             }
             return (<ListLink key={item.id} url={item.url} text={t}/>);
           })}

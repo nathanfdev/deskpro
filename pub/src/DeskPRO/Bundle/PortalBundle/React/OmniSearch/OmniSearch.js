@@ -1,10 +1,10 @@
-import React from "react"
-import _ from "lodash"
-import $ from "jquery"
-import PortalHttp from "DeskPRO/Bundle/PortalBundle/Http/PortalHttp"
-import PortalUrlGenerator from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator"
-import OmniSearchResultSection from "DeskPRO/Bundle/PortalBundle/React/OmniSearch/OmniSearchResultSection"
-import Pagination from "DeskPRO/Bundle/PortalBundle/React/Pagination"
+import React from "react";
+import _ from "lodash";
+import $ from "jquery";
+import PortalHttp from "DeskPRO/Bundle/PortalBundle/Http/PortalHttp";
+import PortalUrlGenerator from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator";
+import OmniSearchResultSection from "DeskPRO/Bundle/PortalBundle/React/OmniSearch/OmniSearchResultSection";
+import Pagination from "DeskPRO/Bundle/PortalBundle/React/Pagination";
 
 class SearchType extends React.Component {
   toggle() {
