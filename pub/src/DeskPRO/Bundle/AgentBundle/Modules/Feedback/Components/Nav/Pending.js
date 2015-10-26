@@ -20,13 +20,13 @@ export class Pending extends Component {
           <ListItemContainer
             count={toValidateCount}
             label="Feedback to Validate"
-            listOptions={{awaiting_validation: 1}}
-          />
+            listOptions={ {navItem: { awaiting_validation: 1 } } }
+            />
           <ListItemContainer
             count={commentsToReviewCount}
             label="Comments to Review"
             onClick={commentsView.bind(this, {name: 'feedback_comments'})}
-          />
+            />
         </ul>
       </Section>
     );

@@ -92,7 +92,7 @@ export class ListItemStatefulContainer extends Component {
       active: props.state.getIn([props.groupId, 'active']) === props.itemId,
 
       // decorating original "onClick" with additional URL state saving functionality
-      onClick: function(event) {
+      onClick(event) {
         props.onClick(event);
         props.dispatch(updateRoutingState(props.groupId, 'active', props.itemId));
       }

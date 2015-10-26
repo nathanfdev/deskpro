@@ -142,12 +142,19 @@ export function getHidden() {
 
 /**
  * Get list of filtered feedback
+ * @param {object} params Request options
  * @return {object} Promise
  */
 export function getList(params) {
-  console.log('DP_API/feedback/?' + compileParams(params));
-  return DpApi.sendGet('DP_API/feedback/?' + compileParams(params));
+  const {navItem} = params;
+  if (navItem) {
+    delete params.navItem;
+  }
+  const queryParams = Object.assign({ ...params, ...navItem });
+  // console.log('DP_API/feedback/?' + compileParams(queryParams));
+  return DpApi.sendGet('DP_API/feedback/?' + compileParams(queryParams));
 }
+
 /**
  * Get values for chosen filter
  * @return {object} Promise
