@@ -31,12 +31,12 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
-use Application\DeskPRO\Entity\TicketFlagged;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStar;
 use DeskPRO\Bundle\AppBundle\Form\Type\TaskStarType;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Put;
@@ -82,11 +82,11 @@ class TicketStarsController extends BaseController
         }
 
         for ($i = 1; $i <= 7; ++$i) {
-            $name    = array_key_exists($i, $customNames) ? $customNames[$i] : ucfirst(TicketFlagged::idToColorName($i));
+            $name    = array_key_exists($i, $customNames) ? $customNames[$i] : TicketStar::idToColorLabel($i);
             $stars[] = [
                 'id'    => $i,
                 'name'  => $name,
-                'color' => TicketFlagged::idToColorName($i),
+                'color' => TicketStar::idToColorHex($i),
             ];
         }
 
