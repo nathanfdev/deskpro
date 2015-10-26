@@ -39,7 +39,7 @@ export default class OmniSearch extends React.Component {
     let throttleChanges = _.throttle((e) => {
       this.doSearch({ q: e.target.value });
     }, 250);
-    this.state.$input.on('keyup', throttleChanges);
+    this.state.$input.on('keyup change', throttleChanges);
     this.state.$close.click(() => {
       this.state.$input.val('');
       this.doSearch({ q: '' }); // reset/close search

@@ -4,7 +4,7 @@
             <form action="{{ path('portal_search') }}" id="omnisearch" autocomplete="off">
                 <div class="input-wrap">
                     <i class="fa fa-search"></i>
-                    <a href="#" class="search-clear"><i class="fa fa-times"></i></a>
+                    <a href="#" class="search-clear" style="display: none;"><i class="fa fa-times"></i></a>
                     <input type="text" name="q" autocomplete="off" placeholder="{{ phrase('portal.general.search_btn') }}...">
                     <!-- .active on this if we need it active -->
                 </div>
@@ -62,6 +62,6 @@
         </div>
     </div>
     <div class="search-form-suggestions">
-        For example: "<a href="#">lorel ipsum</a>", "<a href="#">lorel ipsum</a>", "<a href="#">lorel ipsum</a>"
+        For example: "<a href="#" class="omnisearch-link">lorel ipsum</a>", "<a href="#" class="omnisearch-link">lorel ipsum 2</a>", "<a href="#" class="omnisearch-link">lorel ipsum 3</a>"
     </div>
 </div>
