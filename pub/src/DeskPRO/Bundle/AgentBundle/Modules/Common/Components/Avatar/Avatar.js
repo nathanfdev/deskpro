@@ -49,7 +49,8 @@ export class Avatar extends React.Component {
 
   renderGravatar() {
     const { gravatar, size } = this.props;
-    const gravatarImg = gravatar + '&default=blank' + (size ? '&s=' + size : '');
+    const delimiter = gravatar.indexOf('?') === -1 ? '?' : '&';
+    const gravatarImg = gravatar + delimiter + 'default=blank' + (size ? '&s=' + size : '');
     const gravatarStyle = this.getStyle('url(' + gravatarImg + ')');
     gravatarStyle.position = 'absolute';
     gravatarStyle.top = '0';

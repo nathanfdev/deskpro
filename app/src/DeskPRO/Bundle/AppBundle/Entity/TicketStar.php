@@ -26,33 +26,48 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
-
-use Application\DeskPRO\Entity;
-use Orb\Util\PhoneNumbers;
-use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\ConstraintValidator;
-use Symfony\Component\Validator\Exception\UnexpectedTypeException;
-
 /**
- * Class PhoneNumberValidator.
+ * DeskPRO.
+ *
+ * @category Entities
  */
-class PhoneNumberValidator extends ConstraintValidator
+namespace DeskPRO\Bundle\AppBundle\Entity;
+
+use Application\DeskPRO\Entity\TicketFlagged;
+
+class TicketStar extends TicketFlagged
 {
+    private static $id_color_hex_map = array(
+        self::STAR_BLUE   => '#0000FF',
+        self::STAR_GREEN  => '#008000',
+        self::STAR_ORANGE => '#FFA500',
+        self::STAR_PINK   => '#FFC0CB',
+        self::STAR_PURPLE => '#800080',
+        self::STAR_RED    => '#FF0000',
+        self::STAR_YELLOW => '#FFFF00',
+    );
+
     /**
-     * {@inheritdoc}
+     * @param int $id
+     *
+     * @return string
      */
-    public function validate($value, Constraint $constraint)
+    public static function idToColorLabel($id)
     {
-        if (!$constraint instanceof PhoneNumber) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\PhoneNumber');
+        return ucfirst(self::idToColorName($id));
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return string
+     */
+    public static function idToColorHex($id)
+    {
+        if (!isset(self::$id_color_hex_map[$id])) {
+            throw new \InvalidArgumentException();
         }
 
-        if ($value && $value instanceof Entity\PhoneNumber) {
-            $value = $value->getNumberFormatted();
-        }
-        if ($value && !PhoneNumbers::isValid($value)) {
-            $this->context->addViolation($constraint->message);
-        }
+        return self::$id_color_hex_map[$id];
     }
 }

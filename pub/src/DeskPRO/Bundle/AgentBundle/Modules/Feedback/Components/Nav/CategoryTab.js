@@ -13,12 +13,12 @@ export class CategoryTab extends Component {
     return (
       <ul>
         {customCategories.map((item, index) =>
-          <ListItemContainer
-            key={index}
-            count={item.count}
-            label={item.group}
-            listOptions={{custom_category: item.group}}
-          />
+            <ListItemContainer
+              key={index}
+              count={item.count}
+              label={item.group}
+              listOptions={{navItem: {custom_category: item.group}}}
+              />
         )}
       </ul>
     );

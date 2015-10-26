@@ -11,12 +11,12 @@ export class TypeTab extends Component {
     return (
       <ul>
         {types.map((item, index) =>
-          <ListItemContainer
-            key={index}
-            count={item.get('value')}
-            label={item.get('title')}
-            listOptions={{category: item.get('title')}}
-          />
+            <ListItemContainer
+              key={index}
+              count={item.get('value')}
+              label={item.get('title')}
+              listOptions={{navItem: {category: item.get('title')}}}
+              />
         )}
       </ul>
     );

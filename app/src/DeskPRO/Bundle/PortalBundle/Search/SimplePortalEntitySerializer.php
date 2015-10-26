@@ -98,6 +98,22 @@ class SimplePortalEntitySerializer
             $result['id']   = $object->getId();
             $result['name'] = $object->getTitle();
             $result['url']  = $this->object_router->getPortalUrl($object);
+            if ($object instanceof Entity\News) {
+                if (!$date = $object->getDatePublished()) {
+                    $date = $object->getDateCreated();
+                }
+                try {
+                    $result['date'] = $date->format(\DateTime::ISO8601);
+                } catch (\Exception $e) {
+                }
+            }
+            if ($object instanceof Entity\Feedback) {
+                if ($rating = $object->getTotalRating()) {
+                    $result['rating'] = $rating;
+                } else {
+                    $result['rating'] = 0;
+                }
+            }
         } elseif ($object instanceof Entity\Ticket) {
             $result['id']   = $object->getId();
             $result['name'] = $object->getSubject();

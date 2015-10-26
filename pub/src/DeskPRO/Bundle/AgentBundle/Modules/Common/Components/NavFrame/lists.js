@@ -92,7 +92,7 @@ export class ListItemStatefulContainer extends Component {
       active: props.state.getIn([props.groupId, 'active']) === props.itemId,
 
       // decorating original "onClick" with additional URL state saving functionality
-      onClick: function(event) {
+      onClick(event) {
         props.onClick(event);
         props.dispatch(updateRoutingState(props.groupId, 'active', props.itemId));
       }
@@ -203,7 +203,6 @@ export class NestedList extends BaseList {
   }
 
   render() {
-    console.log('Status items: ', this.props.items);
     const depth = this.props.depth || 1;
     const className = depth > 1
       ? 'with-connectors depth-' + (depth - 1)

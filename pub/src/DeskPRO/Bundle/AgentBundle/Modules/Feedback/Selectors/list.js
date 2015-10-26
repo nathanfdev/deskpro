@@ -13,9 +13,19 @@ import { hashStateSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/App
 
 const stateSelector = state => state.Feedback.list;
 
-export const sortingDataSelector = createSelector(
+export const currentListParamsSelector = createSelector(
   stateSelector,
-    list => list.get('sortOptions').toJS().find(option => option.current === true)
+  state => state.get('currentListParams')
+);
+
+export const currentListSortSelector = createSelector(
+  currentListParamsSelector,
+  params => params.get('sort')
+);
+
+export const currentListOrderSelector = createSelector(
+  currentListParamsSelector,
+  params => params.get('order')
 );
 
 export const filterDataSelector = createSelector(

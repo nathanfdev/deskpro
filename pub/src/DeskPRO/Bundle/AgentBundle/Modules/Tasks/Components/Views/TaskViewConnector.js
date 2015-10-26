@@ -32,6 +32,7 @@ export default class TaskViewConnector extends React.Component {
     agents: React.PropTypes.object,
     children: React.PropTypes.any,
     departments: React.PropTypes.object,
+    direction: React.PropTypes.string,
     dispatch: React.PropTypes.func,
     lists: React.PropTypes.object,
     order: React.PropTypes.string,
@@ -91,6 +92,7 @@ export default class TaskViewConnector extends React.Component {
 
   render() {
     const tasks = [];
+    const sortedTasks = [];
     const grouping = new TaskGrouping(this.props.projects, this.props.departments, this.props.teams, this.props.agents, this.props.lists, this.props.tickets);
     const columnField = this.props.order;
     const rawGroupings = grouping.getRawGroupings(columnField, this.props.direction);
@@ -106,13 +108,31 @@ export default class TaskViewConnector extends React.Component {
 
         tasks[columnId].push(object);
       });
+
+      const updateField = rawGroupings[0].updateField;
+
+      // Sort within the groups
+      Object.keys(tasks).map((key) => {
+        sortedTasks[key] = tasks[key].sort((first, second) => {
+          if (first.get(updateField) === second.get(updateField)) {
+            return 0;
+          }
+
+          if (this.props.direction === 'desc') {
+            return first.get(updateField) < second.get(updateField) ? 1 : -1;
+          }
+
+          return first.get(updateField) > second.get(updateField) ? 1 : -1;
+        });
+      });
     }
 
     const childProps = Object.assign({
       agents: this.props.agents,
       departments: this.props.departments,
+      direction: this.props.direction,
       dispatch: this.props.dispatch,
-      groupedTasks: tasks,
+      groupedTasks: sortedTasks,
       massEdit: this.props.massEdit,
       projects: this.props.projects,
       order: this.props.order,

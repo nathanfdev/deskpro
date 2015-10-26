@@ -17,10 +17,10 @@ export class FeedbackCard extends Component {
     toggleSelected: PropTypes.func.isRequired,
     author: PropTypes.object.isRequired,
     type: PropTypes.object.isRequired,
-    feedbackLabels: PropTypes.object.isRequired,
+    feedbackLabels: PropTypes.object,
     feedbackStatus: PropTypes.object.isRequired,
-    feedbackCategory: PropTypes.object.isRequired,
-    feedbackComments: PropTypes.object.isRequired
+    feedbackCategory: PropTypes.object,
+    feedbackComments: PropTypes.object
   };
 
   renderLabels(labels) {

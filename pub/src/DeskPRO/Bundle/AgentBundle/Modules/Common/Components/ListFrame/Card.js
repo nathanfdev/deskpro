@@ -139,7 +139,7 @@ export class CardCheckbox extends Component {
   static propTypes = {
     onClick: PropTypes.func,
     selected: PropTypes.bool
-  }
+  };
 
   render() {
     const { selected, onClick } = this.props;
@@ -223,7 +223,7 @@ export class CardDate extends Component {
 export class CardUser extends Component {
 
   static propTypes = {
-    email: PropTypes.string.isRequired,
+    email: PropTypes.string,
     user: PropTypes.object
   };
 

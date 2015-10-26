@@ -1,10 +1,10 @@
-import React from "react"
-import _ from "lodash"
-import $ from "jquery"
-import PortalHttp from "DeskPRO/Bundle/PortalBundle/Http/PortalHttp"
-import PortalUrlGenerator from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator"
-import OmniSearchResults from "DeskPRO/Bundle/PortalBundle/React/OmniSearch/OmniSearchResults"
-import Pagination from "DeskPRO/Bundle/PortalBundle/React/Pagination"
+import React from "react";
+import _ from "lodash";
+import $ from "jquery";
+import PortalHttp from "DeskPRO/Bundle/PortalBundle/Http/PortalHttp";
+import PortalUrlGenerator from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator";
+import OmniSearchResultSection from "DeskPRO/Bundle/PortalBundle/React/OmniSearch/OmniSearchResultSection";
+import Pagination from "DeskPRO/Bundle/PortalBundle/React/Pagination";
 
 class SearchType extends React.Component {
   toggle() {
@@ -32,20 +32,14 @@ export default class OmniSearch extends React.Component {
       },
       search_query: {
         q: ''
-      },
-      types: [
-        {type: 'download', name: 'Downloads', active: true},
-        {type: 'article', name: 'Articles', active: true},
-        {type: 'news', name: 'News', active: true},
-        {type: 'feedback', name: 'Feedback', active: true}
-      ]
+      }
     };
   }
   componentDidMount() {
     let throttleChanges = _.throttle((e) => {
       this.doSearch({ q: e.target.value });
     }, 250);
-    this.state.$input.on('keyup', throttleChanges);
+    this.state.$input.on('keyup change', throttleChanges);
     this.state.$close.click(() => {
       this.state.$input.val('');
       this.doSearch({ q: '' }); // reset/close search
@@ -68,7 +62,7 @@ export default class OmniSearch extends React.Component {
       doSpin: true
     });
 
-    PortalHttp.sendGet('DP_URL/search', { data: search_query }).then((r) => {
+    PortalHttp.sendGet('DP_URL/search/omni', { data: search_query }).then((r) => {
       if (!r.isError()) {
         this.setState({
           data: r.data.data,
@@ -78,55 +72,67 @@ export default class OmniSearch extends React.Component {
       }
     });
   }
-  changePage(page) {
-    this.doSearch({page: page});
+  doResultsExist() {
+    let grandTotal = 0;
+    _.forOwn(this.state.data, (type_results, type) => {
+      if ("results" in type_results) {
+        grandTotal += _.keys(type_results.results).length;
+      }
+    });
+
+    return grandTotal > 0;
   }
 	render() {
     let data = this.state.data;
-    let total = _.parseInt(data.pageinfo.total_results);
-      return (
-        <div className="expanded-search-results" style={{display: this.state.search_query.q.length > 0 ? "block" : "none"}}>
-          <div className="search-result-collection">
-            <h1><i className="fa fa-file-text-o"></i> Knowledge base</h1>
-            <ul>
-              <li><a href="#">Keep Files On Your Users (Literally)</a></li>
-              <li><a href="#">Can I keep my existing support email address?</a></li>
-              <li><a href="#">Quick Start Guide for new agents</a></li>
-              <li><a href="#">Keeping read mail on the POP3 server</a></li>
-            </ul>
-            <a href="#" className="search-results-show-more">10 More <i className="fa fa-angle-double-down"></i></a>
-          </div>
 
-          <div className="search-result-collection">
-            <h1><i className="fa fa-download"></i> Downloads</h1>
-            <ul>
-              <li><a href="#">New Feature: Keep Files On Your Users (Literally)</a></li>
-              <li><a href="#">Can I keep my existing support email address?</a></li>
-            </ul>
-            <a href="#" className="search-results-show-more">10 More <i className="fa fa-angle-double-down"></i></a>
-          </div>
+    if (this.state.search_query.q.length < 3) {
+      return null;
+    }
 
-          <div className="search-result-collection">
-            <h1><i className="fa fa-file-text-o"></i> News</h1>
-            <ul>
-              <li><a href="#"><span className="date-mark"><i className="fa fa-calendar-o"></i> 10 days ago</span> New Feature:
-                Keep <span className="search-match-mark">Files On Your</span> Users (Literally)</a></li>
-              <li><a href="#"><span className="date-mark"><i className="fa fa-calendar-o"></i> 10 days ago</span> Can I keep my
-                existing support email address?</a></li>
-            </ul>
-            <a href="#" className="search-results-show-more">10 More <i className="fa fa-angle-double-down"></i></a>
-          </div>
+    return (
+        <div className="expanded-search-results" style={{
+          display: this.state.search_query.q.length > 0 ? "block" : "none",
+          width: this.state.$input.closest('.search-form').width()
+        }}>
+          {
+            this.doResultsExist() ?
+              (<div>
+                <OmniSearchResultSection
+                  name="Knowledge base"
+                  nameApi="article"
+                  nameIcon="fa fa-file-text-o"
+                  initialResult={"article" in data ? data.article : []}
+                  q={this.state.search_query.q}
+                  />
 
-          <div className="search-result-collection">
-            <h1><i className="fa fa-comments"></i> Feedback</h1>
-            <ul>
-              <li><a href="#"><span className="feedback-mark"><i className="fa fa-thumbs-up"></i> +12</span> New Feature: Keep
-                Files On Your Users (Literally)</a></li>
-              <li><a href="#"><span className="feedback-mark"><i className="fa fa-thumbs-up"></i> +12</span> Can I keep my
-                existing support email address?</a></li>
-            </ul>
-            <a href="#" className="search-results-show-more">10 More <i className="fa fa-angle-double-down"></i></a>
-          </div>
+                <OmniSearchResultSection
+                  name="Downloads"
+                  nameApi="download"
+                  nameIcon="fa fa-download"
+                  initialResult={"download" in data ? data.download : []}
+                  q={this.state.search_query.q}
+                  />
+
+                <OmniSearchResultSection
+                  name="News"
+                  nameApi="news"
+                  nameIcon="fa fa-file-text-o"
+                  initialResult={"news" in data ? data.news : []}
+                  q={this.state.search_query.q}
+                  />
+
+                <OmniSearchResultSection
+                  name="Feedback"
+                  nameApi="feedback"
+                  nameIcon="fa fa-comments"
+                  initialResult={"feedback" in data ? data.feedback : []}
+                  q={this.state.search_query.q}
+                  />
+              </div>) :
+              (<div>
+                <h1>No Results</h1>
+              </div>)
+          }
 
           <div className="search-results-footer">
             <a href={PortalUrlGenerator.path('/new-ticket')}>
@@ -141,36 +147,6 @@ export default class OmniSearch extends React.Component {
               <i className="fa fa-comments"></i>
               <span>Start Chat Session</span>
             </a>
-          </div>
-        </div>
-      );
-      return (
-        <div className={"live-results-container" + (this.state.search_query.q.length > 0 ? " show" : "")}>
-          <div className="search-box-results">
-            <header>
-              <span className="result-count">{total} results</span>
-              <img style={{display: this.state.doSpin ? "inline" : "none", height: "18px", width: "18px", marginLeft: "3px"}}
-                src={ PortalUrlGenerator.getSpinnerPath() }/>
-              <ul className="result-filter">
-                {_.map(this.state.types, (type) => {
-                  return (<SearchType key={type.type} name={type.name} active={type.active} type={type.type} toggleType={this.toggleType.bind(this)} />);
-                })}
-              </ul>
-            </header>
-            <OmniSearchResults total={total} results={data.results} />
-            <Pagination
-              currentPage={data.pageinfo.curpage}
-              totalResults={total}
-              perPageResults={data.pageinfo.per_page}
-              pageClick={this.changePage.bind(this)}
-              />
-            <hr />
-            <div className="live-search-meta">
-              <div>Still haven't found what you're looking for?</div>
-              <a href={PortalUrlGenerator.path('/new-ticket')} className="button">Contact Us</a>
-              <a href={PortalUrlGenerator.path('/feedback')} className="button">Submit Feedback</a>
-              <a href="#" className="button">Start Chat Session</a>
-            </div>
           </div>
         </div>
       );

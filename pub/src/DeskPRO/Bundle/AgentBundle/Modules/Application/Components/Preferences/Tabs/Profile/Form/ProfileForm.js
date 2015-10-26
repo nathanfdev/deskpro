@@ -25,6 +25,7 @@ export class ProfileForm extends React.Component {
   constructor(props) {
     super(props);
     const profile = props.profile;
+    const phone = profile.get('phone');
 
     this.state = {
       data: {
@@ -33,8 +34,8 @@ export class ProfileForm extends React.Component {
         emails: profile.get('emails').toArray() || [],
         primary_email: profile.get('primary_email'),
         phone: {
-          number: profile.get('phone').get('number'),
-          extension: profile.get('phone').get('extension')
+          number: phone && phone.get('number'),
+          extension: phone && phone.get('extension')
         },
         language_id: profile.get('language_id'),
         timezone: profile.get('timezone') || 'UTC',
@@ -116,9 +117,8 @@ export class ProfileForm extends React.Component {
 
   submitForm = (event) => {
     event.preventDefault();
-    const { dispatch } = this.props;
 
-    console.log(this.state);
+    const { dispatch } = this.props;
     const changeSubmitStatus = isSubmit => this.setState({
       submit: isSubmit,
       errors: {}
@@ -126,7 +126,14 @@ export class ProfileForm extends React.Component {
 
     changeSubmitStatus(true);
 
-    DpApi.sendPut('DP_API/me/profile', this.state.data)
+    const stateData = this.state.data;
+    const submitData = {...stateData};
+
+    if (!submitData.phone.number) {
+      delete submitData.phone;
+    }
+
+    DpApi.sendPut('DP_API/me/profile', submitData)
       .success(response => {
         const records = {};
         records[response.data.id] = response.data;
@@ -137,10 +144,10 @@ export class ProfileForm extends React.Component {
         changeSubmitStatus(false);
       })
       .catch(http => {
-        changeSubmitStatus(false);
         const fieldsErrors = Immutable.fromJS(http.xhr.responseJSON.errors ? http.xhr.responseJSON.errors.fields : {});
         this.setState({
-          errors: fieldsErrors.map(fieldErrors => fieldErrors.get('errors')).toJS()
+          errors: fieldsErrors.map(fieldErrors => fieldErrors.get('errors')).toJS(),
+          submit: false
         });
       })
     ;

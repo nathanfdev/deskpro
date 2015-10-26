@@ -26,69 +26,43 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
-use Orb\Util\PhoneNumbers;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-/**
- * Class PhoneNumberType.
- */
-class PhoneNumberType extends AbstractType
+class TaskStarType extends AbstractType
 {
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function getName()
     {
-        return 'phone_number';
+        return 'task_star';
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface $builder
+     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('number', 'hidden', [
-                'required' => false,
-
-            ])
-            ->add('extension', 'hidden', [
-                'required'      => false,
-                'property_path' => 'ext',
-            ])
-            ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-                $form = $event->getForm();
-                $data = $form->getData();
-
-                /*
-                 * moved from PhoneNumber entity:
-                 * We do logic here (with the help of Google's libphonenumber) to
-                 * get the region code, and validate/format the number.
-                 */
-
-                if ($data && $data['number']) {
-                    $number = $data['number'];
-                    $data['region'] = PhoneNumbers::getRegionForNumber($number);
-                    $data['guessed_type'] = PhoneNumbers::getTypeCode($number);
-                }
-            });
+        // TaskStarType only accepts 'name' and saves it as PersonSetting,
+        // so binding the name to PersonSetting.value property
+        $builder->add('name', 'text', ['property_path' => 'value', 'required' => false]);
     }
 
     /**
-     * {@inheritdoc}
+     * @param OptionsResolverInterface $resolver
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(
-            [
-                'data_class' => 'Application\DeskPRO\Entity\PhoneNumber',
-            ]
-        );
+        $resolver->setDefaults(array(
+            'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\PersonSetting',
+        ));
     }
 }

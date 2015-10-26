@@ -7,7 +7,7 @@ import { loadEmails } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/
 import { loadFeedbackCommentsCounter } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCommentsActions';
 import { loadFeedbackStatuses } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackStatusesActions';
 import { loadFeedbackCategories } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';
-import { sortingDataSelector } from '../Selectors/list';
+import { currentListParamsSelector } from '../Selectors/list';
 
 /**
  * Used to identify requests within record stores
@@ -48,17 +48,22 @@ export const getCategories = createAction(
     ids => dispatch => dispatch(loadFeedbackCategories(recordStoresId, ids))
 );
 
+export const setCurrentListParams = createAction(
+  'FEEDBACK_LIST_SET_CURRENT_PARAMS'
+);
+
 export const loadFeedbackList = createAction(
   'FEEDBACK_LIST',
   (overwriteParams = {}) => (dispatch, getState)=> {
-    const state = getState();
-    const feedbackListState = state.Feedback.list.toJS();
-    const currentParams = {
-      sort: sortingDataSelector(state).field,
-      order: feedbackListState.order
-    };
-    const params = { ...currentParams, ...overwriteParams };
+    const currentParams = currentListParamsSelector(getState()).toJS();
 
+    let params = { ...currentParams, ...overwriteParams };
+    dispatch(setCurrentListParams(params));
+    const {navItem} = params;
+    if (navItem) {
+      delete params.navItem;
+      params = { ...params, ...navItem };
+    }
     return () => Feedback.getList(params).then(promise => {
       const feedback = promise.getData();
       const ids = [];
@@ -71,11 +76,11 @@ export const loadFeedbackList = createAction(
       dispatch(getCommentsCounter(ids));
       dispatch(getStatuses(ids));
       dispatch(getCategories(ids));
+
       return feedback;
     });
   }
 );
-
 
 export const feedbackToValidate = createAction(
   'FEEDBACK_TO_VALIDATE',
@@ -138,24 +143,17 @@ export const setTableSort = createAction(
   });
 
 export const toggleViewMode = createAction(
-  'FEEDBACK_TOGGLE_VIEW_MODE',
-    viewMode => viewMode
+  'FEEDBACK_TOGGLE_VIEW_MODE'
 );
 
-export const toggleOrder = createAction(
-  'FEEDBACK_TOGGLE_ORDER',
-  (order) => (dispatch) => {
-    dispatch(loadFeedbackList({ order: order }));
-    return order;
-  }
+export const setOrder = createAction(
+  'FEEDBACK_SET_ORDER',
+    order => dispatch => dispatch(loadFeedbackList({ order: order }))
 );
 
-export const toggleSort = createAction(
-  'FEEDBACK_TOGGLE_SORT',
-  (sort) => (dispatch) => {
-    dispatch(loadFeedbackList({ sort: sort }));
-    return sort;
-  }
+export const setSort = createAction(
+  'FEEDBACK_SET_SORT',
+    sort => dispatch => dispatch(loadFeedbackList({ sort: sort }))
 );
 
 export const getDisplayFieldsFromPersonSetting = createAction(

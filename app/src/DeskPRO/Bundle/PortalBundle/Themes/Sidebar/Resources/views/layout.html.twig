@@ -19,6 +19,11 @@
             {% show section flashes %}
             <div class="column-half-plus">
                 {% block page_content %}
+                    {% block content_header %}
+                        <section class="welcome-news">
+                            {% show section nav_buttons %}
+                        </section>
+                    {% endblock content_header %}
                     <section>
                         <div class="column-full">
                             {% block inner_content %}

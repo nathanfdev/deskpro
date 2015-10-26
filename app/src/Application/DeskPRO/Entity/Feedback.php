@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -138,6 +137,14 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $this->comments    = new ArrayCollection();
         $this->custom_data = new ArrayCollection();
         $this->attachments = new ArrayCollection();
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalRating()
+    {
+        return $this->total_rating;
     }
 
     /**

@@ -28,7 +28,7 @@ export default class MenuFooterOptions extends React.Component {
           });
 
           return (<span className={classes} key={option.id}>
-                    <a href="#" onClick={option.onClick.bind(this)}>
+                    <a href="#" onClick={(e) => {e.preventDefault(); option.onClick.bind(this)();}}>
                       <span className="dpwd-radio-button-disc"/>
                       <span className="radio-button-title">{option.label}</span>
                     </a>

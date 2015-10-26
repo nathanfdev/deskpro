@@ -3,14 +3,14 @@ import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu
 import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
 import MenuFooter from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooter';
 import MenuFooterOptions from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterOptions';
-import { toggleSort, toggleOrder } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
+import { setSort, setOrder } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { commentsToggleOrder } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
 
 const OrderByDropdown = React.createClass({
 
   propTypes: {
     order: PropTypes.string.isRequired,
-    currentSortMode: PropTypes.object.isRequired,
+    currentSortOption: PropTypes.string.isRequired,
     sortOptions: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     toggleDropdown: PropTypes.func.isRequired,
@@ -30,29 +30,28 @@ const OrderByDropdown = React.createClass({
     if (isComments) {
       dispatch(commentsToggleOrder(order));
     } else {
-      dispatch(toggleOrder(order));
+      dispatch(setOrder(order));
     }
     toggleDropdown();
   },
 
   /* Change sort option (Order By ...)*/
   toggleListSort(option) {
-    console.log(option);
     const { dispatch, isComments, toggleDropdown } = this.props;
     if (!isComments) {
-      dispatch(toggleSort(option.field));
+      dispatch(setSort(option.field));
     }
     toggleDropdown();
   },
 
   renderOptions() {
-    const { isComments, toggleDropdown, currentSortMode, sortOptions } = this.props;
+    const { isComments, toggleDropdown, currentSortOption, sortOptions } = this.props;
     if (isComments) {
       return (
         <Item
           isActive
           toggleDropdown={toggleDropdown}
-          option={currentSortMode}
+          option={currentSortOption}
         />
       );
     }
@@ -61,8 +60,8 @@ const OrderByDropdown = React.createClass({
           <Item
             key={index}
             label={option.label}
-            isActive={currentSortMode.field === option.field}
-            checked={currentSortMode.field === option.field}
+            isActive={currentSortOption === option}
+            checked={currentSortOption === option}
             onClick={this.toggleListSort.bind(this, option)}
             icon={option.icon}
           />
