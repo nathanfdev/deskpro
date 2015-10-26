@@ -24,29 +24,19 @@
         </div>
     {% endif %}
     {% if lang_diff %}
-        <div class="lang-diff-alert-bar">
-            <div class="wrapper">
-                <ul>
-                    <li>
-                        <form action="{{ path('portal_change_language') }}">
-                            <input type="hidden" name="lang_code" value="{{ lang_diff.person_lang.url_code }}"/>
-                            <button>{{ phrase('portal.general.lang-switch', { lang: lang_diff.person_lang.title }) }}</button>
-                        </form>
-                    </li>
-                    <li>
-                        <form action="{{ path('portal_change_language') }}">
-                            <input type="hidden" name="lang_code" value="{{ lang_diff.active_lang.url_code }}"/>
-                            <button>{{ phrase('portal.general.lang-change-to-current', { lang: lang_diff.active_lang.title }) }}</button>
-                        </form>
-                    </li>
-                    <li>
-                        <a href="{{ path('portal_dismiss_lang_alert') }}">
-                            {{ phrase('portal.general.lang-diff', { active_lang: lang_diff.active_lang.title, person_lang: lang_diff.person_lang.title }) }}
-                        </a>
-                    </li>
-                </ul>
+            <div class="alert">
+                <a href="{{ path('portal_dismiss_lang_alert') }}">
+                    {{ phrase('portal.general.lang-diff', { active_lang: lang_diff.active_lang.title, person_lang: lang_diff.person_lang.title }) }}
+                </a>
+                <form action="{{ path('portal_change_language') }}" style="display: inline-block; float:right;">
+                    <input type="hidden" name="lang_code" value="{{ lang_diff.person_lang.url_code }}"/>
+                    <button class="button button-small">{{ phrase('portal.general.lang-switch', { lang: lang_diff.person_lang.title }) }}</button>
+                </form>
+                <form action="{{ path('portal_change_language') }}" style="display: inline-block; float:right;">
+                    <input type="hidden" name="lang_code" value="{{ lang_diff.active_lang.url_code }}"/>
+                    <button class="button button-small">{{ phrase('portal.general.lang-change-to-current', { lang: lang_diff.active_lang.title }) }}</button>
+                </form>
             </div>
-        </div>
     {% endif %}
 
     {% for validation in validation_alerts %}
