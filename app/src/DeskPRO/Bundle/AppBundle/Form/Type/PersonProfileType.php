@@ -94,6 +94,7 @@ class PersonProfileType extends AbstractType
             ->add('phone', new PhoneNumberType(), [
                 'property_path'  => 'primaryPhoneNumber',
                 'error_bubbling' => false,
+                'required'       => false,
                 'constraints'    => [
                     new AppConstraints\PhoneNumber(),
                 ],

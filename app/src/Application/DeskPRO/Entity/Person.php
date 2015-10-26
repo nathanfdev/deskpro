@@ -1932,7 +1932,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function getPrimaryPhoneNumber()
     {
-        return $this->phone_numbers->first();
+        return $this->phone_numbers->first() ?: null;
     }
 
     /**

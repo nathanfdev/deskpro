@@ -48,13 +48,11 @@ class PhoneNumberValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\PhoneNumber');
         }
 
-        if ($value) {
-            if ($value instanceof Entity\PhoneNumber) {
-                $value = $value->getNumberFormatted();
-            }
-            if (!PhoneNumbers::isValid($value)) {
-                $this->context->addViolation($constraint->message);
-            }
+        if ($value && $value instanceof Entity\PhoneNumber) {
+            $value = $value->getNumberFormatted();
+        }
+        if ($value && !PhoneNumbers::isValid($value)) {
+            $this->context->addViolation($constraint->message);
         }
     }
 }

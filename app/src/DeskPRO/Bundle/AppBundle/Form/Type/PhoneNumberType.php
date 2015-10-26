@@ -33,7 +33,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Class PhoneNumberType.
@@ -55,35 +55,40 @@ class PhoneNumberType extends AbstractType
     {
         $builder
             ->add('number', 'hidden', [
-                'required'    => false,
-                'label'       => false,
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Phone number is invalid.',
-                    ]),
-                ],
+                'required' => false,
+
             ])
             ->add('extension', 'hidden', [
                 'required'      => false,
-                'label'         => false,
                 'property_path' => 'ext',
             ])
-        ;
+            ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+                $form = $event->getForm();
+                $data = $form->getData();
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-            $data = $event->getForm()->getData();
+                /*
+                 * moved from PhoneNumber entity:
+                 * We do logic here (with the help of Google's libphonenumber) to
+                 * get the region code, and validate/format the number.
+                 */
 
-            /*
-             * moved from PhoneNumber entity:
-             * We do logic here (with the help of Google's libphonenumber) to
-             * get the region code, and validate/format the number.
-             */
+                if ($data && $data['number']) {
+                    $number = $data['number'];
+                    $data['region'] = PhoneNumbers::getRegionForNumber($number);
+                    $data['guessed_type'] = PhoneNumbers::getTypeCode($number);
+                }
+            });
+    }
 
-            if ($data && $data['number']) {
-                $number = $data['number'];
-                $data['region'] = PhoneNumbers::getRegionForNumber($number);
-                $data['guessed_type'] = PhoneNumbers::getTypeCode($number);
-            }
-        });
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(
+            [
+                'data_class' => 'Application\DeskPRO\Entity\PhoneNumber',
+            ]
+        );
     }
 }
