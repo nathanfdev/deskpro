@@ -25,12 +25,12 @@ export class NavContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     currentFilterMode: PropTypes.object.isRequired,
-    toValidateCount: PropTypes.string.isRequired,
-    commentsToReviewCount: PropTypes.string.isRequired,
-    statuses: PropTypes.array.isRequired,
-    labels: PropTypes.array.isRequired,
-    types: PropTypes.array.isRequired,
-    customCategories: PropTypes.array.isRequired,
+    toValidateCount: PropTypes.number.isRequired,
+    commentsToReviewCount: PropTypes.number.isRequired,
+    statuses: PropTypes.object.isRequired,
+    labels: PropTypes.object.isRequired,
+    types: PropTypes.object.isRequired,
+    customCategories: PropTypes.object.isRequired,
     dpWindow: PropTypes.object.isRequired
   };
 

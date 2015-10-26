@@ -13,8 +13,6 @@ import { connect } from 'react-redux';
   order: state.Feedback.list.get('order'),
   filters: state.Feedback.list.get('filters'),
   viewFields: state.Feedback.list.get('viewFields'),
-  tableViewFields: state.Feedback.list.get('tableViewFields'),
-  listViewFields: state.Feedback.list.get('listViewFields'),
   currentViewMode: currentViewModeSelector(state)
 }))
 export class ViewSwitcherContainer extends Component {

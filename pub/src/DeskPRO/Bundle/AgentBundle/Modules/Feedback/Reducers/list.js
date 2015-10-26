@@ -24,44 +24,6 @@ const initialState = {
     {field: 'custom_category', label: 'Category', icon: 'fa-calendar-o', value: '', current: false}
   ],
   filterValues: [/* string */],
-  listViewFields: [
-    {name: 'id', label: 'ID', status: constants.FIELD_REQUIRED, priority: 3},
-    {name: 'status', label: 'Status', status: constants.FIELD_REQUIRED, priority: 2},
-    {name: 'hidden_status', label: 'Hidden status', status: constants.FIELD_REQUIRED, priority: 1},
-    {name: 'title', label: 'Title', status: constants.FIELD_HIDDEN, priority: 4},
-    {name: 'status_category', label: 'Status category', status: constants.FIELD_HIDDEN, priority: 5},
-    {name: 'author_name', label: 'Submitter', status: constants.FIELD_HIDDEN, priority: 6},
-    {name: 'language_id', label: 'Lang', status: constants.FIELD_HIDDEN, priority: 7},
-    {name: 'type', label: 'Type', status: constants.FIELD_HIDDEN, priority: 8},
-    {name: 'slug', label: 'Slug', status: constants.FIELD_HIDDEN, priority: 9},
-    {name: 'date_created', label: 'Created', status: constants.FIELD_SHOWN, priority: 0},
-    {name: 'date_published', label: 'Published', status: constants.FIELD_SHOWN, priority: 0},
-    {name: 'view_count', label: 'Views', status: constants.FIELD_SHOWN, priority: 0},
-    {name: 'total_rating', label: 'Rating', status: constants.FIELD_SHOWN, priority: 0},
-    {name: 'num_rating', label: 'Votes', status: constants.FIELD_SHOWN, priority: 10},
-    {name: 'num_comments', label: 'Comments', status: constants.FIELD_SHOWN, priority: 11},
-    {name: 'validating', label: 'Validating', status: constants.FIELD_SHOWN, priority: 12},
-    {name: 'popularity', label: 'Popularity', status: constants.FIELD_SHOWN, priority: 13},
-    {name: 'content', label: 'Content', status: constants.FIELD_SHOWN, priority: 14},
-    {name: 'custom_category', label: 'Category', status: constants.FIELD_HIDDEN, priority: 15}
-  ],
-  tableViewFields: [
-    {name: 'id', label: 'ID', className: 'id-col', status: constants.FIELD_SHOWN, priority: 3},
-    {name: 'status', label: 'Status', status: constants.FIELD_SHOWN, priority: 2},
-    {name: 'hidden_status', label: 'Hidden status', status: constants.FIELD_SHOWN, priority: 1},
-    {name: 'title', label: 'Title', className: 'item-title', status: constants.FIELD_SHOWN, priority: 4},
-    {name: 'status_category', label: 'Status category', status: constants.FIELD_SHOWN, priority: 5},
-    {name: 'author_name', label: 'Submitter', className: 'user-col', status: constants.FIELD_SHOWN, priority: 6},
-    {name: 'type', label: 'Type', status: constants.FIELD_HIDDEN, priority: 8},
-    {name: 'date_created', label: 'Created', status: constants.FIELD_SHOWN, priority: 10},
-    {name: 'total_rating', label: 'Rating', status: constants.FIELD_SHOWN, priority: 13},
-    {name: 'num_rating', label: 'Votes', status: constants.FIELD_SHOWN, priority: 14},
-    {name: 'num_comments', label: 'Comments', status: constants.FIELD_SHOWN, priority: 15},
-    {name: 'validating', label: 'Validating', status: constants.FIELD_SHOWN, priority: 16},
-    {name: 'popularity', label: 'Popularity', status: constants.FIELD_SHOWN, priority: 17},
-    {name: 'content', label: 'Content', status: constants.FIELD_SHOWN, priority: 18},
-    {name: 'custom_category', label: 'Category', status: constants.FIELD_HIDDEN, priority: 19}
-  ],
   commentsTableViewFields: [
     {name: 'id', label: 'ID', className: 'id-col', status: constants.FIELD_SHOWN, priority: 1},
     {name: 'status', label: 'Status', status: constants.FIELD_SHOWN, priority: 2},
@@ -117,15 +79,6 @@ export default createReducer(initialState, {
       : selected.push(payload);
 
     return state.set('selected', selected);
-  },
-  [actions.setTableSort]: (state, payload) => {
-    const tableViewFields = [];
-    state.get('tableViewFields').toJS().forEach(obj=> {
-      const nextObj = {...obj};
-      nextObj.order = nextObj.name === payload.sort ? payload.order : false;
-      tableViewFields.push(nextObj);
-    });
-    return state.set('tableViewFields', Immutable.fromJS(tableViewFields));
   },
   [actions.getDisplayFieldsFromPersonSetting]: async({
     success: (state, payload) =>
