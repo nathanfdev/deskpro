@@ -2,10 +2,9 @@
   {% for item in pager %}
     <article class="news kb-article kb-article-news">
       <header>
-        <div class="calendar-decoration-new">
-          <i class="fa fa-calendar-o"></i>
-          <div class="month">{{ item.date_published | date('M') }}</div>
-          <div class="day">{{ item.date_published | date('j') }}</div>
+        <div class="deskpro-calendar-decoration-flat">
+          <div class="dcdf-month">{{ item.date_published | date('M') }}</div>
+          <div class="dcdf-day">{{ item.date_published | date('j') }}</div>
         </div>
         <h1><a href="{{ portal_path(item) }}">{{ item.title }}</a></h1>
         <div class="article-meta">
