@@ -156,10 +156,14 @@ export default class OmniSearchResultSection extends React.Component {
           })}
         </ul>
 
-        { this.getShowMoreNum() !== null ? (
+        { this.getShowMoreNum() !== null && !this.state.doSpin ? (
           <a onClick={this.showMore.bind(this)} className="search-results-show-more">{this.getShowMoreNum()} More <i
             className="fa fa-angle-double-down"></i></a>
         ) : null}
+
+        { this.state.doSpin ? (
+          <div className="search-result-collection-loading inline-loading"></div>
+        ) : null }
 
       </div>
     );

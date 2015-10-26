@@ -36,11 +36,17 @@ export default class OmniSearch extends React.Component {
     };
   }
   componentDidMount() {
+    let last_val = null;
     let throttleChanges = _.throttle((e) => {
-      this.doSearch({ q: e.target.value });
+      // ensure we don't trigger a search if the actual search val hasn't changed
+      if (last_val !== e.target.value) {
+        last_val = e.target.value;
+        this.doSearch({q: e.target.value});
+      }
     }, 250);
     this.state.$input.on('keyup change', throttleChanges);
-    this.state.$close.click(() => {
+    this.state.$close.click((e) => {
+      e.preventDefault();
       this.state.$input.val('');
       this.doSearch({ q: '' }); // reset/close search
     });
@@ -95,7 +101,10 @@ export default class OmniSearch extends React.Component {
           width: this.state.$input.closest('.search-form').width()
         }}>
           {
-            this.doResultsExist() ?
+            this.state.doSpin ? (
+              <div className="search-result-collection-loading"></div>
+            ) :
+              (this.doResultsExist() ?
               (<div>
                 <OmniSearchResultSection
                   name="Knowledge base"
@@ -129,10 +138,11 @@ export default class OmniSearch extends React.Component {
                   q={this.state.search_query.q}
                   />
               </div>) :
-              (<div>
-                <h1>No Results</h1>
-              </div>)
+              (<div className="search-result-collection-empty">
+                <div>No Results found :(</div>
+              </div>))
           }
+
 
           <div className="search-results-footer">
             <a href={PortalUrlGenerator.path('/new-ticket')}>
