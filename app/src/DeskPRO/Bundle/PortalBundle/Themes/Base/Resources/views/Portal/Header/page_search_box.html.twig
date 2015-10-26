@@ -1,11 +1,11 @@
 <div class="content">
     <div class="search-and-ticket">
         <div class="search-form">
-            <form action="{{ path('portal_search') }}" id="omnisearch">
+            <form action="{{ path('portal_search') }}" id="omnisearch" autocomplete="off">
                 <div class="input-wrap">
                     <i class="fa fa-search"></i>
                     <a href="#" class="search-clear"><i class="fa fa-times"></i></a>
-                    <input type="text" name="q" placeholder="{{ phrase('portal.general.search_btn') }}...">
+                    <input type="text" name="q" autocomplete="off" placeholder="{{ phrase('portal.general.search_btn') }}...">
                     <!-- .active on this if we need it active -->
                 </div>
                 <button type="submit">{{ phrase('portal.general.search_btn') }}</button>
