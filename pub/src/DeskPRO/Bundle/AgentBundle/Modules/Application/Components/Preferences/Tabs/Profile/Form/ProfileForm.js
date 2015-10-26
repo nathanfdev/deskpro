@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { FieldWrapper } from './Fields/FieldWrapper';
+import { Avatar } from './Fields/Avatar';
 import { Name } from './Fields/Name';
 import { DisplayName } from './Fields/DisplayName';
 import { Email } from './Fields/Email';
@@ -150,6 +151,7 @@ export class ProfileForm extends React.Component {
       <FieldWrapper label="Your name" errors={this.state.errors.name}>
         <Name value={this.state.data.name}
               onChange={this.onChangeName} />
+        <Avatar />
       </FieldWrapper>
     );
   }

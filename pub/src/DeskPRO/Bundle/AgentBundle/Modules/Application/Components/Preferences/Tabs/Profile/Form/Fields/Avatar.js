@@ -1,21 +1,43 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
+import Cropper from 'react-cropper';
 
 export class Avatar extends React.Component {
 
   render() {
     return (
-      <div className="bucket-column-last">
-        <a href="#" className="button button-secondary user-avatar"><span style={{backgroundImage: 'url(./img/avatar2.png)'}}></span>Manage Avatar</a>
-
-        <div className="avatar-crop" id="avatar-crop" style={{display: 'none'}}>
-          <p>Click &amp; drag to crop your avatar</p>
-          <div className="cropper-bucket">
-            <img src="./img/avatar-sample.png" alt="Avatar Sample" />
-          </div>
-          <a href="#" className="crop">Crop &amp; Save Avatar</a>
-          <a href="#" className="cancel">Or cancel &amp; discard your changes</a>
+      <div>
+        <Cropper
+          ref="cropper"
+          src="http://fengyuanchen.github.io/cropper/img/picture.jpg"
+          style={{height: 400, width: '100%'}}
+          // Cropper.js options
+          aspectRatio={16 / 9}
+          guides={false}
+          crop={this._crop} />
         </div>
-      </div>
+    );
+  }
+}
+
+export class FileUpload extends React.Component {
+
+  handleFile = (e) => {
+    var reader = new FileReader();
+    var file = e.target.files[0];
+
+    if (!file) return;
+
+    reader.onload = function(img) {
+      ReactDOM.findDOMNode(this.refs.in).value = '';
+      this.props.handleFileChange(img.target.result);
+    }.bind(this);
+    reader.readAsDataURL(file);
+  };
+
+  render() {
+    return (
+      <input ref="in" type="file" accept="image/*" onChange={this.handleFile} />
     );
   }
 }
