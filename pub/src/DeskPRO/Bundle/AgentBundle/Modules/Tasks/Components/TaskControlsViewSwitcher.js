@@ -15,14 +15,14 @@ export default class TaskControlsViewSwitcher extends Component {
 
     return (<Menu>
       <Item onClick={this.props.setView.bind(this, constants.VIEW_MODE_CARD)}
-            label="List"
+            label="Card View"
             isActive={view === constants.VIEW_MODE_CARD}
             checked={view === constants.VIEW_MODE_CARD}
             icon="list"/>
       <Item onClick={this.props.setView.bind(this, constants.VIEW_MODE_CONDENSED)}
             isActive={view === constants.VIEW_MODE_CONDENSED}
             checked={view === constants.VIEW_MODE_CONDENSED}
-            label="Condensed"
+            label="Table View"
             icon="table"/>
       <Item onClick={this.props.setView.bind(this, constants.VIEW_MODE_KANBAN)}
             isActive={view === constants.VIEW_MODE_KANBAN}

@@ -75,6 +75,13 @@ export default class TaskControls extends React.Component {
 
     const count = actionable > 0 ? actionable.toString() : '';
 
+    const viewTitles = {
+      card: 'Card View',
+      condensed: 'Table View',
+      kanban: 'Kanban',
+      calendar: 'Calendar',
+    };
+
     return (
       <ListFrameMenu ref="ticketControlBar">
 
@@ -137,7 +144,7 @@ export default class TaskControls extends React.Component {
             <span className="dpwd-navigation-dropdown-top-row-button-text dpwd-navigation-dropdown-top-row-button-text-grey">View:</span>
             <span className="dpwd-navigation-dropdown-top-row-button-text">&nbsp;
               <span className="multi task-list-view-switcher">
-                { taskView.charAt(0).toUpperCase() + taskView.slice(1) }
+                { viewTitles[taskView] }
                 <span className="multi-down"> <i className="fa fa-caret-down"/></span>
               </span>
             </span>

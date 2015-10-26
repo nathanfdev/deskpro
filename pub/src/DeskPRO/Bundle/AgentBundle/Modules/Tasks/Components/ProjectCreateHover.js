@@ -89,7 +89,8 @@ const ProjectCreateHover = React.createClass({
   },
 
   assignSelf: function() {
-    const userId = this.props.user.id;
+    const userId = this.props.user.get('id');
+
     if (this.props.agentList.indexOf(userId) < 0) {
       const selected = this.state.selected;
       selected.agents.push(userId);
