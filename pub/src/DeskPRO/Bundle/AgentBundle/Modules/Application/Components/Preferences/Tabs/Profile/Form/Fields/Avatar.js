@@ -33,24 +33,29 @@ export class Avatar extends React.Component {
     });
   };
 
+  onDiscard = () => {
+    this.setState({
+      tmpFile: null,
+      tmpFilePath: null
+    });
+  };
+
   renderCropper() {
     return (
       <div className="avatar-crop" id="avatar-crop">
-        <Cropper
-          ref="cropper"
-          src={this.state.tmpFilePath}
-          style={{height: 400, width: '100%'}}
-          // Cropper.js options
-          aspectRatio={16 / 9}
-          guides={false}
-          crop={this._crop} />
-
         <p>Click &amp; drag to crop your avatar</p>
         <div className="cropper-bucket">
-          <img src="./img/avatar-sample.png" alt="Avatar Sample" />
+          <Cropper
+            ref="cropper"
+            src={this.state.tmpFilePath}
+            style={{height: 400, width: '100%'}}
+            // Cropper.js options
+            aspectRatio={16 / 9}
+            guides={false}
+            crop={this._crop} />
         </div>
         <a href="#" className="crop">Crop &amp; Save Avatar</a>
-        <a href="#" className="cancel">Or cancel &amp; discard your changes</a>
+        <a href="#" className="cancel" onClick={this.onDiscard}>Or cancel &amp; discard your changes</a>
       </div>
     );
   }
