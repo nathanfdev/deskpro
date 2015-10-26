@@ -57,15 +57,13 @@ export const loadFeedbackList = createAction(
   (overwriteParams = {}) => (dispatch, getState)=> {
     const currentParams = currentListParamsSelector(getState()).toJS();
 
-    // status and status_category are mutually exclusive, so unset both when receiving either one in new params
-    if (overwriteParams.status || overwriteParams.status_category) {
-      delete currentParams.status;
-      delete currentParams.status_category;
-    }
-
-    const params = { ...currentParams, ...overwriteParams };
+    let params = { ...currentParams, ...overwriteParams };
     dispatch(setCurrentListParams(params));
-
+    const {navItem} = params;
+    if (navItem) {
+      delete params.navItem;
+      params = { ...params, ...navItem };
+    }
     return () => Feedback.getList(params).then(promise => {
       const feedback = promise.getData();
       const ids = [];
@@ -150,12 +148,12 @@ export const toggleViewMode = createAction(
 
 export const setOrder = createAction(
   'FEEDBACK_SET_ORDER',
-  order => dispatch => dispatch(loadFeedbackList({order: order}))
+    order => dispatch => dispatch(loadFeedbackList({ order: order }))
 );
 
 export const setSort = createAction(
   'FEEDBACK_SET_SORT',
-  sort => dispatch => dispatch(loadFeedbackList({sort: sort}))
+    sort => dispatch => dispatch(loadFeedbackList({ sort: sort }))
 );
 
 export const getDisplayFieldsFromPersonSetting = createAction(
