@@ -9,7 +9,7 @@ import { peopleSelector, emailsSelector } from '../../../../Selectors/list';
 import { connect } from 'react-redux';
 @connect(state => ({
   comments: state.Feedback.list.get('comments'),
-  tableViewFields: state.Feedback.list.get('tableViewFields').toJS(),
+  viewFields: state.Feedback.list.get('viewFields'),
   feedbackFromStore: feedbackSelector(state),
   people: peopleSelector(state),
   emails: emailsSelector(state),
@@ -22,12 +22,12 @@ export class FeedbackCommentTableContainer extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     comments: PropTypes.array.isRequired,
-    tableViewFields: PropTypes.array.isRequired,
+    viewFields: PropTypes.object.isRequired,
+    commentsTableViewFields: PropTypes.array.isRequired,
     people: PropTypes.array.isRequired,
     emails: PropTypes.array.isRequired,
     feedbackFromStore: PropTypes.array.isRequired,
     feedbackStatuses: PropTypes.object.isRequired,
-    commentsTableViewFields: PropTypes.array.isRequired,
     dispatch: PropTypes.func.isRequired
   };
 
@@ -45,7 +45,7 @@ export class FeedbackCommentTableContainer extends Component {
       );
     } else if (field.name === 'author_name') {
       return (
-      <PersonInTable person={people.get(element.person_id)} email={emails.get(element.person_id).get('email')}/>
+        <PersonInTable person={people.get(element.person_id)} email={emails.get(element.person_id).get('email')}/>
       );
     } else if (field.name === 'title') {
       content = element.title.substr(0, 40);
@@ -76,8 +76,8 @@ export class FeedbackCommentTableContainer extends Component {
 
 
   render() {
-    const { comments, tableViewFields, commentsTableViewFields, feedbackFromStore } = this.props;
-    const tableViewFieldsFiltered = tableViewFields.filter(field => field.status !== constants.FIELD_HIDDEN);
+    const { comments, viewFields, commentsTableViewFields, feedbackFromStore } = this.props;
+    const tableViewFieldsFiltered = viewFields.get('table').toJS().filter(field => field.status !== constants.FIELD_HIDDEN);
     tableViewFieldsFiltered.sort((prev, next) => prev.priority - next.priority);
     const commentsTableViewFieldsFiltered = commentsTableViewFields.filter(field => field.status !== constants.FIELD_HIDDEN);
     commentsTableViewFieldsFiltered.sort((prev, next) => prev.priority - next.priority);
@@ -90,7 +90,8 @@ export class FeedbackCommentTableContainer extends Component {
             <th colSpan={tableViewFieldsFiltered.length}>Feedback</th>
           </tr>
           <tr>
-            {commentsTableViewFieldsFiltered.map((field, index) => {
+            {commentsTableViewFieldsFiltered.map(
+              (field, index) => {
                 if (field.name === 'date_created') {
                   return (
                     <Th key={index} field={field} sortable sortTable={this.sortTable.bind(this)}/>
@@ -107,7 +108,8 @@ export class FeedbackCommentTableContainer extends Component {
           </tr>
         </TableHeader>
         <TableBody>
-          {comments.map((element, index) => {
+          {comments.map(
+            (element, index) => {
               let key = 0;
               return (
                 <Row key={index}>

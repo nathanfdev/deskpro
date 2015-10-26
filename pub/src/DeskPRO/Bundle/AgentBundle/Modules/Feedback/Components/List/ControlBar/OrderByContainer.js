@@ -6,9 +6,9 @@ import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Pos
 import { connect } from 'react-redux';
 
 const sortOptions = [
-  {field: 'date_created', label: 'Date', icon: 'calendar'},
-  {field: 'total_rating', label: 'Rating', icon: 'calendar-o'},
-  {field: 'num_ratings', label: 'Votes', icon: 'calendar'}
+  { field: 'date_created', label: 'Date', icon: 'calendar' },
+  { field: 'total_rating', label: 'Rating', icon: 'calendar-o' },
+  { field: 'num_ratings', label: 'Votes', icon: 'calendar' }
 ];
 
 @connect(state => ({
@@ -29,7 +29,11 @@ export class OrderByContainer extends Component {
 
   render() {
     const { dispatch, expanded, order, sort, toggleDropdown, isComments } = this.props;
-    const currentSortOption = sortOptions.find(option => option.field === sort);
+    let currentSortOption = sortOptions.find(option => option.field === sort);
+    // When we sort table, we can have other sortOptions and no need re-render this button
+    if (!currentSortOption) {
+      currentSortOption = sortOptions[0];
+    }
 
     return (
       <OrderBy
@@ -49,7 +53,7 @@ export class OrderByContainer extends Component {
             currentSortOption={currentSortOption}
             dispatch={dispatch}
             isComments={isComments}
-          />
+            />
         </Positioned>
       </OrderBy>
     );
