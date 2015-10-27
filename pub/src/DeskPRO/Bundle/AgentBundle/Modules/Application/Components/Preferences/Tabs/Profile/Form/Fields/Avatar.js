@@ -8,7 +8,8 @@ export class Avatar extends React.Component {
     super(props);
     this.state = {
       tmpFile: null,
-      tmpFilePath: null
+      tmpFilePath: null,
+      edit: false
     };
   }
 
@@ -61,26 +62,22 @@ export class Avatar extends React.Component {
     });
   };
 
-  renderCropper() {
+  onEdit = () => {
+    this.setState({
+      edit: true
+    });
+  };
+
+  renderManageButton() {
     return (
-      <div className="avatar-crop" id="avatar-crop">
-        <p>Click &amp; drag to crop your avatar</p>
-        <div className="cropper-bucket">
-          <Cropper
-            ref="cropper"
-            src={this.state.tmpFilePath}
-            style={{height: 200, width: '100%'}}
-            // Cropper.js options
-            aspectRatio={16 / 9}
-            guides={false} />
-        </div>
-        <a href="#" className="crop" onClick={this.onSave}>Crop &amp; Save Avatar</a>
-        <a href="#" className="cancel" onClick={this.onDiscard}>Or cancel &amp; discard your changes</a>
-      </div>
+      <a href="#" className="button button-secondary user-avatar" onClick={this.onEdit}>
+        <span className="icon"></span>
+        Manage Avatar
+      </a>
     );
   }
 
-  render() {
+  renderDropzone() {
     const djsConfig = {
       addRemoveLinks: true,
       autoQueue: false,
@@ -95,16 +92,39 @@ export class Avatar extends React.Component {
     };
 
     return (
+      <DropzoneComponent ref="dropzoneComponent"
+                         config={componentConfig}
+                         eventHandlers={{
+                           thumbnail: this.onCropThumbnail,
+                           complete: this.onComplete
+                         }}
+                         djsConfig={djsConfig}/>
+    );
+  }
+
+  renderCropper() {
+    return (
+      <div className="avatar-crop" id="avatar-crop">
+        <p>Click &amp; drag to crop your avatar</p>
+        <div className="cropper-bucket">
+          <Cropper
+            ref="cropper"
+            src={this.state.tmpFilePath}
+            style={{height: 200, width: '100%'}}
+            aspectRatio={16 / 9}
+            guides={false} />
+        </div>
+        <a href="#" className="crop" onClick={this.onSave}>Crop &amp; Save Avatar</a>
+        <a href="#" className="cancel" onClick={this.onDiscard}>Or cancel &amp; discard your changes</a>
+      </div>
+    );
+  }
+
+  render() {
+    return (
       <div className="bucket-column-last">
         {this.state.tmpFilePath ? this.renderCropper() : null}
-
-        <DropzoneComponent ref="dropzoneComponent"
-                           config={componentConfig}
-                           eventHandlers={{
-                             thumbnail: this.onCropThumbnail,
-                             complete: this.onComplete
-                           }}
-                           djsConfig={djsConfig} />
+        {this.state.edit ? this.renderDropzone() : this.renderManageButton()}
       </div>
     );
   }

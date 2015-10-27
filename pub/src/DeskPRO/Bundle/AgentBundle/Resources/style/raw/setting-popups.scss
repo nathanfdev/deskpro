@@ -271,6 +271,8 @@ $right-bucket: 200px;
       width: 200px;
       float: right;
       padding-left: 10px;
+      position: relative;
+      z-index: 100;
     }
   }
 }
@@ -317,12 +319,10 @@ $right-bucket: 200px;
 
   // Upload avatar button
   .user-avatar {
-    position: relative;
     text-align: left;
     padding-left: 40px;
-    z-index: 99;
 
-    span {
+    .icon {
       display: inline-block;
       width: 24px;
       height: 24px;
