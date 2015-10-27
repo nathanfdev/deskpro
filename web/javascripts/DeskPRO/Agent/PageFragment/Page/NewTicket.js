@@ -1729,6 +1729,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			},
 			save: function () {
 				this.set(self.getEl('newticket').serializeArray());
+        console.info(this.get());
         $discard.show();
 			},
 			reset: function () {
@@ -1777,7 +1778,23 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
     });
 
     d.get().forEach(function(el, i){
-      $('[name="' + el.name + '"]', $form).val(el.value).trigger('change', true);
+
+      console.info(el.name, ': ', el.value);
+      (function(el){
+        $('[name="' + el.name + '"]', $form).each(function() {
+
+          if ($(this).is(':checkbox') || $(this).is(':radio')) {
+            $(this).val() == el.value && $(this).prop('checked', true);
+          } else if ($(this).is('select')) {
+            $('option[value="' + el.value + '"]', $(this)).prop('selected', true);
+          } else {
+            $(this).val(el.value);
+          }
+
+          $(this).trigger('change', true);
+        });
+      })(el);
+
     });
 
     d.isEmpty() ? $discard.show() : $discard.hide();
