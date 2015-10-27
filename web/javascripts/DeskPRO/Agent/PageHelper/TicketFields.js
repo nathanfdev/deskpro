@@ -139,6 +139,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 					next: 'fa fa-chevron-right'
 				}
 			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
+			});
 		});
 
 		$('.DateTime.customfield input', this.display).each(function(){
@@ -153,6 +156,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 					previous: 'fa fa-chevron-left',
 					next: 'fa fa-chevron-right'
 				}
+			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
 			});
 		});
 

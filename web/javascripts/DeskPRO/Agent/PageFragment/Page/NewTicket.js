@@ -37,8 +37,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this._initMessageSection();
 		this._initOtherSection();
 		this._initCcSelection();
-
-                this._initLabels();
+		this._initLabels();
+    this._initDraft();
 
 		this.meta.person_api_data = {};
 
@@ -106,7 +106,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					previous: 'fa fa-chevron-left',
 					next: 'fa fa-chevron-right'
 				}
-			})
+			});
+      $(this).on('dp.change', function(){
+        $(this).trigger('change');
+      });
 		});
 
     $('.DateTime.customfield input', this.wrapper).each(function () {
@@ -122,6 +125,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					next: 'fa fa-chevron-right'
 				}
 			});
+      $(this).on('dp.change', function(){
+        $(this).trigger('change');
+      });
 		});
 
 		this.wrapper.find('.pending-info').on('click', '.reset', function(ev) {
@@ -691,6 +697,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			return;
 		}
 
+		//this.draft.save();
+
 		this.getEl('action').val(this.getEl('reply_as_type').data('type'));
 		var formData = this.form.serializeArray();
     formData.push({
@@ -886,7 +894,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		this.getEl('user_section').hide();
 		this.getEl('choose_user').hide();
-		this.getEl('user_searchbox').find('input.person-id').val(data.person_id);
 
 		this.setUser(data.person_id);
 
@@ -1692,5 +1699,87 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		if (this.agentNotifyList) {
 			this.agentNotifyList.remove();
 		}
+    this.draft.reset();
+	},
+
+	_initDraft: function(key) {
+		var self = this
+      , $form = self.getEl('newticket')
+      , $discard = $('#discard-draft-btn', $form)
+      ;
+
+		var d = this.draft = {
+			key: function () {
+        if (self.meta.draftKey) return self.meta.draftKey;
+				return self.meta.draftKey = 'drafts.ticket-' + self.meta.baseId + (new Date()).getTime();
+			},
+			get: function () {
+				var str = window.localStorage.getItem(this.key());
+				return str
+					? JSON.parse(str)
+					: [];
+			},
+			set: function (item) {
+				try {
+					window.localStorage.setItem(this.key(), JSON.stringify(item));
+				} catch (e) {
+					console.error(e);
+					this.resetAllDrafts();
+				}
+			},
+			save: function () {
+				this.set(self.getEl('newticket').serializeArray());
+        $discard.show();
+			},
+			reset: function () {
+        var data = this.get();
+        data.forEach(function(el, i){
+          $('[name="' + el.name + '"]', $form).val('').trigger('change', true);
+        });
+				window.localStorage.removeItem(this.key());
+        $discard.hide();
+			},
+      isEmpty: function() {
+        var item = this.get();
+        return !item || !item.length;
+      },
+			resetAllDrafts: function () {
+				// todo
+			},
+			addAttachment: function (blob) {
+				var item = this.get();
+				for (var i = 0; i < item.attachments.length; i++) {
+					if (blob.blob_id === item.attachments[i].blob_id) return;
+				}
+				item.attachments.push(blob);
+				this.set(item);
+			},
+			removeAttachment: function (id) {
+				var item = this.get();
+				id = parseInt(id) || 0;
+				for (var i = 0; i < item.attachments.length; i++) {
+					if (id !== item.attachments[i].blob_id) continue;
+					item.attachments.splice(i, 1);
+					break;
+				}
+				this.set(item);
+				this.removeAttachmentTemplate(id);
+			}
+		};
+
+
+    $('input, select, textarea', $form).on('keyup change', function(e, byDraft){
+      !byDraft && d.save();
+    });
+
+    $discard.on('click', function(){
+      d.reset();
+    });
+
+    d.get().forEach(function(el, i){
+      $('[name="' + el.name + '"]', $form).val(el.value).trigger('change', true);
+    });
+
+    d.isEmpty() ? $discard.show() : $discard.hide();
 	}
 });
