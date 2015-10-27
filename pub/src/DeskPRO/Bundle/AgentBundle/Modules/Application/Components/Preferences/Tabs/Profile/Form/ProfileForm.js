@@ -29,6 +29,7 @@ export class ProfileForm extends React.Component {
 
     this.state = {
       data: {
+        avatar_url: profile.get('avatar_url'),
         name: profile.get('name'),
         display_name: profile.get('display_name'),
         emails: profile.get('emails').toArray() || [],
@@ -48,6 +49,12 @@ export class ProfileForm extends React.Component {
       submit: false
     };
   }
+
+  onChangeAvatar = (value) => {
+    this.updateData({
+      avatar_url: value
+    });
+  };
 
   onChangeName = (value) => {
     this.updateData({
@@ -156,7 +163,8 @@ export class ProfileForm extends React.Component {
   renderNameField() {
     return (
       <FieldWrapper label="Your name" errors={this.state.errors.name}>
-        <Avatar />
+        <Avatar value={this.state.data.avatar_url}
+                onChange={this.onChangeAvatar}/>
         <Name value={this.state.data.name}
               onChange={this.onChangeName} />
       </FieldWrapper>

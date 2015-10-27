@@ -5,7 +5,7 @@ import DropzoneComponent from 'react-dropzone-component';
 export class Avatar extends React.Component {
 
   static propTypes = {
-    path: PropTypes.string,
+    value: PropTypes.object,
     onChange: PropTypes.func.isRequired
   };
 
@@ -23,9 +23,7 @@ export class Avatar extends React.Component {
       return;
     }
 
-    const dropzone = this.refs.dropzoneComponent.dropzone;
-    dropzone.removeFile(file);
-
+    this.refs.dropzoneComponent.dropzone.removeFile(file);
     this.setState({
       tmpFile: file,
       tmpFilePath: dataUrl
@@ -113,8 +111,7 @@ export class Avatar extends React.Component {
                              }}
                              djsConfig={djsConfig}>
             <div className="dz-message">
-              tmp text
-              <img src={this.props.path} />
+              {this.props.value && (<img src={this.props.value} />)}
             </div>
           </DropzoneComponent>
           {tmpPath && (<Cropper
