@@ -7,6 +7,7 @@ import ClickAwayDropdownWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/Clic
 import HTmlLinkToPostWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/HtmlLinkToPostWidget";
 import OmniSearchWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/OmniSearchWidget";
 import LanguageChangerWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/LanguageChangerWidget";
+import AgentBarWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/AgentBarWidget";
 import CustomPerFieldEdit from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/CustomPerFieldEdit";
 import $ from "jquery";
 
@@ -21,6 +22,7 @@ export default class PortalPage extends PageWidget {
     this.addWidgetDef(HTmlLinkToPostWidget, "body");
     this.addWidgetDef(CustomPerFieldEdit, ".form-custom-per-field");
     this.addWidgetDef(ClickAwayDropdownWidget, ".clickaway-dropdown");
+    this.addWidgetDef(AgentBarWidget, "#agent-bar");
     return new Promise((resolve) => {
       $(document).ready(resolve);
       if (window.DP_LOAD_FN && window.DP_LOAD_FN.length) {

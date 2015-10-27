@@ -76,13 +76,6 @@
     &middot;
     <a href="{{ path('portal_user_profile') }}">{{ phrase('portal.account.section-title-your-account') }}</a>
 
-    {% if is_agent() %}
-      &middot;
-      {# TODO: temporary link for dev purposes #}
-      <a href="/old-agent">[OLD AGENT]</a>
-      {# TODO: temporary link for dev purposes #}
-    {% endif %}
-
     {% if ticket_count > 0 %}
       &middot;
       <a href="{{ path('portal_tickets') }}">{{ phrase('portal.general.nav-tickets') }} ({{ ticket_count }})</a>

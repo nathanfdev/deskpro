@@ -113,6 +113,7 @@ return array(
     'portal.general.agent_bar_agent_dl'          => 'Manage Downloads',
     'portal.general.agent_bar_agent_feedback'    => 'Manage Feedback',
     'portal.general.admin'                       => 'Admin',
+    'portal.general.admin_home'                  => 'Admin Home',
     'portal.general.agent_bar_admin_desc'        => 'Manage your Helpdesk',
     'portal.general.agent_bar_admin_portal'      => 'Portal Design & Templates',
     'portal.general.agent_bar_admin_lang'        => 'Language Settings',
