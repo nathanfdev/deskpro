@@ -100,7 +100,9 @@ export class Avatar extends React.Component {
 
     return (
       <div className="avatar-crop" id="avatar-crop">
-        {tmpPath && (<p>Click &amp; drag to crop your avatar</p>)}
+        {tmpPath && (
+          <p>Click &amp; drag to crop your avatar</p>
+        )}
         <div className="cropper-bucket">
           <DropzoneComponent className={tmpPath && 'hidden'}
                              ref="dropzoneComponent"
@@ -116,15 +118,20 @@ export class Avatar extends React.Component {
                 : (<span>Drag and drop a photo here or click to browse.</span>)}
             </div>
           </DropzoneComponent>
-          {tmpPath && (<Cropper
+
+          {tmpPath && (
+            <Cropper
             ref="cropper"
             src={tmpPath}
             style={{height: 200, width: '100%'}}
             aspectRatio={16 / 9}
-            guides={false} />)}
+            guides={false} />
+          )}
         </div>
 
-        {tmpPath && (<a href="#" className="crop" onClick={this.onSave}>Crop &amp; Save Avatar</a>)}
+        {tmpPath && (
+          <a href="#" className="crop" onClick={this.onSave}>Crop &amp; Save Avatar</a>
+        )}
         <a href="#" className="cancel" onClick={this.onDiscard}>Or cancel &amp; discard your changes</a>
       </div>
     );
