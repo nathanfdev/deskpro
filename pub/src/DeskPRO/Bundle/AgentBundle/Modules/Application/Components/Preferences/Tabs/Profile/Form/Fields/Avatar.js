@@ -91,6 +91,7 @@ export class Avatar extends React.Component {
   }
 
   renderUploader() {
+    const tmpPath = this.state.tmpFilePath;
     const djsConfig = {
       addRemoveLinks: true,
       autoQueue: false,
@@ -106,7 +107,7 @@ export class Avatar extends React.Component {
       <div className="avatar-crop" id="avatar-crop">
         <p>Click &amp; drag to crop your avatar</p>
         <div className="cropper-bucket">
-          <DropzoneComponent className={this.state.tmpFilePath && 'hidden'}
+          <DropzoneComponent className={tmpPath && 'hidden'}
                              ref="dropzoneComponent"
                              config={componentConfig}
                              eventHandlers={{
@@ -119,15 +120,15 @@ export class Avatar extends React.Component {
               <img src={this.props.path} />
             </div>
           </DropzoneComponent>
-          {this.state.tmpFilePath && (<Cropper
+          {tmpPath && (<Cropper
             ref="cropper"
-            src={this.state.tmpFilePath}
+            src={tmpPath}
             style={{height: 200, width: '100%'}}
             aspectRatio={16 / 9}
             guides={false} />)}
         </div>
 
-        {this.state.tmpFilePath && (<a href="#" className="crop" onClick={this.onSave}>Crop &amp; Save Avatar</a>)}
+        {tmpPath && (<a href="#" className="crop" onClick={this.onSave}>Crop &amp; Save Avatar</a>)}
         <a href="#" className="cancel" onClick={this.onDiscard}>Or cancel &amp; discard your changes</a>
       </div>
     );
