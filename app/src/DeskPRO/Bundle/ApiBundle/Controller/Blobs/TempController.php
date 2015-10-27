@@ -29,7 +29,6 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Blobs;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,18 +38,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TempController extends BaseController
 {
-    /**
-     * @Get("/blobs/temp", name="api_get_blobs_temp")
-     *
-     * @return View
-     */
-    public function getAction()
-    {
-        return new View([
-            'A' => 1,
-        ]);
-    }
-
     /**
      * @Post("/blobs/temp", name="api_post_blobs_temp")
      *

@@ -12,24 +12,14 @@ export class Avatar extends React.Component {
     };
   }
 
-  onCropThumbnail = file => {
+  onCropThumbnail = (file, dataUrl) => {
     if (file.cropped) {
       return;
     }
 
-    const dropzone = this.refs.dropzoneComponent.dropzone;
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      this.setState({
-        tmpFilePath: reader.result
-      });
-    };
-
-    dropzone.removeFile(file);
-    reader.readAsDataURL(file);
-
     this.setState({
-      tmpFile: file
+      tmpFile: file,
+      tmpFilePath: dataUrl
     });
   };
 
@@ -61,6 +51,11 @@ export class Avatar extends React.Component {
     dropzone.addFile(croppedFile);
     dropzone.enqueueFile(croppedFile);
     dropzone.processQueue();
+
+    this.setState({
+      tmpFile: null,
+      tmpFilePath: null
+    });
   };
 
   renderCropper() {
