@@ -33,6 +33,7 @@
  * Date: 11.09.15
  * Time: 20:58
  */
+
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
@@ -46,6 +47,7 @@ class AgentChatMessageTransformer extends AbstractDataSerializerTransformer
             'message',
             'metadata',
             'person_name',
+            'status',
             'agent_chat_id',
             'person_id',
             'date_created',

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
 import { Message } from './Message';
-import { loadMessages } from '../../Actions/imMessagesActions';
+import { loadMessages, markMessages } from '../../Actions/messagesActions';
 import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
@@ -26,9 +26,30 @@ export class MessageList extends React.Component {
     searchQuery: PropTypes.string.isRequired
   };
 
+  markNewMessages() {
+    const ids = [];
+    const messages = this.props.messages.getIn(['chatMessages', this.props.current.id]) || [];
+    messages.map((message) => {
+      if (message.status < 1) {
+        ids.push(message.id);
+      }
+    });
+    if (ids.length > 0) {
+      this.props.dispatch(markMessages(ids));
+    }
+  }
+
   componentDidMount() {
     this.props.dispatch(loadAllAgents());
-    this.props.dispatch(loadMessages(this.props.current.id));
+    this.refresh();
+    const interval = setInterval(this.refresh, 1000);
+    this.state = {
+      interval: interval
+    };
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.interval);
   }
 
   componentWillReceiveProps(newProps) {
@@ -55,6 +76,7 @@ export class MessageList extends React.Component {
 
   refresh = () => {
     this.props.dispatch(loadMessages(this.props.current.id));
+    this.markNewMessages();
   };
 
   render() {

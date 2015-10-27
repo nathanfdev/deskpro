@@ -1,8 +1,5 @@
 import React, { PropTypes } from 'react';
 import { DepartmentAvatar, PersonAvatar, AgentTeamAvatar } from '../../../Common/Components/Avatar/index';
-import { connect } from 'react-redux';
-
-@connect()
 export class Item extends React.Component {
 
   static propTypes = {
@@ -11,6 +8,7 @@ export class Item extends React.Component {
     departments: PropTypes.object.isRequired,
     me: PropTypes.object.isRequired,
     chat: PropTypes.object.isRequired,
+    bubbles: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     startChat: PropTypes.func.isRequired
   };
@@ -24,6 +22,7 @@ export class Item extends React.Component {
         const agent = agents.get(notMe.get(0));
         entity = {
           avatar: this.renderPersonAvatar(agent),
+          bubble: this.renderBubble(chat),
           name: agent.get('name'),
           id: agent.get('id'),
           type: chat.get('chat_type'),
@@ -34,6 +33,7 @@ export class Item extends React.Component {
         const team = teams.get(chat.getIn(['agent_teams', 0]));
         entity = {
           avatar: this.renderTeamAvatar(team),
+          bubble: this.renderBubble(chat),
           name: team.get('name'),
           id: team.get('id'),
           type: chat.get('chat_type'),
@@ -44,6 +44,7 @@ export class Item extends React.Component {
         const department = departments.get(chat.getIn(['departments', 0]));
         entity = {
           avatar: this.renderDepartmentAvatar(department),
+          bubble: this.renderBubble(chat),
           name: department.get('title'),
           id: department.get('id'),
           type: chat.get('chat_type'),
@@ -57,15 +58,26 @@ export class Item extends React.Component {
   };
 
   renderPersonAvatar(person) {
-    return <PersonAvatar person={person} size="22" />
+    return <PersonAvatar person={person} size="22" />;
   }
 
   renderTeamAvatar(team) {
-      return <AgentTeamAvatar agentTeam={team} size="22" />
+      return <AgentTeamAvatar agentTeam={team} size="22" />;
   }
 
   renderDepartmentAvatar(department) {
-    return <DepartmentAvatar department={department} size="22" />
+    return <DepartmentAvatar department={department} size="22" />;
+  }
+
+  renderBubble(chat) {
+    const current = this.props.bubbles[chat.get('id')];
+    if (current && current.cnt > 0) {
+      return (
+        <span className="chat-bubble">
+          {current.cnt}
+        </span>
+      );
+    }
   }
 
 
@@ -80,6 +92,7 @@ export class Item extends React.Component {
         onClick={this.props.startChat.bind(null, entity.id, entity.type)}
         className="chat-avatar">
         {entity.avatar}
+        {entity.bubble}
       </a>
     );
   }

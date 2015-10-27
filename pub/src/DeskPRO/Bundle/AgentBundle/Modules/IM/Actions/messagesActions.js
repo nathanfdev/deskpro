@@ -50,10 +50,25 @@ export const addMessage = createAction(
 
 export const refreshCounts = createAction(
   'IM_COUNT_MESSAGES',
-  (lastCheck) => {
+  () => {
     return new Promise(
       (resolve, reject) => {
-        return IM.loadMessagesCount(lastCheck)
+        return IM.loadMessagesCount()
+          .success((response) => {
+            return resolve(response.data);
+          })
+          .error(response => reject(response));
+      }
+    );
+  }
+);
+
+export const markMessages = createAction(
+  'IM_MARK_MESSAGES',
+  (ids) => {
+    return new Promise(
+      (resolve, reject) => {
+        return IM.markMessages(ids)
           .success((response) => {
             return resolve(response.data);
           })
