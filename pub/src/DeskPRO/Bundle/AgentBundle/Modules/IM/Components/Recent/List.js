@@ -8,7 +8,7 @@ import { Item } from './Item';
 // chats
 import * as actions from '../../Actions/chatsActions';
 import * as chatActions from '../../RecordStores/Actions/imChatsActions';
-import * as messagesActions from '../../Actions/messagesActions';
+// import * as messagesActions from '../../Actions/messagesActions';
 import { recentChatsSelector, recentChatsStatusSelector } from '../../RecordStores/Selectors/chats';
 
 // agents
@@ -57,9 +57,9 @@ export class List extends React.Component {
 
   constructor(props) {
     super(props);
-    const interval = setInterval(() => this.props.dispatch(messagesActions.refreshCounts()), 1000);
+    // const interval = setInterval(() => this.props.dispatch(messagesActions.refreshCounts()), 1000);
     this.state = {
-      interval: interval,
+      // interval: interval,
       stickers: {}
     };
   }
