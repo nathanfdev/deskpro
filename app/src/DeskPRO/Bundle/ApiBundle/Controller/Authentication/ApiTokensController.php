@@ -62,7 +62,7 @@ class ApiTokensController extends BaseController
      *      }
      * )
      *
-     * @Post("/api_tokens", name="post_api_tokens")
+     * @Post("/api_tokens", name="api_post_api_tokens")
      *
      * @param Request $request
      *
