@@ -17,6 +17,9 @@ export class Avatar extends React.Component {
       return;
     }
 
+    const dropzone = this.refs.dropzoneComponent.dropzone;
+    dropzone.removeFile(file);
+
     this.setState({
       tmpFile: file,
       tmpFilePath: dataUrl
@@ -97,7 +100,8 @@ export class Avatar extends React.Component {
         <DropzoneComponent ref="dropzoneComponent"
                            config={componentConfig}
                            eventHandlers={{
-                             thumbnail: this.onCropThumbnail
+                             thumbnail: this.onCropThumbnail,
+                             complete: this.onComplete
                            }}
                            djsConfig={djsConfig} />
       </div>
