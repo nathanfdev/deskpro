@@ -28,8 +28,10 @@ export default class ComponentRootWrapper extends React.Component {
   renderDialogContent(props) {
     const componentProps = props || this.props;
 
+    const renderSubtreeIntoContainer = ReactDOM.unstable_renderSubtreeIntoContainer;
+
     // Render the component with react
-    ReactDOM.render(componentProps.children, this.node);
+    renderSubtreeIntoContainer(this, componentProps.children, this.node);
 
     // Can show and hide a node depending on the open property
     if (componentProps.open) {

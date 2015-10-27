@@ -85,8 +85,9 @@ export default class TaskControls extends React.Component {
     return (
       <ListFrameMenu ref="ticketControlBar">
 
-        <MassActionCheckbox count={count} massAction={(actionable > 0)} onClick={toggleAllMassActions.bind(this)}/>
-
+        { this.props.view !== 'calendar' ?
+          <MassActionCheckbox count={count} massAction={(actionable > 0)} onClick={toggleAllMassActions.bind(this)}/>
+        : '' }
         <li>
           <a href="#" ref="orderButton" className="dpwd-navigation-dropdown-top-row-button"
              onClick={this.toggleShowOrder.bind(this)}>
