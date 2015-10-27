@@ -2760,7 +2760,7 @@ header {
 }
 
 .active-button-dropdown {
-  // display: none;
+  display: none; // by default this should be display: none;
   position: absolute;
   top: 55px;
   right: 0;
@@ -4212,6 +4212,13 @@ ul.kb-checkbox-extra {
     top: 36%;
     right: 20px;
     color: $text-color-lighter;
+    cursor: pointer;
+
+    // hover didn't look so good, we should look into a hover bg change maybe?
+    //&:hover {
+    //  background: #e3dddd;
+    //  color: #333;
+    //}
   }
 
   .alert-button {
@@ -7221,6 +7228,10 @@ ul.big-button-collection {
   margin-bottom: 43px;
   line-height: 1em;
   z-index: 9999;
+}
+
+body.with-agent-bar {
+  margin-top: 43px;
 }
 
 .deskpro-agent-top-bar {

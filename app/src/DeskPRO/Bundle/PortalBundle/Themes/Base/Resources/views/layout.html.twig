@@ -25,7 +25,7 @@
   <link href="{{ asset('DeskPRO_PortalBundle_style.css', 'app_assets') }}" media="all" rel="stylesheet" type="text/css" />
   <link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,500,700|Open+Sans:400,300,600,700|Roboto:400,300,500,700|Lato:400,300,700' rel='stylesheet' type='text/css' />
 </head>
-<body>
+<body{% if is_agent() or is_admin() or is_impersonating() %} class="with-agent-bar"{% endif %}>
 <script type="text/javascript">
 (function(){
   document.body.className = document.body.className + ' with-js';

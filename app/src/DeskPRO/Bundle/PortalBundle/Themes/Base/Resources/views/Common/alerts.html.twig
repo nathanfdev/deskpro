@@ -1,31 +1,30 @@
 {% if display_alerts %}
     <div class="alerts">
     {% if lang_diff %}
-            <div class="alert">
-                <a href="{{ path('portal_dismiss_lang_alert') }}">
-                    {{ phrase('portal.general.lang-diff', { active_lang: lang_diff.active_lang.title, person_lang: lang_diff.person_lang.title }) }}
-                </a>
-                <form action="{{ path('portal_change_language') }}" style="display: inline-block; float:right;">
-                    <input type="hidden" name="lang_code" value="{{ lang_diff.person_lang.url_code }}"/>
-                    <button class="button button-small">{{ phrase('portal.general.lang-switch', { lang: lang_diff.person_lang.title }) }}</button>
-                </form>
-                <form action="{{ path('portal_change_language') }}" style="display: inline-block; float:right;">
-                    <input type="hidden" name="lang_code" value="{{ lang_diff.active_lang.url_code }}"/>
-                    <button class="button button-small">{{ phrase('portal.general.lang-change-to-current', { lang: lang_diff.active_lang.title }) }}</button>
-                </form>
-            </div>
+        <span class="alert" >
+          <i class="fa fa-times click-to-dismiss" data-click-to-dismiss="{{ path('portal_dismiss_lang_alert') }}"></i>
+            {{ phrase('portal.general.lang-diff', { active_lang: lang_diff.active_lang.title, person_lang: lang_diff.person_lang.title }) }}
+          <a href="{{ path('portal_change_language', {lang_code: lang_diff.active_lang.url_code}) }}" class="alert-button post-link">{{ phrase('portal.general.lang-change-to-current', { lang: lang_diff.active_lang.title }) }}</a>
+          <a href="{{ path('portal_change_language', {lang_code: lang_diff.person_lang.url_code}) }}" class="alert-button post-link">{{ phrase('portal.general.lang-switch', { lang: lang_diff.person_lang.title }) }}</a>
+        </span>
     {% endif %}
 
     {% for validation in validation_alerts %}
-        <a href="{{ validation.resend_url ?: '' }}" class="alert">
-            <i class="fa fa-times"></i> <strong>{{ validation.message }}</strong>
-        </a>
+        {# TODO: add a data-click-to-dismiss that links to a URL that will silence this alert for this session #}
+        <span class="alert">
+            <i class="fa fa-times click-to-dismiss"></i>
+            {{ validation.message }}
+            <a href="{{ validation.resend_url ?: '' }}">Resend</a>
+        </span>
     {% endfor %}
 
     {% for saved in saved_forms %}
-        <a href="{{ saved.link }}" class="alert">
-            <i class="fa fa-times"></i> {{ phrase('portal.account.login-saved-form', { type: saved.message }) }}
-        </a>
+        {# TODO: add a data-click-to-dismiss that links to a URL that will silence this alert for this session #}
+        <span class="alert">
+            <i class="fa fa-times click-to-dismiss"></i>
+            {{ phrase('portal.account.login-saved-form', { type: saved.message }) }}
+            <a href="{{ saved.link }}">Go</a>
+        </span>
     {% endfor %}
     </div>
 {% endif %}
