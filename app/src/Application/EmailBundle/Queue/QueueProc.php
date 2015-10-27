@@ -31,6 +31,7 @@
  */
 namespace Application\EmailBundle\Queue;
 
+use Application\DeskPRO\BlobStorage\BlobStorageException;
 use Application\EmailBundle\Mail\RawTransport\RawTransportException;
 use Application\EmailBundle\SourceMapper\SourceMapperInterface;
 use Psr\Log\LoggerInterface;
@@ -119,6 +120,20 @@ class QueueProc
             }
         } catch (RawTransportException $e) {
             $this->logger->notice('Send failed');
+            $next = $this->getNextRetry($r);
+
+            if ($next) {
+                $this->logger->info(sprintf('Scheduling retry for %s', $next->format('Y-m-d H:i:s')));
+                $this->source_mapper->markSourceRetry($r, null, $next);
+            } else {
+                $this->logger->notice('Marking as failed (retry count exceeded)');
+                $this->source_mapper->markSourceError($r, 'failed');
+            }
+        } catch (BlobStorageException $e) {
+            $this->logger->notice('Send failed due to blob storage problem: '.$e->getMessage());
+            if ($e->getPrevious()) {
+                $this->logger->notice('Previous exception: '.$e->getPrevious()->getMessage());
+            }
             $next = $this->getNextRetry($r);
 
             if ($next) {

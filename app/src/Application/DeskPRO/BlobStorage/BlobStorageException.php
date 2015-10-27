@@ -26,15 +26,25 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\InstallBundle\Upgrade\Build;
+/**
+ * DeskPRO.
+ */
+namespace Application\DeskPRO\BlobStorage;
 
-class Build1444822921 extends AbstractBuild
+class BlobStorageException extends \Exception
 {
-    public function run()
-    {
-        $this->out('Add email_accounts.is_read_active');
+    /** Failed to fetch a blob with a given ID */
+    const INVALID_BLOB_ID = 100;
 
-        // eating error because may have been added via previous upgrade script
-        $this->execMutateSql('ALTER TABLE email_accounts ADD is_read_active TINYINT(1) NOT NULL', true);
-    }
+    /** Failed to fetch an adapter with a given ID */
+    const INVALID_ADAPTER_ID = 200;
+
+    /** Failed to store new blob data because all adapters failed */
+    const FAILED_BLOB_STORE = 300;
+
+    /**#@+ Various write ops */
+    const FAILED_RESOURCE_READ   = 1000;
+    const FAILED_RESOURCE_WRITE  = 1100;
+    const FAILED_RESOURCE_DELETE = 1200;
+    /**#@-*/
 }

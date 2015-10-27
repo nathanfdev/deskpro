@@ -90,6 +90,7 @@ $CONFIG['agent_vendors'] = array(
         'vendor/JSON-js/json2.js',
 
         'vendor/jquery/jquery.min.js',
+        'vendor/jquery/jquery-migrate.min.js',
         'vendor/jquery.patch.js',
         'vendor/jquery/jquery.resize.min.js',
         'vendor/jquery/jquery-ui/jquery-ui.min.js',
@@ -532,6 +533,7 @@ $CONFIG['user_vendors'] = array(
         'javascripts/Orb/modernizr-ext.js',
 
         'vendor/jquery/jquery.min.js',
+        'vendor/jquery/jquery-migrate.min.js',
         'vendor/jquery.patch.js',
         'vendor/jquery/jquery-ui/jquery-ui.min.js',
         'vendor/jquery/jquery.cookie.js',

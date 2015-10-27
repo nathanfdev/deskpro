@@ -32,6 +32,7 @@
 namespace Application\DeskPRO\BlobStorage\StorageAdapter;
 
 use Application\DeskPRO\BlobStorage\Blob;
+use Application\DeskPRO\BlobStorage\BlobStorageException;
 use Orb\Util\Numbers;
 
 class DatabaseStorage extends AbstractStorageAdapter
@@ -106,7 +107,7 @@ class DatabaseStorage extends AbstractStorageAdapter
             ));
         } catch (\Exception $e) {
             $this->logger->logError("[DatabaseStorage] (deleteBlob) Failed: {$e->getCode()} {$e->getMessage()}");
-            throw $e;
+            throw new BlobStorageException('Failed to delete blob', BlobStorageException::FAILED_RESOURCE_DELETE, $e);
         }
 
         $this->logger->logInfo("[DatabaseStorage] (deleteBlob) Affected rows: $num");
