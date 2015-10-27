@@ -11,15 +11,15 @@ export class FeedbackListControlBar extends Component {
     dispatch: PropTypes.func.isRequired
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      orderByDropdownIsExpanded: false,
-      filterByDropdownIsExpanded: false,
-      viewModeDropdownIsExpanded: false,
-      viewOptionsIsExpanded: false
-    };
-  }
+    constructor(props) {
+      super(props);
+      this.state = {
+        orderByDropdownIsExpanded: false,
+        filterByDropdownIsExpanded: false,
+        viewModeDropdownIsExpanded: false,
+        viewOptionsIsExpanded: false
+      };
+    }
 
   toggleOrderByDropdown = (event) => {
     if (event) {

@@ -138,10 +138,8 @@
 
 
   .dpw-date-picker-calendar {
-    padding: 5px;
+    padding: 5px 5px 5px 0;
     display: inline-block;
-
-    + .dpw-date-picker-calendar { padding-left: 0px; }
 
     table {
       border-collapse: collapse;

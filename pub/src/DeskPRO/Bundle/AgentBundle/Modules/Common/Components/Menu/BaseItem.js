@@ -95,9 +95,9 @@ const BaseItem = React.createClass({
    */
   handleClickOutside: function(event) {
     // Don't handle clicks for menu items - they deal with that themselves
-    const closest = jQuery(event.target).parents('.dropdown-nav-item');
-
-    if (closest.length === 0) {
+    const closestItem = jQuery(event.target).parents('.dropdown-nav-item');
+    const closestDateTimePicker = jQuery(event.target).closest('.dpw-date-picker');
+    if (closestItem.length === 0 && !closestDateTimePicker) {
       this.closeMenu();
     }
   },
