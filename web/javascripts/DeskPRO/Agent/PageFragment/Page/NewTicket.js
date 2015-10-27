@@ -1707,6 +1707,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		var self = this
       , $form = self.getEl('newticket')
       , $discard = $('#discard-draft-btn', $form)
+      , redactor = this.textarea.data('redactor')
       ;
 
 		var d = this.draft = {
@@ -1730,6 +1731,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			},
 			save: function () {
 				this.set(self.getEl('newticket').serializeArray());
+        console.info(this.get());
         $discard.show();
 			},
 			reset: function () {
@@ -1791,6 +1793,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
           return self.setUser(el.value);
         }
 
+        if ('newticket[message]' === el.name) {
+          redactor && self.textarea.setCode(el.value);
+        }
+
         $('[name="' + el.name + '"]', $form).each(function() {
 
           if ($(this).is(':checkbox') || $(this).is(':radio')) {
@@ -1808,5 +1814,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
     });
 
     d.isEmpty() ? $discard.hide() : $discard.show();
+    redactor && self.textarea.getEditor().on('keyup change synced', function(){
+      d.save();
+    });
 	}
 });
