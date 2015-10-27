@@ -13,10 +13,6 @@ export class Avatar extends React.Component {
   }
 
   onThumbnail = file => {
-    if (file.cropped) {
-      return;
-    }
-
     const dropzone = this.refs.dropzoneComponent.dropzone;
     const reader = new FileReader();
     reader.onloadend = () => {
