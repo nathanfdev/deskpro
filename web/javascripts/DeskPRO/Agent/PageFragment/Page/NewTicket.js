@@ -1731,7 +1731,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			},
 			save: function () {
 				this.set(self.getEl('newticket').serializeArray());
-        console.info(this.get());
         $discard.show();
 			},
 			reset: function () {
