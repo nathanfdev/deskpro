@@ -300,13 +300,16 @@ export const createTask = createAction(
 
 export const editTask = createAction(
   'TASKS_EDIT_TASK',
-  (data, source = 'tasks') => {
+  (data, source = 'tasks', reload = false) => {
     const taskId = data.taskId;
     delete data.taskId;
     return Tasks.editTask(taskId, data).then(
       value => dispatch => {
         const output = value.getData();
-        dispatch(loadTaskList(source));
+
+        if (reload) {
+          dispatch(loadTaskList(source));
+        }
         return output;
       },
       value => value.xhr.responseJSON

@@ -185,6 +185,15 @@ const TaskCard = React.createClass({
     return result;
   },
 
+  expandDetails: function(event) {
+    if (this.props.task.get('is_done', false) && !this.state.expanded) {
+      this.setState({
+        expanded: true
+      });
+    }
+    event.preventDefault();
+  },
+
   render: function() {
     const { task,
             projects,
@@ -260,7 +269,7 @@ const TaskCard = React.createClass({
           {selected ? <i className="fa fa-check"/> : '' }
         </div>
 
-        <div className="dpw--card-line">
+        <div className="dpw--card-line" onClick={this.expandDetails}>
           <div className="dpw--card-line-left card-title">
             <div className={titleClass}>
               { !this.state.editing ?
@@ -278,10 +287,10 @@ const TaskCard = React.createClass({
                 <a href="#" onClick={this.toggleDetails}>{detailsButtonText} <i className="fa fa-navicon"/></a>
               </div>
               :
-              assignee ?
               <div className="dpwd--card-assigned" onClick={this.props.toggleAssignWindow.bind(this, task)}>
-                <div className="dpw--avatar-face" style={{position: 'relative'}}>{assigneeAvatar}</div>
-              </div> : '' }
+                <div className="dpw--avatar-face" style={{position: 'relative'}}>{ assignee ? assigneeAvatar : <i className="fa fa-caret-down" /> }</div>
+              </div>
+            }
           </div>
         </div>
 

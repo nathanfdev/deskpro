@@ -3,6 +3,7 @@ import jQuery from 'jquery';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 import { AgentTeamAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/AgentTeamAvatar';
 import { DepartmentAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/DepartmentAvatar';
+import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
 
 const AssignHover = React.createClass({
 
@@ -125,57 +126,69 @@ const AssignHover = React.createClass({
                   value: 'agents-me'
                 })}>Assign to me</a></h1>
                 <div className="dpw--popup-item-collection">
-                  <ul>
-                    {this.state.agents ? this.state.agents.map((agent) => {
-                      const lineClass = this.props.taskData.has && this.props.taskData.has('agents') && this.props.taskData.get('agents').first() === agent.get('id') ? 'dpw--popup-item-person selected' : 'dpw--popup-item-person';
-                      return (<li key={agent.get('id')}>
-                                <div className={lineClass} onClick={this.handleAssignment.bind(this, {
-                                  id: taskId,
-                                  value: 'agents-' + agent.get('id')
-                                })}>
-                                  <span style={{position: 'relative'}}><PersonAvatar person={agent} size="16" /></span> <span className="dpw-popup-item-collection-name">{agent.get('name')}</span>
-                                </div>
-                              </li>);
-                    }) : ''}
-                  </ul>
+                  <div className="dpw--assignment-scrollable-container">
+                    <Scrollable vertical>
+                      <ul>
+                        {this.state.agents ? this.state.agents.map((agent) => {
+                          const lineClass = this.props.taskData.has && this.props.taskData.has('agents') && this.props.taskData.get('agents').first() === agent.get('id') ? 'dpw--popup-item-person selected' : 'dpw--popup-item-person';
+                          return (<li key={agent.get('id')}>
+                                    <div className={lineClass} onClick={this.handleAssignment.bind(this, {
+                                      id: taskId,
+                                      value: 'agents-' + agent.get('id')
+                                    })}>
+                                      <span style={{position: 'relative'}}><PersonAvatar person={agent} size="16" /></span> <span className="dpw-popup-item-collection-name">{agent.get('name')}</span>
+                                    </div>
+                                  </li>);
+                        }) : ''}
+                      </ul>
+                    </Scrollable>
+                  </div>
                 </div>
               </div>
 
               <div className="dpmw--popup-content-of-three">
                 <h1 className="dpw--popup-item-collection-title">Team</h1>
                 <div className="dpw--popup-item-collection">
-                  <ul>
-                    {this.state.teams ? this.state.teams.map((team) => {
-                      const lineClass = this.props.taskData.has && this.props.taskData.has('teams') && this.props.taskData.get('teams').first() === team.get('id') ? 'dpw--popup-item-person selected' : 'dpw--popup-item-person';
-                      return (<li key={team.get('id')}>
-                                <div className={lineClass} onClick={this.handleAssignment.bind(this, {
-                                  id: taskId,
-                                  value: 'teams-' + team.get('id')
-                                })}>
-                                  <span style={{position: 'relative'}}><AgentTeamAvatar agentTeam={team} size="16" /></span> <span className="dpw-popup-item-collection-name">{team.get('name')}</span>
-                                </div>
-                              </li>);
-                    }) : ''}
-                  </ul>
+                  <div className="dpw--assignment-scrollable-container">
+                    <Scrollable vertical>
+                      <ul>
+                        {this.state.teams ? this.state.teams.map((team) => {
+                          const lineClass = this.props.taskData.has && this.props.taskData.has('teams') && this.props.taskData.get('teams').first() === team.get('id') ? 'dpw--popup-item-person selected' : 'dpw--popup-item-person';
+                          return (<li key={team.get('id')}>
+                                    <div className={lineClass} onClick={this.handleAssignment.bind(this, {
+                                      id: taskId,
+                                      value: 'teams-' + team.get('id')
+                                    })}>
+                                      <span style={{position: 'relative'}}><AgentTeamAvatar agentTeam={team} size="16" /></span> <span className="dpw-popup-item-collection-name">{team.get('name')}</span>
+                                    </div>
+                                  </li>);
+                        }) : ''}
+                      </ul>
+                    </Scrollable>
+                  </div>
                 </div>
               </div>
 
               <div className="dpmw--popup-content-of-three">
                 <h1 className="dpw--popup-item-collection-title">Department</h1>
                 <div className="dpw--popup-item-collection">
-                  <ul>
-                    {this.state.departments ? this.state.departments.map((department) => {
-                      const lineClass = this.props.taskData.has && this.props.taskData.has('departments') && this.props.taskData.get('departments').first() === department.get('id') ? 'dpw--popup-item-person selected' : 'dpw--popup-item-person';
-                      return (<li key={department.get('id')}>
-                                <div className={lineClass} onClick={this.handleAssignment.bind(this, {
-                                  id: taskId,
-                                  value: 'departments-' + department.get('id')
-                                })}>
-                                  <span style={{position: 'relative'}}><DepartmentAvatar department={department} size="16" /></span> <span className="dpw-popup-item-collection-name">{department.get('title')}</span>
-                                </div>
-                              </li>);
-                    }) : '' }
-                  </ul>
+                  <div className="dpw--assignment-scrollable-container">
+                    <Scrollable vertical>
+                      <ul>
+                        {this.state.departments ? this.state.departments.map((department) => {
+                          const lineClass = this.props.taskData.has && this.props.taskData.has('departments') && this.props.taskData.get('departments').first() === department.get('id') ? 'dpw--popup-item-person selected' : 'dpw--popup-item-person';
+                          return (<li key={department.get('id')}>
+                                    <div className={lineClass} onClick={this.handleAssignment.bind(this, {
+                                      id: taskId,
+                                      value: 'departments-' + department.get('id')
+                                    })}>
+                                      <span style={{position: 'relative'}}><DepartmentAvatar department={department} size="16" /></span> <span className="dpw-popup-item-collection-name">{department.get('title')}</span>
+                                    </div>
+                                  </li>);
+                        }) : '' }
+                      </ul>
+                    </Scrollable>
+                  </div>
                 </div>
               </div>
             </div>
