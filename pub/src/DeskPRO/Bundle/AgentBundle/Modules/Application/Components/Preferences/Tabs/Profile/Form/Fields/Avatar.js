@@ -93,7 +93,7 @@ export class Avatar extends React.Component {
     const componentConfig = {
       iconFiletypes: ['.jpg', '.png', '.gif'],
       showFiletypeIcon: true,
-      postUrl: '/uploadHandler'
+      postUrl: '/blobs/temp'
     };
 
     return (
