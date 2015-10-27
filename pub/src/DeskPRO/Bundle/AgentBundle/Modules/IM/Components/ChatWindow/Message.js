@@ -1,4 +1,6 @@
 import React, { PropTypes } from 'react';
+import TimeAgo from 'react-timeago';
+import { PersonAvatar } from '../../../Common/Components/Avatar/index';
 
 export class Message extends React.Component {
 
@@ -11,8 +13,11 @@ export class Message extends React.Component {
   renderMy = () => {
     return (
       <li className="chat-message yours old">
-        <div className="message-read-mark"><i className="fa fa-check"></i><i className="fa fa-check"></i></div>
-        <span className="time">4.13pm <i className="fa fa-clock-o"></i></span>
+        <div className="message-read-mark">
+          <i className="fa fa-check"></i>
+          {(this.props.message.status > 1) ? <i className="fa fa-check"></i> : null}
+        </div>
+        <span className="time"><TimeAgo date={this.props.message.date_created}/> <i className="fa fa-clock-o"></i></span>
         <p>{this.props.message.message}</p>
       </li>
     );
@@ -20,13 +25,12 @@ export class Message extends React.Component {
 
   renderNotMy = () => {
     const author = this.props.agents.get(this.props.message.person_id);
-    const style = {
-      backgroundImage: 'url("' + author.get('gravatar_url') + '")'
-    };
     return (
       <li className="chat-message old">
-        <a href="#" title={this.props.message.person_name} className="chat-avatar" style={style}></a>
-        <span className="time">4.13pm <i className="fa fa-clock-o"></i></span>
+        <a title={this.props.message.person_name} className="chat-avatar">
+          <PersonAvatar person={author} size="22"/>
+        </a>
+        <span className="time"><TimeAgo date={this.props.message.date_created}/> <i className="fa fa-clock-o"></i></span>
         <p>{this.props.message.message}</p>
       </li>
     );
