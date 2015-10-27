@@ -1535,6 +1535,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
+     * @return CustomDataTicket[]
+     */
+    public function getCustomData()
+    {
+        return $this->custom_data;
+    }
+
+    /**
      * Gets a display array for a specific field.
      *
      * @param $field_id

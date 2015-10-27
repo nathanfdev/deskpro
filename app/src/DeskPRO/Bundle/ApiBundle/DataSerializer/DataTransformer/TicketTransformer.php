@@ -71,7 +71,6 @@ class TicketTransformer extends AbstractDataSerializerTransformer
             'agent_team',
             'organization',
             'linked_chat',
-            'custom_data',
             'labels',
             // 'sent_to_address',
             'email_account',
@@ -109,7 +108,6 @@ class TicketTransformer extends AbstractDataSerializerTransformer
             'count_user_replies',
             'worst_sla_status',
             'waiting_times',
-            'participants',
             'ticket_slas',
         ];
     }
@@ -155,6 +153,24 @@ class TicketTransformer extends AbstractDataSerializerTransformer
             $props['person_email'] = null;
         }
 
+        $custom_data = [];
+        foreach ($ticket->getCustomData() as $custom) {
+            $custom_data[$custom->getId()] = $custom->getData();
+        }
+        $props['fields']       = $custom_data;
+        $props['participants'] = $this->selectIds($ticket->getUserParticipants());
+        $props['followers']    = $this->selectIds($ticket->getAgentParticipants());
+
         return $props;
+    }
+
+    private function selectIds($collection)
+    {
+        $ids = [];
+        foreach ($collection as $element) {
+            $ids[] = $element->getId();
+        }
+
+        return array_values(array_unique($ids));
     }
 }
