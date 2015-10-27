@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Cropper from 'react-cropper';
 import DropzoneComponent from 'react-dropzone-component';
 
 export class Avatar extends React.Component {
+
+  static propTypes = {
+    path: PropTypes.string,
+    onChange: PropTypes.func.isRequired
+  };
 
   constructor(props) {
     super(props);
@@ -59,7 +64,13 @@ export class Avatar extends React.Component {
 
     this.setState({
       tmpFile: null,
-      tmpFilePath: null,
+      tmpFilePath: null
+    });
+  };
+
+  onComplete = file => {
+    console.log('complete', file.xhr.response);
+    this.setState({
       edit: false
     });
   };
@@ -79,7 +90,7 @@ export class Avatar extends React.Component {
     );
   }
 
-  renderDropzone() {
+  renderUploader() {
     const djsConfig = {
       addRemoveLinks: true,
       autoQueue: false,
@@ -88,8 +99,6 @@ export class Avatar extends React.Component {
     };
 
     const componentConfig = {
-      iconFiletypes: ['.jpg', '.png', '.gif'],
-      showFiletypeIcon: true,
       postUrl: `${DP_BASE_URL}/api/v2/blobs/temp`
     };
 
@@ -97,7 +106,8 @@ export class Avatar extends React.Component {
       <div className="avatar-crop" id="avatar-crop">
         <p>Click &amp; drag to crop your avatar</p>
         <div className="cropper-bucket">
-          <DropzoneComponent ref="dropzoneComponent"
+          <DropzoneComponent className={this.state.tmpFilePath && 'hidden'}
+                             ref="dropzoneComponent"
                              config={componentConfig}
                              eventHandlers={{
                                thumbnail: this.onCropThumbnail,
@@ -105,48 +115,28 @@ export class Avatar extends React.Component {
                              }}
                              djsConfig={djsConfig}>
             <div className="dz-message">
-              <img src="" />
+              tmp text
+              <img src={this.props.path} />
             </div>
           </DropzoneComponent>
-        </div>
-        <a href="#" className="cancel" onClick={this.onDiscard}>Or cancel &amp; discard your changes</a>
-      </div>
-    );
-  }
-
-  renderCropper() {
-    return (
-      <div className="avatar-crop" id="avatar-crop">
-        <p>Click &amp; drag to crop your avatar</p>
-        <div className="cropper-bucket">
-          <Cropper
+          {this.state.tmpFilePath && (<Cropper
             ref="cropper"
             src={this.state.tmpFilePath}
             style={{height: 200, width: '100%'}}
             aspectRatio={16 / 9}
-            guides={false} />
+            guides={false} />)}
         </div>
-        <a href="#" className="crop" onClick={this.onSave}>Crop &amp; Save Avatar</a>
+
+        {this.state.tmpFilePath && (<a href="#" className="crop" onClick={this.onSave}>Crop &amp; Save Avatar</a>)}
         <a href="#" className="cancel" onClick={this.onDiscard}>Or cancel &amp; discard your changes</a>
       </div>
     );
-  }
-
-  renderContent() {
-    if (this.state.tmpFilePath) {
-      return this.renderCropper();
-    }
-    if (this.state.edit) {
-      return this.renderDropzone();
-    }
-
-    return this.renderManageButton();
   }
 
   render() {
     return (
       <div className="bucket-column-last">
-        {this.renderContent()}
+        {this.state.edit ? this.renderUploader() : this.renderManageButton()}
       </div>
     );
   }
