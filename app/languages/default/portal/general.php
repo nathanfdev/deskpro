@@ -121,4 +121,5 @@ return array(
     'portal.general.agent_bar_admin_news'        => 'News Settings',
     'portal.general.agent_bar_admin_dl'          => 'Downloads Settings',
     'portal.general.agent_bar_admin_feedback'    => 'Feedback Settings',
+    'portal.general.nav-all'                     => 'All',
 );
