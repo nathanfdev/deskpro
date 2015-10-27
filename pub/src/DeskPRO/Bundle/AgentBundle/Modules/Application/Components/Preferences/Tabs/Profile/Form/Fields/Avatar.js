@@ -12,7 +12,11 @@ export class Avatar extends React.Component {
     };
   }
 
-  onThumbnail = file => {
+  onCropThumbnail = file => {
+    if (file.cropped) {
+      return;
+    }
+
     const dropzone = this.refs.dropzoneComponent.dropzone;
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -49,13 +53,13 @@ export class Avatar extends React.Component {
 
     const file = this.state.tmpFile;
     const dropzone = this.refs.dropzoneComponent.dropzone;
-    const blob = new Blob([ab], {
-      type: file.type,
-      name: file.name
+    const blob = new Blob([ab]);
+    const croppedFile = new File([blob], file.name, {
+      cropped: true
     });
 
-    dropzone.addFile(blob);
-    dropzone.enqueueFile(blob);
+    dropzone.addFile(croppedFile);
+    dropzone.enqueueFile(croppedFile);
     dropzone.processQueue();
   };
 
@@ -82,10 +86,7 @@ export class Avatar extends React.Component {
     const djsConfig = {
       addRemoveLinks: true,
       autoQueue: false,
-      maxFiles: 1,
-      params: {
-        myParameter: "I'm a parameter!"
-      }
+      maxFiles: 1
     };
 
     const componentConfig = {
@@ -101,7 +102,7 @@ export class Avatar extends React.Component {
         <DropzoneComponent ref="dropzoneComponent"
                            config={componentConfig}
                            eventHandlers={{
-                             thumbnail: this.onThumbnail
+                             thumbnail: this.onCropThumbnail
                            }}
                            djsConfig={djsConfig} />
       </div>
