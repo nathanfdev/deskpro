@@ -52,7 +52,7 @@ export default class Abstract extends React.Component {
    */
   componentWillUnmount() {
     // Clean up the DOM when the component is umounted
-    React.unmountComponentAtNode(this.node);
+    ReactDOM.unmountComponentAtNode(this.node);
     jQuery(this.node).remove();
   }
 
