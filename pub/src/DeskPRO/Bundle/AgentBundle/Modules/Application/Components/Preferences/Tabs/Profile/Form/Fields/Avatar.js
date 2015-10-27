@@ -100,7 +100,7 @@ export class Avatar extends React.Component {
 
     return (
       <div className="avatar-crop" id="avatar-crop">
-        <p>Click &amp; drag to crop your avatar</p>
+        {tmpPath && (<p>Click &amp; drag to crop your avatar</p>)}
         <div className="cropper-bucket">
           <DropzoneComponent className={tmpPath && 'hidden'}
                              ref="dropzoneComponent"
@@ -111,7 +111,9 @@ export class Avatar extends React.Component {
                              }}
                              djsConfig={djsConfig}>
             <div className="dz-message">
-              {this.props.value && (<img src={this.props.value} />)}
+              {this.props.value
+                ? (<img src={this.props.value} />)
+                : (<span>Drag and drop a photo here or click to browse.</span>)}
             </div>
           </DropzoneComponent>
           {tmpPath && (<Cropper
