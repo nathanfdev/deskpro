@@ -55,6 +55,7 @@ export class Avatar extends React.Component {
     });
 
     dropzone.addFile(blob);
+    dropzone.enqueueFile(blob);
     dropzone.processQueue();
   };
 
@@ -66,7 +67,7 @@ export class Avatar extends React.Component {
           <Cropper
             ref="cropper"
             src={this.state.tmpFilePath}
-            style={{height: 400, width: '100%'}}
+            style={{height: 200, width: '100%'}}
             // Cropper.js options
             aspectRatio={16 / 9}
             guides={false} />
@@ -80,6 +81,7 @@ export class Avatar extends React.Component {
   render() {
     const djsConfig = {
       addRemoveLinks: true,
+      autoQueue: false,
       maxFiles: 1,
       params: {
         myParameter: "I'm a parameter!"
@@ -89,7 +91,7 @@ export class Avatar extends React.Component {
     const componentConfig = {
       iconFiletypes: ['.jpg', '.png', '.gif'],
       showFiletypeIcon: true,
-      postUrl: '/blobs/temp'
+      postUrl: `${DP_BASE_URL}/api/v2/blobs/temp`
     };
 
     return (
