@@ -84,7 +84,8 @@ export class Avatar extends React.Component {
     const djsConfig = {
       addRemoveLinks: true,
       autoQueue: false,
-      maxFiles: 1
+      maxFiles: 1,
+      previewsContainer: false
     };
 
     const componentConfig = {
