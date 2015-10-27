@@ -30,7 +30,8 @@ export class Avatar extends React.Component {
   onDiscard = () => {
     this.setState({
       tmpFile: null,
-      tmpFilePath: null
+      tmpFilePath: null,
+      edit: false
     });
   };
 
@@ -58,7 +59,8 @@ export class Avatar extends React.Component {
 
     this.setState({
       tmpFile: null,
-      tmpFilePath: null
+      tmpFilePath: null,
+      edit: false
     });
   };
 
@@ -92,13 +94,23 @@ export class Avatar extends React.Component {
     };
 
     return (
-      <DropzoneComponent ref="dropzoneComponent"
-                         config={componentConfig}
-                         eventHandlers={{
-                           thumbnail: this.onCropThumbnail,
-                           complete: this.onComplete
-                         }}
-                         djsConfig={djsConfig}/>
+      <div className="avatar-crop" id="avatar-crop">
+        <p>Click &amp; drag to crop your avatar</p>
+        <div className="cropper-bucket">
+          <DropzoneComponent ref="dropzoneComponent"
+                             config={componentConfig}
+                             eventHandlers={{
+                               thumbnail: this.onCropThumbnail,
+                               complete: this.onComplete
+                             }}
+                             djsConfig={djsConfig}>
+            <div className="dz-message">
+              <img src="" />
+            </div>
+          </DropzoneComponent>
+        </div>
+        <a href="#" className="cancel" onClick={this.onDiscard}>Or cancel &amp; discard your changes</a>
+      </div>
     );
   }
 
@@ -120,11 +132,21 @@ export class Avatar extends React.Component {
     );
   }
 
+  renderContent() {
+    if (this.state.tmpFilePath) {
+      return this.renderCropper();
+    }
+    if (this.state.edit) {
+      return this.renderDropzone();
+    }
+
+    return this.renderManageButton();
+  }
+
   render() {
     return (
       <div className="bucket-column-last">
-        {this.state.tmpFilePath ? this.renderCropper() : null}
-        {this.state.edit ? this.renderDropzone() : this.renderManageButton()}
+        {this.renderContent()}
       </div>
     );
   }
