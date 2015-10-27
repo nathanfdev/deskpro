@@ -76,15 +76,6 @@ export class Avatar extends React.Component {
     });
   };
 
-  renderManageButton() {
-    return (
-      <a href="#" className="button button-secondary user-avatar" onClick={this.onEdit}>
-        <span className="icon"></span>
-        Manage Avatar
-      </a>
-    );
-  }
-
   renderUploader() {
     const tmpPath = this.state.tmpFilePath;
     const djsConfig = {
@@ -140,7 +131,11 @@ export class Avatar extends React.Component {
   render() {
     return (
       <div className="bucket-column-last">
-        {this.state.edit ? this.renderUploader() : this.renderManageButton()}
+        <a href="#" className="button button-secondary user-avatar" onClick={this.onEdit}>
+          <span className="icon"></span>
+          Manage Avatar
+        </a>
+        {this.state.edit && this.renderUploader()}
       </div>
     );
   }
