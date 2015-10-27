@@ -15,7 +15,7 @@ export class PhoneNumber extends React.Component {
     const { number, extension } = this.props;
 
     $input.intlTelInput({
-      utilsScript: `${DP_BUILD_PATH}/phonenumber_utils.js`,
+      utilsScript: DP_PHONE_UTIL_PATH,
       autoPlaceholder: true,
       autoFormat: true,
       allowExtensions: true,
