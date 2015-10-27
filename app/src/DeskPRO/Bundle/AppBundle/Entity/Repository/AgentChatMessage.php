@@ -47,8 +47,8 @@ class AgentChatMessage extends EntityRepository
     public function searchString(AgentChatEntity $chat, $searchString)
     {
         $qb = $this->createQueryBuilder('acm');
-        $qb->where('acm.chat = :agent_chat_id')
-            ->setParameter('chat', $chat->getId());
+        $qb->where('acm.chat = :chat')
+            ->setParameter('chat', $chat);
         if ($searchString) {
             $qb->andWhere('acm.message LIKE :message')
                 ->setParameter('message', '%'.$searchString.'%');

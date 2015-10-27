@@ -47,3 +47,18 @@ export const addMessage = createAction(
     });
   }
 );
+
+export const refreshCounts = createAction(
+  'IM_COUNT_MESSAGES',
+  (lastCheck) => {
+    return new Promise(
+      (resolve, reject) => {
+        return IM.loadMessagesCount(lastCheck)
+          .success((response) => {
+            return resolve(response.data);
+          })
+          .error(response => reject(response));
+      }
+    );
+  }
+);
