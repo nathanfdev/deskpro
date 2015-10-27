@@ -12,7 +12,7 @@ import Moment from 'moment';
 import * as AppActions from '../../Application/Actions/AppActions';
 import * as constants from '../../../Constants/Constants';
 import ReactPaginate from '../../Common/Components/Pagination/deskpro-react-paginate';
-import ComponentRootWrapper from 'DeskPRO/Component/ComponentRootWrapper';
+import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import AssignHover from '../Components/AssignHover';
 import TaskViewConnector from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/Views/TaskViewConnector';
 
@@ -347,7 +347,7 @@ export class TasksListFrame extends React.Component {
 
     return (
       <ListFrameContainer className={sectionClass}>
-        <ComponentRootWrapper open={this.state.showAssignWindow}>
+        <Positioned isOpen={this.state.showAssignWindow}>
           <AssignHover position={this.state.position}
                        assignTask={this.handleAssigneeChange.bind(this)}
                        agents={this.props.agents}
@@ -355,7 +355,7 @@ export class TasksListFrame extends React.Component {
                        departments={this.props.departments}
                        taskData={this.state.taskData}
                        closeWindow={this.closeAssignWindow.bind(this)}/>
-        </ComponentRootWrapper>
+        </Positioned>
         <TaskControls toggleView={this.toggleView.bind(this)}
                       changeView={this.state.changeView}
                       agents={this.props.agents}

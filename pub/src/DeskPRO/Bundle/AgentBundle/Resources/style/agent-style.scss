@@ -275,5 +275,6 @@ $kanban-frame-width: 800px;
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 250;
   //visibility: hidden; // todo breaks dropdowns
 }

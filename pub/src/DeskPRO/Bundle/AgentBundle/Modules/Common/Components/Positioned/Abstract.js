@@ -118,16 +118,18 @@ export default class Abstract extends React.Component {
   renderContent() {
     const isOpen = this.props.isOpen || false;
 
+    const renderSubtreeIntoContainer = ReactDOM.unstable_renderSubtreeIntoContainer;
+
     // Render the component with react, or don't if the prop changes
     if (isOpen) {
       // Put the element inside a div that we can position
-      ReactDOM.render(<div className="positioned-element">{this.props.children}</div>, this.node);
+      renderSubtreeIntoContainer(this, <div className="positioned-element">{this.props.children}</div>, this.node);
       this.updatePosition();
       if (this.shouldFire() && this.props.onOpen) {
         this.props.onOpen();
       }
     } else {
-      ReactDOM.render(<div />, this.node);
+      renderSubtreeIntoContainer(this, <div />, this.node);
       if (this.shouldFire() && this.props.onClose) {
         this.props.onClose();
       }

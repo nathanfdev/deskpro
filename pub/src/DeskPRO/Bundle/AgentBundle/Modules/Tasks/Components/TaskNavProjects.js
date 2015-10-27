@@ -1,7 +1,7 @@
 import React from 'react';
 import ProjectCreateHover from '../Components/ProjectCreateHover';
 import TaskNavItemProject from '../Components/TaskNavItemProject';
-import ComponentRootWrapper from 'DeskPRO/Component/ComponentRootWrapper';
+import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { connect } from 'react-redux';
 import jQuery from 'jquery';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
@@ -135,7 +135,7 @@ export default class TasksNavProjects extends React.Component {
 
     return (<section className="sidebar-list tasks-nav-projects">
         <div>
-          <ComponentRootWrapper open={this.state.showWindow}>
+          <Positioned isOpen={this.state.showWindow}>
             <ProjectCreateHover
               position={this.state.position}
               createProject={this.createProject.bind(this)}
@@ -147,7 +147,7 @@ export default class TasksNavProjects extends React.Component {
               closeWindow={this.closeWindow.bind(this)}
               user={this.props.user}
             />
-          </ComponentRootWrapper>
+          </Positioned>
         </div>
         <div className="list-sidebar-title">Projects <a href="#" onClick={this.toggleWindow.bind(this, {})}><i className="fa fa-plus"/></a></div>
         <ul>{projectList ? projectList.map((object) => {
