@@ -40,6 +40,28 @@ export class Avatar extends React.Component {
     });
   };
 
+  onSave = () => {
+    const cropper = this.refs.cropper;
+    const blobUrl = cropper.getCroppedCanvas().toDataURL();
+    const byteString = atob(blobUrl.split(',')[1]);
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+
+    for (let num = 0; num < byteString.length; num++) {
+      ia[num] = byteString.charCodeAt(num);
+    }
+
+    const file = this.state.tmpFile;
+    const dropzone = this.refs.dropzoneComponent.dropzone;
+    const blob = new Blob([ab], {
+      type: file.type,
+      name: file.name
+    });
+
+    dropzone.addFile(blob);
+    dropzone.processQueue();
+  };
+
   renderCropper() {
     return (
       <div className="avatar-crop" id="avatar-crop">
@@ -51,10 +73,9 @@ export class Avatar extends React.Component {
             style={{height: 400, width: '100%'}}
             // Cropper.js options
             aspectRatio={16 / 9}
-            guides={false}
-            crop={this._crop} />
+            guides={false} />
         </div>
-        <a href="#" className="crop">Crop &amp; Save Avatar</a>
+        <a href="#" className="crop" onClick={this.onSave}>Crop &amp; Save Avatar</a>
         <a href="#" className="cancel" onClick={this.onDiscard}>Or cancel &amp; discard your changes</a>
       </div>
     );
