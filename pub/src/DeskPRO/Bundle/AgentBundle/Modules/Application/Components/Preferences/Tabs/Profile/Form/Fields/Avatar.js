@@ -61,16 +61,13 @@ export class Avatar extends React.Component {
     dropzone.addFile(croppedFile);
     dropzone.enqueueFile(croppedFile);
     dropzone.processQueue();
-
-    this.setState({
-      tmpFile: null,
-      tmpFilePath: null
-    });
   };
 
   onComplete = file => {
     console.log('complete', file.xhr.response);
     this.setState({
+      tmpFile: null,
+      tmpFilePath: null,
       edit: false
     });
   };
