@@ -29,6 +29,16 @@
     </li>
   {% endif %}
 
+  {% if can_use_downloads() %}
+    <li class="{{ is_page_downloads() ? 'active' }}">
+      <a href="{{ path('portal_downloads') }}">
+        <i class="fa fa-files-o"></i>
+        <span class="title">{{ phrase('portal.general.nav-downloads') }}</span>
+        <span class="subtitle">{{ phrase('portal.general.nav-downloads-desc') }}</span>
+      </a>
+    </li>
+  {% endif %}
+
   {% if can_use_tickets() %}
     <li>
       <a href="{{ path('portal_new_ticket') }}">
