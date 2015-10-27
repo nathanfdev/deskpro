@@ -26,25 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat as AgentChatEntity;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityRepository;
 
+/**
+ * Class AgentChatMessage.
+ */
 class AgentChatMessage extends EntityRepository
 {
+    /**
+     * @param AgentChatEntity $chat
+     * @param $searchString
+     *
+     * @return array
+     */
     public function searchString(AgentChatEntity $chat, $searchString)
     {
         $qb = $this->createQueryBuilder('acm');
-        $qb->where('acm.chat = :agent_chat_id')
-            ->setParameter('agent_chat_id', $chat->getId());
+        $qb->where('acm.chat = :chat')
+            ->setParameter('chat', $chat);
         if ($searchString) {
             $qb->andWhere('acm.message LIKE :message')
                 ->setParameter('message', '%'.$searchString.'%');
@@ -54,5 +58,26 @@ class AgentChatMessage extends EntityRepository
         $ids = array_map('current', $results);
 
         return $ids;
+    }
+
+    /**
+     * @param Person $user
+     * @param $chats
+     *
+     * @return array
+     */
+    public function countMessages(Person $user, $chats)
+    {
+        $qb = $this->createQueryBuilder('acm');
+        $qb->select('IDENTITY(acm.chat) as chat_id, COUNT(acm.id) as cnt')
+            ->where('acm.chat IN (:chats)')
+            ->andWhere('acm.status < :status')
+            ->andWhere('acm.person != :person')
+            ->groupBy('acm.chat')
+            ->setParameter('chats', $chats)
+            ->setParameter('status', 1)
+            ->setParameter('person', $user);
+
+        return $qb->getQuery()->getResult(AbstractQuery::HYDRATE_SCALAR);
     }
 }

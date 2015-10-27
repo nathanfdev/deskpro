@@ -11,7 +11,7 @@ import { SearchForm } from './SearchForm';
 
 // messages
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
-import { addMessage } from '../../Actions/imMessagesActions';
+import { addMessage } from '../../Actions/messagesActions';
 
 @connect(state => ({
   me: meSelector(state),

@@ -121,4 +121,44 @@ class MessagesController extends AbstractController
             Response::HTTP_CREATED
         );
     }
+
+    /**
+     * @return View
+     * @Annotations\Get("/agent_chats/messages/count", name="agent_chats_messages_count")
+     */
+    public function countsAction()
+    {
+        /** @var History $searchService */
+        $searchService = $this->get('deskpro.agentchat.history');
+        $count         = $searchService->countMessages($this->getUser());
+        $data          = [];
+        foreach ($count as $cnt) {
+            $data[$cnt['chat_id']] = $cnt;
+        }
+
+        return View::create(
+            $this->createRepresentation($data),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return View
+     * @Annotations\Patch("/agent_chats/messages/mark", name="agent_chats_messages_mark")
+     */
+    public function markAction(Request $request)
+    {
+        $status = Response::HTTP_ACCEPTED;
+        $ids    = $request->request->get('ids');
+        /** @var Messenger $messenger */
+        $messenger = $this->get('deskpro.agentchat.messenger');
+        $messenger->markAsRead($ids, $this->getUser());
+
+        return View::create(
+            $this->createRepresentation([]),
+            $status
+        );
+    }
 }

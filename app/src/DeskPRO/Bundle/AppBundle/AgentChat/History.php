@@ -39,6 +39,7 @@ use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChat as AgentChatRepository;
+use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatMessage as AgentChatMessageRepository;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatParticipant as AgentChatParticipantRepository;
 
 /**
@@ -154,6 +155,20 @@ class History
         $chats    = $chatRepo->findBy(array('id' => $ids), $order);
 
         return $chats;
+    }
+
+    /**
+     * @param Person $user
+     *
+     * @return array
+     */
+    public function countMessages(Person $user)
+    {
+        $chats = $this->findChats($user);
+        /** @var AgentChatMessageRepository $repo */
+        $repo = $this->em->getRepository('App:AgentChatMessage');
+
+        return $repo->countMessages($user, $chats);
     }
 
     /**

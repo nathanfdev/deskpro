@@ -2,7 +2,7 @@ import { createReducer } from 'Ampliflux';
 import * as actions from '../Actions/chatsActions';
 
 const initialState = {
-  current: {}
+  current: {},
 };
 
 export default createReducer(initialState, {

@@ -1,28 +1,5 @@
 {% if display_alerts %}
     <div class="alerts">
-    {% if impersonator %}
-        <div class="admin-bar">
-            <div class="wrapper">
-                <ul>
-                    <li>
-                        <a href="{{ path('portal_logout', { _dp_impersonate_exit: 1 }) }}">
-                            <span>{{ phrase('portal.account.exit_impersonation') }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ path('portal_logout', { _dp_impersonate_exit: 1 }) }}">
-                            <i>{{ impersonator.display_name }}</i>
-                            {{ phrase('portal.account.impersonating') }}
-                            <i>{{ user.display_name }}
-                                ({{ phrase('portal.general.id') }}
-                                #{{ user.id }})
-                            </i>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    {% endif %}
     {% if lang_diff %}
             <div class="alert">
                 <a href="{{ path('portal_dismiss_lang_alert') }}">

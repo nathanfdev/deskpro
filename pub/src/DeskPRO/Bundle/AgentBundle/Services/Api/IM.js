@@ -19,3 +19,11 @@ export function startChat(entityId, type) {
 export function addMessage(chatId, message) {
   return DpApi.sendPost('DP_API/agent_chats/' + chatId + '/messages', {message: message});
 }
+
+export function loadMessagesCount() {
+  return DpApi.sendGet('DP_API/agent_chats/messages/count');
+}
+
+export function markMessages(ids) {
+  return DpApi.sendPatch('DP_API/agent_chats/messages/mark', {ids: ids});
+}

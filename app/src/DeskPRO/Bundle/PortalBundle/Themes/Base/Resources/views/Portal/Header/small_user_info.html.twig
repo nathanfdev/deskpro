@@ -78,23 +78,9 @@
 
     {% if is_agent() %}
       &middot;
-      <a href="{{ path('agent') }}">{{ phrase('agent.general.agent_interface') }}</a>
-
-
-
       {# TODO: temporary link for dev purposes #}
-      <a href="/old-agent">[OLD]</a>
+      <a href="/old-agent">[OLD AGENT]</a>
       {# TODO: temporary link for dev purposes #}
-
-
-
-
-
-    {% endif %}
-
-    {% if is_admin() %}
-      &middot;
-      <a href="{{ path('admin') }}">{{ phrase('agent.general.admin_interface') }}</a>
     {% endif %}
 
     {% if ticket_count > 0 %}

@@ -1,11 +1,12 @@
-import * as actions from '../Actions/imMessagesActions';
+import * as actions from '../Actions/messagesActions';
 import { createReducer } from 'Ampliflux';
 import { createEmptyRecordStoreState, buildRecordStoreHandlers } from 'Ampliflux/common/record-store/handlers';
 import Immutable from 'immutable';
 import { async } from 'Ampliflux/reducers/handlers';
 
 const initialState = {
-  chatMessages: {}
+  chatMessages: {},
+  lastMessages: {}
 };
 export default createReducer(initialState, {
   [actions.loadMessages]: async(
@@ -21,6 +22,8 @@ export default createReducer(initialState, {
       const messages = state.getIn(['chatMessages', payload.chat_id]).push(payload.message);
       return state.set(['chatMessages', payload.chat_id], messages);
     }
-  })
-
+  }),
+  [actions.refreshCounts]: (state, payload) => {
+    return state.set('lastMessages', payload);
+  }
 });

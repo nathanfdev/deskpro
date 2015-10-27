@@ -51,6 +51,10 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
+    const STATUS_NEW       = 0;
+    const STATUS_DELIVERED = 1;
+    const STATUS_READ      = 2;
+
     /**
      * @var int
      * @ORM\Id()
@@ -100,6 +104,13 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
      * @Assert\NotNull()
      */
     protected $date_created;
+
+    /**
+     * @var int
+     * @ORM\Column(type="integer", nullable=false)
+     * @Assert\NotNull()
+     */
+    protected $status = 0;
 
     public function __construct()
     {
@@ -217,5 +228,25 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
     public function getPersonId()
     {
         return $this->getPerson()->getId();
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param int $status
+     *
+     * @return $this
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
     }
 }

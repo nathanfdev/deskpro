@@ -60,6 +60,43 @@ class CommonController extends AbstractController
     /**
      * DO NOT use always_guest_inline=true on this or we risk cache alert messages to guests.
      *
+     * @Tag(name="agent_bar", esi=true)
+     */
+    public function agentBarAction(TagRequest $tag_request)
+    {
+        //
+        // AGENT IMPERSONATION
+        //
+        $agent            = null;
+        $impersonation_on = false;
+        if ($token = $this->get('security.token_storage')->getToken()) {
+            if ($token instanceof AgentImpersonateToken) {
+                $agent_id         = $token->getAttribute(AgentImpersonateToken::ATTR_AGENT_IMPERSONATE);
+                $agent            = $this->getPersonDataService()->getPerson($agent_id);
+                $impersonation_on = true;
+            } else {
+                $agent = $this->getCurrentPerson();
+            }
+        }
+
+        // no bar for a non-agent
+        if (!$agent || !$agent->isAgent()) {
+            return new Response('');
+        }
+
+        return $this->renderThemeView(
+            'Theme:Common:agent_bar.html.twig',
+            array(
+                'impersonator'     => $agent,
+                'impersonation_on' => $impersonation_on,
+                'user'             => $this->getCurrentPerson(),
+            )
+        );
+    }
+
+    /**
+     * DO NOT use always_guest_inline=true on this or we risk cache alert messages to guests.
+     *
      * @Tag(name="alerts", esi=true)
      */
     public function alertsAction(TagRequest $tag_request)
@@ -78,10 +115,10 @@ class CommonController extends AbstractController
             $primary_email = $user->getPrimaryEmail();
             if (!$user->isEmailValidated()) {
                 $validation_alerts[] = array(
-                    'type'    => PersonValidator::TYPE_EMAIL_PRIMARY,
-                    'message' => $this->phrase('portal.account.validation_alert',
+                    'type'            => PersonValidator::TYPE_EMAIL_PRIMARY,
+                    'message'         => $this->phrase('portal.account.validation_alert',
                         array('email' => $user->getPrimaryEmail()->getEmail())),
-                    'resend_url' => $person_validator->getResendLink(PersonValidator::TYPE_EMAIL_PRIMARY, $primary_email),
+                    'resend_url'      => $person_validator->getResendLink(PersonValidator::TYPE_EMAIL_PRIMARY, $primary_email),
                 );
             } elseif (!$user->isAgentValidated()) {
                 $validation_alerts[] = array(
@@ -98,27 +135,16 @@ class CommonController extends AbstractController
         if ($user && $validating_emails = $this->getEmailDataService()->getValidatingEmails($user)) {
             foreach ($validating_emails as $validating_email) {
                 $validation_alerts[] = array(
-                    'type'    => PersonValidator::TYPE_EMAIL,
-                    'message' => $this->phrase('portal.account.validation_alert_extra_email',
+                    'type'            => PersonValidator::TYPE_EMAIL,
+                    'message'         => $this->phrase('portal.account.validation_alert_extra_email',
                         array('email' => $validating_email->getEmail())),
-                    'resend_url' => $person_validator->getResendLink(
+                    'resend_url'      => $person_validator->getResendLink(
                         PersonValidator::TYPE_EMAIL,
                         $validating_email,
                         null,
                         true
                     ),
                 );
-            }
-        }
-
-        //
-        // AGENT IMPERSONATION
-        //
-        $agent = null;
-        if ($token = $this->get('security.token_storage')->getToken()) {
-            if ($token instanceof AgentImpersonateToken) {
-                $agent_id = $token->getAttribute(AgentImpersonateToken::ATTR_AGENT_IMPERSONATE);
-                $agent    = $this->getPersonDataService()->getPerson($agent_id);
             }
         }
 
@@ -155,10 +181,9 @@ class CommonController extends AbstractController
             }
         }
 
-        $should_display = count($saved_forms) || $agent || count($validation_alerts) || $lang_diff;
+        $should_display = count($saved_forms) || count($validation_alerts) || $lang_diff;
 
         return $this->renderThemeView('Theme:Common:alerts.html.twig', array(
-            'impersonator'      => $agent,
             'user'              => $user,
             'saved_forms'       => $saved_forms,
             'validation_alerts' => $validation_alerts,

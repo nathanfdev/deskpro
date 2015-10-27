@@ -26,36 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * deskpro.
- *
- * @author Denis Ranneft (aka Immortal) <denis@ranneft.ru>
- * Date: 11.09.15
- * Time: 20:58
- */
+namespace Application\InstallBundle\Upgrade\Build;
 
-namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
-
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
-
-class AgentChatMessageTransformer extends AbstractDataSerializerTransformer
+class Build1445902167 extends AbstractBuild
 {
-    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
+    public function run()
     {
-        return [
-            'id',
-            'message',
-            'metadata',
-            'person_name',
-            'status',
-            'agent_chat_id',
-            'person_id',
-            'date_created',
-        ];
-    }
-
-    public function getCustomProperties(DataTransformerRequest $transformation_request)
-    {
-        return [];
+        $this->out('Add message status');
+        $this->execMutateSql('ALTER TABLE agent_chat_message ADD `status` INT NOT NULL');
     }
 }
