@@ -69,6 +69,10 @@ body {
   line-height: 1.75em;
 }
 
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
 .world {
   padding: $world-padding;
   padding-top: 0;
@@ -1785,6 +1789,9 @@ form {
     }
   }
 }
+
+
+
 
 .with-searchbox .top-bar {
   margin-bottom: 0;
@@ -7176,4 +7183,193 @@ ul.big-button-collection {
 
 .person-avatar {
   display: inline-block;
+}
+
+// agent bar
+.deskpro-agent-top-bar-wrapper {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #35383a;
+  margin-bottom: 43px;
+  line-height: 1em;
+  z-index: 9999;
+}
+
+.deskpro-agent-top-bar {
+  max-width: 1180px;
+  margin: 0 auto;
+  height: 43px;
+  color: #fff;
+  border-bottom: 3px solid #3d77b6;
+  font-family: "Helvetica Neue", Helvetica, Arial, Sans-Serif;
+  font-size: 11px;
+  font-weight: 500;
+  a {
+    text-decoration: none;
+  }
+}
+
+.datb-user-impersonator {
+  display: inline-block;
+  height: 40px;
+  background: #2f649c;
+  color: #6e93ba;
+  text-transform: uppercase;
+  padding-left: 20px;
+  &.on {
+    color: #c1d1e1;
+  }
+
+  > span, a {
+    display: inline-block;
+    vertical-align: middle;
+    padding-top: 13px;
+    height: 40px;
+  }
+
+  span.datb-impersonated-user-email {
+    text-transform: lowercase;
+    color: #a7b4ca;
+    text-decoration: underline;
+  }
+
+  i {
+    display: inline-block;
+    font-size: 17px;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+    margin-right: 4px;
+  }
+
+  a {
+    background: #3269a4;
+    color: #fff;
+    border-left: 1px solid #3c71a9;
+    padding-left: 12px;
+    padding-right: 12px;
+    margin-left: 4px;
+    &:hover {
+      background: #2e6198;
+    }
+  }
+}
+
+.datb-dropdown-content {
+  display: block;
+  width: 250px;
+  background: #444648;
+  position: absolute;
+  left: 10px;
+  top: 10px;
+
+  ul {
+    display: block;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    color: #dadada;
+
+    i {
+      opacity: 0.5;
+      margin-right: 5px;
+    }
+    li + li {
+      border-top: 1px solid #4a4c4e;
+    }
+  }
+
+  a {
+    display: block;
+    padding: 10px;
+    color: inherit;
+    font-size: 12px;
+    text-decoration: none;
+  }
+}
+
+.datb-interface-switcher {
+  display: block;
+  height: 40px;
+  float: right;
+  color: #868889;
+  font-size: 10px;
+
+  > span {
+    display: inline-block;
+    text-transform: uppercase;
+    padding-top: 14px;
+    padding-right: 10px;
+  }
+
+  a {
+    display: inline-block;
+    vertical-align: top;
+    height: 40px;
+    color: inherit;
+    border-left: 1px solid #4a4c4e;
+    padding-left: 10px;
+    padding-right: 10px;
+
+    i {
+      display: inline-block;
+      vertical-align: middle;
+      font-size: 14px;
+      margin-right: 10px;
+      position: relative;
+      top: 4px;
+      opacity: 0.5;
+    }
+
+    .datb-button-content {
+      display: inline-block;
+      vertical-align: middle;
+      padding-top: 6px;
+      span {
+        display: block;
+      }
+      .datb-interface-button-title {
+        text-transform: uppercase;
+      }
+      .datb-interface-button-subtitle {
+        opacity: 0.5;
+      }
+    }
+
+    .datb-button-dropdown {
+      padding: 10px;
+      position: relative;
+      left: 10px;
+      &:hover {
+        opacity: 1;
+        color: #fff;
+      }
+    }
+
+    &:hover .datb-button-content .datb-interface-button-title {
+      color: #fff;
+    }
+  }
+
+  .datb-edit-context {
+    display: inline-block;
+    vertical-align: top;
+    background: #2f649c;
+    color: #fff;
+    a {
+      color: inherit;
+    }
+    a:hover i {
+      color: #fff;
+      opacity: 1
+    }
+    i {
+      opacity: 0.5;
+      top: 13px;
+      left: 5px;
+    }
+  }
 }
