@@ -38,7 +38,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this._initOtherSection();
 		this._initCcSelection();
 		this._initLabels();
-    this._initDraft();
 
 		this.meta.person_api_data = {};
 
@@ -493,6 +492,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			-1 == $problems.val() ? $title.show() : $title.hide();
 		});
 
+    this._initDraft();
 	},
 
   addSignature: function() {
@@ -983,6 +983,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		var placeUserRow = function(html) {
 			self.placeUserRow(html);
+      self.draft.save();
 		};
 
 		searchbox.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
@@ -1090,7 +1091,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		self.getEl('choose_user').hide();
 		rechooseBtn.show();
-		searchbox.hide();
+		searchbox.data('handler').close();
 		userfields.show();
 
 		var apiData = userfields.find('.api_data');
@@ -1729,7 +1730,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			},
 			save: function () {
 				this.set(self.getEl('newticket').serializeArray());
-        console.info(this.get());
         $discard.show();
 			},
 			reset: function () {
@@ -1737,6 +1737,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         data.forEach(function(el, i){
           $('[name="' + el.name + '"]', $form).val('').trigger('change', true);
         });
+
+        var $btn = self.getEl('switch_user');
+        if ($btn.is(':visible')) {
+          $btn.trigger('click');
+        }
+
 				window.localStorage.removeItem(this.key());
         $discard.hide();
 			},
@@ -1779,8 +1785,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
     d.get().forEach(function(el, i){
 
-      console.info(el.name, ': ', el.value);
       (function(el){
+
+        if ('newticket[person][id]' === el.name && el.value) {
+          return self.setUser(el.value);
+        }
+
         $('[name="' + el.name + '"]', $form).each(function() {
 
           if ($(this).is(':checkbox') || $(this).is(':radio')) {
@@ -1797,6 +1807,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
     });
 
-    d.isEmpty() ? $discard.show() : $discard.hide();
+    d.isEmpty() ? $discard.hide() : $discard.show();
 	}
 });
