@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
 use Application\DeskPRO\Entity\Person as PersonEntity;
@@ -103,6 +104,34 @@ class AgentChat extends EntityRepository
             ->andWhere('ac.type = :type')
             ->setParameter('department_id', $department_id)
             ->setParameter('type', 'department');
+
+        $results = $qb->getQuery()->getResult();
+
+        return $results;
+    }
+
+    public function findEveryoneChat()
+    {
+        $qb = $this->createQueryBuilder('ac');
+        $qb->andWhere('ac.type = :type')
+            ->setParameter('type', 'everyone');
+
+        $results = $qb->getQuery()->getResult();
+
+        return $results;
+    }
+
+    public function findAllChats(array $ids, array $order)
+    {
+        $qb = $this->createQueryBuilder('ac');
+        $qb->andWhere('ac.id IN (:ids)')
+            ->orWhere('ac.type = :type')
+            ->setParameter('ids', $ids)
+            ->setParameter('type', 'everyone');
+
+        foreach ($order as $sort => $direction) {
+            $qb->addOrderBy('ac.'.$sort, $direction);
+        }
 
         $results = $qb->getQuery()->getResult();
 

@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { DepartmentAvatar, PersonAvatar, AgentTeamAvatar } from '../../../Common/Components/Avatar/index';
+import { Avatar, DepartmentAvatar, PersonAvatar, AgentTeamAvatar } from '../../../Common/Components/Avatar/index';
 export class Item extends React.Component {
 
   static propTypes = {
@@ -51,6 +51,16 @@ export class Item extends React.Component {
           elementId: 'chat-with-' + this.props.chat.get('chat_type') + '-' + department.get('id')
         };
         break;
+      case 'everyone':
+        entity = {
+          avatar: this.renderEveryoneAvatar(),
+          bubble: this.renderBubble(chat),
+          name: 'Everyone',
+          id: chat.get('id'),
+          type: chat.get('chat_type'),
+          elementId: 'chat-with-' + this.props.chat.get('chat_type')
+        };
+        break;
       default:
         break;
     }
@@ -58,15 +68,27 @@ export class Item extends React.Component {
   };
 
   renderPersonAvatar(person) {
-    return <PersonAvatar person={person} size="22" />;
+    return <PersonAvatar person={person} size="22"/>;
   }
 
   renderTeamAvatar(team) {
-      return <AgentTeamAvatar agentTeam={team} size="22" />;
+    return <AgentTeamAvatar agentTeam={team} size="22"/>;
   }
 
   renderDepartmentAvatar(department) {
-    return <DepartmentAvatar department={department} size="22" />;
+    return <DepartmentAvatar department={department} size="22"/>;
+  }
+
+  renderEveryoneAvatar() {
+    const props = {
+      size: 22,
+      color: '#DD00AA',
+      urlPattern: null,
+      gravatar: null,
+      fallbackText: 'E'
+    };
+
+    return <Avatar {...props} />;
   }
 
   renderBubble(chat) {
