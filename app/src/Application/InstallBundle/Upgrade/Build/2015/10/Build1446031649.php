@@ -32,7 +32,6 @@ class Build1446031649 extends AbstractBuild
 {
     public function run()
     {
-        $this->out('Remove old automated testing script');
-        @unlink(DP_ROOT.'/sys/scripts/testfile.php');
+        //noop
     }
 }
