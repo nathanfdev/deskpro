@@ -112,11 +112,9 @@ export class Avatar extends React.Component {
 
           {tmpPath && (
             <Cropper
-            ref="cropper"
-            src={tmpPath}
-            style={{height: 200, width: '100%'}}
-            aspectRatio={16 / 9}
-            guides={false} />
+              ref="cropper"
+              src={tmpPath}
+              style={{height: 200, width: '100%'}} />
           )}
         </div>
 
