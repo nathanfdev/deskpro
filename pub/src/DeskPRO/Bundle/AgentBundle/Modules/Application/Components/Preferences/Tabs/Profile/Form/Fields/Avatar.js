@@ -186,7 +186,7 @@ export class Avatar extends React.Component {
       <div className="bucket-column-last">
         <a href="#" className="button button-secondary user-avatar" onClick={this.onToggleEdit}>
           {this.getImagePath() && (
-            <span className="icon"><img src={this.getImagePath()} width="20" height="20"/></span>
+            <span className="icon" style={{backgroundImage: 'url(' + this.getImagePath() + ')'}}/>
           )}
           Manage Avatar
         </a>
