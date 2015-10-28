@@ -118,10 +118,16 @@ export class Avatar extends React.Component {
     });
   };
 
-  renderUploader() {
-    const tmpPath = this.state.tmpFilePath;
-    const tmpFile = this.state.tmpFile;
+  getImagePath() {
+    const currentPath = this.props.value;
     const croppedPath = this.state.croppedPath;
+
+    return croppedPath || currentPath;
+  }
+
+  renderUploader() {
+    const tmpFile = this.state.tmpFile;
+    const tmpPath = this.state.tmpFilePath;
     const error = this.state.error;
     const djsConfig = {
       autoQueue: false,
@@ -149,8 +155,8 @@ export class Avatar extends React.Component {
                              }}
                              djsConfig={djsConfig}>
             <div className="dz-message">
-              {this.props.value
-                ? (<img src={croppedPath || this.props.value} />)
+              {this.getImagePath()
+                ? (<img src={this.getImagePath()} />)
                 : (<span>Drag and drop a photo here or click to browse.</span>)}
             </div>
           </DropzoneComponent>
@@ -179,7 +185,9 @@ export class Avatar extends React.Component {
     return (
       <div className="bucket-column-last">
         <a href="#" className="button button-secondary user-avatar" onClick={this.onToggleEdit}>
-          <span className="icon"></span>
+          {this.getImagePath() && (
+            <span className="icon"><img src={this.getImagePath()} width="20" height="20"/></span>
+          )}
           Manage Avatar
         </a>
         {this.state.edit && this.renderUploader()}
