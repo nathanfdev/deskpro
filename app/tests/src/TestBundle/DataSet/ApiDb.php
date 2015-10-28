@@ -33,7 +33,6 @@ namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Feedback;
@@ -103,12 +102,11 @@ class ApiDb extends AbstractDbSet
         );
 
         // this will be refactored into a better "entity creator" once the api data set needs more elaborate data
-        // we need a brand and some deps, and some other entities
+        // we need some deps, and some other entities
         $dep1              = new Department();
         $dep1->title       = 'sales';
         $dep2              = new Department();
         $dep2->title       = 'support';
-        $brand             = new Brand();
         $team              = new AgentTeam();
         $team->name        = 'test team';
         $ticket_def        = new CustomDefTicket();
@@ -141,7 +139,6 @@ class ApiDb extends AbstractDbSet
         $em->persist($team);
         $em->persist($dep1);
         $em->persist($dep2);
-        $em->persist($brand);
         $em->persist($task);
         $em->persist($taskAssignment);
         $em->persist($unassignedTask);
