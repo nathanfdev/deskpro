@@ -60,9 +60,6 @@ Feature: /feedback/ endpoint
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data" should have 4 elements
-#    And the JSON node "data[0].type" should be equal to "Test feedback category 1"
-#    And the JSON node "data[1].type" should be equal to "Test feedback category 1"
-#    And the JSON node "data[2].type" should be equal to "Test feedback category 1"
     And the JSON node "meta" should exist
     And the JSON node "meta.pagination" should exist
     And the JSON node "meta.pagination.count" should be equal to 4
@@ -70,7 +67,6 @@ Feature: /feedback/ endpoint
   Scenario: I GET list of feedback tagged with one label
     When I send a GET request to "/api/v2/feedback/?custom_category=Linux"
     Then the response should be in JSON
-#   And print last JSON response
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data" should have 2 elements
@@ -82,7 +78,6 @@ Feature: /feedback/ endpoint
     When I send a GET request to "/api/v2/feedback/?no_labels=1"
     Then the response should be in JSON
     And the response status code should be 200
-#    And print last JSON response
     And the JSON node "data" should exist
     And the JSON node "data" should have 4 elements
     And the JSON node "meta" should exist
@@ -93,7 +88,6 @@ Feature: /feedback/ endpoint
     When I send a GET request to "/api/v2/feedback/?created_from=2015-08-01"
     Then the response should be in JSON
     And the response status code should be 200
-    And print last JSON response
     And the JSON node "data" should exist
     And the JSON node "data" should have 3 elements
     And the JSON node "meta" should exist
