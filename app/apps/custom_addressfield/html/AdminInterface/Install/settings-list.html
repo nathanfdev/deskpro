@@ -1,0 +1,22 @@
+<div class="form-group">
+    <div class="col-lg-4">
+        <h3>{{ definitions.custom_field.label }}</h3>
+    </div>
+    <div class="col-lg-8" dp-hide-spinning="loadingFields">
+        <select ng-model="setting_values.custom_field" ui-select2 style="width: 300px;" ng-if="definitions.custom_field.options.length">
+            <option ng-repeat="option in definitions.custom_field.options" value="{{ option.value }}">{{ option.label }}</option>
+        </select>
+		<span class="help-block">
+			<span ng-if="definitions.custom_field.options.length">
+				Select the custom textarea field that will be used to store the address.
+				You can create fields from the <a href="#/tickets/fields">Ticket > Fields</a> section.
+			</span>
+			<span ng-if="!definitions.custom_field.options.length">
+				You need to create custom textarea field from the <a href="#/tickets/fields">Ticket > Fields</a> section.
+			</span>
+		</span>
+    </div>
+	<div dp-show-spinning="loadingFields">
+		<i class="spinner-flat"></i>
+	</div>
+</div>
