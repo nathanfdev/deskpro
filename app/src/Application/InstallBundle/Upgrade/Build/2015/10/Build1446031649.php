@@ -26,4 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1446031649);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1446031649 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('Remove old automated testing script');
+        @unlink(DP_ROOT.'/sys/scripts/testfile.php');
+    }
+}
