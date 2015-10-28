@@ -1227,12 +1227,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 		/****************** new_ticket drafts ***************/
 		for (var i = 0; i < window.localStorage.length; i++){
 			var key = window.localStorage.key(i);
-			if ('drafts.ticket-' !== key.substr(0, 14)) continue;
+			if ('drafts.new-ticket-' !== key.substr(0, 18)) continue;
 
 			(function(key){
 				DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/tickets/new', {
 					openCallback: function(page) {
-						page.meta.draftKey = key;
+						page.draft._key = key;
+						page.draft.load();
 					},
 					ignoreExist: true
 				});
