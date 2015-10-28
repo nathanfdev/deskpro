@@ -15,6 +15,7 @@ export class Avatar extends React.Component {
     this.state = {
       tmpFile: null,
       tmpFilePath: null,
+      croppedPath: null,
       edit: false,
       error: null
     };
@@ -42,6 +43,7 @@ export class Avatar extends React.Component {
     this.setState({
       tmpFile: null,
       tmpFilePath: null,
+      croppedPath: null,
       edit: false,
       error: null
     });
@@ -71,7 +73,7 @@ export class Avatar extends React.Component {
     });
 
     this.setState({
-      tmpFilePath: blobUrl
+      croppedPath: blobUrl
     });
 
     dropzone.addFile(croppedFile);
@@ -82,6 +84,7 @@ export class Avatar extends React.Component {
   onSuccess = (file, response) => {
     this.setState({
       tmpFile: null,
+      tmpPath: null,
       edit: false,
       error: null
     });
@@ -118,9 +121,9 @@ export class Avatar extends React.Component {
   renderUploader() {
     const tmpPath = this.state.tmpFilePath;
     const tmpFile = this.state.tmpFile;
+    const croppedPath = this.state.croppedPath;
     const error = this.state.error;
     const djsConfig = {
-      addRemoveLinks: true,
       autoQueue: false,
       maxFiles: 1,
       previewsContainer: false
@@ -147,7 +150,7 @@ export class Avatar extends React.Component {
                              djsConfig={djsConfig}>
             <div className="dz-message">
               {this.props.value
-                ? (<img src={tmpPath || this.props.value} />)
+                ? (<img src={croppedPath || this.props.value} />)
                 : (<span>Drag and drop a photo here or click to browse.</span>)}
             </div>
           </DropzoneComponent>
