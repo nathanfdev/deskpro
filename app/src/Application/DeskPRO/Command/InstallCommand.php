@@ -37,10 +37,12 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
 use Application\InstallBundle\Data\DefaultDataProcessor;
+use Doctrine\Common\Util\Debug;
 use Doctrine\DBAL\DBALException;
 use Monolog\Logger;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -291,6 +293,24 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             'name'  => 'core.install_via_cmd',
             'value' => 1,
         ));
+
+        $this->loadFixtures($output);
+    }
+
+    private function loadFixtures($output)
+    {
+        $output->writeln('Executing fixtures...');
+
+        $app   = $this->getApplication();
+        $input = new ArrayInput(array(
+            'command'          => 'doctrine:fixtures:load',
+            '--fixtures'       => 'app/src/DeskPRO/Bundle/AppBundle/DataFixtures/ORM',
+            '--no-interaction' => true,
+            '--append'         => true,
+        ));
+        $returnCode = $app->doRun($input, $output);
+
+        $output->writeln('Fixtures exit code: '.$returnCode);
     }
 
     private function createDatabase()

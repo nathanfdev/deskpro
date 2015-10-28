@@ -28,54 +28,46 @@
 
 /**
  * DeskPRO.
- *
- * @category Entities
  */
-namespace DeskPRO\Bundle\AppBundle\Entity;
+namespace DeskPRO\Bundle\AppBundle\DataFixtures;
 
-use Application\DeskPRO\Entity\TicketFlagged;
+use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\Persistence\ObjectManager;
+use Faker\Factory;
+use Faker\ORM\Doctrine\Populator;
 
-class TicketStar extends TicketFlagged
+abstract class DpFixture implements FixtureInterface
 {
-    private static $id_color_hex_map = array(
-        self::STAR_BLUE   => '#0000FF',
-        self::STAR_GREEN  => '#008000',
-        self::STAR_ORANGE => '#FFA500',
-        self::STAR_PINK   => '#FFC0CB',
-        self::STAR_PURPLE => '#800080',
-        self::STAR_RED    => '#FF0000',
-        self::STAR_YELLOW => '#FFFF00',
-    );
+    /**
+     * @var \Faker\Generator
+     */
+    protected $faker;
 
     /**
-     * @param int $id
-     *
-     * @return string
+     * DpFixture constructor.
      */
-    public static function idToColorLabel($id)
+    public function __construct()
     {
-        return ucfirst(self::idToColorName($id));
+        $this->faker = Factory::create();
     }
 
-    /**
-     * @param int $id
-     *
-     * @return string
-     */
-    public static function idToColorHex($id)
+    protected function populate(ObjectManager $manager, array $specs)
     {
-        if (!isset(self::$id_color_hex_map[$id])) {
-            throw new \InvalidArgumentException();
+        $generator = $this->faker;
+        $populator = new Populator($generator, $manager);
+        foreach ($specs as $spec) {
+            if (count($spec) < 2) {
+                throw new \Exception('Each data spec within array passed to the populate() must have at least two
+                                      elements: entity class and number of fake entries to generate');
+            }
+            $populator->addEntity(
+                $spec[0],
+                $spec[1],
+                array_key_exists(2, $spec) ? $spec[2] : [],
+                array_key_exists(3, $spec) ? $spec[3] : []
+            );
         }
 
-        return self::$id_color_hex_map[$id];
-    }
-
-    /**
-     * @return array
-     */
-    public static function getAll()
-    {
-        return self::$id_color_map;
+        return $populator->execute();
     }
 }

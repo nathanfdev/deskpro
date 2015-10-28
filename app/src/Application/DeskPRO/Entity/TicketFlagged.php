@@ -49,7 +49,7 @@ class TicketFlagged extends \Application\DeskPRO\Domain\DomainObject
     const STAR_RED    = 6;
     const STAR_YELLOW = 7;
 
-    private static $id_color_map = array(
+    protected static $id_color_map = array(
         self::STAR_BLUE   => 'blue',
         self::STAR_GREEN  => 'green',
         self::STAR_ORANGE => 'orange',
@@ -59,7 +59,7 @@ class TicketFlagged extends \Application\DeskPRO\Domain\DomainObject
         self::STAR_YELLOW => 'yellow',
     );
 
-    private static $color_map = array(
+    protected static $color_map = array(
         'blue'   => self::STAR_BLUE,
         'green'  => self::STAR_GREEN,
         'orange' => self::STAR_ORANGE,
