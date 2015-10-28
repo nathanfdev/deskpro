@@ -43,6 +43,12 @@ export class Avatar extends React.Component {
   };
 
   onSave = () => {
+    const dropzone = this.refs.dropzoneComponent.dropzone;
+
+    if (dropzone.getUploadingFiles().length) {
+      return;
+    }
+
     const cropper = this.refs.cropper;
     const blobUrl = cropper.getCroppedCanvas().toDataURL();
     const byteString = atob(blobUrl.split(',')[1]);
@@ -54,7 +60,6 @@ export class Avatar extends React.Component {
     }
 
     const file = this.state.tmpFile;
-    const dropzone = this.refs.dropzoneComponent.dropzone;
     const blob = new Blob([ab]);
     const croppedFile = new File([blob], file.name, {
       cropped: true
@@ -83,15 +88,16 @@ export class Avatar extends React.Component {
     file.status = Dropzone.ADDED;
     file.accepted = true;
 
+    let message;
     if (response && response.error) {
-      this.setState({
-        error: response.error.message
-      });
+      message = response.error.message;
     } else {
-      this.setState({
-        error: 'An unknown error has occurred while uploading, please re-try again.'
-      });
+      message = 'An unknown error has occurred while uploading, please re-try again.';
     }
+
+    this.setState({
+      error: message
+    });
   };
 
   onEdit = () => {
