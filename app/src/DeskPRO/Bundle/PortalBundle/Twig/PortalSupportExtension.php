@@ -292,7 +292,7 @@ class PortalSupportExtension extends \Twig_Extension
             }
         }
 
-        return true;
+        return false;
     }
 
     /**
