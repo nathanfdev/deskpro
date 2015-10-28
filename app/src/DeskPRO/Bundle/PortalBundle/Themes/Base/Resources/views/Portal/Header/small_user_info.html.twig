@@ -17,6 +17,46 @@
                   class="fa fa-caret-down"></i></a>
 
         <div class="active-button-dropdown language-dropdown" id="top-login-dropdown" style="min-width:300px;">
+            {#<div class="small-form">#}
+              {#<form action="/login/authenticate-password" method="post" id="login-sidebar">#}
+                {#<input type="hidden" name="_failure_path" value="/en/login?retry=auth">#}
+                {#<label>#}
+                  {#<span>Your email</span>#}
+                  {#<input type="text" tabindex="2" placeholder="email@example.com"#}
+                         {#name="username">#}
+                {#</label>#}
+
+                {#<label>#}
+                  {#<span>Your password</span>#}
+                  {#<input type="password" tabindex="2" placeholder="Your password"#}
+                         {#name="password">#}
+                {#</label>#}
+
+                {#<label class="error">#}
+                  {#<div class="message">This is a password error</div>#}
+                  {#<span>Your password</span>#}
+                  {#<input type="password" tabindex="2" placeholder="Your password"#}
+                         {#name="password">#}
+                {#</label>#}
+
+                {#<div class="permanent-login">#}
+                  {#<label><input tabindex="2" type="checkbox" name="remember_me"> Stay Logged In?</label>#}
+                {#</div>#}
+
+                {#<button type="submit" tabindex="2">Login</button>#}
+
+                {#<div class="secondary-action">#}
+                  {#<a href="/en/login/reset-password">Need a password reminder?</a>#}
+                {#</div>#}
+              {#</form>#}
+
+              {#<a href="/login/authenticate/3" class="button auth-facebook"><i#}
+                        {#class="fa fa-facebook"></i> Login#}
+                {#with Facebook</a>#}
+
+            {#</div>#}
+          {#</div>#}
+        {#</div>#}
           <div class="small-form">
             {% if show_login_form %}
               <form action="{{ path('portal_login_submit') }}" method="post" id="login-sidebar">
@@ -33,7 +73,7 @@
 
                 {% if show_remember_me %}
                   <div class="permanent-login">
-                    <label>{{ phrase('portal.account.login-remember') }} <input tabindex="2" type="checkbox" name="remember_me"></label>
+                    <label><input tabindex="2" type="checkbox" name="remember_me"> {{ phrase('portal.account.login-remember') }}</label>
                   </div>
                 {% endif %}
 
