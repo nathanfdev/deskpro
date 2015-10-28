@@ -1,3 +1,4 @@
+{% import 'Theme::icons.html.twig' as icons %}
 {% if pager|length %}
   <ul>
     {% for item in pager %}
@@ -17,6 +18,13 @@
       </li>
     {% endfor %}
   </ul>
+  {% if show_category_link %}
+    <div class="list-meta">
+      <a href="{{ category ? portal_path(category) : path('portal_news') }}">
+        {{ phrase('portal.news.view-x-news', {count: pager|length}) }}{{ icons.view_more() }}
+      </a>
+    </div>
+  {% endif %}
   {% if show_pager %}
     {% show news_pager %}
   {% endif %}

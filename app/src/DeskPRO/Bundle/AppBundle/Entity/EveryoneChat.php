@@ -27,27 +27,24 @@
  */
 
 /**
- * DeskPRO.
+ * DeskPRO. Just a stub to handle everyone chat.
+ *
+ * @category Entities
  */
 
-namespace DeskPRO\Bundle\AppBundle\AgentChat\Interfaces;
+namespace DeskPRO\Bundle\AppBundle\Entity;
 
-/**
- * Interface Chatable.
- */
-interface Chatable
+use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
+
+class EveryoneChat implements Chatable
 {
-    const PARTICIPANT_TYPE_AGENT      = 'agent';
-    const PARTICIPANT_TYPE_TEAM       = 'team';
-    const PARTICIPANT_TYPE_DEPARTMENT = 'department';
+    public function getChatableType()
+    {
+        return Chatable::PARTICIPANT_TYPE_EVERYONE;
+    }
 
-    const PARTICIPANT_TYPE_EVERYONE = 'everyone';
-    const PARTICIPANT_TYPE_GROUP    = 'group';
-
-    /**
-     * @return int
-     */
-    public function getChatableType();
-
-    public function getId();
+    public function getId()
+    {
+        return 0;
+    }
 }

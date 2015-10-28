@@ -1,7 +1,6 @@
 import React from 'react';
 import TaskFilterHover from '../Components/TaskFilterHover';
 import TaskOrderHover from '../Components/TaskOrderHover';
-import ComponentRootWrapper from 'DeskPRO/Component/ComponentRootWrapper';
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameMenu';
 import TaskControlsViewSwitcher from '../Components/TaskControlsViewSwitcher';
@@ -85,8 +84,9 @@ export default class TaskControls extends React.Component {
     return (
       <ListFrameMenu ref="ticketControlBar">
 
-        <MassActionCheckbox count={count} massAction={(actionable > 0)} onClick={toggleAllMassActions.bind(this)}/>
-
+        { this.props.view !== 'calendar' ?
+          <MassActionCheckbox count={count} massAction={(actionable > 0)} onClick={toggleAllMassActions.bind(this)}/>
+        : '' }
         <li>
           <a href="#" ref="orderButton" className="dpwd-navigation-dropdown-top-row-button"
              onClick={this.toggleShowOrder.bind(this)}>
@@ -122,7 +122,7 @@ export default class TaskControls extends React.Component {
             </span>
           </a>
 
-          <ComponentRootWrapper open={this.state.showWindow}>
+          <Positioned isOpen={this.state.showWindow}>
             <TaskFilterHover
               position={this.state.position}
               applyFilter={this.applyFilter.bind(this)}
@@ -134,7 +134,7 @@ export default class TaskControls extends React.Component {
               closeWindow={this.closeWindow.bind(this)}
               taskFilter={this.props.taskFilter}
               />
-          </ComponentRootWrapper>
+          </Positioned>
         </li>
         <li>
           <hr/>

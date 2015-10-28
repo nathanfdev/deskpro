@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;
 use League\Url\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -93,6 +94,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('is_user', array($this, 'isUser')),
             new \Twig_SimpleFunction('is_agent', array($this, 'isAgent')),
             new \Twig_SimpleFunction('is_admin', array($this, 'isAdmin')),
+            new \Twig_SimpleFunction('is_impersonating', array($this, 'isImpersonating')),
             new \Twig_SimpleFunction('is_guest', array($this, 'isGuest')),
             new \Twig_SimpleFunction('is_page_*', array($this, 'pageIsCheck')),
             new \Twig_SimpleFunction('col_count', array($this, 'countTruthy')),
@@ -273,6 +275,24 @@ class PortalSupportExtension extends \Twig_Extension
         }
 
         return $person->is_agent && $person->can_admin;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isImpersonating()
+    {
+        if ($token = $this->container->get('security.token_storage')->getToken()) {
+            if ($token instanceof AgentImpersonateToken) {
+                // perhaps another twig function will want to get the impersonator agent,
+                // can do that something like this:
+                //$agent_id = $token->getAttribute(AgentImpersonateToken::ATTR_AGENT_IMPERSONATE);
+                //$agent = $this->getPersonDataService()->getPerson($agent_id);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

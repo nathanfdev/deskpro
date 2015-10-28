@@ -1476,7 +1476,11 @@ for ($i = 0; $i < 15; ++$i) {
 // these are inserted already
 $DEFAULT_IDEA_CAT = $em->getRepository('DeskPRO:FeedbackCategory')->find(1);
 $FEEDBACK_FEATURE = $em->getRepository('DeskPRO:FeedbackCategory')->find(2);
-$FEEDBACK_BUG     = $em->getRepository('DeskPRO:FeedbackCategory')->find(3);
+$FEEDBACK_FEATURE->addUsergroup($USERGROUP_EVERYONE);
+$FEEDBACK_BUG = $em->getRepository('DeskPRO:FeedbackCategory')->find(3);
+$FEEDBACK_BUG->addUsergroup($USERGROUP_EVERYONE);
+$em->flush($FEEDBACK_FEATURE);
+$em->flush($FEEDBACK_BUG);
 
 if (!function_exists('rand_fb_status_pair')) {
     function rand_fb_status_pair(\Doctrine\ORM\EntityManager $em)

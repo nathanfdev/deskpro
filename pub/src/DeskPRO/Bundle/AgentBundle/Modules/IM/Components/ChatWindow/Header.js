@@ -84,6 +84,10 @@ export class Header extends React.Component {
         text = departments.getIn([current.departments[0], 'title']);
         render = this.wrapHeaderText(text);
         break;
+      case 'everyone':
+        text = 'everyone';
+        render = this.wrapHeaderText(text);
+        break;
       default:
         render = <Spinner width="20" height="20" />;
     }

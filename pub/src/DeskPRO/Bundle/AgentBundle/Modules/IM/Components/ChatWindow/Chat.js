@@ -31,7 +31,7 @@ export class Chat extends React.Component {
     this.state = {
       searchQuery: '',
       searchTyped: '',
-      searchShown: false,
+      searchShown: false
     };
   }
 
@@ -48,7 +48,8 @@ export class Chat extends React.Component {
     this.setState(newState);
   };
 
-  handleSearch = () => {
+  handleSearch = (event) => {
+    event.preventDefault();
     const oldState = this.state;
     const newState = {...oldState};
     newState.searchQuery = oldState.searchTyped;

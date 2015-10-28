@@ -100,8 +100,6 @@ data/encryption-key.bin.*
 /web/stylesheets/report
 /app/sys/config/changed-files.php
 /app/sys/logs/dev.log
-routing.php
-serve.sh
 /log
 
 # Place devs can use as scratch space

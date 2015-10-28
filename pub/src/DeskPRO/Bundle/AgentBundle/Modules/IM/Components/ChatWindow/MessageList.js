@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
 import { Message } from './Message';
-import { loadMessages, markMessages } from '../../Actions/messagesActions';
+import { loadMessages, markMessages, refreshCounts } from '../../Actions/messagesActions';
 import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
@@ -30,7 +30,7 @@ export class MessageList extends React.Component {
     const ids = [];
     const messages = this.props.messages.getIn(['chatMessages', this.props.current.id]) || [];
     messages.map((message) => {
-      if (message.status < 1) {
+      if (message.status < 1 && message.person_id !== this.props.me.get('id')) {
         ids.push(message.id);
       }
     });
@@ -42,14 +42,17 @@ export class MessageList extends React.Component {
   componentDidMount() {
     this.props.dispatch(loadAllAgents());
     this.refresh();
-    const interval = setInterval(this.refresh, 1000);
+    const interval = setInterval(this.refresh, 5000);
+    const countsInterval = setInterval(() => this.props.dispatch(refreshCounts()), 5000);
     this.state = {
-      interval: interval
+      interval: interval,
+      countsInterval: countsInterval
     };
   }
 
   componentWillUnmount() {
     clearInterval(this.state.interval);
+    clearInterval(this.state.countsInterval);
   }
 
   componentWillReceiveProps(newProps) {
@@ -71,11 +74,11 @@ export class MessageList extends React.Component {
   };
 
   controls = () => {
-    return <div className="chat-controls"><a href="#">Load old messages</a><a onClick={this.refresh} href="#">Refresh</a></div>;
+    return <div className="chat-controls"><a href="#">Load old messages</a></div>;
   };
 
   refresh = () => {
-    this.props.dispatch(loadMessages(this.props.current.id));
+    this.props.dispatch(loadMessages(this.props.current.id, this.props.searchQuery));
     this.markNewMessages();
   };
 

@@ -3,6 +3,7 @@ import Formsy from 'formsy-react';
 import FRC from '../../../../../Component/FormComponents/main.js';
 import $ from 'jquery';
 import Immutable from 'immutable';
+import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
 
 const ProjectCreateHover = React.createClass({
 
@@ -259,45 +260,57 @@ const ProjectCreateHover = React.createClass({
                 <div className="dpmw--popup-content-of-three">
                   <h1 className="dpw--popup-item-collection-title">Agent <a href="#" onClick={this.assignSelf}>Assign to me</a></h1>
                   <div className="dpw--popup-item-collection">
-                    {this.props.agentList ? <FRC.CheckboxGroupDeskPRO
-                      name="agents"
-                      label="Agent"
-                      options={this.filterAssignees(this.props.agentList, 'agents', this.state.filterValue, this.state.filterSelected)}
-                      value={this.state.selected && this.state.selected.agents ? this.state.selected.agents : []}
-                      ref="agentSelect"
-                      onChange={this.updateAssignment}
-                      multiple
-                      /> : ''}
+                    <div className="dpw--assignment-scrollable-container">
+                      <Scrollable vertical>
+                        {this.props.agentList ? <FRC.CheckboxGroupDeskPRO
+                          name="agents"
+                          label="Agent"
+                          options={this.filterAssignees(this.props.agentList, 'agents', this.state.filterValue, this.state.filterSelected)}
+                          value={this.state.selected && this.state.selected.agents ? this.state.selected.agents : []}
+                          ref="agentSelect"
+                          onChange={this.updateAssignment}
+                          multiple
+                          /> : ''}
+                      </Scrollable>
+                    </div>
                   </div>
                 </div>
 
                 <div className="dpmw--popup-content-of-three">
                   <h1 className="dpw--popup-item-collection-title">Team</h1>
                   <div className="dpw--popup-item-collection">
-                    {this.props.teamList ? <FRC.CheckboxGroupDeskPRO
-                      name="teams"
-                      label="Team"
-                      options={this.filterAssignees(this.props.teamList, 'teams', this.state.filterValue, this.state.filterSelected)}
-                      value={this.state.selected && this.state.selected.teams ? this.state.selected.teams : []}
-                      ref="teamSelect"
-                      onChange={this.updateAssignment}
-                      multiple
-                      /> : ''}
+                    <div className="dpw--assignment-scrollable-container">
+                      <Scrollable vertical>
+                        {this.props.teamList ? <FRC.CheckboxGroupDeskPRO
+                          name="teams"
+                          label="Team"
+                          options={this.filterAssignees(this.props.teamList, 'teams', this.state.filterValue, this.state.filterSelected)}
+                          value={this.state.selected && this.state.selected.teams ? this.state.selected.teams : []}
+                          ref="teamSelect"
+                          onChange={this.updateAssignment}
+                          multiple
+                          /> : ''}
+                      </Scrollable>
+                    </div>
                   </div>
                 </div>
 
                 <div className="dpmw--popup-content-of-three">
                   <h1 className="dpw--popup-item-collection-title">Department</h1>
                   <div className="dpw--popup-item-collection">
-                    {this.props.departmentList ? <FRC.CheckboxGroupDeskPRO
-                      name="departments"
-                      label="Department"
-                      options={this.filterAssignees(this.props.departmentList, 'departments', this.state.filterValue, this.state.filterSelected)}
-                      value={this.state.selected && this.state.selected.departments ? this.state.selected.departments : []}
-                      ref="departmentSelect"
-                      onChange={this.updateAssignment}
-                      multiple
-                      /> : ''}
+                    <div className="dpw--assignment-scrollable-container">
+                      <Scrollable vertical>
+                        {this.props.departmentList ? <FRC.CheckboxGroupDeskPRO
+                          name="departments"
+                          label="Department"
+                          options={this.filterAssignees(this.props.departmentList, 'departments', this.state.filterValue, this.state.filterSelected)}
+                          value={this.state.selected && this.state.selected.departments ? this.state.selected.departments : []}
+                          ref="departmentSelect"
+                          onChange={this.updateAssignment}
+                          multiple
+                          /> : ''}
+                      </Scrollable>
+                    </div>
                   </div>
                 </div>
               </div>

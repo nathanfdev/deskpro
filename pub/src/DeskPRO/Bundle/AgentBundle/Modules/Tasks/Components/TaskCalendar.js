@@ -5,7 +5,7 @@ import TaskCalendarList from '../Components/TaskCalendarList';
 import TaskCardGeneric from '../Components/TaskCardGeneric';
 import TaskCalendarYearsDropdown from '../Components/TaskCalendarYearsDropdown';
 import Calendar from '../../../Services/Calendar';
-import ComponentRootWrapper from 'DeskPRO/Component/ComponentRootWrapper';
+import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import jQuery from 'jquery';
 
 export default class TaskCalendar extends React.Component {
@@ -258,7 +258,7 @@ export default class TaskCalendar extends React.Component {
       </table>
 
       <div>
-        <ComponentRootWrapper open={this.state.showWindow}>
+        <Positioned isOpen={this.state.showWindow}>
 
           <TaskCalendarList tasks={this.state.tasks}
                             dayDate={this.state.dayDate}
@@ -268,20 +268,20 @@ export default class TaskCalendar extends React.Component {
                             closeHover={this.closeHover.bind(this)}
                             dispatch={this.props.dispatch.bind(this)} />
 
-        </ComponentRootWrapper>
+        </Positioned>
       </div>
 
       <div>
-        <ComponentRootWrapper open={this.state.showYearDropdown}>
+        <Positioned isOpen={this.state.showYearDropdown}>
           <TaskCalendarYearsDropdown setYear={this.props.setYear.bind(this)}
                                      position={this.state.yearDropdownPosition}
                                      openYearDropdown={this.openYearDropdown.bind(this)}
                                      closeYearDropdown={this.closeYearDropdown.bind(this)} />
-        </ComponentRootWrapper>
+        </Positioned>
       </div>
 
       <div>
-        <ComponentRootWrapper open={this.state.showHover}>
+        <Positioned isOpen={this.state.showHover}>
           <div style={{position: 'absolute', top: this.state.hoverPosition.y, left: this.state.hoverPosition.x}}>
             {typeof this.state.task !== 'undefined' && this.state.task && this.state.task.size > 0 ?
             <TaskCardGeneric task={this.state.task}
@@ -294,7 +294,7 @@ export default class TaskCalendar extends React.Component {
                              tickets={this.props.tickets} />
             : <div />}
           </div>
-        </ComponentRootWrapper>
+        </Positioned>
       </div>
     </div>);
   }

@@ -111,13 +111,18 @@ class FeedbackDataService extends AbstractDataService
                 $types = array();
                 if (null === $requested_types) {
                     $types = $allowed_types;
-                } else {
+                } elseif (count($requested_types)) {
                     foreach ($requested_types as $req_type) {
                         if (in_array($req_type, $allowed_types)) {
                             $types[] = $req_type;
                         }
                     }
                 }
+
+                if (empty($types)) {
+                    $types = $allowed_types;
+                }
+
                 $filter->setTypes($types);
                 //
                 // end filter types

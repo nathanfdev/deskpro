@@ -42,6 +42,7 @@ use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
+use DeskPRO\Bundle\AppBundle\Entity\EveryoneChat;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChat as AgentChatRepository;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatMessage as AgentChatMessageRepository;
 use Doctrine\ORM\PersistentCollection;
@@ -129,6 +130,9 @@ class Messenger
                 /* @var Department $target */
                 return $this->createChatWithDepartment($target);
                 break;
+            case Chatable::PARTICIPANT_TYPE_EVERYONE:
+                return $this->createEveryoneChat();
+                break;
             default:
                 throw new WrongChatableTypeException();
         }
@@ -165,6 +169,11 @@ class Messenger
         return $this->createChat([$department], Chatable::PARTICIPANT_TYPE_DEPARTMENT);
     }
 
+    public function createEveryoneChat()
+    {
+        return $this->createChat([], Chatable::PARTICIPANT_TYPE_EVERYONE);
+    }
+
     /**
      * @param            $id
      * @param bool|false $forceReload
@@ -199,6 +208,8 @@ class Messenger
             case Chatable::PARTICIPANT_TYPE_DEPARTMENT:
                 $entity_name = 'DeskPRO:Department';
                 break;
+            case Chatable::PARTICIPANT_TYPE_EVERYONE:
+                return new EveryoneChat();
             default:
                 throw new WrongChatableTypeException();
         }
@@ -230,6 +241,9 @@ class Messenger
                 break;
             case Chatable::PARTICIPANT_TYPE_DEPARTMENT:
                 $chats = $agentChatRepository->findDepartmentChat($target->getId());
+                break;
+            case Chatable::PARTICIPANT_TYPE_EVERYONE:
+                $chats = $agentChatRepository->findEveryoneChat();
                 break;
             default:
                 throw new WrongChatableTypeException();
@@ -273,6 +287,8 @@ class Messenger
                     }
                 }
                 break;
+            case Chatable::PARTICIPANT_TYPE_EVERYONE:
+                return true;
             default:
                 return false;
         }

@@ -111,6 +111,7 @@ h2 {
 
 [type="submit"], button {
   cursor: pointer;
+  font-family: $fonts;
 }
 
 header {
@@ -1018,9 +1019,9 @@ textarea {
 .permanent-login {
   position: relative;
   top: -3px;
-  display: block;
+  display: inline-block;
   font-size: 0.85em;
-  line-height: 1.5em;
+  line-height: 1.3em;
 
   label {
     display: inline-block;
@@ -1033,14 +1034,10 @@ textarea {
 
   .button, button {
     display: block;
-    margin-top: 10px;
+    margin-top: 5px;
     margin-bottom: 5px;
     width: 100%;
     text-align: center;
-  }
-
-  .permanent-login {
-    margin-left: 5px;
   }
 
   hr {
@@ -1089,6 +1086,11 @@ textarea {
     border: 1px solid $divider-color;
     border-radius: 4px;
   }
+
+  input[type="checkbox"] {
+    margin: 0px;
+    margin-right: 4px;
+  }
 }
 
 // Error handling
@@ -1110,7 +1112,6 @@ form {
 
     input[type="text"], input[type="email"], input[type="password"] {
       border: 1px solid $red;
-      border-top-right-radius: 0;
       background: #fff0ec;
     }
   }
@@ -1725,8 +1726,7 @@ form {
         }
       }
       .language-dropdown {
-        display: none;
-
+        display: none; // this is displayed on hover, via css, above
         position: absolute;
         top: 45px;
         right: 0;
@@ -1789,9 +1789,6 @@ form {
     }
   }
 }
-
-
-
 
 .with-searchbox .top-bar {
   margin-bottom: 0;
@@ -2012,30 +2009,30 @@ $search-btn-height: $search-height - 24;
     }
 
     .search-result-collection-loading {
-     height: 60px;
-     background: url("#{$portal-img-path}/search-spinner.gif");
-     background-repeat: no-repeat;
-     background-position: center center;
-     border-bottom: 1px solid #d6d6d6;
+      height: 60px;
+      background: url("#{$portal-img-path}/search-spinner.gif");
+      background-repeat: no-repeat;
+      background-position: center center;
+      border-bottom: 1px solid #d6d6d6;
       &.inline-loading {
         border-bottom: 0px;
       }
     }
 
-     .search-result-collection-empty {
-     text-transform: uppercase;
-     font-size: 11px;
-     font-weight:bold;
-     text-align:center;
-     color:#a6a5a5;
-     border-bottom: 1px solid #d6d6d6;
+    .search-result-collection-empty {
+      text-transform: uppercase;
+      font-size: 11px;
+      font-weight: bold;
+      text-align: center;
+      color: #a6a5a5;
+      border-bottom: 1px solid #d6d6d6;
 
-       div {
-       margin: 10px;
-       border-radius: 2px;
-       background:#f4f4f4;
-       border: 1px solid #cfcfcf;
-       padding: 6px;
+      div {
+        margin: 10px;
+        border-radius: 2px;
+        background: #f4f4f4;
+        border: 1px solid #cfcfcf;
+        padding: 6px;
 
       }
     }
@@ -2262,6 +2259,22 @@ $search-btn-height: $search-height - 24;
       min-width: 231px;
       z-index: 3999;
 
+      .agent-avatar {
+        border: 2px solid #fff;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        margin-right: -8px;
+      }
+
+      .fa-map-marker {
+        position: relative;
+        top: 2px;
+      }
+
+      .flag {
+        vertical-align: middle;
+        margin-right: 2px;
+      }
+
       ul {
         margin: 0px;
         padding: 0px;
@@ -2344,7 +2357,7 @@ $search-btn-height: $search-height - 24;
           }
 
           p {
-            font-size: 0.9em;
+            font-size: 0.85em;
             margin: 0;
             padding: 0;
             margin-bottom: 5px;
@@ -2408,7 +2421,7 @@ $search-btn-height: $search-height - 24;
 
       .fa-caret-down {
         position: relative;
-        top: 18px;
+        top: 12px; // placehodler to figure out why this keeps changes // was 18px, is 12px
       }
     }
   }
@@ -2747,7 +2760,7 @@ header {
 }
 
 .active-button-dropdown {
-  display: none;
+  display: none; // by default this should be display: none;
   position: absolute;
   top: 55px;
   right: 0;
@@ -4150,6 +4163,8 @@ ul.kb-checkbox-extra {
 .alerts {
   margin-top: 10px;
   font-weight: 400;
+  max-width: 1080px;
+  margin: 0 auto;
 
   a.all-tickets {
     padding-bottom: 1px;
@@ -4197,6 +4212,24 @@ ul.kb-checkbox-extra {
     top: 36%;
     right: 20px;
     color: $text-color-lighter;
+    cursor: pointer;
+
+    // hover didn't look so good, we should look into a hover bg change maybe?
+    //&:hover {
+    //  background: #e3dddd;
+    //  color: #333;
+    //}
+  }
+
+  .alert-button {
+    display: inline-block;
+    background: #3f79ba;
+    color: #fff;
+    line-height: 1.25em;
+    padding: 3px;
+    vertical-align: middle;
+    text-decoration: none;
+    border-radius: 2px;
   }
 }
 
@@ -4375,11 +4408,12 @@ ul.kb-checkbox-extra {
 //  }
 //}
 
-
 .deskpro-calendar-decoration-flat {
   display: inline-block;
+  float: left;
+  margin-right: 10px;
   position: relative;
-  width: 42px;
+  width: 44px;
   height: 37px;
   border: 1px solid #dcdcdc;
   border-radius: 2px;
@@ -4393,19 +4427,17 @@ ul.kb-checkbox-extra {
     color: #fff;
     position: absolute;
     text-transform: uppercase;
-    left: - 1 px;
-    top: - 1 px;
     width: 42px;
     height: 18px;
     text-align: center;
-    padding-top: 5px;
+    padding-top: 1px;
     border-top-left-radius: 2px;
     border-top-right-radius: 2px;
 
   }
   .dcdf-day {
     text-align: center;
-    padding-top: 21px;
+    padding-top: 18px;
     font-weight: 900;
     font-size: 10px;
     color: #cecece;
@@ -7198,13 +7230,17 @@ ul.big-button-collection {
   z-index: 9999;
 }
 
+body.with-agent-bar {
+  margin-top: 43px;
+}
+
 .deskpro-agent-top-bar {
   max-width: 1180px;
   margin: 0 auto;
   height: 43px;
   color: #fff;
   border-bottom: 3px solid #3d77b6;
-  font-family: "Helvetica Neue", Helvetica, Arial, Sans-Serif;
+  // font-family: $fonts;
   font-size: 11px;
   font-weight: 500;
   a {
@@ -7263,8 +7299,8 @@ ul.big-button-collection {
   width: 250px;
   background: #444648;
   position: absolute;
-  left: 10px;
   top: 10px;
+  right: 10px;
 
   ul {
     display: block;
@@ -7371,5 +7407,121 @@ ul.big-button-collection {
       top: 13px;
       left: 5px;
     }
+  }
+}
+
+.map-box {
+  width: 100%;
+  height: 150px;
+  border-radius: 2px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 5px;
+
+  iframe {
+    width: 100%;
+    height: 150px;
+    border: 0px;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.italics {
+  font-style: italic;
+}
+
+
+
+
+
+
+
+
+
+
+// portal tabs
+.deskpro-portal-tabs {
+  color: #5a5a5a;
+  font-size: 12px;
+  margin-bottom: 15px;
+
+  ul {
+    display: block;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    height: 34px;
+
+    li {
+      display: block;
+      float: left;
+      height: 34px;
+      margin-left: -1px;
+      margin-right: -1px;
+      position: relative;
+      top: 1px;
+    }
+
+    a {
+      text-decoration: none;
+      color: #787878;
+      display: block;
+      padding-left: 10px;
+      padding-right: 10px;
+      padding-top: 10px;
+      height: 34px;
+      background: #f0f0f0;
+      border-bottom: 1px solid #dadada;
+      border-right: 1px solid #dadada;
+      border-left: 1px solid #dadada;
+      outline: 0;
+      transition: all 0.2s ease;
+      i {
+        color: #8d8d8d;
+      }
+      &:hover {
+        background: #e3dddd;
+        color: #333;
+      }
+    }
+
+    li.all a {
+      background: #dadada;
+    }
+    li.blank {
+      width: 20px;
+      border-bottom: 1px solid #dadada;
+    }
+
+    li.dpt-active-tab a {
+      background: #fff;
+      border-bottom: 1px solid #fff;
+      position: relative;
+
+      &:before {
+        content: "";
+        display: block;
+        position: absolute;
+        background: #3d75b4;
+        width: 100%;
+        height: 4px;
+        left: -1px;
+        top: 0px;
+      }
+      &:after {
+        // better than checking width with js
+        content: "";
+        display: block;
+        position: absolute;
+        background: #3d75b4;
+        width: 1px;
+        height: 4px;
+        right: 0px;
+        top: 0px;
+        z-index: 199;
+      }
+
+    }
+
   }
 }
