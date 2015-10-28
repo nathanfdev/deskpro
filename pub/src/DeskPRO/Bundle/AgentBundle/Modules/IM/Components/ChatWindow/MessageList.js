@@ -30,7 +30,7 @@ export class MessageList extends React.Component {
     const ids = [];
     const messages = this.props.messages.getIn(['chatMessages', this.props.current.id]) || [];
     messages.map((message) => {
-      if (message.status < 1) {
+      if (message.status < 1 && message.person_id !== this.props.me.get('id')) {
         ids.push(message.id);
       }
     });
