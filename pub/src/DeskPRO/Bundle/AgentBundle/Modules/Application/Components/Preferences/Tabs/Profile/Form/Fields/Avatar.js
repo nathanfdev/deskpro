@@ -70,11 +70,16 @@ export class Avatar extends React.Component {
     this.setState({
       tmpFile: null,
       tmpFilePath: null,
-      edit: false
+      edit: false,
+      error: null
     });
   };
 
   onError = (file, response) => {
+    if (file.status !== Dropzone.ERROR) {
+      return;
+    }
+
     file.status = Dropzone.ADDED;
     file.accepted = true;
 
