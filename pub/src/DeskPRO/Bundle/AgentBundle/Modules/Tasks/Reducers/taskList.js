@@ -12,27 +12,27 @@ const initialState = {
 
 export default createReducer(initialState, {
   [TaskListActions.loadTasks]: (state, payload) => {
-    const taskCount = payload.meta ? payload.meta.total_count : 0;
+    const taskCount = payload.meta ? payload.data.count : 0;
     return state.set('taskCount', taskCount);
   },
   [TaskListActions.loadMyTasks]: (state, payload) => {
-    const taskCount = payload.meta ? payload.meta.total_count : 0;
+    const taskCount = payload.meta ? payload.data.count : 0;
     return state.set('myTaskCount', taskCount);
   },
   [TaskListActions.loadTeamTasks]: (state, payload) => {
-    const taskCount = payload.meta ? payload.meta.total_count : 0;
+    const taskCount = payload.meta ? payload.data.count : 0;
     return state.set('teamTaskCount', taskCount);
   },
   [TaskListActions.loadDepartmentTasks]: (state, payload) => {
-    const taskCount = payload.meta ? payload.meta.total_count : 0;
+    const taskCount = payload.meta ? payload.data.count : 0;
     return state.set('deptTaskCount', taskCount);
   },
   [TaskListActions.loadDelegatedTasks]: (state, payload) => {
-    const taskCount = payload.meta ? payload.meta.total_count : 0;
+    const taskCount = payload.meta ? payload.data.count : 0;
     return state.set('delegatedTaskCount', taskCount);
   },
   [TaskListActions.loadUnassignedTasks]: (state, payload) => {
-    const taskCount = payload.meta ? payload.meta.total_count : 0;
+    const taskCount = payload.meta ? payload.data.count : 0;
     return state.set('unassignedTaskCount', taskCount);
   }
 });
