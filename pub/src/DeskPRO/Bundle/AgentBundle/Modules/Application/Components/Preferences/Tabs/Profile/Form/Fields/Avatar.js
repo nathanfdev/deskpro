@@ -20,17 +20,22 @@ export class Avatar extends React.Component {
     };
   }
 
-  onCropThumbnail = (file, dataUrl) => {
+  onCropThumbnail = file => {
     if (file.cropped) {
       return;
     }
 
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      this.setState({
+        tmpFile: file,
+        tmpFilePath: reader.result,
+        error: null
+      });
+    };
+
+    reader.readAsDataURL(file);
     this.refs.dropzoneComponent.dropzone.removeFile(file);
-    this.setState({
-      tmpFile: file,
-      tmpFilePath: dataUrl,
-      error: null
-    });
   };
 
   onDiscard = () => {
@@ -150,8 +155,7 @@ export class Avatar extends React.Component {
           {tmpFile && (
             <Cropper
               ref="cropper"
-              src={tmpPath}
-              style={{height: 200, width: '100%'}} />
+              src={tmpPath} />
           )}
         </div>
 
