@@ -33,6 +33,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class TempController.
@@ -50,14 +51,17 @@ class TempController extends BaseController
     {
         $blob = new Blob();
 
-        return new View([
-            'blob_id'           => $blob['id'],
-            'blob_auth'         => $blob->authcode,
-            'blob_auth_id'      => $blob->id.'-'.$blob->authcode,
-            'download_url'      => $blob->getDownloadUrl(true, false),
-            'filename'          => $blob['filename'],
-            'filesize_readable' => $blob->getReadableFilesize(),
-            'is_image'          => $blob->isImage(),
-        ]);
+        return View::create(
+            [
+                'blob_id'           => $blob['id'],
+                'blob_auth'         => $blob->authcode,
+                'blob_auth_id'      => $blob->id.'-'.$blob->authcode,
+                'download_url'      => $blob->getDownloadUrl(true, false),
+                'filename'          => $blob['filename'],
+                'filesize_readable' => $blob->getReadableFilesize(),
+                'is_image'          => $blob->isImage(),
+            ],
+            Response::HTTP_INTERNAL_SERVER_ERROR
+        );
     }
 }

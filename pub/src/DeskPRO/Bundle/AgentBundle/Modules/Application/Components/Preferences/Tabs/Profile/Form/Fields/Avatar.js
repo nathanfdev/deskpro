@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Cropper } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Cropper';
+import Dropzone from 'dropzone';
 import DropzoneComponent from 'react-dropzone-component';
 
 export class Avatar extends React.Component {
@@ -14,7 +15,8 @@ export class Avatar extends React.Component {
     this.state = {
       tmpFile: null,
       tmpFilePath: null,
-      edit: false
+      edit: false,
+      error: null
     };
   }
 
@@ -26,7 +28,8 @@ export class Avatar extends React.Component {
     this.refs.dropzoneComponent.dropzone.removeFile(file);
     this.setState({
       tmpFile: file,
-      tmpFilePath: dataUrl
+      tmpFilePath: dataUrl,
+      error: null
     });
   };
 
@@ -34,7 +37,8 @@ export class Avatar extends React.Component {
     this.setState({
       tmpFile: null,
       tmpFilePath: null,
-      edit: false
+      edit: false,
+      error: null
     });
   };
 
@@ -71,7 +75,12 @@ export class Avatar extends React.Component {
   };
 
   onError = (file, response) => {
-    console.log('error', response);
+    file.status = Dropzone.ADDED;
+    file.accepted = true;
+
+    this.setState({
+      error: JSON.stringify(response)
+    });
   };
 
   onEdit = () => {
@@ -82,6 +91,7 @@ export class Avatar extends React.Component {
 
   renderUploader() {
     const tmpPath = this.state.tmpFilePath;
+    const error = this.state.error;
     const djsConfig = {
       addRemoveLinks: true,
       autoQueue: false,
@@ -122,6 +132,8 @@ export class Avatar extends React.Component {
               style={{height: 200, width: '100%'}} />
           )}
         </div>
+
+        {error && (<span className="error">{error}</span>)}
 
         {tmpPath && (
           <a href="#" className="crop" onClick={this.onSave}>Crop &amp; Save Avatar</a>
