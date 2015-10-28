@@ -61,13 +61,17 @@ export class Avatar extends React.Component {
     dropzone.processQueue();
   };
 
-  onComplete = file => {
-    console.log('complete', file.xhr.response);
+  onSuccess = (file, response) => {
+    console.log('success', response);
     this.setState({
       tmpFile: null,
       tmpFilePath: null,
       edit: false
     });
+  };
+
+  onError = (file, response) => {
+    console.log('error', response);
   };
 
   onEdit = () => {
@@ -100,7 +104,8 @@ export class Avatar extends React.Component {
                              config={componentConfig}
                              eventHandlers={{
                                thumbnail: this.onCropThumbnail,
-                               complete: this.onComplete
+                               success: this.onSuccess,
+                               error: this.onError
                              }}
                              djsConfig={djsConfig}>
             <div className="dz-message">

@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Blobs;
 
+use Application\DeskPRO\Entity\Blob;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\View\View;
@@ -47,10 +48,16 @@ class TempController extends BaseController
      */
     public function postAction(Request $request)
     {
-        $r = $request;
+        $blob = new Blob();
 
         return new View([
-            'A' => 1,
+            'blob_id'           => $blob['id'],
+            'blob_auth'         => $blob->authcode,
+            'blob_auth_id'      => $blob->id.'-'.$blob->authcode,
+            'download_url'      => $blob->getDownloadUrl(true, false),
+            'filename'          => $blob['filename'],
+            'filesize_readable' => $blob->getReadableFilesize(),
+            'is_image'          => $blob->isImage(),
         ]);
     }
 }
