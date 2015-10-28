@@ -5,18 +5,15 @@ export class FilterBy extends Component {
 
   static propTypes = {
     children: PropTypes.any,
-    currentFilterMode: PropTypes.object.isRequired,
     toggleDropdown: PropTypes.func.isRequired
   };
 
   render() {
-    const {currentFilterMode, toggleDropdown} = this.props;
+    const {toggleDropdown} = this.props;
     return (
       <li>
         <ControlButton
-          title="Filter by:"
-          icon={currentFilterMode.icon}
-          label={currentFilterMode.label}
+          title="Filter by"
           toggleDropdown={toggleDropdown}
           />
         {this.props.children}

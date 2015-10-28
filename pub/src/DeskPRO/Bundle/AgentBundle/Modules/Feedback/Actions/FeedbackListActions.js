@@ -190,12 +190,13 @@ export const toggleSelectedAction = createAction(
   'FEEDBACK_TOGGLE_SELECTED_ACTION'
 );
 
-/** @ToDo migrate to Ampliflux v2 after FilterBy block design */
 export const setFilterValue = createAction(
   'FEEDBACK_SET_FILTER_VALUE',
-  (trigger, filter, value) => () => trigger({ filter: filter, value: value })
+    update => update
 );
 
+
+/** @ToDo migrate to Ampliflux v2 after FilterBy block design */
 export const resetFilters = createAction(
   'FEEDBACK_RESET_FILTERS',
   (trigger, filterAlias, filterName) => {

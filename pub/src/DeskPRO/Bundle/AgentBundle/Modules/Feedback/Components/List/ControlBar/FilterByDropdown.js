@@ -4,12 +4,13 @@ import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu
 import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
 import {FilterItem} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/FilterItem';
 import {DateTimePicker} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/DateTimePicker';
+import { setFilterValue } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 
 const FilterByDropdown = React.createClass({
 
   propTypes: {
-    filterOptions: PropTypes.array.isRequired,
-    currentFilterMode: PropTypes.object.isRequired,
+    filterParams: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired,
     toggleDropdown: PropTypes.func.isRequired
   },
   /*
@@ -32,25 +33,27 @@ const FilterByDropdown = React.createClass({
    },*/
 
   resetFilter(type) {
-    this.setState({
-      [type]: { value: false }
-    });
+    const {dispatch} = this.props;
+    dispatch(setFilterValue({ type: type, value: null }));
   },
 
-
-  submit(model) {
+  submitDateCreatedFilter(model) {
+    const {dispatch} = this.props;
     console.log(model);
     this.setState({ date_created: model });
-    console.log('State', this.state.date_created);
-    //this.props.toggleDropdown();
+    dispatch(setFilterValue({ type: 'date_created', value: model }));
+    // this.props.toggleDropdown();
   },
 
   render() {
+    const {filterParams} = this.props;
+    const initialFrom = filterParams && filterParams.get('date_created') ? filterParams.get('date_created').from : null;
+    const initialTo = filterParams && filterParams.get('date_created') ? filterParams.get('date_created').to : null;
     return (
       <Menu>
         <FilterItem
           filterType="category"
-          isActive={Boolean(this.state.category.value)}
+          isActive={Boolean(filterParams && filterParams.get('category'))}
           resetFilter={this.resetFilter}
           icon="calendar-o"
           label="Type"
@@ -62,7 +65,7 @@ const FilterByDropdown = React.createClass({
         </FilterItem>
         <FilterItem
           filterType="status"
-          isActive={Boolean(this.state.status.value)}
+          isActive={Boolean(filterParams && filterParams.get('status'))}
           resetFilter={this.resetFilter}
           icon="calendar-o"
           label="Status">
@@ -73,7 +76,7 @@ const FilterByDropdown = React.createClass({
         </FilterItem>
         <FilterItem
           filterType="custom_category"
-          isActive={Boolean(this.state.custom_category.value)}
+          isActive={Boolean(filterParams && filterParams.get('custom_category'))}
           resetFilter={this.resetFilter}
           icon="calendar-o"
           label="Category">
@@ -84,7 +87,7 @@ const FilterByDropdown = React.createClass({
         </FilterItem>
         <FilterItem
           filterType="date_created"
-          isActive={Boolean(this.state.date_created.value)}
+          isActive={Boolean(filterParams && filterParams.get('date_created'))}
           resetFilter={this.resetFilter}
           icon="calendar-o"
           label="Date"
@@ -98,9 +101,11 @@ const FilterByDropdown = React.createClass({
               <div className="dpw-date-picker">
 
                 <div className="dpw-date-picker-panel-container">
-                  <Formsy.Form onValidSubmit={this.submit}>
-                    <DateTimePicker name="from" className="dpw-date-picker-left"/>
-                    <DateTimePicker name="to" className="dpw-date-picker-right"/>
+                  <Formsy.Form onValidSubmit={this.submitDateCreatedFilter}>
+                    <DateTimePicker name="from" className="dpw-date-picker-left"
+                                    initialValue={initialFrom}/>
+                    <DateTimePicker name="to" className="dpw-date-picker-right"
+                                    initialValue={initialTo}/>
 
                     <div className=" dpw-date-picker-footer">
                       <button type="submit" className="dpw--panel-button">Apply Date Range Filter</button>

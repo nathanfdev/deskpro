@@ -29,35 +29,75 @@ $level-10: #ac2020;
     right: -1px;
   }
 
-  &.status-bar-left.level-1 { border-left: 2px solid $level-1; }
-  &.status-bar-right.level-1 { border-right: 2px solid $level-1; }
+  &.status-bar-left.level-1 {
+    border-left: 2px solid $level-1;
+  }
+  &.status-bar-right.level-1 {
+    border-right: 2px solid $level-1;
+  }
 
-  &.status-bar-left.level-2 { border-left: 2px solid $level-2; }
-  &.status-bar-right.level-2 { border-right: 2px solid $level-2; }
+  &.status-bar-left.level-2 {
+    border-left: 2px solid $level-2;
+  }
+  &.status-bar-right.level-2 {
+    border-right: 2px solid $level-2;
+  }
 
-  &.status-bar-left.level-3 { border-left: 2px solid $level-3; }
-  &.status-bar-right.level-3 { border-right: 2px solid $level-3; }
+  &.status-bar-left.level-3 {
+    border-left: 2px solid $level-3;
+  }
+  &.status-bar-right.level-3 {
+    border-right: 2px solid $level-3;
+  }
 
-  &.status-bar-left.level-4 { border-left: 2px solid $level-4; }
-  &.status-bar-right.level-4 { border-right: 2px solid $level-4; }
+  &.status-bar-left.level-4 {
+    border-left: 2px solid $level-4;
+  }
+  &.status-bar-right.level-4 {
+    border-right: 2px solid $level-4;
+  }
 
-  &.status-bar-left.level-5 { border-left: 2px solid $level-5; }
-  &.status-bar-right.level-5 { border-right: 2px solid $level-5; }
+  &.status-bar-left.level-5 {
+    border-left: 2px solid $level-5;
+  }
+  &.status-bar-right.level-5 {
+    border-right: 2px solid $level-5;
+  }
 
-  &.status-bar-left.level-6 { border-left: 2px solid $level-6; }
-  &.status-bar-right.level-6 { border-right: 2px solid $level-6; }
+  &.status-bar-left.level-6 {
+    border-left: 2px solid $level-6;
+  }
+  &.status-bar-right.level-6 {
+    border-right: 2px solid $level-6;
+  }
 
-  &.status-bar-left.level-7 { border-left: 2px solid $level-7; }
-  &.status-bar-right.level-7 { border-right: 2px solid $level-7; }
+  &.status-bar-left.level-7 {
+    border-left: 2px solid $level-7;
+  }
+  &.status-bar-right.level-7 {
+    border-right: 2px solid $level-7;
+  }
 
-  &.status-bar-left.level-8 { border-left: 2px solid $level-8; }
-  &.status-bar-right.level-8 { border-right: 2px solid $level-8; }
+  &.status-bar-left.level-8 {
+    border-left: 2px solid $level-8;
+  }
+  &.status-bar-right.level-8 {
+    border-right: 2px solid $level-8;
+  }
 
-  &.status-bar-left.level-9 { border-left: 2px solid $level-9; }
-  &.status-bar-right.level-9 { border-right: 2px solid $level-9; }
+  &.status-bar-left.level-9 {
+    border-left: 2px solid $level-9;
+  }
+  &.status-bar-right.level-9 {
+    border-right: 2px solid $level-9;
+  }
 
-  &.status-bar-left.level-10 { border-left: 2px solid $level-10; }
-  &.status-bar-right.level-10 { border-right: 2px solid $level-10; }
+  &.status-bar-left.level-10 {
+    border-left: 2px solid $level-10;
+  }
+  &.status-bar-right.level-10 {
+    border-right: 2px solid $level-10;
+  }
 }
 
 .divider {
@@ -107,11 +147,19 @@ $level-10: #ac2020;
   // Card hover changes
   &:hover {
     border: 1px solid #4681b2;
-    h1 { color: #4681b2; }
-    .card-status-bar { transition: all 0.5s ease; opacity: 0; }
+    h1 {
+      color: #4681b2;
+    }
+    .card-status-bar {
+      transition: all 0.5s ease;
+      opacity: 0;
+    }
   }
 
-  .card-line { margin-bottom: 3px; }// Generic rows for cards
+  .card-line {
+    margin-bottom: 3px;
+  }
+  // Generic rows for cards
 
   input {
     padding: 2px;
@@ -125,7 +173,7 @@ $level-10: #ac2020;
     display: inline-block;
     width: 200px;
     vertical-align: middle;
-    white-space: nowrap;// Cut off too long text
+    white-space: nowrap; // Cut off too long text
     overflow: hidden;
     text-overflow: ellipsis;
   }
@@ -151,7 +199,9 @@ $level-10: #ac2020;
     display: inline-block;
     vertical-align: middle;
   }
-  .fa-star.grey { color: #cecece; }
+  .fa-star.grey {
+    color: #cecece;
+  }
 
   // The checkbox on the card
   .card-checkbox {
@@ -199,17 +249,17 @@ $level-10: #ac2020;
     }
 
     .checkbox.checked {
-        * { opacity: 1; }
-        background: #62ad8c;
-        border: 1px solid #62ad8c;
-        i {
-          color: #fff;
-        }
+      * {
+        opacity: 1;
+      }
+      background: #62ad8c;
+      border: 1px solid #62ad8c;
+      i {
+        color: #fff;
+      }
     }
 
-
   }
-
 
   // Status icon under the checkbox
   .card-status {
@@ -228,8 +278,7 @@ $level-10: #ac2020;
   }
 
   .card-status
-
-  // Container for labels on title
+    // Container for labels on title
   .ticket-label-box {
     display: inline-block;
     vertical-align: top;
@@ -243,7 +292,6 @@ $level-10: #ac2020;
     line-height: 1em;
     padding: 4px 5px;
   }
-
 
   // If we need the first line of text from a ticket
   .ticket-intro {
@@ -259,9 +307,12 @@ $level-10: #ac2020;
     float: right;
     margin-top: 1px;
 
-    .chat-avatar, .ticket-department {  margin-left: 3px; }
+    .chat-avatar, .ticket-department {
+      margin-left: 3px;
+    }
 
-    .text {// if we need a title next to an icon
+    .text {
+      // if we need a title next to an icon
       font-size: 0.85em;
       color: #bfbfbf;
       display: inline-block;
@@ -275,7 +326,8 @@ $level-10: #ac2020;
     margin-top: 4px;
   }
 
-  .chat-avatar {// Usual sizing overwrites on chat avatars
+  .chat-avatar {
+    // Usual sizing overwrites on chat avatars
     width: 16px;
     height: 16px;
     margin: 0px;
@@ -310,13 +362,15 @@ $level-10: #ac2020;
     text-overflow: ellipsis;
   }
 
-  .agent {// Usually in .person
+  .agent {
+    // Usually in .person
     color: #898989;
     margin-right: 3px;
     font-size: 0.9em;
   }
 
-  .email {// Usually in .person
+  .email {
+    // Usually in .person
     color: #bfbfbf;
     font-size: 0.9em;
   }
@@ -370,9 +424,9 @@ $level-10: #ac2020;
 
 // Ticket Specific
 
-
 // Feedback specific
-.line-box.card-feedback-mark {// This overwrites .line-box
+.line-box.card-feedback-mark {
+  // This overwrites .line-box
   background: #f2f2f3;
   border-radius: 2px;
   width: 34px;
@@ -395,8 +449,6 @@ $level-10: #ac2020;
   }
 }
 
-
-
 // Task Specific
 // Line of task info (due/label/linekd items etc)
 .task-properties {
@@ -414,7 +466,9 @@ $level-10: #ac2020;
     margin: 0px 6px;
   }
 
-  a { color: inherit; }
+  a {
+    color: inherit;
+  }
 
   > div {
     display: inline-block;
@@ -520,105 +574,116 @@ $level-10: #ac2020;
 }
 
 // Tasks
-  // For tasks, we turn it into a button/action
-  .line-box.card-task-mark {
-    width: auto;
-    font-weight: bold;
-    color: #fff;
+// For tasks, we turn it into a button/action
+.line-box.card-task-mark {
+  width: auto;
+  font-weight: bold;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 10px;
+  background: #62ad8c;
+  border-radius: 2px;
+  line-height: 1em;
+  padding: 3px 4px;
+  margin-right: 5px;
+}
+
+.line-box.card-task-mark:hover {
+  background: darken(#62ad8c, 10%);
+}
+
+.line-box.card-task-mark.offset {
+  margin-left: -18px;
+}
+
+// For second line mark as done button thats aligned with the checkbox
+
+.task-card.bulk-editing {
+  * {
+    opacity: 0.6;
+  }
+
+  .card-checkbox-large {
+    opacity: 1;
+    * {
+      opacity: 1;
+    }
+  }
+}
+
+.task-card.bulk-editing.selected {
+  * {
+    opacity: 1;
+  }
+}
+
+.task-card.task-card-completed {
+  h1 {
+    color: #cecece;
+    text-decoration: line-through;
+  }
+
+  .editing h1 {
+    text-decoration: none;
+  }
+
+  .card-task-mark {
+    background: #f0f0f0;
+    color: #c9c9c9;
+  }
+
+  .task-properties {
+    color: #cecece;
+  }
+
+  .task-details-button {
+    color: #c9c9c9;
+    background-color: #fff;
+    border: 1px solid #c9c9c9;
+    font-size: 0.6em;
+    border-radius: 3px;
     text-transform: uppercase;
-    font-size: 10px;
-    background: #62ad8c;
-    border-radius: 2px;
-    line-height: 1em;
-    padding: 3px 4px;
-    margin-right: 5px;
-  }
+    vertical-align: -1px;
 
-  .line-box.card-task-mark:hover { background: darken(#62ad8c, 10%); }
-  .line-box.card-task-mark.offset { margin-left: -18px; }// For second line mark as done button thats aligned with the checkbox
-
-  .task-card.bulk-editing {
-    * {
-      opacity: 0.6;
+    &:focus {
+      outline: 0;
     }
 
-    .card-checkbox-large {
-      opacity: 1;
-      * { opacity: 1; }
+    i {
+      font-size: 1.2em;
     }
   }
-
-  .task-card.bulk-editing.selected {
-    * {
-      opacity: 1;
-    }
-  }
-
-  .task-card.task-card-completed {
-    h1 {
-      color: #cecece;
-      text-decoration: line-through;
-    }
-
-    .editing h1 {
-      text-decoration: none;
-    }
-
-    .card-task-mark {
-      background: #f0f0f0;
-      color: #c9c9c9;
-    }
-
-    .task-properties { color: #cecece; }
-
-    .task-details-button {
-      color: #c9c9c9;
-      background-color: #fff;
-      border: 1px solid #c9c9c9;
-      font-size: 0.6em;
-      border-radius: 3px;
-      text-transform: uppercase;
-      vertical-align: -1px;
-
-      &:focus {
-        outline: 0;
-      }
-
-      i {
-        font-size: 1.2em;
-      }
-    }
-  }
+}
 
 // Card interactions
 
-  // Moving a card
-  .card.moving {
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    z-index: 99999;
-    -moz-transform: rotate(-3deg);
-    -webkit-transform: rotate(-3deg);
-    -o-transform: rotate(-3deg);
-    -ms-transform: rotate(-3deg);
-    transform: rotate(-3deg);
-  }
+// Moving a card
+.card.moving {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  z-index: 99999;
+  -moz-transform: rotate(-3deg);
+  -webkit-transform: rotate(-3deg);
+  -o-transform: rotate(-3deg);
+  -ms-transform: rotate(-3deg);
+  transform: rotate(-3deg);
+}
 
-  .card.moved {
-    background: #ebebeb;
-    border: 1px dashed #dadada;
-    height: 60px;
-  }
+.card.moved {
+  background: #ebebeb;
+  border: 1px dashed #dadada;
+  height: 60px;
+}
 
-  .card.move-target {
-    background: #dfdfdf;
-    border: 1px solid #dfdfdf;
-    height: 30px;
+.card.move-target {
+  background: #dfdfdf;
+  border: 1px solid #dfdfdf;
+  height: 30px;
 
-    &:hover {
-      background: #d9d9d9;
-      border: 1px solid #d9d9d9;
-    }
+  &:hover {
+    background: #d9d9d9;
+    border: 1px solid #d9d9d9;
   }
+}
 
 .anytime-picker {
   display: none;
@@ -629,7 +694,7 @@ $level-10: #ac2020;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
   transition: all 0.25s ease-in-out;
   width: 208px;
-  left: 0 !important;
+  //left: 0 !important; It's impossible because we use this style in different places. So, for this property we must create separate class
 
   .anytime-picker__header {
     background-color: #fff;
@@ -708,11 +773,22 @@ $level-10: #ac2020;
   }
 }
 
-.anytime-picker--is-visible { display: block; }
-.anytime-picker__dates {  width: 200px; }
-.anytime-picker__dates > * { box-sizing: border-box; width: 14.28%; display: inline-block; }
+.anytime-picker--is-visible {
+  display: block;
+}
 
-.dpmw--single-card {// Single card
+.anytime-picker__dates {
+  width: 200px;
+}
+
+.anytime-picker__dates > * {
+  box-sizing: border-box;
+  width: 14.28%;
+  display: inline-block;
+}
+
+.dpmw--single-card {
+  // Single card
   background: #fff;
   border: 1px solid #d5d5d5;
   border-radius: 2px;
@@ -730,25 +806,38 @@ $level-10: #ac2020;
     // max-width: 350px;
   }
 
-  &.dpmw--single-card.minimized { padding: 3px 5px 3px 14px; }// Resize the minimized cards
-  a { color: inherit; }
+  &.dpmw--single-card.minimized {
+    padding: 3px 5px 3px 14px;
+  }
+  // Resize the minimized cards
+  a {
+    color: inherit;
+  }
 }
 
 .dpmw--single-card:hover {
   border: 1px solid #4681b2;
-  h1 { color: #4681b2; }
-  .dpw--card-status-bar { transition: all 0.5s ease; opacity: 0; }
+  h1 {
+    color: #4681b2;
+  }
+  .dpw--card-status-bar {
+    transition: all 0.5s ease;
+    opacity: 0;
+  }
 }
 
 .dpw--card-line {
   margin-bottom: 6px;
 
-  &:last-child { margin-bottom: 2px; }
+  &:last-child {
+    margin-bottom: 2px;
+  }
 
-  &:after { // Clearfix
-    content:"";
-    display:table;
-    clear:both;
+  &:after {
+    // Clearfix
+    content: "";
+    display: table;
+    clear: both;
   }
 
   .dpw--card-line-left {
@@ -789,7 +878,9 @@ $level-10: #ac2020;
     margin-right: 2px;
   }
 
-  i.fa-calendar-o { top: -1px; }
+  i.fa-calendar-o {
+    top: -1px;
+  }
 }
 
 .dpw--card-expand {
@@ -807,7 +898,9 @@ $level-10: #ac2020;
     position: relative;
     top: 2px;
 
-    i { margin-left: 2px; }
+    i {
+      margin-left: 2px;
+    }
   }
 
   a:hover {
@@ -826,7 +919,7 @@ $level-10: #ac2020;
     font-weight: normal;
     display: block;
     vertical-align: middle;
-    white-space: nowrap;// Cut off too long text
+    white-space: nowrap; // Cut off too long text
     overflow: hidden;
     text-overflow: ellipsis;
   }
@@ -863,9 +956,12 @@ $level-10: #ac2020;
     top: 2px;
   }
 }
+
 // Reposition the checkbox on minimized cards
 .dpmw--single-card.minimized {
-  .dpmw--card-checkbox { top: 3px; }
+  .dpmw--card-checkbox {
+    top: 3px;
+  }
 }
 
 .moving {
