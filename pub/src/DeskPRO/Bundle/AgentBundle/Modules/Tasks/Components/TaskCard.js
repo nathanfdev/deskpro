@@ -11,6 +11,7 @@ import { getEmptyImage } from 'react-dnd-html5-backend';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 import { AgentTeamAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/AgentTeamAvatar';
 import { DepartmentAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/DepartmentAvatar';
+import Immutable from 'immutable';
 
 import { Card } from '../../Common/Components/ListFrame/Card';
 
@@ -86,7 +87,7 @@ const TaskCard = React.createClass({
     return {
       expanded: false,
       editing: false,
-      task: {}
+      task: Immutable.Map()
     };
   },
 
@@ -104,8 +105,8 @@ const TaskCard = React.createClass({
   },
 
   handleTitleChange: function(name, value) {
-    const task = this.state.task;
-    task.title = value;
+    const task = this.state.task.set('title', value);
+
     this.setState({
       task: task
     });
@@ -113,6 +114,22 @@ const TaskCard = React.createClass({
 
   toggleMassAction: function() {
     this.props.updateMassActions(this.props.task.get('id'));
+  },
+
+  toggleDone: function() {
+    const task = this.state.task;
+    const source = this.props.source;
+
+    const updatedTask = task.set('is_done', !task.get('is_done', true));
+
+    this.setState({
+      task: updatedTask
+    });
+
+    // Fun fact: calling this.forceUpdate() in this.props.toggleDone()
+    // kills all the things.
+    // Now you know.
+    this.props.toggleDone(task, source);
   },
 
   componentDidMount: function() {
@@ -156,6 +173,12 @@ const TaskCard = React.createClass({
     });
   },
 
+  componentWillReceiveProps: function(newProps) {
+    this.setState({
+      task: newProps.task
+    });
+  },
+
   getStyles: function(props) {
     const { isDragging } = props;
 
@@ -195,16 +218,16 @@ const TaskCard = React.createClass({
   },
 
   render: function() {
-    const { task,
-            projects,
+    const { projects,
             tickets,
             departments,
             teams,
             agents,
-            source,
             connectDragSource,
             connectDropTarget
           } = this.props;
+
+    const task = this.state.task;
 
     const selected = this.props.selected;
 
@@ -254,12 +277,12 @@ const TaskCard = React.createClass({
         {
           task.get('is_done', false) ?
           <div className="dpw--single-card-mark-done dpw--single-card-mark-done-minimized"
-               onClick={this.props.toggleDone.bind(this, task, source)}>
+               onClick={this.toggleDone}>
             <span>Done</span>
             <i className="fa fa-check"/>
           </div>
             :
-          <div className="dpw--single-card-mark-done" onClick={this.props.toggleDone.bind(this, task, source)}>
+          <div className="dpw--single-card-mark-done" onClick={this.toggleDone}>
             <i className="fa fa-check"/>
             <span>Mark Done</span>
           </div>
@@ -275,7 +298,7 @@ const TaskCard = React.createClass({
               { !this.state.editing ?
                 <h1 onDoubleClick={this.editMode}>{task.get('title')}</h1> :
                 <Formsy.Form className="inline-form">
-                  <h1><FRC.Input type="text" name="title" value={task.get('title')} onChange={this.handleTitleChange}/></h1>
+                  <h1 className="ignore-react-onclickoutside"><FRC.Input type="text" name="title" value={task.get('title')} onChange={this.handleTitleChange}/></h1>
                 </Formsy.Form>
               }
             </div>

@@ -310,6 +310,7 @@ export const editTask = createAction(
         if (reload) {
           dispatch(loadTaskList(source));
         }
+
         return output;
       },
       value => value.xhr.responseJSON

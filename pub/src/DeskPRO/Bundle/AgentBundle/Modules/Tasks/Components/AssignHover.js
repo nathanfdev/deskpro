@@ -108,7 +108,7 @@ const AssignHover = React.createClass({
                 <div className="dpw-popup-content-item">
                   <div className="dpw-popup-content-item-unassign-all">
                     <a href="#" className="checkbox-link" onClick={this.handleAssignment.bind(this, {
-                      id: taskId,
+                      taskId: taskId,
                       value: 'unassigned'
                     })}>
                       <span>Unassign</span>
@@ -133,7 +133,7 @@ const AssignHover = React.createClass({
                           const lineClass = this.props.taskData.has && this.props.taskData.has('agents') && this.props.taskData.get('agents').first() === agent.get('id') ? 'dpw--popup-item-person selected' : 'dpw--popup-item-person';
                           return (<li key={agent.get('id')}>
                                     <div className={lineClass} onClick={this.handleAssignment.bind(this, {
-                                      id: taskId,
+                                      taskId: taskId,
                                       value: 'agents-' + agent.get('id')
                                     })}>
                                       <span style={{position: 'relative'}}><PersonAvatar person={agent} size="16" /></span> <span className="dpw-popup-item-collection-name">{agent.get('name')}</span>
@@ -156,7 +156,7 @@ const AssignHover = React.createClass({
                           const lineClass = this.props.taskData.has && this.props.taskData.has('teams') && this.props.taskData.get('teams').first() === team.get('id') ? 'dpw--popup-item-person selected' : 'dpw--popup-item-person';
                           return (<li key={team.get('id')}>
                                     <div className={lineClass} onClick={this.handleAssignment.bind(this, {
-                                      id: taskId,
+                                      taskId: taskId,
                                       value: 'teams-' + team.get('id')
                                     })}>
                                       <span style={{position: 'relative'}}><AgentTeamAvatar agentTeam={team} size="16" /></span> <span className="dpw-popup-item-collection-name">{team.get('name')}</span>

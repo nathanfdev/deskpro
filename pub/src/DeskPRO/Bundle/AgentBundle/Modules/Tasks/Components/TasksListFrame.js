@@ -15,6 +15,7 @@ import ReactPaginate from '../../Common/Components/Pagination/deskpro-react-pagi
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import AssignHover from '../Components/AssignHover';
 import TaskViewConnector from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/Views/TaskViewConnector';
+import Immutable from 'immutable';
 
 import TaskMassActions from '../Components/TaskMassActions';
 import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
@@ -231,8 +232,6 @@ export class TasksListFrame extends React.Component {
       newValues.percent_complete = 100;
     }
 
-    this.forceUpdate();
-
     this.props.dispatch(TaskActions.editTask(newValues, reload));
   }
 
@@ -248,7 +247,20 @@ export class TasksListFrame extends React.Component {
   }
 
   editTask(source, model) {
-    this.props.dispatch(TaskActions.editTask(model, source));
+    // Make sure the right data gets through
+    const task = {
+      taskId: model.get('id'),
+      title: model.get('title'),
+      is_done: model.get('is_done'),
+      project: model.get('project'),
+      date_due: model.get('date_due'),
+      agents: model.get('agents'),
+      teams: model.get('teams'),
+      departments: model.get('departments'),
+      list: model.get('list'),
+    };
+
+    this.props.dispatch(TaskActions.editTask(task, source));
   }
 
   handleAssigneeChange(assignee) {
@@ -264,13 +276,13 @@ export class TasksListFrame extends React.Component {
       task[assignmentParts[0]] = [assignmentParts[1]];
     }
 
-    if (typeof assignee.id === 'number') {
-      task.taskId = assignee.id;
+    if (typeof assignee.taskId === 'number') {
+      task.id = assignee.taskId;
       this.closeAssignWindow();
 
       const source = this.props.taskSource ? this.props.taskSource.get('taskSource', '') : '';
 
-      this.editTask(source, task);
+      this.editTask(source, Immutable.Map(task));
     }
   }
 
