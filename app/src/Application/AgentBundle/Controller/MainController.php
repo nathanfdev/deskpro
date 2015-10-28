@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketDeleted;
 use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
 use Application\DeskPRO\People\PrefNoticeSet;
+use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
@@ -218,7 +219,7 @@ class MainController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $html = file_get_contents($target_dir.'/log.html');
+        $html = SafeFile::fileGetContents($target_dir.'/log.html', DP_ROOT.'/docs/changelog');
         $html = Strings::extractRegexMatch('#<body>(.*?)</body>#s', $html, 1);
 
         if (preg_match_all('#<[^>]+src=(\'|")(.*?)(\'|")[^>]+>#', $html, $matches, PREG_SET_ORDER)) {
@@ -232,7 +233,7 @@ class MainController extends AbstractController
                     } else {
                         $type = '';
                     }
-                    $url = "data:{$type}base64,".base64_encode(file_get_contents($attach_path));
+                    $url = "data:{$type}base64,".base64_encode(SafeFile::fileGetContents($attach_path, DP_ROOT.'/docs/changelog'));
 
                     $str  = $m[0];
                     $str  = str_replace($m[2], $url, $str);

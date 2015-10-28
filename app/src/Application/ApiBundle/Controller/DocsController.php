@@ -31,6 +31,8 @@
  */
 namespace Application\ApiBundle\Controller;
 
+use DeskPRO\Component\Filesystem\SafeFile;
+
 /**
  * Docs API Controller.
  */
@@ -126,6 +128,6 @@ class DocsController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        return $this->createJsonResponse(file_get_contents($path));
+        return $this->createJsonResponse(SafeFile::fileGetContents($path, DP_ROOT.'/src/Application/ApiBundle/Resources/views/SwaggerDocs'));
     }
 }

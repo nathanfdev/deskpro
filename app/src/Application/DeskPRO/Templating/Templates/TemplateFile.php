@@ -31,6 +31,8 @@
  */
 namespace Application\DeskPRO\Templating\Templates;
 
+use DeskPRO\Component\Filesystem\SafeFile;
+
 class TemplateFile extends Template
 {
     /**
@@ -108,7 +110,7 @@ class TemplateFile extends Template
         }
 
         if ($this->content === null) {
-            $this->content = file_get_contents($this->file_path);
+            $this->content = SafeFile::fileGetContents($this->file_path, DP_ROOT.'/src');
         }
 
         return $this->content;

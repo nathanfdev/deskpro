@@ -31,6 +31,7 @@
  */
 namespace Application\DeskPRO\Controller;
 
+use DeskPRO\Component\Filesystem\SafeFile;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
@@ -353,7 +354,7 @@ class Deskpro3RedirectController extends AbstractController
                 return $this->redirectRoute('user', array(), 301);
             }
 
-            $file     = file_get_contents($file_path);
+            $file     = SafeFile::fileGetContents($file_path, $manual_dir);
             $mimetype = \Orb\Data\ContentTypes::getContentTypeFromFilename($_GET['img']);
 
             $res = new \Symfony\Component\HttpFoundation\Response($file, 200, array(
@@ -371,7 +372,7 @@ class Deskpro3RedirectController extends AbstractController
                 return $this->redirectRoute('dp3_redirect_manual_php', array('m' => $manual_id));
             }
             $page_file = $manual_dir.'/pages/'.$index_data[$_GET['p']];
-            $html      = file_get_contents($page_file);
+            $html      = SafeFile::fileGetContents($page_file, $manual_dir);
         }
 
         foreach ($index_data as $pid => $page) {

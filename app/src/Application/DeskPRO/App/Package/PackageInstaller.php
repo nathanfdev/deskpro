@@ -36,6 +36,7 @@ namespace Application\DeskPRO\App\Package;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Entity\Blob;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Doctrine\ORM\EntityManager;
 use Imagine\Image\Box as ImageBox;
 use Imagine\Image\ImagineInterface;
@@ -191,7 +192,7 @@ class PackageInstaller
 
         $path = $package->getReadmeFilePath();
         if ($path) {
-            $readme = file_get_contents($path);
+            $readme = SafeFile::fileGetContents($path, dirname($path));
 
             if ($this->isAssetBlobChanged($def, 'README', md5($readme), true)) {
                 $blob = $this->blob_storage->createBlobRecordFromString(
@@ -345,7 +346,7 @@ class PackageInstaller
                     return '<!-- Invalid include file: '.$m[1].' -->';
                 }
 
-                $inc_content = @file_get_contents($path);
+                $inc_content = @SafeFile::fileGetContents($path, dirname($path));
 
                 return $inc_content;
             }, $content);

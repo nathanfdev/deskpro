@@ -33,6 +33,7 @@
  */
 namespace Application\DeskPRO\App\Package;
 
+use DeskPRO\Component\Filesystem\SafeFile;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
@@ -83,7 +84,7 @@ class ManifestReader
             return new self(array(), self::ERR_INVALID_FILE, array('file', 'missing_path'));
         }
 
-        $json = @file_get_contents($path);
+        $json = SafeFile::fileGetContents($path, dirname($path));
 
         return self::newFromJson($json);
     }

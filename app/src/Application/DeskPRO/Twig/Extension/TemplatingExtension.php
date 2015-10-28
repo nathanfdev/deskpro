@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Service\RateLimit;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Usersource\UsersourceInfo;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Orb\Auth\Adapter\IframeSsoInterface;
 use Orb\Auth\Adapter\JsSsoInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
@@ -1335,7 +1336,7 @@ class TemplatingExtension extends \Twig_Extension
             return '';
         }
 
-        return file_get_contents($path);
+        return SafeFile::fileGetContents($path.dirname($path));
     }
 
     public function includePhpFile($path, array $with = null)

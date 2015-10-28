@@ -39,6 +39,7 @@ use Application\DeskPRO\Banning\Form\Type\IpBanType;
 use Application\DeskPRO\Banning\IpBanEdit;
 use Application\DeskPRO\EntityRepository\BanEmail;
 use Application\DeskPRO\Exception\ValidationException;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -367,7 +368,7 @@ class BanningController extends AbstractController implements ProtectedControlle
 
         /** @var EmailBans $email_bans */
         $email_bans = $this->container->getSystemService('email_bans');
-        $content    = file_get_contents($file->getPath().'/'.$file->getFilename());
+        $content    = SafeFile::fileGetContents($file->getPath().'/'.$file->getFilename(), dirname($file->getRealPath()));
 
         foreach (explode(',', $content) as $email) {
             try {
