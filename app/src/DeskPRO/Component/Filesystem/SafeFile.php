@@ -56,7 +56,15 @@ namespace DeskPRO\Component\Filesystem;
  */
 class SafeFile
 {
-    private static $blacklist;
+    /**
+     * @var array
+     */
+    private static $blacklist = array();
+
+    /**
+     * @var bool
+     */
+    private static $emit_warnings = false;
 
     /**
      * @param string $path
@@ -88,6 +96,14 @@ class SafeFile
     public static function resetBlacklist()
     {
         self::$blacklist = array();
+    }
+
+    /**
+     * @param bool $onoff
+     */
+    public static function setEmitWarningsOption($onoff)
+    {
+        self::$emit_warnings = (bool) $onoff;
     }
 
     /**
@@ -213,12 +229,14 @@ class SafeFile
      */
     public static function fileGetContents($path, $whitelist = array())
     {
-        $path = realpath($path);
-        if (!$path) {
-            return false;
-        }
+        $orig_path = $path;
+        $path      = realpath($path);
 
-        if (!self::isValid($path, $whitelist)) {
+        if (!$path || !self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::fileGetContents($orig_path) is not valid", E_USER_WARNING);
+            }
+
             return false;
         }
 
@@ -235,12 +253,14 @@ class SafeFile
      */
     public static function file($path, $whitelist = array())
     {
-        $path = realpath($path);
-        if (!$path) {
-            return false;
-        }
+        $orig_path = $path;
+        $path      = realpath($path);
 
-        if (!self::isValid($path, $whitelist)) {
+        if (!$path || !self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::file($orig_path) is not valid", E_USER_WARNING);
+            }
+
             return false;
         }
 
@@ -258,12 +278,14 @@ class SafeFile
      */
     public static function fileOpen($path, $mode, $whitelist = array())
     {
-        $path = realpath($path);
-        if (!$path) {
-            return false;
-        }
+        $orig_path = $path;
+        $path      = realpath($path);
 
-        if (!self::isValid($path, $whitelist)) {
+        if (!$path || !self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::fileOpen($orig_path) is not valid", E_USER_WARNING);
+            }
+
             return false;
         }
 

@@ -102,6 +102,7 @@ class KernelBooter
         #------------------------------
 
         require DP_ROOT.'/src/DeskPRO/Component/Filesystem/SafeFile.php';
+        SafeFile::setEmitWarningsOption(true);
         SafeFile::addBlacklistFile(DP_WEB_ROOT.'/config.php');
         SafeFile::addBlacklistDir(dp_get_backup_dir());
         SafeFile::addBlacklistDir(dp_get_debug_dir());
