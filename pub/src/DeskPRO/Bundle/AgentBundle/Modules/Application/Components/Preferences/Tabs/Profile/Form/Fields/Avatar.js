@@ -5,7 +5,7 @@ import DropzoneComponent from 'react-dropzone-component';
 export class Avatar extends React.Component {
 
   static propTypes = {
-    value: PropTypes.object,
+    value: PropTypes.string,
     onChange: PropTypes.func.isRequired
   };
 
