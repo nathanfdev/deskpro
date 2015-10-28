@@ -42,9 +42,9 @@ export class MessageList extends React.Component {
   componentDidMount() {
     this.props.dispatch(loadAllAgents());
     this.refresh();
-    const interval = setInterval(this.refresh, 1000);
+    //const interval = setInterval(this.refresh, 1000);
     this.state = {
-      interval: interval
+      //interval: interval
     };
   }
 

@@ -57,9 +57,9 @@ export class List extends React.Component {
 
   constructor(props) {
     super(props);
-    const interval = setInterval(() => this.props.dispatch(messagesActions.refreshCounts()), 1000);
+    //const interval = setInterval(() => this.props.dispatch(messagesActions.refreshCounts()), 1000);
     this.state = {
-      interval: interval,
+      //interval: interval,
       stickers: {}
     };
   }

@@ -6,16 +6,35 @@ import { updateRoutingState } from '../../../Application/Actions/routingActions'
 
 
 class BaseList extends Component {
-  renderCount(count, active) {
+  renderCount(count) {
     if (count >= 0) {
-      const classes = classNames('list-counter', { 'active': active });
-
       return (
         <div className="list-counter-bucket">
-          <a className={classes} href="#">{count}</a>
+          {this.renderItemControl()}
+          <a className="list-counter active" href="#">{count}</a>
         </div>
       );
     }
+  }
+
+  renderItemControl() {
+    const { onItemControlClick } = this.props;
+
+    if (!onItemControlClick) {
+      return '';
+    }
+
+    const onClick = (e) => {
+      e.preventDefault();
+      onItemControlClick(e);
+    };
+
+    return (
+      <a href="" className="list-counter-dropdown active" onClick={onClick}>
+        <span>&nbsp;</span>
+        <i className="fa fa-angle-down"></i>
+      </a>
+    );
   }
 }
 
@@ -63,7 +82,7 @@ export class ListItem extends BaseList {
 
     return (
       <li className="counter-display">
-        {this.renderCount(count, active)}
+        {this.renderCount(count)}
         <a href="#" className={classes} onClick={onClick}>
           {label}
         </a>
@@ -107,6 +126,7 @@ export class ListItemStatefulContainer extends Component {
 export class NestedList extends BaseList {
   static propTypes = {
     onClick: PropTypes.func.isRequired,
+    onItemControlClick: PropTypes.func,
     groups: PropTypes.object,
     items: PropTypes.object,
     depth: PropTypes.number,
@@ -193,9 +213,15 @@ export class NestedList extends BaseList {
   renderListItem({nested, group, count}, depth) {
     this.ensureValidDepth(depth);
     const parts = this.getListItemParts(nested, group, depth);
+    const { onItemControlClick } = this.props;
 
     return (
-      <ListItem key={group} count={count} onClick={this.toggleExpanded(group)}>
+      <ListItem
+        key={group}
+        count={count}
+        onClick={this.toggleExpanded(group)}
+        onItemControlClick={onItemControlClick ? onItemControlClick(group) : null}
+      >
         <div part="label">{parts.label}</div>
         <div part="nested">{parts.nested}</div>
       </ListItem>

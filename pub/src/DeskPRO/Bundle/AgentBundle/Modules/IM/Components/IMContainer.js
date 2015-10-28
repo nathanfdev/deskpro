@@ -20,15 +20,7 @@ export class IMContainer extends React.Component {
   renderOverlay = () => {
 
     return (
-      <SimplePositioned
-        positionMy="left-25 top+1"
-        positionAt="center bottom"
-        collision="none"
-        positionTarget={document.getElementById('im-button')}
-        isOpen={this.props.overlayShown}
-        >
-        <Overlay />
-      </SimplePositioned>
+      <div></div>
     );
   };
 

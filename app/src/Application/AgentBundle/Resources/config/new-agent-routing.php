@@ -54,6 +54,14 @@ $collection->create(
 )
 ;
 $collection->create(
+    'react_agent_new_tickets',
+    array(
+        'path'       => '/new-tickets',
+        'controller' => 'AgentBundle:AgentChrome:agentChrome',
+    )
+)
+;
+$collection->create(
     'react_agent_tasks',
     array(
         'path'       => '/tasks',

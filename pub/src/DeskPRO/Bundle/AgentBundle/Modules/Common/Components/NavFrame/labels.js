@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import Immutable from 'immutable';
 
 export class LabelsDictionary extends Component {
 
@@ -14,7 +15,7 @@ export class LabelsDictionary extends Component {
     // count BC both for Immutable and JS objects
     count = labels.count ? labels.count() : labels.length;
     for (let i = 0, label, letter; i < count; i++) {
-      label  = labels[i];
+      label  = Immutable.Iterable.isIterable(labels) ? labels.get(i) : labels[i];
       letter = label[0].toUpperCase();
       if (!dictionary.hasOwnProperty(letter)) {
         dictionary[letter] = [];
