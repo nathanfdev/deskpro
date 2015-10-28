@@ -139,10 +139,6 @@ export const feedbackHiddenStatus = createAction(
   'FEEDBACK_HIDDEN_STATUS',
   () => Feedback.getHidden().then(promise => promise.getData()));
 
-export const resetFilterValue = createAction(
-  'FEEDBACK_RESET_FILTER_VALUE'
-);
-
 export const setTableSort = createAction(
   'FEEDBACK_SET_TABLE_SORT',
   (sort, order) => dispatch => {

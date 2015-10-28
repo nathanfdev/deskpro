@@ -4,7 +4,7 @@ import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu
 import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
 import {FilterItem} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/FilterItem';
 import {DateTimePicker} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/DateTimePicker';
-import { setFilterValue } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
+import { setFilterValue, loadFeedbackList } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 
 const FilterByDropdown = React.createClass({
 
@@ -25,12 +25,14 @@ const FilterByDropdown = React.createClass({
   resetFilter(type) {
     const {dispatch} = this.props;
     dispatch(setFilterValue({ type: type, value: null }));
+    dispatch(loadFeedbackList());
   },
 
-  submitDateCreatedFilter(model) {
+  submitFilter(model) {
     const {dispatch} = this.props;
     console.log(model);
     dispatch(setFilterValue(model));
+    dispatch(loadFeedbackList());
     // this.props.toggleDropdown();
   },
 
@@ -98,7 +100,7 @@ const FilterByDropdown = React.createClass({
               <div className="dpw-date-picker">
 
                 <div className="dpw-date-picker-panel-container">
-                  <Formsy.Form onValidSubmit={this.submitDateCreatedFilter}>
+                  <Formsy.Form onValidSubmit={this.submitFilter}>
                     <DateTimePicker name="created_from" className="dpw-date-picker-left"
                                     initialValue={initialFrom}/>
                     <DateTimePicker name="created_to" className="dpw-date-picker-right"
