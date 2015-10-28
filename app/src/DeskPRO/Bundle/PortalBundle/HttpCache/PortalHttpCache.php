@@ -92,6 +92,6 @@ class PortalHttpCache extends EventDispatchingHttpCache
      */
     protected function getOptions()
     {
-        return array('private_headers' => array(), 'debug' => true);
+        return array('private_headers' => array(), 'debug' => false);
     }
 }
