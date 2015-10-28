@@ -59,7 +59,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
     public function getFieldsAction(ApiPackageRequestContext $context)
     {
         $manager = $context->getContainer()->getTicketFieldManager();
-        $fields = array();
+        $fields  = array();
         foreach ($manager->getFields() as $field) {
             if ('Textarea' === substr($field->handler_class, strrpos($field->handler_class, '\\') + 1)) {
                 $fields[] = array(
