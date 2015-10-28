@@ -142,7 +142,12 @@ export class ProfileForm extends React.Component {
     const stateData = this.state.data;
     const submitData = {...stateData};
 
-    submitData.avatar = submitData.avatar.blob_auth_id;
+    if (submitData.avatar.blob_auth_id) {
+      submitData.avatar_blob_auth_id = submitData.avatar.blob_auth_id;
+    }
+
+    delete submitData.avatar;
+
     if (!submitData.phone.number) {
       delete submitData.phone;
     }
