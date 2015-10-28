@@ -1753,7 +1753,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
           (function(el){
 
             if ('newticket[person][id]' === el.name && el.value) {
-              console.info('person', el.value);
               return self.setUser(el.value);
             }
 
