@@ -150,7 +150,7 @@ define [
         getDataFormatter: ->
           return {
             getViewValue: (value = {}, data) ->
-              if value.options.custom_fields? && options.field_id?
+              if value.options?.custom_fields? && options.field_id?
                 val = value.options.custom_fields['field_' + options.field_id]
               else
                 val = value.options?[prop_name] || null
