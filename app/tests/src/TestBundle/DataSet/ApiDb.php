@@ -333,17 +333,16 @@ class ApiDb extends AbstractDbSet
         $this->getDb()->exec(
             "
             INSERT INTO `feedback`
-                (`status_category_id`,`category_id`,`title`, `slug`, `content`,`status`, `hidden_status`)
-
-            VALUES
-                (1, 1, 'Test feedback 1', 'Slug to feedback 1', 'Content of test feedback 1', 'hidden', 'deleted'),
-                (1, 2, 'Test feedback 2', 'Slug to feedback 2', 'Content of test feedback 2', 'active', 'validating'),
-                (1, 3, 'Test feedback 3', 'Slug to feedback 3', 'Content of test feedback 3', 'active', 'validating'),
-                (1, 1, 'Test feedback 4', 'Slug to feedback 4', 'Content of test feedback 4', 'hidden', 'spam'),
-                (5, 1, 'Test feedback 5', 'Slug to feedback 5', 'Content of test feedback 5', 'closed', 'validating'),
-                (1, 2, 'Test feedback 6', 'Slug to feedback 6', 'Content of test feedback 6', 'new', 'validating')
-            ;
-        "
+            (`id`, `status_category_id`, `category_id`, `person_id`, `language_id`, `hidden_status`, `validating`, `popularity`, `slug`, `title`, `content`, `view_count`, `total_rating`, `num_comments`, `num_ratings`, `status`, `date_created`, `date_published`, `date_updated`, `date_last_comment`)
+              VALUES
+              (1, 5, 1, 1, NULL, 'validating', NULL, 0, 'Example Suggestion', 'example-suggestion', 'This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 1, 0, 2, 'new', '2015-04-13 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
+              (2, 1, 1, 1, NULL, 'deleted', NULL, 0, 'slug-to-feedback-1', 'Test feedback 1', 'Content of test feedback 1', 0, 3, 0, 4, 'hidden', '2015-05-01 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+              (3, 1, 2, 1, NULL, NULL, NULL, 0, 'slug-to-feedback-2', 'Test feedback 2', 'Content of test feedback 2', 0, 5, 0, 6, 'active', '2015-06-02 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+              (4, 2, 3, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-3', 'Test feedback 3', 'Content of test feedback 3', 0, 0, 0, 0, 'active', '2015-07-03 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+              (5, 1, 1, 1, NULL, 'spam', NULL, 0, 'slug-to-feedback-4', 'Test feedback 4', 'Content of test feedback 4', 0, 1, 0, 1, 'hidden', '2015-08-04 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+              (6, 5, 1, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-5', 'Test feedback 5', 'Content of test feedback 5', 0, 2, 0, 1, 'closed', '2015-09-05 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+              (7, 1, 2, 1, NULL, 'validating', NULL, 15, 'slug-to-feedback-6', 'Test feedback 6', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'new', '2015-10-10 00:00:00', NULL, '0000-00-00 00:00:00', NULL);
+            "
         );
 
         $this->getDb()->exec(

@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import * as actions from '../../Actions/FeedbackListActions';
 import * as commentActions from '../../Actions/FeedbackCommentsActions';
 import { Nav } from './Nav';
-import { filterDataSelector } from '../../Selectors/list';
 import { loadFeedbackTypes } from '../../RecordStores/Actions/feedbackTypesActions';
 import { loadFeedbackLabels } from '../../RecordStores/Actions/feedbackLabelsActions';
 
@@ -15,7 +14,6 @@ import { loadFeedbackLabels } from '../../RecordStores/Actions/feedbackLabelsAct
     types: state.Feedback.nav.get('types'),
     labels: state.Feedback.nav.get('labels'),
     customCategories: state.Feedback.nav.get('customCategories').toJS(),
-    currentFilterMode: filterDataSelector(state),
     dpWindow: state.Application.dpWindow
   });
 })
@@ -24,7 +22,6 @@ export class NavContainer extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    currentFilterMode: PropTypes.object.isRequired,
     toValidateCount: PropTypes.number.isRequired,
     commentsToReviewCount: PropTypes.number.isRequired,
     statuses: PropTypes.object.isRequired,
@@ -36,7 +33,7 @@ export class NavContainer extends Component {
 
   constructor(props) {
     super(props);
-    const { dispatch, currentFilterMode } = this.props;
+    const { dispatch } = this.props;
 
     dispatch(loadFeedbackTypes());
     dispatch(loadFeedbackLabels());
@@ -49,7 +46,6 @@ export class NavContainer extends Component {
     dispatch(actions.feedbackActiveStatus());
     dispatch(actions.feedbackClosedStatus());
     dispatch(actions.feedbackHiddenStatus());
-    dispatch(actions.getFilterValues(currentFilterMode.name));
   }
 
   commentsView(group, event) {

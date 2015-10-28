@@ -28,11 +28,6 @@ export const currentListOrderSelector = createSelector(
   params => params.get('order')
 );
 
-export const filterDataSelector = createSelector(
-  stateSelector,
-    list => list.get('filterOptions').toJS().find(option=> option.current === true)
-);
-
 export const isCommentsSelector = createSelector(
   stateSelector,
     list => list.get('isComments')
