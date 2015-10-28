@@ -165,6 +165,8 @@ export class Avatar extends React.Component {
             <Cropper
               ref="cropper"
               src={tmpPath}
+              minCropBoxWidth="120"
+              minCropBoxHeight="120"
               aspectRatio={1 / 1} />
           )}
         </div>
