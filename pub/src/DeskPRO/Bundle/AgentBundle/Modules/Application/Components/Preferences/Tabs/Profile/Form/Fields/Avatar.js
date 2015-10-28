@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import Cropper from 'react-cropper';
+import { Cropper } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Cropper';
 import DropzoneComponent from 'react-dropzone-component';
 
 export class Avatar extends React.Component {
