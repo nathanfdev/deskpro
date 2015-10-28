@@ -155,16 +155,19 @@ export class Avatar extends React.Component {
           {tmpFile && (
             <Cropper
               ref="cropper"
-              src={tmpPath} />
+              src={tmpPath}
+              aspectRatio={1 / 1} />
           )}
         </div>
 
         {error && (<span className="error">{error}</span>)}
 
         {tmpFile && (
-          <a href="#" className="crop" onClick={this.onSave}>Crop &amp; Save Avatar</a>
+          <div>
+            <a href="#" className="crop" onClick={this.onSave}>Crop &amp; Save Avatar</a>
+            <a href="#" className="cancel" onClick={this.onDiscard}>Or cancel &amp; discard your changes</a>
+          </div>
         )}
-        <a href="#" className="cancel" onClick={this.onDiscard}>Or cancel &amp; discard your changes</a>
       </div>
     );
   }

@@ -84,7 +84,7 @@ class PersonProfileTransformer extends AbstractDataSerializerTransformer
             'phone'         => $phone_serialized,
             'language_id'   => $data->getLanguageId(),
             'timezone'      => $data->getTimezone(),
-            'avatar_url'    => $this->avatar_resolver->getAvatarModel($data->getPerson())->getUrl(),
+            'avatar_url'    => $this->avatar_resolver->getAvatarModel($data->getPerson())->getUrl(200),
         ];
     }
 }
