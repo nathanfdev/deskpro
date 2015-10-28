@@ -19,17 +19,17 @@ const initialState = {
   },
 
   filterOptions: [
-    {field: 'category', label: 'Type', icon: 'fa-calendar-o', value: '', current: true},
-    {field: 'status', label: 'Status', icon: 'fa-calendar-o', value: '', current: false},
-    {field: 'custom_category', label: 'Category', icon: 'fa-calendar-o', value: '', current: false}
+    { field: 'category', label: 'Type', icon: 'fa-calendar-o', value: '', current: true },
+    { field: 'status', label: 'Status', icon: 'fa-calendar-o', value: '', current: false },
+    { field: 'custom_category', label: 'Category', icon: 'fa-calendar-o', value: '', current: false }
   ],
   filterValues: [/* string */],
   commentsTableViewFields: [
-    {name: 'id', label: 'ID', className: 'id-col', status: constants.FIELD_SHOWN, priority: 1},
-    {name: 'status', label: 'Status', status: constants.FIELD_SHOWN, priority: 2},
-    {name: 'date_created', label: 'Created', status: constants.FIELD_SHOWN, priority: 10},
-    {name: 'validating', label: 'Validating', status: constants.FIELD_SHOWN, priority: 16},
-    {name: 'content', label: 'Content', status: constants.FIELD_SHOWN, priority: 18}
+    { name: 'id', label: 'ID', className: 'id-col', status: constants.FIELD_SHOWN, priority: 1 },
+    { name: 'status', label: 'Status', status: constants.FIELD_SHOWN, priority: 2 },
+    { name: 'date_created', label: 'Created', status: constants.FIELD_SHOWN, priority: 10 },
+    { name: 'validating', label: 'Validating', status: constants.FIELD_SHOWN, priority: 16 },
+    { name: 'content', label: 'Content', status: constants.FIELD_SHOWN, priority: 18 }
   ]
 };
 
@@ -72,6 +72,7 @@ export default createReducer(initialState, {
 
     return next;
   },
+
   [actions.toggleSelectedAction]: (state, payload) => {
     let selected = state.get('selected');
     selected = selected.includes(payload)
@@ -80,15 +81,20 @@ export default createReducer(initialState, {
 
     return state.set('selected', selected);
   },
+
   [actions.getDisplayFieldsFromPersonSetting]: async({
     success: (state, payload) =>
       state.setIn(['viewFields'], payload.data.value)
   }),
+
+  [actions.setFilterValue]: (state, payload) => state.setIn(['currentListParams', 'filters', payload.type], payload.value),
+
   [commentsActions.commentsToggleOrder]: setFullPayload('order'),
+
   [commentsActions.setTableSort]: (state, payload) => {
     const commentsTableViewFields = [];
     state.get('commentsTableViewFields').toJS().forEach(obj=> {
-      const nextObj = {...obj};
+      const nextObj = { ...obj };
       nextObj.order = nextObj.name === payload.sort ? payload.order : false;
       commentsTableViewFields.push(nextObj);
     });

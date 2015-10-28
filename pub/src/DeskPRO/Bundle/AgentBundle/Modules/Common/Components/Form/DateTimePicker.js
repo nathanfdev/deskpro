@@ -8,19 +8,29 @@ var DateTimePicker = React.createClass({
   mixins: [Formsy.Mixin],
 
   componentDidMount() {
-    const {name} = this.props;
+    const {name, initialValue} = this.props;
+    const initial = initialValue ? Moment(initialValue).format('MMMM D, YYYY, hh:mm') : null;
+    if (initialValue) {
+      this.setValue(Moment(initialValue).format('MMMM D, YYYY, hh:mm'));
+    }
     // Create the picker
     const picker = new Picker({
       input: ReactDOM.findDOMNode(this.refs[name]),
       button: ReactDOM.findDOMNode(this.refs[name]),
-      format: 'hh:mm, MMMM D, YYYY'
+      format: 'MMMM D, YYYY, hh:mm',
+      maxYear: Moment().year(),
+      initialValue: initial,
+      timeSliders: true
     });
     picker.render();
 
     // Change the component state and submit the edit when the date is changed
     picker.on('change', (newDate) => {
-      console.log('Changed', newDate);
-      this.setValue(Moment(newDate).format('hh:mm, MMMM D, YYYY'));
+      if (Moment(newDate).isValid()) {
+        this.setValue(Moment(newDate).format('MMMM D, YYYY, hh:mm'));
+      } else {
+        this.setValue(null);
+      }
     });
   },
 
