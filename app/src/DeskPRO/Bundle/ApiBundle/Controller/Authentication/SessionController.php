@@ -46,7 +46,7 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 class SessionController extends BaseController
 {
     /**
-     * @Post("/get_session", name="post_get_session")
+     * @Post("/get_session", name="api_post_get_session")
      *
      * @param Request $request
      *

@@ -57,7 +57,7 @@ class MeController extends BaseController
      *      }
      * )
      *
-     * @Get("/me", name="me")
+     * @Get("/me", name="api_me")
      */
     public function meAction()
     {
@@ -83,7 +83,7 @@ class MeController extends BaseController
     }
 
     /**
-     * @Get("/me/profile", name="get_my_profile")
+     * @Get("/me/profile", name="api_get_my_profile")
      */
     public function getProfileAction()
     {
@@ -94,7 +94,7 @@ class MeController extends BaseController
     }
 
     /**
-     * @Put("/me/profile", name="put_my_profile")
+     * @Put("/me/profile", name="api_put_my_profile")
      *
      * @param Request $request
      *

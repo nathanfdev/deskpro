@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { FieldWrapper } from './Fields/FieldWrapper';
+import { Avatar } from './Fields/Avatar';
 import { Name } from './Fields/Name';
 import { DisplayName } from './Fields/DisplayName';
 import { Email } from './Fields/Email';
@@ -28,6 +29,10 @@ export class ProfileForm extends React.Component {
 
     this.state = {
       data: {
+        avatar: {
+          blob_auth_id: null,
+          url: profile.get('avatar_url'),
+        },
         name: profile.get('name'),
         display_name: profile.get('display_name'),
         emails: profile.get('emails').toArray() || [],
@@ -47,6 +52,15 @@ export class ProfileForm extends React.Component {
       submit: false
     };
   }
+
+  onChangeAvatar = (value) => {
+    this.updateData({
+      avatar: {
+        url: this.state.data.avatar.url,
+        blob_auth_id: value
+      }
+    });
+  };
 
   onChangeName = (value) => {
     this.updateData({
@@ -128,6 +142,12 @@ export class ProfileForm extends React.Component {
     const stateData = this.state.data;
     const submitData = {...stateData};
 
+    if (submitData.avatar.blob_auth_id) {
+      submitData.avatar_blob_auth_id = submitData.avatar.blob_auth_id;
+    }
+
+    delete submitData.avatar;
+
     if (!submitData.phone.number) {
       delete submitData.phone;
     }
@@ -155,6 +175,8 @@ export class ProfileForm extends React.Component {
   renderNameField() {
     return (
       <FieldWrapper label="Your name" errors={this.state.errors.name}>
+        <Avatar value={this.state.data.avatar.url}
+                onChange={this.onChangeAvatar}/>
         <Name value={this.state.data.name}
               onChange={this.onChangeName} />
       </FieldWrapper>
