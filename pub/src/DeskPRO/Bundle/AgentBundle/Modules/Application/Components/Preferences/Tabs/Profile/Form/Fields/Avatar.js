@@ -65,6 +65,10 @@ export class Avatar extends React.Component {
       cropped: true
     });
 
+    this.setState({
+      tmpFilePath: blobUrl
+    });
+
     dropzone.addFile(croppedFile);
     dropzone.enqueueFile(croppedFile);
     dropzone.processQueue();
@@ -73,7 +77,6 @@ export class Avatar extends React.Component {
   onSuccess = (file, response) => {
     this.setState({
       tmpFile: null,
-      tmpFilePath: null,
       edit: false,
       error: null
     });
@@ -101,14 +104,15 @@ export class Avatar extends React.Component {
     });
   };
 
-  onEdit = () => {
+  onToggleEdit = () => {
     this.setState({
-      edit: true
+      edit: !this.state.edit
     });
   };
 
   renderUploader() {
     const tmpPath = this.state.tmpFilePath;
+    const tmpFile = this.state.tmpFile;
     const error = this.state.error;
     const djsConfig = {
       addRemoveLinks: true,
@@ -123,11 +127,11 @@ export class Avatar extends React.Component {
 
     return (
       <div className="avatar-crop" id="avatar-crop">
-        {tmpPath && (
+        {tmpFile && (
           <p>Click &amp; drag to crop your avatar</p>
         )}
         <div className="cropper-bucket">
-          <DropzoneComponent className={tmpPath && 'hidden'}
+          <DropzoneComponent className={tmpFile && 'hidden'}
                              ref="dropzoneComponent"
                              config={componentConfig}
                              eventHandlers={{
@@ -138,12 +142,12 @@ export class Avatar extends React.Component {
                              djsConfig={djsConfig}>
             <div className="dz-message">
               {this.props.value
-                ? (<img src={this.props.value} />)
+                ? (<img src={tmpPath || this.props.value} />)
                 : (<span>Drag and drop a photo here or click to browse.</span>)}
             </div>
           </DropzoneComponent>
 
-          {tmpPath && (
+          {tmpFile && (
             <Cropper
               ref="cropper"
               src={tmpPath}
@@ -153,7 +157,7 @@ export class Avatar extends React.Component {
 
         {error && (<span className="error">{error}</span>)}
 
-        {tmpPath && (
+        {tmpFile && (
           <a href="#" className="crop" onClick={this.onSave}>Crop &amp; Save Avatar</a>
         )}
         <a href="#" className="cancel" onClick={this.onDiscard}>Or cancel &amp; discard your changes</a>
@@ -164,7 +168,7 @@ export class Avatar extends React.Component {
   render() {
     return (
       <div className="bucket-column-last">
-        <a href="#" className="button button-secondary user-avatar" onClick={this.onEdit}>
+        <a href="#" className="button button-secondary user-avatar" onClick={this.onToggleEdit}>
           <span className="icon"></span>
           Manage Avatar
         </a>
