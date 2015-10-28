@@ -273,6 +273,14 @@ $right-bucket: 200px;
       padding-left: 10px;
       position: relative;
       z-index: 100;
+
+      .error {
+        display: block;
+        padding: 10px 0;
+        font-size: 0.85em;
+        opacity: 0.5;
+        color: #ff0000;
+      }
     }
   }
 }

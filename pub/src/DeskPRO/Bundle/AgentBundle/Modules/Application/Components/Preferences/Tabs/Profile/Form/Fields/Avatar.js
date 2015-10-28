@@ -78,9 +78,15 @@ export class Avatar extends React.Component {
     file.status = Dropzone.ADDED;
     file.accepted = true;
 
-    this.setState({
-      error: JSON.stringify(response)
-    });
+    if (response && response.error) {
+      this.setState({
+        error: response.error.message
+      });
+    } else {
+      this.setState({
+        error: 'An unknown error has occurred while uploading, please re-try again.'
+      });
+    }
   };
 
   onEdit = () => {
