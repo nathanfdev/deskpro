@@ -150,6 +150,7 @@ export function getList(params) {
   return DpApi.sendGet('DP_API/feedback/?' + compileParams(params));
 }
 
+/* @ToDo remove this method and endpoint */
 /**
  * Get values for chosen filter
  * @return {object} Promise

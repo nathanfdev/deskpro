@@ -16,18 +16,8 @@ const FilterByDropdown = React.createClass({
   /*
 
    mixins: [require('react-onclickoutside')],
-   */
 
-  getInitialState() {
-    return {
-      category: { value: false },
-      status: { value: { some: true } },
-      custom_category: { value: false },
-      date_created: { from: false, to: false }
-    };
-  },
-
-  /* handleClickOutside(event) {
+   handleClickOutside(event) {
    console.log('Click outside', event);
    this.props.toggleDropdown();
    },*/
@@ -40,20 +30,27 @@ const FilterByDropdown = React.createClass({
   submitDateCreatedFilter(model) {
     const {dispatch} = this.props;
     console.log(model);
-    this.setState({ date_created: model });
-    dispatch(setFilterValue({ type: 'date_created', value: model }));
+    dispatch(setFilterValue(model));
     // this.props.toggleDropdown();
+  },
+
+  checkIfActiveDateCreated() {
+    const {filterParams} = this.props;
+    if (filterParams && (filterParams.get('created_from') || filterParams.get('created_to'))) {
+      return true;
+    }
   },
 
   render() {
     const {filterParams} = this.props;
-    const initialFrom = filterParams && filterParams.get('date_created') ? filterParams.get('date_created').from : null;
-    const initialTo = filterParams && filterParams.get('date_created') ? filterParams.get('date_created').to : null;
+    console.log('Params', filterParams);
+    const initialFrom = filterParams && filterParams.get('created_from') ? filterParams.get('created_from') : null;
+    const initialTo = filterParams && filterParams.get('created_to') ? filterParams.get('created_to') : null;
     return (
       <Menu>
         <FilterItem
           filterType="category"
-          isActive={Boolean(filterParams && filterParams.get('category'))}
+          isActive={Boolean(filterParams && filterParams.category)}
           resetFilter={this.resetFilter}
           icon="calendar-o"
           label="Type"
@@ -65,7 +62,7 @@ const FilterByDropdown = React.createClass({
         </FilterItem>
         <FilterItem
           filterType="status"
-          isActive={Boolean(filterParams && filterParams.get('status'))}
+          isActive={Boolean(filterParams && filterParams.status)}
           resetFilter={this.resetFilter}
           icon="calendar-o"
           label="Status">
@@ -76,7 +73,7 @@ const FilterByDropdown = React.createClass({
         </FilterItem>
         <FilterItem
           filterType="custom_category"
-          isActive={Boolean(filterParams && filterParams.get('custom_category'))}
+          isActive={Boolean(filterParams && filterParams.custom_category)}
           resetFilter={this.resetFilter}
           icon="calendar-o"
           label="Category">
@@ -87,7 +84,7 @@ const FilterByDropdown = React.createClass({
         </FilterItem>
         <FilterItem
           filterType="date_created"
-          isActive={Boolean(filterParams && filterParams.get('date_created'))}
+          isActive={this.checkIfActiveDateCreated()}
           resetFilter={this.resetFilter}
           icon="calendar-o"
           label="Date"
@@ -102,9 +99,9 @@ const FilterByDropdown = React.createClass({
 
                 <div className="dpw-date-picker-panel-container">
                   <Formsy.Form onValidSubmit={this.submitDateCreatedFilter}>
-                    <DateTimePicker name="from" className="dpw-date-picker-left"
+                    <DateTimePicker name="created_from" className="dpw-date-picker-left"
                                     initialValue={initialFrom}/>
-                    <DateTimePicker name="to" className="dpw-date-picker-right"
+                    <DateTimePicker name="created_to" className="dpw-date-picker-right"
                                     initialValue={initialTo}/>
 
                     <div className=" dpw-date-picker-footer">

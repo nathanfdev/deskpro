@@ -8,6 +8,7 @@ import { loadFeedbackCommentsCounter } from 'DeskPRO/Bundle/AgentBundle/Modules/
 import { loadFeedbackStatuses } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackStatusesActions';
 import { loadFeedbackCategories } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';
 import { currentListParamsSelector } from '../Selectors/list';
+import Moment from 'moment';
 
 /**
  * Used to identify requests within record stores
@@ -53,34 +54,46 @@ export const setCurrentListParams = createAction(
 );
 
 export const loadFeedbackList = createAction(
-  'FEEDBACK_LIST',
-  (overwriteParams = {}) => (dispatch, getState)=> {
-    const currentParams = currentListParamsSelector(getState()).toJS();
+    'FEEDBACK_LIST',
+    (overwriteParams = {}) => (dispatch, getState)=> {
+      const currentParams = currentListParamsSelector(getState()).toJS();
 
-    let params = { ...currentParams, ...overwriteParams };
-    dispatch(setCurrentListParams(params));
-    const {navItem} = params;
-    if (navItem) {
-      delete params.navItem;
-      params = { ...params, ...navItem };
-    }
-    return () => Feedback.getList(params).then(promise => {
-      const feedback = promise.getData();
-      const ids = [];
-      for (var index in feedback.data) {
-        if (feedback.data.hasOwnProperty(index)) {
-          ids.push(feedback.data[index].id);
+      let params = { ...currentParams, ...overwriteParams };
+      dispatch(setCurrentListParams(params));
+      const {navItem} = params;
+      if (navItem) {
+        delete params.navItem;
+        params = { ...params, ...navItem };
+      }
+      const {filters} = params;
+      if (filters) {
+        delete params.filters;
+        if (filters.created_from) {
+          params.created_from = Moment(filters.created_from).format('YYYY-MM-DD HH:mm:ss');
+        }
+        if (filters.created_to) {
+          params.created_to = Moment(filters.created_to).format('YYYY-MM-DD HH:mm:ss');
         }
       }
-      dispatch(getAuthors(feedback));
-      dispatch(getCommentsCounter(ids));
-      dispatch(getStatuses(ids));
-      dispatch(getCategories(ids));
 
-      return feedback;
-    });
-  }
-);
+      return () => Feedback.getList(params).then(promise => {
+        const feedback = promise.getData();
+        const ids = [];
+        for (var index in feedback.data) {
+          if (feedback.data.hasOwnProperty(index)) {
+            ids.push(feedback.data[index].id);
+          }
+        }
+        dispatch(getAuthors(feedback));
+        dispatch(getCommentsCounter(ids));
+        dispatch(getStatuses(ids));
+        dispatch(getCategories(ids));
+
+        return feedback;
+      });
+    }
+  )
+  ;
 
 export const feedbackToValidate = createAction(
   'FEEDBACK_TO_VALIDATE',
@@ -125,11 +138,6 @@ export const feedbackClosedStatus = createAction(
 export const feedbackHiddenStatus = createAction(
   'FEEDBACK_HIDDEN_STATUS',
   () => Feedback.getHidden().then(promise => promise.getData()));
-
-export const getFilterValues = createAction(
-  'FEEDBACK_SELECT_FILTER',
-  (filterName) => Feedback.getFilterValues(filterName).then(promise => promise.getData())
-);
 
 export const resetFilterValue = createAction(
   'FEEDBACK_RESET_FILTER_VALUE'

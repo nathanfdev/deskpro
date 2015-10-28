@@ -18,8 +18,7 @@ const initialState = {
     order: constants.ORDER_DESC
   },
 
-  filterValues: [/* string */],
-  commentsTableViewFields: [
+  commentsTableViewFields: [ // temporary, must be removed later
     { name: 'id', label: 'ID', className: 'id-col', status: constants.FIELD_SHOWN, priority: 1 },
     { name: 'status', label: 'Status', status: constants.FIELD_SHOWN, priority: 2 },
     { name: 'date_created', label: 'Created', status: constants.FIELD_SHOWN, priority: 10 },
@@ -29,14 +28,6 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-
-  [actions.getFilterValues]: async({
-    success: (state, payload) => {
-      const values = [];
-      payload.data.map(item => values.push(item.title));
-      return state.setIn(['filterValues'], values);
-    }
-  }),
 
   [actions.loadFeedbackList]: async({
     success: (state, payload) => state.set('feedback', payload.data)
@@ -82,7 +73,7 @@ export default createReducer(initialState, {
       state.setIn(['viewFields'], payload.data.value)
   }),
 
-  [actions.setFilterValue]: (state, payload) => state.setIn(['currentListParams', 'filters', payload.type], payload.value),
+  [actions.setFilterValue]: (state, payload) => state.setIn(['currentListParams', 'filters'], Immutable.fromJS(payload)),
 
   [commentsActions.commentsToggleOrder]: setFullPayload('order'),
 

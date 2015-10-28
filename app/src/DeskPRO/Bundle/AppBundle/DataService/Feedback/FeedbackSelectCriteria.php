@@ -94,6 +94,16 @@ class FeedbackSelectCriteria extends Criteria
                         ->andWhere("$alias.hidden_status = :status")
                         ->setParameter('status', $value);
                     break;
+                case 'created_from':
+                    $qb
+                        ->andWhere("$alias.date_created >= DATE(:from_date)")
+                        ->setParameter('from_date', $value);
+                    break;
+                case 'created_to':
+                    $qb
+                        ->andWhere("$alias.date_created <= DATE(:to_date)")
+                        ->setParameter('to_date', $value);
+                    break;
                 case 'sort':
                     $sort = "$alias.$value";
                     break;
@@ -129,6 +139,7 @@ class FeedbackSelectCriteria extends Criteria
                 'page',
                 'count',
                 'ids',
+                'created_from', 'created_to'
             ]
         );
         $resolver->setAllowedValues('awaiting_validation', '1');
