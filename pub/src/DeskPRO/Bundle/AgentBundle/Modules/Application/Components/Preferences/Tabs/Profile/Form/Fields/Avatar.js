@@ -71,13 +71,14 @@ export class Avatar extends React.Component {
   };
 
   onSuccess = (file, response) => {
-    console.log('success', response);
     this.setState({
       tmpFile: null,
       tmpFilePath: null,
       edit: false,
       error: null
     });
+
+    this.props.onChange(response.blob_auth_id);
   };
 
   onError = (file, response) => {

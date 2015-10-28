@@ -29,7 +29,10 @@ export class ProfileForm extends React.Component {
 
     this.state = {
       data: {
-        avatar_url: profile.get('avatar_url'),
+        avatar: {
+          blob_auth_id: null,
+          url: profile.get('avatar_url'),
+        },
         name: profile.get('name'),
         display_name: profile.get('display_name'),
         emails: profile.get('emails').toArray() || [],
@@ -52,7 +55,10 @@ export class ProfileForm extends React.Component {
 
   onChangeAvatar = (value) => {
     this.updateData({
-      avatar_url: value
+      avatar: {
+        url: this.state.data.avatar.url,
+        blob_auth_id: value
+      }
     });
   };
 
@@ -136,6 +142,7 @@ export class ProfileForm extends React.Component {
     const stateData = this.state.data;
     const submitData = {...stateData};
 
+    submitData.avatar = submitData.avatar.blob_auth_id;
     if (!submitData.phone.number) {
       delete submitData.phone;
     }
@@ -163,7 +170,7 @@ export class ProfileForm extends React.Component {
   renderNameField() {
     return (
       <FieldWrapper label="Your name" errors={this.state.errors.name}>
-        <Avatar value={this.state.data.avatar_url}
+        <Avatar value={this.state.data.avatar.url}
                 onChange={this.onChangeAvatar}/>
         <Name value={this.state.data.name}
               onChange={this.onChangeName} />

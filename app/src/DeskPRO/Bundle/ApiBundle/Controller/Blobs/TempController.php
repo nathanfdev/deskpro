@@ -61,7 +61,7 @@ class TempController extends BaseController
                 'filesize_readable' => $blob->getReadableFilesize(),
                 'is_image'          => $blob->isImage(),
             ],
-            Response::HTTP_INTERNAL_SERVER_ERROR
+            Response::HTTP_CREATED
         );
     }
 }
