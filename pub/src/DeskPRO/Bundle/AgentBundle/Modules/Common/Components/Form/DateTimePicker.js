@@ -1,10 +1,21 @@
-import React, {Component} from 'react';
+import React, {PropTypes} from 'react';
 import Formsy from 'formsy-react';
 import ReactDOM from 'react-dom';
 import Picker from 'anytime';
 import Moment from 'moment';
 
 var DateTimePicker = React.createClass({
+
+  propTypes: {
+    name: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    className: PropTypes.string.isRequired,
+    initialValue: PropTypes.string,
+    filterParams: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    toggleDropdown: PropTypes.func.isRequired
+  },
+
   mixins: [Formsy.Mixin],
 
   componentDidMount() {
@@ -37,7 +48,7 @@ var DateTimePicker = React.createClass({
   render() {
     return (
       <div className={this.props.className}>
-        <label>{this.props.name}</label>
+        <label>{this.props.label}</label>
         <input ref={this.props.name} type="text" value={this.getValue()}/>
       </div>
     );

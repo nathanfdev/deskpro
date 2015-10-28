@@ -101,10 +101,18 @@ const FilterByDropdown = React.createClass({
 
                 <div className="dpw-date-picker-panel-container">
                   <Formsy.Form onValidSubmit={this.submitFilter}>
-                    <DateTimePicker name="created_from" className="dpw-date-picker-left"
-                                    initialValue={initialFrom}/>
-                    <DateTimePicker name="created_to" className="dpw-date-picker-right"
-                                    initialValue={initialTo}/>
+                    <DateTimePicker
+                      label="From"
+                      name="created_from"
+                      className="dpw-date-picker-left"
+                      initialValue={initialFrom}
+                      />
+                    <DateTimePicker
+                      label="To"
+                      name="created_to"
+                      className="dpw-date-picker-right"
+                      initialValue={initialTo}
+                      />
 
                     <div className=" dpw-date-picker-footer">
                       <button type="submit" className="dpw--panel-button">Apply Date Range Filter</button>
