@@ -77,8 +77,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			uploadTemplate: $('.template-upload', this.wrapper),
 			downloadTemplate: $('.template-download', this.wrapper)
 		});
-		this.wrapper.bind('fileuploaddone', function() {
+		this.wrapper.bind('fileuploaddone', function(e, data) {
 			self.getEl('attach_row').slideDown().removeClass('is-hidden');
+			data.result && data.result.forEach(function(el, i){
+				self.draft.addAttachment(el);
+			});
+
 		});
 		this.wrapper.bind('fileuploadstart', function() {
 			self.getEl('attach_row').slideDown().removeClass('is-hidden');
@@ -96,7 +100,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					self.getEl('attach_row').slideUp().addClass('is-hidden');
 				}
 			});
-        });
+
+			self.draft.removeAttachment($(this).prev('input').val());
+		});
 
 		$('.Date.customfield input', this.wrapper).each(function() {
 			$(this).datetimepicker({
@@ -1721,7 +1727,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         var str = window.localStorage.getItem(this.key());
         return str
           ? JSON.parse(str)
-          : [];
+          : {form:[], attachments:[]};
       },
       set: function (item) {
         try {
@@ -1738,6 +1744,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         var $form = self.getEl('newticket')
           , $discard = $('#discard-draft-btn', $form)
           , redactor = self.textarea.data('redactor')
+					, item = d.get()
+					, $attachRow = self.getEl('attach_row')
         ;
 
         $('input, select, textarea', $form).on('keyup change', function(e, byDraft){
@@ -1748,7 +1756,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
           d.reset();
         });
 
-        d.get().forEach(function(el, i){
+        item.form.forEach(function(el, i){
 
           (function(el){
 
@@ -1776,6 +1784,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
         });
 
+				var html = window.tmpl($('.template-download', self.wrapper).attr('id'))({files: item.attachments});
+				$attachRow.find('ul.files:first').append(html);
+				item.attachments.length && $attachRow.removeClass('is-hidden').show();
+
         d.isEmpty() ? $discard.hide() : $discard.show();
         redactor && self.textarea.getEditor().on('keyup change synced', function(){
           d.save();
@@ -1784,19 +1796,24 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
       save: function () {
         var $form = self.getEl('newticket')
           , $discard = $('#discard-draft-btn', $form)
+					, item = this.get()
           ;
-        this.set($form.serializeArray());
+
+				item.form = $form.serializeArray();
+        this.set(item);
         $discard.show();
       },
       reset: function () {
-        var data = this.get()
+        var item = this.get()
           , $form = self.getEl('newticket')
           , $discard = $('#discard-draft-btn', $form)
+					, $attachRow = self.getEl('attach_row')
           ;
 
-        data.forEach(function(el, i){
+        item.form.forEach(function(el, i){
           $('[name="' + el.name + '"]', $form).val('').trigger('change', true);
         });
+				$attachRow.hide().find('ul.files:first').children().remove();
 
         var $btn = self.getEl('switch_user');
         if ($btn.is(':visible')) {
@@ -1808,7 +1825,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
       },
       isEmpty: function() {
         var item = this.get();
-        return !item || !item.length;
+        return !item || (!item.form.length && !item.attachments.length);
       },
       resetAllDrafts: function () {
         // todo
@@ -1830,7 +1847,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
           break;
         }
         this.set(item);
-        this.removeAttachmentTemplate(id);
       }
     };
   }
