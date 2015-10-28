@@ -18,11 +18,6 @@ const initialState = {
     order: constants.ORDER_DESC
   },
 
-  filterOptions: [
-    { field: 'category', label: 'Type', icon: 'fa-calendar-o', value: '', current: true },
-    { field: 'status', label: 'Status', icon: 'fa-calendar-o', value: '', current: false },
-    { field: 'custom_category', label: 'Category', icon: 'fa-calendar-o', value: '', current: false }
-  ],
   filterValues: [/* string */],
   commentsTableViewFields: [
     { name: 'id', label: 'ID', className: 'id-col', status: constants.FIELD_SHOWN, priority: 1 },
