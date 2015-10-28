@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Blobs;
 
-use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Attachments\AcceptAttachment;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\View\View;
@@ -49,7 +49,11 @@ class TempController extends BaseController
      */
     public function postAction(Request $request)
     {
-        $blob = new Blob();
+        $file = $request->files->get('file');
+
+        /** @var AcceptAttachment $accept */
+        $accept = $this->container->getAttachmentAccepter();
+        $blob   = $accept->accept($file);
 
         return View::create(
             [
