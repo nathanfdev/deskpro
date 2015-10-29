@@ -18,7 +18,7 @@
 {% endmacro %}
 {% macro dl_detailed(dl) %}
     {% if dl.blob and dl.blob.extension %}
-        <span class="text-tag file-tag file-{{ dl.blob.extension }}">.{{ dl.blob.extension }}</span>
+        <i class="fa fa-{{ file_css_class(dl) }}"></i>
     {% else %}
         {# file type is unknown #}
         <span class="text-tag file-tag">&nbsp;</span>

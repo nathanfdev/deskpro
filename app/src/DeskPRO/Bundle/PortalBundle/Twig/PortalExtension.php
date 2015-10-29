@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Helper\TicketPublicIdResolver;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
+use DeskPRO\Bundle\PortalBundle\View\File\FileViewHelper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
@@ -117,7 +118,17 @@ class PortalExtension extends \Twig_Extension
             new \Twig_SimpleFunction('get_secure_content_cats', array($this, 'getSecureCats')),
             new \Twig_SimpleFunction('user_up_voted', array($this, 'didUserUpVote')),
             new \Twig_SimpleFunction('user_down_voted', array($this, 'didUserDownVote')),
+            new \Twig_SimpleFunction('file_css_class', array($this, 'getFileCssClass')),
         );
+    }
+
+    public function getFileCssClass(Entity\Download $download)
+    {
+        if ($blob = $download->getBlob()) {
+            return implode(' ', FileViewHelper::getCssClassForFileExtension($blob->getExtension()));
+        }
+
+        return '';
     }
 
     /**
