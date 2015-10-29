@@ -24,14 +24,16 @@ export class ProfileForm extends React.Component {
 
   constructor(props) {
     super(props);
+
     const profile = props.profile;
+    const avatar = profile.get('avatar');
     const phone = profile.get('phone');
 
     this.state = {
       data: {
         avatar: {
-          blob_auth_id: null,
-          url: profile.get('avatar_url'),
+          blob_auth_id: avatar && avatar.get('blob_auth_id'),
+          url: avatar && avatar.get('url')
         },
         name: profile.get('name'),
         display_name: profile.get('display_name'),

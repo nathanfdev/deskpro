@@ -75,6 +75,15 @@ class PersonProfileTransformer extends AbstractDataSerializerTransformer
             ];
         }
 
+        $picture_blob      = $data->getPerson()->picture_blob;
+        $avatar_serialized = null;
+        if ($picture_blob) {
+            $avatar_serialized = [
+                'blob_auth_id' => $picture_blob->getAuthId(),
+                'url'          => $this->avatar_resolver->getAvatarModel($data->getPerson())->getUrl(200),
+            ];
+        }
+
         return [
             'id'            => $data->getId(),
             'name'          => $data->getName(),
@@ -84,7 +93,7 @@ class PersonProfileTransformer extends AbstractDataSerializerTransformer
             'phone'         => $phone_serialized,
             'language_id'   => $data->getLanguageId(),
             'timezone'      => $data->getTimezone(),
-            'avatar_url'    => $this->avatar_resolver->getAvatarModel($data->getPerson())->getUrl(200),
+            'avatar'        => $avatar_serialized,
         ];
     }
 }
