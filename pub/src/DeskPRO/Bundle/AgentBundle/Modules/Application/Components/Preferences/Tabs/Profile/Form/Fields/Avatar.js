@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Cropper } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Cropper';
+import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import Dropzone from 'dropzone';
 import DropzoneComponent from 'react-dropzone-component';
 
@@ -122,6 +123,12 @@ export class Avatar extends React.Component {
     });
   };
 
+  onCloseEdit = () => {
+    this.setState({
+      edit: false
+    });
+  };
+
   onRemove = () => {
     this.onDiscard();
     this.props.onChange(null);
@@ -219,13 +226,15 @@ export class Avatar extends React.Component {
   render() {
     return (
       <div className="bucket-column-last">
-        <a href="#" className="button button-secondary user-avatar" onClick={this.onToggleEdit}>
-          {this.getImagePath() && (
-            <span className="icon" style={{backgroundImage: 'url(' + this.getImagePath() + ')'}}/>
-          )}
-          Manage Avatar
-        </a>
-        {this.renderUploaderPopup()}
+        <ClickOut onClickOut={this.onCloseEdit}>
+          <a href="#" className="button button-secondary user-avatar" onClick={this.onToggleEdit}>
+            {this.getImagePath() && (
+              <span className="icon" style={{backgroundImage: 'url(' + this.getImagePath() + ')'}}/>
+            )}
+            Manage Avatar
+          </a>
+          {this.renderUploaderPopup()}
+        </ClickOut>
       </div>
     );
   }
