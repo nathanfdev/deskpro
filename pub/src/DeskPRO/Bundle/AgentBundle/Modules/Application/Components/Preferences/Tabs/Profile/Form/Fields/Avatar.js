@@ -226,13 +226,13 @@ export class Avatar extends React.Component {
   render() {
     return (
       <div className="bucket-column-last">
-        <ClickOut onClickOut={this.onCloseEdit}>
-          <a href="#" className="button button-secondary user-avatar" onClick={this.onToggleEdit}>
-            {this.getImagePath() && (
-              <span className="icon" style={{backgroundImage: 'url(' + this.getImagePath() + ')'}}/>
-            )}
-            Manage Avatar
-          </a>
+        <a href="#" className="button button-secondary user-avatar" onClick={this.onToggleEdit} ref="editButton">
+          {this.getImagePath() && (
+            <span className="icon" style={{backgroundImage: 'url(' + this.getImagePath() + ')'}}/>
+          )}
+          Manage Avatar
+        </a>
+        <ClickOut onClickOut={this.onCloseEdit} additionalNodes={[this.refs.editButton]}>
           {this.renderUploaderPopup()}
         </ClickOut>
       </div>
