@@ -44,6 +44,7 @@ use Orb\Log\Loggable;
 use Orb\Log\Writer\ArrayWriter;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -129,8 +130,17 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                     'csrf_double_submit_protection' => false,
                 ]
             );
-            $captcha_check->submit([]); // the validator uses the request stack directly
+            $captcha_check->submit([]); // the validator use the request stack directly
             if (!$captcha_check->isValid()) {
+                if ($request->isXmlHttpRequest()) {
+                    return new JsonResponse(
+                        [
+                            'success' => false,
+                            'captcha' => true,
+                        ]
+                    );
+                }
+
                 return new RedirectResponse(
                     $this->container->get('router')->generate(
                         'portal_login',

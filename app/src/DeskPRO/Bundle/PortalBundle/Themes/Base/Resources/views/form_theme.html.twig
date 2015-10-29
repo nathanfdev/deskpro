@@ -301,7 +301,7 @@
 {# RECAPTHCA #}
 {% block deskpro_captcha_widget %}
     {% spaceless %}
-        <div class="bucket form-widget{% if not form.parent.vars.valid %} show-error{% endif %}">
+        <div class="bucket form-widget{% if form.parent and not form.parent.vars.valid %} show-error{% endif %}">
             {% if attr.options is defined %}
                 <script type="text/javascript">
                     var RecaptchaOptions =

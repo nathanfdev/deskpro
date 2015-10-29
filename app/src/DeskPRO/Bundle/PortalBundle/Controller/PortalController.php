@@ -37,7 +37,9 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class PortalController extends AbstractController
 {
@@ -192,6 +194,37 @@ class PortalController extends AbstractController
         $referer = $request->server->get('HTTP_REFERER');
 
         return $this->redirect($referer);
+    }
+
+    /**
+     * This is used by JS forms that need to periodically check if they need to render a CAPTCHA
+     * and if so, what HTML they should use to render it.
+     *
+     * @Route("/captcha-html", name="portal_captcha_html")
+     */
+    public function catpchaHtmlAction(Request $request)
+    {
+        $action = $request->get('action');
+
+        // if we know its for a login form, we can return a blank response if it's unnecessary
+        if ($action === 'login') {
+            $check = new LoginAbuseCheck(null, $request->getClientIp());
+            $check->markAsCheckOnly();
+            $this->getAntiAbuseService()->check($check);
+            if (!$check->isCaptchaRecommended()) {
+                return new JsonResponse([
+                    'captcha_required' => false,
+                ]);
+            }
+        }
+
+        //$form = $this->createFormBuilder()->add('captcha', 'deskpro_captcha')->getForm();
+
+        return new JsonResponse(
+            [
+                'captcha_required' => true,
+            ]
+        );
     }
 
     public function removeTrailingSlashAction(Request $request)

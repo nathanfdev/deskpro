@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\PortalBundle\EmailSender\PortalEmailSender;
 use Doctrine\DBAL\Driver\Connection;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -104,7 +105,17 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
             ));
         }
 
-        $this->anti_abuse->check(new LoginAbuseCheck($attempt_person, $ip));
+        $check = new LoginAbuseCheck($attempt_person, $ip);
+        $this->anti_abuse->check($check);
+
+        if ($request->isXmlHttpRequest()) {
+            return new JsonResponse(
+                [
+                    'success' => false,
+                    'captcha' => $check->isCaptchaRecommended(),
+                ]
+            );
+        }
 
         return parent::onAuthenticationFailure($request, $exception);
     }

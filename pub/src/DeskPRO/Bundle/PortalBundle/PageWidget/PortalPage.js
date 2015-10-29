@@ -9,12 +9,14 @@ import HTmlLinkToPostWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/HtmlLin
 import OmniSearchWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/OmniSearchWidget";
 import LanguageChangerWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/LanguageChangerWidget";
 import AgentBarWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/AgentBarWidget";
+import LoginDropdownWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/LoginDropdownWidget";
 import CustomPerFieldEdit from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/CustomPerFieldEdit";
 import $ from "jquery";
 
 export default class PortalPage extends PageWidget {
   init() {
     this.addWidgetDef(OmniSearchWidget, "#omnisearch");
+    this.addWidgetDef(LoginDropdownWidget, "#top-login-btn");
     this.addWidgetDef(LanguageChangerWidget, "#language-changer");
     this.addWidgetDef(NewTicketForm, "#new_ticket_page");
     this.addWidgetDef(EditTicketForm, "#edit_ticket_page");

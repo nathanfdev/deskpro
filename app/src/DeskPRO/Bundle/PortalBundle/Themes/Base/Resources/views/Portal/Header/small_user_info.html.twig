@@ -13,10 +13,10 @@
     {% endif %}
     <li>
       <div class="dropdown-group">
-        <a href="{{ path('portal_login') }}" class="button-small button-marked clickaway-dropdown" data-clickaway-target="top-login-dropdown">{{ phrase('portal.account.login-btn') }} <i
+        <a href="{{ path('portal_login') }}" id="top-login-btn" class="button-small button-marked clickaway-dropdown" data-clickaway-target="top-login-dropdown">{{ phrase('portal.account.login-btn') }} <i
                   class="fa fa-caret-down"></i></a>
 
-        <div class="active-button-dropdown language-dropdown" id="top-login-dropdown" style="min-width:300px;">
+        {#<div class="active-button-dropdown language-dropdown" id="top-login-dropdown" style="min-width:300px;">#}
             {#<div class="small-form">#}
               {#<form action="/login/authenticate-password" method="post" id="login-sidebar">#}
                 {#<input type="hidden" name="_failure_path" value="/en/login?retry=auth">#}
@@ -57,55 +57,55 @@
             {#</div>#}
           {#</div>#}
         {#</div>#}
-          <div class="small-form">
-            {% if show_login_form %}
-              <form action="{{ path('portal_login_submit') }}" method="post" id="login-sidebar">
-                <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}"/>
-                <label>
-                  <span>{{ phrase('portal.account.login-email') }}</span>
-                  <input type="text" tabindex="2" placeholder="email@example.com" name="username">
-                </label>
+          {#<div class="small-form">#}
+            {#{% if show_login_form %}#}
+              {#<form action="{{ path('portal_login_submit') }}" method="post" id="login-sidebar">#}
+                {#<input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}"/>#}
+                {#<label>#}
+                  {#<span>{{ phrase('portal.account.login-email') }}</span>#}
+                  {#<input type="text" tabindex="2" placeholder="email@example.com" name="username">#}
+                {#</label>#}
 
-                <label>
-                  <span>{{ phrase('portal.account.login-password') }}</span>
-                  <input type="password" tabindex="2" placeholder="Your password" name="password">
-                </label>
+                {#<label>#}
+                  {#<span>{{ phrase('portal.account.login-password') }}</span>#}
+                  {#<input type="password" tabindex="2" placeholder="Your password" name="password">#}
+                {#</label>#}
 
-                {% if show_remember_me %}
-                  <div class="permanent-login">
-                    <label><input tabindex="2" type="checkbox" name="remember_me"> {{ phrase('portal.account.login-remember') }}</label>
-                  </div>
-                {% endif %}
+                {#{% if show_remember_me %}#}
+                  {#<div class="permanent-login">#}
+                    {#<label><input tabindex="2" type="checkbox" name="remember_me"> {{ phrase('portal.account.login-remember') }}</label>#}
+                  {#</div>#}
+                {#{% endif %}#}
 
-                <button type="submit" tabindex="2">{{ phrase('portal.account.login-btn') }}</button>
+                {#<button type="submit" tabindex="2">{{ phrase('portal.account.login-btn') }}</button>#}
 
-                {% if show_forgot_password %}
-                  <div class="secondary-action">
-                    <a href="{{ path('portal_reset_password') }}">{{ phrase('portal.account.login-password-reminder') }}</a>
-                  </div>
-                {% endif %}
-              </form>
-            {% endif %}
+                {#{% if show_forgot_password %}#}
+                  {#<div class="secondary-action">#}
+                    {#<a href="{{ path('portal_reset_password') }}">{{ phrase('portal.account.login-password-reminder') }}</a>#}
+                  {#</div>#}
+                {#{% endif %}#}
+              {#</form>#}
+            {#{% endif %}#}
 
-            {# twitter, facebook, google (the old "icon" usersources) #}
-            {% if login_icon_usersources|length > 0 %}
-              {% for usersource in login_icon_usersources %}
-                <a href="{{ path('portal_login_authenticate', {'usersource_id': usersource.id}) }}"
-                   class="button auth-{{ usersource.adapter.codeName|lower }}"><i
-                          class="fa fa-{{ usersource.adapter.codeName|lower }}"></i> Login
-                  with {{ usersource.adapter.codeName|title }}</a>
-              {% endfor %}
-            {% endif %}
+            {#&#123;&#35; twitter, facebook, google (the old "icon" usersources) &#35;&#125;#}
+            {#{% if login_icon_usersources|length > 0 %}#}
+              {#{% for usersource in login_icon_usersources %}#}
+                {#<a href="{{ path('portal_login_authenticate', {'usersource_id': usersource.id}) }}"#}
+                   {#class="button auth-{{ usersource.adapter.codeName|lower }}"><i#}
+                          {#class="fa fa-{{ usersource.adapter.codeName|lower }}"></i> Login#}
+                  {#with {{ usersource.adapter.codeName|title }}</a>#}
+              {#{% endfor %}#}
+            {#{% endif %}#}
 
-            {# the newer "text button" usersources #}
-            {% if login_text_button_usersources|length > 0 %}
-              {% for usersource in login_text_button_usersources %}
-                <a href="{{ path('portal_login_authenticate', {'usersource_id': usersource.id}) }}"
-                   class="button">{{ usersource.options.login_custom_text }}</a>
-              {% endfor %}
-            {% endif %}
-          </div>
-        </div>
+            {#&#123;&#35; the newer "text button" usersources &#35;&#125;#}
+            {#{% if login_text_button_usersources|length > 0 %}#}
+              {#{% for usersource in login_text_button_usersources %}#}
+                {#<a href="{{ path('portal_login_authenticate', {'usersource_id': usersource.id}) }}"#}
+                   {#class="button">{{ usersource.options.login_custom_text }}</a>#}
+              {#{% endfor %}#}
+            {#{% endif %}#}
+          {#</div>#}
+        {#</div>#}
       </div>
     </li>
   {% endif %}

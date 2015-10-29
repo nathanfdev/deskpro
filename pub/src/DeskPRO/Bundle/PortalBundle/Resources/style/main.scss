@@ -7769,20 +7769,6 @@ form {
   }
 }
 
-// Cramped forms (in a dropdown, in the sidebar etc)
-.permanent-login {
-  position: relative;
-  top: -3px;
-  display: inline-block;
-  font-size: 0.85em;
-  line-height: 1.3em;
-
-  label {
-    display: inline-block;
-    cursor: pointer;
-  }
-}
-
 .small-form {
   // Login dropdown form
   margin: 0;
@@ -7838,6 +7824,21 @@ form {
     margin: 0px;
     margin-right: 4px;
   }
+}
+
+// Cramped forms (in a dropdown, in the sidebar etc)
+.permanent-login {
+  position: relative;
+  top: -3px;
+  display: inline-block;
+  font-size: 0.85em;
+  line-height: 1.3em;
+
+  label, span, label span {
+    display: inline-block;
+    cursor: pointer;
+  }
+
 }
 
 // Error handling
@@ -7908,4 +7909,10 @@ form {
   .level > .level > .level > .level-indent {
     margin-left: 23px;
   }
+}
+
+
+
+.captcha-form-widget {
+
 }
