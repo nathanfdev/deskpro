@@ -4,7 +4,7 @@ import { ListItemContainer } from './ListItemContainer';
 export class CategoryTab extends Component {
 
   static propTypes = {
-    customCategories: PropTypes.array.isRequired
+    customCategories: PropTypes.object.isRequired
   };
 
   render() {
@@ -12,7 +12,7 @@ export class CategoryTab extends Component {
 
     return (
       <ul>
-        {customCategories.map((item, index) =>
+        {customCategories.toJS().map((item, index) =>
             <ListItemContainer
               key={index}
               count={item.count}

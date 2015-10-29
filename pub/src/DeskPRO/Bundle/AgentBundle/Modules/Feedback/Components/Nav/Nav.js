@@ -16,7 +16,7 @@ export class Nav extends Component {
     statuses: PropTypes.object.isRequired,
     labels: PropTypes.array.isRequired,
     types: PropTypes.array.isRequired,
-    customCategories: PropTypes.array.isRequired,
+    customCategories: PropTypes.object.isRequired,
     toValidateCount: PropTypes.number.isRequired,
     commentsToReviewCount: PropTypes.number.isRequired
   };

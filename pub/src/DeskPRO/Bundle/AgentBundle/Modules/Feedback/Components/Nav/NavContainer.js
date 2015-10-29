@@ -13,7 +13,7 @@ import { loadFeedbackLabels } from '../../RecordStores/Actions/feedbackLabelsAct
     statuses: state.Feedback.nav.get('statuses').toJS(),
     types: state.Feedback.nav.get('types'),
     labels: state.Feedback.nav.get('labels'),
-    customCategories: state.Feedback.nav.get('customCategories').toJS(),
+    customCategories: state.Feedback.nav.get('customCategories'),
     dpWindow: state.Application.dpWindow
   });
 })

@@ -1,13 +1,13 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 import BaseItem from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/BaseItem';
 
-export class FilterItem extends React.Component {
+export class FilterItem extends Component {
   static propTypes = {
-    icon: React.PropTypes.string,
-    filterType: React.PropTypes.string.isRequired,
-    children: React.PropTypes.any,
-    resetFilter: React.PropTypes.func.isRequired,
-    isActive: React.PropTypes.bool
+    icon: PropTypes.string,
+    filterType: PropTypes.string.isRequired,
+    children: PropTypes.any,
+    resetFilter: PropTypes.func.isRequired,
+    isActive: PropTypes.bool
   };
 
   render() {
