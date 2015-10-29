@@ -547,6 +547,7 @@ class TicketType extends AbstractType
         if (in_array($field_def->getHandlerClass(), [
             'Application\DeskPRO\CustomFields\Handler\Hidden',
             'Application\DeskPRO\CustomFields\Handler\Display',
+            'Application\DeskPRO\CustomFields\Handler\Toggle',
         ])) {
             $options['label'] = false;
         }

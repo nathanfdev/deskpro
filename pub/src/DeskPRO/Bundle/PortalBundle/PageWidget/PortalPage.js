@@ -1,5 +1,6 @@
 import PageWidget from "DeskPRO/Component/PageWidget/PageWidget";
 import NewTicketForm from "DeskPRO/Bundle/PortalBundle/PageWidget/NewTicketForm";
+import DpInteractiveFormWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/DpInteractiveFormWidget";
 import EditTicketForm from "DeskPRO/Bundle/PortalBundle/PageWidget/EditTicketForm";
 import TicketView from "DeskPRO/Bundle/PortalBundle/PageWidget/TicketView";
 import FeedbackPage from "DeskPRO/Bundle/PortalBundle/PageWidget/FeedbackPage";
@@ -27,6 +28,7 @@ export default class PortalPage extends PageWidget {
     this.addWidgetDef(ClickAwayDropdownWidget, ".clickaway-dropdown");
     this.addWidgetDef(ClickToDismissWidget, ".click-to-dismiss");
     this.addWidgetDef(AgentBarWidget, "#agent-bar");
+    this.addWidgetDef(DpInteractiveFormWidget, ".dpx-interactive-form");
     return new Promise((resolve) => {
       $(document).ready(resolve);
       if (window.DP_LOAD_FN && window.DP_LOAD_FN.length) {

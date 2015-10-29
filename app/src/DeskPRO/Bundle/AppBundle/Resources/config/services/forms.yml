@@ -26,6 +26,11 @@ services:
       tags:
           - { name: form.type, alias: api_boolean }
 
+  form.single_checkbox:
+      class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\SingleCheckboxType
+      tags:
+          - { name: form.type, alias: single_checkbox }
+
   form.filter:
       class: DeskPRO\Bundle\AppBundle\Form\Type\FilterType
       tags:

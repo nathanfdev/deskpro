@@ -4,7 +4,9 @@
 
 {%- block form_row -%}
     <div class="bucket">
-        {{- form_label(form) -}}
+        {% if not (checkbox_label is defined and checkbox_label) %}
+            {{- form_label(form) -}}
+        {% endif %}
         {{- form_errors(form) -}}
         {{- form_widget(form) -}}
     </div>
@@ -37,6 +39,28 @@
 
 {%- block button_label -%}{%- endblock -%}
 
+{# Checkbox #}
+{% block checkbox_widget %}
+    {% spaceless %}
+        {% if checkbox_label is defined and checkbox_label %}
+            <label for="{{ id }}"><input
+                        type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />{{ checkbox_label|trans }}
+            </label>
+        {% else %}
+            {{ parent() }}
+        {% endif %}
+    {% endspaceless %}
+{% endblock checkbox_widget %}
+
+{% block single_checkbox_widget %}
+    {# we use a special type if its a single checkbox (toggle type) #}
+    <div class="dpx-checkbox-group">
+        <input
+            type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+        <label for="{{ id }}">{{ checkbox_label|trans }}</label>
+    </div>
+{% endblock %}
+
 {# letting logged in users choose their email #}
 {% block deskpro_person_email_choice_widget %}
     <div {{ block('widget_container_attributes') }}>
@@ -51,8 +75,6 @@
         {% endif %}
     </div>
 {% endblock deskpro_person_email_choice_widget %}
-
-
 
 
 {% block deskpro_custom_per_field_data_widget %}
@@ -111,7 +133,7 @@
             </div>
         </div>
         <div class="as-dpui">
-            <div class="new-ticket-attachements new-ticket-attachements-interactive" data-base-name="{{ form.vars.full_name }}">
+            <div class="new-ticket-attachements dpx-attachements" data-base-name="{{ form.vars.full_name }}">
                 <a class="attach-file"><i class="fa fa-link"></i> {{ phrase('portal.general.attach-instructions') }}</a>
             </div>
         </div>
@@ -152,7 +174,7 @@
                 </div>
             </div>
             <div class="as-dpui">
-                <div class="new-ticket-attachements new-ticket-attachements-interactive"
+                <div class="new-ticket-attachements dpx-attachements"
                      data-base-name="{{ form.vars.full_name }}">
                     <a class="attach-file"><i class="fa fa-link"></i> {{ phrase('portal.general.attach-instructions') }}
                     </a>
@@ -272,13 +294,12 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
 
 {% block deskpro_custom_field_choice_widget_expanded -%}
     <div {{ block('widget_container_attributes') }}>
-        <div class="deskpro-choice-widget">
+        <div class="{% if expanded %}dpx-checkbox-group{% else %}dpx-radio-group{% endif %}">
             {%- for child in form %}
                 {% if form.vars.choices[child.vars.value] is defined %}
                     {% if form.vars.choices[child.vars.value].data|length == 0 %}
                     {{- form_widget(child) -}}
                     {{- form_label(child) -}}
-                    <br>
                     {% endif %}
                 {% endif %}
             {% endfor -%}
@@ -290,7 +311,7 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
     {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
         {% set required = false %}
     {%- endif -%}
-    <select dp-select="" {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+    <select dpx-select="" {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
         {% if empty_value is not none -%}
             <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
         {%- endif %}
@@ -356,7 +377,7 @@ END HEIRARCHY
         {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
             {% set required = false %}
         {%- endif -%}
-        <select dp-select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+        <select dpx-select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
             {% if empty_value is not none -%}
                 <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
             {%- endif %}

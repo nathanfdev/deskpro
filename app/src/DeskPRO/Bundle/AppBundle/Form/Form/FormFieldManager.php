@@ -235,10 +235,10 @@ class FormFieldManager
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle':
 
                 return array(
-                    'checkbox',
+                    'single_checkbox',
                     'value',
                     $this->getGeneralOptionsForField($field_type, array(
-                        'checkbox_label' => $field_type->getOption('label_text'),
+                        'checkbox_label' => $field_type->getOption('label_text') ?: $field_type->getTitle(),
                         'force_boolean'  => true,
                     ), $agent_interface), );
 
