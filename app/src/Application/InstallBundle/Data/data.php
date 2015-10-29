@@ -26,150 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-# Language
-################################################################################
-
-##BEGIN:locale.language##
-$em->getConnection()->executeUpdate(
-    "
-    INSERT INTO `languages`
-        (`id`, `sys_name`, `lang_code`, `title`, `base_filepath`, `locale`, `flag_image`, `is_rtl`, `has_user`, `has_agent`, `has_admin`)
-    VALUES
-        (1, 'default', 'eng', 'English', NULL, 'en_US', 'us.png', 0, 1, 1, 1)
-    ;
-"
-);
-
-################################################################################
-# Departments
-################################################################################
-
-##BEGIN:create_department.department2##
-if (!$IMPORT_INSTALL) {
-    $q                       = new \Application\DeskPRO\Entity\Department();
-    $q['title']              = $translate->phrase('user.defaults.department_support');
-    $q['is_tickets_enabled'] = true;
-    $q['is_chat_enabled']    = false;
-    $em->persist($q);
-    $em->flush();
-}
-
-##BEGIN:create_department.department1##
-if (!$IMPORT_INSTALL) {
-    $q                       = new \Application\DeskPRO\Entity\Department();
-    $q['title']              = $translate->phrase('user.defaults.department_sales');
-    $q['is_tickets_enabled'] = true;
-    $q['is_chat_enabled']    = false;
-    $em->persist($q);
-    $em->flush();
-}
-
-##BEGIN:create_department.department3##
-if (!$IMPORT_INSTALL) {
-    $q                       = new \Application\DeskPRO\Entity\Department();
-    $q['title']              = $translate->phrase('user.defaults.department_support');
-    $q['is_tickets_enabled'] = false;
-    $q['is_chat_enabled']    = true;
-    $em->persist($q);
-    $em->flush();
-}
-
-##BEGIN:create_department.department4##
-if (!$IMPORT_INSTALL) {
-    $q                       = new \Application\DeskPRO\Entity\Department();
-    $q['title']              = $translate->phrase('user.defaults.department_sales');
-    $q['is_tickets_enabled'] = false;
-    $q['is_chat_enabled']    = true;
-    $em->persist($q);
-    $em->flush();
-}
-
-################################################################################
-# KB
-################################################################################
-
-##BEGIN:create_article.default##
-if (!$IMPORT_INSTALL) {
-    $DEFAULT_ARTICLE_CAT          = new \Application\DeskPRO\Entity\ArticleCategory();
-    $DEFAULT_ARTICLE_CAT['title'] = $translate->phrase('user.defaults.article_category_general');
-    $em->persist($DEFAULT_ARTICLE_CAT);
-    $em->flush();
-
-    $DEFAULT_ARTICLE          = new \Application\DeskPRO\Entity\Article();
-    $DEFAULT_ARTICLE->person  = $AGENT;
-    $DEFAULT_ARTICLE->title   = $translate->phrase('user.defaults.article_example_title');
-    $DEFAULT_ARTICLE->content = $translate->phrase('user.defaults.article_example_content');
-    $DEFAULT_ARTICLE->status  = 'published';
-    $DEFAULT_ARTICLE->addToCategory($DEFAULT_ARTICLE_CAT);
-    $em->persist($DEFAULT_ARTICLE);
-    $em->flush();
-}
-
-################################################################################
-# Downloads
-################################################################################
-
-##BEGIN:create_download_cat.default##
-if (!$IMPORT_INSTALL) {
-    $q          = new \Application\DeskPRO\Entity\DownloadCategory();
-    $q['title'] = $translate->phrase('user.defaults.downloads_category_general');
-    $em->persist($q);
-    $em->flush();
-}
-
-################################################################################
-# News
-################################################################################
-
-##BEGIN:create_news.default##
-if (!$IMPORT_INSTALL) {
-    $DEFAULT_NEWS_CAT          = new \Application\DeskPRO\Entity\NewsCategory();
-    $DEFAULT_NEWS_CAT['title'] = $translate->phrase('user.defaults.news_category_general');
-    $em->persist($DEFAULT_NEWS_CAT);
-    $em->flush();
-
-    $DEFAULT_NEWS           = new \Application\DeskPRO\Entity\News();
-    $DEFAULT_NEWS->person   = $AGENT;
-    $DEFAULT_NEWS->title    = $translate->phrase('user.defaults.news_example_title');
-    $DEFAULT_NEWS->content  = $translate->phrase('user.defaults.news_example_content');
-    $DEFAULT_NEWS->status   = 'published';
-    $DEFAULT_NEWS->category = $DEFAULT_NEWS_CAT;
-    $em->persist($DEFAULT_NEWS);
-    $em->flush();
-}
-
 ################################################################################
 # Feedback
 ################################################################################
-
-$em->getConnection()->executeUpdate(
-    "
-INSERT INTO `feedback_categories` (`id`, `parent_id`, `title`, `slug`, `display_order`, `depth`, `root`) VALUES
-(1, NULL, 'Suggestion', 'suggestion', 0, 0, NULL),
-(2, NULL, 'Feature Request', 'feature-request', 0, 0, NULL),
-(3, NULL, 'Bug Report', 'bug-report', 0, 0, NULL);
-"
-);
-
-$em->getConnection()->executeUpdate(
-    "
-INSERT INTO `custom_def_feedback` (`id`, `parent_id`, `app_id`, `sys_name`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `default_value`, `is_agent_field`) VALUES
-(1, NULL, NULL, 'cat', '', 0, 0, 'Category', 'e.g., maybe Windows, Mac, Linux.', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Text', 'a:0:{}', 1, 1, 0, NULL, 1);
-"
-);
-
-$em->getConnection()->executeUpdate(
-    "
-INSERT INTO `feedback_status_categories` (`id`, `status_type`, `title`, `display_order`) VALUES
-(1, 'active', 'Gathering Feedback', 0),
-(2, 'active', 'Planning', 0),
-(3, 'active', 'Started', 0),
-(4, 'active', 'Under Review', 0),
-(5, 'closed', 'Completed', 0),
-(6, 'closed', 'Duplicate', 0),
-(7, 'closed', 'Declined', 0);
-"
-);
 
 $em->getConnection()->executeUpdate(
     "
@@ -217,200 +76,29 @@ INSERT INTO `feedback_comments` (`id`, `feedback_id`, `person_id`, `ip_address`,
 );
 
 ################################################################################
-# Person Setting
-################################################################################
-
-$em->getConnection()->executeUpdate(
-    "
-    INSERT INTO `person_settings` (`person_id`, `name`, `value`)
-      VALUES
-      (1, 'feedback_display_fields', '{\"isStored\":null,\"isChanged\":\"1\",\"card\":{\"id\":{\"isShown\":\"1\"},\"hidden_status\":{\"isShown\":\"1\"},\"status_category\":{\"isShown\":\"1\"},\"custom_category\":{\"isShown\":\"1\"},\"type\":{\"isShown\":\"1\"},\"date_created\":{\"isShown\":null},\"total_rating\":{\"isShown\":\"1\"},\"num_ratings\":{\"isShown\":\"1\"},\"num_comments\":{\"isShown\":\"1\"}},\"table\":{\"id\":{\"isShown\":\"1\"},\"num_ratings\":{\"isShown\":\"1\"},\"title\":{\"isShown\":\"1\"},\"content\":{\"isShown\":\"1\"},\"hidden_status\":{\"isShown\":\"1\"},\"status_category\":{\"isShown\":\"1\"},\"type\":{\"isShown\":\"1\"},\"custom_category\":{\"isShown\":\"1\"},\"labels\":{\"isShown\":\"1\"},\"author_name\":{\"isShown\":\"1\"},\"num_comments\":{\"isShown\":\"1\"},\"date_created\":{\"isShown\":\"1\"},\"total_rating\":{\"isShown\":\"1\"},\"validating\":{\"isShown\":\"1\"}}}');
-    "
-);
-
-################################################################################
-# Agent Teams
-################################################################################
-
-##BEGIN:agent_teams.default1##
-$t         = new \Application\DeskPRO\Entity\AgentTeam();
-$t['name'] = $translate->phrase('agent.defaults.team_support_managers');
-$em->persist($t);
-$em->flush();
-
-##BEGIN:agent_teams.default2##
-$t         = new \Application\DeskPRO\Entity\AgentTeam();
-$t['name'] = $translate->phrase('agent.defaults.team_lvl1_support');
-$em->persist($t);
-$em->flush();
-
-##BEGIN:agent_teams.default3##
-$t         = new \Application\DeskPRO\Entity\AgentTeam();
-$t['name'] = $translate->phrase('agent.defaults.team_lvl2_support');
-$em->persist($t);
-$em->flush();
-
-##BEGIN:agent_teams.setting##
-$t          = new \Application\DeskPRO\Entity\Setting();
-$t['name']  = 'core.use_agent_team';
-$t['value'] = '1';
-$em->persist($t);
-$em->flush();
-
-################################################################################
-# Usergroups
-################################################################################
-
-##BEGIN:usergroups.everyone##
-$g             = new \Application\DeskPRO\Entity\Usergroup();
-$g['title']    = $translate->phrase('agent.defaults.usergroup_everyone');
-$g['note']     = $translate->phrase('agent.defaults.usergroup_everyone_note');
-$g['sys_name'] = 'everyone';
-$em->persist($g);
-$em->flush();
-$USERGROUP_EVERYONE = $g;
-
-##BEGIN:usergroups.register##
-$g             = new \Application\DeskPRO\Entity\Usergroup();
-$g['title']    = $translate->phrase('agent.defaults.usergroup_registered');
-$g['note']     = $translate->phrase('agent.defaults.usergroup_registered_note');
-$g['sys_name'] = 'registered';
-$em->persist($g);
-$em->flush();
-$USERGROUP_REG = $g;
-
-##BEGIN:usergroups.agent_all##
-$AGENTGROUP_ALL                   = new \Application\DeskPRO\Entity\Usergroup();
-$AGENTGROUP_ALL['title']          = $translate->phrase('agent.defaults.usergroup_agent_all_perms');
-$AGENTGROUP_ALL['note']           = $translate->phrase('agent.defaults.usergroup_agent_all_perms_note');
-$AGENTGROUP_ALL['is_agent_group'] = true;
-$AGENTGROUP_ALL['sys_name']       = 'agent_all_perms';
-$em->persist($AGENTGROUP_ALL);
-$em->flush();
-
-##BEGIN:usergroups.agent_all_nondestructive##
-$AGENTGROUP_ALL_ND                   = new \Application\DeskPRO\Entity\Usergroup();
-$AGENTGROUP_ALL_ND['title']          = $translate->phrase('agent.defaults.usergroup_agent_all_non_destructive');
-$AGENTGROUP_ALL_ND['note']           = $translate->phrase('agent.defaults.usergroup_agent_all_non_destructive_note');
-$AGENTGROUP_ALL_ND['is_agent_group'] = true;
-$AGENTGROUP_ALL_ND['sys_name']       = 'agent_all_safe_perms';
-$em->persist($AGENTGROUP_ALL_ND);
-$em->flush();
-
-// Permissions for ND group
-$ugid = $AGENTGROUP_ALL_ND->getId();
-$em->getConnection()->executeUpdate(
-    "
-    INSERT INTO `permissions` (`usergroup_id`, `person_id`, `value`, `name`)
-    VALUES
-        ($ugid, NULL, '1', 'agent_tickets.use'),
-        ($ugid, NULL, '1', 'agent_tickets.create'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_set_archived'),
-        ($ugid, NULL, '1', 'agent_tickets.reply_own'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_own'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_department_own'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_fields_own'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_assign_agent_own'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_assign_team_own'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_assign_self_own'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_cc_own'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_merge_own'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_labels_own'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_notes_own'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_set_hold_own'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_set_awaiting_user_own'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_set_awaiting_agent_own'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_set_resolved_own'),
-        ($ugid, NULL, '1', 'agent_tickets.reply_to_followed'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_followed'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_department_followed'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_fields_followed'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_assign_agent_followed'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_assign_team_followed'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_assign_self_followed'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_cc_followed'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_merge_followed'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_labels_followed'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_notes_followed'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_set_hold_followed'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_set_awaiting_user_followed'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_set_awaiting_agent_followed'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_set_resolved_followed'),
-        ($ugid, NULL, '1', 'agent_tickets.view_unassigned'),
-        ($ugid, NULL, '1', 'agent_tickets.reply_unassigned'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_unassigned'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_department_unassigned'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_fields_unassigned'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_assign_agent_unassigned'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_assign_team_unassigned'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_assign_self_unassigned'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_merge_unassigned'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_labels_unassigned'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_notes_unassigned'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_set_hold_unassigned'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_set_awaiting_user_unassigned'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_set_awaiting_agent_unassigned'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_set_resolved_unassigned'),
-        ($ugid, NULL, '1', 'agent_tickets.view_others'),
-        ($ugid, NULL, '1', 'agent_tickets.reply_others'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_others'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_department_others'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_fields_others'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_assign_agent_others'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_assign_team_others'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_assign_self_others'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_merge_others'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_labels_others'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_notes_others'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_set_hold_others'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_set_awaiting_user_others'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_set_awaiting_agent_others'),
-        ($ugid, NULL, '1', 'agent_tickets.modify_set_resolved_others'),
-        ($ugid, NULL, '1', 'agent_people.use'),
-        ($ugid, NULL, '1', 'agent_people.create'),
-        ($ugid, NULL, '1', 'agent_people.edit'),
-        ($ugid, NULL, '1', 'agent_people.validate'),
-        ($ugid, NULL, '1', 'agent_people.manage_emails'),
-        ($ugid, NULL, '1', 'agent_people.reset_password'),
-        ($ugid, NULL, '1', 'agent_people.notes'),
-        ($ugid, NULL, '1', 'agent_people.disable'),
-        ($ugid, NULL, '1', 'agent_org.create'),
-        ($ugid, NULL, '1', 'agent_org.edit'),
-        ($ugid, NULL, '1', 'agent_chat.use'),
-        ($ugid, NULL, '1', 'agent_chat.view_unassigned'),
-        ($ugid, NULL, '1', 'agent_chat.view_others'),
-        ($ugid, NULL, '1', 'agent_publish.create'),
-        ($ugid, NULL, '1', 'agent_publish.edit'),
-        ($ugid, NULL, '1', 'agent_publish.validate'),
-        ($ugid, NULL, '1', 'agent_general.signature'),
-        ($ugid, NULL, '1', 'agent_general.signature_rte')
-"
-);
-
-################################################################################
 # TEMPORARY TEST DATA: People
 ################################################################################
 
 if (!function_exists('create_user')) {
     function create_user($fname, $lname, $email, $pass, $agent = false, $admin = false, $is_deleted = false)
     {
-        $user             = new \Application\DeskPRO\Entity\Person();
+        $user = new \Application\DeskPRO\Entity\Person();
         $user->first_name = $fname;
-        $user->last_name  = $lname;
+        $user->last_name = $lname;
         $user->setEmail($email, true);
         $user->setPassword($pass);
-        $user->is_user      = true;
+        $user->is_user = true;
         $user->is_confirmed = true;
-        $user->is_deleted   = $is_deleted;
+        $user->is_deleted = $is_deleted;
 
         if ($agent || $admin) {
             $user->is_agent_confirmed = true;
-            $user->is_agent           = true;
-            $user->can_agent          = true;
+            $user->is_agent = true;
+            $user->can_agent = true;
         }
 
         if ($admin) {
-            $user->can_admin   = true;
+            $user->can_admin = true;
             $user->can_billing = true;
             $user->can_reports = true;
         }
@@ -809,10 +497,10 @@ $em->getConnection()->executeUpdate(
 $faker = \Faker\Factory::create();
 
 // the content publisher agent guy
-$publisher            = new \Application\DeskPRO\Entity\Person();
-$publisher->name      = 'Corporate Content';
+$publisher = new \Application\DeskPRO\Entity\Person();
+$publisher->name = 'Corporate Content';
 $publisher->can_agent = true;
-$publisher->is_agent  = true;
+$publisher->is_agent = true;
 $publisher->addEmailAddressString('content.publisher@deskprodemo.com');
 $publisher->setPassword('publisher');
 
@@ -820,7 +508,7 @@ $em->persist($publisher);
 $em->flush($publisher);
 
 // a regular dude
-$person       = new \Application\DeskPRO\Entity\Person();
+$person = new \Application\DeskPRO\Entity\Person();
 $person->name = 'Joe Kool';
 $person->addEmailAddressString('joe@deskprodemo.com');
 $person->setPassword('joe');
@@ -832,7 +520,7 @@ $em->flush($person);
 // articles
 //////////////////////////////////////////////////////////////
 
-$ac        = new \Application\DeskPRO\Entity\ArticleCategory();
+$ac = new \Application\DeskPRO\Entity\ArticleCategory();
 $ac->title = 'Germany Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
@@ -840,14 +528,14 @@ $em->persist($ac);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\Article();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
     $a->setCategories(array($ac));
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
     $em->persist($a);
 }
 
-$ac        = new \Application\DeskPRO\Entity\ArticleCategory();
+$ac = new \Application\DeskPRO\Entity\ArticleCategory();
 $ac->title = 'Finland Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
@@ -855,14 +543,14 @@ $em->persist($ac);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\Article();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
     $a->setCategories(array($ac, $em->getRepository('DeskPRO:ArticleCategory')->find(1)));
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
     $em->persist($a);
 }
 
-$ac        = new \Application\DeskPRO\Entity\ArticleCategory();
+$ac = new \Application\DeskPRO\Entity\ArticleCategory();
 $ac->title = 'Japan Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
@@ -870,7 +558,7 @@ $em->persist($ac);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\Article();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
     $a->setCategories(array($ac));
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -881,7 +569,7 @@ for ($i = 0; $i < 15; ++$i) {
 // news
 //////////////////////////////////////////////////////////////
 
-$ac        = new \Application\DeskPRO\Entity\NewsCategory();
+$ac = new \Application\DeskPRO\Entity\NewsCategory();
 $ac->title = 'Canada Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
@@ -889,14 +577,14 @@ $em->persist($ac);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\News();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
     $em->persist($a);
 }
 
-$ac        = new \Application\DeskPRO\Entity\NewsCategory();
+$ac = new \Application\DeskPRO\Entity\NewsCategory();
 $ac->title = 'U.S. Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
@@ -904,7 +592,7 @@ $em->persist($ac);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\News();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -916,7 +604,7 @@ $ac = $em->getRepository('DeskPRO:NewsCategory')->find(1);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\News();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -933,27 +621,27 @@ if (!function_exists('make_blob')) {
         $storage = new \Application\DeskPRO\BlobStorage\DeskproBlobStorage($em);
 
         $blob = $storage->createBlobRecordFromFile(
-            realpath(__DIR__.'/../../../../../web/images/dp-logo-130.png'),
+            realpath(__DIR__ . '/../../../../../web/images/dp-logo-130.png'),
             'dp-logo-130.png',
             'image/png'
         );
 
-        $blob->authcode = rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18);
+        $blob->authcode = rand(0, 18) . rand(0, 18) . rand(0, 18) . rand(0, 18) . rand(0, 18) . rand(0, 18);
 
         return $blob;
     }
 }
 
-$ac        = new \Application\DeskPRO\Entity\DownloadCategory();
+$ac = new \Application\DeskPRO\Entity\DownloadCategory();
 $ac->title = 'Canada Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
 
 for ($i = 0; $i < 15; ++$i) {
     $blob = make_blob($em);
-    $a    = new \Application\DeskPRO\Entity\Download();
+    $a = new \Application\DeskPRO\Entity\Download();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -961,16 +649,16 @@ for ($i = 0; $i < 15; ++$i) {
     $em->persist($a);
 }
 
-$ac        = new \Application\DeskPRO\Entity\DownloadCategory();
+$ac = new \Application\DeskPRO\Entity\DownloadCategory();
 $ac->title = 'U.S. Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
 
 for ($i = 0; $i < 15; ++$i) {
     $blob = make_blob($em);
-    $a    = new \Application\DeskPRO\Entity\Download();
+    $a = new \Application\DeskPRO\Entity\Download();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -982,9 +670,9 @@ $ac = $em->getRepository('DeskPRO:DownloadCategory')->find(1);
 
 for ($i = 0; $i < 15; ++$i) {
     $blob = make_blob($em);
-    $a    = new \Application\DeskPRO\Entity\Download();
+    $a = new \Application\DeskPRO\Entity\Download();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -1031,7 +719,7 @@ if (!function_exists('rand_fb_status_pair')) {
 for ($i = 0; $i < 30; ++$i) {
     $a = new \Application\DeskPRO\Entity\Feedback();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(750).'<br><br>'.$faker->text(1000));
+    $a->setContent($faker->text(750) . '<br><br>' . $faker->text(1000));
     $a->setCategory($DEFAULT_IDEA_CAT);
     $fbinfo = rand_fb_status_pair($em);
     $a->setStatus($fbinfo['status']);
@@ -1043,7 +731,7 @@ for ($i = 0; $i < 30; ++$i) {
 for ($i = 0; $i < 30; ++$i) {
     $a = new \Application\DeskPRO\Entity\Feedback();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(750).'<br><br>'.$faker->text(1000));
+    $a->setContent($faker->text(750) . '<br><br>' . $faker->text(1000));
     $a->setCategory($FEEDBACK_BUG);
     $fbinfo = rand_fb_status_pair($em);
     $a->setStatus($fbinfo['status']);
@@ -1057,7 +745,7 @@ $ac = $em->getRepository('DeskPRO:DownloadCategory')->find(1);
 for ($i = 0; $i < 30; ++$i) {
     $a = new \Application\DeskPRO\Entity\Feedback();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(750).'<br><br>'.$faker->text(1000));
+    $a->setContent($faker->text(750) . '<br><br>' . $faker->text(1000));
     $a->setCategory($FEEDBACK_FEATURE);
     $fbinfo = rand_fb_status_pair($em);
     $a->setStatus($fbinfo['status']);
@@ -1076,7 +764,7 @@ foreach (array('default', 'foo', 'bar', 'baz') as $type) {
     for ($i = 1; $i <= 10; ++$i) {
         $a = new \DeskPRO\Bundle\AppBundle\Entity\SandboxWidget();
         $a->setType($type);
-        $a->setName(ucfirst($type).' '.$i);
+        $a->setName(ucfirst($type) . ' ' . $i);
         $a->setInventory(5);
         $em->persist($a);
     }

@@ -31,13 +31,35 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\ORM;
 
-use DeskPRO\Bundle\AppBundle\DataFixtures\DpFixture;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStar;
+use Doctrine\Common\DataFixtures\AbstractFixture;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 
-class LoadTicketsData extends DpFixture
+class LoadTicketsData extends AbstractFixture implements OrderedFixtureInterface
 {
+    /**
+     * @var \Faker\Generator
+     */
+    protected $faker;
+
+    /**
+     * DpFixture constructor.
+     */
+    public function __construct()
+    {
+        $this->faker = \Faker\Factory::create();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOrder()
+    {
+        return 1000;
+    }
+
     /**
      * {@inheritdoc}
      */

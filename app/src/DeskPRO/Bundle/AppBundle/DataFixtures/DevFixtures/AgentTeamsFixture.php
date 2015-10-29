@@ -29,45 +29,37 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\DataFixtures;
+namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
-use Doctrine\Common\DataFixtures\FixtureInterface;
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\LabelPerson;
+use Doctrine\Common\DataFixtures\AbstractFixture;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Faker\Factory;
-use Faker\ORM\Doctrine\Populator;
 
-abstract class DpFixture implements FixtureInterface
+class AgentTeamsFixture extends AbstractFixture implements OrderedFixtureInterface
 {
     /**
-     * @var \Faker\Generator
+     * {@inheritdoc}
      */
-    protected $faker;
-
-    /**
-     * DpFixture constructor.
-     */
-    public function __construct()
+    public function getOrder()
     {
-        $this->faker = Factory::create();
+        return 50;
     }
 
-    protected function populate(ObjectManager $manager, array $specs)
+    /**
+     * {@inheritdoc}
+     */
+    public function load(ObjectManager $manager)
     {
-        $generator = $this->faker;
-        $populator = new Populator($generator, $manager);
-        foreach ($specs as $spec) {
-            if (count($spec) < 2) {
-                throw new \Exception('Each data spec within array passed to the populate() must have at least two
-                                      elements: entity class and number of fake entries to generate');
-            }
-            $populator->addEntity(
-                $spec[0],
-                $spec[1],
-                array_key_exists(2, $spec) ? $spec[2] : [],
-                array_key_exists(3, $spec) ? $spec[3] : []
-            );
+        foreach (array('Support', 'Level 1', 'Level 2') as $k => $title) {
+            $team = new AgentTeam();
+            $team->name = $title;
+            $this->addReference('team.' . $k, $team);
+            $manager->persist($team);
         }
 
-        return $populator->execute();
+        $manager->flush();
     }
 }
