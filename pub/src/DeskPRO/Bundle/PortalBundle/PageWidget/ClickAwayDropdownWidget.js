@@ -11,6 +11,9 @@ export default class ClickAwayDropdownWidget extends PageWidget {
       event.preventDefault();
       event.stopPropagation();
       $target.toggle();
+      if ($target.is(":visible")) {
+        $target.find('input:visible').first().focus();
+      }
     });
 
     $target.click((event) => {
