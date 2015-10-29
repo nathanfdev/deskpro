@@ -166,7 +166,6 @@ const BaseItem = React.createClass({
   checkIfItemListExists() {
     let hasItemList = false;
     if (this.props.children) {
-      console.log(this.props.children);
       React.Children.map(this.props.children,
         (child) => {
           if (child && child.type && child.type.displayName === 'ItemList') {

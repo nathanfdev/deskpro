@@ -5,7 +5,7 @@ import { FilterByDropdown } from './FilterByDropdown';
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 
 @connect(state => ({
-  listParams: state.Feedback.list.get('currentListParams')
+  filterParams: state.Feedback.list.get('currentListParams').get('filters')
 }))
 
 export class FilterContainer extends Component {
@@ -14,14 +14,26 @@ export class FilterContainer extends Component {
     toggleDropdown: PropTypes.func.isRequired,
     expanded: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
-    listParams: PropTypes.object.isRequired
+    filterParams: PropTypes.object.isRequired
   };
 
   render() {
-    const {dispatch, expanded, toggleDropdown, listParams} = this.props;
+    const {dispatch, expanded, toggleDropdown, filterParams} = this.props;
+    let title = 'Filter By';
+    let filterLabel = '';
+    let filtersCounter = 0;
+    if (filterParams) {
+      title += ':';
+      if (filterParams.get('created_from') || filterParams.get('created_to')) {
+        filterLabel = 'Created';
+        filtersCounter++;
+      }
+    }
     return (
       <FilterBy
-        filterParams={listParams.get('filters')}
+        title={title}
+        filterLabel={filterLabel}
+        filtersCounter={filtersCounter}
         toggleDropdown={toggleDropdown}
         ref="filterButton"
         >
@@ -29,7 +41,7 @@ export class FilterContainer extends Component {
                     positionAt="left bottom"
                     positionTarget={this.refs.filterButton}>
           <FilterByDropdown
-            filterParams={listParams.get('filters')}
+            filterParams={filterParams}
             toggleDropdown={toggleDropdown}
             dispatch={dispatch}
             />

@@ -46,7 +46,6 @@ const FilterByDropdown = React.createClass({
 
   renderDateCreatedItemContent(active) {
     if (active) {
-      console.log('ACTIVE!!!');
       const {filterParams} = this.props;
       const from = filterParams.get('created_from') ? Moment(filterParams.get('created_from')).format('DD/MM/YYYY') : '...';
       const to = filterParams.get('created_to') ? Moment(filterParams.get('created_to')).format('DD/MM/YYYY') : '...';
