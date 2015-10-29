@@ -3,6 +3,7 @@ import { Cropper } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Cr
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import Dropzone from 'dropzone';
 import DropzoneComponent from 'react-dropzone-component';
+import jQuery from 'jquery';
 
 export class Avatar extends React.Component {
 
@@ -118,12 +119,20 @@ export class Avatar extends React.Component {
   };
 
   onToggleEdit = () => {
+    if (this.state.tmpFile) {
+      return;
+    }
+
     this.setState({
       edit: !this.state.edit
     });
   };
 
   onCloseEdit = () => {
+    if (this.state.tmpFile) {
+      return;
+    }
+
     this.setState({
       edit: false
     });
@@ -232,7 +241,10 @@ export class Avatar extends React.Component {
           )}
           Manage Avatar
         </a>
-        <ClickOut onClickOut={this.onCloseEdit} additionalNodes={[this.refs.editButton]}>
+        <ClickOut onClickOut={this.onCloseEdit}
+                  additionalNodes={[this.refs.editButton]}
+                  ignoreNodes={[jQuery('.dz-hidden-input')[0]]}>
+
           {this.renderUploaderPopup()}
         </ClickOut>
       </div>

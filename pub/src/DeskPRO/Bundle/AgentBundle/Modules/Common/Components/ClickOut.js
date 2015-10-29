@@ -1,9 +1,11 @@
 import React, { PropTypes } from 'react';
 import jQuery from 'jquery';
+import ReactDOM from 'react-dom';
 
 export class ClickOut extends React.Component {
 
   static propTypes = {
+    ignoreNodes: PropTypes.array,
     additionalNodes: PropTypes.array,
     children: PropTypes.node,
     onClickOut: PropTypes.func.isRequired
@@ -18,7 +20,23 @@ export class ClickOut extends React.Component {
   }
 
   onClick = event => {
-    const { additionalNodes, onClickOut } = this.props;
+    const { additionalNodes, ignoreNodes, onClickOut } = this.props;
+
+    if (ignoreNodes) {
+      let skip = false;
+
+      ignoreNodes.forEach(node => {
+        console.log(node, event.target);
+        if (node === event.target) {
+          skip = true;
+        }
+      });
+
+      if (skip) {
+        return;
+      }
+    }
+
     const nodes = additionalNodes || [];
     nodes.push(this.refs.container);
 
