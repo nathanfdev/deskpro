@@ -20,20 +20,22 @@ export class FilterContainer extends Component {
   render() {
     const {dispatch, expanded, toggleDropdown, filterParams} = this.props;
     let title = 'Filter By';
-    let filterLabel = '';
+    let label = '';
     let filtersCounter = 0;
     if (filterParams) {
       title += ':';
       if (filterParams.get('created_from') || filterParams.get('created_to')) {
-        filterLabel = 'Created';
+        label = 'Created';
         filtersCounter++;
+      }
+      if (filtersCounter > 1) {
+        label = filtersCounter + ' Options';
       }
     }
     return (
       <FilterBy
         title={title}
-        filterLabel={filterLabel}
-        filtersCounter={filtersCounter}
+        label={label}
         toggleDropdown={toggleDropdown}
         ref="filterButton"
         >
