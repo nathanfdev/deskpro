@@ -2847,6 +2847,26 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
     display: inline-block;
     padding-top: 5px;
   }
+
+  @media screen and (max-width: 760px) {
+    position: relative;
+    text-align: left;
+    display: block;
+    top: initial;
+    right: initial;
+    left: 0px;
+    top: 0px;
+    margin-bottom: 5px;
+    .answer-icon {
+      float: none;
+      margin-left: 0;
+      margin-right: 5px;
+      text-align: center;
+    }
+    .answer-yes {
+      margin-left: 5px;
+    }
+  }
 }
 
 .active .this-answered-my-question.inline, li.related-article-item:hover .this-answered-my-question.inline {
@@ -6807,6 +6827,7 @@ ul.big-button-collection {
   margin-bottom: 43px;
   line-height: 1em;
   z-index: 9999;
+  border-bottom: 3px solid #3d77b6;
 }
 
 body.with-agent-bar {
@@ -6816,9 +6837,8 @@ body.with-agent-bar {
 .deskpro-agent-top-bar {
   max-width: 1180px;
   margin: 0 auto;
-  height: 43px;
+  height: 40px;
   color: #fff;
-  border-bottom: 3px solid #3d77b6;
   // font-family: $fonts;
   font-size: 11px;
   font-weight: 500;
@@ -7312,7 +7332,7 @@ body.with-agent-bar {
   margin-top: 5px;
   margin-right: 50px;
   margin-bottom: 10px;
-  margin-left: 5px;
+  margin-left: 10px;
 
   input[type="radio"] {
     display: none;
@@ -7399,6 +7419,8 @@ body.with-agent-bar {
 
     border: 1px solid $button-color;
     border-radius: 2px;
+    max-height: 300px;
+    overflow-y: scroll;
 
     a {
       display: block;
@@ -7509,6 +7531,13 @@ body.with-agent-bar {
   }
 }
 
+.form-item-valid {
+  color: #93d06e;
+  i {
+    margin-left: 5px;
+  }
+}
+
 input[type="text"], input[type="email"], input[type="password"], textarea, select, .multiselect {
   max-width: 620px;
 }
@@ -7598,6 +7627,12 @@ form {
   }
 }
 
+.checkbox-container {
+  display: inline-block;
+  min-width: 120px;
+  margin-left: 10px;
+}
+
 .checkbox {
   background: #f0f0f0;
   border: 1px solid #c7c7c7;
@@ -7681,26 +7716,6 @@ form {
     border: 1px solid $form-border-color;
     border-radius: 2px;
     background: $page-background;
-  }
-}
-
-.error-large {
-  position: relative;
-  margin-bottom: 10px;
-  padding: $form-padding-vertical $form-padding-horizontal;
-  border-radius: 2px;
-  background: $red;
-  color: #ffffff;
-
-  &:before {
-    position: absolute;
-    top: -8px;
-    left: 40px;
-    display: block;
-    width: 0;
-    border: 4px solid rgba(0, 0, 0, 0);
-    border-bottom: 4px solid $red;
-    content: " ";
   }
 }
 
@@ -7843,6 +7858,33 @@ form {
 
 // Error handling
 form {
+  .error-large {
+    position: absolute;
+    margin-bottom: 10px;
+    padding: $form-padding-vertical $form-padding-horizontal;
+    border-radius: 2px;
+    background: $red;
+    color: #ffffff;
+    width: 100%;
+    max-width: 620px;
+    z-index: 199;
+
+    &:before {
+      position: absolute;
+      top: -8px;
+      left: 40px;
+      display: block;
+      width: 0;
+      border: 4px solid rgba(0, 0, 0, 0);
+      border-bottom: 4px solid $red;
+      content: " ";
+    }
+    &.solo {
+      // If there's no margin on the parent element
+      margin-top: 10px;
+    }
+  }
+
   .error {
     .message {
       position: absolute;
