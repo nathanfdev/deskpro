@@ -93,6 +93,7 @@ export class Avatar extends React.Component {
     });
 
     this.props.onChange(response.blob_auth_id);
+    this.refs.dropzoneComponent.dropzone.removeFile(file);
   };
 
   onError = (file, response) => {
@@ -152,7 +153,7 @@ export class Avatar extends React.Component {
     );
   }
 
-  renderUploader() {
+  renderUploaderPopup() {
     const tmpFile = this.state.tmpFile;
     const tmpPath = this.state.tmpFilePath;
     const error = this.state.error;
@@ -166,8 +167,13 @@ export class Avatar extends React.Component {
       postUrl: `${DP_BASE_URL}/api/v2/blobs/temp`
     };
 
+    const classNames = ['avatar-crop'];
+    if (!this.state.edit) {
+      classNames.push('hidden');
+    }
+
     return (
-      <div className="avatar-crop" id="avatar-crop">
+      <div className={classNames.join(' ')} id="avatar-crop">
         {tmpFile && (
           <p>Click &amp; drag to crop your avatar</p>
         )}
@@ -215,7 +221,7 @@ export class Avatar extends React.Component {
           )}
           Manage Avatar
         </a>
-        {this.state.edit && this.renderUploader()}
+        {this.renderUploaderPopup()}
       </div>
     );
   }
