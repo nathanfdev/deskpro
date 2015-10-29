@@ -5,7 +5,9 @@ import { FilterByDropdown } from './FilterByDropdown';
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 
 @connect(state => ({
-  filterParams: state.Feedback.list.get('currentListParams').get('filters')
+  filterParams: state.Feedback.list.get('currentListParams').get('filters'),
+  statuses: state.Feedback.nav.get('statuses'),
+  types: state.Feedback.nav.get('types')
 }))
 
 export class FilterContainer extends Component {
@@ -14,11 +16,13 @@ export class FilterContainer extends Component {
     toggleDropdown: PropTypes.func.isRequired,
     expanded: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
+    statuses: PropTypes.object.isRequired,
+    types: PropTypes.object.isRequired,
     filterParams: PropTypes.object.isRequired
   };
 
   render() {
-    const {dispatch, expanded, toggleDropdown, filterParams} = this.props;
+    const {dispatch, expanded, toggleDropdown, filterParams, statuses, types} = this.props;
     let title = 'Filter By';
     let label = '';
     let filtersCounter = 0;
@@ -43,6 +47,8 @@ export class FilterContainer extends Component {
                     positionAt="left bottom"
                     positionTarget={this.refs.filterButton}>
           <FilterByDropdown
+            types={types}
+            statuses={statuses}
             filterParams={filterParams}
             toggleDropdown={toggleDropdown}
             dispatch={dispatch}
