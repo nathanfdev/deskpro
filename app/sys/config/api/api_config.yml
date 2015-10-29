@@ -10,6 +10,7 @@ parameters:
   hateoas.serializer.json_hal.class: DeskPRO\Bundle\ApiBundle\Serializer\HateoasJsonApiSerializer
   monolog.logger.class: DeskPRO\Bundle\AppBundle\Logging\NoExceptionsLogger
   file_locator.class: DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator
+  nelmio_api_doc.extractor.api_doc_extractor.class: DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\ApiDocExtractor
 
 api:
     data_serializer:
@@ -109,17 +110,10 @@ fos_rest:
 nelmio_api_doc:
     name: 'DeskPRO API Documentation'
     sandbox:
+        enabled: false
+    cache:
         enabled: true
-        body_format:
-            formats:
-                - json
-            default_format: json
-        request_format:
-            formats:
-                json: application/json
-            method: accept_header
-            default_format: json
-
+        file: '%kernel.cache_dir%/api-doc.cache'
 
 # Security Configuration
 security:

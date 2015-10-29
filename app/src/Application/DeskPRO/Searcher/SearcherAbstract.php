@@ -160,7 +160,7 @@ abstract class SearcherAbstract implements PersonContextInterface
     }
 
     /**
-     * @depreciated Use setPersonContext
+     * @deprecated Use setPersonContext
      */
     public function setPerson($person)
     {

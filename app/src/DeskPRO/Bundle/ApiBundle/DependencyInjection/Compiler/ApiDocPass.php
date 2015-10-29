@@ -29,12 +29,19 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Model;
+namespace DeskPRO\Bundle\ApiBundle\DependencyInjection\Compiler;
 
-class Me
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+
+class ApiDocPass implements CompilerPassInterface
 {
-    public $auth_method;
-    public $person_id;
-    public $app_id;
-    public $person;
+    public function process(ContainerBuilder $container)
+    {
+        $def = $container->getDefinition('nelmio_api_doc.extractor.api_doc_extractor');
+
+        if (strpos($def->getClass(), 'CachingApiDocExtractor') !== false) {
+            $def->setClass('DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\CachingApiDocExtractor');
+        }
+    }
 }

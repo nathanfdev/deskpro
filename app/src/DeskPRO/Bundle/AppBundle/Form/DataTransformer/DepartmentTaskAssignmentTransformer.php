@@ -56,7 +56,7 @@ class DepartmentTaskAssignmentTransformer implements DataTransformerInterface
      * @param EntityManager $entityManager
      * @param Task          $task
      */
-    public function __construct(EntityManager $entityManager, Task $task)
+    public function __construct(EntityManager $entityManager, Task $task = null)
     {
         $this->entityManager = $entityManager;
         $this->task          = $task;
@@ -85,6 +85,10 @@ class DepartmentTaskAssignmentTransformer implements DataTransformerInterface
      */
     public function reverseTransform($department)
     {
+        if (!$this->task) {
+            return null;
+        }
+
         if (!$department instanceof Department) {
             $department = $this->entityManager->getRepository('DeskPRO:Department')
                 ->find($department);

@@ -56,7 +56,7 @@ class PersonProjectMemberTransformer implements DataTransformerInterface
      * @param EntityManager $entityManager
      * @param TaskProject   $project
      */
-    public function __construct(EntityManager $entityManager, TaskProject $project)
+    public function __construct(EntityManager $entityManager, TaskProject $project = null)
     {
         $this->entityManager = $entityManager;
         $this->project       = $project;
@@ -85,6 +85,10 @@ class PersonProjectMemberTransformer implements DataTransformerInterface
      */
     public function reverseTransform($person)
     {
+        if (!$this->project) {
+            return;
+        }
+
         if (!$person instanceof Person) {
             $person = $this->entityManager->getRepository('DeskPRO:Person')
                 ->find($person);

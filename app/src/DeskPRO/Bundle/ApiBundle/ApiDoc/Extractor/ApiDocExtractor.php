@@ -29,12 +29,21 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Model;
+namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor;
 
-class Me
+use Nelmio\ApiDocBundle\Extractor\ApiDocExtractor as BaseApiDocExtractor;
+use Symfony\Component\Routing\Route;
+
+class ApiDocExtractor extends BaseApiDocExtractor
 {
-    public $auth_method;
-    public $person_id;
-    public $app_id;
-    public $person;
+    /**
+     * @return Route[]
+     */
+    public function getRoutes()
+    {
+        return array_filter($this->router->getRouteCollection()->all(), function(Route $r) {
+            $ctrl = $r->getDefault('_controller');
+            return $ctrl && preg_match('#^DeskPRO\\\\Bundle\\\\ApiBundle\\\\#', $ctrl);
+        });
+    }
 }

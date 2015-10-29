@@ -53,7 +53,6 @@ class ApiTokensController extends BaseController
     /**
      * @ApiDoc(
      *      description="create a new api token",
-     *      input="email,password",
      *      output="token",
      *      statusCodes={
      *          201="Created token",

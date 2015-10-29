@@ -70,12 +70,13 @@ class ApiKernel extends BaseKernel
             new \FOS\ElasticaBundle\FOSElasticaBundle(),
             new \JMS\SerializerBundle\JMSSerializerBundle(),
 
+            new \Nelmio\ApiDocBundle\NelmioApiDocBundle(),
+            new \Bazinga\Bundle\HateoasBundle\BazingaHateoasBundle(),
+
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\EmailBundle\EmailBundle(),
             new \DeskPRO\Bundle\ApiBundle\ApiBundle(),
             new \DeskPRO\Bundle\AppBundle\AppBundle(),
-            new \Nelmio\ApiDocBundle\NelmioApiDocBundle(),
-            new \Bazinga\Bundle\HateoasBundle\BazingaHateoasBundle(),
         );
 
         if ('dev' === $this->getEnvironment()

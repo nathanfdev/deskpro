@@ -193,4 +193,12 @@ class SandboxWidget implements EntityInterface, NotifyPropertyChanged
     {
         $this->setModelField('inventory', $inventory);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    function __toString()
+    {
+        return $this->name;
+    }
 }
