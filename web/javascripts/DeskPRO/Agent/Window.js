@@ -1224,6 +1224,22 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 
 
+		/****************** new_ticket drafts ***************/
+		for (var i = 0; i < window.localStorage.length; i++){
+			var key = window.localStorage.key(i);
+			if ('drafts.new-ticket-' !== key.substr(0, 18)) continue;
+
+			(function(key){
+				DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/tickets/new', {
+					openCallback: function(page) {
+						page.draft._key = key;
+						page.draft.load();
+					},
+					ignoreExist: true
+				});
+			})(key);
+		}
+
 
 		/***************** scrolling handle on drag ******************/
 		var drag = function(){

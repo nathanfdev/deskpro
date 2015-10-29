@@ -8,6 +8,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.parent();
 		this.TYPENAME = 'newticket';
 		this.allowDupe = true;
+
+    this._initDraft();
+		this.test = 123;
 	},
 
 	_initLabels: function () {
@@ -37,8 +40,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this._initMessageSection();
 		this._initOtherSection();
 		this._initCcSelection();
-
-                this._initLabels();
+		this._initLabels();
 
 		this.meta.person_api_data = {};
 
@@ -75,8 +77,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			uploadTemplate: $('.template-upload', this.wrapper),
 			downloadTemplate: $('.template-download', this.wrapper)
 		});
-		this.wrapper.bind('fileuploaddone', function() {
+		this.wrapper.bind('fileuploaddone', function(e, data) {
 			self.getEl('attach_row').slideDown().removeClass('is-hidden');
+			data.result && data.result.forEach(function(el, i){
+				self.draft.addAttachment(el);
+			});
+
 		});
 		this.wrapper.bind('fileuploadstart', function() {
 			self.getEl('attach_row').slideDown().removeClass('is-hidden');
@@ -94,7 +100,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					self.getEl('attach_row').slideUp().addClass('is-hidden');
 				}
 			});
-        });
+
+			self.draft.removeAttachment($(this).prev('input').val());
+		});
 
 		$('.Date.customfield input', this.wrapper).each(function() {
 			$(this).datetimepicker({
@@ -106,7 +114,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					previous: 'fa fa-chevron-left',
 					next: 'fa fa-chevron-right'
 				}
-			})
+			});
+      $(this).on('dp.change', function(){
+        $(this).trigger('change');
+      });
 		});
 
     $('.DateTime.customfield input', this.wrapper).each(function () {
@@ -122,6 +133,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					next: 'fa fa-chevron-right'
 				}
 			});
+      $(this).on('dp.change', function(){
+        $(this).trigger('change');
+      });
 		});
 
 		this.wrapper.find('.pending-info').on('click', '.reset', function(ev) {
@@ -487,6 +501,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			-1 == $problems.val() ? $title.show() : $title.hide();
 		});
 
+    this.draft.load();
 	},
 
   addSignature: function() {
@@ -691,6 +706,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			return;
 		}
 
+		//this.draft.save();
+
 		this.getEl('action').val(this.getEl('reply_as_type').data('type'));
 		var formData = this.form.serializeArray();
     formData.push({
@@ -886,7 +903,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		this.getEl('user_section').hide();
 		this.getEl('choose_user').hide();
-		this.getEl('user_searchbox').find('input.person-id').val(data.person_id);
 
 		this.setUser(data.person_id);
 
@@ -976,6 +992,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		var placeUserRow = function(html) {
 			self.placeUserRow(html);
+      self.draft.save();
 		};
 
 		searchbox.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
@@ -1083,7 +1100,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		self.getEl('choose_user').hide();
 		rechooseBtn.show();
-		searchbox.hide();
+		searchbox.data('handler').close();
 		userfields.show();
 
 		var apiData = userfields.find('.api_data');
@@ -1692,5 +1709,145 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		if (this.agentNotifyList) {
 			this.agentNotifyList.remove();
 		}
-	}
+    this.draft.reset();
+	},
+
+  _initDraft: function() {
+    var self = this
+      , d
+      ;
+
+    this.draft = d = {
+			_key: null,
+      key: function () {
+        if (this._key) return this._key;
+        return this._key = 'drafts.new-ticket-' + self.meta.baseId + (new Date()).getTime();
+      },
+      get: function () {
+        var str = window.localStorage.getItem(this.key());
+        return str
+          ? JSON.parse(str)
+          : {form:[], attachments:[]};
+      },
+      set: function (item) {
+        try {
+          window.localStorage.setItem(this.key(), JSON.stringify(item));
+        } catch (e) {
+          console.error(e);
+          this.resetAllDrafts();
+        }
+      },
+      load: function() {
+
+				if (!this._key || !self.wrapper) return;
+
+        var $form = self.getEl('newticket')
+          , $discard = $('#discard-draft-btn', $form)
+          , redactor = self.textarea.data('redactor')
+					, item = d.get()
+					, $attachRow = self.getEl('attach_row')
+        ;
+
+        $('input, select, textarea', $form).on('keyup change', function(e, byDraft){
+          !byDraft && d.save();
+        });
+
+        $discard.on('click', function(){
+          d.reset();
+        });
+
+        item.form.forEach(function(el, i){
+
+          (function(el){
+
+            if ('newticket[person][id]' === el.name && el.value) {
+              return self.setUser(el.value);
+            }
+
+            if ('newticket[message]' === el.name) {
+              redactor && self.textarea.setCode(el.value);
+            }
+
+            $('[name="' + el.name + '"]', $form).each(function() {
+
+              if ($(this).is(':checkbox') || $(this).is(':radio')) {
+                $(this).val() == el.value && $(this).prop('checked', true);
+              } else if ($(this).is('select')) {
+                $('option[value="' + el.value + '"]', $(this)).prop('selected', true);
+              } else {
+                $(this).val(el.value);
+              }
+
+              $(this).trigger('change', true);
+            });
+          })(el);
+
+        });
+
+				var html = window.tmpl($('.template-download', self.wrapper).attr('id'))({files: item.attachments});
+				$attachRow.find('ul.files:first').append(html);
+				item.attachments.length && $attachRow.removeClass('is-hidden').show();
+
+        d.isEmpty() ? $discard.hide() : $discard.show();
+        redactor && self.textarea.getEditor().on('keyup change synced', function(){
+          d.save();
+        });
+      },
+      save: function () {
+        var $form = self.getEl('newticket')
+          , $discard = $('#discard-draft-btn', $form)
+					, item = this.get()
+          ;
+
+				item.form = $form.serializeArray();
+        this.set(item);
+        $discard.show();
+      },
+      reset: function () {
+        var item = this.get()
+          , $form = self.getEl('newticket')
+          , $discard = $('#discard-draft-btn', $form)
+					, $attachRow = self.getEl('attach_row')
+          ;
+
+        item.form.forEach(function(el, i){
+          $('[name="' + el.name + '"]', $form).val('').trigger('change', true);
+        });
+				$attachRow.hide().find('ul.files:first').children().remove();
+
+        var $btn = self.getEl('switch_user');
+        if ($btn.is(':visible')) {
+          $btn.trigger('click');
+        }
+
+        window.localStorage.removeItem(this.key());
+        $discard.hide();
+      },
+      isEmpty: function() {
+        var item = this.get();
+        return !item || (!item.form.length && !item.attachments.length);
+      },
+      resetAllDrafts: function () {
+        // todo
+      },
+      addAttachment: function (blob) {
+        var item = this.get();
+        for (var i = 0; i < item.attachments.length; i++) {
+          if (blob.blob_id === item.attachments[i].blob_id) return;
+        }
+        item.attachments.push(blob);
+        this.set(item);
+      },
+      removeAttachment: function (id) {
+        var item = this.get();
+        id = parseInt(id) || 0;
+        for (var i = 0; i < item.attachments.length; i++) {
+          if (id !== item.attachments[i].blob_id) continue;
+          item.attachments.splice(i, 1);
+          break;
+        }
+        this.set(item);
+      }
+    };
+  }
 });

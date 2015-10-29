@@ -581,7 +581,10 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 					previous: 'fa fa-chevron-left',
 					next: 'fa fa-chevron-right'
 				}
-			})
+			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
+			});
 		});
 
 		endDate.on('click', function() {
@@ -671,7 +674,10 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 					previous: 'fa fa-chevron-left',
 					next: 'fa fa-chevron-right'
 				}
-			})
+			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
+			});
 		});
 
 		pubDate.on('click', function() {

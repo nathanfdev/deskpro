@@ -507,7 +507,11 @@ pageMeta.baseId = '{{ baseId }}';
 						</a>
 						<a class="dp-btn dp-btn-primary dp-dropdown-toggle status-menu-trigger"><span class="dp-caret dp-caret-up"></span></a>
 					</div>
+					<button id="discard-draft-btn" class="dp-btn dp-btn-primary" type="button" style="display: none;">
+						{{ phrase('agent.tickets.discard_draft') }}
+					</button>
 				</div>
+
 				<div id="{{ baseId }}_send_loading" style="display: none;">
 					<span class="flat-spinner"></span>
 				</div>
