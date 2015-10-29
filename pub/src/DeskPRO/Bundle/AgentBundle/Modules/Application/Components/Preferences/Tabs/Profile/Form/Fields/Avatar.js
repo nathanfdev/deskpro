@@ -125,6 +125,24 @@ export class Avatar extends React.Component {
     return croppedPath || currentPath;
   }
 
+  renderEditButtons() {
+    return (
+      <div>
+        <a href="#" className="crop" onClick={this.onSave}>Upload &amp; a new avatar</a>
+        <a href="#" className="cancel" onClick={this.onDiscard}>Or remove &amp; your avatar (use the default)</a>
+      </div>
+    );
+  }
+
+  renderCropperButtons() {
+    return (
+      <div>
+        <a href="#" className="crop" onClick={this.onSave}>Crop &amp; Save Avatar</a>
+        <a href="#" className="cancel" onClick={this.onDiscard}>Or cancel &amp; discard your changes</a>
+      </div>
+    );
+  }
+
   renderUploader() {
     const tmpFile = this.state.tmpFile;
     const tmpPath = this.state.tmpFilePath;
@@ -165,20 +183,14 @@ export class Avatar extends React.Component {
             <Cropper
               ref="cropper"
               src={tmpPath}
-              minCropBoxWidth="120"
-              minCropBoxHeight="120"
+              minCropBoxWidth={120}
+              minCropBoxHeight={120}
               aspectRatio={1 / 1} />
           )}
         </div>
 
         {error && (<span className="error">{error}</span>)}
-
-        {tmpFile && (
-          <div>
-            <a href="#" className="crop" onClick={this.onSave}>Crop &amp; Save Avatar</a>
-            <a href="#" className="cancel" onClick={this.onDiscard}>Or cancel &amp; discard your changes</a>
-          </div>
-        )}
+        {tmpFile ? this.renderCropperButtons() : this.renderEditButtons()}
       </div>
     );
   }
