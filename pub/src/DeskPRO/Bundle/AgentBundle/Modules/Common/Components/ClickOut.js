@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import jQuery from 'jquery';
-import ReactDOM from 'react-dom';
 
 export class ClickOut extends React.Component {
 
@@ -26,7 +25,6 @@ export class ClickOut extends React.Component {
       let skip = false;
 
       ignoreNodes.forEach(node => {
-        console.log(node, event.target);
         if (node === event.target) {
           skip = true;
         }
