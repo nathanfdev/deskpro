@@ -12,6 +12,7 @@ import { Password } from './Fields/Password';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import * as ProfilesActions from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/profilesActions';
 import Immutable from 'immutable';
+import Loader from 'react-loader';
 
 export class ProfileForm extends React.Component {
 
@@ -271,7 +272,7 @@ export class ProfileForm extends React.Component {
         <div className="bucket-column submit">
           {this.state.submit
             ? (
-              <div>Saving...</div>
+              <Loader left="45%" opacity={0} width={3} />
             )
             : (
               <input type="submit"

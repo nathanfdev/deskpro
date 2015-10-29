@@ -261,6 +261,10 @@ $right-bucket: 200px;
       &.submit {
         text-align: center;
       }
+
+      .loader {
+        height: 40px;
+      }
     }
 
     .bucket-column.bucket-column-full {
