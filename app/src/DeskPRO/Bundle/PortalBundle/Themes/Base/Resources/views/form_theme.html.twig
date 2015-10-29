@@ -294,12 +294,18 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
 
 {% block deskpro_custom_field_choice_widget_expanded -%}
     <div {{ block('widget_container_attributes') }}>
-        <div class="{% if expanded %}dpx-checkbox-group{% else %}dpx-radio-group{% endif %}">
+        <div class="{% if multiple %}dpx-checkbox-group{% endif %}">
             {%- for child in form %}
                 {% if form.vars.choices[child.vars.value] is defined %}
                     {% if form.vars.choices[child.vars.value].data|length == 0 %}
-                    {{- form_widget(child) -}}
-                    {{- form_label(child) -}}
+                        {% if not multiple %}
+                            <div class="radio-button">
+                        {% endif %}
+                        {{- form_widget(child) -}}
+                        {{- form_label(child) -}}
+                        {% if not multiple %}
+                            </div>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
             {% endfor -%}
