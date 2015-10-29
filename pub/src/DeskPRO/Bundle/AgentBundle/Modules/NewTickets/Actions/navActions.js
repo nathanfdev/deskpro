@@ -1,5 +1,6 @@
 import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { editedFilterIdSelector } from '../Selectors/nav';
 
 export const loadFilterSetsCount = createAction(
   'TICKETS_NAV_LOAD_FILTER_SETS_COUNT',
@@ -34,7 +35,16 @@ export const loadStars = createAction(
 
 export const startFilterEditing = createAction('TICKETS_NAV_FILTER_EDITING_START');
 export const closeFilterEditing = createAction('TICKETS_NAV_FILTER_EDITING_CLOSE');
-export const applyFilterEditing = createAction('TICKETS_NAV_FILTER_EDITING_APPLY');
+export const applyFilterEditing = createAction(
+  'TICKETS_NAV_FILTER_EDITING_APPLY',
+  (groupBy) => (dispatch, getState) => {
+    const id = editedFilterIdSelector(getState());
+    dispatch(closeFilterEditing());
+    DpApi.sendPut(`DP_API/ticket_filters/${id}`, {group_by: groupBy}).success(() => {
+      dispatch(loadFilterSetsCount());
+    });
+  }
+);
 
 export const initialLoad = createAction(
   'TICKETS_NAV_INITIAL_LOAD',

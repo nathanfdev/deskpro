@@ -15,9 +15,17 @@ export class FilterEditPopupContainer extends Component {
   };
 
   static groupingOptions = [
-    {value: 'ololo', label: 'ololo'},
-    {value: 'date_period', label: 'Date Created'},
-    {value: 'department', label: 'Department'}
+    {value: '', label: 'None'},
+    {value: 'department', label: 'Department'},
+    {value: 'organization', label: 'Organization'},
+    {value: 'person', label: 'Person'},
+    {value: 'language', label: 'Language'},
+    {value: 'urgency', label: 'Urgency'},
+    {value: 'agent', label: 'Agent'},
+    {value: 'agent_team', label: 'Agent Team'},
+    {value: 'waiting_time', label: 'Waiting Time'},
+    {value: 'all_waiting_time', label: 'All Waiting Time'},
+    {value: 'open_time', label: 'Open Time'}
   ];
 
   render() {
@@ -32,6 +40,15 @@ export class FilterEditPopupContainer extends Component {
     );
   }
 
-  applyFilterEditing = () => this.props.dispatch(applyFilterEditing());
+  applyFilterEditing = (e) => {
+    const options = e.target.options;
+    for (let i = 0; i < options.length; i++) {
+      if (options[i].selected) {
+        this.props.dispatch(applyFilterEditing(options[i].value));
+        break;
+      }
+    }
+  };
+
   closeFilterEditing = () => this.props.dispatch(closeFilterEditing());
 }

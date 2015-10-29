@@ -14,7 +14,7 @@ export const filterSetsCountSelector = createSelector(
 const filtersSelector = createSelector(stateSelector, state => state.get('filters'));
 export const filterNamesSelector = createSelector(filtersSelector, filters => toPropsMap('id', 'title', filters));
 
-const editedFilterIdSelector = createSelector(stateSelector, state => state.get('editedFilterId'));
+export const editedFilterIdSelector = createSelector(stateSelector, state => state.get('editedFilterId'));
 export const editedFilterSelector = createSelector(
   [editedFilterIdSelector, filtersSelector],
   (id, filters) => filters.find(filter => filter.get('id') === id)
