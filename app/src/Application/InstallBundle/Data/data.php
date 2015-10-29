@@ -46,40 +46,40 @@ $em->getConnection()->executeUpdate(
 
 ##BEGIN:create_department.department2##
 if (!$IMPORT_INSTALL) {
-    $q = new \Application\DeskPRO\Entity\Department();
-    $q['title'] = $translate->phrase('user.defaults.department_support');
+    $q                       = new \Application\DeskPRO\Entity\Department();
+    $q['title']              = $translate->phrase('user.defaults.department_support');
     $q['is_tickets_enabled'] = true;
-    $q['is_chat_enabled'] = false;
+    $q['is_chat_enabled']    = false;
     $em->persist($q);
     $em->flush();
 }
 
 ##BEGIN:create_department.department1##
 if (!$IMPORT_INSTALL) {
-    $q = new \Application\DeskPRO\Entity\Department();
-    $q['title'] = $translate->phrase('user.defaults.department_sales');
+    $q                       = new \Application\DeskPRO\Entity\Department();
+    $q['title']              = $translate->phrase('user.defaults.department_sales');
     $q['is_tickets_enabled'] = true;
-    $q['is_chat_enabled'] = false;
+    $q['is_chat_enabled']    = false;
     $em->persist($q);
     $em->flush();
 }
 
 ##BEGIN:create_department.department3##
 if (!$IMPORT_INSTALL) {
-    $q = new \Application\DeskPRO\Entity\Department();
-    $q['title'] = $translate->phrase('user.defaults.department_support');
+    $q                       = new \Application\DeskPRO\Entity\Department();
+    $q['title']              = $translate->phrase('user.defaults.department_support');
     $q['is_tickets_enabled'] = false;
-    $q['is_chat_enabled'] = true;
+    $q['is_chat_enabled']    = true;
     $em->persist($q);
     $em->flush();
 }
 
 ##BEGIN:create_department.department4##
 if (!$IMPORT_INSTALL) {
-    $q = new \Application\DeskPRO\Entity\Department();
-    $q['title'] = $translate->phrase('user.defaults.department_sales');
+    $q                       = new \Application\DeskPRO\Entity\Department();
+    $q['title']              = $translate->phrase('user.defaults.department_sales');
     $q['is_tickets_enabled'] = false;
-    $q['is_chat_enabled'] = true;
+    $q['is_chat_enabled']    = true;
     $em->persist($q);
     $em->flush();
 }
@@ -90,16 +90,16 @@ if (!$IMPORT_INSTALL) {
 
 ##BEGIN:create_article.default##
 if (!$IMPORT_INSTALL) {
-    $DEFAULT_ARTICLE_CAT = new \Application\DeskPRO\Entity\ArticleCategory();
+    $DEFAULT_ARTICLE_CAT          = new \Application\DeskPRO\Entity\ArticleCategory();
     $DEFAULT_ARTICLE_CAT['title'] = $translate->phrase('user.defaults.article_category_general');
     $em->persist($DEFAULT_ARTICLE_CAT);
     $em->flush();
 
-    $DEFAULT_ARTICLE = new \Application\DeskPRO\Entity\Article();
-    $DEFAULT_ARTICLE->person = $AGENT;
-    $DEFAULT_ARTICLE->title = $translate->phrase('user.defaults.article_example_title');
+    $DEFAULT_ARTICLE          = new \Application\DeskPRO\Entity\Article();
+    $DEFAULT_ARTICLE->person  = $AGENT;
+    $DEFAULT_ARTICLE->title   = $translate->phrase('user.defaults.article_example_title');
     $DEFAULT_ARTICLE->content = $translate->phrase('user.defaults.article_example_content');
-    $DEFAULT_ARTICLE->status = 'published';
+    $DEFAULT_ARTICLE->status  = 'published';
     $DEFAULT_ARTICLE->addToCategory($DEFAULT_ARTICLE_CAT);
     $em->persist($DEFAULT_ARTICLE);
     $em->flush();
@@ -111,7 +111,7 @@ if (!$IMPORT_INSTALL) {
 
 ##BEGIN:create_download_cat.default##
 if (!$IMPORT_INSTALL) {
-    $q = new \Application\DeskPRO\Entity\DownloadCategory();
+    $q          = new \Application\DeskPRO\Entity\DownloadCategory();
     $q['title'] = $translate->phrase('user.defaults.downloads_category_general');
     $em->persist($q);
     $em->flush();
@@ -123,16 +123,16 @@ if (!$IMPORT_INSTALL) {
 
 ##BEGIN:create_news.default##
 if (!$IMPORT_INSTALL) {
-    $DEFAULT_NEWS_CAT = new \Application\DeskPRO\Entity\NewsCategory();
+    $DEFAULT_NEWS_CAT          = new \Application\DeskPRO\Entity\NewsCategory();
     $DEFAULT_NEWS_CAT['title'] = $translate->phrase('user.defaults.news_category_general');
     $em->persist($DEFAULT_NEWS_CAT);
     $em->flush();
 
-    $DEFAULT_NEWS = new \Application\DeskPRO\Entity\News();
-    $DEFAULT_NEWS->person = $AGENT;
-    $DEFAULT_NEWS->title = $translate->phrase('user.defaults.news_example_title');
-    $DEFAULT_NEWS->content = $translate->phrase('user.defaults.news_example_content');
-    $DEFAULT_NEWS->status = 'published';
+    $DEFAULT_NEWS           = new \Application\DeskPRO\Entity\News();
+    $DEFAULT_NEWS->person   = $AGENT;
+    $DEFAULT_NEWS->title    = $translate->phrase('user.defaults.news_example_title');
+    $DEFAULT_NEWS->content  = $translate->phrase('user.defaults.news_example_content');
+    $DEFAULT_NEWS->status   = 'published';
     $DEFAULT_NEWS->category = $DEFAULT_NEWS_CAT;
     $em->persist($DEFAULT_NEWS);
     $em->flush();
@@ -233,26 +233,26 @@ $em->getConnection()->executeUpdate(
 ################################################################################
 
 ##BEGIN:agent_teams.default1##
-$t = new \Application\DeskPRO\Entity\AgentTeam();
+$t         = new \Application\DeskPRO\Entity\AgentTeam();
 $t['name'] = $translate->phrase('agent.defaults.team_support_managers');
 $em->persist($t);
 $em->flush();
 
 ##BEGIN:agent_teams.default2##
-$t = new \Application\DeskPRO\Entity\AgentTeam();
+$t         = new \Application\DeskPRO\Entity\AgentTeam();
 $t['name'] = $translate->phrase('agent.defaults.team_lvl1_support');
 $em->persist($t);
 $em->flush();
 
 ##BEGIN:agent_teams.default3##
-$t = new \Application\DeskPRO\Entity\AgentTeam();
+$t         = new \Application\DeskPRO\Entity\AgentTeam();
 $t['name'] = $translate->phrase('agent.defaults.team_lvl2_support');
 $em->persist($t);
 $em->flush();
 
 ##BEGIN:agent_teams.setting##
-$t = new \Application\DeskPRO\Entity\Setting();
-$t['name'] = 'core.use_agent_team';
+$t          = new \Application\DeskPRO\Entity\Setting();
+$t['name']  = 'core.use_agent_team';
 $t['value'] = '1';
 $em->persist($t);
 $em->flush();
@@ -262,38 +262,38 @@ $em->flush();
 ################################################################################
 
 ##BEGIN:usergroups.everyone##
-$g = new \Application\DeskPRO\Entity\Usergroup();
-$g['title'] = $translate->phrase('agent.defaults.usergroup_everyone');
-$g['note'] = $translate->phrase('agent.defaults.usergroup_everyone_note');
+$g             = new \Application\DeskPRO\Entity\Usergroup();
+$g['title']    = $translate->phrase('agent.defaults.usergroup_everyone');
+$g['note']     = $translate->phrase('agent.defaults.usergroup_everyone_note');
 $g['sys_name'] = 'everyone';
 $em->persist($g);
 $em->flush();
 $USERGROUP_EVERYONE = $g;
 
 ##BEGIN:usergroups.register##
-$g = new \Application\DeskPRO\Entity\Usergroup();
-$g['title'] = $translate->phrase('agent.defaults.usergroup_registered');
-$g['note'] = $translate->phrase('agent.defaults.usergroup_registered_note');
+$g             = new \Application\DeskPRO\Entity\Usergroup();
+$g['title']    = $translate->phrase('agent.defaults.usergroup_registered');
+$g['note']     = $translate->phrase('agent.defaults.usergroup_registered_note');
 $g['sys_name'] = 'registered';
 $em->persist($g);
 $em->flush();
 $USERGROUP_REG = $g;
 
 ##BEGIN:usergroups.agent_all##
-$AGENTGROUP_ALL = new \Application\DeskPRO\Entity\Usergroup();
-$AGENTGROUP_ALL['title'] = $translate->phrase('agent.defaults.usergroup_agent_all_perms');
-$AGENTGROUP_ALL['note'] = $translate->phrase('agent.defaults.usergroup_agent_all_perms_note');
+$AGENTGROUP_ALL                   = new \Application\DeskPRO\Entity\Usergroup();
+$AGENTGROUP_ALL['title']          = $translate->phrase('agent.defaults.usergroup_agent_all_perms');
+$AGENTGROUP_ALL['note']           = $translate->phrase('agent.defaults.usergroup_agent_all_perms_note');
 $AGENTGROUP_ALL['is_agent_group'] = true;
-$AGENTGROUP_ALL['sys_name'] = 'agent_all_perms';
+$AGENTGROUP_ALL['sys_name']       = 'agent_all_perms';
 $em->persist($AGENTGROUP_ALL);
 $em->flush();
 
 ##BEGIN:usergroups.agent_all_nondestructive##
-$AGENTGROUP_ALL_ND = new \Application\DeskPRO\Entity\Usergroup();
-$AGENTGROUP_ALL_ND['title'] = $translate->phrase('agent.defaults.usergroup_agent_all_non_destructive');
-$AGENTGROUP_ALL_ND['note'] = $translate->phrase('agent.defaults.usergroup_agent_all_non_destructive_note');
+$AGENTGROUP_ALL_ND                   = new \Application\DeskPRO\Entity\Usergroup();
+$AGENTGROUP_ALL_ND['title']          = $translate->phrase('agent.defaults.usergroup_agent_all_non_destructive');
+$AGENTGROUP_ALL_ND['note']           = $translate->phrase('agent.defaults.usergroup_agent_all_non_destructive_note');
 $AGENTGROUP_ALL_ND['is_agent_group'] = true;
-$AGENTGROUP_ALL_ND['sys_name'] = 'agent_all_safe_perms';
+$AGENTGROUP_ALL_ND['sys_name']       = 'agent_all_safe_perms';
 $em->persist($AGENTGROUP_ALL_ND);
 $em->flush();
 
@@ -394,23 +394,23 @@ $em->getConnection()->executeUpdate(
 if (!function_exists('create_user')) {
     function create_user($fname, $lname, $email, $pass, $agent = false, $admin = false, $is_deleted = false)
     {
-        $user = new \Application\DeskPRO\Entity\Person();
+        $user             = new \Application\DeskPRO\Entity\Person();
         $user->first_name = $fname;
-        $user->last_name = $lname;
+        $user->last_name  = $lname;
         $user->setEmail($email, true);
         $user->setPassword($pass);
-        $user->is_user = true;
+        $user->is_user      = true;
         $user->is_confirmed = true;
-        $user->is_deleted = $is_deleted;
+        $user->is_deleted   = $is_deleted;
 
         if ($agent || $admin) {
             $user->is_agent_confirmed = true;
-            $user->is_agent = true;
-            $user->can_agent = true;
+            $user->is_agent           = true;
+            $user->can_agent          = true;
         }
 
         if ($admin) {
-            $user->can_admin = true;
+            $user->can_admin   = true;
             $user->can_billing = true;
             $user->can_reports = true;
         }
@@ -809,10 +809,10 @@ $em->getConnection()->executeUpdate(
 $faker = \Faker\Factory::create();
 
 // the content publisher agent guy
-$publisher = new \Application\DeskPRO\Entity\Person();
-$publisher->name = 'Corporate Content';
+$publisher            = new \Application\DeskPRO\Entity\Person();
+$publisher->name      = 'Corporate Content';
 $publisher->can_agent = true;
-$publisher->is_agent = true;
+$publisher->is_agent  = true;
 $publisher->addEmailAddressString('content.publisher@deskprodemo.com');
 $publisher->setPassword('publisher');
 
@@ -820,7 +820,7 @@ $em->persist($publisher);
 $em->flush($publisher);
 
 // a regular dude
-$person = new \Application\DeskPRO\Entity\Person();
+$person       = new \Application\DeskPRO\Entity\Person();
 $person->name = 'Joe Kool';
 $person->addEmailAddressString('joe@deskprodemo.com');
 $person->setPassword('joe');
@@ -832,7 +832,7 @@ $em->flush($person);
 // articles
 //////////////////////////////////////////////////////////////
 
-$ac = new \Application\DeskPRO\Entity\ArticleCategory();
+$ac        = new \Application\DeskPRO\Entity\ArticleCategory();
 $ac->title = 'Germany Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
@@ -840,14 +840,14 @@ $em->persist($ac);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\Article();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
     $a->setCategories(array($ac));
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
     $em->persist($a);
 }
 
-$ac = new \Application\DeskPRO\Entity\ArticleCategory();
+$ac        = new \Application\DeskPRO\Entity\ArticleCategory();
 $ac->title = 'Finland Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
@@ -855,14 +855,14 @@ $em->persist($ac);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\Article();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
     $a->setCategories(array($ac, $em->getRepository('DeskPRO:ArticleCategory')->find(1)));
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
     $em->persist($a);
 }
 
-$ac = new \Application\DeskPRO\Entity\ArticleCategory();
+$ac        = new \Application\DeskPRO\Entity\ArticleCategory();
 $ac->title = 'Japan Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
@@ -870,7 +870,7 @@ $em->persist($ac);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\Article();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
     $a->setCategories(array($ac));
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -881,7 +881,7 @@ for ($i = 0; $i < 15; ++$i) {
 // news
 //////////////////////////////////////////////////////////////
 
-$ac = new \Application\DeskPRO\Entity\NewsCategory();
+$ac        = new \Application\DeskPRO\Entity\NewsCategory();
 $ac->title = 'Canada Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
@@ -889,14 +889,14 @@ $em->persist($ac);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\News();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
     $em->persist($a);
 }
 
-$ac = new \Application\DeskPRO\Entity\NewsCategory();
+$ac        = new \Application\DeskPRO\Entity\NewsCategory();
 $ac->title = 'U.S. Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
@@ -904,7 +904,7 @@ $em->persist($ac);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\News();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -916,7 +916,7 @@ $ac = $em->getRepository('DeskPRO:NewsCategory')->find(1);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\News();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -933,27 +933,27 @@ if (!function_exists('make_blob')) {
         $storage = new \Application\DeskPRO\BlobStorage\DeskproBlobStorage($em);
 
         $blob = $storage->createBlobRecordFromFile(
-            realpath(__DIR__ . '/../../../../../web/images/dp-logo-130.png'),
+            realpath(__DIR__.'/../../../../../web/images/dp-logo-130.png'),
             'dp-logo-130.png',
             'image/png'
         );
 
-        $blob->authcode = rand(0, 18) . rand(0, 18) . rand(0, 18) . rand(0, 18) . rand(0, 18) . rand(0, 18);
+        $blob->authcode = rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18);
 
         return $blob;
     }
 }
 
-$ac = new \Application\DeskPRO\Entity\DownloadCategory();
+$ac        = new \Application\DeskPRO\Entity\DownloadCategory();
 $ac->title = 'Canada Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
 
 for ($i = 0; $i < 15; ++$i) {
     $blob = make_blob($em);
-    $a = new \Application\DeskPRO\Entity\Download();
+    $a    = new \Application\DeskPRO\Entity\Download();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -961,16 +961,16 @@ for ($i = 0; $i < 15; ++$i) {
     $em->persist($a);
 }
 
-$ac = new \Application\DeskPRO\Entity\DownloadCategory();
+$ac        = new \Application\DeskPRO\Entity\DownloadCategory();
 $ac->title = 'U.S. Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
 
 for ($i = 0; $i < 15; ++$i) {
     $blob = make_blob($em);
-    $a = new \Application\DeskPRO\Entity\Download();
+    $a    = new \Application\DeskPRO\Entity\Download();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -982,9 +982,9 @@ $ac = $em->getRepository('DeskPRO:DownloadCategory')->find(1);
 
 for ($i = 0; $i < 15; ++$i) {
     $blob = make_blob($em);
-    $a = new \Application\DeskPRO\Entity\Download();
+    $a    = new \Application\DeskPRO\Entity\Download();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -1031,7 +1031,7 @@ if (!function_exists('rand_fb_status_pair')) {
 for ($i = 0; $i < 30; ++$i) {
     $a = new \Application\DeskPRO\Entity\Feedback();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(750) . '<br><br>' . $faker->text(1000));
+    $a->setContent($faker->text(750).'<br><br>'.$faker->text(1000));
     $a->setCategory($DEFAULT_IDEA_CAT);
     $fbinfo = rand_fb_status_pair($em);
     $a->setStatus($fbinfo['status']);
@@ -1043,7 +1043,7 @@ for ($i = 0; $i < 30; ++$i) {
 for ($i = 0; $i < 30; ++$i) {
     $a = new \Application\DeskPRO\Entity\Feedback();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(750) . '<br><br>' . $faker->text(1000));
+    $a->setContent($faker->text(750).'<br><br>'.$faker->text(1000));
     $a->setCategory($FEEDBACK_BUG);
     $fbinfo = rand_fb_status_pair($em);
     $a->setStatus($fbinfo['status']);
@@ -1057,7 +1057,7 @@ $ac = $em->getRepository('DeskPRO:DownloadCategory')->find(1);
 for ($i = 0; $i < 30; ++$i) {
     $a = new \Application\DeskPRO\Entity\Feedback();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(750) . '<br><br>' . $faker->text(1000));
+    $a->setContent($faker->text(750).'<br><br>'.$faker->text(1000));
     $a->setCategory($FEEDBACK_FEATURE);
     $fbinfo = rand_fb_status_pair($em);
     $a->setStatus($fbinfo['status']);
@@ -1076,7 +1076,7 @@ foreach (array('default', 'foo', 'bar', 'baz') as $type) {
     for ($i = 1; $i <= 10; ++$i) {
         $a = new \DeskPRO\Bundle\AppBundle\Entity\SandboxWidget();
         $a->setType($type);
-        $a->setName(ucfirst($type) . ' ' . $i);
+        $a->setName(ucfirst($type).' '.$i);
         $a->setInventory(5);
         $em->persist($a);
     }
@@ -1118,5 +1118,91 @@ VALUES
 	(2, NULL, 'Sidebar Theme', 'sidebar'),
 	(3, NULL, 'Simple Theme', 'simple'),
 	(4, NULL, 'Tab Bar Theme', 'tabbar');
+"
+);
+
+################################################################################
+# Ticket Form
+################################################################################
+$em->getConnection()->executeUpdate(
+    "
+INSERT INTO `custom_def_ticket` (`id`, `parent_id`, `app_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `default_value`, `is_agent_field`)
+VALUES
+	(1, NULL, NULL, '', 0, 0, 'Custom Text Box', 'This is a custom text box description', 'Application\\\\DeskPRO\\\\CustomFields\\\\Handler\\\\Text', X'613A303A7B7D', 1, 1, 0, NULL, 0),
+	(2, NULL, NULL, '', 0, 0, 'Custom Multi-Line Text Box', 'The description of a custom multi-line text box', 'Application\\\\DeskPRO\\\\CustomFields\\\\Handler\\\\Textarea', X'613A303A7B7D', 1, 1, 0, NULL, 0),
+	(3, NULL, NULL, '', 0, 0, 'Custom Single Checkbox', 'Custom (toggle type) checkbox description', 'Application\\\\DeskPRO\\\\CustomFields\\\\Handler\\\\Toggle', X'613A303A7B7D', 1, 1, 0, '', 0),
+	(4, NULL, NULL, '', 0, 0, 'Custom Date', 'Custom date description', 'Application\\\\DeskPRO\\\\CustomFields\\\\Handler\\\\Date', X'613A333A7B733A383A227265717569726564223B623A303B733A31343A226167656E745F7265717569726564223B623A303B733A31393A22646174655F76616C69645F74696D657A6F6E65223B733A31363A22416D65726963612F4E65775F596F726B223B7D', 1, 1, 0, NULL, 0),
+	(5, NULL, NULL, '', 0, 0, 'Custom Date Time', 'Custom date/time description', 'Application\\\\DeskPRO\\\\CustomFields\\\\Handler\\\\DateTime', X'613A333A7B733A383A227265717569726564223B623A303B733A31343A226167656E745F7265717569726564223B623A303B733A31393A22646174655F76616C69645F74696D657A6F6E65223B733A31363A22416D65726963612F4E65775F596F726B223B7D', 1, 1, 0, NULL, 0),
+	(6, NULL, NULL, '', 0, 0, 'Custom Display', 'This is a custom HTML display', 'Application\\\\DeskPRO\\\\CustomFields\\\\Handler\\\\Display', X'613A313A7B733A343A2268746D6C223B733A33343A223C68313E437573746F6D2048544D4C20446973706C6179204669656C643C2F68313E223B7D', 1, 1, 0, NULL, 0),
+	(7, NULL, NULL, '', 0, 0, 'Custom Hidden', 'this is a custom hidden field description', 'Application\\\\DeskPRO\\\\CustomFields\\\\Handler\\\\Hidden', X'613A303A7B7D', 1, 1, 0, 'VALUE', 0),
+	(8, NULL, NULL, '', 0, 0, 'Custom Radio Group', 'these are a custom pre-defined \"radio\" choices', 'Application\\\\DeskPRO\\\\CustomFields\\\\Handler\\\\Choice', X'613A323A7B733A383A226D756C7469706C65223B623A303B733A383A22657870616E646564223B623A313B7D', 1, 1, 0, NULL, 0),
+	(9, 8, NULL, '', 0, 0, 'Radio 1', '', NULL, X'613A313A7B733A323A226362223B733A323A223139223B7D', 1, 1, 10, NULL, 0),
+	(10, 8, NULL, '', 0, 0, 'Radio 2', '', NULL, X'613A313A7B733A323A226362223B733A323A223230223B7D', 1, 1, 20, NULL, 0),
+	(11, 8, NULL, '', 0, 0, 'Radio 3', '', NULL, X'613A313A7B733A323A226362223B733A323A223231223B7D', 1, 1, 30, NULL, 0),
+	(12, 8, NULL, '', 0, 0, 'Radio 4', '', NULL, X'613A313A7B733A323A226362223B733A323A223232223B7D', 1, 1, 40, NULL, 0),
+	(13, 8, NULL, '', 0, 0, 'Radio 5', '', NULL, X'613A313A7B733A323A226362223B733A323A223233223B7D', 1, 1, 50, NULL, 0),
+	(14, 8, NULL, '', 0, 0, 'Radio 6', '', NULL, X'613A313A7B733A323A226362223B733A323A223234223B7D', 1, 1, 60, NULL, 0),
+	(15, 8, NULL, '', 0, 0, 'Radio 7', '', NULL, X'613A313A7B733A323A226362223B733A323A223235223B7D', 1, 1, 70, NULL, 0),
+	(16, 8, NULL, '', 0, 0, 'Radio 8', '', NULL, X'613A313A7B733A323A226362223B733A323A223236223B7D', 1, 1, 80, NULL, 0),
+	(17, NULL, NULL, '', 0, 0, 'Custom Select Box', 'these are a custom pre-defined \"select box\" choices', 'Application\\\\DeskPRO\\\\CustomFields\\\\Handler\\\\Choice', X'613A323A7B733A383A226D756C7469706C65223B623A303B733A383A22657870616E646564223B623A303B7D', 1, 1, 0, NULL, 0),
+	(18, 17, NULL, '', 0, 0, 'Select 1', '', NULL, X'613A313A7B733A323A226362223B733A323A223237223B7D', 1, 1, 10, NULL, 0),
+	(19, 17, NULL, '', 0, 0, 'Select 2', '', NULL, X'613A313A7B733A323A226362223B733A323A223238223B7D', 1, 1, 20, NULL, 0),
+	(20, 17, NULL, '', 0, 0, 'Select 3', '', NULL, X'613A313A7B733A323A226362223B733A323A223239223B7D', 1, 1, 30, NULL, 0),
+	(21, 17, NULL, '', 0, 0, 'Select 4', '', NULL, X'613A313A7B733A323A226362223B733A323A223330223B7D', 1, 1, 40, NULL, 0),
+	(22, 17, NULL, '', 0, 0, 'Select 5', '', NULL, X'613A313A7B733A323A226362223B733A323A223331223B7D', 1, 1, 50, NULL, 0),
+	(23, 17, NULL, '', 0, 0, 'Select 6', '', NULL, X'613A313A7B733A323A226362223B733A323A223332223B7D', 1, 1, 60, NULL, 0),
+	(24, 17, NULL, '', 0, 0, 'Select 7', '', NULL, X'613A313A7B733A323A226362223B733A323A223333223B7D', 1, 1, 70, NULL, 0),
+	(25, NULL, NULL, '', 0, 0, 'Custom Checkbox Group', 'these are a custom pre-defined \"checkbox\" choices', 'Application\\\\DeskPRO\\\\CustomFields\\\\Handler\\\\Choice', X'613A323A7B733A383A226D756C7469706C65223B623A313B733A383A22657870616E646564223B623A313B7D', 1, 1, 0, NULL, 0),
+	(26, 25, NULL, '', 0, 0, 'Checkbox 1', '', NULL, X'613A313A7B733A323A226362223B733A323A223334223B7D', 1, 1, 10, NULL, 0),
+	(27, 25, NULL, '', 0, 0, 'Checkbox 2', '', NULL, X'613A313A7B733A323A226362223B733A323A223335223B7D', 1, 1, 20, NULL, 0),
+	(28, 25, NULL, '', 0, 0, 'Checkbox 3', '', NULL, X'613A313A7B733A323A226362223B733A323A223336223B7D', 1, 1, 30, NULL, 0),
+	(29, 25, NULL, '', 0, 0, 'Checkbox 4', '', NULL, X'613A313A7B733A323A226362223B733A323A223337223B7D', 1, 1, 40, NULL, 0),
+	(30, 25, NULL, '', 0, 0, 'Checkbox 5', '', NULL, X'613A313A7B733A323A226362223B733A323A223338223B7D', 1, 1, 50, NULL, 0),
+	(31, 25, NULL, '', 0, 0, 'Checkbox 6', '', NULL, X'613A313A7B733A323A226362223B733A323A223339223B7D', 1, 1, 60, NULL, 0),
+	(32, 25, NULL, '', 0, 0, 'Checkbox 7', '', NULL, X'613A313A7B733A323A226362223B733A323A223430223B7D', 1, 1, 70, NULL, 0),
+	(33, 25, NULL, '', 0, 0, 'Checkbox 8', '', NULL, X'613A313A7B733A323A226362223B733A323A223431223B7D', 1, 1, 80, NULL, 0),
+	(34, NULL, NULL, '', 0, 0, 'Custom Multi-Select Box', 'these are a custom pre-defined \"multi-select box\" choices', 'Application\\\\DeskPRO\\\\CustomFields\\\\Handler\\\\Choice', X'613A323A7B733A383A226D756C7469706C65223B623A313B733A383A22657870616E646564223B623A303B7D', 1, 1, 0, NULL, 0),
+	(35, 34, NULL, '', 0, 0, 'Choice 1', '', NULL, X'613A313A7B733A323A226362223B733A323A223432223B7D', 1, 1, 10, NULL, 0),
+	(36, 34, NULL, '', 0, 0, 'Choice 2', '', NULL, X'613A313A7B733A323A226362223B733A323A223433223B7D', 1, 1, 20, NULL, 0),
+	(37, 34, NULL, '', 0, 0, 'Choice 3', '', NULL, X'613A313A7B733A323A226362223B733A323A223434223B7D', 1, 1, 30, NULL, 0),
+	(38, 34, NULL, '', 0, 0, 'Choice 4', '', NULL, X'613A313A7B733A323A226362223B733A323A223435223B7D', 1, 1, 40, NULL, 0),
+	(39, 34, NULL, '', 0, 0, 'Choice 5', '', NULL, X'613A313A7B733A323A226362223B733A323A223436223B7D', 1, 1, 50, NULL, 0),
+	(40, 34, NULL, '', 0, 0, 'Choice 6', '', NULL, X'613A313A7B733A323A226362223B733A323A223437223B7D', 1, 1, 60, NULL, 0),
+	(41, 34, NULL, '', 0, 0, 'Choice 7', '', NULL, X'613A313A7B733A323A226362223B733A323A223438223B7D', 1, 1, 70, NULL, 0),
+	(42, 34, NULL, '', 0, 0, 'Choice 8', '', NULL, X'613A313A7B733A323A226362223B733A323A223439223B7D', 1, 1, 80, NULL, 0);
+
+"
+);
+$em->getConnection()->executeUpdate(
+    "
+REPLACE INTO `ticket_layouts` (`id`, `department_id`, `is_enabled`, `user_layout`, `agent_layout`, `date_updated`)
+VALUES
+	(1, NULL, 1, '{\"@CLASS\":\"Application\\\\\\\\DeskPRO\\\\\\\\TicketLayout\\\\\\\\Layout\",\"@DATA\":{\"version\":1,\"fields\":[{\"version\":1,\"field_type\":\"department\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"subject\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"priority\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"category\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"product\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"1\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"2\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"3\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"4\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"5\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"6\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"7\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"8\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"17\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"25\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"34\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"product\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"category\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"priority\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"message\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"user_email\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"attach\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}}]}}', '{\"@CLASS\":\"Application\\\\\\\\DeskPRO\\\\\\\\TicketLayout\\\\\\\\Layout\",\"@DATA\":{\"version\":1,\"fields\":[{\"version\":1,\"field_type\":\"department\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"subject\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"1\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"2\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"3\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"4\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"5\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"6\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"7\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"8\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"17\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"25\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"34\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"message\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"user_email\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}}]}}', '2015-10-29 14:51:32');
+
+"
+);
+
+$em->getConnection()->executeUpdate(
+    "
+INSERT INTO `products` (`id`, `parent_id`, `title`, `display_order`, `depth`, `root`)
+VALUES
+	(1, NULL, 'Product 1', 10, 0, NULL),
+	(2, NULL, 'Product 2', 20, 0, NULL),
+	(3, NULL, 'Product 3', 30, 0, NULL);
+INSERT INTO `ticket_priorities` (`id`, `title`, `priority`)
+VALUES
+	(1, 'Priority 1', 10),
+	(2, 'Priority 2', 20),
+	(3, 'Priority 3', 30);
+INSERT INTO `ticket_categories` (`id`, `parent_id`, `title`, `display_order`)
+VALUES
+	(1, NULL, 'Category 1', 10),
+	(2, NULL, 'Category 2', 20),
+	(3, NULL, 'Category 3', 30);
+INSERT INTO `ticket_workflows` (`id`, `title`, `display_order`)
+VALUES
+	(4, 'Workflow 1', 10),
+	(5, 'Workflow 2', 20),
+	(6, 'Workflow 3', 30);
 "
 );

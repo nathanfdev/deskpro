@@ -38,7 +38,6 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class HiddenType extends AbstractType
@@ -92,17 +91,16 @@ class HiddenType extends AbstractType
 
     public function getParent()
     {
-        return 'text';
+        return 'hidden';
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'auto_fill' => false,
-            'hidden'    => true,
-            'label'     => function (Options $options) {
-                    return !((bool) $options->get('hidden'));
-                },
+            'auto_fill'          => false,
+            'label'              => false,
+            'help'               => false,
+            'hidden'             => true,
             'request_param_name' => null,
             'cookie_param_name'  => null,
         ));

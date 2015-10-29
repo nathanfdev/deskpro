@@ -248,8 +248,9 @@ class FormFieldManager
                     'deskpro_display_html',
                     'input',
                     $this->getGeneralOptionsForField($field_type, array(
-                        'html' => $field_type->getOption('html'),
-                        'data' => '',
+                        'html'  => $field_type->getOption('html'),
+                        'data'  => '',
+                        'label' => false,
                     ), $agent_interface), );
 
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
@@ -291,15 +292,13 @@ class FormFieldManager
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Hidden':
 
                 $options = array(
-                    'auto_fill'          => !$agent_interface,
-                    'hidden'             => !$agent_interface,
+                    'auto_fill'          => false,
+                    'hidden'             => true,
+                    'label'              => false,
+                    'help'               => false,
                     'cookie_param_name'  => $field_type->getOption('cookie_name'),
                     'request_param_name' => $field_type->getOption('param_name'),
                 );
-
-                if (!$agent_interface) {
-                    $options['label'] = false;
-                }
 
                 return array('deskpro_hidden', 'input', $this->getGeneralOptionsForField($field_type, $options, $agent_interface));
 
@@ -314,15 +313,12 @@ class FormFieldManager
     {
         $isAgent = $agent_interface;
 
-        $options = array(
-            'required' => $field_type->isRequired($isAgent),
-        );
-
-        $constraints = array();
+        $constraints = $options = [];
 
         // required
         if ($field_type->isRequired($isAgent)) {
-            $constraints[] = new NotBlank(array('message' => 'This value is required'));
+            $options['required'] = $field_type->isRequired($isAgent);
+            $constraints[]       = new NotBlank(array('message' => 'This value is required'));
         }
 
         // length

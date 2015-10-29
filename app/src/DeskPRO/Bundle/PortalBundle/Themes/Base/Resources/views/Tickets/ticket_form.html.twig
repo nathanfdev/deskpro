@@ -19,13 +19,14 @@
         {% for widget in form.children if widget.vars.name not in ['_token', '_dp_csrf_token'] %}
               <div class="deskpro-form-widget field_{{ widget.vars.name }} {% if widget.vars.valid is defined and not widget.vars.valid %} form-error{% endif %}"
                    data-field="{{ widget.vars.name }}">
-                  <div class="bucket">
-                      {{ form_label(widget) }}
-                      {{ form_widget(widget) }}
-                      {% if widget.vars.valid is defined %}
-                          {{ form_errors(widget) }}
-                      {% endif %}
-                  </div>
+                  {{ form_row(widget) }}
+                  {#<div class="bucket">#}
+                      {#{{ form_label(widget) }}#}
+                      {#{{ form_widget(widget) }}#}
+                      {#{% if widget.vars.valid is defined %}#}
+                          {#{{ form_errors(widget) }}#}
+                      {#{% endif %}#}
+                  {#</div>#}
           </div>
         {% endfor %}
     </div>

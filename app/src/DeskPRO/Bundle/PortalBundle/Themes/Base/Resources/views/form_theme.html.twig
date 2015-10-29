@@ -1,5 +1,7 @@
 {% extends 'form_div_layout.html.twig' %}
 
+{# Basic structure #}
+
 {%- block form_row -%}
     <div class="bucket">
         {{- form_label(form) -}}
@@ -8,117 +10,49 @@
     </div>
 {%- endblock form_row -%}
 
+{# Labels #}
+
 {%- block form_label -%}
     {% if label is not sameas(false) -%}
+        {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' title')|trim}) %}
         {% if not compound -%}
-    {% set label_attr = label_attr|merge({'for': id}) %}
-{%- endif %}
+            {% set label_attr = label_attr|merge({'for': id}) %}
+        {%- endif %}
         {% if required -%}
-    {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
-{%- endif %}
+            {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
+        {%- endif %}
         {% if label is empty -%}
-    {%- if label_format is not empty -%}
-        {% set label = label_format|replace({
-        '%name%': name,
-        '%id%': id,
-        }) %}
-    {%- else -%}
-        {% set label = name|humanize %}
-    {%- endif -%}
-{%- endif -%}
-{%- if no_dp_title is not defined  -%}
-    {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' title')}) %}
-    {%- endif -%}
-        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}</label>
+            {%- if label_format is not empty -%}
+                {% set label = label_format|replace({
+                    '%name%': name,
+                    '%id%': id,
+                }) %}
+            {%- else -%}
+                {% set label = name|humanize %}
+            {%- endif -%}
+        {%- endif -%}
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}{% if required %} *{% endif %}</label>
     {%- endif -%}
 {%- endblock form_label -%}
 
-{# Generic Form Types #}
-{% block form_widget -%}
-        {% if compound %}
-            {{- block('form_widget_compound') -}}
-        {% else %}
-            {{- block('form_widget_simple') -}}
-        {% endif %}
-    {% if form.vars.help %}
-        <small class="help">{{ form.vars.help }}</small>
-    {% endif %}
-{%- endblock form_widget %}
-
-{%- block textarea_widget -%}
-    <div class="form-widget">
-        <textarea {{ block('widget_attributes') }}>{{ value }}</textarea>
-    </div>
-{%- endblock textarea_widget -%}
-
-{%- block form_widget_simple -%}
-    <div class="form-widget">
-        {%- set type = type|default('text') -%}
-        <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
-    </div>
-{%- endblock form_widget_simple -%}
-
-{%- block choice_widget_collapsed -%}
-    <div class="deskpro-choice-widget">
-        {{ parent() }}
-    </div>
-{%- endblock choice_widget_collapsed -%}
-
-{%- block choice_widget_expanded -%}
-    <div {{ block('widget_container_attributes') }}>
-        <div class="deskpro-choice-widget">
-            {%- for child in form %}
-                {{- form_widget(child) -}}
-                {{- form_label(child, null, { no_dp_title: true }) -}}
-            {% endfor -%}
-        </div>
-    </div>
-{%- endblock choice_widget_expanded -%}
-
-{% block email_widget -%}
-    {% set type = type|default('email') %}
-    {{- block('form_widget_simple') -}}
-{%- endblock email_widget %}
-
-{%- block button_widget -%}
-    <div class="bucket form-widget">
-        {{ parent() }}
-    </div>
-{%- endblock button_widget -%}
-
-{# A Checkbox #}
-{% block checkbox_widget -%}
-    <input{% if add_margin is defined %} style="margin-left: 20px;"{% endif %} type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
-    {% if form.vars.checkbox_label %}{{ form.vars.checkbox_label }}{% endif %}
-{%- endblock checkbox_widget %}
-
-
-{# Hidden Custom Fields #}
-{% block deskpro_hidden_widget -%}
-    {% if hidden %}
-        {% set type = 'hidden' %}
-    {% else %}
-        {% set type = type|default('text') %}
-    {% endif %}
-    {{- block('form_widget_simple') -}}
-{%- endblock deskpro_hidden_widget %}
+{%- block button_label -%}{%- endblock -%}
 
 {# letting logged in users choose their email #}
 {% block deskpro_person_email_choice_widget %}
     <div {{ block('widget_container_attributes') }}>
-        <div class="deskpro-choice-widget">
-            {% set count = form|length %}
-            {% if count > 1 %}
-                {%- for child in form %}
-                    {{- form_widget(child) -}}
-                    {{- form_label(child) -}}<br>
-                {% endfor -%}
-            {% else %}
-                <strong>{{ person.primary_email_address }}</strong>
-            {% endif %}
-        </div>
+        {% set count = form|length %}
+        {% if count > 1 %}
+            {%- for child in form %}
+                {{- form_widget(child) -}}
+                {{- form_label(child) -}}<br>
+            {% endfor -%}
+        {% else %}
+            <strong>{{ person.primary_email_address }}</strong>
+        {% endif %}
     </div>
 {% endblock deskpro_person_email_choice_widget %}
+
+
 
 
 {% block deskpro_custom_per_field_data_widget %}
@@ -131,9 +65,7 @@
         data-input-name="{{ form.vars.full_name }}"
         >
         {% set no_dp_title = true %}
-        <div class="form-widget">
-            {{ block('form_widget') }}
-        </div>
+        {{ block('form_widget') }}
     </div>
 {% endblock %}
 
@@ -164,7 +96,6 @@
 
 {% block ticket_message_attachment_collection_widget %}
 <div class="bucket">
-    <div class="form-widget">
     {% if prototype is defined %}
         {%- set attr = attr|merge({'data-prototype': form_row(prototype) }) -%}
     {% endif %}
@@ -185,25 +116,23 @@
             </div>
         </div>
     </div>
-    </div>
 </div>
 {% endblock ticket_message_attachment_collection_widget %}
 
-
 {# FEEDBACK ATTACHMENTS #}
 {% block feedback_attachment_widget %}
-{% if form.upload is defined %}
-    {{ form_widget(form.upload) }}
-{% else %}
-    <a href="{{ form.vars.data.blob.downloadUrl }}">
-        {% if form.vars.data.blob.is_image %}
-            <img src="{{ form.vars.data.blob.thumbnailUrl }}" alt=""/>
-        {% endif %}
-        {{ form.vars.data.blob.filename }}
-    </a>
-    [ {{ form_widget(form.delete) }} {{ phrase('portal.general.delete_question') }} ]
-    {{ form_widget(form.blob_auth) }}
-{% endif %}
+    {% if form.upload is defined %}
+        {{ form_widget(form.upload) }}
+    {% else %}
+        <a href="{{ form.vars.data.blob.downloadUrl }}">
+            {% if form.vars.data.blob.is_image %}
+                <img src="{{ form.vars.data.blob.thumbnailUrl }}" alt=""/>
+            {% endif %}
+            {{ form.vars.data.blob.filename }}
+        </a>
+        [ {{ form_widget(form.delete) }} {{ phrase('portal.general.delete_question') }} ]
+        {{ form_widget(form.blob_auth) }}
+    {% endif %}
 {% endblock feedback_attachment_widget %}
 
 {% block feedback_attachment_collection_widget %}
@@ -233,51 +162,6 @@
     </div>
 {% endblock feedback_attachment_collection_widget %}
 
-
-{# DATES #}
-{% block datetime_widget -%}
-    {% if widget == 'single_text' %}
-        {{- block('form_widget_simple') -}}
-    {% else -%}
-        <div class="deskpro-date-widget" {{ block('widget_container_attributes') }}>
-            {{- form_errors(form.date) -}}
-            {{- form_errors(form.time) -}}
-            {{- form_widget(form.date) -}}
-            {{- form_widget(form.time) -}}
-        </div>
-    {%- endif %}
-    {% if form.vars.help %}
-        <small class="help">{{ form.vars.help }}</small>
-    {% endif %}
-{%- endblock datetime_widget %}
-
-{% block date_widget -%}
-    {% if widget == 'single_text' %}
-        {{- block('form_widget_simple') -}}
-    {% else -%}
-        <div class="deskpro-date-widget" {{ block('widget_container_attributes') }}>
-            {{ form_widget(form.month) }}
-            {{ form_widget(form.day) }}
-            {{ form_widget(form.year) }}
-        </div>
-    {%- endif %}
-    {% if form.vars.help %}
-        <small class="help">{{ form.vars.help }}</small>
-    {% endif %}
-{%- endblock date_widget %}
-
-{%- block time_widget -%}
-    {%- if widget == 'single_text' -%}
-        {{ block('form_widget_simple') }}
-    {%- else -%}
-        {%- set vars = widget == 'text' ? { 'attr': { 'size': 1 }} : {} -%}
-        <div class="deskpro-date-widget" {{ block('widget_container_attributes') }}>
-            {{ form_widget(form.hour, vars) }}{% if with_minutes %}{{ form_widget(form.minute, vars) }}{% endif %}{% if with_seconds %}{{ form_widget(form.second, vars) }}{% endif %}
-        </div>
-    {%- endif -%}
-{%- endblock time_widget -%}
-
-
 {# DISPLAY HTML #}
 {% block deskpro_display_html_widget %}
 {% set value = 'html' %}
@@ -286,22 +170,10 @@
 {% endblock deskpro_display_html_widget %}
 
 
-{# DATES #}
-{% block deskpro_date_widget %}
-    {% set attr = attr|merge({'class': (attr.class|default('') ~ ' deskpro-date-form-widget')|trim}) %}
-    {{ block('date_widget') }}
-{% endblock deskpro_date_widget %}
-
-{% block deskpro_datetime_widget %}
-    {% set attr = attr|merge({'class': (attr.class|default('') ~ ' deskpro-date-form-widget')|trim}) %}
-    {{ block('datetime_widget') }}
-{% endblock deskpro_datetime_widget %}
-
-
 {# RECAPTHCA #}
 {% block deskpro_captcha_widget %}
     {% spaceless %}
-        <div class="bucket form-widget{% if form.parent and not form.parent.vars.valid %} show-error{% endif %}">
+        <div class="bucket{% if form.parent and not form.parent.vars.valid %} show-error{% endif %}">
             {% if attr.options is defined %}
                 <script type="text/javascript">
                     var RecaptchaOptions =
@@ -395,9 +267,6 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
         {{- block('deskpro_custom_field_choice_widget_expanded') -}}
     {% else %}
         {{- block('deskpro_custom_field_choice_widget_collapsed') -}}
-    {% endif %}
-    {% if form.vars.help %}
-        <small class="help">{{ form.vars.help }}</small>
     {% endif %}
 {% endblock %}
 
