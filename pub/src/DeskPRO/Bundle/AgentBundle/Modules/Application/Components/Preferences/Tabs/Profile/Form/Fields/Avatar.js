@@ -174,6 +174,10 @@ export class Avatar extends React.Component {
 
     return (
       <div className={classNames.join(' ')} id="avatar-crop">
+        <div className="controls">
+          <a href="#" onClick={this.onToggleEdit}><i className="fa fa-times"></i></a>
+        </div>
+
         {tmpFile && (
           <p>Click &amp; drag to crop your avatar</p>
         )}

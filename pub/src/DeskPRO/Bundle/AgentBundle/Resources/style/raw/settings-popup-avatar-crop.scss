@@ -13,6 +13,18 @@
     font-size: 0.9em;
   }
 
+  .controls {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+
+    a {
+      opacity: 0.3;
+      &:hover { opacity: 1; }
+      font-size: 0.8em;
+    }
+  }
+
 
   a.crop {
     display: block;
@@ -35,19 +47,21 @@
 
      &:hover { opacity: 1; }
   }
-}
 
-.cropper-bucket {
-  border: 1px solid #ebeced;
-  padding: 10px;
-  background: #fff;
+  .cropper-bucket {
+    border: 1px solid #ebeced;
+    padding: 10px;
+    background: #fff;
+    margin-top: 12px;
 
-  img {
-    width: 100%;
+    img {
+      width: 100%;
+    }
+
+    .dz-message {
+      text-align: center;
+      cursor: pointer;
+    }
   }
 
-  .dz-message {
-    text-align: center;
-    cursor: pointer;
-  }
 }
