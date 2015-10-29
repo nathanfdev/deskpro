@@ -51,12 +51,15 @@ export class Avatar extends React.Component {
 
   onSave = () => {
     const dropzone = this.refs.dropzoneComponent.dropzone;
-
     if (dropzone.getUploadingFiles().length) {
       return;
     }
 
     const cropper = this.refs.cropper;
+    if (!cropper) {
+      return;
+    }
+
     const blobUrl = cropper.getCroppedCanvas().toDataURL();
     const byteString = atob(blobUrl.split(',')[1]);
     const ab = new ArrayBuffer(byteString.length);
