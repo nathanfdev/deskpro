@@ -4,6 +4,7 @@ import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu
 import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
 import {FilterItem} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/FilterItem';
 import {DateTimePicker} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/DateTimePicker';
+import {ChoiceMenu} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/ChoiceMenu';
 import { setFilterValue, loadFeedbackList } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import Moment from 'moment';
 
@@ -50,7 +51,7 @@ const FilterByDropdown = React.createClass({
       const from = filterParams.get('created_from') ? Moment(filterParams.get('created_from')).format('DD/MM/YYYY') : '...';
       const to = filterParams.get('created_to') ? Moment(filterParams.get('created_to')).format('DD/MM/YYYY') : '...';
       return (
-          <span className="dpw-navigation-dropdown-item-inline-info">{from} - {to}</span>
+        <span className="dpw-navigation-dropdown-item-inline-info">{from} - {to}</span>
       );
     }
   },
@@ -70,8 +71,7 @@ const FilterByDropdown = React.createClass({
           label="Type"
           >
           <Menu>
-            <Item label="Sub-menu 2"/>
-            <Item label="Subterranean"/>
+            <ChoiceMenu/>
           </Menu>
         </FilterItem>
         <FilterItem
