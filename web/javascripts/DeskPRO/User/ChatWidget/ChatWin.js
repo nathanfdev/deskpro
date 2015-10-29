@@ -460,6 +460,9 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		});
 
 		this._initFields();
+		$('#dp_chat_messages_pane').on('click', 'img', function(){
+      window.open($(this).attr('src'));
+		});
 	},
 
 	startChat: function() {
