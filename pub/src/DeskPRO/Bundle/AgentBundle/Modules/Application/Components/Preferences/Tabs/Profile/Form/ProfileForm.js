@@ -59,7 +59,7 @@ export class ProfileForm extends React.Component {
   onChangeAvatar = (value) => {
     this.updateData({
       avatar: {
-        url: this.state.data.avatar.url,
+        url: value ? this.state.data.avatar.url : null,
         blob_auth_id: value
       }
     });

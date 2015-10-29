@@ -118,6 +118,11 @@ export class Avatar extends React.Component {
     });
   };
 
+  onRemove = () => {
+    this.onDiscard();
+    this.props.onChange(null);
+  };
+
   getImagePath() {
     const currentPath = this.props.value;
     const croppedPath = this.state.croppedPath;
@@ -125,13 +130,14 @@ export class Avatar extends React.Component {
     return croppedPath || currentPath;
   }
 
-  renderEditButtons() {
-    return (
-      <div>
-        <a href="#" className="crop" onClick={this.onSave}>Upload &amp; a new avatar</a>
-        <a href="#" className="cancel" onClick={this.onDiscard}>Or remove &amp; your avatar (use the default)</a>
-      </div>
-    );
+  renderRemoveButton() {
+    if (this.getImagePath()) {
+      return (
+        <div>
+          <a href="#" className="cancel" onClick={this.onRemove}>Or remove &amp; your avatar (use the default)</a>
+        </div>
+      );
+    }
   }
 
   renderCropperButtons() {
@@ -163,6 +169,8 @@ export class Avatar extends React.Component {
           <p>Click &amp; drag to crop your avatar</p>
         )}
         <div className="cropper-bucket">
+          {(this.getImagePath() && !tmpFile) && ((<img src={this.getImagePath()} />))}
+
           <DropzoneComponent className={tmpFile && 'hidden'}
                              ref="dropzoneComponent"
                              config={componentConfig}
@@ -174,7 +182,7 @@ export class Avatar extends React.Component {
                              djsConfig={djsConfig}>
             <div className="dz-message">
               {this.getImagePath()
-                ? (<img src={this.getImagePath()} />)
+                ? (<a href="#" className="crop" onClick={this.onSave}>Upload &amp; a new avatar</a>)
                 : (<span>Drag and drop a photo here or click to browse.</span>)}
             </div>
           </DropzoneComponent>
@@ -190,7 +198,7 @@ export class Avatar extends React.Component {
         </div>
 
         {error && (<span className="error">{error}</span>)}
-        {tmpFile ? this.renderCropperButtons() : this.renderEditButtons()}
+        {tmpFile ? this.renderCropperButtons() : this.renderRemoveButton()}
       </div>
     );
   }
