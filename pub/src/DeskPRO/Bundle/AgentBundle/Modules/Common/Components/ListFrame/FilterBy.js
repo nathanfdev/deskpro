@@ -4,16 +4,19 @@ import { ControlButton } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Compone
 export class FilterBy extends Component {
 
   static propTypes = {
+    title: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
     children: PropTypes.any,
     toggleDropdown: PropTypes.func.isRequired
   };
 
   render() {
-    const {toggleDropdown} = this.props;
+    const {toggleDropdown, title, label} = this.props;
     return (
       <li>
         <ControlButton
-          title="Filter by"
+          title={title}
+          label={label}
           toggleDropdown={toggleDropdown}
           />
         {this.props.children}

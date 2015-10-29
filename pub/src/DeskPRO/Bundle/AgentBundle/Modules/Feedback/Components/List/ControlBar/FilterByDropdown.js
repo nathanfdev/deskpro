@@ -5,6 +5,7 @@ import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item
 import {FilterItem} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/FilterItem';
 import {DateTimePicker} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/DateTimePicker';
 import { setFilterValue, loadFeedbackList } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
+import Moment from 'moment';
 
 const FilterByDropdown = React.createClass({
 
@@ -43,11 +44,22 @@ const FilterByDropdown = React.createClass({
     }
   },
 
+  renderDateCreatedItemContent(active) {
+    if (active) {
+      const {filterParams} = this.props;
+      const from = filterParams.get('created_from') ? Moment(filterParams.get('created_from')).format('DD/MM/YYYY') : '...';
+      const to = filterParams.get('created_to') ? Moment(filterParams.get('created_to')).format('DD/MM/YYYY') : '...';
+      return (
+          <span className="dpw-navigation-dropdown-item-inline-info">{from} - {to}</span>
+      );
+    }
+  },
+
   render() {
     const {filterParams} = this.props;
-    console.log('Params', filterParams);
     const initialFrom = filterParams && filterParams.get('created_from') ? filterParams.get('created_from') : null;
     const initialTo = filterParams && filterParams.get('created_to') ? filterParams.get('created_to') : null;
+    const isDateCreatedActive = this.checkIfActiveDateCreated();
     return (
       <Menu>
         <FilterItem
@@ -86,11 +98,12 @@ const FilterByDropdown = React.createClass({
         </FilterItem>
         <FilterItem
           filterType="date_created"
-          isActive={this.checkIfActiveDateCreated()}
+          isActive={isDateCreatedActive}
           resetFilter={this.resetFilter}
           icon="calendar-o"
           label="Date"
           >
+          {this.renderDateCreatedItemContent(isDateCreatedActive)}
           <Menu>
             <div
               className="dpw-navigation-dropdown-panel dpw-navigation-date-picker-panel dpw-navigation-dropdown-panel-corner-left">

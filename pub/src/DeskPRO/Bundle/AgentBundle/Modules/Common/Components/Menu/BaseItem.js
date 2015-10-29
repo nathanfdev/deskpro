@@ -139,15 +139,11 @@ const BaseItem = React.createClass({
       if (this.props.format === 'item') {
         return (
           <ItemFormat {...this.props} hasMenu={hasMenu} hasItemList={hasItemList}
-                                      toggleInnerList={this.toggleInnerList}>
-            {output}
-          </ItemFormat>
+                                      toggleInnerList={this.toggleInnerList}/>
         );
       } else if (this.props.format === 'filter') {
         return (
-          <ItemFormat {...this.props}>
-            {output}
-          </ItemFormat>
+          <ItemFormat {...this.props}/>
         );
       }
     }
@@ -159,7 +155,7 @@ const BaseItem = React.createClass({
     if (this.props.children) {
       React.Children.map(this.props.children,
         (child) => {
-          if (child.type && child.type.displayName === 'Menu') {
+          if (child && child.type && child.type.displayName === 'Menu') {
             hasMenu = true;
           }
         });
@@ -172,7 +168,7 @@ const BaseItem = React.createClass({
     if (this.props.children) {
       React.Children.map(this.props.children,
         (child) => {
-          if (child.type && child.type.displayName === 'ItemList') {
+          if (child && child.type && child.type.displayName === 'ItemList') {
             hasItemList = true;
           }
         });
@@ -209,7 +205,7 @@ const BaseItem = React.createClass({
   renderMenu(hasMenu) {
     if (hasMenu) {
       return React.Children.map(this.props.children, (child) => {
-        if (child.type && child.type.displayName === 'Menu') {
+        if (child && child.type && child.type.displayName === 'Menu') {
           const parentLevel = this.props.parentMenuLevel ? this.props.parentMenuLevel : 1;
           const childProps = child.props;
           const menuLevel = parentLevel + 1;
@@ -231,7 +227,7 @@ const BaseItem = React.createClass({
   renderItemList(hasItemList) {
     if (hasItemList) {
       return React.Children.map(this.props.children, (child) => {
-        if (child.type && child.type.displayName === 'ItemList' && this.state.openInnerList) {
+        if (child && child.type && child.type.displayName === 'ItemList' && this.state.openInnerList) {
           return child;
         }
       });

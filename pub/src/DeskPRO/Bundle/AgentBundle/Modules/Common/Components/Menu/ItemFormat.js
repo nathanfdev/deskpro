@@ -4,6 +4,7 @@ import classNames from 'classnames';
 export default class ItemFormat extends React.Component {
   static propTypes = {
     icon: React.PropTypes.string,
+    label: React.PropTypes.string,
     format: React.PropTypes.string,
     itemType: React.PropTypes.string,
     filterType: React.PropTypes.string,
@@ -41,6 +42,27 @@ export default class ItemFormat extends React.Component {
             </span>
         </span>
       );
+    }
+  }
+
+  renderLabel() {
+    const { label } = this.props;
+    if (label) {
+      return (
+        <span className="dpw-navigation-dropdown-item-title">
+        {label}
+      </span>
+      );
+    }
+  }
+
+  renderChildren() {
+    if (this.props.children) {
+      return React.Children.map(this.props.children, (child) => {
+        if (child && child.type && child.type.displayName !== 'ItemList' && child.type.displayName !== 'Menu' ) {
+          return child;
+        }
+      });
     }
   }
 
@@ -120,9 +142,8 @@ export default class ItemFormat extends React.Component {
     return (<div>
       {this.renderDiscMark()}
       {this.renderIcon()}
-      <span className="dpw-navigation-dropdown-item-title">
-        {this.props.children}
-      </span>
+      {this.renderLabel()}
+      {this.renderChildren()}
       {this.renderSubmenuCaret()}
       {this.renderCheckedMark()}
       {this.renderInnerListSwitcher()}
