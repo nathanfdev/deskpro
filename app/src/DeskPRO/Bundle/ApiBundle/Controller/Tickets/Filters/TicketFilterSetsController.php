@@ -35,6 +35,8 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use FOS\RestBundle\Controller\Annotations\Delete;
@@ -223,33 +225,62 @@ class TicketFilterSetsController extends BaseController
      * Workhorse function for the count operations.
      *
      * @param TicketFilterSet $set
-     * @param $groupby
      *
      * @return array
      */
-    protected function getFilterSetTicketsCount(TicketFilterSet $set, $groupby)
+    protected function getFilterSetTicketsCount(TicketFilterSet $set)
     {
         $total  = 0;
         $counts = [];
 
+        /** @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngine $engine */
+        $engine = $this->get('term_engine.dbal_ticket_filters.engine');
+
         foreach ($set->getFilters() as $filter) {
-            $engine = $this->get('term_engine.dbal_ticket_filters.engine');
-
             $context = new TermEngineContext($this->getUser());
-            // Applying the group-by clauses.
 
-            if ($groupby) {
-                $context->addGroupByFromString($groupby);
+            if ($group_by = $this->getFilterGroupBy($filter)) {
+                $context->addGroupByFromString($group_by);
             }
 
             $tickets_query = $engine->evaluate($filter, $context);
             $filter_counts = $tickets_query->fetchGroupedCount();
 
-            $counts[] = Count::fromValueAndGroup((int) $filter_counts[0]['count'], $filter->getId());
-            $total += $filter_counts[0]['count'];
+            if ($group_by) {
+                $filter_count = Count::create(0, $filter->getId(), [], 'filter');
+                foreach ($filter_counts as $nested_count) {
+                    $value = $nested_count['count'];
+                    unset($nested_count['count']);
+                    $group = array_pop($nested_count);
+                    $group = ctype_digit($group) ? (int) $group : $group;
+
+                    $filter_count->addNestedInstance(
+                        Count::create($value, $group, [], $group_by),
+                        true
+                    );
+                }
+            } else {
+                $filter_count = Count::create((int) $filter_counts[0]['count'], $filter->getId(), [], 'filter');
+            }
+            $counts[] = $filter_count;
+            $total += $filter_count->getCount();
         }
 
-        return Count::create($total, $set->getId(), $counts, $groupby);
+        return Count::create($total, $set->getId(), $counts);
+    }
+
+    /**
+     * @param TicketFilter $filter
+     *
+     * @return string|null
+     */
+    private function getFilterGroupBy(TicketFilter $filter)
+    {
+        $name    = TicketFiltersController::CUSTOM_FILTER_GROUP_BY_PREFIX.$filter->getId();
+        $person  = $this->getUser();
+        $setting = $this->getManager()->find(PersonSetting::class, compact('name', 'person'));
+
+        return $setting ? $setting->getValue() : null;
     }
 
     /**
@@ -261,14 +292,7 @@ class TicketFilterSetsController extends BaseController
      *              "requirement"="\d+",
      *              "description"="the id of the filter",
      *              "dataType"="integer"
-     *          },
-     *          {
-     *              "name"="group_by",
-     *              "requirement"=".+",
-     *              "description"="the grouping order you want",
-     *              "dataType"="string",
-     *              "required"=false
-     *          },
+     *          }
      *      },
      *      statusCodes={
      *          200="Success",
@@ -278,19 +302,13 @@ class TicketFilterSetsController extends BaseController
      * )
      * @Get("/ticket_filter_sets/{id}/count", name="api_ticket_filter_set_count")
      */
-    public function getTicketsCountAction(Request $request, $id)
+    public function getTicketsCountAction($id)
     {
-        $set = $this->getEm()->find('App:TicketFilterSet', $id);
-
-        if (!$set) {
-            throw $this->createNotFoundException();
-        }
-
-        $groupby          = $request->query->get('group_by');
-        $filter_set_count = $this->getFilterSetTicketsCount($set, $groupby);
+        $set   = $this->findOr404('App:TicketFilterSet', $id);
+        $count = $this->getFilterSetTicketsCount($set);
 
         return View::create(
-            $this->createRepresentation($filter_set_count),
+            $this->createRepresentation($count),
             Response::HTTP_OK
         );
     }
@@ -338,15 +356,6 @@ class TicketFilterSetsController extends BaseController
     /**
      * @ApiDoc(
      *      description="get a filter set count",
-     *      requirements={
-     *          {
-     *              "name"="group_by",
-     *              "requirement"=".+",
-     *              "description"="the grouping order you want",
-     *              "dataType"="string",
-     *              "required"=false
-     *          },
-     *      },
      *      statusCodes={
      *          200="Success",
      *          404="Not Found"
@@ -357,12 +366,11 @@ class TicketFilterSetsController extends BaseController
      */
     public function getAllTicketsCountsAction(Request $request)
     {
-        $groupby = $request->query->get('group_by');
-        $sets    = $this->getEm()->getRepository('App:TicketFilterSet')->findAll();
+        $sets = $this->getEm()->getRepository('App:TicketFilterSet')->findAll();
 
         $filter_set_counts = [];
         foreach ($sets as $set) {
-            $filter_set_counts[] = $this->getFilterSetTicketsCount($set, $groupby);
+            $filter_set_counts[] = $this->getFilterSetTicketsCount($set);
         }
 
         return View::create(

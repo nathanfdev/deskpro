@@ -1,5 +1,6 @@
 import { createStoreSelectors, createRequestSelectorsBuilder } from 'Ampliflux/common/record-store/selectors';
 import { createSelector } from 'reselect';
+import { reduceImmutableToProperty } from 'DeskPRO/Component/Util/Map';
 
 function departmentsStateSel(state) {
   return state.RecordStores.Agent.departments;
@@ -12,3 +13,8 @@ export const allDepartmentsSelector = createDepartmentsRequestSelectors('all').r
 
 export const myDepartmentsSelector = createDepartmentsRequestSelectors('my').recordsSel;
 export const myDepartmentsStatusSelector = createDepartmentsRequestSelectors('my').statusSel;
+
+export const departmentNamesSelector = createSelector(
+  allDepartmentsSelector,
+  agents => reduceImmutableToProperty('title', agents)
+);

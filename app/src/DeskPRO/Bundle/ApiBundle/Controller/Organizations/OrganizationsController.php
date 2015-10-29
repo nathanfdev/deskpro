@@ -31,11 +31,13 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
+use Application\DeskPRO\Entity\Organization;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -61,6 +63,30 @@ class OrganizationsController extends BaseController
 
         return View::create(
             $this->createRepresentation(Count::fromValue($count)),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Get all organizations list",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     * @Get("/organizations", name="api_organizations")
+     */
+    public function selectiveCollectionGetAction(Request $request)
+    {
+        $ids = explode(',', $request->get('ids', ''));
+        $ids = array_map(function ($id) {return (int) $id;}, $ids);
+
+        $qb = $this->getRepository(Organization::class)->createQueryBuilder('o');
+        $qb->where('o.id IN (:ids)')
+           ->setParameter('ids', $ids);
+
+        return View::create(
+            $this->dataSerialize($qb->getQuery()->getResult()),
             Response::HTTP_OK
         );
     }

@@ -31,10 +31,36 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\ApiBundle\Controller\Tickets\Filters\TicketFiltersController;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
+use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class TicketFilterTransformer extends AbstractDataSerializerTransformer
 {
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * @var Person
+     */
+    private $user;
+
+    /**
+     * @param TokenStorage  $token_storage
+     * @param EntityManager $em
+     */
+    public function __construct(TokenStorage $token_storage, EntityManager $em)
+    {
+        $this->user = $token_storage->getToken() ? $token_storage->getToken()->getUser() : null;
+        $this->em   = $em;
+    }
+
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
         return [
@@ -52,8 +78,29 @@ class TicketFilterTransformer extends AbstractDataSerializerTransformer
 
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        /* @var \DeskPRO\Bundle\AppBundle\Entity\TicketFilter $data */
-        // $data = $transformation_request->getDataToBeTransformed();
-        return [];
+        /* @var \DeskPRO\Bundle\AppBundle\Entity\TicketFilter $filter */
+        $filter = $transformation_request->getDataToBeTransformed();
+        $custom = [];
+
+        if ($this->user) {
+            $custom['group_by'] = $this->getFilterGroupBy($filter);
+        }
+
+        return $custom;
+    }
+
+    /**
+     * @param TicketFilter $filter
+     *
+     * @return string|null
+     */
+    private function getFilterGroupBy(TicketFilter $filter)
+    {
+        $setting = $this->em->find(PersonSetting::class, [
+            'name'   => TicketFiltersController::CUSTOM_FILTER_GROUP_BY_PREFIX.$filter->getId(),
+            'person' => $this->user,
+        ]);
+
+        return $setting ? $setting->getValue() : null;
     }
 }

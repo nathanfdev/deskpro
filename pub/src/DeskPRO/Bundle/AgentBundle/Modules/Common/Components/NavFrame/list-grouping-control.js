@@ -7,6 +7,7 @@ export class ListGroupingControl extends React.Component {
     visible: PropTypes.bool.isRequired,
     onChange: PropTypes.func.isRequired,
     options: PropTypes.array.isRequired,
+    selected: PropTypes.string,
     onClose: PropTypes.func
   };
 
@@ -19,10 +20,10 @@ export class ListGroupingControl extends React.Component {
       this.props.onClose();
     }
     this.onClickOutWorked = true;
-  }
+  };
 
   render() {
-    const { title, onChange, options, visible } = this.props;
+    const { title, onChange, options, visible, selected } = this.props;
     const className = visible ? 'sidebar-hover show' : 'sidebar-hover hide';
 
     return (
@@ -37,7 +38,7 @@ export class ListGroupingControl extends React.Component {
             <form>
               <p>
                 <label>Grouping Options:</label>
-                <select onChange={onChange}>
+                <select onChange={onChange} value={selected}>
                   {options.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
                 </select>
               </p>

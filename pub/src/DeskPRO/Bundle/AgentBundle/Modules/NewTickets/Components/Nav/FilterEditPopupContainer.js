@@ -36,6 +36,7 @@ export class FilterEditPopupContainer extends Component {
         visible
         onChange={this.applyFilterEditing}
         onClose={this.closeFilterEditing}
+        selected={this.props.filter.get('group_by', '')}
       />
     );
   }

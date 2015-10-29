@@ -145,17 +145,14 @@ export class NestedList extends BaseList {
     const hasNested = nested && nested.length;
 
     const parts = {};
-    if (hasNested || this.props.alwaysExpanded) {
+    const label = this.props.groups[group] ? this.props.groups[group] : '—';
+    if (hasNested) {
       const expanded = this.state.expanded.indexOf(group) > -1;
-      parts.label = (
-        <span className="icon">
-          <i className={'fa fa-caret-' + (expanded ? 'down' : 'right')}></i>
-          {this.props.groups[group]}
-        </span>
-      );
+      const caret = this.props.alwaysExpanded ? '' : <i className={'fa fa-caret-' + (expanded ? 'down' : 'right')}></i>;
+      parts.label = <span className="icon">{caret} {label}</span>;
       parts.nested = this.renderNested(nested, group, depth);
     } else {
-      parts.label = this.props.groups[group];
+      parts.label = label;
       parts.nested = '';
     }
 

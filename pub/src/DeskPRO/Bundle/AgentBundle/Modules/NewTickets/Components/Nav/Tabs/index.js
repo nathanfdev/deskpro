@@ -1,4 +1,4 @@
-import { FiltersTabContainer } from './FiltersTabContainer';
+import { FiltersTabContainer } from './FiltersTab/FiltersTabContainer';
 import { LabelsTabContainer } from './LabelsTabContainer';
 import { StarsTabContainer } from './StarsTabContainer';
 
