@@ -2,6 +2,12 @@ import React, {Component, PropTypes} from 'react';
 import {QuickFilter} from './QuickFilter';
 
 export class ChoiceMenu extends Component {
+
+  static propTypes = {
+    title: PropTypes.string.isRequired,
+    children: PropTypes.any.isRequired
+  };
+
   render() {
     return (
       <div className="dpw-navigation-dropdown-panel dpw-navigation-dropdown-panel-corner-left">
@@ -10,94 +16,14 @@ export class ChoiceMenu extends Component {
 
           <div className="dpw-navigation-dropdown-panel-content-line">
             <div className="dpw-navigation-dropdown-panel-content-full">
-              <ChoiceMenuHeader/>
+              <ChoiceMenuHeader title={this.props.title}/>
 
               <div className="dpw-departments-long-list">
 
                 <QuickFilter/>
 
                 <div className="dpw--popup-item-collection">
-                  <ul>
-                    <li>
-                      <div className="dpw--popup-item-person">
-                        <span className="dpw--avatar-icon"><i className="fa fa-users"></i></span> <span
-                        className="dpw-popup-item-collection-name">Department</span>
-                      </div>
-                    </li>
-
-                    <li>
-                      <div className="dpw--popup-item-person">
-                          <span className="dpw--avatar-face"
-                                style={{backgroundImage: 'url(/img/avatars/org-adidas.png)'}}></span> <span
-                        className="dpw-popup-item-collection-name">Department</span>
-                      </div>
-
-                      <ul>
-                        <li>
-                          <div className="dpw--popup-item-person">
-                            <span className="dpw--avatar-icon"><i className="fa fa-users"></i></span> <span
-                            className="dpw-popup-item-collection-name">Another department</span>
-                          </div>
-
-                          <ul>
-                            <li>
-                              <div className="dpw--popup-item-person">
-                                <span className="dpw--avatar-icon"><i className="fa fa-users"></i></span> <span
-                                className="dpw-popup-item-collection-name">Longname Longnamesonn Linewrapper</span>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="dpw--popup-item-person">
-                                  <span className="dpw--avatar-face"
-                                        style={{backgroundImage: 'url(../img/avatars/org-adidas.png)'}}></span> <span
-                                className="dpw-popup-item-collection-name">Department</span>
-                              </div>
-                            </li>
-                          </ul>
-                        </li>
-
-                        <li>
-                          <div className="dpw--popup-item-person">
-                              <span className="dpw--avatar-face"
-                                    style={{backgroundImage: 'url(../img/avatars/org-adidas.png)'}}></span> <span
-                            className="dpw-popup-item-collection-name">Longname Longnamesonn Linewrapper</span>
-                          </div>
-                        </li>
-
-                        <li>
-                          <div className="dpw--popup-item-person">
-                              <span className="dpw--avatar-face"
-                                    style={{backgroundImage: 'url(../img/avatars/avatar2.png)'}}></span> <span
-                            className="dpw-popup-item-collection-name">Longname Longnamesonn Linewrapper</span>
-                          </div>
-                        </li>
-
-                        <li>
-                          <div className="dpw--popup-item-person">
-                              <span className="dpw--avatar-face"
-                                    style={{backgroundImage: 'url(../img/avatars/avatar2.png)'}}></span> <span
-                            className="dpw-popup-item-collection-name">Longname Longnamesonn Linewrapper</span>
-                          </div>
-                        </li>
-                      </ul>
-                    </li>
-
-                    <li>
-                      <div className="dpw--popup-item-person">
-                          <span className="dpw--avatar-face"
-                                style={{backgroundImage: 'url(../img/avatars/avatar3.png)'}}></span> <span
-                        className="dpw-popup-item-collection-name">Christine Rogers</span>
-                      </div>
-                    </li>
-
-                    <li>
-                      <div className="dpw--popup-item-person">
-                          <span className="dpw--avatar-face"
-                                style={{backgroundImage: 'url(../img/avatars/avatar4.png)'}}></span> <span
-                        className="dpw-popup-item-collection-name">Dave Sanders</span>
-                      </div>
-                    </li>
-                  </ul>
+                  {this.props.children}
                 </div>
               </div>
             </div>
@@ -109,10 +35,15 @@ export class ChoiceMenu extends Component {
 }
 
 export class ChoiceMenuHeader extends Component {
+
+  static propTypes = {
+    title: PropTypes.string.isRequired
+  };
+
   render() {
     return (
       <div className="dpw-navigation-dropdown-mini-header">
-        Remove Labels
+        {this.props.title}
       </div>
     );
   }

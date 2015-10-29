@@ -1,16 +1,20 @@
 import React, {PropTypes} from 'react';
 import Formsy from 'formsy-react';
+import Moment from 'moment';
 import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
 import {FilterItem} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/FilterItem';
 import {DateTimePicker} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/DateTimePicker';
 import {ChoiceMenu} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/ChoiceMenu';
 import { setFilterValue, loadFeedbackList } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
-import Moment from 'moment';
+import { TypesCollection } from './TypesCollection';
+import { StatusesCollection } from './StatusesCollection';
 
 const FilterByDropdown = React.createClass({
 
   propTypes: {
+    statuses: PropTypes.object.isRequired,
+    types: PropTypes.object.isRequired,
     filterParams: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     toggleDropdown: PropTypes.func.isRequired
@@ -57,7 +61,7 @@ const FilterByDropdown = React.createClass({
   },
 
   render() {
-    const {filterParams} = this.props;
+    const {filterParams, statuses, types} = this.props;
     const initialFrom = filterParams && filterParams.get('created_from') ? filterParams.get('created_from') : null;
     const initialTo = filterParams && filterParams.get('created_to') ? filterParams.get('created_to') : null;
     const isDateCreatedActive = this.checkIfActiveDateCreated();
@@ -71,7 +75,9 @@ const FilterByDropdown = React.createClass({
           label="Type"
           >
           <Menu>
-            <ChoiceMenu/>
+            <ChoiceMenu title="Feedback Type">
+              <TypesCollection options={types}/>
+            </ChoiceMenu>
           </Menu>
         </FilterItem>
         <FilterItem
@@ -81,8 +87,9 @@ const FilterByDropdown = React.createClass({
           icon="calendar-o"
           label="Status">
           <Menu>
-            <Item label="Sub-menu 2"/>
-            <Item label="Subterranean"/>
+            <ChoiceMenu title="Feedback Status">
+              <StatusesCollection options={statuses}/>
+            </ChoiceMenu>
           </Menu>
         </FilterItem>
         <FilterItem
