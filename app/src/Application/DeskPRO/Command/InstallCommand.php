@@ -304,7 +304,7 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         $app   = $this->getApplication();
         $input = new ArrayInput(array(
             'command'          => 'doctrine:fixtures:load',
-            '--fixtures'       => DP_ROOT.'src/DeskPRO/Bundle/AppBundle/DataFixtures/ORM',
+            '--fixtures'       => DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/ORM',
             '--no-interaction' => true,
             '--append'         => true,
         ));
