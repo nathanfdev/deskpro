@@ -266,19 +266,19 @@ export class ProfileForm extends React.Component {
   }
 
   renderSubmitButton() {
-    const saveIcon = (
-      <div>
-        Saving...
-      </div>
-    );
-
     return (
       <div className="bucket">
         <div className="bucket-column submit">
-          {this.state.submit ? saveIcon : null}
-          <input type="submit"
-                 value="Save"
-                 onClick={this.submitForm} />
+          {this.state.submit
+            ? (
+              <div>Saving...</div>
+            )
+            : (
+              <input type="submit"
+                     value="Save"
+                     onClick={this.submitForm} />
+            )
+          }
         </div>
       </div>
     );
