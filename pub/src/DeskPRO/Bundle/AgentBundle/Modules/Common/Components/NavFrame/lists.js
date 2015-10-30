@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { pureRender } from 'Ampliflux';
 import { connect } from 'react-redux';
 import { updateRoutingState } from '../../../Application/Actions/routingActions';
-
+import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
 
 class BaseList extends Component {
   renderCount(count) {
@@ -236,5 +236,11 @@ export class NestedList extends BaseList {
         {this.props.items.map(item => this.renderListItem(item, depth))}
       </ul>
     );
+  }
+}
+
+export class ListItemLabelSpinner extends React.Component {
+  render() {
+    return <Spinner width="14" height="14" />;
   }
 }

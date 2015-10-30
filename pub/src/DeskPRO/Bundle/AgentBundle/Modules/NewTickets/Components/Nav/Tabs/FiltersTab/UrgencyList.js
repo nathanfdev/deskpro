@@ -6,7 +6,7 @@ export class UrgencyList extends Component {
   };
 
   render() {
-    const items = this.props.items.toOrderedSet().sort((a, b) => a.urgency > b.urgency ? 1 : -1);
+    const items = this.props.items.toOrderedSet().sort((a, b) => a.get('group') > b.get('group') ? 1 : -1);
 
     return (
       <div className="sidebar-urgent-sliders">

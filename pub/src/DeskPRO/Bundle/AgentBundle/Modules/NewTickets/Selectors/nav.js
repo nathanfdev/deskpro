@@ -32,3 +32,10 @@ export const starsCountSelector = createSelector(
   stateSelector,
   state => Immutable.fromJS(state.get('starsCount'))
 );
+
+export const isDoneSelector = function(request) {
+  return createSelector(
+    stateSelector,
+    state => state.getIn(['done', request])
+  );
+};

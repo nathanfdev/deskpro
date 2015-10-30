@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { NavFrame, NavFrameHeader, NavFrameBody, TabsPane, Tab }
+import { NavFrame, NavFrameHeader, NavFrameBody, TabsPaneStatefulContainer, Tab }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { FiltersTabContainer, LabelsTabContainer, StarsTabContainer } from './Tabs/index';
 import { FilterEditPopupContainer } from './FilterEditPopupContainer';
@@ -14,7 +14,7 @@ export class Nav extends Component {
         <div part="inner">
           <NavFrameHeader icon="icon icon-dp-streamline-mail-2">Tickets</NavFrameHeader>
           <NavFrameBody>
-            <TabsPane>
+            <TabsPaneStatefulContainer id="tab">
               <Tab title="Filters">
                 <FiltersTabContainer />
               </Tab>
@@ -24,7 +24,7 @@ export class Nav extends Component {
               <Tab title="Stars">
                 <StarsTabContainer />
               </Tab>
-            </TabsPane>
+            </TabsPaneStatefulContainer>
           </NavFrameBody>
         </div>
       </NavFrame>

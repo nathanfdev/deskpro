@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { ListItem, ListItemLabelSpinner } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { startFilterEditing } from '../../../../Actions/navActions';
 import { navItemLabelsSelector } from '../../../../Selectors/nav-item-labels';
 
@@ -47,7 +47,8 @@ export class ListItemContainer extends Component {
     const { labels, grouped_by, group } = this.props;
 
     const useGroupAsLabel = ['waiting_time', 'all_waiting_time', 'open_time'].indexOf(grouped_by) > -1;
-    const label = useGroupAsLabel ? group : labels.getIn([grouped_by, group], group ? '...' : '—');
+    const defaultLabel = group ? <ListItemLabelSpinner /> : '—';
+    const label = useGroupAsLabel ? group : labels.getIn([grouped_by, group], defaultLabel);
 
     return label;
   }

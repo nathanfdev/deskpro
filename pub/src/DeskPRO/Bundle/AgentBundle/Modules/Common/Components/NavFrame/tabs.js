@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { updateRoutingState } from '../../../Application/Actions/routingActions';
 import { connect } from 'react-redux';
 import { routingStateSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
+import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
 
 export class TabsPane extends React.Component {
   static propTypes = {
@@ -102,5 +103,11 @@ export class TabsPaneStatefulContainer extends TabsPane {
 export class Tab extends React.Component {
   render() {
     return null;
+  }
+}
+
+export class TabSpinner extends React.Component {
+  render() {
+    return <Spinner width="40" height="40" marginTop="10" marginLeft="10" />;
   }
 }

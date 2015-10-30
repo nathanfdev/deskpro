@@ -1,11 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { filterSetsSelector, filterSetsCountSelector, filterNamesSelector } from '../../../../Selectors/nav';
+import { TabSpinner } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { filterSetsSelector, filterSetsCountSelector, isDoneSelector } from '../../../../Selectors/nav';
 import { FiltersTab } from './FiltersTab';
 
 @connect(state => ({
-  filterSets: filterSetsSelector(state),
-  filterSetsCount: filterSetsCountSelector(state)
+  isDone: isDoneSelector('filterSetsCount')(state) && isDoneSelector('filterSets')(state),
+  filterSetsCount: filterSetsCountSelector(state),
+  filterSets: filterSetsSelector(state)
 }))
 export class FiltersTabContainer extends Component {
   static propTypes = {
@@ -15,8 +17,6 @@ export class FiltersTabContainer extends Component {
   };
 
   render() {
-    return (
-      <FiltersTab {...this.props} />
-    );
+    return this.props.isDone ? <FiltersTab {...this.props} /> : <TabSpinner />;
   }
 }
