@@ -48,3 +48,44 @@ export class ChoiceMenuHeader extends Component {
     );
   }
 }
+
+export class ChoiceMenuOption extends Component {
+
+  static propTypes = {
+    label: PropTypes.string.isRequired,
+    children: PropTypes.any
+  };
+
+  render() {
+    const {label} = this.props;
+    return (
+      <li>
+        <div className="dpw--popup-item-person">
+          <span className="dpw-popup-item-collection-name">
+            {label}
+          </span>
+        </div>
+        {this.props.children}
+      </li>
+    );
+  }
+}
+
+export class ChoiceMenuOptionGroup extends Component {
+
+  static propTypes = {
+    node: PropTypes.object.isRequired
+  };
+
+  render() {
+    const {node} = this.props;
+    if (node.nested) {
+      return (
+        <ul>
+          {node.nested.map((item, index) => <ChoiceMenuOption key={index} label={item.group}/>)}
+        </ul>
+      );
+    }
+    return (<div/>);
+  }
+}
