@@ -170,11 +170,7 @@ define [
               value.type = type
               value.op = model.op
               value.options = {}
-              if options.field_id?
-                value.options?.custom_fields = {}
-                value.options?.custom_fields['field_' + options.field_id] = model.value
-              else
-                value.options[prop_name] = model.value
+              value.options[prop_name] = model.value
               return value
           }
       }
@@ -263,11 +259,7 @@ define [
               value.type = type
               value.op = model.op
               value.options = {}
-              if options.field_id?
-                value.options?.custom_fields = {}
-                value.options?.custom_fields['field_' + options.field_id] = val
-              else
-                value.options[prop_name] = val
+              value.options[prop_name] = val
 
               return value
             }
