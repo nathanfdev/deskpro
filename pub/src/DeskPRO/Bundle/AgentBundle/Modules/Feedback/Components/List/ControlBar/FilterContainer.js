@@ -32,6 +32,14 @@ export class FilterContainer extends Component {
         label = 'Created';
         filtersCounter++;
       }
+      if (filterParams.get('status') || filterParams.get('status_category')) {
+        label = 'Status';
+        filtersCounter++;
+      }
+      if (filterParams.get('category')) {
+        label = 'Type';
+        filtersCounter++;
+      }
       if (filtersCounter > 1) {
         label = filtersCounter + ' Options';
       }
