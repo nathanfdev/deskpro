@@ -1,6 +1,21 @@
 import React from 'react';
 
 export class Content extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      signature: ''
+    };
+  }
+
+  onChange = event => {
+    this.setState({
+      signature: event.target.value
+    });
+  };
+
   render() {
     return (
       <div className="user-signature-settings">
@@ -12,7 +27,7 @@ export class Content extends React.Component {
           <div className="signature">
             <form>
               <div className="textarea-tagalong"></div>
-              <textarea placeholder="Your Signature"></textarea>
+              <textarea placeholder="Your Signature" onChange={this.onChange}>{this.state.signature}</textarea>
               <input type="submit" value="Save Signature" />
             </form>
           </div>
