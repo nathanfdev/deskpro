@@ -33,13 +33,22 @@ namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 
+/**
+ * Class ProjectMemberTransformer.
+ */
 class ProjectMemberTransformer extends AbstractDataSerializerTransformer
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
         return ['id', 'project', 'department', 'team', 'person'];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
         return [];

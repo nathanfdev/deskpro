@@ -33,8 +33,14 @@ namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 
+/**
+ * Class TaskSubtaskTransformer.
+ */
 class TaskSubtaskTransformer extends AbstractDataSerializerTransformer
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getAutomaticProperties(DataTransformerRequest $request)
     {
         return [
@@ -48,6 +54,9 @@ class TaskSubtaskTransformer extends AbstractDataSerializerTransformer
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getCustomProperties(DataTransformerRequest $request)
     {
         return [];

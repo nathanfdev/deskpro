@@ -38,11 +38,17 @@ use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
  */
 class ChatConversationTransformer extends AbstractDataSerializerTransformer
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
         return ['id', 'agent', 'department', 'date_created', 'subject'];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
         return [];

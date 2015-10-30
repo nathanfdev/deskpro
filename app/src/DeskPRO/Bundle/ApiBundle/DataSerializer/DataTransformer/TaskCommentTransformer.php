@@ -33,13 +33,22 @@ namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 
+/**
+ * Class TaskCommentTransformer.
+ */
 class TaskCommentTransformer extends AbstractDataSerializerTransformer
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
         return ['id', 'comment', 'person', 'date_created', 'task'];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
         return [];

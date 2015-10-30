@@ -35,6 +35,9 @@ use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 use Doctrine\ORM\EntityManager;
 
+/**
+ * Class TicketTransformer.
+ */
 class TicketTransformer extends AbstractDataSerializerTransformer
 {
     /**
@@ -52,6 +55,9 @@ class TicketTransformer extends AbstractDataSerializerTransformer
         $this->em = $em;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
         return [
@@ -112,6 +118,9 @@ class TicketTransformer extends AbstractDataSerializerTransformer
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
         /** @var \Application\DeskPRO\Entity\Ticket $ticket */

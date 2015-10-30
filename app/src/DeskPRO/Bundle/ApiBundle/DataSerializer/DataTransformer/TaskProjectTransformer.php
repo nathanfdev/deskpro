@@ -36,13 +36,22 @@ use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use Doctrine\Common\Collections\ArrayCollection;
 
+/**
+ * Class TaskProjectTransformer.
+ */
 class TaskProjectTransformer extends AbstractDataSerializerTransformer
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
         return ['id', 'title'];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
         $data = $transformation_request->getDataToBeTransformed();

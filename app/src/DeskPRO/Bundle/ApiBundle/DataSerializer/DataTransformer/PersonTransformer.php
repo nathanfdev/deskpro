@@ -34,6 +34,9 @@ namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 
+/**
+ * Class PersonTransformer.
+ */
 class PersonTransformer extends AbstractDataSerializerTransformer
 {
     /**
@@ -94,6 +97,9 @@ class PersonTransformer extends AbstractDataSerializerTransformer
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
         /** @var \Application\DeskPRO\Entity\Person $person */

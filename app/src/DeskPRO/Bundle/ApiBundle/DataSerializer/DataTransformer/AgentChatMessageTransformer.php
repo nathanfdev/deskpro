@@ -33,13 +33,18 @@
  * Date: 11.09.15
  * Time: 20:58
  */
-
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 
+/**
+ * Class AgentChatMessageTransformer.
+ */
 class AgentChatMessageTransformer extends AbstractDataSerializerTransformer
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
         return [
@@ -54,6 +59,9 @@ class AgentChatMessageTransformer extends AbstractDataSerializerTransformer
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
         return [];

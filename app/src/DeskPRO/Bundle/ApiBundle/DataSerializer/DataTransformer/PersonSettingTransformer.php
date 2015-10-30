@@ -38,11 +38,17 @@ use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
  */
 class PersonSettingTransformer extends AbstractDataSerializerTransformer
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
         return ['name'];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
         $obj = $transformation_request->getDataToBeTransformed();
