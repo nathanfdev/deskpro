@@ -27,7 +27,10 @@ export class Content extends React.Component {
           <div className="signature">
             <form>
               <div className="textarea-tagalong"></div>
-              <textarea placeholder="Your Signature" onChange={this.onChange}>{this.state.signature}</textarea>
+              <textarea placeholder="Your Signature"
+                        value={this.state.signature}
+                        onChange={this.onChange} />
+
               <input type="submit" value="Save Signature" />
             </form>
           </div>
