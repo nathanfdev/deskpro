@@ -1,7 +1,7 @@
 import { createAction } from 'Ampliflux';
 import * as recordStoreActions from 'Ampliflux/common/record-store/actions';
 import { createRecordsRequest } from 'Ampliflux/common/record-store/actions';
-import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSetting';
+import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 
 export const releaseSettings = createAction('RELEASE_SETTINGS', recordStoreActions.releaseRecords());
 export const releaseSettingsRequest = createAction('RELEASE_SETTINGS_REQUEST', recordStoreActions.releaseRequest());
@@ -12,8 +12,8 @@ export const loadMy = createAction(
   createRecordsRequest(
     ['RecordStores', 'CRM', 'settings'],
     'my',
-    name => new Promise((resolve, reject) =>
-        PersonSetting.get(name)
+    () => new Promise((resolve, reject) =>
+        DpApi.sendGet('DP_API/person_setting')
           .success(response => resolve(response.data))
           .error((data, response) => reject(response))
     )
