@@ -7440,46 +7440,51 @@ body.with-agent-bar {
     }
   }
 
-  ul.first-level {
-    @include blank-list;
+  &.level-1 {
 
     display: block;
     width: 100%;
     border: 1px solid $button-color;
-    max-height: 300px;
-    overflow-y: auto;
-    position: absolute;
-    left: 0;
-    z-index: 599;
 
-    a {
+    ul {
+      @include blank-list;
+      position: absolute;
+      left: 0;
+      z-index: 599;
       display: block;
-      padding: 5px $universal-left-padding;
-      background: $form-input;
-      color: $text-color;
-      text-decoration: none;
+      width: 100%;
+      border: 1px solid $button-color;
+      max-height: 300px;
+      overflow-y: auto;
 
+      a {
+        display: block;
+        width: 100%;
+        padding: 5px $universal-left-padding;
+        background: $form-input;
+        color: $text-color;
+        text-decoration: none;
 
-      &:hover, &.active {
-        background: $button-color;
-        color: $button-text;
+        &:hover, &.active {
+          background: $button-color;
+          color: $button-text;
 
-        .checkbox {
-          background: rgba(0, 0, 0, 0.1);
-          border: 1px solid rgba(0, 0, 0, 0.1);
-          color: #fff;
+          .checkbox {
+            background: rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: #fff;
+          }
         }
       }
-    }
 
-    li {
-      position: relative;
+      li {
+        position: relative;
+      }
     }
   }
 
-  ul.second-level {
-    @extend .first-level;
-    position: relative;
+  &.level-2 {
+    @extend .level-1;
     margin-top: 10px;
     margin-left: 30px;
 
@@ -7497,39 +7502,53 @@ body.with-agent-bar {
     }
   }
 
-  ul.third-level {
-    @extend .first-level;
-    @extend .second-level;
+  &.level-3 {
+    @extend .level-1;
+    @extend .level-2;
     margin-left: 60px;
   }
 
-  ul.fourth-level {
-    @extend .first-level;
-    @extend .second-level;
+  &.level-4 {
+    @extend .level-1;
+    @extend .level-2;
     margin-left: 90px;
   }
 
-  ul.fifth-level {
-    @extend .first-level;
-    @extend .second-level;
+  &.level-5 {
+    @extend .level-1;
+    @extend .level-2;
     margin-left: 120px;
   }
 
-  ul.sixth-level {
-    @extend .first-level;
-    @extend .second-level;
+  &.level-6 {
+    @extend .level-1;
+    @extend .level-2;
     margin-left: 120px;
   }
 
-  ul.seventh-level {
-    @extend .first-level;
-    @extend .second-level;
+  &.level-7 {
+    @extend .level-1;
+    @extend .level-2;
     margin-left: 120px;
   }
 
-  ul.eighth-level {
-    @extend .first-level;
-    @extend .second-level;
+  &.level-8 {
+    @extend .level-1;
+    @extend .level-2;
+    margin-left: 120px;
+  }
+}
+
+  &.level-9 {
+    @extend .level-1;
+    @extend .level-2;
+    margin-left: 120px;
+  }
+}
+
+  &.level-10 {
+    @extend .level-1;
+    @extend .level-2;
     margin-left: 120px;
   }
 }

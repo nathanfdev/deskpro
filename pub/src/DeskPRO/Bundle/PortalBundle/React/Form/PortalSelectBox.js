@@ -3,6 +3,7 @@ import $ from "jquery";
 import FormActionStore from "DeskPRO/Component/React/Standalone/FormActionStore";
 import React from "react";
 import ReactDOM from 'react-dom';
+import PortalSimpleSelectBox from "./PortalSimpleSelectBox";
 
 //######################################################################################################################
 //# Action Store
@@ -31,9 +32,9 @@ export class LevelSelectActionStore extends FormActionStore {
       }
 
       options.push({
-        id:       optEl.data('id'),
-        title:    optEl.data('title') || optEl.data('name') || optEl.text(),
-        parent:   parent,
+        id: optEl.data('id'),
+        title: optEl.data('title') || optEl.data('name') || optEl.text(),
+        parent: parent,
         children: []
       });
     });
@@ -68,22 +69,7 @@ export class LevelSelectActionStore extends FormActionStore {
 //# React Component
 //######################################################################################################################
 
-class SelectOption extends React.Component {
-  onClickOption(e) {
-    e.preventDefault();
-    this.props.onClickOption(this.props.option);
-  }
-  render() {
-    const option = this.props.option;
-    return (
-      <li>
-        <a onClick={this.onClickOption.bind(this)} className={this.props.active ? 'active' : null}>{option.title}</a>
-      </li>
-    );
-  }
-}
-
-export class LevelSelect2 extends React.Component {
+export class PortalSelectBox extends React.Component {
   constructor(props) {
     super(props);
     this.actionStore = this.props.actionStore;
@@ -100,7 +86,7 @@ export class LevelSelect2 extends React.Component {
     this.actionStore.on('formChanged', (data) => {
       let value = data.value;
       let valuePath = this.getValuePath(value);
-      let state = { value: value, valuePath: valuePath };
+      let state = {value: value, valuePath: valuePath};
       this.setState(state);
     });
   }
@@ -129,91 +115,36 @@ export class LevelSelect2 extends React.Component {
     return _.find(this.optionData.options, o => o.id == id);
   }
 
-  componentDidMount() {
-    document.addEventListener("click", this.documentClickHandler.bind(this));
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener("click", this.documentClickHandler.bind(this));
-  }
-
-  documentClickHandler() {
-    this.setState({
-      expanded: false
-    });
-  }
-
-  dropdownClickHandler(e) {
-    e.nativeEvent.stopImmediatePropagation();
-  }
-
   onClickOption(option) {
-    console.log(option);
-    this.setState({
-      value: option.id,
-      valuePath: option.id,
-      expanded: false
-    });
     this.actionStore.setValue(option.id);
   }
 
-  onClickTopOption() {
-    this.setState({
-      expanded: !this.state.expanded
-    });
-  }
-
-  renderSelect(group, parentId = null) {
+  renderSelect(group, parentId = null, level = 1) {
     let subGroup = null;
 
     if (this.state.valuePath.length) {
       subGroup = _.find(group, i => this.state.valuePath.indexOf(i.id) !== -1);
     }
 
+    const options = group.map((g) => {
+      return {
+        id: g.id,
+        title: g.title
+      };
+    });
+
+
+
     return (
-      <div className="multiselect">
-        {this.renderTopOption()}
-          {this.renderDropdownList(group)}
-          {/**subGroup && subGroup.children.length ? this.renderSelect(subGroup.children, subGroup.id) : null*/}
+      <div>
+        <PortalSimpleSelectBox options={options} value={subGroup ? subGroup : null} level={level} onChange={this.onClickOption.bind(this)} />
+        {subGroup && subGroup.children.length ? this.renderSelect(subGroup.children, subGroup.id, level + 1) : null}
       </div>
     );
-  }
-
-
-  renderTopOption(){
-   if (this.state.value && !this.state.expanded) {
-     return (<div className="default" onClick={this.onClickTopOption.bind(this)}>
-       <span>{this.getValueForId(this.state.value).title}</span><i className="fa fa-caret-down"></i>
-     </div>);
-   } else {
-     return (<div className="default" onClick={this.onClickTopOption.bind(this)}><span>Select...</span><i className="fa fa-caret-down"></i>
-     </div>);
-   }
-  }
-
-  renderDropdownList(group) {
-    if (!this.state.expanded) {
-      return null;
-    }
-
-    return (
-      <ul className="first-level"> {group.map((o) => {
-        return (
-          <SelectOption onClickOption={this.onClickOption.bind(this)}
-                        key={o.id}
-                        option={o}
-                        active={o.id == this.state.value}/>
-        );
-      })}
-      </ul>);
   }
 
   render() {
-    return (
-      <div className="dp-level-select" onClick={this.dropdownClickHandler.bind(this)}>
-          {this.renderSelect(this.optionData.hierarchy)}
-      </div>
-    );
+    return this.renderSelect(this.optionData.hierarchy);
   }
 }
 
@@ -242,7 +173,7 @@ export function createComponent(select, renderTo, actionStore = null) {
     actionStore = new LevelSelectActionStore(select);
   }
 
-  ReactDOM.render(React.createElement(LevelSelect2, {actionStore: actionStore}), $(renderTo).get(0));
+  ReactDOM.render(React.createElement(PortalSelectBox, {actionStore: actionStore}), $(renderTo).get(0));
 
   return actionStore;
 }
