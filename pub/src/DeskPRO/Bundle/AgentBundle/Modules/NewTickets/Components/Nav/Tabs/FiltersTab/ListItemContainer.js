@@ -41,28 +41,13 @@ export class ListItemContainer extends Component {
   /**
    * Get item label
    *
-   * Return urgency indicator if grouped by urgency, otherwise try to find label in this.props.labels and simply
-   * return group name if label can't be found
-   *
    * @return {string} Label
    */
   getItemLabel() {
     const { labels, grouped_by, group } = this.props;
 
-    let label;
-    if (grouped_by === 'urgency') {
-      label = (
-        <div className={'slider level-' + group}>
-          <div className="slider-container">
-          <span className="slider-grabber-wrapper">
-            <span className="slider-grabber">{group}</span>
-          </span>
-          </div>
-        </div>
-      );
-    } else {
-      label = labels.getIn([grouped_by, group], group || '—');
-    }
+    const useGroupAsLabel = ['waiting_time', 'all_waiting_time', 'open_time'].indexOf(grouped_by) > -1;
+    const label = useGroupAsLabel ? group : labels.getIn([grouped_by, group], group ? '...' : '—');
 
     return label;
   }

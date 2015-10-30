@@ -6,7 +6,6 @@ export class FiltersTab extends Component {
   static propTypes = {
     filterSets: PropTypes.object.isRequired,
     filterSetsCount: PropTypes.object.isRequired,
-    filterNames: PropTypes.object.isRequired
   };
 
   render() {
@@ -18,7 +17,6 @@ export class FiltersTab extends Component {
 
             <NestedList
               items={this.getFilterSetCounts(filterSet)}
-              groups={this.props.filterNames.toJS()}
               alwaysExpanded
             />
           </div>

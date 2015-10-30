@@ -1,6 +1,8 @@
 import React from 'react';
 import { NestedList as BaseNestedList } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { ListItemContainer } from './ListItemContainer';
+import { UrgencyList } from './UrgencyList';
+import Immutable from 'immutable';
 
 export class NestedList extends BaseNestedList {
   renderListItem({nested, group, count, grouped_by}, depth) {
@@ -13,24 +15,15 @@ export class NestedList extends BaseNestedList {
       editable: depth === 1
     };
 
-    let result;
+    const isGroupedByUrgency = nested && nested.length && nested[0].grouped_by === 'urgency';
+    const content = isGroupedByUrgency
+      ? <UrgencyList items={Immutable.fromJS(nested)} />
+      : this.renderNested(nested, group, depth);
 
-    if (nested && nested.length && nested[0].grouped_by === 'urgency') {
-      console.log('ToDo: Render list grouped by urgency somehow differently');
-
-      result = (
-        <ListItemContainer {...props}>
-          {this.renderNested(nested, group, depth)}
-        </ListItemContainer>
-      );
-    } else {
-      result = (
-        <ListItemContainer {...props}>
-          {this.renderNested(nested, group, depth)}
-        </ListItemContainer>
-      );
-    }
-
-    return result;
+    return (
+      <ListItemContainer {...props}>
+        {content}
+      </ListItemContainer>
+    );
   }
 }

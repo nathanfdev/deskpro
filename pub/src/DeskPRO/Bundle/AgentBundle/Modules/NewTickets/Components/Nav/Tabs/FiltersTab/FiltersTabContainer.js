@@ -5,15 +5,13 @@ import { FiltersTab } from './FiltersTab';
 
 @connect(state => ({
   filterSets: filterSetsSelector(state),
-  filterSetsCount: filterSetsCountSelector(state),
-  filterNames: filterNamesSelector(state)
+  filterSetsCount: filterSetsCountSelector(state)
 }))
 export class FiltersTabContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     filterSets: PropTypes.object.isRequired,
-    filterSetsCount: PropTypes.object.isRequired,
-    filterNames: PropTypes.object.isRequired
+    filterSetsCount: PropTypes.object.isRequired
   };
 
   render() {

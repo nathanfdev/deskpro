@@ -3,16 +3,15 @@ import { connect } from 'react-redux';
 import { Nav } from './Nav';
 import { initialLoad, unload } from '../../Actions/navActions';
 
-@connect(state => ({}))
+@connect()
 export class NavContainer extends Component {
-
   static propTypes = {
     dispatch: PropTypes.func.isRequired
   };
 
   render() {
     return (
-      <Nav {...this.props} />
+      <Nav />
     );
   }
 

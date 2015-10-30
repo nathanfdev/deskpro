@@ -26,11 +26,7 @@ export const navItemLabelsSelector = state => Immutable.fromJS({
   person: personNamesSelector(state),
   language: languageNamesSelector(state),
   agent: agentNamesSelector(state),
-  agent_team: agentTeamNamesSelector(state),
-  urgency: {'1': 'urgency 1', '2': 'urgency 2', '3': 'urgency 3', '4': 'urgency 4'},
-  waiting_time: {'1': 'waiting_time 1', '2': 'waiting_time 2', '3': 'waiting_time 3', '4': 'waiting_time 4'},
-  all_waiting_time: {'1': 'all_waiting_time 1', '2': 'all_waiting_time 2', '3': 'all_waiting_time 3', '4': 'all_waiting_time 4'},
-  open_time: {'1': 'open_time 1', '2': 'open_time 2', '3': 'open_time 3', '4': 'open_time 4'}
+  agent_team: agentTeamNamesSelector(state)
 });
 
 const peopleSelector = createPeopleRequestSelectors(RECORD_STORE_REQUEST_ID).recordsSel;
