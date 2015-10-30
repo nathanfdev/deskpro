@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\DataFixtures\ORM;
+namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -65,6 +65,7 @@ class LegacyFixture extends AbstractFixture implements ContainerAwareInterface, 
      */
     public function load(ObjectManager $manager)
     {
+        return;
         $em        = $this->container->get('doctrine.orm.default_entity_manager');
         $translate = $this->container->get('deskpro.core.translate');
 

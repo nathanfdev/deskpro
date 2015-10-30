@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
+namespace DeskPRO\Bundle\AppBundle\DataFixtures\SeedFixtures;
 
 use Application\DeskPRO\Entity\Language;
 use Doctrine\Common\DataFixtures\AbstractFixture;

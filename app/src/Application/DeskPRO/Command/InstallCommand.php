@@ -52,8 +52,8 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     {
         $this->setName('dp:install');
         $this->addOption('insert-initial', null, InputOption::VALUE_NONE, 'Unused (exists for legacy)');
-        $this->addOption('admin-email', null, InputOption::VALUE_OPTIONAL, 'Unused (exists for legacy)');
-        $this->addOption('admin-password', null, InputOption::VALUE_OPTIONAL, 'Unused (exists for legacy)');
+        $this->addOption('admin-email', null, InputOption::VALUE_OPTIONAL, 'Initial admin email');
+        $this->addOption('admin-password', null, InputOption::VALUE_OPTIONAL, 'Initial admin password');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -131,6 +131,34 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
         $this->loadDefaultData($logger);
         $this->installApps();
+
+        if ($input->getOption('admin-email') AND $input->getOption('admin-password')) {
+            $db = $this->getContainer()->get('database_connection');
+            $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+
+            /** @var \Application\DeskPRO\Entity\Person $admin */
+            $admin = $em->createQuery("SELECT p FROM DeskPRO:Person p WHERE p.can_admin = true ORDER BY p.id ASC")->setMaxResults(1)->getOneOrNullResult();
+
+            if (!$admin) {
+                $output->writeln("Could not find admin user to reset the password and email");
+                return 1;
+            }
+
+            $admin->setPassword($input->getOption('admin-password'));
+            $em->persist($admin);
+
+            $admin->getPrimaryEmail()->setEmail($input->getOption('admin-email'));
+            $em->persist($admin->getPrimaryEmail());
+
+            // And we need to delete that special label that is used to
+            // trigger the set password prompt on admin welcome guide
+            $admin->removeLabelByString('not_user');
+
+            $em->flush();
+        }
+
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $em->getRepository('DeskPRO:Ticket')->fillSearchTable();
 
         return 0;
     }

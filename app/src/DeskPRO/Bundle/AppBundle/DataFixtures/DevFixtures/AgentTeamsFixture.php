@@ -29,11 +29,9 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
+namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\AgentTeam;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\LabelPerson;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -45,7 +43,7 @@ class AgentTeamsFixture extends AbstractFixture implements OrderedFixtureInterfa
      */
     public function getOrder()
     {
-        return 50;
+        return 10;
     }
 
     /**
