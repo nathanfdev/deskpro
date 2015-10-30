@@ -18,13 +18,13 @@ export class ContentContainer extends React.Component {
 
   constructor(props) {
     super(props);
-    props.dispatch(SettingsActions.loadMy('signature'));
+    props.dispatch(SettingsActions.loadMy());
   }
 
   render() {
     return (
       <div>
-        <Content />
+        <Content {...this.props} />
       </div>
     );
   }
