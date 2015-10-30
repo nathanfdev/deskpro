@@ -28,7 +28,7 @@
 
 return array(
     'agent.userchat.agent_blocked_user_on'  => '{{name}} założył blokadę dnia {{date}}',
-    'agent.userchat.assigned_to'            => 'Czat przypisany do {{name}}',
+    'agent.userchat.assigned_to'            => 'Czat przydzielony do {{name}}',
     'agent.userchat.block_ip_address'       => 'Zablokuj adres IP',
     'agent.userchat.block_ip_address_info'  => 'Blokada adresu IP może być bardziej skuteczna, lecz może sprawić, iż zablokowani zostaną także inni użytkownicy, którzy korzystają z tego samego adresu IP (na przykład, sieć współdzielona, publiczne wifi itd.).',
     'agent.userchat.block_reason'           => 'Powód: {{reason}}',
@@ -42,7 +42,7 @@ return array(
     'agent.userchat.ident_unconfirmed'      => 'Tożsamość nie potwierdzona, adres email nie został zweryfikowany',
     'agent.userchat.list_title'             => '1 Czat|{{count}} Czaty',
     'agent.userchat.message_agent-timeout'  => '{{name}} Nie odpowiada. Poczekaj, szukamy innego agenta.',
-    'agent.userchat.message_assigned'       => 'Czat przypisany do {{name}}',
+    'agent.userchat.message_assigned'       => 'Czat przydzielony do {{name}}',
     'agent.userchat.message_ended'          => 'Czat zakończony',
     'agent.userchat.message_ended-by'       => 'Czat zakończony przez {{name}}',
     'agent.userchat.message_ended-by-user'  => 'Czat zakończony przez użytkownika',

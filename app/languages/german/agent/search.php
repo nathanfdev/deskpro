@@ -28,6 +28,7 @@
 
 return array(
     'agent.search.by'                            => 'Von',
+    'agent.search.chat_conversations'            => 'Chat Verlauf',
     'agent.search.find_person'                   => 'Person finden',
     'agent.search.loading'                       => 'wird geladen',
     'agent.search.no_email'                      => 'Keine Email',

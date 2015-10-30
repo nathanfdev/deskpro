@@ -96,7 +96,7 @@ return array(
     'user.tickets.rate-negative'                       => 'No ha sido bueno',
     'user.tickets.rate-neutral'                        => 'Bueno',
     'user.tickets.rate-positive'                       => 'Muy bueno',
-    'user.tickets.rate-question'                       => '¿Como valoraría el soporte que ha recibido?',
+    'user.tickets.rate-question'                       => '¿Cómo calificaría el soporte que recibió?',
     'user.tickets.rate-thanks-vialink'                 => 'Gracias por enviarnos su valoración. Puede opcionalmente dejarnos un comentario.',
     'user.tickets.rate_helpful'                        => 'De ayuda',
     'user.tickets.rate_support'                        => 'Valore el servicio de soporte',
