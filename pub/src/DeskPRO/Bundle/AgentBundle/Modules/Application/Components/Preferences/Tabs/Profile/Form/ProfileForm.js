@@ -270,16 +270,9 @@ export class ProfileForm extends React.Component {
     return (
       <div className="bucket">
         <div className="bucket-column submit">
-          {this.state.submit
-            ? (
-              <Loader left="45%" opacity={0} width={3} />
-            )
-            : (
-              <input type="submit"
-                     value="Save"
-                     onClick={this.submitForm} />
-            )
-          }
+          <Loader left="45%" opacity={0} width={3} loaded={!this.state.submit}>
+            <input type="submit" value="Save" onClick={this.submitForm} />
+          </Loader>
         </div>
       </div>
     );
