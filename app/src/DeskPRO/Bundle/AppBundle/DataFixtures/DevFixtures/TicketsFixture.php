@@ -45,7 +45,7 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
     private $num_labels = 100;
     private $ticket_max_messages = 10;
 
-    private $num_tickets = 500;
+    private $num_tickets = 250;
 
     /**
      * @var \Faker\Generator
@@ -280,31 +280,23 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
         $parts_batch = [];
 
         foreach ($this->ticket_ids as $ticket_id) {
-            if ($this->faker->boolean(50)) {
-                foreach ($this->faker->randomElements($this->labels, $this->faker->numberBetween(1, 5)) as $l) {
-                    $labels_batch[] = array('ticket_id' => $ticket_id, 'label' => $l);
-                }
+            foreach ($this->faker->randomElements($this->labels, $this->faker->numberBetween(1, 5)) as $l) {
+                $labels_batch[] = array('ticket_id' => $ticket_id, 'label' => $l);
             }
-            if ($this->faker->boolean(25)) {
-                $probs_batch[] = array('ticket_id' => $ticket_id, 'problem_id' => $this->faker->randomElement($this->problem_ids));
+            $probs_batch[] = array('ticket_id' => $ticket_id, 'problem_id' => $this->faker->randomElement($this->problem_ids));
+            $people_ids = $this->faker->randomElements($this->people_ids, $this->faker->numberBetween(1, 4));
+            foreach ($people_ids as $pid) {
+                $parts_batch[] = array(
+                    'ticket_id' => $ticket_id,
+                    'person_id' => $pid
+                );
             }
-            if ($this->faker->boolean(45)) {
-                $people_ids = $this->faker->randomElements($this->people_ids, $this->faker->numberBetween(1, 4));
-                foreach ($people_ids as $pid) {
-                    $parts_batch[] = array(
-                        'ticket_id' => $ticket_id,
-                        'person_id' => $pid
-                    );
-                }
-            }
-            if ($this->faker->boolean(20)) {
-                $people_ids = $this->faker->randomElements($this->agent_ids, $this->faker->numberBetween(1, 2));
-                foreach ($people_ids as $pid) {
-                    $parts_batch[] = array(
-                        'ticket_id' => $ticket_id,
-                        'person_id' => $pid
-                    );
-                }
+            $people_ids = $this->faker->randomElements($this->agent_ids, $this->faker->numberBetween(1, 2));
+            foreach ($people_ids as $pid) {
+                $parts_batch[] = array(
+                    'ticket_id' => $ticket_id,
+                    'person_id' => $pid
+                );
             }
         }
 
