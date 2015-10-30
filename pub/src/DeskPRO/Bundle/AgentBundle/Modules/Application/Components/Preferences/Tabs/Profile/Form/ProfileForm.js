@@ -178,7 +178,8 @@ export class ProfileForm extends React.Component {
   renderNameField() {
     return (
       <FieldWrapper label="Your name" errors={this.state.errors.name}>
-        <Avatar value={this.state.data.avatar.url}
+        <Avatar personName={this.state.data.name}
+                value={this.state.data.avatar.url}
                 onChange={this.onChangeAvatar}/>
         <Name value={this.state.data.name}
               onChange={this.onChangeName} />

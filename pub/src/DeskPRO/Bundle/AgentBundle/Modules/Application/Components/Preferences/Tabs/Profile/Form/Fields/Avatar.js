@@ -9,6 +9,7 @@ import jQuery from 'jquery';
 export class Avatar extends React.Component {
 
   static propTypes = {
+    personName: PropTypes.string,
     value: PropTypes.string,
     onChange: PropTypes.func.isRequired
   };
@@ -151,6 +152,24 @@ export class Avatar extends React.Component {
     return croppedPath || currentPath;
   }
 
+  getPersonInitials() {
+    const { personName } = this.props;
+    if (personName) {
+      const parts = personName.split(' ');
+
+      let lastNameChar = '';
+      if (parts.length > 1) {
+        lastNameChar = parts.pop()[0];
+      }
+
+      const firstNameChar = parts.shift()[0];
+
+      return firstNameChar + lastNameChar;
+    }
+
+    return '?';
+  }
+
   renderRemoveButton() {
     if (this.getImagePath()) {
       return (
@@ -243,7 +262,7 @@ export class Avatar extends React.Component {
             size={24}
             color="#CDD2D4"
             urlPattern={this.getImagePath()}
-            fallbackText="?" />
+            fallbackText={this.getPersonInitials()} />
           Manage Avatar
         </a>
         <ClickOut onClickOut={this.onCloseEdit}
