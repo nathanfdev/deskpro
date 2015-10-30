@@ -78,7 +78,7 @@ class MeController extends BaseController
             $this->createRepresentation(
                $me
             ),
-            200
+            Response::HTTP_OK
         );
     }
 
