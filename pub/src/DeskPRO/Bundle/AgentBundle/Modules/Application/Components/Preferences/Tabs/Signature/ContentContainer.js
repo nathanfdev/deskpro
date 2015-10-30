@@ -13,7 +13,7 @@ export class ContentContainer extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     settings: PropTypes.object.isRequired,
-    profileStatus: PropTypes.object.isRequired
+    settingStatus: PropTypes.object.isRequired
   };
 
   constructor(props) {
