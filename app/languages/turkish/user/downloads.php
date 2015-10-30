@@ -1,41 +1,13 @@
-<?php
-
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
-return array(
-    'user.downloads.button-download'     => 'İndir',
-    'user.downloads.change_file'         => 'Dosyayı Değiştir',
-    'user.downloads.downloads-count'     => 'Bu dosya {{count}} defa indirildi',
-    'user.downloads.file_not_found'      => 'Dosya bulunamadı',
-    'user.downloads.message_no-files'    => 'Bu dizinde dosya yok.',
-    'user.downloads.noun'                => 'Dosya',
-    'user.downloads.related_downloads'   => 'İlişkili Dosyalar',
-    'user.downloads.sidebar_description' => 'Dosyaya bak|Dosyalara gözat - {{count}}',
-    'user.downloads.title'               => 'İndirmeler',
-    'user.downloads.title-categories'    => '1 alt dizin var |{{count}} alt dizin var',
-    'user.downloads.title-downloads'     => '1 dosya var|{{count}} dosya var',
+<?php return array(
+	'user.downloads.button-download'                                       => 'İndir',
+	'user.downloads.change_file'                                           => 'Dosyayı Değiştir',
+	'user.downloads.downloads-count'                                       => 'Bu dosya {{count}} defa indirildi',
+	'user.downloads.file_not_found'                                        => 'Dosya bulunamadı',
+	'user.downloads.message_no-files'                                      => 'Bu dizinde dosya yok.',
+	'user.downloads.noun'                                                  => 'Dosya',
+	'user.downloads.related_downloads'                                     => 'İlişkili Dosyalar',
+	'user.downloads.sidebar_description'                                   => 'Dosyaya bak|Dosyalara gözat - {{count}}',
+	'user.downloads.title'                                                 => 'İndirmeler',
+	'user.downloads.title-categories'                                      => '1 alt dizin var |{{count}} alt dizin var',
+	'user.downloads.title-downloads'                                       => '1 dosya var|{{count}} dosya var',
 );

@@ -1,63 +1,35 @@
-<?php
-
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
-return array(
-    'user.portal.language_chooser'              => 'Язык:',
-    'user.portal.login-box_cancel-button'       => 'Отмена',
-    'user.portal.more_labels'                   => 'Отобразить больше меток',
-    'user.portal.no_results_help'               => 'Нет результатов. Попробуйте изменить запрос.',
-    'user.portal.online-staff'                  => 'Сотрудники онлайн',
-    'user.portal.our-staff'                     => 'Наши сотрудники',
-    'user.portal.search'                        => 'Поиск',
-    'user.portal.search-everything'             => 'Всё',
-    'user.portal.search-new-chat'               => 'Начать диалог',
-    'user.portal.search-new-feedback'           => 'Отправить отзыв',
-    'user.portal.search-new-ticket'             => 'Обратная связь',
-    'user.portal.search-no_matches'             => 'Ничего подходящего? ...',
-    'user.portal.search_label-search_show'      => 'Показать',
-    'user.portal.search_label-search_with'      => 'Метки:',
-    'user.portal.search_labels_title'           => 'Найти метки',
-    'user.portal.search_more-results'           => 'Показать больше результатов поиска',
-    'user.portal.search_result-count'           => 'Результатов поиска: {{count}}|Результатов поиска: {{count}}',
-    'user.portal.share_this'                    => 'Поделиться',
-    'user.portal.sidebar_staff-description'     => 'Наши сотрудники готовы помочь.',
-    'user.portal.sidebar_welcome-user'          => 'Рады видеть Вас снова, {{name}}',
-    'user.portal.tab_downloads'                 => 'Загрузки',
-    'user.portal.tab_downloads-description'     => 'Доступные загрузки',
-    'user.portal.tab_feedback'                  => 'Предложения',
-    'user.portal.tab_feedback-description'      => 'Предложения клиентов',
-    'user.portal.tab_knowledgebase'             => 'База знаний',
-    'user.portal.tab_knowledgebase-description' => 'База вспомогательных материалов',
-    'user.portal.tab_news'                      => 'Новости',
-    'user.portal.tab_news-description'          => 'Новости и события',
-    'user.portal.tab_tickets'                   => 'Обратная связь',
-    'user.portal.tab_tickets-description'       => 'Мы готовы помочь',
-    'user.portal.twitter-user-link'             => '@{{name}} в Твиттере',
-    'user.portal.twitter-view-more'             => 'Узнать больше из @{{name}} &rarr:',
-    'user.portal.welcome-back-guest'            => 'Уважаемый гость, мы рады видеть Вас снова',
+<?php return array(
+	'user.portal.language_chooser'                                         => 'Язык:',
+	'user.portal.login-box_cancel-button'                                  => 'Отмена',
+	'user.portal.more_labels'                                              => 'Отобразить больше меток',
+	'user.portal.no_results_help'                                          => 'Нет результатов. Попробуйте изменить запрос.',
+	'user.portal.online-staff'                                             => 'Сотрудники онлайн',
+	'user.portal.our-staff'                                                => 'Наши сотрудники',
+	'user.portal.search'                                                   => 'Поиск',
+	'user.portal.search-everything'                                        => 'Всё',
+	'user.portal.search.new-chat'                                          => 'Начать диалог',
+	'user.portal.search.new-feedback'                                      => 'Отправить отзыв',
+	'user.portal.search.new-ticket'                                        => 'Обратная связь',
+	'user.portal.search.no_matches'                                        => 'Ничего подходящего? ...',
+	'user.portal.search_label-search_show'                                 => 'Показать',
+	'user.portal.search_label-search_with'                                 => 'Метки:',
+	'user.portal.search_labels_title'                                      => 'Найти метки',
+	'user.portal.search_more-results'                                      => 'Показать больше результатов поиска',
+	'user.portal.search_result-count'                                      => 'Результатов поиска: {{count}}|Результатов поиска: {{count}}',
+	'user.portal.share_this'                                               => 'Поделиться',
+	'user.portal.sidebar_staff-description'                                => 'Наши сотрудники готовы помочь.',
+	'user.portal.sidebar_welcome-user'                                     => 'Рады видеть Вас снова, {{name}}',
+	'user.portal.tab_downloads'                                            => 'Загрузки',
+	'user.portal.tab_downloads-description'                                => 'Доступные загрузки',
+	'user.portal.tab_feedback'                                             => 'Предложения',
+	'user.portal.tab_feedback-description'                                 => 'Предложения клиентов',
+	'user.portal.tab_knowledgebase'                                        => 'База знаний',
+	'user.portal.tab_knowledgebase-description'                            => 'База вспомогательных материалов',
+	'user.portal.tab_news'                                                 => 'Новости',
+	'user.portal.tab_news-description'                                     => 'Новости и события',
+	'user.portal.tab_tickets'                                              => 'Обратная связь',
+	'user.portal.tab_tickets-description'                                  => 'Мы готовы помочь',
+	'user.portal.twitter-user-link'                                        => '@{{name}} в Твиттере',
+	'user.portal.twitter-view-more'                                        => 'Узнать больше из @{{name}} &rarr:',
+	'user.portal.welcome-back-guest'                                       => 'Уважаемый гость, мы рады видеть Вас снова',
 );
