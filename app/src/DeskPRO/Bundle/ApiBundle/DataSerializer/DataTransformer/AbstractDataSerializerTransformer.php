@@ -39,7 +39,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Class AbstractDataSerializerTransformer.
  */
-abstract class AbstractDataSerializerTransformer
+abstract class AbstractDataSerializerTransformer implements DataSerializerTransformerInterface
 {
     /**
      * @var DataPropertyTransformer
@@ -50,10 +50,6 @@ abstract class AbstractDataSerializerTransformer
      * @var LoggerInterface
      */
     protected $logger;
-
-    abstract public function getAutomaticProperties(DataTransformerRequest $transformation_request);
-
-    abstract public function getCustomProperties(DataTransformerRequest $transformation_request);
 
     /**
      * The context contains all of the data needed to do the transformation, including what "view" and also
