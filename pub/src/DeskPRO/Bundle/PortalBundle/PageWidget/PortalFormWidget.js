@@ -2,8 +2,8 @@ import _ from "lodash";
 import React from "react";
 import ReactDOM from "react-dom"
 import PageWidget from "DeskPRO/Component/PageWidget/PageWidget";
-import DpLevelSelect from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpLevelSelect";
-import DpCheckboxGroup from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpCheckboxGroup";
+import DpxSelectBox from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpxSelectBox";
+import DpxCheckboxGroup from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpxCheckboxGroup";
 import DpDropzone from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpDropzone";
 import NewTicketSuggestions from "DeskPRO/Bundle/PortalBundle/React/NewTicketSuggestions";
 import DynamicForm from "DeskPRO/Bundle/AppBundle/Form/DynamicForm.js";
@@ -16,11 +16,8 @@ import DynamicForm from "DeskPRO/Bundle/AppBundle/Form/DynamicForm.js";
 
 export default class DpInteractiveFormWidget extends PageWidget {
   init() {
-    this.addWidgetDef(DpLevelSelect, "select[dpx-select]");
-    this.addWidgetDef(DpCheckboxGroup, ".dpx-checkbox-group");
+    this.addWidgetDef(DpxSelectBox, "select[dpx-select]");
+    this.addWidgetDef(DpxCheckboxGroup, ".dpx-checkbox-group");
     this.addWidgetDef(DpDropzone, ".dpx-attachements");
-  }
-  renderWidget() {
-
   }
 }

@@ -77,7 +77,7 @@ class SelectOption extends React.Component {
     const option = this.props.option;
     return (
       <li>
-        <a onClick={this.onClickOption.bind(this)} className={this.props.active ? 'active' : null}>{this.props.active ? ('--- ' + option.title) : option.title}</a>
+        <a onClick={this.onClickOption.bind(this)} className={this.props.active ? 'active' : null}>{option.title}</a>
       </li>
     );
   }
@@ -129,25 +129,22 @@ export class LevelSelect2 extends React.Component {
     return _.find(this.optionData.options, o => o.id == id);
   }
 
-  handleSelectChange(event) {
-    let sel = $(event.target);
-    let opt = sel.find('option:selected');
-    let value = null;
+  componentDidMount() {
+    document.addEventListener("click", this.documentClickHandler.bind(this));
+  }
 
-    // Set value to new option
-    if (opt.data('id')) {
-      value = opt.data('id');
+  componentWillUnmount() {
+    document.removeEventListener("click", this.documentClickHandler.bind(this));
+  }
 
-    } else {
-      // Set value to the last option selected
-      if (sel.data('parent') && sel.data('parent') !== 0 && sel.data('parent') !== "0") {
-        value = sel.data('parent');
-      }
-    }
+  documentClickHandler() {
+    this.setState({
+      expanded: false
+    });
+  }
 
-    let valuePath = this.getValuePath(value);
-    this.setState({ value: value, valuePath: valuePath });
-    this.actionStore.setValue(value);
+  dropdownClickHandler(e) {
+    e.nativeEvent.stopImmediatePropagation();
   }
 
   onClickOption(option) {
@@ -174,11 +171,9 @@ export class LevelSelect2 extends React.Component {
     }
 
     return (
-      <div className="multiselect default">
-        <ul className="first-level">
-          {this.renderTopOption()}
+      <div className="multiselect">
+        {this.renderTopOption()}
           {this.renderDropdownList(group)}
-        </ul>
           {/**subGroup && subGroup.children.length ? this.renderSelect(subGroup.children, subGroup.id) : null*/}
       </div>
     );
@@ -187,14 +182,12 @@ export class LevelSelect2 extends React.Component {
 
   renderTopOption(){
    if (this.state.value && !this.state.expanded) {
-     return (<li>
-       <a onClick={this.onClickTopOption.bind(this)}><span>{this.getValueForId(this.state.value).title}</span><i
-         className="fa fa-caret-down"></i></a>
-     </li>);
+     return (<div className="default" onClick={this.onClickTopOption.bind(this)}>
+       <span>{this.getValueForId(this.state.value).title}</span><i className="fa fa-caret-down"></i>
+     </div>);
    } else {
-     return (<li>
-       <a onClick={this.onClickTopOption.bind(this)}><span>Select...</span><i className="fa fa-caret-down"></i></a>
-     </li>);
+     return (<div className="default" onClick={this.onClickTopOption.bind(this)}><span>Select...</span><i className="fa fa-caret-down"></i>
+     </div>);
    }
   }
 
@@ -203,16 +196,21 @@ export class LevelSelect2 extends React.Component {
       return null;
     }
 
-    return group.map((o) => {
-      return (
-        <SelectOption onClickOption={this.onClickOption.bind(this)} key={o.id} option={o} active={o.id == this.state.value} />
-      );
-    });
+    return (
+      <ul className="first-level"> {group.map((o) => {
+        return (
+          <SelectOption onClickOption={this.onClickOption.bind(this)}
+                        key={o.id}
+                        option={o}
+                        active={o.id == this.state.value}/>
+        );
+      })}
+      </ul>);
   }
 
   render() {
     return (
-      <div className="dp-level-select">
+      <div className="dp-level-select" onClick={this.dropdownClickHandler.bind(this)}>
           {this.renderSelect(this.optionData.hierarchy)}
       </div>
     );

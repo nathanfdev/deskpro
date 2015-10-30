@@ -7414,13 +7414,43 @@ body.with-agent-bar {
 }
 
 .multiselect {
+  position: relative;
+  margin-bottom: 10px;
+
+  .default {
+    border: 1px solid $form-border-color;
+    cursor: pointer;
+    width: 100%;
+    display: block;
+    padding: $form-padding-vertical $form-padding-horizontal;
+    background: #ffffff;
+    line-height: normal;
+    position: relative;
+
+    &:hover {
+      color: $button-text;
+      border: 1px solid $button-color;
+      background: $button-color;
+    }
+
+    i[class^='fa-caret'], i[class*=' fa-caret'] {
+      position: absolute;
+      top: 11px;
+      right: 15px;
+    }
+  }
+
   ul.first-level {
     @include blank-list;
 
+    display: block;
+    width: 100%;
     border: 1px solid $button-color;
-    border-radius: 2px;
     max-height: 300px;
-    overflow-y: scroll;
+    overflow-y: auto;
+    position: absolute;
+    left: 0;
+    z-index: 599;
 
     a {
       display: block;
@@ -7428,6 +7458,7 @@ body.with-agent-bar {
       background: $form-input;
       color: $text-color;
       text-decoration: none;
+
 
       &:hover, &.active {
         background: $button-color;
@@ -7443,11 +7474,6 @@ body.with-agent-bar {
 
     li {
       position: relative;
-      i[class^='fa-caret'], i[class*=' fa-caret'] {
-        position: absolute;
-        top: 11px;
-        right: 15px;
-      }
     }
   }
 
@@ -7505,29 +7531,6 @@ body.with-agent-bar {
     @extend .first-level;
     @extend .second-level;
     margin-left: 120px;
-  }
-
-  &.default {
-    ul.first-level {
-      border: 1px solid $form-border-color;
-
-      &:hover {
-        border: 1px solid $button-color;
-      }
-
-      a {
-        padding: $form-padding-vertical $form-padding-horizontal;
-        border-bottom: 1px solid $form-border-color;
-        border-radius: 2px;
-        background: #ffffff;
-        line-height: normal;
-
-        &:hover {
-          border-bottom: 1px solid $button-color;
-          background: $button-color;
-        }
-      }
-    }
   }
 }
 

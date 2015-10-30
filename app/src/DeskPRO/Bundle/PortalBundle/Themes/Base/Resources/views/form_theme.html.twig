@@ -237,7 +237,7 @@ HEIRARCHY
 {% endblock deskpro_heirarchical_choice_widget_expanded %}
 
 {% block deskpro_heirarchical_choice_widget_collapsed -%}
-    <div class="deskpro-choice-widget">
+    <div>
         {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
             {% set required = false %}
         {%- endif -%}
@@ -379,7 +379,7 @@ END HEIRARCHY
 {% endblock entity_hierarchy_expanded %}
 
 {% block entity_hierarchy_collapsed -%}
-    <div class="deskpro-choice-widget">
+    <div>
         {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
             {% set required = false %}
         {%- endif -%}
