@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import {ChoiceMenuOption} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/ChoiceMenu';
 
 export class TypesCollection extends Component {
 
@@ -6,24 +7,12 @@ export class TypesCollection extends Component {
     options: PropTypes.object.isRequired
   };
 
-  renderListItem(item) {
-    return (
-      <li>
-        <div className="dpw--popup-item-person">
-          <span className="dpw-popup-item-collection-name">
-            {item.title}
-          </span>
-        </div>
-      </li>
-    );
-  }
-
   render() {
     const {options} = this.props;
     console.log('Types options: ', options.toJS());
     return (
       <ul>
-        {options.toJS().map(item => this.renderListItem(item))}
+        {options.toJS().map((item, index) => <ChoiceMenuOption key={index} label={item.title}/>)}
       </ul>
     );
   }
