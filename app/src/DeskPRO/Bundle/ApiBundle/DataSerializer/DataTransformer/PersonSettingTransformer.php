@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
+use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
 
 /**
  * Class PersonSettingTransformer.
@@ -43,7 +44,7 @@ class PersonSettingTransformer extends AbstractDataSerializerTransformer
      */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        return ['name'];
+        return ['name', 'value'];
     }
 
     /**
@@ -51,8 +52,11 @@ class PersonSettingTransformer extends AbstractDataSerializerTransformer
      */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        $obj = $transformation_request->getDataToBeTransformed();
+        /** @var PersonSetting $data */
+        $data = $transformation_request->getDataToBeTransformed();
 
-        return ['value' => $obj->getValue()];
+        return [
+            'id' => $data->getName(),
+        ];
     }
 }

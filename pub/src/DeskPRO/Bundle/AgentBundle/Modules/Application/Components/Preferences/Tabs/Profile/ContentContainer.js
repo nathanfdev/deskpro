@@ -33,15 +33,9 @@ export class ContentContainer extends React.Component {
   }
 
   render() {
-    const { dispatch, languages, timezones, profile, profileStatus } = this.props;
-
     return (
       <div>
-        <Content dispatch={dispatch}
-                 languages={languages}
-                 timezones={timezones}
-                 profile={profile}
-                 profileStatus={profileStatus} />
+        <Content {...this.props} />
       </div>
     );
   }
