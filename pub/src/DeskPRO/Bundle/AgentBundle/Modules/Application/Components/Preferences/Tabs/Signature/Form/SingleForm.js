@@ -1,12 +1,21 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSetting';
+import Immutable from 'immutable';
 
 export class SingleForm extends React.Component {
+
+  static propTypes = {
+    settings: PropTypes.object.isRequired
+  };
 
   constructor(props) {
     super(props);
 
+    const settings = this.props.settings;
+    const signature = settings && settings.get('signature') || Immutable.fromJS({});
+
     this.state = {
-      signature: ''
+      signature: signature.get('value')
     };
   }
 
@@ -14,6 +23,13 @@ export class SingleForm extends React.Component {
     this.setState({
       signature: event.target.value
     });
+  };
+
+  onSubmit = () => {
+    const settings = this.props.settings;
+    if (settings && settings.get('signature')) {
+      PersonSetting.sendPut();
+    }
   };
 
   render() {

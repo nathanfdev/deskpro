@@ -11,7 +11,7 @@ export class Content extends React.Component {
   };
 
   render() {
-    const { settingStatus } = this.props;
+    const { settings, settingStatus } = this.props;
 
     return (
       <Loader loaded={settingStatus.get('isDone')}
@@ -21,7 +21,7 @@ export class Content extends React.Component {
         <div className="user-signature-settings">
           <h1>Signature</h1>
 
-          <SingleForm />
+          <SingleForm settings={settings} />
         </div>
       </Loader>
     );

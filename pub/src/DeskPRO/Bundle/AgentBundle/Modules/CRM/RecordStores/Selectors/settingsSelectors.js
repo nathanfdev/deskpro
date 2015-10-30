@@ -13,7 +13,7 @@ export const createSettingsRequestSelectors = createRequestSelectorsBuilder(sett
 export const myStateSelector = createSettingsRequestSelectors('my');
 export const mySelector = createSelector(
   myStateSelector.recordsSel,
-  settings => settings.first() || Immutable.fromJS({})
+  settings => settings
 );
 
 export const myStatusSelector = createSelector(
