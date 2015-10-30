@@ -334,15 +334,36 @@ $right-bucket: 200px;
     text-align: left;
     padding-left: 40px;
 
-    .icon {
+    .user-photo {
       display: inline-block;
       width: 24px;
       height: 24px;
       border-radius: 2px;
       background-size: cover;
       position: absolute;
-      left: 20px;
+      left: 18px;
       top: 6px;
+
+      &.gravatar {
+        position: absolute;
+        top: 0;
+        left: 2px !important;
+      }
+
+      &.text-fallback {
+        background-color: #CDD2D4 !important;
+        margin-left: 2px;
+
+        .text {
+          color: black;
+          font-size: 150%;
+          position: relative;
+          top: 50%;
+          -webkit-transform: translateY(-50%);
+          -ms-transform: translateY(-50%);
+          transform: translateY(-50%);
+        }
+      }
     }
   }
 

@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Cropper } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Cropper';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
+import { Avatar as AvatarIcon } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/Avatar';
 import Dropzone from 'dropzone';
 import DropzoneComponent from 'react-dropzone-component';
 import jQuery from 'jquery';
@@ -238,9 +239,11 @@ export class Avatar extends React.Component {
     return (
       <div className="bucket-column-last">
         <a href="#" className="button button-secondary user-avatar" onClick={this.onToggleEdit} ref="editButton">
-          {this.getImagePath() && (
-            <span className="icon" style={{backgroundImage: 'url(' + this.getImagePath() + ')'}}/>
-          )}
+          <AvatarIcon
+            size={24}
+            color="#CDD2D4"
+            urlPattern={this.getImagePath()}
+            fallbackText="?" />
           Manage Avatar
         </a>
         <ClickOut onClickOut={this.onCloseEdit}
