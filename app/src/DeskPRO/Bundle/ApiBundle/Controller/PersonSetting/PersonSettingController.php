@@ -137,6 +137,35 @@ class PersonSettingController extends BaseController
 
     /**
      * @ApiDoc(
+     *      description="get person settings",
+     *      statusCodes={
+     *          200="Success"
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\Entity\PersonSetting"
+     * )
+     * @Get("/person_setting", name="api_person_setting_cget")
+     *
+     * @return View
+     */
+    public function cgetAction()
+    {
+        $settings = $this
+            ->getDoctrine()
+            ->getManager()
+            ->getRepository('App:PersonSetting')
+            ->findBy([
+                'person' => $this->getUser(),
+            ])
+        ;
+
+        return View::create(
+            $this->dataSerialize($settings),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @ApiDoc(
      *      description="get a person setting",
      *      requirements={
      *          {
@@ -156,15 +185,19 @@ class PersonSettingController extends BaseController
      *
      * @param string $name
      *
-     * @throws \LogicException
-     * @throws \InvalidArgumentException
-     *
      * @return View
      */
     public function getAction($name)
     {
-        $setting = $this->getDoctrine()->getManager()->getRepository('App:PersonSetting')
-            ->find(['name' => $name, 'person' => $this->getUser()]);
+        $setting = $this
+            ->getDoctrine()
+            ->getManager()
+            ->getRepository('App:PersonSetting')
+            ->find([
+                'name'   => $name,
+                'person' => $this->getUser(),
+            ])
+        ;
 
         if (null === $setting) {
             throw $this->createNotFoundException();

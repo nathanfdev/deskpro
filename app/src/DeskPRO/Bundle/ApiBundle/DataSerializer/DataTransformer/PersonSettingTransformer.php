@@ -43,7 +43,7 @@ class PersonSettingTransformer extends AbstractDataSerializerTransformer
      */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        return ['name'];
+        return ['name', 'value'];
     }
 
     /**
@@ -51,8 +51,6 @@ class PersonSettingTransformer extends AbstractDataSerializerTransformer
      */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        $obj = $transformation_request->getDataToBeTransformed();
-
-        return ['value' => $obj->getValue()];
+        return [];
     }
 }
