@@ -423,34 +423,13 @@ class LegacyTermsTransformer
                 );
 
             case 'FilterTicketField':
-                $t   = $term->getTermOptions();
-                $fid = $t['field_id'];
-
-                return array(
-                    'type'    => "ticket_field[{$fid}]",
-                    'op'      => $term->getTermOperator(),
-                    'options' => $t->all(),
-                );
+                return $this->filterFieldToLegacyOptions($term);
 
             case 'FilterUserField':
-                $t   = $term->getTermOptions();
-                $fid = $t['field_id'];
-
-                return array(
-                    'type'    => "person_field[{$fid}]",
-                    'op'      => $term->getTermOperator(),
-                    'options' => $t->all(),
-                );
+                return $this->filterFieldToLegacyOptions($term);
 
             case 'FilterOrgField':
-                $t   = $term->getTermOptions();
-                $fid = $t['field_id'];
-
-                return array(
-                    'type'    => "org_field[{$fid}]",
-                    'op'      => $term->getTermOperator(),
-                    'options' => $t->all(),
-                );
+                return $this->filterFieldToLegacyOptions($term);
         }
 
         return $legacy_terms;
@@ -811,20 +790,17 @@ class LegacyTermsTransformer
                 return new Terms\FilterOrgContactIm($op, $options);
 
             case 'ticket_field':
-                $new_opts             = $options;
-                $new_opts['field_id'] = $type_id;
+                $new_opts = $this->legacyFieldToFilterOptions($type_id, $options);
 
                 return new Terms\FilterTicketField($op, $new_opts);
 
             case 'person_field':
-                $new_opts             = array();
-                $new_opts['field_id'] = $type_id;
+                $new_opts = $this->legacyFieldToFilterOptions($type_id, $options);
 
                 return new Terms\FilterUserField($op, $new_opts);
 
             case 'org_field':
-                $new_opts             = array();
-                $new_opts['field_id'] = $type_id;
+                $new_opts = $this->legacyFieldToFilterOptions($type_id, $options);
 
                 return new Terms\FilterOrgField($op, $new_opts);
 
@@ -833,5 +809,44 @@ class LegacyTermsTransformer
         }
 
         return;
+    }
+
+    protected function legacyFieldToFilterOptions($type_id, $options)
+    {
+        if (isset($options['date1']) || isset($options['date2']) || isset($options['date1_relative']) || isset($options['date2_relative'])) {
+            $new_opts = $options;
+            $new_opts['field_id'] = $type_id;
+        } else {
+            $new_opts             = array();
+            $new_opts['field_id'] = $type_id;
+            $new_opts['value']    = @$options['custom_fields']['field_' . $type_id];
+        }
+
+        return $new_opts;
+    }
+
+    protected function filterFieldToLegacyOptions($term)
+    {
+        /** @var OptionsArray $options */
+        $options = $term->getTermOptions();
+        $fid = $options['field_id'];
+
+        if ($options->has('date1') || $options->has('date2') || $options->has('date1_relative') || $options->has('date2_relative')) {
+            return array(
+                'type'    => "ticket_field[{$fid}]",
+                'op'      => $term->getTermOperator(),
+                'options' => $options->all(),
+            );
+        } else {
+            return array(
+                'type'    => "ticket_field[{$fid}]",
+                'op'      => $term->getTermOperator(),
+                'options' => array(
+                    'custom_fields' => array(
+                        'field_' . $fid => $options->get('value'),
+                    ),
+                ),
+            );
+        }
     }
 }
