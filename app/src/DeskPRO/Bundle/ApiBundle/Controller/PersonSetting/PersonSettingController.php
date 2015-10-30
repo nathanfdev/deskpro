@@ -85,9 +85,9 @@ class PersonSettingController extends BaseController
         return View::create(
             $this->dataSerialize($setting),
             Response::HTTP_CREATED,
-            array(
+            [
                 'Location' => $location,
-            )
+            ]
         );
     }
 
@@ -129,9 +129,9 @@ class PersonSettingController extends BaseController
         return View::create(
             $this->dataSerialize($setting),
             Response::HTTP_NO_CONTENT,
-            array(
+            [
                 'Location' => $location,
-            )
+            ]
         );
     }
 
@@ -151,8 +151,7 @@ class PersonSettingController extends BaseController
     {
         $settings = $this
             ->getDoctrine()
-            ->getManager()
-            ->getRepository('App:PersonSetting')
+            ->getRepository(PersonSetting::class)
             ->findBy([
                 'person' => $this->getUser(),
             ])
@@ -191,8 +190,7 @@ class PersonSettingController extends BaseController
     {
         $setting = $this
             ->getDoctrine()
-            ->getManager()
-            ->getRepository('App:PersonSetting')
+            ->getRepository(PersonSetting::class)
             ->find([
                 'name'   => $name,
                 'person' => $this->getUser(),
