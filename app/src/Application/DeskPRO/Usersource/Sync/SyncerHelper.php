@@ -128,7 +128,9 @@ class SyncerHelper
         }
 
         if (!empty($user_info['email'])) {
-            if (!$person->hasEmailAddress($user_info['email'])) {
+            // if "$this->getPersonFromEmail($user_info['email'])" is true, we are in a potential merge situation
+            // ignoring for now
+            if (!$person->hasEmailAddress($user_info['email']) && !$this->getPersonFromEmail($user_info['email'])) {
                 $person->addEmailAddressString($user_info['email']);
             }
         }
