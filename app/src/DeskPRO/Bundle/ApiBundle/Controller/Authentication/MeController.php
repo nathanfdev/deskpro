@@ -120,4 +120,30 @@ class MeController extends BaseController
             Response::HTTP_CREATED
         );
     }
+
+    /**
+     * @Get("/me/profile/signature", name="api_get_signature")
+     */
+    public function getSignatureAction()
+    {
+        return View::create(
+            [],
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @Put("/me/profile/signature", name="api_put_signature)
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function putSignatureAction(Request $request)
+    {
+        return View::create(
+            [],
+            Response::HTTP_OK
+        );
+    }
 }
