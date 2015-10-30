@@ -1,10 +1,12 @@
 import React, { PropTypes } from 'react';
 import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSetting';
+import * as SettingsActions from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/settingsActions';
 import Immutable from 'immutable';
 
 export class SingleForm extends React.Component {
 
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     settings: PropTypes.object.isRequired
   };
 
@@ -25,11 +27,26 @@ export class SingleForm extends React.Component {
     });
   };
 
-  onSubmit = () => {
-    const settings = this.props.settings;
+  onSubmit = event => {
+    event.preventDefault();
+
+    const { settings, dispatch } = this.props;
+    let promise;
+
     if (settings && settings.get('signature')) {
-      PersonSetting.sendPut();
+      promise = PersonSetting.put('signature', this.state.signature);
+    } else {
+      promise = PersonSetting.post('signature', this.state.signature);
     }
+
+    promise
+      .success(response => {
+        const records = {};
+        records[response.data.id] = response.data;
+
+        dispatch(SettingsActions.releaseSettings('my'));
+        dispatch(SettingsActions.setSettingsRequest('my', records, [response.data.id]));
+      });
   };
 
   render() {
@@ -44,7 +61,7 @@ export class SingleForm extends React.Component {
                         value={this.state.signature}
                         onChange={this.onChange} />
 
-            <input type="submit" value="Save Signature" />
+            <input type="submit" value="Save Signature" onClick={this.onSubmit} />
           </form>
         </div>
       </section>

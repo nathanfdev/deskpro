@@ -128,7 +128,7 @@ class PersonSettingController extends BaseController
 
         return View::create(
             $this->dataSerialize($setting),
-            Response::HTTP_NO_CONTENT,
+            Response::HTTP_CREATED,
             [
                 'Location' => $location,
             ]
