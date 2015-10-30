@@ -68,11 +68,14 @@ export const loadFeedbackList = createAction(
       const {filters} = params;
       if (filters) {
         delete params.filters;
-        if (filters.created_from) {
-          params.created_from = Moment(filters.created_from).format('YYYY-MM-DD HH:mm:ss');
-        }
-        if (filters.created_to) {
-          params.created_to = Moment(filters.created_to).format('YYYY-MM-DD HH:mm:ss');
+        for (var property in filters) {
+          if (filters.hasOwnProperty(property) && filters[property]) {
+            if (property === 'created_from' || property === 'created_to') {
+              params[property] = Moment(filters[property]).format('YYYY-MM-DD HH:mm:ss');
+            } else {
+              params[property] = filters[property];
+            }
+          }
         }
       }
 

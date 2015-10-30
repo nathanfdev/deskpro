@@ -73,7 +73,20 @@ export default createReducer(initialState, {
       state.setIn(['viewFields'], payload.data.value)
   }),
 
-  [actions.setFilterValue]: (state, payload) => state.setIn(['currentListParams', 'filters'], Immutable.fromJS(payload)),
+  [actions.setFilterValue]: (state, payload) => {
+    let newFilters = {};
+    if (state.get('currentListParams').get('filters')) {
+      newFilters = state.get('currentListParams').get('filters').toJS();
+      for (var property in payload) {
+        if (payload.hasOwnProperty(property)) {
+          newFilters[property] = payload[property];
+        }
+      }
+    } else {
+      newFilters = payload;
+    }
+    return state.setIn(['currentListParams', 'filters'], Immutable.fromJS(newFilters));
+  },
 
   [commentsActions.commentsToggleOrder]: setFullPayload('order'),
 

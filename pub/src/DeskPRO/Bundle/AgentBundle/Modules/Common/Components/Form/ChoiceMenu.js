@@ -53,14 +53,17 @@ export class ChoiceMenuOption extends Component {
 
   static propTypes = {
     label: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired,
     children: PropTypes.any
   };
 
   render() {
-    const {label} = this.props;
+    const {label, type, value, onClick} = this.props;
     return (
       <li>
-        <div className="dpw--popup-item-person">
+        <div className="dpw--popup-item-person" onClick={onClick.bind(this, {[type]: value})}>
           <span className="dpw-popup-item-collection-name">
             {label}
           </span>
@@ -74,15 +77,18 @@ export class ChoiceMenuOption extends Component {
 export class ChoiceMenuOptionGroup extends Component {
 
   static propTypes = {
-    node: PropTypes.object.isRequired
+    node: PropTypes.object.isRequired,
+    type: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired
   };
 
   render() {
-    const {node} = this.props;
+    const {node, type, onClick} = this.props;
     if (node.nested) {
       return (
         <ul>
-          {node.nested.map((item, index) => <ChoiceMenuOption key={index} label={item.group}/>)}
+          {node.nested.map((item, index) =>
+            <ChoiceMenuOption key={index} label={item.group} type={type} value={item.group} onClick={onClick}/>)}
         </ul>
       );
     }
