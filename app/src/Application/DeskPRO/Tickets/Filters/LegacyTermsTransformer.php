@@ -814,12 +814,12 @@ class LegacyTermsTransformer
     protected function legacyFieldToFilterOptions($type_id, $options)
     {
         if (isset($options['date1']) || isset($options['date2']) || isset($options['date1_relative']) || isset($options['date2_relative'])) {
-            $new_opts = $options;
+            $new_opts             = $options;
             $new_opts['field_id'] = $type_id;
         } else {
             $new_opts             = array();
             $new_opts['field_id'] = $type_id;
-            $new_opts['value']    = @$options['custom_fields']['field_' . $type_id];
+            $new_opts['value']    = @$options['custom_fields']['field_'.$type_id];
         }
 
         return $new_opts;
@@ -829,7 +829,7 @@ class LegacyTermsTransformer
     {
         /** @var OptionsArray $options */
         $options = $term->getTermOptions();
-        $fid = $options['field_id'];
+        $fid     = $options['field_id'];
 
         if ($options->has('date1') || $options->has('date2') || $options->has('date1_relative') || $options->has('date2_relative')) {
             return array(
@@ -843,7 +843,7 @@ class LegacyTermsTransformer
                 'op'      => $term->getTermOperator(),
                 'options' => array(
                     'custom_fields' => array(
-                        'field_' . $fid => $options->get('value'),
+                        'field_'.$fid => $options->get('value'),
                     ),
                 ),
             );

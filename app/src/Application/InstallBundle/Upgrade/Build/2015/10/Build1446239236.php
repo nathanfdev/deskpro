@@ -53,7 +53,7 @@ class Build1446239236 extends AbstractBuild
                 if (is_numeric($term['options'])) {
                     $term['options'] = array(
                         'custom_fields' => array(
-                            'field_' . $id => $term['options'],
+                            'field_'.$id => $term['options'],
                         ),
                     );
                     $update = true;
@@ -71,7 +71,7 @@ class Build1446239236 extends AbstractBuild
                     if ($isNum) {
                         $term['options'] = array(
                             'custom_fields' => array(
-                                'field_' . $id => $term['options'],
+                                'field_'.$id => $term['options'],
                             ),
                         );
                         $update = true;
