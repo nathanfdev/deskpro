@@ -39,3 +39,8 @@ export const isDoneSelector = function(request) {
     state => state.getIn(['done', request])
   );
 };
+
+export const loadingFilterIdsSelector = createSelector(
+  stateSelector,
+  state => state.get('filtersLoading')
+);

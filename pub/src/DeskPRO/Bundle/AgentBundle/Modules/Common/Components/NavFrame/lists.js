@@ -244,3 +244,13 @@ export class ListItemLabelSpinner extends React.Component {
     return <Spinner width="14" height="14" />;
   }
 }
+
+export class ListItemSpinner extends React.Component {
+  render() {
+    return (
+      <div style={{marginTop: '3px', marginBottom: '1px'}}>
+        <Spinner width="20" height="20" marginLeft="10" />
+      </div>
+    );
+  }
+}

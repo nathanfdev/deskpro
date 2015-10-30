@@ -1,10 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { ListItem, ListItemLabelSpinner } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { ListItem, ListItemLabelSpinner, ListItemSpinner }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { startFilterEditing } from '../../../../Actions/navActions';
 import { navItemLabelsSelector } from '../../../../Selectors/nav-item-labels';
+import { loadingFilterIdsSelector } from '../../../../Selectors/nav';
 
 @connect(state => ({
+  notDoneFilters: loadingFilterIdsSelector(state),
   labels: navItemLabelsSelector(state)
 }))
 export class ListItemContainer extends Component {
@@ -19,7 +22,7 @@ export class ListItemContainer extends Component {
   };
 
   render() {
-    const { count, group, editable, children } = this.props;
+    const { count, group, grouped_by, editable, notDoneFilters, children } = this.props;
 
     const props = {
       count,
@@ -28,10 +31,9 @@ export class ListItemContainer extends Component {
       onClick: () => alert('list item clicked'),
       onItemControlClick: editable ? this.startFilterEditing(group) : null
     };
+    const isNotDoneFilterItem = (grouped_by === 'filter') && notDoneFilters.includes(group);
 
-    return (
-      <ListItem {...props} />
-    );
+    return isNotDoneFilterItem ? <ListItemSpinner /> : <ListItem {...props} />;
   }
 
   startFilterEditing(filterId) {
