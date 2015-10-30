@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\DataFixtures\ORM;
+namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -41,8 +41,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class TicketsFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
-    private $num_problems = 200;
-    private $num_labels = 200;
+    private $num_problems = 100;
+    private $num_labels = 100;
     private $ticket_max_messages = 10;
 
     private $num_tickets = 500;
@@ -192,7 +192,13 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
         $batch = [];
 
         for ($i = 0; $i < $this->num_tickets; $i++) {
-            $status = '';
+
+            if ($this->faker->boolean(60)) {
+                $status = 'awaiting_agent';
+            } else {
+                $status = $this->faker->randomElement(array('awaiting_user', 'resolved'));
+            }
+
             $subj = $this->faker->realText($this->faker->numberBetween(10, 20));
             $batch[] = array(
                 'department_id'            => $this->faker->randomElement($this->department_ids),
@@ -232,16 +238,19 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
                 $as_agent = $this->faker->boolean(50);
 
                 $text = [];
-                $text[] = $this->faker->realText($this->faker->numberBetween(10, 25));
+                $text[] = $this->faker->realText($this->faker->numberBetween(100, 300));
 
                 if ($this->faker->boolean(50)) {
-                    $text[] = $this->faker->realText($this->faker->numberBetween(10, 50));
+                    $text[] = $this->faker->realText($this->faker->numberBetween(100, 300));
+                }
+                if ($this->faker->boolean(20)) {
+                    $text[] = '<img src="' . $this->faker->imageUrl(200, 100, 'cats') . '" />';
                 }
                 if ($this->faker->boolean(50)) {
-                    $text[] = '<strong>' . $this->faker->realText($this->faker->numberBetween(10, 15)) . '</strong>';
+                    $text[] = '<strong>' . $this->faker->realText($this->faker->numberBetween(10, 150)) . '</strong>';
                 }
                 if ($this->faker->boolean(10)) {
-                    $text[] = $this->faker->realText($this->faker->numberBetween(50, 100));
+                    $text[] = $this->faker->realText($this->faker->numberBetween(150, 800));
                 }
 
                 $text = implode("<br/><br/>", $text);
