@@ -9,7 +9,9 @@ export class Projects extends React.Component {
         <SectionHeader>Projects</SectionHeader>
         <ul>
           <ListItem count={0}>
-            <div part="label"><i className="fa fa-book"/>Example Project</div>
+            <div part="label">
+              <i className="fa fa-book" /> Example Project
+            </div>
           </ListItem>
         </ul>
       </Section>
