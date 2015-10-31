@@ -1,34 +1,19 @@
 import React from 'react';
-import { Section, SectionHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
-import Immutable from 'immutable';
+import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 
 export class Groups extends React.Component {
-
-  renderItem(name, count, route) {
-    const taskList = Immutable.fromJS({});
-    const filterTasks = () => {};
-
-    return (
-      <li>
-        <div className="list-counter-bucket">
-          <a className="list-counter" href="#">{taskList.get(count, 0)}</a>
-        </div>
-        <a href="#" className="item" onClick={filterTasks.bind(this, route)}>{name}</a>
-      </li>
-    );
-  }
 
   render() {
     return (
       <Section>
         <SectionHeader>Tasks</SectionHeader>
         <ul>
-          {this.renderItem('My Tasks', 'myTaskCount', {agents: ['me']})}
-          {this.renderItem('My Department Tasks', 'teamTaskCount', {teams: ['me']})}
-          {this.renderItem('My Department Tasks', 'deptTaskCount', {departments: ['me']})}
-          {this.renderItem('Delegated Tasks', 'delegatedTaskCount', {agents: ['not_me'], creator: 'me'})}
-          {this.renderItem('Unassigned Tasks', 'unassignedTaskCount', {agents: ['null'], teams: ['null'], departments: ['null']})}
-          {this.renderItem('All Tasks', 'taskCount', {done: 'all'})}
+          <ListItem count={0} label="My Tasks" />
+          <ListItem count={0} label="My Team Tasks" />
+          <ListItem count={0} label="My Department Tasks" />
+          <ListItem count={0} label="Delegated Tasks" />
+          <ListItem count={0} label="Unassigned Tasks" />
+          <ListItem count={0} label="All Tasks" />
         </ul>
       </Section>
     );
