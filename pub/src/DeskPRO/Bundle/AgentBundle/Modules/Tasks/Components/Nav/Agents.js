@@ -12,7 +12,7 @@ export class Agents extends React.Component {
         <ul>
           <ListItem count={0}>
             <div part="label">
-              <PersonAvatar person={Immutable.fromJS({})} size={16} /> Some Person
+              <PersonAvatar person={Immutable.fromJS({first_name: 'Some', last_name: 'Person'})} size={16} /> Some Person
             </div>
           </ListItem>
           <ListItem count={0}>
