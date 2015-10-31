@@ -39,82 +39,90 @@ $collection = new RouteCollection();
 
 $collection->create(
     'agent',
-    array(
+    [
         'path'       => '/',
         'controller' => 'AgentBundle:AgentChrome:agentChrome',
-    )
+    ]
 )
 ;
 $collection->create(
     'react_agent_tickets',
-    array(
+    [
         'path'       => '/tickets',
         'controller' => 'AgentBundle:AgentChrome:agentChrome',
-    )
+    ]
 )
 ;
 $collection->create(
     'react_agent_tasks',
-    array(
+    [
         'path'       => '/tasks',
         'controller' => 'AgentBundle:AgentChrome:agentChrome',
-    )
+    ]
+)
+;
+$collection->create(
+    'react_agent_old_tasks',
+    [
+        'path'       => '/old_tasks',
+        'controller' => 'AgentBundle:AgentChrome:agentChrome',
+    ]
 )
 ;
 $collection->create(
     'react_agent_example',
-    array(
+    [
         'path'       => '/example',
         'controller' => 'AgentBundle:AgentChrome:agentChrome',
-    )
+    ]
 )
 ;
 $collection->create(
     'react_agent_crm',
-    array(
+    [
         'path'       => '/crm',
         'controller' => 'AgentBundle:AgentChrome:agentChrome',
-    )
+    ]
 )
 ;
 $collection->create(
     'react_agent_chat',
-    array(
+    [
         'path'       => '/chat',
         'controller' => 'AgentBundle:AgentChrome:agentChrome',
-    )
+    ]
 )
 ;
 $collection->create(
     'react_agent_feedback',
-    array(
+    [
         'path'       => '/feedback',
         'controller' => 'AgentBundle:AgentChrome:agentChrome',
-    )
+    ]
 )
 ;
 $collection->create(
     'react_agent_publish',
-    array(
+    [
         'path'       => '/publish',
         'controller' => 'AgentBundle:AgentChrome:agentChrome',
-    )
+    ]
 )
 ;
 $collection->create(
     'react_agent_login',
-    array(
+    [
         'path'       => '/login',
         'controller' => 'AgentBundle:AgentChrome:agentChrome',
-    )
+    ]
 )
 ;
 $collection->create(
     'react_agent_welcome',
-    array(
+    [
         'path'       => '/welcome',
         'controller' => 'AgentBundle:AgentChrome:agentChrome',
-    )
+    ]
 )
 ;
 

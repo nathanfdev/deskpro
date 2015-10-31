@@ -13,7 +13,7 @@ import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Recor
   user: meSelector(state),
   dpWindow: state.Application.dpWindow
 }))
-class TasksApp extends React.Component {
+class OldTasksApp extends React.Component {
   render() {
     return (
       <AppContainer thisAppId="tasks" {...this.props}>
@@ -25,4 +25,4 @@ class TasksApp extends React.Component {
   }
 }
 
-export default DragDropContext(HTML5Backend)(TasksApp);
+export default DragDropContext(HTML5Backend)(OldTasksApp);

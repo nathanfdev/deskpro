@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { DpAppRouteContainer } from './DpAppRouteContainer';
 import { LoginRouteContainer } from '../../Login/Components/LoginRouteContainer';
 import TicketsApp from '../../Tickets/Components/TicketsApp';
-import TasksApp from '../../OldTasks/Components/TasksApp';
+import OldTasksApp from '../../OldTasks/Components/OldTasksApp';
+import TasksApp from '../../Tasks/Components/TasksApp';
 import { FeedbackApp } from '../../Feedback/Components/FeedbackApp';
 import { CrmApp } from '../../CRM/Components/CrmApp';
 import { ChatApp } from '../../Chat/Components/ChatApp';
@@ -69,6 +70,7 @@ export class DpAppContainer extends React.Component {
           <Route name="crm" path="crm" component={CrmApp}/>
           <Route name="chat" path="chat" component={ChatApp}/>
           <Route name="tickets" path="tickets" component={TicketsApp}/>
+          <Route name="old_tasks" path="old_tasks" component={OldTasksApp}/>
           <Route name="tasks" path="tasks" component={TasksApp}/>
           <Route name="publish" path="publish" component={PublishApp}/>
           <Route name="feedback" path="feedback" component={FeedbackApp}/>
