@@ -1,5 +1,6 @@
 import React from 'react';
 import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
+import { Header } from './Header';
 import { FieldGroup } from './FieldGroup';
 import { FullField } from './FullField';
 import { CollectionField } from './CollectionField';
@@ -10,9 +11,7 @@ export class ProjectForm extends React.Component {
     return (
       <div className="sidebar-hover">
         <div className="dpmw--popup-main">
-          <div className="dpmw--popup-header">
-            <i className="fa fa-tags"/> Project - Create New
-          </div>
+          <Header>Project - Create New</Header>
 
           <form>
             <inpit name="projectId" type="hidden" />
