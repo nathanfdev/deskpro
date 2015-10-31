@@ -14,7 +14,7 @@ import * as constants from '../../../Constants/Constants';
 import ReactPaginate from '../../Common/Components/Pagination/deskpro-react-paginate';
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import AssignHover from '../Components/AssignHover';
-import TaskViewConnector from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/Views/TaskViewConnector';
+import TaskViewConnector from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/Components/Views/TaskViewConnector';
 import Immutable from 'immutable';
 
 import TaskMassActions from '../Components/TaskMassActions';
@@ -22,14 +22,14 @@ import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Compone
 import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
 // import { filteredTasksSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/taskSelectors';
-import { allProjectsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/projectSelectors';
-import { createLinkedItemRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/linkedItemSelectors';
+import { allProjectsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/RecordStores/Selectors/projectSelectors';
+import { createLinkedItemRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/RecordStores/Selectors/linkedItemSelectors';
 import { createTicketRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/RecordStores/Selectors/ticketSelectors';
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
 import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
-import { allTaskLabelsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/taskLabelSelectors';
-import { taskListSelector, statusFilteredTasksSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Selectors/taskSelectors';
+import { allTaskLabelsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/RecordStores/Selectors/taskLabelSelectors';
+import { taskListSelector, statusFilteredTasksSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/Selectors/taskSelectors';
 
 const requestId = 'taskListFrame';
 const ticketsSelector = createTicketRequestSelectors(requestId);
@@ -45,10 +45,10 @@ const linkedItemsSelector = createLinkedItemRequestSelectors(requestId);
   linkedItemsStatus: linkedItemsSelector.statusSel(state),
   projects: allProjectsSelector(state),
   status: statusFilteredTasksSelector(state),
-  taskFilter: state.Tasks.taskFilter,
-  taskFrameList: state.Tasks.taskFrameList,
+  taskFilter: state.OldTasks.taskFilter,
+  taskFrameList: state.OldTasks.taskFrameList,
   tasks: taskListSelector(state),
-  taskSource: state.Tasks.taskSource,
+  taskSource: state.OldTasks.taskSource,
   tickets: ticketsSelector.recordsSel(state)
 }))
 

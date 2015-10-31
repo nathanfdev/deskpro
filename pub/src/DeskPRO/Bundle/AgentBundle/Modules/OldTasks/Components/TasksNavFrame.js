@@ -11,26 +11,26 @@ import jQuery from 'jquery';
 
 import { loadAllAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions';
 import { loadAllDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
-import { loadAllProjects } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Actions/projectActions';
-import { loadAllTaskLabels } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Actions/taskLabelActions';
+import { loadAllProjects } from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/RecordStores/Actions/projectActions';
+import { loadAllTaskLabels } from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/RecordStores/Actions/taskLabelActions';
 
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
 import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
-import { allProjectsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/projectSelectors';
-import { allTaskLabelsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/taskLabelSelectors';
+import { allProjectsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/RecordStores/Selectors/projectSelectors';
+import { allTaskLabelsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/RecordStores/Selectors/taskLabelSelectors';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 
 // const projectRequestId = 'projectNavView';
 
 @connect(state => ({
-  taskList: state.Tasks.taskList,
-  agentList: state.Tasks.agentList,
-  labelList: state.Tasks.labelList,
-  teamList: state.Tasks.teamList,
-  departmentList: state.Tasks.departmentList,
+  taskList: state.OldTasks.taskList,
+  agentList: state.OldTasks.agentList,
+  labelList: state.OldTasks.labelList,
+  teamList: state.OldTasks.teamList,
+  departmentList: state.OldTasks.departmentList,
   user: meSelector(state),
-  createdProject: state.Tasks.createdProject,
+  createdProject: state.OldTasks.createdProject,
   dpWindow: state.Application.dpWindow,
   projects: allProjectsSelector(state),
   agents: agentsSelector(state),

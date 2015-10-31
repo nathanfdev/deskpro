@@ -23,7 +23,7 @@ function collect(connector, monitor) {
 }
 
 @connect(state => ({
-  failedProject: state.Tasks.failedProject
+  failedProject: state.OldTasks.failedProject
 }))
 @DropTarget(DragTypes.TASK, projectTarget, collect)
 export default class TaskNavItemProject extends React.Component {

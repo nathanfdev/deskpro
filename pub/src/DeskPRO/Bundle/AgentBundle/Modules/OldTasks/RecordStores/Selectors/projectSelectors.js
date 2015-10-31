@@ -4,18 +4,18 @@ import { createStoreSelectors, createRequestSelectorsBuilder } from 'Ampliflux/c
 // You need to define this top-level
 // selector that fetches record-store state
 // from the global app state
-function appTaskLabelStateSel(state) {
-  return state.RecordStores.Tasks.taskLabels;
+function appProjectStateSel(state) {
+  return state.RecordStores.OldTasks.projects;
 }
 
 // This creates a number of selectors for records, status and requests
 // This is not typically used by client-code (usually only used by the next builder)
-export const taskLabelStateSelector = createStoreSelectors(appTaskLabelStateSel);
+export const projectStateSelector = createStoreSelectors(appProjectStateSel);
 
 // This create a number of useful selectors that your client-code will find useful
-export const createTaskLabelRequestSelectors = createRequestSelectorsBuilder(taskLabelStateSelector);
+export const createProjectRequestSelectors = createRequestSelectorsBuilder(projectStateSelector);
 
-export const allTaskLabelsSelector = createSelector(
-  createTaskLabelRequestSelectors('allTaskLabels').recordsSel,
-  taskLabels => taskLabels
+export const allProjectsSelector = createSelector(
+  createProjectRequestSelectors('all').recordsSel,
+  projects => projects
 );

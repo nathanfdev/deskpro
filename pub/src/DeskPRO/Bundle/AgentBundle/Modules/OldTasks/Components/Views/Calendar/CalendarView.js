@@ -1,6 +1,6 @@
 import React from 'react';
-import TaskCalendar from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/TaskCalendar';
-import * as TaskActions from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Actions/TaskListActions';
+import TaskCalendar from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/Components/TaskCalendar';
+import * as TaskActions from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/Actions/TaskListActions';
 import Moment from 'moment';
 
 export default class CalendarView extends React.Component {

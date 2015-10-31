@@ -1,6 +1,6 @@
 import React from 'react';
-import KanbanColumn from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/KanbanColumn';
-import * as TaskActions from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Actions/TaskListActions';
+import KanbanColumn from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/Components/KanbanColumn';
+import * as TaskActions from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/Actions/TaskListActions';
 
 export default class KanbanView extends React.Component {
   static propTypes = {

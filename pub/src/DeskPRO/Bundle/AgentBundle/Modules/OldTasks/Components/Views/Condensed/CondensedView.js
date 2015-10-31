@@ -1,8 +1,8 @@
 import React from 'react';
 import Formsy from 'formsy-react';
 import FRC from 'DeskPRO/Component/FormComponents/main.js';
-import TaskCardCondensedGroup from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/TaskCardCondensedGroup';
-import * as TaskActions from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Actions/TaskListActions';
+import TaskCardCondensedGroup from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/Components/TaskCardCondensedGroup';
+import * as TaskActions from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/Actions/TaskListActions';
 
 export default class CondensedView extends React.Component {
   static propTypes = {

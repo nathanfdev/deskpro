@@ -10,10 +10,10 @@ import Immutable from 'immutable';
 
 import * as TaskActions from '../Actions/TaskListActions';
 
-import { updateProject, loadAllProjects } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Actions/projectActions';
+import { updateProject, loadAllProjects } from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/RecordStores/Actions/projectActions';
 
 @connect(state => ({
-  failedProject: state.Tasks.failedProject
+  failedProject: state.OldTasks.failedProject
 }))
 export default class TasksNavProjects extends React.Component {
   static propTypes = {

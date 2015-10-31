@@ -5,7 +5,7 @@ import { createStoreSelectors, createRequestSelectorsBuilder } from 'Ampliflux/c
 // selector that fetches record-store state
 // from the global app state
 function appTaskListStateSel(state) {
-  return state.RecordStores.Tasks.taskLists;
+  return state.RecordStores.OldTasks.taskLists;
 }
 
 // This creates a number of selectors for records, status and requests

@@ -1,8 +1,8 @@
 import { createAction } from 'Ampliflux';
 import * as Tasks from 'DeskPRO/Bundle/AgentBundle/Services/Api/Tasks';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import * as RecordStoreTaskActions from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Actions/taskActions';
-import * as RecordStoreTaskListActions from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Actions/taskListActions';
+import * as RecordStoreTaskActions from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/RecordStores/Actions/taskActions';
+import * as RecordStoreTaskListActions from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/RecordStores/Actions/taskListActions';
 import * as RecordStoreTicketActions from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/RecordStores/Actions/ticketActions';
 import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 

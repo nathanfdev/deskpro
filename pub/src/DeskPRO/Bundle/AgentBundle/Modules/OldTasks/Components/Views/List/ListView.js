@@ -1,8 +1,8 @@
 import React from 'react';
 import Formsy from 'formsy-react';
 import FRC from 'DeskPRO/Component/FormComponents/main.js';
-import TaskCardGroup from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/TaskCardGroup';
-import * as TaskActions from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Actions/TaskListActions';
+import TaskCardGroup from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/Components/TaskCardGroup';
+import * as TaskActions from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/Actions/TaskListActions';
 
 export default class ListView extends React.Component {
   static propTypes = {
