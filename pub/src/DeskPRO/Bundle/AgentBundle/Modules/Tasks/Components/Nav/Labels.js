@@ -7,9 +7,18 @@ export class Labels extends React.Component {
     return (
       <Section>
         <SectionHeader>Labels</SectionHeader>
-        <ul>
-
-        </ul>
+        <div className="sidebar-label-list sidebar-list">
+          <ul>
+            <li>
+              <span className="labelCharacter">A</span>
+              <a href="#" className="item-label active">Label 1</a>
+            </li>
+            <li>
+              <span className="labelCharacter">B</span>
+              <a href="#" className="item-label">Label 2</a>
+            </li>
+          </ul>
+        </div>
       </Section>
     );
   }

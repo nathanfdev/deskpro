@@ -13,6 +13,11 @@ export class Projects extends React.Component {
               <i className="fa fa-book" /> Example Project
             </div>
           </ListItem>
+          <ListItem count={2}>
+            <div part="label">
+              <i className="fa fa-book" /> Example Project2
+            </div>
+          </ListItem>
         </ul>
       </Section>
     );
