@@ -5,6 +5,9 @@ import { FieldGroup } from './Fields/FieldGroup';
 import { FullField } from './Fields/FullField';
 import { FloatField } from './Fields/FloatField';
 import { CollectionField } from './Fields/CollectionField';
+import { QuickFilter } from './Fields/QuickFilter';
+import { ShowOnlySelected } from './Fields/ShowOnlySelected';
+import { Unassign } from './Fields/Unassign';
 
 export class ProjectForm extends React.Component {
 
@@ -27,28 +30,12 @@ export class ProjectForm extends React.Component {
 
               <FieldGroup>
                 <FloatField align="left">
-                  <div className="dpw-quick-filter">
-                    <div className="dpw-quick-filter-container">
-                      <div className="dpw-quick-filter-icon"><i className="fa fa-filter" /></div>
-                      <input type="text" placeholder="Quick Filter" />
-                      <span className="dpw-quick-filter-clear-link"><i className="fa fa-times-circle"></i></span>
-                    </div>
-                  </div>
+                  <QuickFilter />
                 </FloatField>
 
                 <FloatField align="right">
-                  <div className="dpw-popup-content-item-show-only-selected">
-                    <a href="#" className="checkbox-link'">
-                      <span>Show only Selected</span>
-                      <span className="dpw--checkbox-boxy"><i className="fa fa-check" /></span>
-                    </a>
-                  </div>
-                  <div className="dpw-popup-content-item-unassign-all">
-                    <a href="#" className="checkbox-link">
-                      <span>Unassign</span>
-                      <span className="unassign-all-icon"><span /></span>
-                    </a>
-                  </div>
+                  <ShowOnlySelected />
+                  <Unassign />
                 </FloatField>
               </FieldGroup>
 
