@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { NavFrame, NavFrameHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { Groups } from './Groups';
+import { Projects } from './Projects';
 
 export class Nav extends React.Component {
 
@@ -20,6 +21,7 @@ export class Nav extends React.Component {
 
         <div className="sidebar-list sidebar-list-filters">
           <Groups />
+          <Projects />
         </div>
       </NavFrame>
     );
