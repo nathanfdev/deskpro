@@ -1,10 +1,10 @@
 import React from 'react';
 import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
 import { Header } from './Header';
-import { FieldGroup } from './FieldGroup';
-import { FullField } from './FullField';
-import { FloatField } from './FloatField';
-import { CollectionField } from './CollectionField';
+import { FieldGroup } from './Fields/FieldGroup';
+import { FullField } from './Fields/FullField';
+import { FloatField } from './Fields/FloatField';
+import { CollectionField } from './Fields/CollectionField';
 
 export class ProjectForm extends React.Component {
 
