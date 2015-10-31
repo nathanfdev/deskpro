@@ -1,6 +1,7 @@
 import React from 'react';
 import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
 import { FieldGroup } from './FieldGroup';
+import { FullField } from './FullField';
 import { CollectionField } from './CollectionField';
 
 export class ProjectForm extends React.Component {
@@ -19,12 +20,9 @@ export class ProjectForm extends React.Component {
             <div className="dpw--popup-content">
 
               <FieldGroup>
-                <div className="dpmw--popup-content-full">
-                  <h2 className="dpw--popup-item-section-title">Title</h2>
-                  <div className="dpw--popup-form-container">
-                    <input name="title" type="text" placeholder="Title" />
-                  </div>
-                </div>
+                <FullField title="Title">
+                  <input name="title" type="text" placeholder="Title" />
+                </FullField>
               </FieldGroup>
 
               <FieldGroup>
