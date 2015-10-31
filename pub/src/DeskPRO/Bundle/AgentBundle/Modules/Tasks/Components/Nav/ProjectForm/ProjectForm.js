@@ -3,6 +3,7 @@ import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components
 import { Header } from './Header';
 import { FieldGroup } from './FieldGroup';
 import { FullField } from './FullField';
+import { FloatField } from './FloatField';
 import { CollectionField } from './CollectionField';
 
 export class ProjectForm extends React.Component {
@@ -10,7 +11,7 @@ export class ProjectForm extends React.Component {
   render() {
     return (
       <div className="sidebar-hover">
-        <div className="dpmw--popup-main">
+        <div className="dpw--popup-main">
           <Header>Project - Create New</Header>
 
           <form>
@@ -25,7 +26,7 @@ export class ProjectForm extends React.Component {
               </FieldGroup>
 
               <FieldGroup>
-                <div className="dpw--popup-content-left">
+                <FloatField align="left">
                   <div className="dpw-quick-filter">
                     <div className="dpw-quick-filter-container">
                       <div className="dpw-quick-filter-icon"><i className="fa fa-filter" /></div>
@@ -33,26 +34,22 @@ export class ProjectForm extends React.Component {
                       <span className="dpw-quick-filter-clear-link"><i className="fa fa-times-circle"></i></span>
                     </div>
                   </div>
-                </div>
+                </FloatField>
 
-                <div className="dpmw--popup-content-right">
-                  <div className="dpw-popup-content-item">
-                    <div className="dpw-popup-content-item-show-only-selected">
-                      <a href="#" className="checkbox-link'">
-                        <span>Show only Selected</span>
-                        <span className="dpw--checkbox-boxy"><i className="fa fa-check" /></span>
-                      </a>
-                    </div>
+                <FloatField align="right">
+                  <div className="dpw-popup-content-item-show-only-selected">
+                    <a href="#" className="checkbox-link'">
+                      <span>Show only Selected</span>
+                      <span className="dpw--checkbox-boxy"><i className="fa fa-check" /></span>
+                    </a>
                   </div>
-                  <div className="dpw-popup-content-item">
-                    <div className="dpw-popup-content-item-unassign-all">
-                      <a href="#" className="checkbox-link">
-                        <span>Unassign</span>
-                        <span className="unassign-all-icon"><span /></span>
-                      </a>
-                    </div>
+                  <div className="dpw-popup-content-item-unassign-all">
+                    <a href="#" className="checkbox-link">
+                      <span>Unassign</span>
+                      <span className="unassign-all-icon"><span /></span>
+                    </a>
                   </div>
-                </div>
+                </FloatField>
               </FieldGroup>
 
               <FieldGroup>

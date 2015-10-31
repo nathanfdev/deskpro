@@ -87,8 +87,8 @@ const AssignHover = React.createClass({
     const taskId = this.props.taskData && this.props.taskData.get ? this.props.taskData.get('id') : null;
 
     return (<div style={this.props.position ? {top: this.props.position.y + 10, left: this.props.position.x - 300} : {}} className="sidebar-hover assign-hover">
-        <div className="dpmw--popup-main">
-          <div className="dpmw--popup-header">
+        <div className="dpw--popup-main">
+          <div className="dpw--popup-header">
             <i className="fa fa-tags"/> Assign to Task
           </div>
           <div className="dpw--popup-content">
@@ -104,7 +104,7 @@ const AssignHover = React.createClass({
                 </div>
               </div>
 
-              <div className="dpmw--popup-content-right">
+              <div className="dpw--popup-content-right">
                 <div className="dpw-popup-content-item">
                   <div className="dpw-popup-content-item-unassign-all">
                     <a href="#" className="checkbox-link" onClick={this.handleAssignment.bind(this, {
@@ -120,7 +120,7 @@ const AssignHover = React.createClass({
             </div>
 
             <div className="dpw--popup-content-line">
-              <div className="dpmw--popup-content-of-three">
+              <div className="dpw--popup-content-of-three">
                 <h1 className="dpw--popup-item-collection-title">Agent <a href="#" onClick={this.handleAssignment.bind(this, {
                   id: taskId,
                   value: 'agents-me'
@@ -146,7 +146,7 @@ const AssignHover = React.createClass({
                 </div>
               </div>
 
-              <div className="dpmw--popup-content-of-three">
+              <div className="dpw--popup-content-of-three">
                 <h1 className="dpw--popup-item-collection-title">Team</h1>
                 <div className="dpw--popup-item-collection">
                   <div className="dpw--assignment-scrollable-container">
@@ -169,7 +169,7 @@ const AssignHover = React.createClass({
                 </div>
               </div>
 
-              <div className="dpmw--popup-content-of-three">
+              <div className="dpw--popup-content-of-three">
                 <h1 className="dpw--popup-item-collection-title">Department</h1>
                 <div className="dpw--popup-item-collection">
                   <div className="dpw--assignment-scrollable-container">

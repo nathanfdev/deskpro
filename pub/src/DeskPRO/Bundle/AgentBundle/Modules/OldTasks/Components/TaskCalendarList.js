@@ -21,13 +21,13 @@ const TaskCalendarList = React.createClass({
     const { tasks, dayDate, position } = this.props;
     const _this = this;
 
-    return (<div className="dpmw--popup-main dpw--popup-main-pointer dpw--popup-main-pointer-top-left calendar-popup"
+    return (<div className="dpw--popup-main dpw--popup-main-pointer dpw--popup-main-pointer-top-left calendar-popup"
                  style={{top: position.y, left: position.x}}>
-      <div className="dpmw--popup-header">{dayDate ? 'Tasks for ' + dayDate.format('MMMM Do') : 'Tasks'}</div>
+      <div className="dpw--popup-header">{dayDate ? 'Tasks for ' + dayDate.format('MMMM Do') : 'Tasks'}</div>
 
       <div className="dpw--popup-content">
         <div className="dpw--popup-content-line">
-          <div className="dpmw--popup-content-full">
+          <div className="dpw--popup-content-full">
             <div className="dpwd-calendar-tasks dpwd-calendar-tasks-flat">
               <ul>
                 {tasks ? tasks.map((task) => {

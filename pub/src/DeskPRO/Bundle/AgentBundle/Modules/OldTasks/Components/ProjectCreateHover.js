@@ -209,14 +209,14 @@ const ProjectCreateHover = React.createClass({
     }
 
     return (<div style={{top: top}} className={overshotY ? 'sidebar-hover hide-indicator' : 'sidebar-hover'}>
-        <div className="dpmw--popup-main">
-          <div className="dpmw--popup-header">
+        <div className="dpw--popup-main">
+          <div className="dpw--popup-header">
             <i className="fa fa-tags"/> Project - {project.has('id') ? 'Edit' : 'Create New'}
           </div>
           <Formsy.Form onValid={this.enableButton} onInvalid={this.disableButton} onSubmit={this.props.createProject}>
             <div className="dpw--popup-content">
               <div className="dpw--popup-content-line">
-                <div className="dpmw--popup-content-full">
+                <div className="dpw--popup-content-full">
                   <FRC.Input name="projectId" type="hidden" value={project.get('id', false)} />
                   <h2 className="dpw--popup-item-section-title">Title</h2>
                   <div className="dpw--popup-form-container">
@@ -236,7 +236,7 @@ const ProjectCreateHover = React.createClass({
                   </div>
                 </div>
 
-                <div className="dpmw--popup-content-right">
+                <div className="dpw--popup-content-right">
                   <div className="dpw-popup-content-item">
                     <div className="dpw-popup-content-item-show-only-selected">
                       <a href="#" className={this.state.filterSelected === true ? 'checkbox-link checked' : 'checkbox-link'} onClick={this.toggleFilterSelected}>
@@ -257,7 +257,7 @@ const ProjectCreateHover = React.createClass({
               </div>
 
               <div className="dpw--popup-content-line">
-                <div className="dpmw--popup-content-of-three">
+                <div className="dpw--popup-content-of-three">
                   <h1 className="dpw--popup-item-collection-title">Agent <a href="#" onClick={this.assignSelf}>Assign to me</a></h1>
                   <div className="dpw--popup-item-collection">
                     <div className="dpw--assignment-scrollable-container">
@@ -276,7 +276,7 @@ const ProjectCreateHover = React.createClass({
                   </div>
                 </div>
 
-                <div className="dpmw--popup-content-of-three">
+                <div className="dpw--popup-content-of-three">
                   <h1 className="dpw--popup-item-collection-title">Team</h1>
                   <div className="dpw--popup-item-collection">
                     <div className="dpw--assignment-scrollable-container">
@@ -295,7 +295,7 @@ const ProjectCreateHover = React.createClass({
                   </div>
                 </div>
 
-                <div className="dpmw--popup-content-of-three">
+                <div className="dpw--popup-content-of-three">
                   <h1 className="dpw--popup-item-collection-title">Department</h1>
                   <div className="dpw--popup-item-collection">
                     <div className="dpw--assignment-scrollable-container">

@@ -21,7 +21,7 @@ export class CollectionField extends React.Component {
     }
 
     return (
-      <div className="dpmw--popup-content-of-three">
+      <div className="dpw--popup-content-of-three">
         <h1 className="dpw--popup-item-collection-title">{title}</h1>
         <div className="dpw--popup-item-collection">
           <div className="dpw--assignment-scrollable-container">

@@ -10,7 +10,7 @@ export class Header extends React.Component {
     const { children } = this.props;
 
     return (
-      <div className="dpmw--popup-header">
+      <div className="dpw--popup-header">
         <i className="fa fa-tags"/> {children}
       </div>
     );
