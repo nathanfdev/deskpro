@@ -1,6 +1,7 @@
 import React from 'react';
 import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
 import { FieldGroup } from './FieldGroup';
+import { CollectionField } from './CollectionField';
 
 export class ProjectForm extends React.Component {
 
@@ -58,32 +59,22 @@ export class ProjectForm extends React.Component {
               </FieldGroup>
 
               <FieldGroup>
-                <div className="dpmw--popup-content-of-three">
-                  <h1 className="dpw--popup-item-collection-title">Agent <a href="#">Assign to me</a></h1>
-                  <div className="dpw--popup-item-collection">
-                    <div className="dpw--assignment-scrollable-container">
-                      <Scrollable vertical />
-                    </div>
+                <CollectionField>
+                  <div part="title">
+                    Agent <a href="#">Assign to me</a>
                   </div>
-                </div>
+                  <div part="selectbox">
+                    <Scrollable vertical />
+                  </div>
+                </CollectionField>
 
-                <div className="dpmw--popup-content-of-three">
-                  <h1 className="dpw--popup-item-collection-title">Team</h1>
-                  <div className="dpw--popup-item-collection">
-                    <div className="dpw--assignment-scrollable-container">
-                      <Scrollable vertical />
-                    </div>
-                  </div>
-                </div>
+                <CollectionField title="Team">
+                  <Scrollable vertical />
+                </CollectionField>
 
-                <div className="dpmw--popup-content-of-three">
-                  <h1 className="dpw--popup-item-collection-title">Department</h1>
-                  <div className="dpw--popup-item-collection">
-                    <div className="dpw--assignment-scrollable-container">
-                      <Scrollable vertical />
-                    </div>
-                  </div>
-                </div>
+                <CollectionField title="Department">
+                  <Scrollable vertical />
+                </CollectionField>
               </FieldGroup>
 
               <FieldGroup>
