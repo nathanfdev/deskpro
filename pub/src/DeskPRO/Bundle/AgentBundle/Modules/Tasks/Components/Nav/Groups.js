@@ -1,4 +1,5 @@
 import React from 'react';
+import { Section, SectionHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import Immutable from 'immutable';
 
 export class Groups extends React.Component {
@@ -19,8 +20,8 @@ export class Groups extends React.Component {
 
   render() {
     return (
-      <section className="sidebar-list tasks-nav-groups">
-        <div className="list-sidebar-title">Tasks</div>
+      <Section>
+        <SectionHeader>Tasks</SectionHeader>
         <ul>
           {this.renderItem('My Tasks', 'myTaskCount', {agents: ['me']})}
           {this.renderItem('My Department Tasks', 'teamTaskCount', {teams: ['me']})}
@@ -29,7 +30,7 @@ export class Groups extends React.Component {
           {this.renderItem('Unassigned Tasks', 'unassignedTaskCount', {agents: ['null'], teams: ['null'], departments: ['null']})}
           {this.renderItem('All Tasks', 'taskCount', {done: 'all'})}
         </ul>
-      </section>
+      </Section>
     );
   }
 }
