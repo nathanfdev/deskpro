@@ -2,7 +2,7 @@ import React from 'react';
 import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
-import { ProjectForm } from './ProjectForm';
+import { ProjectFormContainer } from './ProjectForm/ProjectFormContainer';
 
 export class Projects extends React.Component {
 
@@ -53,7 +53,7 @@ export class Projects extends React.Component {
                   positionTarget={this}>
 
           <ClickOut onClickOut={this.closeForm}>
-            <ProjectForm />
+            <ProjectFormContainer />
           </ClickOut>
         </Detached>
       </Section>
