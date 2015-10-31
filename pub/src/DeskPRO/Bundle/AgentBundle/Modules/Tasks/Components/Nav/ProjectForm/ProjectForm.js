@@ -75,9 +75,9 @@ export class ProjectForm extends React.Component {
               </FieldGroup>
 
               <FieldGroup>
-                <div className="dpw--popup-content-left">
+                <FullField>
                   <button type="submit" value="Save" className="dpw--popup-button">Save</button>
-                </div>
+                </FullField>
               </FieldGroup>
 
             </div>
