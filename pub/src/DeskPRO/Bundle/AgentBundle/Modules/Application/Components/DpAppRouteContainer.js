@@ -16,7 +16,7 @@ import { PreferencesContainer } from './Preferences/PreferencesContainer';
 export class DpAppRouteContainer extends React.Component {
 
   static propTypes = {
-    children: PropTypes.object.isRequired,
+    children: PropTypes.node.isRequired,
     dpWindow: PropTypes.object.isRequired,
     userStatus: PropTypes.object.isRequired,
     user: PropTypes.object.isRequired,
