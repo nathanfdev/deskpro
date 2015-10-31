@@ -39,7 +39,7 @@ export class NavFrame extends React.Component {
     let inner = children;
 
     if (children instanceof Array && children.length) {
-      children.forEach((child) => {
+      children.forEach(child => {
         if (child.props.part === 'outer') {
           outer = child;
         } else if (child.props.part === 'inner') {

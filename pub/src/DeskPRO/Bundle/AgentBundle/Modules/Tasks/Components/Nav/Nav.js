@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
-import { NavFrame, NavFrameHeader, SectionHeader }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { NavFrame, NavFrameHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { Groups } from './Groups';
 
 export class Nav extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired,
     dpWindow: PropTypes.object.isRequired
   };
 
@@ -17,6 +17,10 @@ export class Nav extends React.Component {
         <NavFrameHeader icon="icon-dp-streamline-check-circle-2">
           Tasks
         </NavFrameHeader>
+
+        <div className="sidebar-list sidebar-list-filters">
+          <Groups />
+        </div>
       </NavFrame>
     );
   }
