@@ -1,5 +1,6 @@
 import React from 'react';
 import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
+import { FieldGroup } from './FieldGroup';
 
 export class ProjectForm extends React.Component {
 
@@ -12,19 +13,20 @@ export class ProjectForm extends React.Component {
           </div>
 
           <form>
+            <inpit name="projectId" type="hidden" />
+
             <div className="dpw--popup-content">
 
-              <div className="dpw--popup-content-line">
+              <FieldGroup>
                 <div className="dpmw--popup-content-full">
-                  <inpit name="projectId" type="hidden" />
                   <h2 className="dpw--popup-item-section-title">Title</h2>
                   <div className="dpw--popup-form-container">
                     <input name="title" type="text" placeholder="Title" />
                   </div>
                 </div>
-              </div>
+              </FieldGroup>
 
-              <div className="dpw--popup-content-line">
+              <FieldGroup>
                 <div className="dpw--popup-content-left">
                   <div className="dpw-quick-filter">
                     <div className="dpw-quick-filter-container">
@@ -53,9 +55,9 @@ export class ProjectForm extends React.Component {
                     </div>
                   </div>
                 </div>
-              </div>
+              </FieldGroup>
 
-              <div className="dpw--popup-content-line">
+              <FieldGroup>
                 <div className="dpmw--popup-content-of-three">
                   <h1 className="dpw--popup-item-collection-title">Agent <a href="#">Assign to me</a></h1>
                   <div className="dpw--popup-item-collection">
@@ -82,13 +84,13 @@ export class ProjectForm extends React.Component {
                     </div>
                   </div>
                 </div>
-              </div>
+              </FieldGroup>
 
-              <div className="dpw--popup-content-line">
+              <FieldGroup>
                 <div className="dpw--popup-content-left">
                   <button type="submit" value="Save" className="dpw--popup-button">Save</button>
                 </div>
-              </div>
+              </FieldGroup>
 
             </div>
           </form>
