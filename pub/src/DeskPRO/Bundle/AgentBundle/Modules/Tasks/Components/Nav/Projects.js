@@ -50,7 +50,8 @@ export class Projects extends React.Component {
         </ul>
 
         <Detached isOpen={this.state.formOpened}
-                  positionTarget={this}>
+                  positionTarget={this}
+                  positionAt="right+5 top-6">
 
           <ClickOut onClickOut={this.closeForm}>
             <ProjectFormContainer />
