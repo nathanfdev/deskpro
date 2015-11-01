@@ -26,4 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1446397151);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1446397151 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->execMutateSql('ALTER TABLE agent_chat_message CHANGE message message LONGTEXT NOT NULL');
+    }
+}
