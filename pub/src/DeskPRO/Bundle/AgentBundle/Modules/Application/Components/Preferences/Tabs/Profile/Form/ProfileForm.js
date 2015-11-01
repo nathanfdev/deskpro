@@ -207,18 +207,17 @@ export class ProfileForm extends React.Component {
 
   renderPrimaryEmailField() {
     const emails = this.state.data.emails;
-
-    if (emails && emails.length > 1 && emails[1]) {
-      return (
-        <FieldWrapper label="Primary email" errors={this.state.errors.primary_email}>
-          <PrimaryEmail emails={emails}
-                        value={this.state.data.primary_email}
-                        onChange={this.onChangePrimaryEmail} />
-        </FieldWrapper>
-      );
+    if (!emails || !emails.length || !emails[1]) {
+      return null;
     }
 
-    return null;
+    return (
+      <FieldWrapper label="Primary email" errors={this.state.errors.primary_email}>
+        <PrimaryEmail emails={emails}
+                      value={this.state.data.primary_email}
+                      onChange={this.onChangePrimaryEmail} />
+      </FieldWrapper>
+    );
   }
 
   renderPhoneField() {
@@ -271,7 +270,11 @@ export class ProfileForm extends React.Component {
     return (
       <div className="bucket">
         <div className="bucket-column submit">
-          <Loader left="45%" opacity={0} width={3} loaded={!this.state.submit}>
+          <Loader left="45%"
+                  opacity={0}
+                  width={3}
+                  loaded={!this.state.submit}>
+
             <input type="submit" value="Save" onClick={this.submitForm} />
           </Loader>
         </div>
