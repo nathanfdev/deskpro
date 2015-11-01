@@ -134,6 +134,7 @@ export class ProjectForm extends React.Component {
                   <AgentsList values={agents}
                               selected={this.state.agents}
                               showOnlySelected={this.state.showOnlySelected}
+                              filter={this.state.quickFilter}
                               onChange={this.onChangeAgents} />
                 </CollectionField>
 
@@ -141,6 +142,7 @@ export class ProjectForm extends React.Component {
                   <AgentTeamsList values={agentTeams}
                                   selected={this.state.agentTeams}
                                   showOnlySelected={this.state.showOnlySelected}
+                                  filter={this.state.quickFilter}
                                   onChange={this.onChangeAgentTeams} />
                 </CollectionField>
 
@@ -148,6 +150,7 @@ export class ProjectForm extends React.Component {
                   <DepartmentsList values={departments}
                                    selected={this.state.departments}
                                    showOnlySelected={this.state.showOnlySelected}
+                                   filter={this.state.quickFilter}
                                    onChange={this.onChangeDepartments} />
                 </CollectionField>
               </FieldGroup>

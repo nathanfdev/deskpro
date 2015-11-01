@@ -11,7 +11,8 @@ export class AgentTeamsList extends React.Component {
     const { values = [] } = this.props;
     const options = values.map(value => ({
       label: value.get('name'),
-      value: value.get('id')
+      value: value.get('id'),
+      keyword: value.get('name')
     }));
 
     return (

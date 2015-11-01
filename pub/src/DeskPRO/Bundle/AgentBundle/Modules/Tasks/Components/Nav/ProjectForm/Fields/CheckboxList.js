@@ -6,6 +6,7 @@ export class CheckboxList extends React.Component {
   static propTypes = {
     selected: PropTypes.array,
     showOnlySelected: PropTypes.bool,
+    filter: PropTypes.string,
     options: PropTypes.any,
     onChange: PropTypes.func.isRequired
   };
@@ -23,11 +24,14 @@ export class CheckboxList extends React.Component {
     onChange(selected);
   };
 
-  renderItem({label, value}, index) {
-    const { selected = [], showOnlySelected = false } = this.props;
+  renderItem({label, value, keyword}, index) {
+    const { selected = [], showOnlySelected = false, filter = '' } = this.props;
     const checked = selected.indexOf(value) !== -1;
 
     if (showOnlySelected && !checked) {
+      return null;
+    }
+    if (filter && keyword && keyword.toLowerCase().indexOf(filter.toLowerCase()) === -1) {
       return null;
     }
 

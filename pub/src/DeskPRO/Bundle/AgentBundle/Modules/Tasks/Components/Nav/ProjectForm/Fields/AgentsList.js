@@ -23,7 +23,8 @@ export class AgentsList extends React.Component {
     const { values = [] } = this.props;
     const options = values.map(value => ({
       label: AgentsList.renderLabel(value),
-      value: value.get('id')
+      value: value.get('id'),
+      keyword: value.get('name')
     }));
 
     return (
