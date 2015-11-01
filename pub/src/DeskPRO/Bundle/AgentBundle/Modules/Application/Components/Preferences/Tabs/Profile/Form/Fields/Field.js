@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-export class FieldWrapper extends React.Component {
+export class Field extends React.Component {
 
   static propTypes = {
     label: PropTypes.string,
