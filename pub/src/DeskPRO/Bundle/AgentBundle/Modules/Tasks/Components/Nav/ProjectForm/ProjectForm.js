@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
 import { Header } from './Header';
 import { FieldGroup } from './Fields/FieldGroup';
@@ -11,13 +11,19 @@ import { Unassign } from './Fields/Unassign';
 
 export class ProjectForm extends React.Component {
 
+  static propTypes = {
+    agents: PropTypes.object.isRequired,
+    agentTeams: PropTypes.object.isRequired,
+    departments: PropTypes.object.isRequired
+  };
+
   constructor(props) {
     super(props);
 
     this.state = {
       title: '',
       quick_filter: '',
-      filter_selected: false,
+      filter_selected: false
     };
   }
 
@@ -84,7 +90,58 @@ export class ProjectForm extends React.Component {
                   <div part="title">
                     Agent <a href="#">Assign to me</a>
                   </div>
-                  todo
+                  <Scrollable vertical>
+                    <ul>
+                      <li>
+                        <a className="checkbox-button">
+                          <span className="checkbox"><i className="fa fa-check"></i></span>
+                          <span className="name">Agent 1</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a className="checkbox-button">
+                          <span className="checkbox"><i className="fa fa-check"></i></span>
+                          <span className="name">Agent 2</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a className="checkbox-button">
+                          <span className="checkbox"><i className="fa fa-check"></i></span>
+                          <span className="name">Agent 3</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a className="checkbox-button">
+                          <span className="checkbox"><i className="fa fa-check"></i></span>
+                          <span className="name">Agent 4</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a className="checkbox-button">
+                          <span className="checkbox"><i className="fa fa-check"></i></span>
+                          <span className="name">Agent 5</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a className="checkbox-button">
+                          <span className="checkbox"><i className="fa fa-check"></i></span>
+                          <span className="name">Agent 6</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a className="checkbox-button">
+                          <span className="checkbox"><i className="fa fa-check"></i></span>
+                          <span className="name">Agent 7</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a className="checkbox-button">
+                          <span className="checkbox"><i className="fa fa-check"></i></span>
+                          <span className="name">Agent 8</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </Scrollable>
                 </CollectionField>
 
                 <CollectionField title="Team">
