@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
 import { Header } from './Header';
 import { FieldGroup } from './Fields/FieldGroup';
 import { FullField } from './Fields/FullField';
@@ -8,6 +7,7 @@ import { CollectionField } from './Fields/CollectionField';
 import { QuickFilter } from './Fields/QuickFilter';
 import { ShowOnlySelected } from './Fields/ShowOnlySelected';
 import { Unassign } from './Fields/Unassign';
+import { CheckboxList } from './Fields/CheckboxList';
 
 export class ProjectForm extends React.Component {
 
@@ -46,7 +46,19 @@ export class ProjectForm extends React.Component {
   };
 
   onUnassignAll = () => {
-    console.log('unassign all');
+    console.log('onUnassignAll');
+  };
+
+  onChangeAgents = () => {
+    console.log('onChangeAgents');
+  };
+
+  onChangeAgentTeams = () => {
+    console.log('onChangeAgentTeams');
+  };
+
+  onChangeDepartments = () => {
+    console.log('onChangeDepartments');
   };
 
   onSubmit = event => {
@@ -90,66 +102,21 @@ export class ProjectForm extends React.Component {
                   <div part="title">
                     Agent <a href="#">Assign to me</a>
                   </div>
-                  <Scrollable vertical>
-                    <ul>
-                      <li>
-                        <a className="checkbox-button">
-                          <span className="checkbox"><i className="fa fa-check"></i></span>
-                          <span className="name">Agent 1</span>
-                        </a>
-                      </li>
-                      <li>
-                        <a className="checkbox-button">
-                          <span className="checkbox"><i className="fa fa-check"></i></span>
-                          <span className="name">Agent 2</span>
-                        </a>
-                      </li>
-                      <li>
-                        <a className="checkbox-button">
-                          <span className="checkbox"><i className="fa fa-check"></i></span>
-                          <span className="name">Agent 3</span>
-                        </a>
-                      </li>
-                      <li>
-                        <a className="checkbox-button">
-                          <span className="checkbox"><i className="fa fa-check"></i></span>
-                          <span className="name">Agent 4</span>
-                        </a>
-                      </li>
-                      <li>
-                        <a className="checkbox-button">
-                          <span className="checkbox"><i className="fa fa-check"></i></span>
-                          <span className="name">Agent 5</span>
-                        </a>
-                      </li>
-                      <li>
-                        <a className="checkbox-button">
-                          <span className="checkbox"><i className="fa fa-check"></i></span>
-                          <span className="name">Agent 6</span>
-                        </a>
-                      </li>
-                      <li>
-                        <a className="checkbox-button">
-                          <span className="checkbox"><i className="fa fa-check"></i></span>
-                          <span className="name">Agent 7</span>
-                        </a>
-                      </li>
-                      <li>
-                        <a className="checkbox-button">
-                          <span className="checkbox"><i className="fa fa-check"></i></span>
-                          <span className="name">Agent 8</span>
-                        </a>
-                      </li>
-                    </ul>
-                  </Scrollable>
+                  <CheckboxList values={[]}
+                                selected={[]}
+                                onChange={this.onChangeAgents} />
                 </CollectionField>
 
                 <CollectionField title="Team">
-                  todo
+                  <CheckboxList values={[]}
+                                selected={[]}
+                                onChange={this.onChangeAgentTeams} />
                 </CollectionField>
 
                 <CollectionField title="Department">
-                  todo
+                  <CheckboxList values={[]}
+                                selected={[]}
+                                onChange={this.onChangeDepartments} />
                 </CollectionField>
               </FieldGroup>
 
