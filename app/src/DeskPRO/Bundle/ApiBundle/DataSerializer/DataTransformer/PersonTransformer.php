@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
+use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 
 /**
  * Class PersonTransformer.
@@ -44,12 +46,17 @@ class PersonTransformer extends AbstractDataSerializerTransformer
      */
     private $avatar_resolver;
 
+    /** @var AgentDataService  */
+    private $agent_data_service;
+
     /**
-     * @param AvatarResolver $avatar_resolver
+     * @param AvatarResolver   $avatar_resolver
+     * @param AgentDataService $agent_data_service
      */
-    public function __construct(AvatarResolver $avatar_resolver)
+    public function __construct(AvatarResolver $avatar_resolver, AgentDataService $agent_data_service)
     {
-        $this->avatar_resolver = $avatar_resolver;
+        $this->avatar_resolver    = $avatar_resolver;
+        $this->agent_data_service = $agent_data_service;
     }
 
     /**
@@ -131,6 +138,14 @@ class PersonTransformer extends AbstractDataSerializerTransformer
         # Avatar
         #------------------------------
         $ret['avatar'] = $this->avatar_resolver->getAvatarModel($person);
+        $ret['online'] = $this->agent_data_service->isAgentOnline($person);
+        $last_seen     = $this->agent_data_service->getLastSeen($person);
+        if ($last_seen) {
+            $last_seen        = new \DateTime($last_seen);
+            $ret['last_seen'] = $last_seen->format(\DateTime::ISO8601);
+        } else {
+            $ret['last_seen'] = false;
+        }
 
         return $ret;
     }
