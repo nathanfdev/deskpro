@@ -23,7 +23,10 @@ export class ProjectForm extends React.Component {
     this.state = {
       title: '',
       quick_filter: '',
-      filter_selected: false
+      filter_selected: false,
+      agents: ['val2'],
+      agent_teams: [],
+      departments: ['val1']
     };
   }
 
@@ -45,20 +48,30 @@ export class ProjectForm extends React.Component {
     });
   };
 
+  onAssignSelf = () => {
+    console.log('onAssignSelf');
+  };
+
   onUnassignAll = () => {
     console.log('onUnassignAll');
   };
 
-  onChangeAgents = () => {
-    console.log('onChangeAgents');
+  onChangeAgents = selected => {
+    this.setState({
+      agents: selected
+    });
   };
 
-  onChangeAgentTeams = () => {
-    console.log('onChangeAgentTeams');
+  onChangeAgentTeams = selected => {
+    this.setState({
+      agent_teams: selected
+    });
   };
 
-  onChangeDepartments = () => {
-    console.log('onChangeDepartments');
+  onChangeDepartments = selected => {
+    this.setState({
+      departments: selected
+    });
   };
 
   onSubmit = event => {
@@ -73,7 +86,6 @@ export class ProjectForm extends React.Component {
 
           <form>
             <div className="dpw--popup-content">
-
               <FieldGroup>
                 <FullField title="Title">
                   <input name="title"
@@ -100,22 +112,22 @@ export class ProjectForm extends React.Component {
               <FieldGroup>
                 <CollectionField>
                   <div part="title">
-                    Agent <a href="#">Assign to me</a>
+                    Agent <a href="#" onClick={this.onAssignSelf}>Assign to me</a>
                   </div>
-                  <CheckboxList values={[]}
-                                selected={[]}
+                  <CheckboxList options={[]}
+                                selected={this.state.agents}
                                 onChange={this.onChangeAgents} />
                 </CollectionField>
 
                 <CollectionField title="Team">
-                  <CheckboxList values={[]}
-                                selected={[]}
+                  <CheckboxList options={[]}
+                                selected={this.state.agent_teams}
                                 onChange={this.onChangeAgentTeams} />
                 </CollectionField>
 
                 <CollectionField title="Department">
-                  <CheckboxList values={[]}
-                                selected={[]}
+                  <CheckboxList options={[]}
+                                selected={this.state.departments}
                                 onChange={this.onChangeDepartments} />
                 </CollectionField>
               </FieldGroup>
@@ -128,7 +140,6 @@ export class ProjectForm extends React.Component {
                           onClick={this.onSubmit}>Save</button>
                 </FullField>
               </FieldGroup>
-
             </div>
           </form>
         </div>
