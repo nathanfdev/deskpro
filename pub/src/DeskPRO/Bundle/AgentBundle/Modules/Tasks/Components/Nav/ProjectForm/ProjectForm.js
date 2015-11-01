@@ -15,13 +15,20 @@ export class ProjectForm extends React.Component {
     super(props);
 
     this.state = {
-      title: ''
+      title: '',
+      quick_filter: ''
     };
   }
 
   onChangeTitle = event => {
     this.setState({
       title: event.target.value
+    });
+  };
+
+  onChangeQuickFilter = value => {
+    this.setState({
+      quick_filter: value
     });
   };
 
@@ -36,13 +43,18 @@ export class ProjectForm extends React.Component {
 
               <FieldGroup>
                 <FullField title="Title">
-                  <input name="title" type="text" placeholder="Title" value={this.state.title} onChange={this.onChangeTitle} />
+                  <input name="title"
+                         type="text"
+                         placeholder="Title"
+                         value={this.state.title}
+                         onChange={this.onChangeTitle} />
                 </FullField>
               </FieldGroup>
 
               <FieldGroup>
                 <FloatField align="left">
-                  <QuickFilter />
+                  <QuickFilter value={this.state.quick_filter}
+                               onChange={this.onChangeQuickFilter} />
                 </FloatField>
 
                 <FloatField align="right">
