@@ -1,19 +1,20 @@
 import * as actions from '../Actions/messagesActions';
 import { createReducer } from 'Ampliflux';
-import { createEmptyRecordStoreState, buildRecordStoreHandlers } from 'Ampliflux/common/record-store/handlers';
-import Immutable from 'immutable';
 import { async } from 'Ampliflux/reducers/handlers';
 
 const initialState = {
   chatMessages: {},
-  lastMessages: {}
+  lastMessages: {},
+  loadingMessages: true
 };
 export default createReducer(initialState, {
   [actions.loadMessages]: async(
     {
+      begin: (state) => state.set('loadingMessages', true),
       success: (state, payload) => {
         return state.setIn(['chatMessages', payload.chat_id], payload.messages);
-      }
+      },
+      done: (state) => state.set('loadingMessages', false)
     }
   ),
   [actions.addMessageOptimistic]: async({

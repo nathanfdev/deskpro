@@ -12,7 +12,7 @@ import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Recor
   me: meSelector(state),
   agents: agentsSelector(state),
   agentsStatus: agentsStatusSelector(state),
-  messages: state.IM.messages
+  messages: state.IM.messages,
 }))
 export class MessageList extends React.Component {
 
@@ -83,22 +83,27 @@ export class MessageList extends React.Component {
   };
 
   render() {
-    const messages = this.props.messages.getIn(['chatMessages', this.props.current.id]) || [];
-    return (messages.length > 0 ) ? (
-      <div>
-      {this.controls()}
-        <ul ref="list" className="chat-message-list">
-          {
-            messages.map((message, index) => {
-              return (<Message
-                key={index}
-                message={message}
-                agents={this.props.agents}
-                me={this.props.me}/>);
-            })
-          }
-        </ul>
-      </div>
-    ) : <Spinner ref="list" width="40" height="40" />;
+    const loading = this.props.messages.loadingMessages;
+    if (!loading) {
+      const messages = this.props.messages.getIn(['chatMessages', this.props.current.id]) || [];
+      return (
+        <div>
+          {this.controls()}
+          <ul ref="list" className="chat-message-list">
+            {
+              messages.map((message, index) => {
+                return (<Message
+                  key={index}
+                  message={message}
+                  agents={this.props.agents}
+                  me={this.props.me}/>);
+              })
+            }
+          </ul>
+        </div>
+      );
+    } else {
+      return <Spinner ref="list" width="40" height="40" />;
+    }
   }
 }
