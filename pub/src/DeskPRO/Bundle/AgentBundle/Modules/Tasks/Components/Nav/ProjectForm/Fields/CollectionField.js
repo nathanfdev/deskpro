@@ -13,7 +13,7 @@ export class CollectionField extends React.Component {
     let title = this.props.title;
     if (children instanceof Array) {
       children.forEach((child, num) => {
-        if (child.props.part === 'title') {
+        if (child.props && child.props.part === 'title') {
           title = child;
           delete children[num];
         }

@@ -16,7 +16,8 @@ export class ProjectForm extends React.Component {
 
     this.state = {
       title: '',
-      quick_filter: ''
+      quick_filter: '',
+      filter_selected: false,
     };
   }
 
@@ -30,6 +31,16 @@ export class ProjectForm extends React.Component {
     this.setState({
       quick_filter: value
     });
+  };
+
+  onChangeFilterSelected = value => {
+    this.setState({
+      filter_selected: value
+    });
+  };
+
+  onSubmit = event => {
+    event.preventDefault();
   };
 
   render() {
@@ -58,7 +69,8 @@ export class ProjectForm extends React.Component {
                 </FloatField>
 
                 <FloatField align="right">
-                  <ShowOnlySelected />
+                  <ShowOnlySelected value={this.state.filter_selected}
+                                    onChange={this.onChangeFilterSelected} />
                   <Unassign />
                 </FloatField>
               </FieldGroup>
@@ -68,9 +80,7 @@ export class ProjectForm extends React.Component {
                   <div part="title">
                     Agent <a href="#">Assign to me</a>
                   </div>
-                  <div part="selectbox">
-                    todo
-                  </div>
+                  todo
                 </CollectionField>
 
                 <CollectionField title="Team">
@@ -84,7 +94,10 @@ export class ProjectForm extends React.Component {
 
               <FieldGroup>
                 <FullField>
-                  <button type="submit" value="Save" className="dpw--popup-button">Save</button>
+                  <button type="submit"
+                          value="Save"
+                          className="dpw--popup-button"
+                          onClick={this.onSubmit}>Save</button>
                 </FullField>
               </FieldGroup>
 
