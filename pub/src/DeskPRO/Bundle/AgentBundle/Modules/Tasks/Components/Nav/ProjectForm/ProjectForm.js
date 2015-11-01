@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import * as TasksActions from '../../../Actions/tasksActions';
 import { Header } from './Header';
 import { FieldGroup } from './Fields/FieldGroup';
 import { FullField } from './Fields/FullField';
@@ -14,6 +15,7 @@ import { DepartmentsList } from './Fields/DepartmentsList';
 export class ProjectForm extends React.Component {
 
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     me: PropTypes.object.isRequired,
     agents: PropTypes.object.isRequired,
     agentTeams: PropTypes.object.isRequired,
@@ -91,6 +93,13 @@ export class ProjectForm extends React.Component {
 
   onSubmit = event => {
     event.preventDefault();
+
+    TasksActions.createProject({
+      title: this.state.title,
+      departments: this.state.departments,
+      teams: this.state.agentTeams,
+      agents: this.state.agents
+    });
   };
 
   render() {
