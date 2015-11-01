@@ -133,18 +133,21 @@ export class ProjectForm extends React.Component {
                   </div>
                   <AgentsList values={agents}
                               selected={this.state.agents}
+                              showOnlySelected={this.state.showOnlySelected}
                               onChange={this.onChangeAgents} />
                 </CollectionField>
 
                 <CollectionField title="Team">
                   <AgentTeamsList values={agentTeams}
                                   selected={this.state.agentTeams}
+                                  showOnlySelected={this.state.showOnlySelected}
                                   onChange={this.onChangeAgentTeams} />
                 </CollectionField>
 
                 <CollectionField title="Department">
                   <DepartmentsList values={departments}
                                    selected={this.state.departments}
+                                   showOnlySelected={this.state.showOnlySelected}
                                    onChange={this.onChangeDepartments} />
                 </CollectionField>
               </FieldGroup>

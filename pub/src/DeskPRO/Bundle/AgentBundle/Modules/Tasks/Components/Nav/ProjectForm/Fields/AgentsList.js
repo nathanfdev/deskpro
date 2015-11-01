@@ -5,9 +5,7 @@ import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Componen
 export class AgentsList extends React.Component {
 
   static propTypes = {
-    selected: PropTypes.array,
-    values: PropTypes.object,
-    onChange: PropTypes.func.isRequired
+    values: PropTypes.object
   };
 
   static renderLabel(value) {
@@ -22,16 +20,14 @@ export class AgentsList extends React.Component {
   }
 
   render() {
-    const { values = [], selected, onChange } = this.props;
+    const { values = [] } = this.props;
     const options = values.map(value => ({
       label: AgentsList.renderLabel(value),
       value: value.get('id')
     }));
 
     return (
-      <CheckboxList options={options}
-                    selected={selected}
-                    onChange={onChange} />
+      <CheckboxList {...this.props} options={options} />
     );
   }
 }

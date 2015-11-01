@@ -5,6 +5,7 @@ export class CheckboxList extends React.Component {
 
   static propTypes = {
     selected: PropTypes.array,
+    showOnlySelected: PropTypes.bool,
     options: PropTypes.any,
     onChange: PropTypes.func.isRequired
   };
@@ -23,9 +24,15 @@ export class CheckboxList extends React.Component {
   };
 
   renderItem({label, value}, index) {
-    const { selected = [] } = this.props;
+    const { selected = [], showOnlySelected = false } = this.props;
+    const checked = selected.indexOf(value) !== -1;
+
+    if (showOnlySelected && !checked) {
+      return null;
+    }
+
     const classNames = ['checkbox-button'];
-    if (selected.indexOf(value) !== -1) {
+    if (checked) {
       classNames.push('checked');
     }
 
