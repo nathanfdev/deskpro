@@ -13,6 +13,7 @@ import { CheckboxList } from './Fields/CheckboxList';
 export class ProjectForm extends React.Component {
 
   static propTypes = {
+    me: PropTypes.object.isRequired,
     agents: PropTypes.object.isRequired,
     agentTeams: PropTypes.object.isRequired,
     departments: PropTypes.object.isRequired
@@ -50,11 +51,23 @@ export class ProjectForm extends React.Component {
   };
 
   onAssignSelf = () => {
-    console.log('onAssignSelf');
+    const id = this.props.me.get('id');
+    const selected = this.state.agents;
+    if (id && selected.indexOf(id) === -1) {
+      selected.push(id);
+    }
+
+    this.setState({
+      agents: selected
+    });
   };
 
   onUnassignAll = () => {
-    console.log('onUnassignAll');
+    this.setState({
+      agents: [],
+      agent_teams: [],
+      departments: []
+    });
   };
 
   onChangeAgents = selected => {
