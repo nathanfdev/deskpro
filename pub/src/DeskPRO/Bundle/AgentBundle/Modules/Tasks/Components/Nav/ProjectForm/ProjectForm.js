@@ -8,7 +8,8 @@ import { QuickFilter } from './Fields/QuickFilter';
 import { ShowOnlySelected } from './Fields/ShowOnlySelected';
 import { Unassign } from './Fields/Unassign';
 import { AgentsList } from './Fields/AgentsList';
-import { CheckboxList } from './Fields/CheckboxList';
+import { AgentTeamsList } from './Fields/AgentTeamsList';
+import { DepartmentsList } from './Fields/DepartmentsList';
 
 export class ProjectForm extends React.Component {
 
@@ -93,7 +94,7 @@ export class ProjectForm extends React.Component {
   };
 
   render() {
-    const { agents } = this.props;
+    const { agents, agentTeams, departments } = this.props;
 
     return (
       <div className="sidebar-hover">
@@ -130,21 +131,21 @@ export class ProjectForm extends React.Component {
                   <div part="title">
                     Agent <a href="#" onClick={this.onAssignSelf}>Assign to me</a>
                   </div>
-                  <AgentsList agents={agents}
+                  <AgentsList values={agents}
                               selected={this.state.agents}
                               onChange={this.onChangeAgents} />
                 </CollectionField>
 
                 <CollectionField title="Team">
-                  <CheckboxList options={[]}
-                                selected={this.state.agent_teams}
-                                onChange={this.onChangeAgentTeams} />
+                  <AgentTeamsList values={agentTeams}
+                                  selected={this.state.agent_teams}
+                                  onChange={this.onChangeAgentTeams} />
                 </CollectionField>
 
                 <CollectionField title="Department">
-                  <CheckboxList options={[]}
-                                selected={this.state.departments}
-                                onChange={this.onChangeDepartments} />
+                  <DepartmentsList values={departments}
+                                   selected={this.state.departments}
+                                   onChange={this.onChangeDepartments} />
                 </CollectionField>
               </FieldGroup>
 
