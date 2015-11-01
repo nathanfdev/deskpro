@@ -15,7 +15,7 @@ export class FloatField extends React.Component {
 
     return (
       <div className={`dpw--popup-content-${this.props.align}`}>
-        {children.map(child => <div className="dpw-popup-content-item">{child}</div>)}
+        {children.map((child, index) => <div className="dpw-popup-content-item" key={index}>{child}</div>)}
       </div>
     );
   }
