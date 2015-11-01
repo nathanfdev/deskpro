@@ -39,6 +39,10 @@ export class ProjectForm extends React.Component {
     });
   };
 
+  onUnassignAll = () => {
+    console.log('unassign all');
+  };
+
   onSubmit = event => {
     event.preventDefault();
   };
@@ -71,7 +75,7 @@ export class ProjectForm extends React.Component {
                 <FloatField align="right">
                   <ShowOnlySelected value={this.state.filter_selected}
                                     onChange={this.onChangeFilterSelected} />
-                  <Unassign />
+                  <Unassign onClick={this.onUnassignAll} />
                 </FloatField>
               </FieldGroup>
 
