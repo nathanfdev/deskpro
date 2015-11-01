@@ -11,6 +11,20 @@ import { Unassign } from './Fields/Unassign';
 
 export class ProjectForm extends React.Component {
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      title: ''
+    };
+  }
+
+  onChangeTitle = event => {
+    this.setState({
+      title: event.target.value
+    });
+  };
+
   render() {
     return (
       <div className="sidebar-hover">
@@ -18,13 +32,11 @@ export class ProjectForm extends React.Component {
           <Header>Project - Create New</Header>
 
           <form>
-            <inpit name="projectId" type="hidden" />
-
             <div className="dpw--popup-content">
 
               <FieldGroup>
                 <FullField title="Title">
-                  <input name="title" type="text" placeholder="Title" />
+                  <input name="title" type="text" placeholder="Title" value={this.state.title} onChange={this.onChangeTitle} />
                 </FullField>
               </FieldGroup>
 
@@ -45,16 +57,16 @@ export class ProjectForm extends React.Component {
                     Agent <a href="#">Assign to me</a>
                   </div>
                   <div part="selectbox">
-                    <Scrollable vertical />
+                    todo
                   </div>
                 </CollectionField>
 
                 <CollectionField title="Team">
-                  <Scrollable vertical />
+                  todo
                 </CollectionField>
 
                 <CollectionField title="Department">
-                  <Scrollable vertical />
+                  todo
                 </CollectionField>
               </FieldGroup>
 
