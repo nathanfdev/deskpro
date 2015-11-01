@@ -7,6 +7,7 @@ import { CollectionField } from './Fields/CollectionField';
 import { QuickFilter } from './Fields/QuickFilter';
 import { ShowOnlySelected } from './Fields/ShowOnlySelected';
 import { Unassign } from './Fields/Unassign';
+import { AgentsList } from './Fields/AgentsList';
 import { CheckboxList } from './Fields/CheckboxList';
 
 export class ProjectForm extends React.Component {
@@ -24,9 +25,9 @@ export class ProjectForm extends React.Component {
       title: '',
       quick_filter: '',
       filter_selected: false,
-      agents: ['val2'],
+      agents: [],
       agent_teams: [],
-      departments: ['val1']
+      departments: []
     };
   }
 
@@ -79,6 +80,8 @@ export class ProjectForm extends React.Component {
   };
 
   render() {
+    const { agents } = this.props;
+
     return (
       <div className="sidebar-hover">
         <div className="dpw--popup-main">
@@ -114,9 +117,9 @@ export class ProjectForm extends React.Component {
                   <div part="title">
                     Agent <a href="#" onClick={this.onAssignSelf}>Assign to me</a>
                   </div>
-                  <CheckboxList options={[]}
-                                selected={this.state.agents}
-                                onChange={this.onChangeAgents} />
+                  <AgentsList agents={agents}
+                              selected={this.state.agents}
+                              onChange={this.onChangeAgents} />
                 </CollectionField>
 
                 <CollectionField title="Team">

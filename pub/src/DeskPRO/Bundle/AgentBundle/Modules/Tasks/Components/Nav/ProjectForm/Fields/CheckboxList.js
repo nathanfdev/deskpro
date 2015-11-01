@@ -5,7 +5,7 @@ export class CheckboxList extends React.Component {
 
   static propTypes = {
     selected: PropTypes.array,
-    options: PropTypes.array,
+    options: PropTypes.any,
     onChange: PropTypes.func.isRequired
   };
 
@@ -22,7 +22,7 @@ export class CheckboxList extends React.Component {
     onChange(selected);
   };
 
-  renderItem(label, value) {
+  renderItem({label, value}, index) {
     const { selected = [] } = this.props;
     const classNames = ['checkbox-button'];
     if (selected.indexOf(value) !== -1) {
@@ -30,7 +30,7 @@ export class CheckboxList extends React.Component {
     }
 
     return (
-      <li>
+      <li key={index}>
         <a className={classNames.join(' ')}
            onClick={this.onClick.bind(this, value)}>
 
@@ -45,8 +45,7 @@ export class CheckboxList extends React.Component {
     return (
       <Scrollable vertical>
         <ul>
-          {this.renderItem('Agent 1', 'val1')}
-          {this.renderItem('Agent 2', 'val2')}
+          {this.props.options.map((option, index) => this.renderItem(option, index))}
         </ul>
       </Scrollable>
     );
