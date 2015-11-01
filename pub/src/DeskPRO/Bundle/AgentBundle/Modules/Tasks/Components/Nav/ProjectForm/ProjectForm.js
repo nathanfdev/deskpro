@@ -25,10 +25,10 @@ export class ProjectForm extends React.Component {
 
     this.state = {
       title: '',
-      quick_filter: '',
-      filter_selected: false,
+      quickFilter: '',
+      showOnlySelected: false,
       agents: [],
-      agent_teams: [],
+      agentTeams: [],
       departments: []
     };
   }
@@ -41,13 +41,13 @@ export class ProjectForm extends React.Component {
 
   onChangeQuickFilter = value => {
     this.setState({
-      quick_filter: value
+      quickFilter: value
     });
   };
 
   onChangeFilterSelected = value => {
     this.setState({
-      filter_selected: value
+      showOnlySelected: value
     });
   };
 
@@ -66,7 +66,7 @@ export class ProjectForm extends React.Component {
   onUnassignAll = () => {
     this.setState({
       agents: [],
-      agent_teams: [],
+      agentTeams: [],
       departments: []
     });
   };
@@ -79,7 +79,7 @@ export class ProjectForm extends React.Component {
 
   onChangeAgentTeams = selected => {
     this.setState({
-      agent_teams: selected
+      agentTeams: selected
     });
   };
 
@@ -115,12 +115,12 @@ export class ProjectForm extends React.Component {
 
               <FieldGroup>
                 <FloatField align="left">
-                  <QuickFilter value={this.state.quick_filter}
+                  <QuickFilter value={this.state.quickFilter}
                                onChange={this.onChangeQuickFilter} />
                 </FloatField>
 
                 <FloatField align="right">
-                  <ShowOnlySelected value={this.state.filter_selected}
+                  <ShowOnlySelected value={this.state.showOnlySelected}
                                     onChange={this.onChangeFilterSelected} />
                   <Unassign onClick={this.onUnassignAll} />
                 </FloatField>
@@ -138,7 +138,7 @@ export class ProjectForm extends React.Component {
 
                 <CollectionField title="Team">
                   <AgentTeamsList values={agentTeams}
-                                  selected={this.state.agent_teams}
+                                  selected={this.state.agentTeams}
                                   onChange={this.onChangeAgentTeams} />
                 </CollectionField>
 
