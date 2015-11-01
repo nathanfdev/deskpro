@@ -7,7 +7,7 @@ import { Item } from './Item';
 
 // chats
 import * as actions from '../../Actions/chatsActions';
-import * as chatActions from '../../RecordStores/Actions/imChatsActions';
+import * as chatActions from '../../RecordStores/Actions/chatsActions';
 // import * as messagesActions from '../../Actions/messagesActions';
 import { recentChatsSelector, recentChatsStatusSelector } from '../../RecordStores/Selectors/chats';
 

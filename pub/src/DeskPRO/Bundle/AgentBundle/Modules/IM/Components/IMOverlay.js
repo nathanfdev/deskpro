@@ -4,7 +4,7 @@ import { TeamsList } from './Teams/TeamsList';
 import { DepartmentsList } from './Departments/DepartmentsList';
 import * as actions from '../Actions/chatsActions';
 
-export class Overlay extends React.Component {
+export class IMOverlay extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired
   };

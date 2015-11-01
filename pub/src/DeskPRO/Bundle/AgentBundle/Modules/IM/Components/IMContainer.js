@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import SimplePositioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Simple';
-import { Overlay } from './Overlay';
+import { IMOverlay } from './IMOverlay';
 import { Chat } from './ChatWindow/Chat';
 
 @connect(state => ({
@@ -27,7 +27,7 @@ export class IMContainer extends React.Component {
         positionTarget={document.getElementById('im-button')}
         isOpen={this.props.overlayShown}
         >
-        <Overlay dispatch={this.props.dispatch}/>
+        <IMOverlay dispatch={this.props.dispatch}/>
       </SimplePositioned>
     );
   };

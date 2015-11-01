@@ -1,7 +1,7 @@
 import { createAction } from 'Ampliflux';
 import * as IM from 'DeskPRO/Bundle/AgentBundle/Services/Api/IM';
 import { openChat } from './uiActions';
-import { releaseChats, setChatsRequest } from '../RecordStores/Actions/imChatsActions';
+import { releaseChats, setChatsRequest } from '../RecordStores/Actions/chatsActions';
 
 export const startChat = createAction(
   'IM_START_CHAT',
