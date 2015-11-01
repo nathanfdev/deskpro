@@ -32,7 +32,8 @@ import { myDepartmentsSelector, myDepartmentsStatusSelector } from 'DeskPRO/Bund
   departments: myDepartmentsSelector(state),
   recentChats: recentChatsSelector(state),
   current: state.IM.chats.get('current'),
-  bubbles: state.IM.messages.get('lastMessages'),
+  counts: state.IM.messages.get('counts'),
+  countsLoading: state.IM.messages.get('countsLoading'),
   teamsStatus: myAgentTeamsStatusSelector(state),
   agentsStatus: agentsStatusSelector(state),
   departmentsStatus: myDepartmentsStatusSelector(state),
@@ -48,6 +49,8 @@ export class List extends React.Component {
     departments: PropTypes.object.isRequired,
     recentChats: PropTypes.object.isRequired,
     current: PropTypes.object.isRequired,
+    counts: PropTypes.object.isRequired,
+    countsLoading: PropTypes.bool.isRequired,
     teamsStatus: PropTypes.object.isRequired,
     agentsStatus: PropTypes.object.isRequired,
     departmentsStatus: PropTypes.object.isRequired,
@@ -72,22 +75,12 @@ export class List extends React.Component {
     dispatch(loadMyDepartments());
   }
 
-  componentWillReceiveProps(newProps) {
-    if (!(newProps.bubbles instanceof Promise)) {
-      const oldState = this.state;
-      const newState = {...oldState};
-      newState.bubbles = newProps.bubbles;
-      this.setState(newState);
-    }
-    this.props = newProps;
-  }
-
   startChat = (id, type) => {
     this.props.dispatch(actions.startChat(id, type));
   };
 
   renderList = () => {
-    const { agents, teams, departments, recentChats, me, dispatch } = this.props;
+    const { agents, teams, departments, recentChats, me, dispatch, counts, loadingCounts } = this.props;
     const sortedChats = recentChats.sort((first, second) => {
       const fDate = Date.parse(first.get('date_last_message'));
       const sDate = Date.parse(second.get('date_last_message'));
@@ -102,7 +95,7 @@ export class List extends React.Component {
             <Item
               startChat={this.startChat}
               me={me}
-              bubbles={this.state.bubbles}
+              counts={loadingCounts ? {} : counts}
               key={index}
               chat={chat}
               teams={teams}
@@ -117,7 +110,7 @@ export class List extends React.Component {
   };
 
   renderLoading = () => {
-    return <span className="chat-avatar-loading"><Spinner width="20" height="20" assignClass="recent-spinner"/> Loading recent agents... </span>;
+    return <span className="chat-avatar-loading"><Spinner width="20" height="20" assignClass="recent-spinner"/> Loading recent chats... </span>;
   };
 
   render() {

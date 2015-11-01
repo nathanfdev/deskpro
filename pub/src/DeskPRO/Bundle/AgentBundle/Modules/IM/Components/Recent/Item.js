@@ -8,7 +8,7 @@ export class Item extends React.Component {
     departments: PropTypes.object.isRequired,
     me: PropTypes.object.isRequired,
     chat: PropTypes.object.isRequired,
-    bubbles: PropTypes.object.isRequired,
+    counts: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     startChat: PropTypes.func.isRequired
   };
@@ -22,7 +22,6 @@ export class Item extends React.Component {
         const agent = agents.get(notMe.get(0));
         entity = {
           avatar: this.renderPersonAvatar(agent),
-          bubble: this.renderBubble(chat),
           name: agent.get('name'),
           id: agent.get('id'),
           type: chat.get('chat_type'),
@@ -33,7 +32,6 @@ export class Item extends React.Component {
         const team = teams.get(chat.getIn(['agent_teams', 0]));
         entity = {
           avatar: this.renderTeamAvatar(team),
-          bubble: this.renderBubble(chat),
           name: team.get('name'),
           id: team.get('id'),
           type: chat.get('chat_type'),
@@ -44,7 +42,6 @@ export class Item extends React.Component {
         const department = departments.get(chat.getIn(['departments', 0]));
         entity = {
           avatar: this.renderDepartmentAvatar(department),
-          bubble: this.renderBubble(chat),
           name: department.get('title'),
           id: department.get('id'),
           type: chat.get('chat_type'),
@@ -54,7 +51,6 @@ export class Item extends React.Component {
       case 'everyone':
         entity = {
           avatar: this.renderEveryoneAvatar(),
-          bubble: this.renderBubble(chat),
           name: 'Everyone',
           id: chat.get('id'),
           type: chat.get('chat_type'),
@@ -64,6 +60,7 @@ export class Item extends React.Component {
       default:
         break;
     }
+    entity.count = this.renderCount(chat);
     return entity;
   };
 
@@ -91,8 +88,8 @@ export class Item extends React.Component {
     return <Avatar {...props} />;
   }
 
-  renderBubble(chat) {
-    const current = this.props.bubbles[chat.get('id')];
+  renderCount(chat) {
+    const current = this.props.counts[chat.get('id')];
     if (current && current.cnt > 0) {
       return (
         <span className="chat-bubble">
@@ -114,7 +111,7 @@ export class Item extends React.Component {
         onClick={this.props.startChat.bind(null, entity.id, entity.type)}
         className="chat-avatar">
         {entity.avatar}
-        {entity.bubble}
+        {entity.count}
       </a>
     );
   }

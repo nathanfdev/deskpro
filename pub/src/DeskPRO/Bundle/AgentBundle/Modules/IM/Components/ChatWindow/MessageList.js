@@ -13,6 +13,7 @@ import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Recor
   agents: agentsSelector(state),
   agentsStatus: agentsStatusSelector(state),
   messages: state.IM.messages,
+  loadingMessages: state.IM.messages.get('loadingMessages')
 }))
 export class MessageList extends React.Component {
 
@@ -26,19 +27,6 @@ export class MessageList extends React.Component {
     searchQuery: PropTypes.string.isRequired
   };
 
-  markNewMessages() {
-    const ids = [];
-    const messages = this.props.messages.getIn(['chatMessages', this.props.current.id]) || [];
-    messages.map((message) => {
-      if (message.status < 1 && message.person_id !== this.props.me.get('id')) {
-        ids.push(message.id);
-      }
-    });
-    if (ids.length > 0) {
-      this.props.dispatch(markMessages(ids));
-    }
-  }
-
   componentDidMount() {
     this.props.dispatch(loadAllAgents());
     this.refresh();
@@ -48,11 +36,6 @@ export class MessageList extends React.Component {
       interval: interval,
       countsInterval: countsInterval
     };
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.state.interval);
-    clearInterval(this.state.countsInterval);
   }
 
   componentWillReceiveProps(newProps) {
@@ -73,6 +56,24 @@ export class MessageList extends React.Component {
     }
   };
 
+  componentWillUnmount() {
+    clearInterval(this.state.interval);
+    clearInterval(this.state.countsInterval);
+  }
+
+  markNewMessages() {
+    const ids = [];
+    const messages = this.props.messages.getIn(['chatMessages', this.props.current.id]) || [];
+    messages.map((message) => {
+      if (message.status < 1 && message.person_id !== this.props.me.get('id')) {
+        ids.push(message.id);
+      }
+    });
+    if (ids.length > 0) {
+      this.props.dispatch(markMessages(ids));
+    }
+  }
+
   controls = () => {
     return <div className="chat-controls"><a href="#">Load old messages</a></div>;
   };
@@ -82,28 +83,32 @@ export class MessageList extends React.Component {
     this.markNewMessages();
   };
 
+  renderMessages() {
+    const messages = this.props.messages.getIn(['chatMessages', this.props.current.id]) || [];
+    return (
+      <div>
+        {this.controls()}
+        <ul ref="list" className="chat-message-list">
+          {
+            messages.map((message, index) => {
+              return (<Message
+                key={index}
+                message={message}
+                agents={this.props.agents}
+                me={this.props.me}/>);
+            })
+          }
+        </ul>
+      </div>
+    );
+  }
+
+  renderLoading() {
+    return <Spinner ref="list" width="40" height="40" />;
+  }
+
   render() {
     const loading = this.props.messages.loadingMessages;
-    if (!loading) {
-      const messages = this.props.messages.getIn(['chatMessages', this.props.current.id]) || [];
-      return (
-        <div>
-          {this.controls()}
-          <ul ref="list" className="chat-message-list">
-            {
-              messages.map((message, index) => {
-                return (<Message
-                  key={index}
-                  message={message}
-                  agents={this.props.agents}
-                  me={this.props.me}/>);
-              })
-            }
-          </ul>
-        </div>
-      );
-    } else {
-      return <Spinner ref="list" width="40" height="40" />;
-    }
+    return !loading ? this.renderMessages() : this.renderLoading();
   }
 }

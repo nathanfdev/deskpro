@@ -4,8 +4,9 @@ import { async } from 'Ampliflux/reducers/handlers';
 
 const initialState = {
   chatMessages: {},
-  lastMessages: {},
-  loadingMessages: true
+  loadingMessages: true,
+  counts: {},
+  countsLoading: true
 };
 export default createReducer(initialState, {
   [actions.loadMessages]: async(
@@ -24,7 +25,9 @@ export default createReducer(initialState, {
       return state.set(['chatMessages', payload.chat_id], messages);
     }
   }),
-  [actions.refreshCounts]: (state, payload) => {
-    return state.set('lastMessages', payload);
-  }
+  [actions.refreshCounts]: async({
+    success: (state, payload) => state.set('counts', payload),
+    begin: (state) => state.set('countsLoading', true),
+    done: (state) => state.set('countsLoading', false)
+  })
 });

@@ -58,7 +58,6 @@ export const refreshCounts = createAction(
           .success((response) => {
             const records = {};
             const ids = [];
-            console.log(response.data);
             Object.keys(response.data).map((key) => {
               const item = response.data[key];
               ids.push(parseInt(item.chat_id, 10));
