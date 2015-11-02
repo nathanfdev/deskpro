@@ -2,7 +2,7 @@
   {% if can_use_articles() %}
     <li>
       <a href="{{ path('portal_kb') }}">
-        <i class="fa fa-columns"></i>
+        <i class="fa fa-list-alt"></i>
         <span class="title">{{ phrase('portal.general.nav-kb') }}</span>
         <span class="subtitle">{{ phrase('portal.general.nav-kb-desc') }}</span>
       </a>
@@ -42,7 +42,7 @@
   {% if can_use_tickets() %}
     <li>
       <a href="{{ path('portal_new_ticket') }}">
-        <i class="fa fa-envelope"></i>
+        <i class="fa fa-envelope-o"></i>
         <span class="title">{{ phrase('portal.general.nav-newticket') }}</span>
         <span class="subtitle">{{ phrase('portal.general.nav-newticket-desc') }}</span>
       </a>
