@@ -111,6 +111,7 @@ h2 {
 
 [type="submit"], button {
   cursor: pointer;
+  font-family: $fonts;
 }
 
 header {
@@ -479,686 +480,6 @@ button, .button, input[type="submit"] {
 
   &.button-resolved {
     @include generate-background-and-border($button-color-secondary);
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Forms
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-input[type="text"], input[type="email"], input[type="password"], textarea, select {
-  margin-bottom: 10px;
-}
-
-input[type="text"], input[type="email"], input[type="password"], textarea {
-  @include placeholder {
-    color: $text-faded;
-    font-weight: 400;
-    font-style: italic;
-    font-size: $font-mid;
-  }
-
-  padding: $form-padding-vertical $form-padding-horizontal;
-  border: 0;
-  background: $form-input;
-  font-weight: 300;
-
-  &:focus {
-    outline: none;
-  }
-
-  &.email {
-    color: $button-color;
-    font-weight: 400;
-  }
-}
-
-textarea {
-  @include generate-background-and-border(#f8f8f8);
-  @include placeholder {
-    color: $text-faded;
-    font-style: italic;
-  }
-
-  min-height: 70px;
-  width: 100%;
-  outline: none;
-  border: 1px solid $text-faded;
-  font-size: 14px;
-}
-
-.user-logged-in {
-  position: relative;
-  display: block;
-  margin-bottom: 20px;
-  padding: $form-padding-vertical $form-padding-horizontal;
-  border: 1px dashed $divider-color;
-  border-radius: $border-radius-main;
-  background: $surface-secondary;
-  color: $text-color;
-  text-decoration: none;
-
-  i {
-    position: relative;
-    top: 1px;
-    margin-right: 4px;
-    color: $text-color-lighter;
-    font-size: 1.3em;
-  }
-
-  span {
-    color: $button-color;
-    font-weight: 500;
-  }
-
-  div {
-    position: absolute;
-    top: 7px;
-    right: 10px;
-    display: inline-block;
-    padding: $form-padding-vertical $form-padding-horizontal;
-    border-radius: 2px;
-    background: $text-color-lighter;
-    color: $grey;
-    font-size: 0.9em;
-    line-height: 1em;
-  }
-
-  @media screen and (max-width: 760px) {
-    text-align: center;
-
-    div {
-      position: relative;
-      top: 0;
-      left: 0;
-      display: block;
-      margin-top: 10px;
-    }
-
-    i {
-      display: block;
-    }
-  }
-}
-
-.new-ticket-attachements {
-  cursor: pointer;
-
-  .title {
-    margin-top: 10px;
-  }
-
-  ul {
-    @include blank-list;
-
-    margin-bottom: 20px;
-
-    li {
-      position: relative;
-      margin-left: 20px;
-      font-size: 0.9em;
-
-      &:before {
-        position: absolute;
-        top: 10px;
-        left: -13px;
-        width: 5px;
-        height: 5px;
-        border-radius: 199px;
-        background: $text-color-lighter;
-        content: " ";
-      }
-    }
-
-    a {
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .file-size {
-      margin-left: 3px;
-      font-size: 0.9em;
-      opacity: $text-opacue;
-    }
-  }
-}
-
-// Hide 'add attachments' submit button when js-capable
-.with-dpui .deskpro-form-widget.field_more_attachments {
-  display: none;
-}
-
-// Hide 'add attachments' submit button when js-capable
-.with-dpui #ticket_reply_more_attachments {
-  display: none;
-}
-
-.attach-file {
-  // Grab the same styles as the logged in user button
-  @extend .user-logged-in;
-
-  div {
-    // revert the "div" mods on .user-logged-in
-    position: initial;
-    padding: 0;
-    border: 0;
-    background: inherit;
-    color: inherit;
-    line-height: inherit;
-    font-size: inherit;
-  }
-
-  div.frame {
-    display: inline-block;
-    padding: 5px;
-    border-radius: 1px;
-    background: $text-color-lighter;
-    color: $grey;
-    font-size: 0.9em;
-    line-height: 1em;
-    margin-right: 5px;
-    text-align: center;
-    span {
-      color: #ffffff;
-      display: block;
-      white-space: nowrap;
-    }
-    .caption {
-      margin-top: 10px;
-      display: block;
-      clear: both;
-    }
-    img {
-      margin: auto;
-      margin-bottom: 10px;
-      text-align: center;
-      display: block;
-      clear: both;
-    }
-  }
-
-  div.previews {
-    display: block;
-  }
-
-  span {
-    color: $text-color-lighter;
-    font-weight: normal;
-    text-decoration: none;
-  }
-
-  color: $text-color;
-  text-decoration: none;
-  margin-bottom: 0;
-  cursor: pointer;
-}
-
-.attach-file-active {
-  @extend .attach-file;
-  border: 1px solid black;
-}
-
-.remove-attachement {
-  margin-left: 10px;
-  color: inherit;
-  font-size: 0.9em;
-  opacity: 0.3;
-
-  i {
-    margin-right: 3px;
-  }
-
-  &:hover {
-    opacity: 1;
-  }
-}
-
-.multiselect {
-  ul.first-level {
-    @include blank-list;
-
-    border: 1px solid $button-color;
-    border-radius: 2px;
-
-    a {
-      display: block;
-      padding: 5px 10px;
-      background: $form-input;
-      color: $text-color;
-      text-decoration: none;
-      // border-bottom: 1px solid #cecece;
-      font-weight: 300;
-
-      &:hover, &.active {
-        background: $button-color;
-        color: $button-text;
-      }
-    }
-
-    li {
-      position: relative;
-      i {
-        position: absolute;
-        top: 12px;
-        right: 15px;
-      }
-    }
-  }
-
-  ul.second-level {
-    @extend .first-level;
-
-    position: relative;
-    margin-top: 10px;
-    margin-left: 30px;
-
-    &:before {
-      position: absolute;
-      top: 0;
-      left: -20px;
-      display: block;
-      width: 10px;
-      height: 20px;
-      border: 1px dotted $text-color-lighter;
-      border-top: none;
-      border-right: none;
-      content: " ";
-    }
-  }
-
-  &.default {
-    ul.first-level {
-      border: 1px solid $form-border-color;
-
-      &:hover {
-        border: 1px solid $button-color;
-      }
-
-      a {
-        padding: $form-padding-vertical $form-padding-horizontal;
-        border-bottom: 1px solid $form-border-color;
-        border-radius: 2px;
-        background: #ffffff;
-        line-height: normal;
-
-        &:hover {
-          border-bottom: 1px solid $button-color;
-          background: $button-color;
-        }
-      }
-    }
-  }
-}
-
-.radio-button {
-  position: relative;
-  display: inline-block;
-  margin-top: 5px;
-  margin-right: 50px;
-  margin-bottom: 10px;
-  margin-left: 5px;
-
-  input[type="radio"] {
-    display: none;
-    border: 2px solid $button-color-secondary;
-
-    &:checked + label {
-      &:after {
-        position: absolute;
-        top: 7px;
-        left: 7px;
-        display: block;
-        float: left;
-        margin-right: 3px;
-        width: 7px;
-        height: 7px;
-        border: 1px solid $button-color-secondary;
-        border-radius: 16px;
-        background-color: $button-color-secondary;
-        content: "";
-      }
-    }
-  }
-
-  label {
-    cursor: pointer;
-
-    &:before {
-      display: block;
-      float: left;
-      margin-right: 8px;
-      width: 19px;
-      height: 19px;
-      border: 2px solid $button-color-secondary;
-      border-radius: 24px;
-      content: "";
-    }
-  }
-}
-
-.form-help {
-  position: relative;
-  top: -5px;
-  margin-bottom: 5px;
-  padding: 5px 0 5px 20px;
-  border-left: 1px solid $divider-color;
-
-  h1 {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 400;
-    font-size: 1em;
-  }
-
-  p {
-    font-size: 0.9em;
-  }
-}
-
-.form-meta {
-  position: relative;
-  top: 6px;
-  float: right;
-  font-style: italic;
-  font-size: 0.9em;
-  line-height: 1em;
-}
-
-.form-meta-grey {
-  font-style: normal;
-
-  a {
-    color: $text-color-lighter;
-    text-decoration: none;
-
-    &:hover {
-      color: $text-color;
-    }
-  }
-}
-
-.form-ticket {
-  header {
-    padding-left: 5px;
-
-    h1 {
-      font-weight: 300;
-      font-size: 1.4em;
-    }
-  }
-
-  button, .button {
-    min-width: 180px;
-  }
-
-  .title {
-    display: block;
-    margin-bottom: 7px;
-    padding-left: $form-padding-horizontal;
-    color: $text-color;
-    font-weight: darker;
-  }
-
-  .deskpro-choice-widget {
-    .title {
-      display: inline;
-      font-weight: lighter;
-      padding-left: 0;
-    }
-    padding-left: $form-padding-horizontal;
-  }
-
-  .ticket_user_email label {
-    display: inline;
-  }
-
-  .form-widget {
-    padding-left: $form-padding-horizontal;
-  }
-
-  .subtitle {
-    position: relative;
-    top: -5px;
-    display: block;
-    margin-bottom: 5px;
-    padding-left: 5px;
-    font-size: 0.9em;
-    line-height: 1em;
-  }
-
-  .bucket {
-    margin-bottom: 10px;
-    width: 100%;
-  }
-
-  input[type="text"], input[type="email"], input[type="password"], textarea {
-    width: 100%;
-    transition: all 0.30s ease-in-out;
-
-    &:hover {
-      cursor: pointer;
-    }
-
-    &:focus {
-      border: 1px solid $button-color;
-      background: #f0f0e8;
-    }
-    &.shorter {
-      width: 33%;
-    }
-    &.show-error {
-      border: 1px solid $red;
-      border-top-right-radius: 0;
-      background: #fff0ec;
-    }
-  }
-
-  input[type="text"], input[type="email"], input[type="password"], textarea {
-    border: 1px solid $form-border-color;
-    border-radius: 2px;
-    background: $form-input;
-
-    &.email-present {
-      border: 1px dashed $form-border-color;
-    }
-  }
-}
-
-.form-filter {
-  .bucket {
-    span {
-      display: inline;
-      margin-right: 3px;
-      font-size: 0.9em;
-    }
-  }
-
-  input[type="text"], input[type="email"], textarea {
-    border: 1px solid $form-border-color;
-    border-radius: 2px;
-    background: $page-background;
-  }
-}
-
-.error-large {
-  position: relative;
-  margin-bottom: 10px;
-  padding: $form-padding-vertical $form-padding-horizontal;
-  border-radius: 2px;
-  background: $red;
-  color: #ffffff;
-
-  &:before {
-    position: absolute;
-    top: -8px;
-    left: 40px;
-    display: block;
-    width: 0;
-    border: 4px solid rgba(0, 0, 0, 0);
-    border-bottom: 4px solid $red;
-    content: " ";
-  }
-}
-
-.remember-me {
-  display: inline-block;
-  margin-left: 10px;
-  vertical-align: top;
-  font-size: 0.9em;
-  line-height: 1em;
-
-  input {
-    margin-right: 2px;
-  }
-}
-
-// Cramped forms (in a dropdown, in the sidebar etc)
-.permanent-login {
-  position: relative;
-  top: -3px;
-  display: block;
-  font-size: 0.85em;
-  line-height: 1.5em;
-
-  label {
-    display: inline-block;
-    cursor: pointer;
-  }
-}
-
-.small-form {
-  margin: 0;
-
-  .button, button {
-    display: block;
-    margin-top: 10px;
-    margin-bottom: 5px;
-    width: 100%;
-    text-align: center;
-  }
-
-  .permanent-login {
-    margin-left: 5px;
-  }
-
-  hr {
-    height: 1px;
-    border: 0;
-    background: #e5e5e5;
-  }
-
-  .panel {
-    margin-left: 5px;
-  }
-
-  h1 {
-    font-size: 1.2em;
-  }
-
-  p {
-    line-height: 1.5em;
-  }
-
-  label {
-    position: relative;
-    display: block;
-
-    span {
-      display: block;
-      padding-left: 5px;
-    }
-  }
-
-  .secondary-action {
-    font-size: 0.85em;
-    a {
-      margin-left: 5px;
-      color: #333333;
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
-
-  input[type="text"], input[type="email"], input[type="password"], textarea {
-    width: 100%;
-    border: 1px solid $divider-color;
-    border-radius: 4px;
-  }
-}
-
-// Error handling
-form {
-  .error {
-    .message {
-      position: absolute;
-      right: 0;
-      bottom: 10px;
-      display: block;
-      padding-right: 4px;
-      padding-left: 4px;
-      background: $red;
-      color: #ffffff;
-      font-weight: 500;
-      font-size: 0.9em;
-      line-height: 1.5em;
-    }
-
-    input[type="text"], input[type="email"], input[type="password"] {
-      border: 1px solid $red;
-      border-top-right-radius: 0;
-      background: #fff0ec;
-    }
-  }
-}
-
-.dp-level-select {
-  display: block;
-
-  .select-wrap {
-    display: inline-block;
-    margin-bottom: 3px;
-    select {
-      margin: 0;
-    }
-  }
-
-  .level-indent {
-    display: inline-block;
-    margin-right: 3px;
-    vertical-align: middle;
-
-    i {
-      @include fa-icon();
-      @include fa-icon-rotate(90deg, 1);
-      &:before {
-        content: $fa-var-level-up;
-      }
-      width: 12px;
-      height: 12px;
-      text-align: center;
-      font-size: 120%;
-      color: #aaa;
-    }
-  }
-
-  > .level > .level-indent {
-    display: none;
-  }
-
-  .level > .level .level-indent {
-    display: inline-block;
-  }
-
-  .level > .level > .level-indent {
-    margin-left: 5px;
-  }
-  .level > .level > .level > .level-indent {
-    margin-left: 23px;
   }
 }
 
@@ -1725,8 +1046,7 @@ form {
         }
       }
       .language-dropdown {
-        display: none;
-
+        display: none; // this is displayed on hover, via css, above
         position: absolute;
         top: 45px;
         right: 0;
@@ -1789,9 +1109,6 @@ form {
     }
   }
 }
-
-
-
 
 .with-searchbox .top-bar {
   margin-bottom: 0;
@@ -1964,8 +1281,8 @@ $search-btn-height: $search-height - 24;
 
       .search-clear {
         position: absolute;
-        top: 12px;
-        right: 30px;
+        top: 17px;
+        right: 60px;
         color: #cecece;
         &:hover {
           color: #333;
@@ -2012,30 +1329,30 @@ $search-btn-height: $search-height - 24;
     }
 
     .search-result-collection-loading {
-     height: 60px;
-     background: url("#{$portal-img-path}/search-spinner.gif");
-     background-repeat: no-repeat;
-     background-position: center center;
-     border-bottom: 1px solid #d6d6d6;
+      height: 60px;
+      background: url("#{$portal-img-path}/search-spinner.gif");
+      background-repeat: no-repeat;
+      background-position: center center;
+      border-bottom: 1px solid #d6d6d6;
       &.inline-loading {
         border-bottom: 0px;
       }
     }
 
-     .search-result-collection-empty {
-     text-transform: uppercase;
-     font-size: 11px;
-     font-weight:bold;
-     text-align:center;
-     color:#a6a5a5;
-     border-bottom: 1px solid #d6d6d6;
+    .search-result-collection-empty {
+      text-transform: uppercase;
+      font-size: 11px;
+      font-weight: bold;
+      text-align: center;
+      color: #a6a5a5;
+      border-bottom: 1px solid #d6d6d6;
 
-       div {
-       margin: 10px;
-       border-radius: 2px;
-       background:#f4f4f4;
-       border: 1px solid #cfcfcf;
-       padding: 6px;
+      div {
+        margin: 10px;
+        border-radius: 2px;
+        background: #f4f4f4;
+        border: 1px solid #cfcfcf;
+        padding: 6px;
 
       }
     }
@@ -2262,6 +1579,22 @@ $search-btn-height: $search-height - 24;
       min-width: 231px;
       z-index: 3999;
 
+      .agent-avatar {
+        border: 2px solid #fff;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        margin-right: -8px;
+      }
+
+      .fa-map-marker {
+        position: relative;
+        top: 2px;
+      }
+
+      .flag {
+        vertical-align: middle;
+        margin-right: 2px;
+      }
+
       ul {
         margin: 0px;
         padding: 0px;
@@ -2344,7 +1677,7 @@ $search-btn-height: $search-height - 24;
           }
 
           p {
-            font-size: 0.9em;
+            font-size: 0.85em;
             margin: 0;
             padding: 0;
             margin-bottom: 5px;
@@ -2408,7 +1741,7 @@ $search-btn-height: $search-height - 24;
 
       .fa-caret-down {
         position: relative;
-        top: 18px;
+        top: 12px; // placehodler to figure out why this keeps changes // was 18px, is 12px
       }
     }
   }
@@ -2747,7 +2080,7 @@ header {
 }
 
 .active-button-dropdown {
-  display: none;
+  display: none; // by default this should be display: none;
   position: absolute;
   top: 55px;
   right: 0;
@@ -3178,92 +2511,371 @@ table {
   background-repeat: no-repeat;
 }
 
+.ticket-related-articles-completed {
+  background: #f9f9f9;
+  border: 1px solid #d6d6d6;
+  color: #575757;
+  margin: 10px 0px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+  padding-top: 20px;
+  text-align: center;
+
+  .footer {
+    @include clearfix();
+    padding: 5px;
+    border-top: 1px solid #d6d6d6;
+
+    > div {
+      float: left;
+      width: 60%;
+    }
+
+    > div + div {
+      width: 40%;
+      padding-left: 5px;
+    }
+  }
+
+  a {
+    border-radius: 2px;
+    padding: 11px 0px;
+    display: block;
+    line-height: 1.1em;
+    background: #3575bd;
+    border: 1px solid #3575bd;
+    color: #fff;
+    text-decoration: none;
+    text-align: center;
+    font-size: 12px;
+    &:hover {
+      background: #2969b0;
+    }
+    &.grey {
+      background: #fff;
+      border: 1px solid #d6d6d6;
+      color: #b1b1b1;
+      &:hover {
+        color: #333;
+      }
+    }
+  }
+
+  i {
+    display: inline-block;
+    font-size: 22px;
+    color: #dfdfdf;
+    margin-bottom: 10px;
+  }
+
+  h1, h2 {
+    font-weight: 400;
+    padding: 0;
+    margin: 0;
+    font-size: 18px;
+    color: #3d3d3d;
+  }
+
+  h2 {
+    font-size: 12px;
+    color: #9f9f9f;
+    margin-top: 3px;
+    margin-bottom: 12px;
+  }
+}
+
 .ticket-related-articles {
-  margin-top: 20px;
-  padding-bottom: 10px;
-  border: 1px solid $divider-color;
+  background: #f9f9f9;
+  border: 1px solid #d6d6d6;
+  color: #575757;
+  margin: 10px 0px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
 
   header {
+    border-bottom: 1px solid #d6d6d6;
     padding: 10px;
-    background: $button-color-secondary;
-    color: $page-background;
-    text-align: center;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
-
     h1 {
-      color: $page-background;
-      font-weight: 600;
-      font-size: 1.2em;
+      color: #3d3d3d;
     }
-
     h2 {
-      color: $page-background;
+      color: #9f9f9f;
     }
-  }
-
-  .container {
-    @include clearfix;
-  }
-
-  .bucket {
-    margin-top: 20px;
-    margin-bottom: 10px;
-    padding-right: 20px;
-    padding-bottom: 10px;
-    padding-left: 10px;
-
-    a:hover {
-      text-decoration: underline;
-    }
-  }
-
-  .button {
-    margin-left: 10px;
-    border: 0;
-    text-shadow: none;
-    font-weight: 400;
-  }
-
-  .button.positive {
-    background: $button-color-secondary;
-  }
-
-  .button.negative {
-    background: $grey;
-    color: $text-color;
   }
 
   ul {
-    @include blank-list;
+    margin: 0;
+    padding: 0;
+    display: block;
+    list-style: none;
+    line-height: 1.2em;
+  }
 
-    margin-left: 10px;
+  .file-icon {
+    position: relative;
+    top: -1px;
+    color: #8f8f8f;
+    text-align: center;
+    width: 20px;
+  }
 
-    li {
-      @include whitespace;
+  .expand-content {
+    position: absolute;
+    right: 15px;
+  }
 
-      margin-bottom: 5px;
-    }
+  li {
+    display: block;
+  }
+
+  li + li {
+    border-top: 1px solid #d6d6d6;
+  }
+
+  li.active,
+  li:hover {
+    background: #fff;
+    cursor: pointer;
+  }
+
+  li.related-list-meta {
+    text-align: right;
+    padding: 5px;
+  }
+
+  .related-articles-footer {
+    border-top: 1px solid #d6d6d6;
+    padding: 5px;
 
     a {
-      color: $link-color;
+      text-align: center;
       text-decoration: none;
-    }
-
-    p {
-      color: $text-color;
-      font-weight: 300;
-      font-size: 0.9em;
+      font-size: 12px;
+      display: block;
+      line-height: 1.1em;
+      padding: 10px;
+      border-radius: 2px;
+      background: #d5d5d5;
+      color: #5f5f5f;
+      &:hover {
+        background: #333;
+        color: #f9f9f9;
+      }
     }
 
     i {
-      float: left;
-      margin-top: 12px;
       margin-right: 5px;
-      margin-right: 10px;
-      color: $text-color-lighter;
-      font-size: 1.2em;
+      color: #9f9f9f;
+      position: relative;
+      top: -2px;
+    }
+  }
+
+  .related-article-link {
+    color: inherit;
+    display: block;
+    text-decoration: none;
+    padding: 9px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    position: relative;
+    &:hover {
+      color: #333;
+    }
+  }
+
+  .expanded-content {
+    margin-left: 25px;
+    padding: 0px 10px 10px 10px;
+    overflow: hidden;
+
+    &.hidden {
+      display: none;
+    }
+
+    p {
+      font-size: 12px;
+      line-height: 1.7em;
+      color: #737171;
+    }
+
+    p + p {
+      padding-top: 10px;
+    }
+
+    .show-more-content-container {
+      margin-top: 10px;
+    }
+  }
+
+  .expanded-content.intro {
+    padding-right: 5px;
+    padding-bottom: 5px;
+    .show-more-content-container {
+      text-align: right;
       opacity: 0.5;
     }
+  }
+}
+
+li.related-article-item.active .expanded-content.intro .show-more-content-container,
+li.related-article-item:hover .expanded-content.intro .show-more-content-container, {
+  opacity: 1;
+}
+
+.show-more-content-container {
+  text-align: center;
+  position: relative;
+
+  hr {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    height: 1px;
+    border: 0px;
+    padding: 0;
+    margin: 0;
+  }
+
+  .button-wrapper {
+    position: relative;
+    display: inline-block;
+    z-index: 199;
+    background: #fff;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+.show-more-content {
+  display: inline-block;
+  border: 1px solid #d8d8d8;
+  border-bottom: 2px solid #d8d8d8;
+  border-radius: 2px;
+  color: #a5a5a5;
+  font-size: 9px;
+  text-transform: uppercase;
+  font-weight: 700;
+  text-decoration: none;
+  line-height: 1em;
+  padding: 4px 10px;
+
+  &:hover {
+    border: 1px solid #3366ae;
+    border-bottom: 2px solid #3366ae;
+    background: #3366ae;
+    color: #fff;
+  }
+}
+
+.this-answered-my-question {
+  margin-top: 15px;
+  text-align: center;
+
+  .answer-no, .answer-yes {
+    display: inline-block;
+    text-decoration: none;
+    margin: 0px 15px;
+  }
+
+  .answer-no {
+    color: #5f5f5f;
+    .answer-icon {
+      background: #d5d5d5;
+      color: #9f9f9f;
+    }
+  }
+
+  .answer-icon {
+    display: block;
+    width: 25px;
+    height: 25px;
+    background: #3575bd;
+    color: #fff;
+    border-radius: 2px;
+    margin: 0 auto;
+    margin-bottom: 3px;
+    font-size: 11px;
+    transition: all 0.5s ease;
+    i {
+      position: relative;
+      top: 3px;
+    }
+  }
+
+  .answer-text {
+    transition: all 0.5s ease;
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .answer-no:hover {
+    .answer-icon {
+      background: #b9b4b4;
+    }
+    .answer-text {
+      color: #494646;
+    }
+  }
+
+  .answer-yes:hover {
+    .answer-icon {
+      background: #205187;
+    }
+    .answer-text {
+      color: #2d67a8;
+    }
+  }
+}
+
+.this-answered-my-question.inline {
+  display: block;
+  margin-top: 0;
+  position: absolute;
+  top: 5px;
+  right: -10px;
+
+  .answer-icon {
+    display: inline-block;
+    vertical-align: middle;
+    float: right;
+    margin-left: 5px;
+    background: #d3d3d3;
+  }
+
+  .answer-text {
+    color: #d3d3d3;
+    display: inline-block;
+    padding-top: 5px;
+  }
+
+  @media screen and (max-width: 760px) {
+    position: relative;
+    text-align: left;
+    display: block;
+    top: initial;
+    right: initial;
+    left: 0px;
+    top: 0px;
+    margin-bottom: 5px;
+    .answer-icon {
+      float: none;
+      margin-left: 0;
+      margin-right: 5px;
+      text-align: center;
+    }
+    .answer-yes {
+      margin-left: 5px;
+    }
+  }
+}
+
+.active .this-answered-my-question.inline, li.related-article-item:hover .this-answered-my-question.inline {
+  .answer-icon {
+    background: #3575bd;
+  }
+
+  .answer-text {
+    color: #3575bd;
   }
 }
 
@@ -4150,6 +3762,8 @@ ul.kb-checkbox-extra {
 .alerts {
   margin-top: 10px;
   font-weight: 400;
+  max-width: 1080px;
+  margin: 0 auto;
 
   a.all-tickets {
     padding-bottom: 1px;
@@ -4197,6 +3811,24 @@ ul.kb-checkbox-extra {
     top: 36%;
     right: 20px;
     color: $text-color-lighter;
+    cursor: pointer;
+
+    // hover didn't look so good, we should look into a hover bg change maybe?
+    //&:hover {
+    //  background: #e3dddd;
+    //  color: #333;
+    //}
+  }
+
+  .alert-button {
+    display: inline-block;
+    background: #3f79ba;
+    color: #fff;
+    line-height: 1.25em;
+    padding: 3px;
+    vertical-align: middle;
+    text-decoration: none;
+    border-radius: 2px;
   }
 }
 
@@ -4375,11 +4007,12 @@ ul.kb-checkbox-extra {
 //  }
 //}
 
-
 .deskpro-calendar-decoration-flat {
   display: inline-block;
+  float: left;
+  margin-right: 10px;
   position: relative;
-  width: 42px;
+  width: 44px;
   height: 37px;
   border: 1px solid #dcdcdc;
   border-radius: 2px;
@@ -4393,19 +4026,17 @@ ul.kb-checkbox-extra {
     color: #fff;
     position: absolute;
     text-transform: uppercase;
-    left: - 1 px;
-    top: - 1 px;
     width: 42px;
     height: 18px;
     text-align: center;
-    padding-top: 5px;
+    padding-top: 1px;
     border-top-left-radius: 2px;
     border-top-right-radius: 2px;
 
   }
   .dcdf-day {
     text-align: center;
-    padding-top: 21px;
+    padding-top: 18px;
     font-weight: 900;
     font-size: 10px;
     color: #cecece;
@@ -7196,15 +6827,19 @@ ul.big-button-collection {
   margin-bottom: 43px;
   line-height: 1em;
   z-index: 9999;
+  border-bottom: 3px solid #3d77b6;
+}
+
+body.with-agent-bar {
+  margin-top: 43px;
 }
 
 .deskpro-agent-top-bar {
   max-width: 1180px;
   margin: 0 auto;
-  height: 43px;
+  height: 40px;
   color: #fff;
-  border-bottom: 3px solid #3d77b6;
-  font-family: "Helvetica Neue", Helvetica, Arial, Sans-Serif;
+  // font-family: $fonts;
   font-size: 11px;
   font-weight: 500;
   a {
@@ -7263,8 +6898,8 @@ ul.big-button-collection {
   width: 250px;
   background: #444648;
   position: absolute;
-  left: 10px;
   top: 10px;
+  right: 10px;
 
   ul {
     display: block;
@@ -7372,4 +7007,1582 @@ ul.big-button-collection {
       left: 5px;
     }
   }
+}
+
+.map-box {
+  width: 100%;
+  height: 150px;
+  border-radius: 2px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 5px;
+
+  iframe {
+    width: 100%;
+    height: 150px;
+    border: 0px;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.italics {
+  font-style: italic;
+}
+
+// portal tabs
+.deskpro-portal-tabs {
+  color: #5a5a5a;
+  font-size: 12px;
+  margin-bottom: 15px;
+
+  ul {
+    display: block;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    height: 34px;
+
+    li {
+      display: block;
+      float: left;
+      height: 34px;
+      margin-left: -1px;
+      margin-right: -1px;
+      position: relative;
+      top: 1px;
+    }
+
+    a {
+      text-decoration: none;
+      color: #787878;
+      display: block;
+      padding-left: 10px;
+      padding-right: 10px;
+      padding-top: 10px;
+      height: 34px;
+      background: #f0f0f0;
+      border-bottom: 1px solid #dadada;
+      border-right: 1px solid #dadada;
+      border-left: 1px solid #dadada;
+      outline: 0;
+      transition: all 0.2s ease;
+      i {
+        color: #8d8d8d;
+      }
+      &:hover {
+        background: #e3dddd;
+        color: #333;
+      }
+    }
+
+    li.all a {
+      background: #dadada;
+    }
+    li.blank {
+      width: 20px;
+      border-bottom: 1px solid #dadada;
+    }
+
+    li.dpt-active-tab a {
+      background: #fff;
+      border-bottom: 1px solid #fff;
+      position: relative;
+
+      &:before {
+        content: "";
+        display: block;
+        position: absolute;
+        background: #3d75b4;
+        width: 100%;
+        height: 4px;
+        left: -1px;
+        top: 0px;
+      }
+      &:after {
+        // better than checking width with js
+        content: "";
+        display: block;
+        position: absolute;
+        background: #3d75b4;
+        width: 1px;
+        height: 4px;
+        right: 0px;
+        top: 0px;
+        z-index: 199;
+      }
+
+    }
+
+  }
+}
+
+.user-logged-in {
+  position: relative;
+  display: block;
+  margin-bottom: 20px;
+  padding: $form-padding-vertical $form-padding-horizontal;
+  border: 1px dashed $divider-color;
+  border-radius: $border-radius-main;
+  background: $surface-secondary;
+  color: $text-color;
+  text-decoration: none;
+
+  i {
+    position: relative;
+    top: 1px;
+    margin-right: 4px;
+    color: $text-color-lighter;
+    font-size: 1.3em;
+  }
+
+  span {
+    color: $button-color;
+    font-weight: 500;
+  }
+
+  div {
+    position: absolute;
+    top: 7px;
+    right: 10px;
+    display: inline-block;
+    padding: $form-padding-vertical $form-padding-horizontal;
+    border-radius: 2px;
+    background: $text-color-lighter;
+    color: $grey;
+    font-size: 0.9em;
+    line-height: 1em;
+  }
+
+  @media screen and (max-width: 760px) {
+    text-align: center;
+
+    div {
+      position: relative;
+      top: 0;
+      left: 0;
+      display: block;
+      margin-top: 10px;
+    }
+
+    i {
+      display: block;
+    }
+  }
+}
+
+.attach-file {
+  background: #ebf2f5;
+  border: 1px solid #dce4e7;
+  color: #818587;
+  padding: 5px;
+  font-size: 11.5px;
+  line-height: 1.2em;
+  display: inline-block;
+  transition: all 0.3s ease;
+  &:hover {
+    background: #e5ebed;
+    .fake-button {
+      background: #afbbc9;
+    }
+  }
+
+  i {
+    color: #c5cbce;
+    font-size: 14px;
+    margin-right: 7px;
+    margin-left: 7px;
+    position: relative;
+    top: 2px;
+  }
+
+  .text {
+    position: relative;
+    top: 1px;
+  }
+
+  .fake-button {
+    background: #b9c6d5;
+    color: #51575f;
+    padding: 7px 50px;
+    margin-left: 10px;
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+
+  div.frame {
+    display: inline-block;
+    padding: 5px;
+    border-radius: 1px;
+    background: $text-color-lighter;
+    color: $grey;
+    font-size: 0.9em;
+    line-height: 1em;
+    margin-right: 5px;
+    text-align: center;
+    span {
+      color: #ffffff;
+      display: block;
+      white-space: nowrap;
+    }
+    .caption {
+      margin-top: 10px;
+      display: block;
+      clear: both;
+    }
+    img {
+      margin: auto;
+      margin-bottom: 10px;
+      text-align: center;
+      display: block;
+      clear: both;
+    }
+  }
+
+  div.previews {
+    display: block;
+  }
+
+  span {
+    color: $text-color-lighter;
+    font-weight: normal;
+    text-decoration: none;
+  }
+
+  color: $text-color;
+  text-decoration: none;
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Forms
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+.new-ticket-attachements {
+  cursor: pointer;
+
+  .title {
+    margin-top: 10px;
+    margin-bottom: 0px;
+  }
+
+  ul {
+    @include blank-list;
+    margin-bottom: 20px;
+
+    li {
+      position: relative;
+      font-size: 0.9em;
+      padding-left: 10px;
+      i {
+        margin-right: 4px;
+      }
+    }
+
+    a {
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .file-size {
+      margin-left: 3px;
+      font-size: 0.9em;
+      opacity: $text-opacue;
+    }
+  }
+}
+
+// Hide 'add attachments' submit button when js-capable
+.with-dpui .deskpro-form-widget.field_more_attachments {
+  display: none;
+}
+
+// Hide 'add attachments' submit button when js-capable
+.with-dpui #ticket_reply_more_attachments {
+  display: none;
+}
+
+.attach-file-active {
+  @extend .attach-file;
+  border: 1px solid black;
+}
+
+.remove-attachement {
+  margin-left: 10px;
+  color: inherit;
+  font-size: 0.9em;
+  opacity: 0.3;
+
+  i {
+    margin-right: 3px;
+  }
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.radio-button {
+  position: relative;
+  display: inline-block;
+  margin-top: 5px;
+  margin-right: 50px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+
+  input[type="radio"] {
+    display: none;
+    border: 2px solid $button-color;
+
+    &:checked + label {
+      &:after {
+        position: absolute;
+        top: 6px;
+        left: 16px;
+        display: block;
+        float: left;
+        margin-right: 3px;
+        width: 7px;
+        height: 7px;
+        border: 1px solid $button-color;
+        border-radius: 16px;
+        background-color: $button-color;
+        content: "";
+      }
+    }
+  }
+
+  label {
+    cursor: pointer;
+
+    &:before {
+      display: block;
+      float: left;
+      margin-right: 8px;
+      width: 19px;
+      height: 19px;
+      border: 2px solid $button-color;
+      border-radius: 24px;
+      content: "";
+    }
+  }
+}
+
+.form-help {
+  position: relative;
+  top: -5px;
+  margin-bottom: 5px;
+  padding: 5px 0 5px 20px;
+  border-left: 1px solid $divider-color;
+
+  h1 {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 400;
+    font-size: 1em;
+  }
+
+  p {
+    font-size: 0.9em;
+  }
+}
+
+.form-meta {
+  position: relative;
+  top: 6px;
+  float: right;
+  font-style: italic;
+  font-size: 0.9em;
+  line-height: 1em;
+}
+
+.form-meta-grey {
+  font-style: normal;
+
+  a {
+    color: $text-color-lighter;
+    text-decoration: none;
+
+    &:hover {
+      color: $text-color;
+    }
+  }
+}
+
+.multiselect {
+  position: relative;
+  margin-bottom: 10px;
+
+  .default {
+    border: 1px solid $form-border-color;
+    cursor: pointer;
+    width: 100%;
+    display: block;
+    padding: $form-padding-vertical $form-padding-horizontal;
+    background: #ffffff;
+    line-height: normal;
+    position: relative;
+
+    &:hover {
+      color: $button-text;
+      border: 1px solid $button-color;
+      background: $button-color;
+    }
+
+    i[class^='fa-caret'], i[class*=' fa-caret'] {
+      position: absolute;
+      top: 11px;
+      right: 15px;
+    }
+  }
+
+  &.level-1 {
+
+    display: block;
+    width: 100%;
+    border: 1px solid $button-color;
+
+    ul {
+      @include blank-list;
+      position: absolute;
+      left: 0;
+      z-index: 599;
+      display: block;
+      width: 100%;
+      border: 1px solid $button-color;
+      max-height: 300px;
+      overflow-y: auto;
+
+      a {
+        display: block;
+        width: 100%;
+        padding: 5px $universal-left-padding;
+        background: $form-input;
+        color: $text-color;
+        text-decoration: none;
+
+        &:hover, &.active {
+          background: $button-color;
+          color: $button-text;
+
+          .checkbox {
+            background: rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: #fff;
+          }
+        }
+      }
+
+      li {
+        position: relative;
+      }
+    }
+  }
+
+  &.level-2 {
+    @extend .level-1;
+    margin-top: 10px;
+    margin-left: 30px;
+
+    &:before {
+      position: absolute;
+      top: 0;
+      left: -20px;
+      display: block;
+      width: 10px;
+      height: 20px;
+      border: 1px dotted $text-color-lighter;
+      border-top: none;
+      border-right: none;
+      content: " ";
+    }
+  }
+
+  &.level-3 {
+    @extend .level-1;
+    @extend .level-2;
+    margin-left: 60px;
+  }
+
+  &.level-4 {
+    @extend .level-1;
+    @extend .level-2;
+    margin-left: 90px;
+  }
+
+  &.level-5 {
+    @extend .level-1;
+    @extend .level-2;
+    margin-left: 120px;
+  }
+
+  &.level-6 {
+    @extend .level-1;
+    @extend .level-2;
+    margin-left: 120px;
+  }
+
+  &.level-7 {
+    @extend .level-1;
+    @extend .level-2;
+    margin-left: 120px;
+  }
+
+  &.level-8 {
+    @extend .level-1;
+    @extend .level-2;
+    margin-left: 120px;
+  }
+
+  &.level-9 {
+    @extend .level-1;
+    @extend .level-2;
+    margin-left: 120px;
+  }
+
+  &.level-10 {
+    @extend .level-1;
+    @extend .level-2;
+    margin-left: 120px;
+  }
+}
+
+.form-item-valid {
+  color: #93d06e;
+  i {
+    margin-left: 5px;
+  }
+}
+
+input[type="text"], input[type="email"], input[type="password"], textarea, select, .multiselect {
+  max-width: 620px;
+}
+
+input[type="text"], input[type="email"], input[type="password"], textarea, select {
+  margin-bottom: 10px;
+  font-size: $font-mid;
+  font-weight: 400;
+  width: 100%;
+  transition: all 0.30s ease-in-out;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.multiselect {
+  font-size: $font-mid;
+  font-weight: 400;
+}
+
+input[type="text"], input[type="email"], input[type="password"], textarea {
+  border: 1px solid $form-border-color;
+  border-radius: 2px;
+  background: $form-input;
+  padding: $form-padding-vertical $form-padding-horizontal;
+
+  @include placeholder {
+    color: $text-faded;
+    font-weight: 400;
+    font-style: italic;
+    font-family: $fonts;
+    font-size: $font-mid;
+  }
+
+  &:focus {
+    outline: none;
+    border: 1px solid $button-color;
+    background: #fff;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  &.email {
+    color: $button-color;
+    font-weight: 400;
+  }
+
+  &.shorter {
+    width: 33%;
+  }
+
+  &.show-error {
+    border: 1px solid $red;
+    border-top-right-radius: 0;
+    background: #fff0ec;
+  }
+
+  &.email-present {
+    border: 1px dashed $form-border-color;
+  }
+}
+
+textarea {
+  min-height: 70px;
+}
+
+button, .button {
+  min-width: 180px;
+}
+
+form {
+  .title {
+    display: block;
+    margin-bottom: 7px;
+    padding-left: $universal-left-padding;
+    color: $text-color;
+    font-weight: darker;
+  }
+
+  .subtitle {
+    position: relative;
+    top: -5px;
+    display: block;
+    margin-bottom: 5px;
+    padding-left: $form-padding-horizontal;
+    font-size: 0.9em;
+    line-height: 1em;
+  }
+}
+
+.checkbox-container {
+  display: inline-block;
+  min-width: 120px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.checkbox {
+  background: #f0f0f0;
+  border: 1px solid #c7c7c7;
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  line-height: 1.1em;
+  border-radius: 2px;
+  vertical-align: middle;
+  text-align: center;
+  margin-top: -4px;
+  margin-right: 2px;
+  color: #333;
+  cursor: pointer;
+
+  i {
+    line-height: 1.1em;
+    font-size: 9px;
+    opacity: 0;
+    position: relative;
+    top: 3px;
+    color: inherit;
+  }
+
+  &:hover i {
+    opacity: 0.2;
+  }
+
+  &.checked {
+    background: #3575bd;
+    border: 1px solid #3575bd;
+    color: #fff;
+    i {
+      opacity: 1;
+    }
+  }
+}
+
+.form-ticket {
+  header {
+    // padding-left: 5px;
+    h1 {
+      font-weight: 300;
+      font-size: 1.3em;
+    }
+  }
+
+  .deskpro-choice-widget {
+    padding-left: $form-padding-horizontal;
+    .title {
+      display: inline;
+      font-weight: lighter;
+      padding-left: 0;
+    }
+  }
+
+  .ticket_user_email label {
+    display: inline;
+  }
+  .form-widget {
+    padding-left: $form-padding-horizontal;
+  }
+
+  .bucket {
+    margin-bottom: 10px;
+    width: 100%;
+  }
+}
+
+.form-filter {
+  .bucket {
+    span {
+      display: inline;
+      margin-right: 3px;
+      font-size: 0.9em;
+    }
+  }
+
+  input[type="text"], input[type="email"], textarea {
+    border: 1px solid $form-border-color;
+    border-radius: 2px;
+    background: $page-background;
+  }
+}
+
+.form-error-list {
+  background: #fff0ec;
+  border: 2px solid $red;
+  border-radius: 2px;
+  color: #333;
+  font-size: 12px;
+  padding: 1em 1.5em;
+  line-height: 1.2em;
+
+  h1 {
+    font-weight: 400;
+    font-size: 15px;
+  }
+
+  ul {
+    display: block;
+    list-style: none;
+    padding: 0;
+    margin: 15px 0px 0px 0px;
+    padding-bottom: 1px;
+    margin-bottom: 1px;
+  }
+
+  li {
+    padding: 0;
+    margin: 0;
+    padding-bottom: 1px;
+    margin-bottom: 1px;
+  }
+
+  li + li {
+    a {
+      margin-top: 10px;
+    }
+
+  }
+
+  strong {
+    color: #dc7575;
+  }
+
+  a {
+    display: block;
+    padding: 0;
+    margin: 0;
+    text-decoration: none;
+    color: inherit;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.remember-me {
+  display: inline-block;
+  margin-left: 10px;
+  vertical-align: top;
+  font-size: 0.9em;
+  line-height: 1em;
+
+  input {
+    margin-right: 2px;
+  }
+}
+
+.small-form {
+  // Login dropdown form
+  margin: 0;
+
+  .button, button {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: 100%;
+    text-align: center;
+  }
+
+  hr {
+    height: 1px;
+    border: 0;
+    background: #e5e5e5;
+  }
+
+  .panel {
+    margin-left: 5px;
+  }
+  h1 {
+    font-size: 1.2em;
+  }
+  p {
+    line-height: 1.5em;
+  }
+
+  label {
+    position: relative;
+    display: block;
+
+    span {
+      display: block;
+      padding-left: 5px;
+    }
+  }
+
+  .secondary-action {
+    // Password reminder
+    font-size: 0.85em;
+    a {
+      margin-left: 5px;
+      color: #333333;
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  input[type="checkbox"] {
+    margin: 0px;
+    margin-right: 4px;
+  }
+}
+
+// Cramped forms (in a dropdown, in the sidebar etc)
+.permanent-login {
+  position: relative;
+  top: -3px;
+  display: inline-block;
+  font-size: 0.85em;
+  line-height: 1.3em;
+
+  label, span, label span {
+    display: inline-block;
+    cursor: pointer;
+  }
+
+}
+
+// Error handling
+form {
+  .error-large {
+    position: absolute;
+    margin-bottom: 10px;
+    padding: $form-padding-vertical $form-padding-horizontal;
+    border-radius: 2px;
+    background: $red;
+    color: #ffffff;
+    width: 100%;
+    max-width: 620px;
+    z-index: 199;
+
+    &:before {
+      position: absolute;
+      top: -8px;
+      left: 40px;
+      display: block;
+      width: 0;
+      border: 4px solid rgba(0, 0, 0, 0);
+      border-bottom: 4px solid $red;
+      content: " ";
+    }
+    &.solo {
+      // If there's no margin on the parent element
+      margin-top: 10px;
+    }
+  }
+
+  .error {
+    .message {
+      position: absolute;
+      right: 0;
+      bottom: 10px;
+      display: block;
+      padding-right: 4px;
+      padding-left: 4px;
+      background: $red;
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 0.9em;
+      line-height: 1.5em;
+    }
+
+    input[type="text"], input[type="email"], input[type="password"] {
+      border: 1px solid $red;
+      background: #fff0ec;
+    }
+  }
+}
+
+.dp-level-select {
+  display: block;
+
+  .select-wrap {
+    display: inline-block;
+    margin-bottom: 3px;
+    select {
+      margin: 0;
+    }
+  }
+
+  .level-indent {
+    display: inline-block;
+    margin-right: 3px;
+    vertical-align: middle;
+
+    i {
+      @include fa-icon();
+      @include fa-icon-rotate(90deg, 1);
+      &:before {
+        content: $fa-var-level-up;
+      }
+      width: 12px;
+      height: 12px;
+      text-align: center;
+      font-size: 120%;
+      color: #aaa;
+    }
+  }
+
+  > .level > .level-indent {
+    display: none;
+  }
+
+  .level > .level .level-indent {
+    display: inline-block;
+  }
+
+  .level > .level > .level-indent {
+    margin-left: 5px;
+  }
+  .level > .level > .level > .level-indent {
+    margin-left: 23px;
+  }
+}
+
+.dp-react-widget {
+  display: inline;
+}
+
+.xdsoft_datetimepicker {
+  box-shadow: 0 5px 15px -5px rgba(0, 0, 0, 0.506);
+  background: #fff;
+  border-bottom: 1px solid #bbb;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+  color: #333;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  padding: 8px;
+  padding-left: 0;
+  padding-top: 2px;
+  position: absolute;
+  z-index: 9999;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  display: none;
+}
+
+.xdsoft_datetimepicker.xdsoft_rtl {
+  padding: 8px 0 8px 8px;
+}
+
+.xdsoft_datetimepicker iframe {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 75px;
+  height: 210px;
+  background: transparent;
+  border: none;
+}
+
+/*For IE8 or lower*/
+.xdsoft_datetimepicker button {
+  border: none !important;
+}
+
+.xdsoft_noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+.xdsoft_noselect::selection {
+  background: transparent
+}
+
+.xdsoft_noselect::-moz-selection {
+  background: transparent
+}
+
+.xdsoft_datetimepicker.xdsoft_inline {
+  display: inline-block;
+  position: static;
+  box-shadow: none;
+}
+
+.xdsoft_datetimepicker * {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+.xdsoft_datetimepicker .xdsoft_datepicker, .xdsoft_datetimepicker .xdsoft_timepicker {
+  display: none;
+}
+
+.xdsoft_datetimepicker .xdsoft_datepicker.active, .xdsoft_datetimepicker .xdsoft_timepicker.active {
+  display: block;
+}
+
+.xdsoft_datetimepicker .xdsoft_datepicker {
+  width: 224px;
+  float: left;
+  margin-left: 8px;
+}
+
+.xdsoft_datetimepicker.xdsoft_rtl .xdsoft_datepicker {
+  float: right;
+  margin-right: 8px;
+  margin-left: 0;
+}
+
+.xdsoft_datetimepicker.xdsoft_showweeks .xdsoft_datepicker {
+  width: 256px;
+}
+
+.xdsoft_datetimepicker .xdsoft_timepicker {
+  width: 58px;
+  float: left;
+  text-align: center;
+  margin-left: 8px;
+  margin-top: 0;
+}
+
+.xdsoft_datetimepicker.xdsoft_rtl .xdsoft_timepicker {
+  float: right;
+  margin-right: 8px;
+  margin-left: 0;
+}
+
+.xdsoft_datetimepicker .xdsoft_datepicker.active + .xdsoft_timepicker {
+  margin-top: 8px;
+  margin-bottom: 3px
+}
+
+.xdsoft_datetimepicker .xdsoft_mounthpicker {
+  position: relative;
+  text-align: center;
+}
+
+.xdsoft_datetimepicker .xdsoft_label i,
+.xdsoft_datetimepicker .xdsoft_prev,
+.xdsoft_datetimepicker .xdsoft_next,
+.xdsoft_datetimepicker .xdsoft_today_button {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAeCAYAAADaW7vzAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6Q0NBRjI1NjM0M0UwMTFFNDk4NkFGMzJFQkQzQjEwRUIiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6Q0NBRjI1NjQ0M0UwMTFFNDk4NkFGMzJFQkQzQjEwRUIiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpDQ0FGMjU2MTQzRTAxMUU0OTg2QUYzMkVCRDNCMTBFQiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpDQ0FGMjU2MjQzRTAxMUU0OTg2QUYzMkVCRDNCMTBFQiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PoNEP54AAAIOSURBVHja7Jq9TsMwEMcxrZD4WpBYeKUCe+kTMCACHZh4BFfHO/AAIHZGFhYkBBsSEqxsLCAgXKhbXYOTxh9pfJVP+qutnZ5s/5Lz2Y5I03QhWji2GIcgAokWgfCxNvcOCCGKqiSqhUp0laHOne05vdEyGMfkdxJDVjgwDlEQgYQBgx+ULJaWSXXS6r/ER5FBVR8VfGftTKcITNs+a1XpcFoExREIDF14AVIFxgQUS+h520cdud6wNkC0UBw6BCO/HoCYwBhD8QCkQ/x1mwDyD4plh4D6DDV0TAGyo4HcawLIBBSLDkHeH0Mg2yVP3l4TQMZQDDsEOl/MgHQqhMNuE0D+oBh0CIr8MAKyazBH9WyBuKxDWgbXfjNf32TZ1KWm/Ap1oSk/R53UtQ5xTh3LUlMmT8gt6g51Q9p+SobxgJQ/qmsfZhWywGFSl0yBjCLJCMgXail3b7+rumdVJ2YRss4cN+r6qAHDkPWjPjdJCF4n9RmAD/V9A/Wp4NQassDjwlB6XBiCxcJQWmZZb8THFilfy/lfrTvLghq2TqTHrRMTKNJ0sIhdo15RT+RpyWwFdY96UZ/LdQKBGjcXpcc1AlSFEfLmouD+1knuxBDUVrvOBmoOC/rEcN7OQxKVeJTCiAdUzUJhA2Oez9QTkp72OTVcxDcXY8iKNkxGAJXmJCOQwOa6dhyXsOa6XwEGAKdeb5ET3rQdAAAAAElFTkSuQmCC);
+}
+
+.xdsoft_datetimepicker .xdsoft_label i {
+  opacity: 0.5;
+  background-position: -92px -19px;
+  display: inline-block;
+  width: 9px;
+  height: 20px;
+  vertical-align: middle;
+}
+
+.xdsoft_datetimepicker .xdsoft_prev {
+  float: left;
+  background-position: -20px 0;
+}
+
+.xdsoft_datetimepicker .xdsoft_today_button {
+  float: left;
+  background-position: -70px 0;
+  margin-left: 5px;
+}
+
+.xdsoft_datetimepicker .xdsoft_next {
+  float: right;
+  background-position: 0 0;
+}
+
+.xdsoft_datetimepicker .xdsoft_next,
+.xdsoft_datetimepicker .xdsoft_prev,
+.xdsoft_datetimepicker .xdsoft_today_button {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: 0 none;
+  cursor: pointer;
+  display: block;
+  height: 30px;
+  opacity: 0.5;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+  outline: medium none;
+  overflow: hidden;
+  padding: 0;
+  position: relative;
+  text-indent: 100%;
+  white-space: nowrap;
+  width: 20px;
+  min-width: 0;
+}
+
+.xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_prev,
+.xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_next {
+  float: none;
+  background-position: -40px -15px;
+  height: 15px;
+  width: 30px;
+  display: block;
+  margin-left: 14px;
+  margin-top: 7px;
+}
+
+.xdsoft_datetimepicker.xdsoft_rtl .xdsoft_timepicker .xdsoft_prev,
+.xdsoft_datetimepicker.xdsoft_rtl .xdsoft_timepicker .xdsoft_next {
+  float: none;
+  margin-left: 0;
+  margin-right: 14px;
+}
+
+.xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_prev {
+  background-position: -40px 0;
+  margin-bottom: 7px;
+  margin-top: 0;
+}
+
+.xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_time_box {
+  height: 151px;
+  overflow: hidden;
+  border-bottom: 1px solid #ddd;
+}
+
+.xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_time_box > div > div {
+  background: #f5f5f5;
+  border-top: 1px solid #ddd;
+  color: #666;
+  font-size: 12px;
+  text-align: center;
+  border-collapse: collapse;
+  cursor: pointer;
+  border-bottom-width: 0;
+  height: 25px;
+  line-height: 25px;
+}
+
+.xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_time_box > div > div:first-child {
+  border-top-width: 0;
+}
+
+.xdsoft_datetimepicker .xdsoft_today_button:hover,
+.xdsoft_datetimepicker .xdsoft_next:hover,
+.xdsoft_datetimepicker .xdsoft_prev:hover {
+  opacity: 1;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+}
+
+.xdsoft_datetimepicker .xdsoft_label {
+  display: inline;
+  position: relative;
+  z-index: 9999;
+  margin: 0;
+  padding: 5px 3px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: bold;
+  background-color: #fff;
+  float: left;
+  width: 182px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.xdsoft_datetimepicker .xdsoft_label:hover > span {
+  text-decoration: underline;
+}
+
+.xdsoft_datetimepicker .xdsoft_label:hover i {
+  opacity: 1.0;
+}
+
+.xdsoft_datetimepicker .xdsoft_label > .xdsoft_select {
+  border: 1px solid #ccc;
+  position: absolute;
+  right: 0;
+  top: 30px;
+  z-index: 101;
+  display: none;
+  background: #fff;
+  max-height: 160px;
+  overflow-y: hidden;
+}
+
+.xdsoft_datetimepicker .xdsoft_label > .xdsoft_select.xdsoft_monthselect {
+  right: -7px
+}
+
+.xdsoft_datetimepicker .xdsoft_label > .xdsoft_select.xdsoft_yearselect {
+  right: 2px
+}
+
+.xdsoft_datetimepicker .xdsoft_label > .xdsoft_select > div > .xdsoft_option:hover {
+  color: #fff;
+  background: #ff8000;
+}
+
+.xdsoft_datetimepicker .xdsoft_label > .xdsoft_select > div > .xdsoft_option {
+  padding: 2px 10px 2px 5px;
+  text-decoration: none !important;
+}
+
+.xdsoft_datetimepicker .xdsoft_label > .xdsoft_select > div > .xdsoft_option.xdsoft_current {
+  background: #33aaff;
+  box-shadow: #178fe5 0 1px 3px 0 inset;
+  color: #fff;
+  font-weight: 700;
+}
+
+.xdsoft_datetimepicker .xdsoft_month {
+  width: 100px;
+  text-align: right;
+}
+
+.xdsoft_datetimepicker .xdsoft_calendar {
+  clear: both;
+}
+
+.xdsoft_datetimepicker .xdsoft_year {
+  width: 48px;
+  margin-left: 5px;
+}
+
+.xdsoft_datetimepicker .xdsoft_calendar table {
+  border-collapse: collapse;
+  width: 100%;
+
+}
+
+.xdsoft_datetimepicker .xdsoft_calendar td > div {
+  padding-right: 5px;
+}
+
+.xdsoft_datetimepicker .xdsoft_calendar th {
+  height: 25px;
+}
+
+.xdsoft_datetimepicker .xdsoft_calendar td, .xdsoft_datetimepicker .xdsoft_calendar th {
+  width: 14.2857142%;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  color: #666;
+  font-size: 12px;
+  text-align: right;
+  vertical-align: middle;
+  padding: 0;
+  border-collapse: collapse;
+  cursor: pointer;
+  height: 25px;
+}
+
+.xdsoft_datetimepicker.xdsoft_showweeks .xdsoft_calendar td, .xdsoft_datetimepicker.xdsoft_showweeks .xdsoft_calendar th {
+  width: 12.5%;
+}
+
+.xdsoft_datetimepicker .xdsoft_calendar th {
+  background: #f1f1f1;
+}
+
+.xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_today {
+  color: #33aaff;
+}
+
+.xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_highlighted_default {
+  background: #ffe9d2;
+  box-shadow: #ffb871 0 1px 4px 0 inset;
+  color: #000;
+}
+
+.xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_highlighted_mint {
+  background: #c1ffc9;
+  box-shadow: #00dd1c 0 1px 4px 0 inset;
+  color: #000;
+}
+
+.xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_default,
+.xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_current,
+.xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_time_box > div > div.xdsoft_current {
+  background: #33aaff;
+  box-shadow: #178fe5 0 1px 3px 0 inset;
+  color: #fff;
+  font-weight: 700;
+}
+
+.xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_other_month,
+.xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_disabled,
+.xdsoft_datetimepicker .xdsoft_time_box > div > div.xdsoft_disabled {
+  opacity: 0.5;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+  cursor: default;
+}
+
+.xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_other_month.xdsoft_disabled {
+  opacity: 0.2;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
+}
+
+.xdsoft_datetimepicker .xdsoft_calendar td:hover,
+.xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_time_box > div > div:hover {
+  color: #fff !important;
+  background: #ff8000 !important;
+  box-shadow: none !important;
+}
+
+.xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_current.xdsoft_disabled:hover,
+.xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_time_box > div > div.xdsoft_current.xdsoft_disabled:hover {
+  background: #33aaff !important;
+  box-shadow: #178fe5 0 1px 3px 0 inset !important;
+  color: #fff !important;
+}
+
+.xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_disabled:hover,
+.xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_time_box > div > div.xdsoft_disabled:hover {
+  color: inherit !important;
+  background: inherit !important;
+  box-shadow: inherit !important;
+}
+
+.xdsoft_datetimepicker .xdsoft_calendar th {
+  font-weight: 700;
+  text-align: center;
+  color: #999;
+  cursor: default;
+}
+
+.xdsoft_datetimepicker .xdsoft_copyright {
+  color: #ccc !important;
+  font-size: 10px;
+  clear: both;
+  float: none;
+  margin-left: 8px;
+}
+
+.xdsoft_datetimepicker .xdsoft_copyright a {
+  color: #eee !important
+}
+
+.xdsoft_datetimepicker .xdsoft_copyright a:hover {
+  color: #aaa !important
+}
+
+.xdsoft_time_box {
+  position: relative;
+  border: 1px solid #ccc;
+}
+
+.xdsoft_scrollbar > .xdsoft_scroller {
+  background: #ccc !important;
+  height: 20px;
+  border-radius: 3px;
+}
+
+.xdsoft_scrollbar {
+  position: absolute;
+  width: 7px;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  cursor: pointer;
+}
+
+.xdsoft_datetimepicker.xdsoft_rtl .xdsoft_scrollbar {
+  left: 0;
+  right: auto;
+}
+
+.xdsoft_scroller_box {
+  position: relative;
+}
+
+.xdsoft_datetimepicker.xdsoft_dark {
+  box-shadow: 0 5px 15px -5px rgba(255, 255, 255, 0.506);
+  background: #000;
+  border-bottom: 1px solid #444;
+  border-left: 1px solid #333;
+  border-right: 1px solid #333;
+  border-top: 1px solid #333;
+  color: #ccc;
+}
+
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_timepicker .xdsoft_time_box {
+  border-bottom: 1px solid #222;
+}
+
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_timepicker .xdsoft_time_box > div > div {
+  background: #0a0a0a;
+  border-top: 1px solid #222;
+  color: #999;
+}
+
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_label {
+  background-color: #000;
+}
+
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_label > .xdsoft_select {
+  border: 1px solid #333;
+  background: #000;
+}
+
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_label > .xdsoft_select > div > .xdsoft_option:hover {
+  color: #000;
+  background: #007fff;
+}
+
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_label > .xdsoft_select > div > .xdsoft_option.xdsoft_current {
+  background: #cc5500;
+  box-shadow: #b03e00 0 1px 3px 0 inset;
+  color: #000;
+}
+
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_label i,
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_prev,
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_next,
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_today_button {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAeCAYAAADaW7vzAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6QUExQUUzOTA0M0UyMTFFNDlBM0FFQTJENTExRDVBODYiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6QUExQUUzOTE0M0UyMTFFNDlBM0FFQTJENTExRDVBODYiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpBQTFBRTM4RTQzRTIxMUU0OUEzQUVBMkQ1MTFENUE4NiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpBQTFBRTM4RjQzRTIxMUU0OUEzQUVBMkQ1MTFENUE4NiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pp0VxGEAAAIASURBVHja7JrNSgMxEMebtgh+3MSLr1T1Xn2CHoSKB08+QmR8Bx9A8e7RixdB9CKCoNdexIugxFlJa7rNZneTbLIpM/CnNLsdMvNjM8l0mRCiQ9Ye61IKCAgZAUnH+mU3MMZaHYChBnJUDzWOFZdVfc5+ZFLbrWDeXPwbxIqrLLfaeS0hEBVGIRQCEiZoHQwtlGSByCCdYBl8g8egTTAWoKQMRBRBcZxYlhzhKegqMOageErsCHVkk3hXIFooDgHB1KkHIHVgzKB4ADJQ/A1jAFmAYhkQqA5TOBtocrKrgXwQA8gcFIuAIO8sQSA7hidvPwaQGZSaAYHOUWJABhWWw2EMIH9QagQERU4SArJXo0ZZL18uvaxejXt/Em8xjVBXmvFr1KVm/AJ10tRe2XnraNqaJvKE3KHuUbfK1E+VHB0q40/y3sdQSxY4FHWeKJCunP8UyDdqJZenT3ntVV5jIYCAh20vT7ioP8tpf6E2lfEMwERe+whV1MHjwZB7PBiCxcGQWwKZKD62lfGNnP/1poFAA60T7rF1UgcKd2id3KDeUS+oLWV8DfWAepOfq00CgQabi9zjcgJVYVD7PVzQUAUGAQkbNJTBICDhgwYTjDYD6XeW08ZKh+A4pYkzenOxXUbvZcWz7E8ykRMnIHGX1XPl+1m2vPYpL+2qdb8CDAARlKFEz/ZVkAAAAABJRU5ErkJggg==);
+}
+
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_calendar td,
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_calendar th {
+  background: #0a0a0a;
+  border: 1px solid #222;
+  color: #999;
+}
+
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_calendar th {
+  background: #0e0e0e;
+}
+
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_calendar td.xdsoft_today {
+  color: #cc5500;
+}
+
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_calendar td.xdsoft_highlighted_default {
+  background: #ffe9d2;
+  box-shadow: #ffb871 0 1px 4px 0 inset;
+  color: #000;
+}
+
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_calendar td.xdsoft_highlighted_mint {
+  background: #c1ffc9;
+  box-shadow: #00dd1c 0 1px 4px 0 inset;
+  color: #000;
+}
+
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_calendar td.xdsoft_default,
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_calendar td.xdsoft_current,
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_timepicker .xdsoft_time_box > div > div.xdsoft_current {
+  background: #cc5500;
+  box-shadow: #b03e00 0 1px 3px 0 inset;
+  color: #000;
+}
+
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_calendar td:hover,
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_timepicker .xdsoft_time_box > div > div:hover {
+  color: #000 !important;
+  background: #007fff !important;
+}
+
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_calendar th {
+  color: #666;
+}
+
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_copyright {
+  color: #333 !important
+}
+
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_copyright a {
+  color: #111 !important
+}
+
+.xdsoft_datetimepicker.xdsoft_dark .xdsoft_copyright a:hover {
+  color: #555 !important
+}
+
+.xdsoft_dark .xdsoft_time_box {
+  border: 1px solid #333;
+}
+
+.xdsoft_dark .xdsoft_scrollbar > .xdsoft_scroller {
+  background: #333 !important;
+}
+
+.xdsoft_datetimepicker .xdsoft_save_selected {
+  display: block;
+  border: 1px solid #dddddd !important;
+  margin-top: 5px;
+  width: 100%;
+  color: #454551;
+  font-size: 13px;
+}
+
+.xdsoft_datetimepicker .blue-gradient-button {
+  font-family: "museo-sans", "Book Antiqua", sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  color: #82878c;
+  height: 28px;
+  position: relative;
+  padding: 4px 17px 4px 33px;
+  border: 1px solid #d7d8da;
+  background: -moz-linear-gradient(top, #fff 0%, #f4f8fa 73%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fff), color-stop(73%, #f4f8fa));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #fff 0%, #f4f8fa 73%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #fff 0%, #f4f8fa 73%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #fff 0%, #f4f8fa 73%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, #fff 0%, #f4f8fa 73%);
+  /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff', endColorstr='#f4f8fa', GradientType=0);
+  /* IE6-9 */
+}
+
+.xdsoft_datetimepicker .blue-gradient-button:hover, .xdsoft_datetimepicker .blue-gradient-button:focus, .xdsoft_datetimepicker .blue-gradient-button:hover span, .xdsoft_datetimepicker .blue-gradient-button:focus span {
+  color: #454551;
+  background: -moz-linear-gradient(top, #f4f8fa 0%, #FFF 73%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f4f8fa), color-stop(73%, #FFF));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #f4f8fa 0%, #FFF 73%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #f4f8fa 0%, #FFF 73%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #f4f8fa 0%, #FFF 73%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, #f4f8fa 0%, #FFF 73%);
+  /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f4f8fa', endColorstr='#FFF', GradientType=0);
+  /* IE6-9 */
 }

@@ -33,8 +33,14 @@ namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 
+/**
+ * Class CustomDefTicketTransformer.
+ */
 class CustomDefTicketTransformer extends AbstractDataSerializerTransformer
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
         return [
@@ -56,6 +62,9 @@ class CustomDefTicketTransformer extends AbstractDataSerializerTransformer
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
         /** @var \DeskPRO\Bundle\AppBundle\Entity\Task $data */

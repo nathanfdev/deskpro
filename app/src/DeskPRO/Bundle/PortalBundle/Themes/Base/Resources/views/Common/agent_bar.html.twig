@@ -12,7 +12,7 @@ if impersonation is OFF "user" is the agent
 if impersonation is OFF "impersonator" is the agent
 #}
 {% if is_agent or is_admin %}
-<div class="deskpro-agent-top-bar-wrapper">
+<div class="deskpro-agent-top-bar-wrapper" id="agent-bar">
 
     <div class="deskpro-agent-top-bar">
         <div class="datb-user-impersonator" style="display: none;">
@@ -33,7 +33,7 @@ if impersonation is OFF "impersonator" is the agent
 
         <div class="datb-interface-switcher">
             <span>{{ phrase('portal.general.switch_interface') }}:</span>
-            <a href="{{ path('agent') }}">
+            <a href="{{ path('agent') }}" id="agent-dropdown-arrow" class="clickaway-dropdown" data-clickaway-target="agent-bar-agent-dropdown">
                 <i class="fa fa-users"></i>
                 <span class="datb-button-content">
                     <span class="datb-interface-button-title">{{ phrase('portal.general.agent') }}</span>
@@ -43,45 +43,51 @@ if impersonation is OFF "impersonator" is the agent
                 <span class="datb-button-dropdown">
                     <i class="fa fa-caret-down"></i>
                 </span>
-
-                <div class="datb-dropdown-content" style="display: none;">
-                    <ul>
-                        <li>
-                            <a href="#">
-                                <i class="fa fa-angle-double-right"></i>
-                                {{ phrase('portal.general.agent_bar_agent_home') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fa fa-angle-double-right"></i>
-                                {{ phrase('portal.general.agent_bar_agent_kb') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fa fa-angle-double-right"></i>
-                                {{ phrase('portal.general.agent_bar_agent_news') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fa fa-angle-double-right"></i>
-                                {{ phrase('portal.general.agent_bar_agent_dl') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fa fa-angle-double-right"></i>
-                                {{ phrase('portal.general.agent_bar_agent_feedback') }}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
             </a>
 
+            <div id="agent-bar-agent-dropdown" class="datb-dropdown-content" style="display: none;">
+                <ul>
+                    <li>
+                        <a href="/old-agent">
+                            <i class="fa fa-angle-double-right"></i>
+                            TEMPORARY: Old Agent
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('agent') }}">
+                            <i class="fa fa-angle-double-right"></i>
+                            {{ phrase('portal.general.agent_bar_agent_home') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('agent') }}">
+                            <i class="fa fa-angle-double-right"></i>
+                            {{ phrase('portal.general.agent_bar_agent_kb') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('agent') }}">
+                            <i class="fa fa-angle-double-right"></i>
+                            {{ phrase('portal.general.agent_bar_agent_news') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('agent') }}">
+                            <i class="fa fa-angle-double-right"></i>
+                            {{ phrase('portal.general.agent_bar_agent_dl') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('agent') }}">
+                            <i class="fa fa-angle-double-right"></i>
+                            {{ phrase('portal.general.agent_bar_agent_feedback') }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
             {% if is_admin %}
-            <a href="{{ path('admin') }}">
+            <a href="{{ path('admin') }}" id="admin-dropdown-arrow" class="clickaway-dropdown" data-clickaway-target="agent-bar-admin-dropdown">
                 <i class="fa fa-columns"></i>
                 <span class="datb-button-content">
                     <span class="datb-interface-button-title">{{ phrase('portal.general.admin') }}</span>
@@ -92,47 +98,54 @@ if impersonation is OFF "impersonator" is the agent
                     <i class="fa fa-caret-down"></i>
                 </span>
 
-                <div class="datb-dropdown-content" style="display: none;">
+
+            </a>
+                <div id="agent-bar-admin-dropdown" class="datb-dropdown-content" style="display: none;">
                     <ul>
                         <li>
-                            <a href="#">
+                            <a href="{{ path('admin') }}">
+                                <i class="fa fa-angle-double-right"></i>
+                                {{ phrase('portal.general.admin_home') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ path('admin') }}">
                                 <i class="fa fa-angle-double-right"></i>
                                 {{ phrase('portal.general.agent_bar_admin_portal') }}
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="{{ path('admin') }}#/setup/languages/default">
                                 <i class="fa fa-angle-double-right"></i>
                                 {{ phrase('portal.general.agent_bar_admin_lang') }}
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="{{ path('admin') }}">
                                 <i class="fa fa-angle-double-right"></i>
                                 {{ phrase('portal.general.agent_bar_admin_kb') }}
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="{{ path('admin') }}">
                                 <i class="fa fa-angle-double-right"></i>
                                 {{ phrase('portal.general.agent_bar_admin_news') }}
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="{{ path('admin') }}">
                                 <i class="fa fa-angle-double-right"></i>
                                 {{ phrase('portal.general.agent_bar_admin_dl') }}
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="{{ path('admin') }}">
                                 <i class="fa fa-angle-double-right"></i>
                                 {{ phrase('portal.general.agent_bar_admin_feedback') }}
                             </a>
                         </li>
                     </ul>
                 </div>
-            </a>
             {% endif %}
 
             {# DISABLED "EDIT" BUTTON - this will be a feature #}

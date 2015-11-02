@@ -35,6 +35,7 @@ use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
@@ -55,6 +56,10 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
         if ($token instanceof AgentImpersonateToken) {
             $request->getSession()->set('auth_person_id', $token->getAgent()->getId());
 
+            if ($request->isXmlHttpRequest()) {
+                return $this->getResponseForAjax('/');
+            }
+
             return $this->httpUtils->createRedirectResponse($request, '/');
         }
 
@@ -73,13 +78,35 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
 
         // if we should be auto submitting, send to auto submit controller (this was a login intercept)
         if ($this->container->get('form_saver')->getAutoSubmitSavedForm()) {
+            $saved_form_url = $this->container->get('router')->generate('saved_form_auto_submit');
+
+            if ($request->isXmlHttpRequest()) {
+                return $this->getResponseForAjax($saved_form_url);
+            }
+
             return $this->httpUtils->createRedirectResponse(
                 $request,
-                $this->container->get('router')->generate('saved_form_auto_submit')
+                $saved_form_url
             );
         }
 
-        return $this->httpUtils->createRedirectResponse($request, $this->determineTargetUrl($request));
+        $redirect_url = $this->determineTargetUrl($request);
+
+        if ($request->isXmlHttpRequest()) {
+            return $this->getResponseForAjax($redirect_url);
+        }
+
+        return $this->httpUtils->createRedirectResponse($request, $redirect_url);
+    }
+
+    protected function getResponseForAjax($redirect)
+    {
+        return new JsonResponse(
+            [
+                'success'  => true,
+                'redirect' => $redirect,
+            ]
+        );
     }
 
     /**

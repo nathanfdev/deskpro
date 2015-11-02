@@ -87,7 +87,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
          * auto-start a session for that user
          */
         if (!$this->settings->get('core.setup_initial')) {
-            $persons = $this->em->getRepository('DeskPRO:Person')->findBy(array(), array(), 2);
+            $persons = $this->em->getRepository('DeskPRO:Person')->findBy(array('is_agent' => true, 'can_admin' => true), array(), 1);
 
             if (count($persons) === 1) {
                 /** @var Person $person */

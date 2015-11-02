@@ -20,7 +20,7 @@
             <a href="{{ path('portal_new_ticket') }}" class="clickaway-dropdown"
                data-clickaway-target="top-contactus-dropdown">
                <span class="button select-action">
-                 <i class="fa fa-comments"></i>
+                 <i class="fa fa-support"></i>
                  {{ phrase('portal.general.nav-newticket') }}
                  <span class="select-action-dropdown">
                   <i class="fa fa-caret-down"></i>
@@ -32,7 +32,7 @@
                 <ul>
                     <li>
                         <a href="{{ path('portal_new_ticket') }}">
-                            <i class="fa fa-comments"></i>
+                            <i class="fa fa-envelope-o"></i>
 
                             <h1>{{ phrase('portal.general.get-in-touch') }}</h1>
 
@@ -41,7 +41,7 @@
                     </li>
                     <li>
                         <a href={{ path('portal_feedback') }}>
-                            <i class="fa fa-list-alt"></i>
+                            <i class="fa fa-thumbs-o-up"></i>
 
                             <h1>{{ phrase('portal.general.submit-feedback') }}</h1>
 
@@ -50,12 +50,36 @@
                     </li>
                     <li>
                         <a href="#">
-                            <i class="fa fa-comment"></i>
-
+                            <i class="fa fa-comments-o"></i>
                             <h1>{{ phrase('portal.general.start-chat') }}</h1>
-
-                            <p><span class="online-disc"></span> 3 Agents Available</p>
+                            <p>
+                                <span class="online-disc"></span>
+                                3 Agents Available
+                                <span class="agent-avatar agent-avatar-mini"
+                                      style="background: url(https://secure.gravatar.com/avatar/79cfcfdf770db09a40fca15bb845fef1?&amp;s=36) no-repeat; background-size: cover;"></span>
+                                <span class="agent-avatar agent-avatar-mini"
+                                      style="background: url(https://secure.gravatar.com/avatar/79cfcfdf770db09a40fca15bb845fef1?&amp;s=36) no-repeat; background-size: cover;"></span>
+                                <span class="agent-avatar agent-avatar-mini"
+                                      style="background: url(https://secure.gravatar.com/avatar/79cfcfdf770db09a40fca15bb845fef1?&amp;s=36) no-repeat; background-size: cover;"></span>
+                            </p>
                         </a>
+                    </li>
+                    <li>
+                        <div class="info">
+                            <h1>DeskPRO Ltd</h1>
+
+                            <p>
+                                Innovation Warehouse,
+                                1 East Poultry Avenue
+                                London, EC1A 9PT, United Kingdom
+                            </p>
+
+                            <div class="map-box">
+                                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d19687.41859983101!2d-0.10533072063514232!3d51.525281728248466!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2suk!4v1445937510715"
+                                        frameborder="0" style="border:0" allowfullscreen></iframe>
+                            </div>
+                            <p><a href="https://www.google.ca/maps/place/Innovation+Warehouse/@51.519127,-0.1049968,17z/data=!3m1!4b1!4m2!3m1!1s0x48761b524aaded3d:0x4ac9278806f5288c?hl=en"><i class="fa fa-map-marker"></i>Find us on the map</a></p>
+                        </div>
                     </li>
                 </ul>
             </div>

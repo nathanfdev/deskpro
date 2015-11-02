@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\AgentChat;
 
 use Application\DeskPRO\Entity\Person;
@@ -150,9 +149,9 @@ class History
         /** @var AgentChatParticipantRepository $repo */
         $repo = $this->em->getRepository('App:AgentChatParticipant');
         $ids  = $repo->findChatsIds($person, $departments_ids);
-        /* @var AgentChatRepository $repo */
+        /* @var AgentChatRepository $chatRepo */
         $chatRepo = $this->em->getRepository('App:AgentChat');
-        $chats    = $chatRepo->findBy(array('id' => $ids), $order);
+        $chats    = $chatRepo->findAllChats($ids, $order);
 
         return $chats;
     }

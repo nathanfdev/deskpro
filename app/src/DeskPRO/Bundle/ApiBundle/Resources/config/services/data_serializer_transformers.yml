@@ -30,6 +30,12 @@ services:
       class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\PersonTransformer
       arguments:
         - @avatar_resolver
+        - @data.agent
+
+    data_serializer.transformer.person_profile:
+      class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\PersonProfileTransformer
+      arguments:
+        - @avatar_resolver
 
     data_serializer.transformer.agent_team:
       class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\AgentTeamTransformer

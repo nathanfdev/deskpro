@@ -541,7 +541,16 @@ class TicketType extends AbstractType
             'property_path'     => sprintf('getCustomDataCollection[%s]', $field->getFieldId()),
             'agent_interface'   => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
             'label'             => $field_def->getTitle(),
+            'required'          => $field_def->isRequired(),
         );
+
+        if (in_array($field_def->getHandlerClass(), [
+            'Application\DeskPRO\CustomFields\Handler\Hidden',
+            'Application\DeskPRO\CustomFields\Handler\Display',
+            'Application\DeskPRO\CustomFields\Handler\Toggle',
+        ])) {
+            $options['label'] = false;
+        }
 
         if ($ignore_validation) {
             $options                      = $this->markNoValidation($form_context, $options);

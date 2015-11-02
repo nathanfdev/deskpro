@@ -236,10 +236,11 @@ class TermEngineDb extends AbstractDbSet
      */
     protected function addBaseBrand($em)
     {
+        // data.php actually does this now, so we don't need it atm
         // we need a brand
-        $brand = new Brand();
-        $em->persist($brand);
-        $em->flush();
+        //$brand = new Brand();
+        //$em->persist($brand);
+        //$em->flush();
     }
 
     /**

@@ -2,8 +2,6 @@ import _ from "lodash";
 import React from "react";
 import ReactDOM from "react-dom"
 import PageWidget from "DeskPRO/Component/PageWidget/PageWidget";
-import DpLevelSelect from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpLevelSelect";
-import DpDropzone from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpDropzone";
 import NewTicketSuggestions from "DeskPRO/Bundle/PortalBundle/React/NewTicketSuggestions";
 import DynamicForm from "DeskPRO/Bundle/AppBundle/Form/DynamicForm.js";
 
@@ -51,11 +49,6 @@ class TicketValueReader {
 //######################################################################################################################
 
 export default class NewTicketForm extends PageWidget {
-  init() {
-    this.addWidgetDef(DpLevelSelect, "select[dp-select]");
-    this.addWidgetDef(DpDropzone, ".new-ticket-attachements-interactive");
-  }
-
   renderWidget() {
     let $formEl       = this.$element.find('.dp_ticket_form');
     let formName     = $formEl.find('form').attr('name');

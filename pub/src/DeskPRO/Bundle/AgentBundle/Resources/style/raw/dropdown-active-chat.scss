@@ -177,8 +177,12 @@
     i:first-child {
       text-shadow: -2px 0 #e1e6eb, 0 2px #e1e6eb, 2px 0 #e1e6eb, 0 -2px #e1e6eb;
       position: relative;
-      left: 3px;
       z-index: 99;
+    }
+
+    i:nth-child(2) {
+      position: relative;
+      left: -5px;
     }
   }
 

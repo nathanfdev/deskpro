@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
@@ -86,7 +85,7 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var string
-     * @ORM\Column(type="string", nullable=false)
+     * @ORM\Column(type="text", nullable=false)
      * @Assert\NotNull()
      */
     protected $message;

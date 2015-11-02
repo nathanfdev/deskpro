@@ -35,6 +35,9 @@ use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 use Doctrine\ORM\EntityManager;
 
+/**
+ * Class TicketTransformer.
+ */
 class TicketTransformer extends AbstractDataSerializerTransformer
 {
     /**
@@ -52,6 +55,9 @@ class TicketTransformer extends AbstractDataSerializerTransformer
         $this->em = $em;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
         return [
@@ -71,7 +77,6 @@ class TicketTransformer extends AbstractDataSerializerTransformer
             'agent_team',
             'organization',
             'linked_chat',
-            'custom_data',
             'labels',
             // 'sent_to_address',
             'email_account',
@@ -109,11 +114,13 @@ class TicketTransformer extends AbstractDataSerializerTransformer
             'count_user_replies',
             'worst_sla_status',
             'waiting_times',
-            'participants',
             'ticket_slas',
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
         /** @var \Application\DeskPRO\Entity\Ticket $ticket */
@@ -155,6 +162,24 @@ class TicketTransformer extends AbstractDataSerializerTransformer
             $props['person_email'] = null;
         }
 
+        $custom_data = [];
+        foreach ($ticket->getCustomData() as $custom) {
+            $custom_data[$custom->getId()] = $custom->getData();
+        }
+        $props['fields']       = $custom_data;
+        $props['participants'] = $this->selectIds($ticket->getUserParticipants());
+        $props['followers']    = $this->selectIds($ticket->getAgentParticipants());
+
         return $props;
+    }
+
+    private function selectIds($collection)
+    {
+        $ids = [];
+        foreach ($collection as $element) {
+            $ids[] = $element->getId();
+        }
+
+        return array_values(array_unique($ids));
     }
 }

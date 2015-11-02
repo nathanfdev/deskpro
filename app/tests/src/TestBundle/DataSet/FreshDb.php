@@ -31,7 +31,6 @@
  */
 namespace DpTestSrc\TestBundle\DataSet;
 
-use Application\DeskPRO\Entity\Brand;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 
@@ -83,11 +82,6 @@ class FreshDb extends AbstractDbSet
             false,
             false
         );
-
-        // we need a brand
-        $brand = new Brand();
-        $em->persist($brand);
-        $em->flush();
 
         $this->getDb()->insert('permissions', array('person_id' => $admin->id, 'name' => 'admin.use', 'value' => 1));
 

@@ -317,13 +317,6 @@ class Connection extends \Doctrine\DBAL\Connection
      */
     public function batchInsert($table, array $multiple_values, $ignore = false)
     {
-        $cols       = null;
-        $cols_count = 0;
-        $params     = array();
-
-        $value_parts = array();
-        $value_tpl   = '';
-
         if (!$multiple_values) {
             throw new \InvalidArgumentException('No values');
         }
@@ -332,37 +325,54 @@ class Connection extends \Doctrine\DBAL\Connection
         # Validate values and build params
         #------------------------------
 
-        foreach ($multiple_values as $vals) {
-            if ($cols === null) {
-                foreach (array_keys($vals) as $k) {
-                    $cols[] = $k;
+        $res                     = null;
+        $multiple_values_batches = array_chunk($multiple_values, 200, false);
+        foreach ($multiple_values_batches as $multiple_values) {
+            $cols       = null;
+            $cols_count = 0;
+            $params     = array();
+
+            $value_parts = array();
+            $value_tpl   = '';
+
+            foreach ($multiple_values as $vals) {
+                if ($cols === null) {
+                    foreach (array_keys($vals) as $k) {
+                        $cols[] = $k;
+                    }
+                    $cols_count = count($cols);
+                    $value_tpl  = '('.implode(',', array_fill(0, $cols_count, '?')).')';
                 }
-                $cols_count = count($cols);
-                $value_tpl  = '('.implode(',', array_fill(0, $cols_count, '?')).')';
-            }
 
-            if (count($vals) != $cols_count) {
-                throw new \InvalidArgumentException('A value row has more columns than it should');
-            }
-
-            foreach ($cols as $c) {
-                if (!array_key_exists($c, $vals)) {
-                    throw new \InvalidArgumentException("A value row is missing the `$c` column");
+                if (count($vals) != $cols_count) {
+                    throw new \InvalidArgumentException('A value row has more columns than it should');
                 }
 
-                $params[] = $vals[$c];
+                foreach ($cols as $c) {
+                    if (!array_key_exists($c, $vals)) {
+                        throw new \InvalidArgumentException("A value row is missing the `$c` column");
+                    }
+
+                    $params[] = $vals[$c];
+                }
+
+                $value_parts[] = $value_tpl;
             }
 
-            $value_parts[] = $value_tpl;
+            #------------------------------
+            # Build sql
+            #------------------------------
+
+            $sql = 'INSERT '.($ignore ? 'IGNORE' : '')." INTO `$table` (`".implode('`,`', $cols).'`) VALUES '.implode(',', $value_parts);
+
+            $res = $this->executeUpdate($sql, $params);
         }
 
-        #------------------------------
-        # Build sql
-        #------------------------------
+        if ($res === null) {
+            throw new \InvalidArgumentException('No values');
+        }
 
-        $sql = 'INSERT '.($ignore ? 'IGNORE' : '')." INTO `$table` (`".implode('`,`', $cols).'`) VALUES '.implode(',', $value_parts);
-
-        return $this->executeUpdate($sql, $params);
+        return $res;
     }
 
     /**

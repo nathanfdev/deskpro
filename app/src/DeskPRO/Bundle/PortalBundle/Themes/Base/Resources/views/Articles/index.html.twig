@@ -7,11 +7,10 @@
 
   <header class="section-header padded">
       <h1 style="padding-bottom: 10px;">{{ phrase('portal.articles.section-title') }}</h1>
-
       <div class="header-buttons">
         {% show rss_link %}
       </div>
+      <p>{{ phrase('portal.articles.section-desc') }}</p>
   </header>
-  <p>{{ phrase('portal.articles.section-desc') }}</p>
   {% show section kb with { articles_options: { count: 5 } } %}
 {% endblock inner_content %}

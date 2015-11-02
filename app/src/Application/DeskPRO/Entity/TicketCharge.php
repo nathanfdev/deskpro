@@ -231,7 +231,7 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Render a custom field.
      *
-     * @depreciated
+     * @deprecated
      */
     public function renderCustomField($field_id, $context = 'html')
     {

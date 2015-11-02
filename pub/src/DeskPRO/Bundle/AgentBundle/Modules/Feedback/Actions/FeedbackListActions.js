@@ -8,6 +8,7 @@ import { loadFeedbackCommentsCounter } from 'DeskPRO/Bundle/AgentBundle/Modules/
 import { loadFeedbackStatuses } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackStatusesActions';
 import { loadFeedbackCategories } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';
 import { currentListParamsSelector } from '../Selectors/list';
+import Moment from 'moment';
 
 /**
  * Used to identify requests within record stores
@@ -53,34 +54,49 @@ export const setCurrentListParams = createAction(
 );
 
 export const loadFeedbackList = createAction(
-  'FEEDBACK_LIST',
-  (overwriteParams = {}) => (dispatch, getState)=> {
-    const currentParams = currentListParamsSelector(getState()).toJS();
+    'FEEDBACK_LIST',
+    (overwriteParams = {}) => (dispatch, getState)=> {
+      const currentParams = currentListParamsSelector(getState()).toJS();
 
-    let params = { ...currentParams, ...overwriteParams };
-    dispatch(setCurrentListParams(params));
-    const {navItem} = params;
-    if (navItem) {
-      delete params.navItem;
-      params = { ...params, ...navItem };
-    }
-    return () => Feedback.getList(params).then(promise => {
-      const feedback = promise.getData();
-      const ids = [];
-      for (var index in feedback.data) {
-        if (feedback.data.hasOwnProperty(index)) {
-          ids.push(feedback.data[index].id);
+      let params = { ...currentParams, ...overwriteParams };
+      dispatch(setCurrentListParams(params));
+      const {navItem} = params;
+      if (navItem) {
+        delete params.navItem;
+        params = { ...params, ...navItem };
+      }
+      const {filters} = params;
+      if (filters) {
+        delete params.filters;
+        for (var property in filters) {
+          if (filters.hasOwnProperty(property) && filters[property]) {
+            if (property === 'created_from' || property === 'created_to') {
+              params[property] = Moment(filters[property]).format('YYYY-MM-DD HH:mm:ss');
+            } else {
+              params[property] = filters[property];
+            }
+          }
         }
       }
-      dispatch(getAuthors(feedback));
-      dispatch(getCommentsCounter(ids));
-      dispatch(getStatuses(ids));
-      dispatch(getCategories(ids));
 
-      return feedback;
-    });
-  }
-);
+      return () => Feedback.getList(params).then(promise => {
+        const feedback = promise.getData();
+        const ids = [];
+        for (var index in feedback.data) {
+          if (feedback.data.hasOwnProperty(index)) {
+            ids.push(feedback.data[index].id);
+          }
+        }
+        dispatch(getAuthors(feedback));
+        dispatch(getCommentsCounter(ids));
+        dispatch(getStatuses(ids));
+        dispatch(getCategories(ids));
+
+        return feedback;
+      });
+    }
+  )
+  ;
 
 export const feedbackToValidate = createAction(
   'FEEDBACK_TO_VALIDATE',
@@ -125,15 +141,6 @@ export const feedbackClosedStatus = createAction(
 export const feedbackHiddenStatus = createAction(
   'FEEDBACK_HIDDEN_STATUS',
   () => Feedback.getHidden().then(promise => promise.getData()));
-
-export const getFilterValues = createAction(
-  'FEEDBACK_SELECT_FILTER',
-  (filterName) => Feedback.getFilterValues(filterName).then(promise => promise.getData())
-);
-
-export const resetFilterValue = createAction(
-  'FEEDBACK_RESET_FILTER_VALUE'
-);
 
 export const setTableSort = createAction(
   'FEEDBACK_SET_TABLE_SORT',
@@ -190,12 +197,13 @@ export const toggleSelectedAction = createAction(
   'FEEDBACK_TOGGLE_SELECTED_ACTION'
 );
 
-/** @ToDo migrate to Ampliflux v2 after FilterBy block design */
 export const setFilterValue = createAction(
   'FEEDBACK_SET_FILTER_VALUE',
-  (trigger, filter, value) => () => trigger({ filter: filter, value: value })
+    update => update
 );
 
+
+/** @ToDo migrate to Ampliflux v2 after FilterBy block design */
 export const resetFilters = createAction(
   'FEEDBACK_RESET_FILTERS',
   (trigger, filterAlias, filterName) => {

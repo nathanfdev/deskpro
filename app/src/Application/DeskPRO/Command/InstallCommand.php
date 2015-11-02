@@ -34,13 +34,11 @@
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use Doctrine\DBAL\DBALException;
 use Monolog\Logger;
-use Orb\Util\DpStrings;
-use Orb\Util\Strings;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -51,39 +49,25 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     {
         $this->setName('dp:install');
         $this->addOption('insert-initial', null, InputOption::VALUE_NONE, 'Unused (exists for legacy)');
-        $this->addOption('admin-email', null, InputOption::VALUE_OPTIONAL, 'The initial admin email');
-        $this->addOption('admin-password', null, InputOption::VALUE_OPTIONAL, 'The initial admin password');
+        $this->addOption('admin-email', null, InputOption::VALUE_OPTIONAL, 'Initial admin email');
+        $this->addOption('admin-password', null, InputOption::VALUE_OPTIONAL, 'Initial admin password');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        try {
-            //TODO remove for prod
-            echo "TODO chmod'ing cache dir, remove this in prod\n";
-            passthru('chmod -R 0777 '.escapeshellarg(DP_ROOT.'/sys/cache'));
-            $ret = $this->doExecute($input, $output);
-            $this->sendInstallReport();
+        //TODO remove for prod
+        echo "TODO chmod'ing cache dir, remove this in prod\n";
+        passthru('chmod -R 0777 '.escapeshellarg(DP_ROOT.'/sys/cache'));
+        $ret = $this->doExecute($input, $output);
 
-            return $ret;
-        } catch (\Exception $e) {
-            $this->sendInstallReport($e);
-        }
+        return $ret;
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
+
         if (!$this->ensureNotInstalled()) {
-            exit;
-        }
-
-        $is_user = true;
-        if (!$input->getOption('admin-email') && !$input->getOption('admin-password')) {
-            $input->setOption('admin-email', 'admin@example.com');
-            $input->setOption('admin-password', Strings::random());
-            $is_user = false;
-        } elseif (!$input->getOption('admin-email') || !$input->getOption('admin-password')) {
-            echo "Please specify --admin-email and --admin-password\n";
-
             return 1;
         }
 
@@ -135,72 +119,50 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         }
 
         $install_schema = new \Application\InstallBundle\Install\InstallSchema($this->getDb(), $schema, DP_BUILD_TIME);
-
         $install_schema->setLogger($logger);
-
         $install_schema->run(false);
 
-        #------------------------------
-        # Install Data
-        #------------------------------
+        $this->loadSeedFixtures($output);
+        $this->loadFixtures($output);
+        $this->loadDevFixtures($output);
 
-        $initial_password = 'password';
-        $initial_email    = 'admin@example.com';
+        $this->loadDefaultData($logger);
+        $this->installApps();
 
-        if ($input->getOption('admin-email')) {
-            $initial_email = $input->getOption('admin-email');
-        }
-        if ($input->getOption('admin-password')) {
-            $initial_password = $input->getOption('admin-password');
-        }
+        if ($input->getOption('admin-email') and $input->getOption('admin-password')) {
+            $db = $this->getContainer()->get('database_connection');
+            $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
 
-        if ($initial_email == 'CONFIG') {
-            if (defined('DP_TECHNICAL_EMAIL')) {
-                $initial_email = DP_TECHNICAL_EMAIL;
-            } else {
-                $initial_email = 'admin@example.com';
+            /** @var \Application\DeskPRO\Entity\Person $admin */
+            $admin = $em->createQuery('SELECT p FROM DeskPRO:Person p WHERE p.can_admin = true ORDER BY p.id ASC')->setMaxResults(1)->getOneOrNullResult();
+
+            if (!$admin) {
+                $output->writeln('Could not find admin user to reset the password and email');
+
+                return 1;
             }
+
+            $admin->setPassword($input->getOption('admin-password'));
+            $em->persist($admin);
+
+            $admin->getPrimaryEmail()->setEmail($input->getOption('admin-email'));
+            $em->persist($admin->getPrimaryEmail());
+
+            // And we need to delete that special label that is used to
+            // trigger the set password prompt on admin welcome guide
+            $admin->removeLabelByString('not_user');
+
+            $em->flush();
         }
 
-        $agent             = new \Application\DeskPRO\Entity\Person();
-        $agent->first_name = 'Admin';
-        $agent->last_name  = 'Admin';
-        $agent->setEmail($initial_email, true);
-        $agent->setPassword($initial_password);
-        $agent->is_user            = true;
-        $agent->is_confirmed       = true;
-        $agent->is_agent_confirmed = true;
-        $agent->is_agent           = true;
-        $agent->can_agent          = true;
-        $agent->can_admin          = true;
-        $agent->can_billing        = true;
-        $agent->can_reports        = true;
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $em->getRepository('DeskPRO:Ticket')->fillSearchTable();
 
-        $this->getOrm()->persist($agent);
-        $this->getOrm()->flush();
+        return 0;
+    }
 
-        if (!$is_user) {
-            $label          = new Entity\LabelPerson();
-            $label['label'] = 'not_user';
-            $agent->addLabel($label);
-            $this->getOrm()->persist($label);
-            $this->getOrm()->flush();
-        }
-
-        $this->getDb()->insert('permissions', array('person_id' => $agent->id, 'name' => 'admin.use', 'value' => 1));
-
-        // Install data stuff
-        $AGENTGROUP_ALL     = null; // should be defined by the time we finish processing data.php
-        $USERGROUP_EVERYONE = null; // should be defined by the time we finish processing data.php
-        $AGENT              = $agent; // can be used in data.php
-        $WEB_INSTALL        = true;
-        $IMPORT_INSTALL     = false;
-
-        $em        = $this->getOrm();
-        $translate = $this->getContainer()->get('deskpro.core.translate');
-
-        require DP_ROOT.'/src/Application/InstallBundle/Data/data.php';
-
+    private function loadDefaultData($logger)
+    {
         $data_proc = new DefaultDataProcessor($this->getContainer());
         if ($logger) {
             $orb_logger_adapter = new OrbLoggerAdapterHandler($logger);
@@ -208,38 +170,60 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         }
         $data_proc->runInstall();
 
-        $this->getOrm()->flush();
-
         \Application\DeskPRO\DataSync\AbstractDataSync::syncAllBaseToLive();
+    }
 
-        // For the all agent group, fetch permissions from the template
-        if ($AGENTGROUP_ALL) {
-            $ch = new \Application\DeskPRO\ORM\CollectionHelper($agent, 'usergroups');
-            $ch->setCollection(array($AGENTGROUP_ALL));
-            $this->getOrm()->persist($agent);
-            $this->getOrm()->flush();
-        }
+    private function loadSeedFixtures(OutputInterface $output)
+    {
+        $output->writeln('Executing seed fixtures...');
 
-        if ($USERGROUP_EVERYONE) {
-            $scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
-            foreach ($scanner->getNames() as $p_name) {
-                $p            = new \Application\DeskPRO\Entity\Permission();
-                $p->usergroup = $USERGROUP_EVERYONE;
-                $p->name      = $p_name;
-                $p->value     = 1;
-                $this->getOrm()->persist($p);
-            }
-            $this->getOrm()->flush();
-        }
-
-        $data_init             = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
-        $data_init->admin_user = $agent;
-        $data_init->run();
-        App::getDb()->replace('settings', array(
-            'name'  => 'core.done_data_initializer',
-            'value' => 1,
+        $app   = $this->getApplication();
+        $input = new ArrayInput(array(
+            'command'          => 'doctrine:fixtures:load',
+            '--fixtures'       => DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/SeedFixtures',
+            '--no-interaction' => true,
+            '--append'         => true,
         ));
+        $returnCode = $app->doRun($input, $output);
 
+        $output->writeln('Fixtures exit code: '.$returnCode);
+    }
+
+    private function loadFixtures(OutputInterface $output)
+    {
+        $output->writeln('Executing install fixtures...');
+        $output->writeln('Note: This will show a PHP notice due to a library bug. That is OK. Ignore.');
+
+        $app   = $this->getApplication();
+        $input = new ArrayInput(array(
+            'command'          => 'doctrine:fixtures:load',
+            '--fixtures'       => DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/InstallFixtures',
+            '--no-interaction' => true,
+            '--append'         => true,
+        ));
+        $returnCode = $app->doRun($input, $output);
+
+        $output->writeln('Fixtures exit code: '.$returnCode);
+    }
+
+    private function loadDevFixtures(OutputInterface $output)
+    {
+        $output->writeln('Executing dev fixtures...');
+
+        $app   = $this->getApplication();
+        $input = new ArrayInput(array(
+            'command'          => 'doctrine:fixtures:load',
+            '--fixtures'       => DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/DevFixtures',
+            '--no-interaction' => true,
+            '--append'         => true,
+        ));
+        $returnCode = $app->doRun($input, $output);
+
+        $output->writeln('Fixtures exit code: '.$returnCode);
+    }
+
+    private function installApps()
+    {
         $app_syncer = new \Application\DeskPRO\App\Native\NativeAppsSync(
             $this->getContainer(),
             $this->getContainer()->getAppManager(),
@@ -255,42 +239,6 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             $this->getContainer()->getEm()
         );
         $instance_installer->install('', array(), $this->getContainer());
-
-        App::getDb()->replace('install_data', array(
-            'build' => 'default',
-            'name'  => 'install_build',
-            'data'  => DP_BUILD_TIME,
-        ));
-
-        App::getDb()->replace('settings', array(
-            'name'  => 'core.deskpro_build',
-            'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
-        ));
-        App::getDb()->replace('settings', array(
-            'name'  => 'core.deskpro_build_num',
-            'value' => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0,
-        ));
-        App::getDb()->replace('settings', array(
-            'name'  => 'core.install_build',
-            'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
-        ));
-
-        App::getDb()->replace('settings', array(
-            'name'  => 'core.install_timestamp',
-            'value' => time(),
-        ));
-        App::getDb()->replace('settings', array(
-            'name'  => 'core.install_key',
-            'value' => DpStrings::random(20, Strings::CHARS_KEY),
-        ));
-        App::getDb()->replace('settings', array(
-            'name'  => 'core.deskpro_version',
-            'value' => date('YmdHis'),
-        ));
-        App::getDb()->replace('settings', array(
-            'name'  => 'core.install_via_cmd',
-            'value' => 1,
-        ));
     }
 
     private function createDatabase()
@@ -343,56 +291,5 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     public function getOrm()
     {
         return App::getOrm();
-    }
-
-    protected function sendInstallReport($exception = null)
-    {
-        if ($exception) {
-            $errinfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($exception);
-            unset($errinfo['exception']);
-        } else {
-            $errinfo = 0;
-        }
-
-        $install_time = 0;
-        try {
-            $install_time = $this->getDb()->fetchColumn("SELECT data FROM install_data WHERE build='default' AND name='install_time'");
-        } catch (\Exception $e) {
-        }
-        if (!$install_time) {
-            $install_time = 0.0;
-        }
-
-        if (!defined('DP_BUILD_TIME')) {
-            if (file_exists(DP_ROOT.'/sys/config/build-time.php')) {
-                require_once DP_ROOT.'/sys/config/build-time.php';
-            }
-        }
-        if (!defined('DP_BUILD_NUM')) {
-            if (file_exists(DP_ROOT.'/sys/config/build-num.php')) {
-                require DP_ROOT.'/sys/config/build-num.php';
-            }
-        }
-
-        $data = array(
-            'source_type'   => 'install.web',
-            'log'           => @file_get_contents($this->getContainer()->getLogDir().'/install.log'),
-            'errinfo'       => $errinfo,
-            'install_token' => isset($GLOBALS['dp_install_token']) ? $GLOBALS['dp_install_token'] : '',
-            'nostats'       => isset($_COOKIE['stats_opt_out']) && $_COOKIE['stats_opt_out'] ? 1 : 0,
-            'total_time'    => $install_time,
-            'build'         => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
-            'build_num'     => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0,
-        );
-
-        if (!isset($_COOKIE['stats_opt_out']) || !$_COOKIE['stats_opt_out']) {
-            try {
-                $stats_fetcher = new \Application\InstallBundle\Data\ServerStats($this->getDb());
-                $data          = array_merge($data, $stats_fetcher->getStats());
-            } catch (\Exception $e) {
-            }
-        }
-
-        \Application\DeskPRO\Service\ErrorReporter::sendInstallReport($data);
     }
 }

@@ -31,33 +31,10 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Model;
 
-use JMS\Serializer\Annotation as Serializer;
-
-/**
- * @Serializer\ExclusionPolicy("ALL")
- */
 class Me
 {
-    /**
-     * @Serializer\Expose()
-     * @Serializer\Type("string")
-     */
     public $auth_method;
-
-    /**
-     * @Serializer\Expose()
-     * @Serializer\Type("string")
-     */
     public $person_id;
-
-    /**
-     * @Serializer\Expose()
-     * @Serializer\Type("string")
-     */
     public $app_id;
-
-    /**
-     * @Serializer\Expose()
-     */
     public $person;
 }

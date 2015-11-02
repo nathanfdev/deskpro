@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { ProfileForm } from './Form/ProfileForm';
+import Loader from 'react-loader';
 
 export class Content extends React.Component {
 
@@ -14,18 +15,17 @@ export class Content extends React.Component {
   render() {
     const { dispatch, languages, timezones, profile, profileStatus } = this.props;
 
-    if (!profileStatus.get('isDone')) {
-      return (
-        <div>Loading...</div>
-      );
-    }
-
     return (
       <div>
-        <ProfileForm dispatch={dispatch}
-                     languages={languages}
-                     timezones={timezones}
-                     profile={profile} />
+        <Loader loaded={profileStatus.get('isDone')}
+                opacity={0}
+                width={3}>
+
+          <ProfileForm dispatch={dispatch}
+                       languages={languages}
+                       timezones={timezones}
+                       profile={profile} />
+        </Loader>
       </div>
     );
   }

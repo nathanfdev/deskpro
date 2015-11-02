@@ -50,7 +50,7 @@ class TestController extends AbstractController
     /**
      * This action simply returns a message to indicate that the API is working.
      *
-     * @depreciated
+     * @deprecated
      */
     public function testAction()
     {

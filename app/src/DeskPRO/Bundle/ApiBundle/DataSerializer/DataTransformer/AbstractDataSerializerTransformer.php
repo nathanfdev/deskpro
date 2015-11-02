@@ -32,12 +32,14 @@
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataPropertyTransformer;
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerContext;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\PropertyTransformationContext;
 use Psr\Log\LoggerInterface;
 
-abstract class AbstractDataSerializerTransformer
+/**
+ * Class AbstractDataSerializerTransformer.
+ */
+abstract class AbstractDataSerializerTransformer implements DataSerializerTransformerInterface
 {
     /**
      * @var DataPropertyTransformer
@@ -49,16 +51,12 @@ abstract class AbstractDataSerializerTransformer
      */
     protected $logger;
 
-    abstract public function getAutomaticProperties(DataTransformerRequest $transformation_request);
-
-    abstract public function getCustomProperties(DataTransformerRequest $transformation_request);
-
     /**
      * The context contains all of the data needed to do the transformation, including what "view" and also
      * what is going to be "included" (side-loaded). The job of the transformer is to call setMainTransformed()
      * on the context with the transformed data.
      *
-     * @param DataSerializerContext $context
+     * @param DataTransformerRequest $transformation_request
      *
      * @return array
      */
@@ -101,6 +99,9 @@ abstract class AbstractDataSerializerTransformer
         $this->property_transformer = $property_transformer;
     }
 
+    /**
+     * @param LoggerInterface $logger
+     */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;

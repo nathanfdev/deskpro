@@ -28,7 +28,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\BlobAuthTransformer;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppConstraints;
+use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -42,6 +44,21 @@ use Symfony\Component\Validator\Constraints;
  */
 class PersonProfileType extends AbstractType
 {
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -63,6 +80,10 @@ class PersonProfileType extends AbstractType
             ])
             ->add('display_name', 'text', [
                 'property_path' => 'override_display_name',
+            ])
+            ->add('avatar_blob_auth_id', 'text', [
+                'required'      => false,
+                'property_path' => 'picture_blob',
             ])
             ->add('emails', 'collection', [
                 'type'            => 'email',
@@ -119,6 +140,11 @@ class PersonProfileType extends AbstractType
 
                 $event->setData($data);
             })
+        ;
+
+        $builder
+            ->get('avatar_blob_auth_id')
+            ->addModelTransformer(new BlobAuthTransformer($this->em))
         ;
     }
 

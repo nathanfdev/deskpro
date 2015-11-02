@@ -35,6 +35,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\ApiBundle\Task\DisplayOrder;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Task\TaskFilterBuilder;
 use Doctrine\ORM\Query;
@@ -85,6 +86,7 @@ class TasksController extends BaseController implements ClassResourceInterface
      */
     public function cgetAction(Request $request)
     {
+        $params        = $request->query->all();
         $entityManager = $this->getDoctrine()->getManager();
 
         $datatype = $this->getDatatype($request);
@@ -97,6 +99,15 @@ class TasksController extends BaseController implements ClassResourceInterface
         $pager = new Pagerfanta(new DoctrineORMAdapter($tasks));
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
+
+        if (in_array('count_only', array_keys($params))) {
+            $numResults = $pager->getNbResults();
+
+            return View::create(
+                $this->createRepresentation(Count::fromValue($numResults)),
+                Response::HTTP_OK
+            );
+        }
 
         return View::create(
             $this->dataSerialize($pager, null, $datatype),

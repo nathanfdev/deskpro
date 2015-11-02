@@ -22,9 +22,19 @@
   {% if can_use_feedback() %}
     <li>
       <a href="{{ path('portal_feedback') }}">
-        <i class="fa fa-list-alt"></i>
+        <i class="fa fa-thumbs-o-up"></i>
         <span class="title">{{ phrase('portal.general.nav-feedback') }}</span>
         <span class="subtitle">{{ phrase('portal.general.nav-feedback-desc') }}</span>
+      </a>
+    </li>
+  {% endif %}
+
+  {% if can_use_downloads() %}
+    <li class="{{ is_page_downloads() ? 'active' }}">
+      <a href="{{ path('portal_downloads') }}">
+        <i class="fa fa-files-o"></i>
+        <span class="title">{{ phrase('portal.general.nav-downloads') }}</span>
+        <span class="subtitle">{{ phrase('portal.general.nav-downloads-desc') }}</span>
       </a>
     </li>
   {% endif %}
@@ -32,7 +42,7 @@
   {% if can_use_tickets() %}
     <li>
       <a href="{{ path('portal_new_ticket') }}">
-        <i class="fa fa-comments-o"></i>
+        <i class="fa fa-envelope"></i>
         <span class="title">{{ phrase('portal.general.nav-newticket') }}</span>
         <span class="subtitle">{{ phrase('portal.general.nav-newticket-desc') }}</span>
       </a>

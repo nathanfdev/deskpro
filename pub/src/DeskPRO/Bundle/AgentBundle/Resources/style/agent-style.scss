@@ -3,6 +3,7 @@
 @import "include";
 @import "loading/login";
 @import "global-widgets/table-view", "global-widgets/id-container", "global-widgets/timer", "global-widgets/pagination", "global-widgets/control-bar", "global-widgets/radio", "global-widgets/cards", "global-widgets/fonts";
+@import "global-widgets/popup", "global-widgets/avatar";
 @import "global-widgets/navigation-dropdown/navigation-dropdowns";
 @import "feedback/cards";
 
@@ -275,5 +276,6 @@ $kanban-frame-width: 800px;
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 1000;
   //visibility: hidden; // todo breaks dropdowns
 }

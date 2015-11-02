@@ -108,4 +108,32 @@ class AgentChat extends EntityRepository
 
         return $results;
     }
+
+    public function findEveryoneChat()
+    {
+        $qb = $this->createQueryBuilder('ac');
+        $qb->andWhere('ac.type = :type')
+            ->setParameter('type', 'everyone');
+
+        $results = $qb->getQuery()->getResult();
+
+        return $results;
+    }
+
+    public function findAllChats(array $ids, array $order)
+    {
+        $qb = $this->createQueryBuilder('ac');
+        $qb->andWhere('ac.id IN (:ids)')
+            ->orWhere('ac.type = :type')
+            ->setParameter('ids', $ids)
+            ->setParameter('type', 'everyone');
+
+        foreach ($order as $sort => $direction) {
+            $qb->addOrderBy('ac.'.$sort, $direction);
+        }
+
+        $results = $qb->getQuery()->getResult();
+
+        return $results;
+    }
 }

@@ -23,7 +23,7 @@ $scrollbar-w2: 12px;
     position: absolute;
     background: transparent;
     opacity: 0;
-    z-index: 9999;
+    z-index: 200;
     transition: opacity .3s;
 
     &:hover, &.active{

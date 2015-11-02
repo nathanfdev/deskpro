@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace spec\DeskPRO\Bundle\AppBundle\AgentChat;
 
 use Application\DeskPRO\Entity\Person;
@@ -66,7 +65,7 @@ class HistorySpec extends ObjectBehavior
         $em->getRepository('App:AgentChatParticipant')->willReturn($participantRepo);
         $em->getRepository('App:AgentChat')->willReturn($chatRepo);
         $participantRepo->findChatsIds(Argument::type('Application\DeskPRO\Entity\Person'), Argument::any())->willReturn(array(1, 2));
-        $chatRepo->findBy(Argument::any(), Argument::any())->willReturn(array($chat1, $chat2));
+        $chatRepo->findAllChats(Argument::any(), Argument::any())->willReturn(array($chat1, $chat2));
         $this->shouldHaveType('DeskPRO\Bundle\AppBundle\AgentChat\History');
     }
     public function it_can_get_all_messages_of_the_chat(AgentChat $chat, AgentChatMessage $message)

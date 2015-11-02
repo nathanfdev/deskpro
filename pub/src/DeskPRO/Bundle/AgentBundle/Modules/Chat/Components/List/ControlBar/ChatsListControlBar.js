@@ -2,8 +2,6 @@ import React from 'react';
 import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameMenu';
 import { OrderByContainer } from './OrderByContainer';
 import { ViewSwitcherContainer } from './ViewSwitcherContainer';
-import { OrderByDropdownContainer } from './OrderByDropdownContainer';
-import { ViewSwitcherDropdownContainer } from './ViewSwitcherDropdownContainer';
 
 export class ChatsListControlBar extends React.Component {
 
@@ -34,22 +32,6 @@ export class ChatsListControlBar extends React.Component {
     });
   };
 
-  renderOrderByDropdown() {
-    if (this.state.orderByDropdownIsExpanded) {
-      return (
-        <OrderByDropdownContainer offset={this.state.dropdownOffset}/>
-      );
-    }
-  }
-
-  renderViewModeDropdown() {
-    if (this.state.viewModeDropdownIsExpanded) {
-      return (
-        <ViewSwitcherDropdownContainer offset={this.state.dropdownOffset}/>
-      );
-    }
-  }
-
   render() {
     return (
       <ListFrameMenu>
@@ -58,8 +40,6 @@ export class ChatsListControlBar extends React.Component {
           <hr/>
         </li>
         <ViewSwitcherContainer toggleDropdown={this.toggleViewModeDropdown}/>
-        {this.renderOrderByDropdown()}
-        {this.renderViewModeDropdown()}
       </ListFrameMenu>
 
     );

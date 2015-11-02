@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
 import { Message } from './Message';
-import { loadMessages, markMessages } from '../../Actions/messagesActions';
+import { loadMessages, markMessages, refreshCounts } from '../../Actions/messagesActions';
 import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
@@ -12,7 +12,8 @@ import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Recor
   me: meSelector(state),
   agents: agentsSelector(state),
   agentsStatus: agentsStatusSelector(state),
-  messages: state.IM.messages
+  messages: state.IM.messages,
+  loadingMessages: state.IM.messages.get('loadingMessages')
 }))
 export class MessageList extends React.Component {
 
@@ -26,30 +27,15 @@ export class MessageList extends React.Component {
     searchQuery: PropTypes.string.isRequired
   };
 
-  markNewMessages() {
-    const ids = [];
-    const messages = this.props.messages.getIn(['chatMessages', this.props.current.id]) || [];
-    messages.map((message) => {
-      if (message.status < 1) {
-        ids.push(message.id);
-      }
-    });
-    if (ids.length > 0) {
-      this.props.dispatch(markMessages(ids));
-    }
-  }
-
   componentDidMount() {
     this.props.dispatch(loadAllAgents());
     this.refresh();
-    //const interval = setInterval(this.refresh, 1000);
+    const interval = setInterval(this.refresh, 5000);
+    const countsInterval = setInterval(() => this.props.dispatch(refreshCounts()), 5000);
     this.state = {
-      //interval: interval
+      interval: interval,
+      countsInterval: countsInterval
     };
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.state.interval);
   }
 
   componentWillReceiveProps(newProps) {
@@ -70,20 +56,38 @@ export class MessageList extends React.Component {
     }
   };
 
+  componentWillUnmount() {
+    clearInterval(this.state.interval);
+    clearInterval(this.state.countsInterval);
+  }
+
+  markNewMessages() {
+    const ids = [];
+    const messages = this.props.messages.getIn(['chatMessages', this.props.current.id]) || [];
+    messages.map((message) => {
+      if (message.status < 1 && message.person_id !== this.props.me.get('id')) {
+        ids.push(message.id);
+      }
+    });
+    if (ids.length > 0) {
+      this.props.dispatch(markMessages(ids));
+    }
+  }
+
   controls = () => {
-    return <div className="chat-controls"><a href="#">Load old messages</a><a onClick={this.refresh} href="#">Refresh</a></div>;
+    return <div className="chat-controls"><a href="#">Load old messages</a></div>;
   };
 
   refresh = () => {
-    this.props.dispatch(loadMessages(this.props.current.id));
+    this.props.dispatch(loadMessages(this.props.current.id, this.props.searchQuery));
     this.markNewMessages();
   };
 
-  render() {
+  renderMessages() {
     const messages = this.props.messages.getIn(['chatMessages', this.props.current.id]) || [];
-    return (messages.length > 0 ) ? (
+    return (
       <div>
-      {this.controls()}
+        {this.controls()}
         <ul ref="list" className="chat-message-list">
           {
             messages.map((message, index) => {
@@ -96,6 +100,15 @@ export class MessageList extends React.Component {
           }
         </ul>
       </div>
-    ) : <Spinner ref="list" width="40" height="40" />;
+    );
+  }
+
+  renderLoading() {
+    return <Spinner ref="list" width="40" height="40" />;
+  }
+
+  render() {
+    const loading = this.props.messages.loadingMessages;
+    return !loading ? this.renderMessages() : this.renderLoading();
   }
 }

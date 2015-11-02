@@ -120,4 +120,12 @@ class PersonProfile
     {
         return $this->person->getTimezone();
     }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
 }

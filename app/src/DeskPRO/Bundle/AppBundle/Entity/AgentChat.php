@@ -118,6 +118,7 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
         Chatable::PARTICIPANT_TYPE_TEAM,
         Chatable::PARTICIPANT_TYPE_DEPARTMENT,
         Chatable::PARTICIPANT_TYPE_GROUP,
+        Chatable::PARTICIPANT_TYPE_EVERYONE,
     ];
 
     /**

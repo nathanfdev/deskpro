@@ -35,6 +35,9 @@ use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\PropertyTransformer\Callback\CallbackDeferredProperty;
 use Doctrine\DBAL\Connection;
 
+/**
+ * Class TaskTransformer.
+ */
 class TaskTransformer extends AbstractDataSerializerTransformer
 {
     /**
@@ -57,6 +60,11 @@ class TaskTransformer extends AbstractDataSerializerTransformer
      */
     private $subtaskCounts;
 
+    /**
+     * Constructor.
+     *
+     * @param Connection $connection
+     */
     public function __construct(Connection $connection)
     {
         $this->connection    = $connection;
@@ -65,6 +73,9 @@ class TaskTransformer extends AbstractDataSerializerTransformer
         $this->subtaskCounts = null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
         return [
@@ -88,6 +99,9 @@ class TaskTransformer extends AbstractDataSerializerTransformer
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
         /** @var \DeskPRO\Bundle\AppBundle\Entity\Task $data */

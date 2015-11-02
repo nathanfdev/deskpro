@@ -30,12 +30,26 @@ namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\ApiBundle\Model\PersonProfile;
+use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 
 /**
  * Class PersonProfileTransformer.
  */
 class PersonProfileTransformer extends AbstractDataSerializerTransformer
 {
+    /**
+     * @var AvatarResolver
+     */
+    private $avatar_resolver;
+
+    /**
+     * @param AvatarResolver $avatar_resolver
+     */
+    public function __construct(AvatarResolver $avatar_resolver)
+    {
+        $this->avatar_resolver = $avatar_resolver;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -61,6 +75,15 @@ class PersonProfileTransformer extends AbstractDataSerializerTransformer
             ];
         }
 
+        $picture_blob      = $data->getPerson()->picture_blob;
+        $avatar_serialized = null;
+        if ($picture_blob) {
+            $avatar_serialized = [
+                'blob_auth_id' => $picture_blob->getAuthId(),
+                'url'          => $this->avatar_resolver->getAvatarModel($data->getPerson())->getUrl(200),
+            ];
+        }
+
         return [
             'id'            => $data->getId(),
             'name'          => $data->getName(),
@@ -70,6 +93,7 @@ class PersonProfileTransformer extends AbstractDataSerializerTransformer
             'phone'         => $phone_serialized,
             'language_id'   => $data->getLanguageId(),
             'timezone'      => $data->getTimezone(),
+            'avatar'        => $avatar_serialized,
         ];
     }
 }

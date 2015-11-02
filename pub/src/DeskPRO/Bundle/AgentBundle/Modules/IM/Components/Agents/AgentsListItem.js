@@ -2,6 +2,7 @@ import React, {PropTypes} from 'react';
 import * as actions from '../../Actions/chatsActions';
 import { connect } from 'react-redux';
 import { PersonAvatar } from '../../../Common/Components/Avatar/index';
+import TimeAgo from 'react-timeago';
 
 @connect()
 export class AgentsListItem extends React.Component {
@@ -33,7 +34,7 @@ export class AgentsListItem extends React.Component {
           >
           <PersonAvatar person={this.props.agent} size="22" />
           <span className="agent"><span dangerouslySetInnerHTML={{__html: name}}/><span
-            className="datestamp">2d ago</span></span>
+            className="datestamp">{this.props.agent.get('last_seen') ? <TimeAgo date={this.props.agent.get('last_seen')} /> : 'never'}</span></span>
         </a>
       </li>
     );

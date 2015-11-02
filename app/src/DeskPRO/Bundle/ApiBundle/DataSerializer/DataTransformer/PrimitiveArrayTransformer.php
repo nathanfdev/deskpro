@@ -38,12 +38,18 @@ use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
  */
 class PrimitiveArrayTransformer extends AbstractDataSerializerTransformer
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
         return [
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
         $data = $transformation_request->getDataToBeTransformed();

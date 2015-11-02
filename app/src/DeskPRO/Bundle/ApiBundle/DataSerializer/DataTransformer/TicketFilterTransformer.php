@@ -39,6 +39,9 @@ use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
+/**
+ * Class TicketFilterTransformer.
+ */
 class TicketFilterTransformer extends AbstractDataSerializerTransformer
 {
     /**
@@ -61,6 +64,9 @@ class TicketFilterTransformer extends AbstractDataSerializerTransformer
         $this->em   = $em;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
         return [
@@ -76,6 +82,9 @@ class TicketFilterTransformer extends AbstractDataSerializerTransformer
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
         /* @var \DeskPRO\Bundle\AppBundle\Entity\TicketFilter $filter */

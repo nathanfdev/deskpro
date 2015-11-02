@@ -1,27 +1,25 @@
 import React, { PropTypes } from 'react';
 
 export class Avatar extends React.Component {
+
   static propTypes = {
     size: PropTypes.any.isRequired,
     fallbackText: PropTypes.string.isRequired,
     color: PropTypes.string,
     urlPattern: PropTypes.string,
     defaultUrlPattern: PropTypes.string,
-    gravatar: PropTypes.string,
+    gravatar: PropTypes.string
   };
 
   render() {
-    let result;
-
     if (this.props.urlPattern) {
-      result = this.renderImage();
-    } else if (this.props.gravatar) {
-      result = this.renderGravatar();
-    } else {
-      result = this.renderFallbackText();
+      return this.renderImage();
+    }
+    if (this.props.gravatar) {
+      return this.renderGravatar();
     }
 
-    return result;
+    return this.renderFallbackText();
   }
 
   renderFallbackText(content = '') {
@@ -62,33 +60,30 @@ export class Avatar extends React.Component {
 
   getStyle(backgroundImage) {
     const style = {
-      display: 'inline-block'
+      display: 'inline-block',
+      marginRight: '5px'
     };
 
     if (backgroundImage) {
       style.backgroundImage = backgroundImage;
     }
-
     if (this.props.size) {
       style.width = style.height = this.props.size + ' !important';
     }
-
-    style.marginRight = '5px';
 
     return style;
   }
 
   getTextStyle() {
     const size = this.props.size + 'px';
-    const textStyle = {
+
+    return {
       lineHeight: size,
       width: size,
       height: size,
       display: 'inline-block',
       textAlign: 'center'
     };
-
-    return textStyle;
   }
 
   getImg() {

@@ -179,7 +179,6 @@ class TicketFilterSetsController extends BaseController
     /**
      * @ApiDoc(
      *      description="Reorder filter sets.",
-     *      input={"Array"},
      *      statusCodes={
      *          200="Success"
      *      }

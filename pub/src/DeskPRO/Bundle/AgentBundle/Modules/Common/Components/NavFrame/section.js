@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 export class SectionsPane extends React.Component {
+
+  static propTypes = {
+    children: PropTypes.node
+  };
+
   render() {
     return (
       <div className="sidebar-list sidebar-list-filters">
@@ -11,6 +16,11 @@ export class SectionsPane extends React.Component {
 }
 
 export class Section extends React.Component {
+
+  static propTypes = {
+    children: PropTypes.node
+  };
+
   render() {
     return (
       <section className="sidebar-list">
@@ -21,6 +31,11 @@ export class Section extends React.Component {
 }
 
 export class SectionHeader extends React.Component {
+
+  static propTypes = {
+    children: PropTypes.node
+  };
+
   render() {
     return (
       <div className="list-sidebar-title">
@@ -31,12 +46,19 @@ export class SectionHeader extends React.Component {
 }
 
 export class SectionGroupedHeader extends React.Component {
+
+  static propTypes = {
+    count: PropTypes.number.isRequired,
+    callback: PropTypes.func.isRequired,
+    children: PropTypes.node
+  };
+
   render() {
-    const { count, callback } = this.props;
+    const { count, callback, children } = this.props;
 
     return (
       <div className="list-sidebar-title">
-        {this.props.children}
+        {children}
         <div className="list-counter-bucket">
           <a className="list-counter-dropdown active" href="#" onClick={callback}>
             <span>&nbsp;</span>

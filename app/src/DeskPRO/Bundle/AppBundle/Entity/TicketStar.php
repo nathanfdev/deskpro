@@ -70,4 +70,12 @@ class TicketStar extends TicketFlagged
 
         return self::$id_color_hex_map[$id];
     }
+
+    /**
+     * @return array
+     */
+    public static function getAll()
+    {
+        return self::$id_color_map;
+    }
 }

@@ -29,12 +29,12 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
 
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\AgentChat\History;
 use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\ArrayAdapter;
@@ -67,12 +67,12 @@ class MessagesController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        $searchString = $request->query->get('search', '');
-        $orderBy      = $request->query->get('order', 'date_created');
-        $page         = $request->query->getInt('page', 1);
-        /** @var History $searchService */
-        $searchService = $this->get('deskpro.agentchat.history');
-        $messages      = $searchService->searchInChat($chat, $searchString, $orderBy);
+        $search_string = $request->query->get('search', '');
+        $orderBy       = $request->query->get('order', 'date_created');
+        $page          = $request->query->getInt('page', 1);
+        /** @var History $search_service */
+        $search_service = $this->get('deskpro.agentchat.history');
+        $messages       = $search_service->searchInChat($chat, $search_string, $orderBy);
 
         $pager = new Pagerfanta(new ArrayAdapter(array_reverse($messages)));
         $pager->setMaxPerPage(150);
@@ -128,12 +128,22 @@ class MessagesController extends AbstractController
      */
     public function countsAction()
     {
-        /** @var History $searchService */
-        $searchService = $this->get('deskpro.agentchat.history');
-        $count         = $searchService->countMessages($this->getUser());
-        $data          = [];
+        /** @var History $search_service */
+        /* @var Messenger $messenger */
+
+        $search_service = $this->get('deskpro.agentchat.history');
+        $messenger      = $this->get('deskpro.agentchat.messenger');
+        $count          = $search_service->countMessages($this->getUser());
+        $data           = [];
         foreach ($count as $cnt) {
             $data[$cnt['chat_id']] = $cnt;
+        }
+        $chat_ids = array_keys($data);
+
+        // this looks like very, VERY dirty hack. Smells :(
+        $chats_data = $this->dataSerialize($messenger->getChats($chat_ids));
+        foreach ($chats_data['data'] as $chat) {
+            $data[$chat['id']]['chat'] = $chat;
         }
 
         return View::create(

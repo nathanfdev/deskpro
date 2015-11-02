@@ -85,9 +85,9 @@ class PersonSettingController extends BaseController
         return View::create(
             $this->dataSerialize($setting),
             Response::HTTP_CREATED,
-            array(
+            [
                 'Location' => $location,
-            )
+            ]
         );
     }
 
@@ -128,10 +128,38 @@ class PersonSettingController extends BaseController
 
         return View::create(
             $this->dataSerialize($setting),
-            Response::HTTP_NO_CONTENT,
-            array(
+            Response::HTTP_CREATED,
+            [
                 'Location' => $location,
-            )
+            ]
+        );
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="get person settings",
+     *      statusCodes={
+     *          200="Success"
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\Entity\PersonSetting"
+     * )
+     * @Get("/person_setting", name="api_person_setting_cget")
+     *
+     * @return View
+     */
+    public function cgetAction()
+    {
+        $settings = $this
+            ->getDoctrine()
+            ->getRepository(PersonSetting::class)
+            ->findBy([
+                'person' => $this->getUser(),
+            ])
+        ;
+
+        return View::create(
+            $this->dataSerialize($settings),
+            Response::HTTP_OK
         );
     }
 
@@ -156,15 +184,18 @@ class PersonSettingController extends BaseController
      *
      * @param string $name
      *
-     * @throws \LogicException
-     * @throws \InvalidArgumentException
-     *
      * @return View
      */
     public function getAction($name)
     {
-        $setting = $this->getDoctrine()->getManager()->getRepository('App:PersonSetting')
-            ->find(['name' => $name, 'person' => $this->getUser()]);
+        $setting = $this
+            ->getDoctrine()
+            ->getRepository(PersonSetting::class)
+            ->find([
+                'name'   => $name,
+                'person' => $this->getUser(),
+            ])
+        ;
 
         if (null === $setting) {
             throw $this->createNotFoundException();

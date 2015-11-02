@@ -46,7 +46,7 @@ class FeedbackSelectCriteria extends Criteria
     public function applyFilters(QueryBuilder $qb)
     {
         $alias = $qb->getRootAliases()[0];
-        $sort = "$alias.date_created";
+        $sort  = "$alias.date_created";
         $order = 'asc';
         foreach ($this->filters as $field => $value) {
             switch ($field) {
@@ -94,6 +94,16 @@ class FeedbackSelectCriteria extends Criteria
                         ->andWhere("$alias.hidden_status = :status")
                         ->setParameter('status', $value);
                     break;
+                case 'created_from':
+                    $qb
+                        ->andWhere("$alias.date_created >= DATE(:from_date)")
+                        ->setParameter('from_date', $value);
+                    break;
+                case 'created_to':
+                    $qb
+                        ->andWhere("$alias.date_created <= DATE(:to_date)")
+                        ->setParameter('to_date', $value);
+                    break;
                 case 'sort':
                     $sort = "$alias.$value";
                     break;
@@ -107,7 +117,7 @@ class FeedbackSelectCriteria extends Criteria
 
     /**
      * @param OptionsResolver $resolver
-     * @param array $data
+     * @param array           $data
      *
      * @throws AccessException
      * @throws UndefinedOptionsException
@@ -129,6 +139,7 @@ class FeedbackSelectCriteria extends Criteria
                 'page',
                 'count',
                 'ids',
+                'created_from', 'created_to',
             ]
         );
         $resolver->setAllowedValues('awaiting_validation', '1');

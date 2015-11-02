@@ -54,7 +54,7 @@ class LabelTaskTransformer implements DataTransformerInterface
      * @param EntityManager $entityManager
      * @param Task          $task
      */
-    public function __construct(EntityManager $entityManager, Task $task)
+    public function __construct(EntityManager $entityManager, Task $task = null)
     {
         $this->entityManager = $entityManager;
         $this->task          = $task;
@@ -85,6 +85,10 @@ class LabelTaskTransformer implements DataTransformerInterface
      */
     public function reverseTransform($label)
     {
+        if (!$this->task) {
+            return;
+        }
+
         if ($this->task->getLabels()->contains($label)) {
             return $label;
         }

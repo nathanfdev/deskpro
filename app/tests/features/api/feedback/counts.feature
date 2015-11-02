@@ -22,7 +22,7 @@ Feature: /feedback/counts endpoint
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data[0].title" should be equal to "Test feedback category 1"
-    And the JSON node "data[0].value" should be equal to "3"
+    And the JSON node "data[0].value" should be equal to "4"
     And the JSON node "data[1].title" should be equal to "Test feedback category 2"
     And the JSON node "data[1].value" should be equal to "2"
     And the JSON node "data[2].title" should be equal to "Test feedback category 3"
@@ -36,7 +36,7 @@ Feature: /feedback/counts endpoint
     And the JSON node "data" should exist
     And the JSON node "data.count" should be equal to 2
     And the JSON node "data.grouped_by" should be equal to "status_category"
-    And the JSON node "data.nested[0].count" should be equal to 2
+    And the JSON node "data.nested[0].count" should be equal to "1"
     And the JSON node "data.nested[0].group" should be equal to "Gathering Feedback"
 
   Scenario: I GET count of feedback grouped by custom_category

@@ -44,7 +44,7 @@ class EmptyDb extends AbstractDbSet
     {
         $em = $this->getEm();
 
-        // we need a brand
+        // we need a brand here, but the other db's use data.php which has all the brands
         $brand = new Brand();
         $em->persist($brand);
         $em->flush();

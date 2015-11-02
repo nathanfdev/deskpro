@@ -68,32 +68,55 @@ class PersonSetting implements EntityInterface, NotifyPropertyChanged
      */
     protected $value;
 
+    /**
+     * Constructor.
+     *
+     * @param Person $person
+     * @param string $name
+     */
     public function __construct(Person $person, $name)
     {
         $this->person = $person;
         $this->name   = $name;
     }
 
+    /**
+     * @return array
+     */
     public function getId()
     {
         return [$this->person->getId(), $this->getName()];
     }
 
+    /**
+     * @return Person
+     */
     public function getPerson()
     {
         return $this->person;
     }
 
+    /**
+     * @return mixed
+     */
     public function getName()
     {
         return $this->name;
     }
 
+    /**
+     * @return mixed
+     */
     public function getValue()
     {
         return $this->value;
     }
 
+    /**
+     * @param $value
+     *
+     * @return $this
+     */
     public function setValue($value)
     {
         $this->value = $value;

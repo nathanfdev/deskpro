@@ -37,7 +37,8 @@ export class Header extends React.Component {
     departmentsStatus: PropTypes.object.isRequired,
     current: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
-    toggleSearch: PropTypes.func.isRequired
+    toggleSearch: PropTypes.func.isRequired,
+    online: PropTypes.bool.isRequired
   };
 
   componentDidMount() {
@@ -84,6 +85,10 @@ export class Header extends React.Component {
         text = departments.getIn([current.departments[0], 'title']);
         render = this.wrapHeaderText(text);
         break;
+      case 'everyone':
+        text = 'everyone';
+        render = this.wrapHeaderText(text);
+        break;
       default:
         render = <Spinner width="20" height="20" />;
     }
@@ -93,7 +98,7 @@ export class Header extends React.Component {
 
   renderOnline() {
     if (this.props.current.chat_type === 'agent') {
-      return <b className="user-status online"></b>;
+      return this.props.online ? <b className="user-status online"></b> : <b className="user-status offline"></b>;
     }
   }
 

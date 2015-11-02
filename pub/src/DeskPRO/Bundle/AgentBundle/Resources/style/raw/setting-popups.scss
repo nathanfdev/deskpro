@@ -261,6 +261,10 @@ $right-bucket: 200px;
       &.submit {
         text-align: center;
       }
+
+      .loader {
+        height: 40px;
+      }
     }
 
     .bucket-column.bucket-column-full {
@@ -271,6 +275,16 @@ $right-bucket: 200px;
       width: 200px;
       float: right;
       padding-left: 10px;
+      position: relative;
+      z-index: 100;
+
+      .error {
+        display: block;
+        padding: 10px 0;
+        font-size: 0.85em;
+        opacity: 0.5;
+        color: #ff0000;
+      }
     }
   }
 }
@@ -317,20 +331,39 @@ $right-bucket: 200px;
 
   // Upload avatar button
   .user-avatar {
-    position: relative;
     text-align: left;
     padding-left: 40px;
-    z-index: 99;
 
-    span {
+    .user-photo {
       display: inline-block;
       width: 24px;
       height: 24px;
       border-radius: 2px;
       background-size: cover;
       position: absolute;
-      left: 5px;
+      left: 18px;
       top: 6px;
+
+      &.gravatar {
+        position: absolute;
+        top: 0;
+        left: 2px !important;
+      }
+
+      &.text-fallback {
+        background-color: #CDD2D4 !important;
+        margin-left: 2px;
+
+        .text {
+          color: black;
+          font-size: 100%;
+          position: relative;
+          top: 50%;
+          -webkit-transform: translateY(-50%);
+          -ms-transform: translateY(-50%);
+          transform: translateY(-50%);
+        }
+      }
     }
   }
 

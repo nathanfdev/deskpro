@@ -38,6 +38,9 @@ use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
  */
 class FeedbackTransformer extends AbstractDataSerializerTransformer
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
         return [
@@ -60,6 +63,9 @@ class FeedbackTransformer extends AbstractDataSerializerTransformer
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
         return [];

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\AgentChat\Interfaces;
 
 /**
@@ -41,7 +40,8 @@ interface Chatable
     const PARTICIPANT_TYPE_TEAM       = 'team';
     const PARTICIPANT_TYPE_DEPARTMENT = 'department';
 
-    const PARTICIPANT_TYPE_GROUP = 'group';
+    const PARTICIPANT_TYPE_EVERYONE = 'everyone';
+    const PARTICIPANT_TYPE_GROUP    = 'group';
 
     /**
      * @return int
