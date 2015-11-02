@@ -77,14 +77,8 @@ export default createReducer(initialState, {
     let newFilters = {};
     if (state.get('currentListParams').get('filters')) {
       newFilters = state.get('currentListParams').get('filters').toJS();
-      for (var property in payload) {
-        if (payload.hasOwnProperty(property)) {
-          newFilters[property] = payload[property];
-        }
-      }
-    } else {
-      newFilters = payload;
     }
+    newFilters[payload.filter] = payload.value;
     return state.setIn(['currentListParams', 'filters'], Immutable.fromJS(newFilters));
   },
 
