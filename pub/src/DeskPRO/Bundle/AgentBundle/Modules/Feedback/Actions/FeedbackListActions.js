@@ -69,9 +69,13 @@ export const loadFeedbackList = createAction(
       if (filters) {
         delete params.filters;
         for (var property in filters) {
-          if (filters.hasOwnProperty(property) && filters[property]) {
-            if (property === 'created_from' || property === 'created_to') {
-              params[property] = Moment(filters[property]).format('YYYY-MM-DD HH:mm:ss');
+          if (filters.hasOwnProperty(property)) {
+            if (property === 'date_created') {
+              for (var dateProperty in filters[property]) {
+                if (filters[property].hasOwnProperty(dateProperty) && filters[property][dateProperty]) {
+                  params[dateProperty] = Moment(filters[property][dateProperty]).format('YYYY-MM-DD HH:mm:ss');
+                }
+              }
             } else {
               params[property] = filters[property];
             }
@@ -201,11 +205,3 @@ export const setFilterValue = createAction(
   'FEEDBACK_SET_FILTER_VALUE',
     update => update
 );
-
-
-/** @ToDo migrate to Ampliflux v2 after FilterBy block design */
-export const resetFilters = createAction(
-  'FEEDBACK_RESET_FILTERS',
-  (trigger, filterAlias, filterName) => {
-    trigger({ alias: filterAlias, name: filterName, value: '' });
-  });

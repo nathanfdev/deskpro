@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {QuickFilter} from './QuickFilter';
+import classNames from 'classnames';
 
 export class ChoiceMenu extends Component {
 
@@ -34,36 +35,23 @@ export class ChoiceMenu extends Component {
   }
 }
 
-export class ChoiceMenuHeader extends Component {
-
-  static propTypes = {
-    title: PropTypes.string.isRequired
-  };
-
-  render() {
-    return (
-      <div className="dpw-navigation-dropdown-mini-header">
-        {this.props.title}
-      </div>
-    );
-  }
-}
-
 export class ChoiceMenuOption extends Component {
 
   static propTypes = {
     label: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     onClick: PropTypes.func.isRequired,
+    isActive: PropTypes.bool,
     children: PropTypes.any
   };
 
   render() {
-    const {label, type, value, onClick} = this.props;
+    const {label, value, isActive, onClick} = this.props;
+    var classes = classNames('dpw--popup-item-person', { 'active': isActive });
+
     return (
       <li>
-        <div className="dpw--popup-item-person" onClick={onClick.bind(this, {[type]: value})}>
+        <div className={classes} onClick={onClick.bind(this, value)}>
           <span className="dpw-popup-item-collection-name">
             {label}
           </span>
@@ -93,5 +81,21 @@ export class ChoiceMenuOptionGroup extends Component {
       );
     }
     return (<div/>);
+  }
+}
+
+
+export class ChoiceMenuHeader extends Component {
+
+  static propTypes = {
+    title: PropTypes.string.isRequired
+  };
+
+  render() {
+    return (
+      <div className="dpw-navigation-dropdown-mini-header">
+        {this.props.title}
+      </div>
+    );
   }
 }

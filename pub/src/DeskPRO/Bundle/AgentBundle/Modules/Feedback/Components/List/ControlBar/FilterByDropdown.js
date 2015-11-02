@@ -28,22 +28,37 @@ const FilterByDropdown = React.createClass({
    this.props.toggleDropdown();
    },*/
 
-  resetFilter(type) {
-    const {dispatch} = this.props;
-    dispatch(setFilterValue({ [type]: null }));
-    dispatch(loadFeedbackList());
+  getInitialFromTo(active) {
+    let from = null;
+    let to = null;
+    if (active) {
+      const {filterParams} = this.props;
+      if (filterParams.get('date_created')) {
+        const dateCreated = filterParams.get('date_created');
+        from = dateCreated.get('created_from');
+        to = dateCreated.get('created_to');
+      }
+    }
+    return { from: from, to: to };
   },
 
-  submitFilter(model) {
+  submitFilter(type, model) {
     const {dispatch} = this.props;
-    dispatch(setFilterValue(model));
+    dispatch(setFilterValue({ filter: type, value: model }));
     dispatch(loadFeedbackList());
     // this.props.toggleDropdown();
   },
 
+  resetFilter(type) {
+    console.log('Reset: ', type);
+    const {dispatch} = this.props;
+    dispatch(setFilterValue({ filter: type, value: null }));
+    dispatch(loadFeedbackList());
+  },
+
   checkIfActiveDateCreatedFilter() {
     const {filterParams} = this.props;
-    if (filterParams && (filterParams.get('created_from') || filterParams.get('created_to'))) {
+    if (filterParams && filterParams.get('date_created')) {
       return true;
     }
   },
@@ -62,22 +77,45 @@ const FilterByDropdown = React.createClass({
     }
   },
 
-  renderDateCreatedItemContent(active) {
+  renderDateCreatedItemContent(active, initialFromTo) {
     if (active) {
-      const {filterParams} = this.props;
-      const from = filterParams.get('created_from') ? Moment(filterParams.get('created_from')).format('DD/MM/YYYY') : '...';
-      const to = filterParams.get('created_to') ? Moment(filterParams.get('created_to')).format('DD/MM/YYYY') : '...';
+      const from = initialFromTo.from ? Moment(initialFromTo.from).format('DD/MM/YYYY') : '...';
+      const to = initialFromTo.to ? Moment(initialFromTo.to).format('DD/MM/YYYY') : '...';
       return (
         <span className="dpw-navigation-dropdown-item-inline-info">{from} - {to}</span>
       );
     }
   },
 
+  renderTypeItemContent(active) {
+    if (active) {
+      const {filterParams} = this.props;
+      const chosenValues = filterParams.get('category').toJS();
+      return (
+        <span className="dpw-navigation-dropdown-item-inline-info">{chosenValues[0]}</span>
+      );
+    }
+  },
+
+  renderTypeItemExtraContent(active) {
+    if (active) {
+      const {filterParams} = this.props;
+      const chosenValues = filterParams.get('category').toJS();
+      let size = chosenValues.length;
+      if (size > 1) {
+        return (
+          <span className="dpw-navigation-dropdown-item-inline-info dpw-navigation-dropdown-item-inline-info-extra">
+            +{size - 1}
+          </span>
+        );
+      }
+    }
+  },
+
   render() {
     const {filterParams} = this.props;
-    const initialFrom = filterParams && filterParams.get('created_from') ? filterParams.get('created_from') : null;
-    const initialTo = filterParams && filterParams.get('created_to') ? filterParams.get('created_to') : null;
     const isDateCreatedFilterActive = this.checkIfActiveDateCreatedFilter();
+    const initialFromTo = this.getInitialFromTo(isDateCreatedFilterActive);
     const isTypesFilterActive = this.checkIfActiveTypesFilter();
     const isStatusesFilterActive = this.checkIfActiveStatusesFilter();
     return (
@@ -89,10 +127,10 @@ const FilterByDropdown = React.createClass({
           icon="calendar-o"
           label="Type"
           >
+          {this.renderTypeItemContent(isTypesFilterActive)}
+          {this.renderTypeItemExtraContent(isTypesFilterActive)}
           <Menu>
-            <ChoiceMenu title="Feedback Type">
-              <TypesCollectionContainer/>
-            </ChoiceMenu>
+            <TypesCollectionContainer />
           </Menu>
         </FilterItem>
         <FilterItem
@@ -125,7 +163,7 @@ const FilterByDropdown = React.createClass({
           icon="calendar-o"
           label="Date"
           >
-          {this.renderDateCreatedItemContent(isDateCreatedFilterActive)}
+          {this.renderDateCreatedItemContent(isDateCreatedFilterActive, initialFromTo)}
           <Menu>
             <div
               className="dpw-navigation-dropdown-panel dpw-navigation-date-picker-panel dpw-navigation-dropdown-panel-corner-left">
@@ -135,19 +173,20 @@ const FilterByDropdown = React.createClass({
               <div className="dpw-date-picker">
 
                 <div className="dpw-date-picker-panel-container">
-                  <Formsy.Form onValidSubmit={this.submitFilter}>
+                  <Formsy.Form onValidSubmit={this.submitFilter.bind(this, 'date_created')}>
                     <DateTimePicker
                       label="From"
                       name="created_from"
                       className="dpw-date-picker-left"
-                      initialValue={initialFrom}
+                      initialValue={initialFromTo.from}
                       />
                     <DateTimePicker
                       label="To"
                       name="created_to"
                       className="dpw-date-picker-right"
-                      initialValue={initialTo}
+                      initialValue={initialFromTo.to}
                       />
+
                     <div className=" dpw-date-picker-footer">
                       <button type="submit" className="dpw--panel-button">Apply Date Range Filter</button>
                     </div>
