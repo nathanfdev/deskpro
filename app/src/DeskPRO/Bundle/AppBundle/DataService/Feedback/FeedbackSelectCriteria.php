@@ -69,9 +69,12 @@ class FeedbackSelectCriteria extends Criteria
                     $qb->setParameter('category_title', $value);
                     break;
                 case 'status_category':
-                    $qb
-                        ->andWhere('statusCategory.title = :title')
-                        ->setParameter('title', $value);
+                    if (is_array($value)) {
+                        $qb->andWhere('statusCategory.title IN (:title)');
+                    } else {
+                        $qb->andWhere('statusCategory.title = :title');
+                    }
+                    $qb->setParameter('title', $value);
                     break;
                 case 'label':
                     $qb
@@ -83,14 +86,20 @@ class FeedbackSelectCriteria extends Criteria
                         ->andWhere('labels.label IS NULL');
                     break;
                 case 'custom_category':
-                    $qb
-                        ->andWhere('customCat.input = :input')
-                        ->setParameter('input', $value);
+                    if (is_array($value)) {
+                        $qb->andWhere('customCat.input IN (:input)');
+                    } else {
+                        $qb->andWhere('customCat.input = :input');
+                    }
+                    $qb->setParameter('input', $value);
                     break;
                 case 'status':
-                    $qb
-                        ->andWhere("$alias.status = :status")
-                        ->setParameter('status', $value);
+                    if (is_array($value)) {
+                        $qb->andWhere("$alias.status = :status");
+                    } else {
+                        $qb->andWhere("$alias.status = :status");
+                    }
+                    $qb->setParameter('status', $value);
                     break;
                 case 'hidden_status':
                     $qb

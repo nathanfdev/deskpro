@@ -9,5 +9,5 @@ export function loadTicketLayout(layout_id) {
 }
 
 export function loadTicketLayoutsForDepartment($department_id) {
-    DpApi.sendGet(`DP_API/departments/${department_id}/ticket_layouts`)
+    DpApi.sendGet(`DP_API/ticket_departments/${department_id}/ticket_layouts`)
 }

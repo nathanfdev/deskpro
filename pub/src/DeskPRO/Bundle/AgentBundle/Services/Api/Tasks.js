@@ -113,7 +113,7 @@ export function loadTeams(params = {}) {
  * @return Promise
  */
 export function loadDepartments(params = {}) {
-  return DpApi.sendGet('DP_API/departments?' + compileParams(params));
+  return DpApi.sendGet('DP_API/ticket_departments?' + compileParams(params));
 }
 
 /*

@@ -5,5 +5,5 @@ export function loadAllTicketStatuses() {
 }
 
 export function loadTicketStatusesForDepartment($department_id) {
-    DpApi.sendGet(`DP_API/departments/${department_id}/ticket_statuses`)
+    DpApi.sendGet(`DP_API/ticket_departments/${department_id}/ticket_statuses`);
 }
