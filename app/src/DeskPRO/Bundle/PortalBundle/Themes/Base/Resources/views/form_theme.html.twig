@@ -12,6 +12,61 @@
     </div>
 {%- endblock form_row -%}
 
+
+{# Date and Time #}
+
+{%- block datetime_widget -%}
+    <div class="dpx-date-time">
+        {% if widget == 'single_text' %}
+            {{- block('form_widget_simple') -}}
+        {%- else -%}
+            <div {{ block('widget_container_attributes') }}>
+                {{- form_errors(form.date) -}}
+                {{- form_errors(form.time) -}}
+                {{- form_widget(form.date, {nodpx: true}) -}}
+                {{- form_widget(form.time, {nodpx: true}) -}}
+            </div>
+        {%- endif -%}
+    </div>
+{%- endblock datetime_widget -%}
+
+{%- block date_widget -%}
+    {% if not (nodpx is defined and nodpx) %}
+        <div class="dpx-date">
+    {% endif %}
+        {%- if widget == 'single_text' -%}
+            {{ block('form_widget_simple') }}
+        {%- else -%}
+            <div {{ block('widget_container_attributes') }}>
+                {{- date_pattern|replace({
+                    '{{ year }}':  form_widget(form.year),
+                    '{{ month }}': form_widget(form.month),
+                    '{{ day }}':   form_widget(form.day),
+                })|raw -}}
+            </div>
+        {%- endif -%}
+    {% if not (nodpx is defined and nodpx) %}
+        </div>
+    {% endif %}
+{%- endblock date_widget -%}
+
+{%- block time_widget -%}
+    {% if not (nodpx is defined and nodpx) %}
+        <div class="dpx-time">
+    {% endif %}
+        {%- if widget == 'single_text' -%}
+            {{ block('form_widget_simple') }}
+        {%- else -%}
+            {%- set vars = widget == 'text' ? { 'attr': { 'size': 1 }} : {} -%}
+            <div {{ block('widget_container_attributes') }}>
+                {{ form_widget(form.hour, vars) }}{% if with_minutes %}:{{ form_widget(form.minute, vars) }}{% endif %}{% if with_seconds %}:{{ form_widget(form.second, vars) }}{% endif %}
+            </div>
+        {%- endif -%}
+    {% if not (nodpx is defined and nodpx) %}
+        </div>
+    {% endif %}
+{%- endblock time_widget -%}
+
 {# Labels #}
 
 {%- block form_label -%}

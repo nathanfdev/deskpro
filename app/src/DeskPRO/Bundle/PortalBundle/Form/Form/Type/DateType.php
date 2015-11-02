@@ -48,5 +48,13 @@ class DateType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
+        $current_date = new \DateTime();
+        $current_year = (int) $current_date->format('Y');
+        $resolver->setDefaults(
+            [
+                'years'       => range(($current_year - 100), ($current_year + 100)),
+                'placeholder' => '',
+            ]
+        );
     }
 }
