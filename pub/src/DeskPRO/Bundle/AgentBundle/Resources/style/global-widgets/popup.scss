@@ -198,7 +198,7 @@
         vertical-align: middle;
       }
 
-      .dpw--popup-item-person:hover, .dpw--popup-item-box:hover, .dpw--popup-item-language:hover  {
+      .dpw--popup-item-person:hover, .dpw--popup-item-person.active, .dpw--popup-item-box:hover, .dpw--popup-item-language:hover  {
         background: #62ad8c;
         color: #fff;
       }
