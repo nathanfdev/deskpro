@@ -6,7 +6,7 @@ describe('Ampliflux actions handlers', () => {
   const handlers = require('DeskPRO/Component/Ampliflux/reducers/handlers');
 
   describe('asyncIndicator()', () => {
-    const payload = null;
+    const payload = {};
     const action = {
       payload,
       meta: {
@@ -21,7 +21,8 @@ describe('Ampliflux actions handlers', () => {
           status: {
             loading: null,
             success: null,
-            error: null
+            isError: null,
+            errorCode: null
           }
         }
       });
@@ -31,7 +32,8 @@ describe('Ampliflux actions handlers', () => {
       const handler = handlers.asyncIndicator({
         loading: 'async.status.loading',
         success: 'async.status.success',
-        error: 'async.status.error',
+        isError: 'async.status.isError',
+        errorCode: 'async.status.errorCode'
       });
 
       it('should set loading indicator to true and others to false when sequence starts', () => {
@@ -39,23 +41,27 @@ describe('Ampliflux actions handlers', () => {
         const result = handler(state, payload, action);
         expect(result.toJS().async.status.loading).toEqual(true);
         expect(result.toJS().async.status.success).toEqual(false);
-        expect(result.toJS().async.status.error).toEqual(false);
+        expect(result.toJS().async.status.isError).toEqual(false);
+        expect(result.toJS().async.status.errorCode).toEqual(null);
       });
 
-      it('should set success indicator to true and error to false when sequence succeeds', () => {
+      it('should set success indicator to true and isError to false when sequence succeeds', () => {
         action.meta.sequence = 'success';
         const result = handler(state, payload, action);
         expect(result.toJS().async.status.loading).toEqual(null);
         expect(result.toJS().async.status.success).toEqual(true);
-        expect(result.toJS().async.status.error).toEqual(false);
+        expect(result.toJS().async.status.isError).toEqual(false);
+        expect(result.toJS().async.status.errorCode).toEqual(null);
       });
 
-      it('should set success indicator to false and error to true when sequence fails', () => {
+      it('should set success indicator to false and populate isError and errorCode with error information', () => {
         action.meta.sequence = 'error';
+        payload.response = {xhr: {status: 'test_status'}};
         const result = handler(state, payload, action);
         expect(result.toJS().async.status.loading).toEqual(null);
         expect(result.toJS().async.status.success).toEqual(false);
-        expect(result.toJS().async.status.error).toEqual(true);
+        expect(result.toJS().async.status.isError).toEqual(true);
+        expect(result.toJS().async.status.errorCode).toEqual('test_status');
       });
 
       it('should set loading indicator to false when sequence is done', () => {
@@ -63,7 +69,8 @@ describe('Ampliflux actions handlers', () => {
         const result = handler(state, payload, action);
         expect(result.toJS().async.status.loading).toEqual(false);
         expect(result.toJS().async.status.success).toEqual(null);
-        expect(result.toJS().async.status.error).toEqual(null);
+        expect(result.toJS().async.status.isError).toEqual(null);
+        expect(result.toJS().async.status.errorCode).toEqual(null);
       });
     });
 

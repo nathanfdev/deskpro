@@ -1,6 +1,7 @@
 jest.dontMock('DeskPRO/Component/Ampliflux/reducers/handlers');
 
 import { toImmutable } from 'Helpers/redux';
+import Immutable from 'immutable';
 
 describe('Ampliflux actions handlers', () => {
   const handlers = require('DeskPRO/Component/Ampliflux/reducers/handlers');
@@ -27,6 +28,22 @@ describe('Ampliflux actions handlers', () => {
       expect(next.toJS().b.c.d.e.f).toEqual(42);
       expect(next.toJS().b.c.e).toBeUndefined();
     });
+
+    it('should convert POJO value to immutable', () => {
+      const value = {d: 'test'};
+      const next = handlers.setValue('b.c', value)(state);
+      const valueInState = next.getIn(['b', 'c']);
+      expect(Immutable.Iterable.isIterable(valueInState)).toBeTruthy();
+      expect(next.getIn(['b', 'c', 'd'])).toEqual('test');
+    });
+
+    it('should accept immutable objects as value', () => {
+      const immutableValue = Immutable.fromJS({d: 'test'});
+      const next = handlers.setValue('b.c', immutableValue)(state);
+      const valueInState = next.getIn(['b', 'c']);
+      expect(Immutable.Iterable.isIterable(valueInState)).toBeTruthy();
+      expect(next.getIn(['b', 'c', 'd'])).toEqual('test');
+    });
   });
 
   describe('mergeValue()', () => {
@@ -46,6 +63,22 @@ describe('Ampliflux actions handlers', () => {
       expect(next.toJS().b.c.d.e).toEqual(42);
       expect(next.toJS().b.f).toEqual(4242);
     });
+
+    it('should convert POJO value to immutable', () => {
+      const value = {c: {d: {e: 'test'}}};
+      const next = handlers.mergeValue('b', value)(state);
+      const valueInState = next.getIn(['b', 'c']);
+      expect(Immutable.Iterable.isIterable(valueInState)).toBeTruthy();
+      expect(next.getIn(['b', 'c', 'd', 'e'])).toEqual('test');
+    });
+
+    it('should accept immutable objects', () => {
+      const immutableValue = Immutable.fromJS({c: {d: {e: 'test'}}});
+      const next = handlers.mergeValue('b', immutableValue)(state);
+      const valueInState = next.getIn(['b', 'c']);
+      expect(Immutable.Iterable.isIterable(valueInState)).toBeTruthy();
+      expect(next.getIn(['b', 'c', 'd', 'e'])).toEqual('test');
+    });
   });
 
   describe('setPayload()', () => {
@@ -57,6 +90,22 @@ describe('Ampliflux actions handlers', () => {
     it('should set default value when property is missing in payload', () => {
       const next = handlers.setPayload('b.c.d', 'e.f', 'default')(state, {e: 'and f is missing'});
       expect(next.toJS().b.c.d).toEqual('default');
+    });
+
+    it('should convert POJO value to immutable', () => {
+      const value = {e: {f: 'test'}};
+      const next = handlers.setPayload('b.c.d', null)(state, value);
+      const valueInState = next.getIn(['b', 'c', 'd']);
+      expect(Immutable.Iterable.isIterable(valueInState)).toBeTruthy();
+      expect(next.getIn(['b', 'c', 'd', 'e', 'f'])).toEqual('test');
+    });
+
+    it('should accept immutable objects', () => {
+      const immutableValue = Immutable.fromJS({e: {f: 'test'}});
+      const next = handlers.setPayload('b.c.d', 'e')(state, immutableValue);
+      const valueInState = next.getIn(['b', 'c', 'd']);
+      expect(Immutable.Iterable.isIterable(valueInState)).toBeTruthy();
+      expect(next.getIn(['b', 'c', 'd', 'f'])).toEqual('test');
     });
   });
 
@@ -94,6 +143,14 @@ describe('Ampliflux actions handlers', () => {
     it('should merge deep when 4th argument is true', () => {
       const next = handlers.mergePayload('b.c', null, null, true)(state, {h: 42});
       expect(next.toJS().b.c.h).toEqual(42);
+    });
+
+    it('should convert POJO value to immutable', () => {
+      const value = {h: {i: {j: 'test'}}};
+      const next = handlers.mergePayload('b.c', 'h.i')(state, value);
+      const valueInState = next.getIn(['b', 'c']);
+      expect(Immutable.Iterable.isIterable(valueInState)).toBeTruthy();
+      expect(next.getIn(['b', 'c', 'j'])).toEqual('test');
     });
   });
 
