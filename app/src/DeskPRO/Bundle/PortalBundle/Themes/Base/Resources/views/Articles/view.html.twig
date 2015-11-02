@@ -20,8 +20,10 @@
       <h1>{{ article.real_title }}</h1>
 
       <div class="article-meta">
-        By <span style="background: url(https://secure.gravatar.com/avatar/79cfcfdf770db09a40fca15bb845fef1?&amp;s=80) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>
-        <a href="#">{{ phrase('portal.articles.by-line', { name: article.person.name }) }}</a> on {{ article.date_published | date('Y-m-d') }}
+        <span style="background: url({{ avatar_url(article.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>
+        {{ article.person.name }}
+        <hr>
+        {{ article.date_published | date('Y-m-d') }}
         <hr>
         <span class="comments"><i class="fa fa-comments-o"></i> <a href="#comments">{{ phrase('portal.general.comments-count', {count: article.num_comments}) }}</a></span>
         <hr>
