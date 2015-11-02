@@ -41,7 +41,9 @@ export function setValue(statePropKey, value) {
   return (state, payload, action) => {
     verifyActionError(action);
     verifyImmutable(state);
-    return state.setIn(statePropKey.split('.'), value);
+    const immutableValue = Immutable.fromJS(value);
+
+    return state.setIn(statePropKey.split('.'), immutableValue);
   };
 }
 
@@ -59,17 +61,19 @@ export function mergeValue(statePropKey, value, deep = false) {
     verifyActionError(action);
     verifyImmutable(state);
 
+    const immutableValue = Immutable.fromJS(value);
+
     if (statePropKey) {
       if (deep) {
-        return state.mergeDeepIn(statePropKey.split('.'), value);
+        return state.mergeDeepIn(statePropKey.split('.'), immutableValue);
       }
-      return state.mergeIn(statePropKey.split('.'), value);
+      return state.mergeIn(statePropKey.split('.'), immutableValue);
     }
 
     if (deep) {
-      return state.mergeDeep(value);
+      return state.mergeDeep(immutableValue);
     }
-    return state.merge(value);
+    return state.merge(immutableValue);
   };
 }
 
@@ -101,12 +105,13 @@ export function setPayload(statePropKey, payloadPropKey = '@', defaultValue = nu
       value = payload || defaultValue;
     }
 
+    const immutableValue = Immutable.fromJS(value);
     if (statePropKey) {
-      return state.setIn(statePropKey.split('.'), value);
+      return state.setIn(statePropKey.split('.'), immutableValue);
     }
 
-    verifyIsMapish(value);
-    return Immutable.fromJS(value);
+    verifyIsMapish(immutableValue);
+    return immutableValue;
   };
 }
 
@@ -153,19 +158,20 @@ export function mergePayload(statePropKey = null, payloadPropKey = '@', defaultV
 
     verifyIsMapish(value);
 
+    const immutableValue = Immutable.fromJS(value);
     if (statePropKey) {
       if (deep) {
-        return state.mergeDeepIn(statePropKey.split('.'), value);
+        return state.mergeDeepIn(statePropKey.split('.'), immutableValue);
       }
 
-      return state.mergeIn(statePropKey.split('.'), value);
+      return state.mergeIn(statePropKey.split('.'), immutableValue);
     }
 
     if (deep) {
-      return state.mergeDeep(value);
+      return state.mergeDeep(immutableValue);
     }
 
-    return state.merge(value);
+    return state.merge(immutableValue);
   };
 }
 

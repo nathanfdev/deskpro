@@ -2444,6 +2444,8 @@ h1 {
 
 // All Tables
 table {
+  border-collapse: collapse;
+  border-spacing: 0px;
   tr {
     td {
       padding: 5px 10px;
@@ -6333,6 +6335,7 @@ ul.categories-article-list {
 .user-ticket-list {
   margin-bottom: 60px;
   width: 100%;
+  font-size: 13px;
 
   td, td:first-child {
     padding: 0;

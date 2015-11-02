@@ -4,6 +4,40 @@
     <div class="breadcrumbs">
         {% show breadcrumbs %}
     </div>
+
+    <div class="column-full">
+      <div>
+      <nav class="tabs secondary-tabs">
+        <ul>
+          <li class="tab-active">
+            <a href="#">
+              <div>
+                <span class="title">Open Tickets <div class="text-tag rating-tag">3 awaiting response</div></span>
+              </div>
+            </a>
+          </li>
+
+          <li class="tab-inactive">
+            <a href="#">
+              <div>
+                <span class="title">Resolved</span>
+              </div>
+            </a>
+          </li>
+
+          <li class="tab-solo">
+            <form class="form-filter">
+              <div class="bucket">
+                <span>Filter: </span>
+                <input placeholder="Type filters here" type="text">
+              </div>
+            </form>
+          </li>
+        </ul>
+        </nav>
+      </div>
+    </div>
+
     <div class="column-full">
         {% if type == 'own' and person.organization and person.organization_manager %}
             <a class="button" href="{{ path('portal_tickets', { type: 'organization' }) }}">
