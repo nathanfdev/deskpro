@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import * as TasksActions from '../../../Actions/tasksActions';
+import * as TasksActions from '../../../../Actions/tasksActions';
 import { Header } from './Header';
 import { FieldGroup } from './Fields/FieldGroup';
 import { FullField } from './Fields/FullField';
