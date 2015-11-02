@@ -43,7 +43,7 @@ class AgentDataService extends AbstractDataService
     /**
      * @var int
      */
-    protected $agent_timeout = 60;
+    protected $agent_timeout = 120;
 
     /**
      * @var \Application\DeskPRO\DBAL\Connection

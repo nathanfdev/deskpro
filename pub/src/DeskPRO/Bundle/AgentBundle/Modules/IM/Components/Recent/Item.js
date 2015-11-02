@@ -25,7 +25,8 @@ export class Item extends React.Component {
           name: agent.get('name'),
           id: agent.get('id'),
           type: chat.get('chat_type'),
-          elementId: 'chat-with-' + this.props.chat.get('chat_type') + '-' + agent.get('id')
+          elementId: 'chat-with-' + this.props.chat.get('chat_type') + '-' + agent.get('id'),
+          online: agent.get('online')
         };
         break;
       case 'team':
@@ -35,7 +36,8 @@ export class Item extends React.Component {
           name: team.get('name'),
           id: team.get('id'),
           type: chat.get('chat_type'),
-          elementId: 'chat-with-' + this.props.chat.get('chat_type') + '-' + team.get('id')
+          elementId: 'chat-with-' + this.props.chat.get('chat_type') + '-' + team.get('id'),
+          online: false
         };
         break;
       case 'department':
@@ -45,7 +47,8 @@ export class Item extends React.Component {
           name: department.get('title'),
           id: department.get('id'),
           type: chat.get('chat_type'),
-          elementId: 'chat-with-' + this.props.chat.get('chat_type') + '-' + department.get('id')
+          elementId: 'chat-with-' + this.props.chat.get('chat_type') + '-' + department.get('id'),
+          online: false
         };
         break;
       case 'everyone':
@@ -54,7 +57,8 @@ export class Item extends React.Component {
           name: 'Everyone',
           id: chat.get('id'),
           type: chat.get('chat_type'),
-          elementId: 'chat-with-' + this.props.chat.get('chat_type')
+          elementId: 'chat-with-' + this.props.chat.get('chat_type'),
+          online: false
         };
         break;
       default:
@@ -102,6 +106,10 @@ export class Item extends React.Component {
 
   render() {
     const entity = this.getEntity();
+    let className = 'chat-avatar';
+    if (entity.type === 'agent' && entity.online) {
+      className += ' chat-user-online';
+    }
 
     return (
       <a
@@ -109,7 +117,7 @@ export class Item extends React.Component {
         href="#"
         title={entity.name}
         onClick={this.props.startChat.bind(null, entity.id, entity.type)}
-        className="chat-avatar">
+        className={className}>
         {entity.avatar}
         {entity.count}
       </a>

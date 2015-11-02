@@ -13,16 +13,21 @@ import { SearchForm } from './SearchForm';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 import { addMessage } from '../../Actions/messagesActions';
 
+import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
+import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
+
 @connect(state => ({
   me: meSelector(state),
   messages: state.IM.messages,
-  current: state.IM.chats.get('current')
+  current: state.IM.chats.get('current'),
+  agents: agentsSelector(state)
 }))
 export class Chat extends React.Component {
 
   static propTypes = {
     me: PropTypes.object.isRequired,
     current: PropTypes.object.isRequired,
+    agents: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
   };
 
@@ -33,6 +38,27 @@ export class Chat extends React.Component {
       searchTyped: '',
       searchShown: false
     };
+  }
+
+  componentWillMount() {
+    this.props.dispatch(loadAllAgents());
+  }
+
+  isAgentChat() {
+    return this.props.current.chat_type === 'agent';
+  }
+
+  isOnline() {
+    let online = false;
+    if (this.isAgentChat()) {
+      const { agents, current, me } = this.props;
+      if (agents && agents.size > 0) {
+        const filteredAgents = current.agents.filter(agent => agent !== me.get('id') );
+        const notMe = filteredAgents[0];
+        online = agents.getIn([notMe, 'online']);
+      }
+    }
+    return online;
   }
 
   messageList = () => {
@@ -75,16 +101,19 @@ export class Chat extends React.Component {
     return <div className="active-chat-user-typing">Jeniffer is typing a message <span id="typing">...</span></div>;
   }
 
-  static offline() {
-    return <Offline />;
+  offline() {
+    if (this.isAgentChat()) {
+      return <Offline online={this.isOnline()}/>;
+    }
   }
 
   render() {
     return (
       <div className="dropdown active-chat-dropdown" id="active-chat-dropdown">
-        <Header toggleSearch={this.toggleSearch}/>
+        <Header toggleSearch={this.toggleSearch} online={this.isOnline()}/>
         { this.searchForm() }
         { this.messageList() }
+        { this.offline() }
         <Footer handleAddMessage={this.handleAddMessage}/>
       </div>
     );
