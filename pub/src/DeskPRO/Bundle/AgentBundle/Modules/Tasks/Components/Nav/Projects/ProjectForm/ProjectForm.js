@@ -13,6 +13,8 @@ import { AgentTeamsList } from './Fields/AgentTeamsList';
 import { DepartmentsList } from './Fields/DepartmentsList';
 import { FieldErrors } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/FieldErrors';
 import Immutable from 'immutable';
+import Loader from 'react-loader';
+import classNames from 'classnames';
 
 export class ProjectForm extends React.Component {
 
@@ -38,7 +40,8 @@ export class ProjectForm extends React.Component {
       agents: project.get('agents', emptyObject).toArray(),
       agentTeams: project.get('teams', emptyObject).toArray(),
       departments: project.get('departments', emptyObject).toArray(),
-      errors: {}
+      errors: {},
+      submit: false
     };
   }
 
@@ -100,6 +103,9 @@ export class ProjectForm extends React.Component {
 
   onSubmit = event => {
     event.preventDefault();
+    this.setState({
+      submit: true
+    });
 
     const { project, dispatch } = this.props;
     const submitData = {
@@ -116,9 +122,15 @@ export class ProjectForm extends React.Component {
       promise = dispatch(TasksActions.createProject(submitData));
     }
 
-    promise.catch(result => this.setState({
-      errors: result.getData().errors
-    }));
+    promise.then(
+      () => this.setState({
+        submit: false
+      }),
+      result => this.setState({
+        errors: result.getData().errors,
+        submit: false
+      })
+    );
   };
 
   render() {
@@ -191,8 +203,11 @@ export class ProjectForm extends React.Component {
                 <FullField>
                   <button type="submit"
                           value="Save"
-                          className="dpw--popup-button"
+                          className={classNames('dpw--popup-button', {'hidden': this.state.submit})}
                           onClick={this.onSubmit}>Save</button>
+                  <Loader opacity={0}
+                          width={3}
+                          loaded={!this.state.submit} />
                 </FullField>
               </FieldGroup>
             </div>

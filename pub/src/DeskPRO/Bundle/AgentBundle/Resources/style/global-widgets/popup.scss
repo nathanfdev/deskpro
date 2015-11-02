@@ -109,6 +109,8 @@
   // add .even to the class (for example class='dpw--popup-content-right even') to have them stick at 50%
   .dpw--popup-content-left, .dpw--popup-content-right, .dpw--popup-content-full {
     padding: 5px 7px;
+    position: relative;
+    height: 60px;
   }
 
   .dpw--popup-content-left.even, .dpw--popup-content-right.even { width: 50%; }
