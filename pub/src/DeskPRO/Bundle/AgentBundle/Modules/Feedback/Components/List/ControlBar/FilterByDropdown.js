@@ -2,12 +2,12 @@ import React, {PropTypes} from 'react';
 import Formsy from 'formsy-react';
 import Moment from 'moment';
 import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
-import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
 import {FilterItem} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/FilterItem';
 import {DateTimePicker} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/DateTimePicker';
 import {ChoiceMenu} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/ChoiceMenu';
 import { setFilterValue, loadFeedbackList } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { TypesCollectionContainer } from './TypesCollectionContainer';
+import { CategoriesCollectionContainer } from './CategoriesCollectionContainer';
 import { StatusesCollectionContainer } from './StatusesCollectionContainer';
 
 const FilterByDropdown = React.createClass({
@@ -50,27 +50,33 @@ const FilterByDropdown = React.createClass({
   },
 
   resetFilter(type) {
-    console.log('Reset: ', type);
     const {dispatch} = this.props;
     dispatch(setFilterValue({ filter: type, value: null }));
     dispatch(loadFeedbackList());
   },
 
-  checkIfActiveDateCreatedFilter() {
+  checkIfDateCreatedFilterIsActive() {
     const {filterParams} = this.props;
     if (filterParams && filterParams.get('date_created')) {
       return true;
     }
   },
 
-  checkIfActiveTypesFilter() {
+  checkIfTypesFilterIsActive() {
     const {filterParams} = this.props;
     if (filterParams && filterParams.get('category')) {
       return true;
     }
   },
 
-  checkIfActiveStatusesFilter() {
+  checkIfCategoriesFilterIsActive() {
+    const {filterParams} = this.props;
+    if (filterParams && filterParams.get('custom_category')) {
+      return true;
+    }
+  },
+
+  checkIfStatusesFilterIsActive() {
     const {filterParams} = this.props;
     if (filterParams && (filterParams.get('status') || filterParams.get('status_category'))) {
       return true;
@@ -101,7 +107,32 @@ const FilterByDropdown = React.createClass({
     if (active) {
       const {filterParams} = this.props;
       const chosenValues = filterParams.get('category').toJS();
-      let size = chosenValues.length;
+      const size = chosenValues.length;
+      if (size > 1) {
+        return (
+          <span className="dpw-navigation-dropdown-item-inline-info dpw-navigation-dropdown-item-inline-info-extra">
+            +{size - 1}
+          </span>
+        );
+      }
+    }
+  },
+
+  renderCategoryItemContent(active) {
+    if (active) {
+      const {filterParams} = this.props;
+      const chosenValues = filterParams.get('custom_category').toJS();
+      return (
+        <span className="dpw-navigation-dropdown-item-inline-info">{chosenValues[0]}</span>
+      );
+    }
+  },
+
+  renderCategoryItemExtraContent(active) {
+    if (active) {
+      const {filterParams} = this.props;
+      const chosenValues = filterParams.get('custom_category').toJS();
+      const size = chosenValues.length;
       if (size > 1) {
         return (
           <span className="dpw-navigation-dropdown-item-inline-info dpw-navigation-dropdown-item-inline-info-extra">
@@ -113,11 +144,11 @@ const FilterByDropdown = React.createClass({
   },
 
   render() {
-    const {filterParams} = this.props;
-    const isDateCreatedFilterActive = this.checkIfActiveDateCreatedFilter();
+    const isDateCreatedFilterActive = this.checkIfDateCreatedFilterIsActive();
     const initialFromTo = this.getInitialFromTo(isDateCreatedFilterActive);
-    const isTypesFilterActive = this.checkIfActiveTypesFilter();
-    const isStatusesFilterActive = this.checkIfActiveStatusesFilter();
+    const isTypesFilterActive = this.checkIfTypesFilterIsActive();
+    const isCategoriesFilterActive = this.checkIfCategoriesFilterIsActive();
+    const isStatusesFilterActive = this.checkIfStatusesFilterIsActive();
     return (
       <Menu>
         <FilterItem
@@ -147,13 +178,14 @@ const FilterByDropdown = React.createClass({
         </FilterItem>
         <FilterItem
           filterType="custom_category"
-          isActive={Boolean(filterParams && filterParams.custom_category)}
+          isActive={isCategoriesFilterActive}
           resetFilter={this.resetFilter}
           icon="calendar-o"
           label="Category">
+          {this.renderCategoryItemContent(isCategoriesFilterActive)}
+          {this.renderCategoryItemExtraContent(isCategoriesFilterActive)}
           <Menu>
-            <Item label="Sub-menu 2"/>
-            <Item label="Subterranean"/>
+            <CategoriesCollectionContainer />
           </Menu>
         </FilterItem>
         <FilterItem
