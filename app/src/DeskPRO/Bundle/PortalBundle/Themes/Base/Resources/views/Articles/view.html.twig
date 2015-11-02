@@ -7,6 +7,16 @@
 
   <article class="news kb-article">
     <header>
+
+      <div class="header-button-container">
+        <div class="header-buttons">
+          {% show kb_subscription_link %}
+          {#<a href="#">{{ phrase('portal.general.btn-email') }} <i class="fa fa-envelope"></i></a>#}
+          {#<a href="#">{{ phrase('portal.general.btn-print') }} <i class="fa fa-print"></i></a>#}
+          {#<a href="#">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>#}
+        </div>
+      </div>
+      
       <h1>{{ article.real_title }}</h1>
 
       <div class="article-meta">
@@ -15,15 +25,6 @@
         <span class="comments"><i class="fa fa-comments"></i> <a href="#comments">{{ phrase('portal.general.comments-count', {count: article.num_comments}) }}</a></span>
       </div>
     </header>
-
-    <div class="header-button-container">
-      <div class="header-buttons">
-        {% show kb_subscription_link %}
-        {#<a href="#">{{ phrase('portal.general.btn-email') }} <i class="fa fa-envelope"></i></a>#}
-        {#<a href="#">{{ phrase('portal.general.btn-print') }} <i class="fa fa-print"></i></a>#}
-        {#<a href="#">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>#}
-      </div>
-    </div>
 
     {% show kb_subscription_info %}
 
