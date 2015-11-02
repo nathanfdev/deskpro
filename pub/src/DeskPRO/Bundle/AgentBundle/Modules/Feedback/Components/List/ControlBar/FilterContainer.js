@@ -28,7 +28,7 @@ export class FilterContainer extends Component {
     let filtersCounter = 0;
     if (filterParams) {
       title += ':';
-      if (filterParams.get('created_from') || filterParams.get('created_to')) {
+      if (filterParams.get('date_created')) {
         label = 'Created';
         filtersCounter++;
       }
