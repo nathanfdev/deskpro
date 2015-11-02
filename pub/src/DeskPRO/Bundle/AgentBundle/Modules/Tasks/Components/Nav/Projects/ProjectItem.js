@@ -4,17 +4,12 @@ import { ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/N
 export class ProjectItem extends ListItem {
 
   static propTypes = {
-    label: PropTypes.string.isRequired,
-    count: PropTypes.number.isRequired
+    project: PropTypes.object.isRequired,
+    onEdit: PropTypes.func.isRequired
   };
 
   constructor(props) {
-    const newProps = {
-      ...props,
-      label: <div part="label"><i className="fa fa-book" /> {props.label}</div>
-    };
-
-    super(newProps);
+    super(props);
 
     this.state = {
       showEditIcon: false
@@ -34,9 +29,11 @@ export class ProjectItem extends ListItem {
   };
 
   renderEditButton() {
+    const { project, onEdit } = this.props;
+
     return (
       <div className="list-counter-bucket">
-        <a href="#" className="edit-icon" onClick={null}>
+        <a href="#" className="edit-icon" onClick={onEdit.bind(this, project)}>
           <i className="fa fa-cog" />
         </a>
       </div>
@@ -46,7 +43,10 @@ export class ProjectItem extends ListItem {
   renderCount(count, active) {
     return (
       <div onMouseEnter={this.onShowEditIcon} onMouseLeave={this.onHideEditIcon}>
-        {this.state.showEditIcon ? this.renderEditButton() : super.renderCount(count, active)}
+        {this.state.showEditIcon
+          ? this.renderEditButton()
+          : super.renderCount(this.props.project.get('remaining'), active)
+        }
       </div>
     );
   }
