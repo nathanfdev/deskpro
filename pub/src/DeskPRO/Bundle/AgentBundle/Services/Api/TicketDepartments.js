@@ -2,11 +2,11 @@ import DpApi from "../DpApi";
 
 /** Load all departments. */
 export function loadDepartments(options = {}) {
-  return DpApi.sendGet('DP_API/departments?' + compileParams(options)).then(httpResult => httpResult.getData());
+  return DpApi.sendGet('DP_API/ticket_departments?' + compileParams(options)).then(httpResult => httpResult.getData());
 }
 
 export function loadDepartment(id) {
-  return DpApi.sendGet(`DP_API/departments/${id}`).then(httpResult => httpResult.getData());
+  return DpApi.sendGet(`DP_API/ticket_departments/${id}`).then(httpResult => httpResult.getData());
 }
 
 /**

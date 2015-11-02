@@ -29,8 +29,7 @@
 /**
  * DeskPRO.
  */
-
-namespace DeskPRO\Bundle\ApiBundle\Controller\People;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
@@ -50,7 +49,7 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class DepartmentsController extends BaseController implements ClassResourceInterface
+class TicketDepartmentsController extends BaseController implements ClassResourceInterface
 {
     /**
      * @ApiDoc(
@@ -75,7 +74,7 @@ class DepartmentsController extends BaseController implements ClassResourceInter
      *          200="Success"
      *      }
      * )
-     * @Get("/departments", name="api_departments")
+     * @Get("/ticket_departments", name="api_departments")
      *
      * @param Request $request
      *
@@ -131,7 +130,7 @@ class DepartmentsController extends BaseController implements ClassResourceInter
      *      },
      *      output="Application\DeskPRO\Entity\Department"
      * )
-     * @Get("/departments/{id}", name="api_departments_get")
+     * @Get("/ticket_departments/{id}", name="api_departments_get")
      *
      * @param int $id
      *
@@ -153,6 +152,41 @@ class DepartmentsController extends BaseController implements ClassResourceInter
 
     /**
      * @ApiDoc(
+     *      description="get agents belongs to department",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the department",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          404="Not Found"
+     *      },
+     *      output="Application\DeskPRO\Entity\Department"
+     * )
+     * @Get("/ticket_departments/{id}/agents", name="api_departments_get_agents")
+     *
+     * @param int $id
+     *
+     * @throws NotFoundHttpException
+     *
+     * @return View
+     */
+    public function getAgentsAction($id)
+    {
+        $department = $this->findOr404(Department::class, $id);
+
+        return View::create(
+            $this->dataSerialize($department->getPersonList()),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @ApiDoc(
      *      description="create a new department",
      *      input={"class"="department", "name"=""},
      *      statusCodes={
@@ -161,7 +195,7 @@ class DepartmentsController extends BaseController implements ClassResourceInter
      *      },
      *      output="Application\DeskPRO\Entity\Department"
      * )
-     * @Post("/departments", name="api_departments_post")
+     * @Post("/ticket_departments", name="api_departments_post")
      *
      * @param Request $request
      *
@@ -195,7 +229,7 @@ class DepartmentsController extends BaseController implements ClassResourceInter
      *          404="Not Found"
      *      }
      * )
-     * @Put("/departments/{id}", name="api_departments_put")
+     * @Put("/ticket_departments/{id}", name="api_departments_put")
      *
      * @param Request $request
      * @param $id
@@ -227,7 +261,7 @@ class DepartmentsController extends BaseController implements ClassResourceInter
      *          404="Not Found"
      *      }
      * )
-     * @Delete("/departments/{id}", name="api_departments_delete")
+     * @Delete("/ticket_departments/{id}", name="api_departments_delete")
      *
      * @param $id
      *
