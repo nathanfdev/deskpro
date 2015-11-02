@@ -1505,7 +1505,7 @@ $search-btn-height: $search-height - 24;
     font-size: 1em;
 
     &:focus, &.active {
-      border: 2px solid #3575bd;
+      border: 1px solid #3575bd;
       @include placeholder {
         opacity: 0;
       }
