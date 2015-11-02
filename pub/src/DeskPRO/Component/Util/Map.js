@@ -15,8 +15,8 @@ import warning from 'warning';
 export function mapKeyedFromArray(arrayVal, keyProp) {
   const isDeepKey = isArray(keyProp);
 
-  // Already a Map
-  if (Immutable.Map.isMap(arrayVal)) {
+  // Already an Immutable object
+  if (Immutable.Iterable.isIterable(arrayVal)) {
     return Immutable.Map().withMutations(map => {
       arrayVal.forEach(v => {
         const k = isDeepKey ? v.getIn(keyProp) : v.get(keyProp);
