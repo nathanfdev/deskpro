@@ -99,12 +99,19 @@ export class ProjectForm extends React.Component {
   onSubmit = event => {
     event.preventDefault();
 
-    TasksActions.createProject({
+    const { project } = this.props;
+    const submitData = {
       title: this.state.title,
       departments: this.state.departments,
       teams: this.state.agentTeams,
       agents: this.state.agents
-    });
+    };
+
+    if (project) {
+      TasksActions.editProject(project.get('id'), submitData);
+    } else {
+      TasksActions.createProject(submitData);
+    }
   };
 
   render() {
