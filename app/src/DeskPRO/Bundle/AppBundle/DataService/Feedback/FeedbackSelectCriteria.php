@@ -61,9 +61,12 @@ class FeedbackSelectCriteria extends Criteria
                         ->setParameter('validating', 'validating');
                     break;
                 case 'category':
-                    $qb
-                        ->andWhere('category.title = :category_title')
-                        ->setParameter('category_title', $value);
+                    if (is_array($value)) {
+                        $qb->andWhere('category.title IN (:category_title)');
+                    } else {
+                        $qb->andWhere('category.title = :category_title');
+                    }
+                    $qb->setParameter('category_title', $value);
                     break;
                 case 'status_category':
                     $qb
@@ -139,7 +142,8 @@ class FeedbackSelectCriteria extends Criteria
                 'page',
                 'count',
                 'ids',
-                'created_from', 'created_to'
+                'created_from',
+                'created_to'
             ]
         );
         $resolver->setAllowedValues('awaiting_validation', '1');

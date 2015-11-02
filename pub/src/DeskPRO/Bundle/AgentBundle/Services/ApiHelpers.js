@@ -7,9 +7,13 @@ export function compileParams(params = {}) {
   const compiled = [];
 
   for (const key of Object.keys(params)) {
-    var str = String(params[key]);
-    if (str !== 'null') {
-      compiled.push(key + '=' + str.replace(/\s/g, '%20'));
+    if (Object.prototype.toString.call(params[key]) === '[object Array]') {
+      params[key].forEach(item=>compiled.push(key + '[]=' + item.replace(/\s/g, '%20')));
+    } else {
+      var str = String(params[key]);
+      if (str !== 'null') {
+        compiled.push(key + '=' + str.replace(/\s/g, '%20'));
+      }
     }
   }
 

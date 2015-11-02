@@ -30,6 +30,7 @@ export class TypesCollectionContainer extends Component {
       }
     }
     dispatch(setFilterValue({ filter: 'category', value: values }));
+    dispatch(loadFeedbackList());
   }
 
   render() {
