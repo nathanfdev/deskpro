@@ -10,11 +10,12 @@ export class Nav extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     dpWindow: PropTypes.object.isRequired,
-    projects: PropTypes.object.isRequired
+    projects: PropTypes.object.isRequired,
+    agents: PropTypes.object.isRequired
   };
 
   render() {
-    const { dispatch, dpWindow, projects } = this.props;
+    const { dispatch, dpWindow, projects, agents } = this.props;
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
@@ -25,7 +26,7 @@ export class Nav extends React.Component {
         <div className="sidebar-list sidebar-list-filters">
           <Groups />
           <Projects projects={projects} />
-          <Agents />
+          <Agents agents={agents} />
           <Labels />
         </div>
       </NavFrame>
