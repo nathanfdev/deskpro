@@ -15,18 +15,13 @@ function verifyIsMapish(value) {
   }
 }
 
-function verifyActionError(action) {
-  if (Immutable.Map.isMap(action)) {
-    if (action.get('error') !== true) {
-      return;
-    }
-  } else {
-    if (!action || !action.error || action.error !== true) {
-      return;
-    }
+function verifyActionError(actionObj) {
+  const action = Immutable.Iterable.isIterable(actionObj) ? actionObj.toJS() : actionObj;
+  if (!action || !action.error || action.error !== true) {
+    return;
   }
 
-  console.error('Error with action ' + action.get('type'), action.payload);
+  console.error('Error with action ' + action.type, action.payload);
   throw action.payload;
 }
 
@@ -313,7 +308,10 @@ export function asyncIndicator(props) {
           newState = newState.setIn(useProps.isError, true);
         }
         if (useProps.errorCode && payload.response) {
-          newState = newState.setIn(useProps.errorCode, payload.response.xhr.status);
+          const status = payload && payload.response && payload.response.xhr
+                       ? payload.response.xhr.status
+                       : null;
+          newState = newState.setIn(useProps.errorCode, status);
         }
         break;
       case 'done':
