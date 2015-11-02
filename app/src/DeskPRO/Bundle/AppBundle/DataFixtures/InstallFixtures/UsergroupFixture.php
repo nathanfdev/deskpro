@@ -33,11 +33,12 @@ namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
 use Application\DeskPRO\Entity\Usergroup;
 use Doctrine\Common\DataFixtures\AbstractFixture;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class UsergroupFixture extends AbstractFixture implements ContainerAwareInterface
+class UsergroupFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
     /**
      * @var ContainerInterface
@@ -45,7 +46,15 @@ class UsergroupFixture extends AbstractFixture implements ContainerAwareInterfac
     private $container;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
+     */
+    public function getOrder()
+    {
+        return 0;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function setContainer(ContainerInterface $container = null)
     {
@@ -60,33 +69,33 @@ class UsergroupFixture extends AbstractFixture implements ContainerAwareInterfac
         /** @var \Application\DeskPRO\Translate\Translate $tr */
         $tr = $this->container->get('deskpro.core.translate');
 
-        $g = new Usergroup();
+        $g           = new Usergroup();
         $g->title    = $tr->phrase('agent.defaults.usergroup_everyone');
         $g->note     = $tr->phrase('agent.defaults.usergroup_everyone_note');
         $g->sys_name = 'everyone';
         $manager->persist($g);
         $this->addReference('usergroup.everyone', $g);
 
-        $g = new Usergroup();
+        $g           = new Usergroup();
         $g->title    = $tr->phrase('agent.defaults.usergroup_registered');
         $g->note     = $tr->phrase('agent.defaults.usergroup_registered_note');
         $g->sys_name = 'registered';
         $manager->persist($g);
         $this->addReference('usergroup.registered', $g);
 
-        $g = new Usergroup();
-        $g->title    = $tr->phrase('agent.defaults.usergroup_agent_all_perms');
-        $g->note     = $tr->phrase('agent.defaults.usergroup_agent_all_perms_note');
+        $g                 = new Usergroup();
+        $g->title          = $tr->phrase('agent.defaults.usergroup_agent_all_perms');
+        $g->note           = $tr->phrase('agent.defaults.usergroup_agent_all_perms_note');
         $g->is_agent_group = true;
-        $g->sys_name = 'agent_all_perms';
+        $g->sys_name       = 'agent_all_perms';
         $manager->persist($g);
         $this->addReference('usergroup.agent_all_perms', $g);
 
-        $g = new Usergroup();
-        $g->title    = $tr->phrase('agent.defaults.usergroup_agent_all_non_destructive');
-        $g->note     = $tr->phrase('agent.defaults.usergroup_agent_all_non_destructive_note');
+        $g                 = new Usergroup();
+        $g->title          = $tr->phrase('agent.defaults.usergroup_agent_all_non_destructive');
+        $g->note           = $tr->phrase('agent.defaults.usergroup_agent_all_non_destructive_note');
         $g->is_agent_group = true;
-        $g->sys_name = 'agent_all_safe_perms';
+        $g->sys_name       = 'agent_all_safe_perms';
         $manager->persist($g);
         $this->addReference('usergroup.agent_all_safe_perms', $g);
 

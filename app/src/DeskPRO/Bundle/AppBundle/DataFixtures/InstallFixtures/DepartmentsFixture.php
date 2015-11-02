@@ -33,11 +33,12 @@ namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
 use Application\DeskPRO\Entity\Department;
 use Doctrine\Common\DataFixtures\AbstractFixture;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class DepartmentsFixture extends AbstractFixture implements ContainerAwareInterface
+class DepartmentsFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
     /**
      * @var ContainerInterface
@@ -45,7 +46,15 @@ class DepartmentsFixture extends AbstractFixture implements ContainerAwareInterf
     private $container;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
+     */
+    public function getOrder()
+    {
+        return 0;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function setContainer(ContainerInterface $container = null)
     {
@@ -63,18 +72,18 @@ class DepartmentsFixture extends AbstractFixture implements ContainerAwareInterf
         foreach (array(true, false) as $is_ticket) {
             foreach (array(
                      'support' => 'user.defaults.department_support',
-                     'sales'   => 'user.defaults.department_sales',
+                     'sales' => 'user.defaults.department_sales',
                  ) as $id => $phraseId) {
-                $dep = new Department();
-                $dep->title = $tr->phrase($phraseId);
+                $dep                     = new Department();
+                $dep->title              = $tr->phrase($phraseId);
                 $dep->is_tickets_enabled = $is_ticket;
-                $dep->is_chat_enabled = !$is_ticket;
+                $dep->is_chat_enabled    = !$is_ticket;
                 $manager->persist($dep);
 
                 if ($is_ticket) {
-                    $this->setReference('department.' . $id, $dep);
+                    $this->setReference('department.'.$id, $dep);
                 } else {
-                    $this->setReference('chat_department.' . $id, $dep);
+                    $this->setReference('chat_department.'.$id, $dep);
                 }
             }
         }

@@ -31,13 +31,22 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\Persistence\ObjectManager;
 use Application\DeskPRO\Entity\Setting;
+use Doctrine\Common\DataFixtures\AbstractFixture;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
+use Doctrine\Common\Persistence\ObjectManager;
 use Orb\Util\Strings;
 
-class SettingsFixture extends AbstractFixture
+class SettingsFixture extends AbstractFixture implements OrderedFixtureInterface
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getOrder()
+    {
+        return 0;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -45,13 +54,13 @@ class SettingsFixture extends AbstractFixture
     {
         foreach (array(
             'core.done_data_initializer' => 1,
-            'core.deskpro_build'         => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
-            'core.deskpro_build_num'     => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0,
-            'core.install_build'         => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
-            'core.install_timestamp'     => time(),
-            'core.install_key'           => Strings::CHARS_KEY,
+            'core.deskpro_build' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
+            'core.deskpro_build_num' => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0,
+            'core.install_build' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
+            'core.install_timestamp' => time(),
+            'core.install_key' => Strings::CHARS_KEY,
         ) as $name => $value) {
-            $s = $this->findOrCreate($name, $manager);
+            $s        = $this->findOrCreate($name, $manager);
             $s->value = $value;
             $manager->persist($s);
         }
@@ -60,15 +69,16 @@ class SettingsFixture extends AbstractFixture
     }
 
     /**
-     * @param string $name
+     * @param string        $name
      * @param ObjectManager $manager
+     *
      * @return \Application\DeskPRO\Entity\Setting
      */
     private function findOrCreate($name, ObjectManager $manager)
     {
         $setting = $manager->getRepository('Application\DeskPRO\Entity\Setting')->findBy(array('name' => $name));
         if (!$setting) {
-            $setting = new Setting();
+            $setting       = new Setting();
             $setting->name = $name;
         }
 

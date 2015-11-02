@@ -34,13 +34,10 @@
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use Doctrine\DBAL\DBALException;
 use Monolog\Logger;
-use Orb\Util\DpStrings;
-use Orb\Util\Strings;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -132,15 +129,16 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         $this->loadDefaultData($logger);
         $this->installApps();
 
-        if ($input->getOption('admin-email') AND $input->getOption('admin-password')) {
+        if ($input->getOption('admin-email') and $input->getOption('admin-password')) {
             $db = $this->getContainer()->get('database_connection');
             $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
 
             /** @var \Application\DeskPRO\Entity\Person $admin */
-            $admin = $em->createQuery("SELECT p FROM DeskPRO:Person p WHERE p.can_admin = true ORDER BY p.id ASC")->setMaxResults(1)->getOneOrNullResult();
+            $admin = $em->createQuery('SELECT p FROM DeskPRO:Person p WHERE p.can_admin = true ORDER BY p.id ASC')->setMaxResults(1)->getOneOrNullResult();
 
             if (!$admin) {
-                $output->writeln("Could not find admin user to reset the password and email");
+                $output->writeln('Could not find admin user to reset the password and email');
+
                 return 1;
             }
 
@@ -194,7 +192,6 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     private function loadFixtures(OutputInterface $output)
     {
         $output->writeln('Executing install fixtures...');
-        $output->writeln("Note: This will show a PHP notice due to a library bug. That is OK. Ignore.");
 
         $app   = $this->getApplication();
         $input = new ArrayInput(array(

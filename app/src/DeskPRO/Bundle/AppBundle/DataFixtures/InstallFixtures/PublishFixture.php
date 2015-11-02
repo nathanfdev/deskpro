@@ -38,12 +38,12 @@ use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\NewsCategory;
 use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class ExamplePublishFixture extends AbstractFixture implements ContainerAwareInterface, DependentFixtureInterface
+class PublishFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
     /**
      * @var ContainerInterface
@@ -51,7 +51,15 @@ class ExamplePublishFixture extends AbstractFixture implements ContainerAwareInt
     private $container;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
+     */
+    public function getOrder()
+    {
+        return 0;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function setContainer(ContainerInterface $container = null)
     {
@@ -61,13 +69,12 @@ class ExamplePublishFixture extends AbstractFixture implements ContainerAwareInt
     /**
      * {@inheritdoc}
      */
-    function getDependencies()
+    public function getDependencies()
     {
         return [
-            'DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures\FirstAdminFixture'
+            'DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures\FirstAdminFixture',
         ];
     }
-
 
     /**
      * {@inheritdoc}
@@ -84,15 +91,15 @@ class ExamplePublishFixture extends AbstractFixture implements ContainerAwareInt
         # KB
         #------------------------------
 
-        $cat = new ArticleCategory();
+        $cat        = new ArticleCategory();
         $cat->title = $tr->phrase('user.defaults.article_category_general');
         $manager->persist($cat);
 
-        $content = new \Application\DeskPRO\Entity\Article();
-        $content->person = $admin;
-        $content->title = $tr->phrase('user.defaults.article_example_title');
+        $content          = new \Application\DeskPRO\Entity\Article();
+        $content->person  = $admin;
+        $content->title   = $tr->phrase('user.defaults.article_example_title');
         $content->content = $tr->phrase('user.defaults.article_example_content');
-        $content->status = 'published';
+        $content->status  = 'published';
         $content->addToCategory($cat);
         $manager->persist($content);
 
@@ -100,7 +107,7 @@ class ExamplePublishFixture extends AbstractFixture implements ContainerAwareInt
         # Downloads
         #------------------------------
 
-        $cat = new DownloadCategory();
+        $cat        = new DownloadCategory();
         $cat->title = $tr->phrase('user.defaults.downloads_category_general');
         $manager->persist($cat);
 
@@ -108,15 +115,15 @@ class ExamplePublishFixture extends AbstractFixture implements ContainerAwareInt
         # News
         #------------------------------
 
-        $cat = new NewsCategory();
+        $cat        = new NewsCategory();
         $cat->title = $tr->phrase('user.defaults.news_category_general');
         $manager->persist($cat);
 
-        $content = new \Application\DeskPRO\Entity\News();
-        $content->person = $admin;
-        $content->title = $tr->phrase('user.defaults.news_example_title');
+        $content          = new \Application\DeskPRO\Entity\News();
+        $content->person  = $admin;
+        $content->title   = $tr->phrase('user.defaults.news_example_title');
         $content->content = $tr->phrase('user.defaults.news_example_content');
-        $content->status = 'published';
+        $content->status  = 'published';
         $content->setCategory($cat);
         $manager->persist($content);
 
@@ -125,15 +132,15 @@ class ExamplePublishFixture extends AbstractFixture implements ContainerAwareInt
         #------------------------------
 
         foreach (array('Suggestion', 'Feature Request', 'Bug Report') as $title) {
-            $cat = new FeedbackCategory();
+            $cat        = new FeedbackCategory();
             $cat->title = $title;
             $manager->persist($cat);
         }
 
-        $cat_field = new CustomDefFeedback();
-        $cat_field->sys_name = 'cat';
-        $cat_field->title = 'Category';
-        $cat_field->description = 'e.g., maybe Windows, Mac, Linux.';
+        $cat_field                = new CustomDefFeedback();
+        $cat_field->sys_name      = 'cat';
+        $cat_field->title         = 'Category';
+        $cat_field->description   = 'e.g., maybe Windows, Mac, Linux.';
         $cat_field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
         $manager->persist($cat_field);
 
@@ -142,9 +149,9 @@ class ExamplePublishFixture extends AbstractFixture implements ContainerAwareInt
             'closed' => array('Completed', 'Duplicate', 'Declined'),
         ) as $status => $titles) {
             foreach ($titles as $title) {
-                $cat = new FeedbackStatusCategory();
+                $cat              = new FeedbackStatusCategory();
                 $cat->status_type = $status;
-                $cat->title = $title;
+                $cat->title       = $title;
                 $manager->persist($cat);
             }
         }

@@ -33,10 +33,19 @@ namespace DeskPRO\Bundle\AppBundle\DataFixtures\SeedFixtures;
 
 use Application\DeskPRO\Entity\Language;
 use Doctrine\Common\DataFixtures\AbstractFixture;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class LangFixture extends AbstractFixture
+class LangFixture extends AbstractFixture implements OrderedFixtureInterface
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getOrder()
+    {
+        return 0;
+    }
+
     /**
      * {@inheritdoc}
      */
