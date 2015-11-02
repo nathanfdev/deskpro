@@ -36,7 +36,8 @@ export class ProjectForm extends React.Component {
       showOnlySelected: false,
       agents: project.get('agents', emptyObject).toArray(),
       agentTeams: project.get('teams', emptyObject).toArray(),
-      departments: project.get('departments', emptyObject).toArray()
+      departments: project.get('departments', emptyObject).toArray(),
+      errors: []
     };
   }
 
@@ -99,7 +100,7 @@ export class ProjectForm extends React.Component {
   onSubmit = event => {
     event.preventDefault();
 
-    const { project } = this.props;
+    const { project, dispatch } = this.props;
     const submitData = {
       title: this.state.title,
       departments: this.state.departments,
@@ -107,14 +108,20 @@ export class ProjectForm extends React.Component {
       agents: this.state.agents
     };
 
+    let promise;
     if (project) {
-      TasksActions.editProject(project.get('id'), submitData);
+      promise = dispatch(TasksActions.editProject(project.get('id'), submitData));
     } else {
-      TasksActions.createProject(submitData);
+      promise = dispatch(TasksActions.createProject(submitData));
     }
+
+    promise.catch(result => this.setState({
+      errors: result.getData().errors
+    }));
   };
 
   render() {
+    console.log(this.state.errors);
     const { agents, agentTeams, departments, project } = this.props;
 
     return (
