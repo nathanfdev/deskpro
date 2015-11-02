@@ -11,6 +11,7 @@ import { Unassign } from './Fields/Unassign';
 import { AgentsList } from './Fields/AgentsList';
 import { AgentTeamsList } from './Fields/AgentTeamsList';
 import { DepartmentsList } from './Fields/DepartmentsList';
+import { FieldErrors } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/FieldErrors';
 import Immutable from 'immutable';
 
 export class ProjectForm extends React.Component {
@@ -37,7 +38,7 @@ export class ProjectForm extends React.Component {
       agents: project.get('agents', emptyObject).toArray(),
       agentTeams: project.get('teams', emptyObject).toArray(),
       departments: project.get('departments', emptyObject).toArray(),
-      errors: []
+      errors: {}
     };
   }
 
@@ -121,7 +122,6 @@ export class ProjectForm extends React.Component {
   };
 
   render() {
-    console.log(this.state.errors);
     const { agents, agentTeams, departments, project } = this.props;
 
     return (
@@ -140,6 +140,8 @@ export class ProjectForm extends React.Component {
                          placeholder="Title"
                          value={this.state.title}
                          onChange={this.onChangeTitle} />
+
+                  <FieldErrors errors={this.state.errors} name="title" />
                 </FullField>
               </FieldGroup>
 
