@@ -148,19 +148,19 @@ export default class Http {
 
       return new Promise((ajaxResolve, ajaxReject) => {
         this.ajaxFn(config).done((data, textStatus, jqXHR) => {
-          let r = new HttpResponse(jqXHR, textStatus, config, data);
+          let response = new HttpResponse(jqXHR, textStatus, config, data);
           if (config.transformResponse) {
-            r = config.transformResponse(r);
+            response = config.transformResponse(response);
           }
 
-          ajaxResolve(r);
+          ajaxResolve(response);
         }).fail((jqXHR, textStatus, errorThrown) => {
-          let r = new HttpResponse(jqXHR, textStatus, config, null);
+          let response = new HttpResponse(jqXHR, textStatus, config, jqXHR.responseJSON);
           if (config.transformResponse) {
-            r = config.transformResponse(r);
+            response = config.transformResponse(response);
           }
 
-          ajaxReject(r);
+          ajaxReject(response);
         });
       });
     };
