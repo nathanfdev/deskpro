@@ -19,6 +19,12 @@ export class Projects extends React.Component {
     };
   }
 
+  onEdit = () => {
+    this.setState({
+      formOpened: true
+    });
+  };
+
   openForm = () => {
     this.setState({
       formOpened: true
@@ -28,12 +34,6 @@ export class Projects extends React.Component {
   closeForm = () => {
     this.setState({
       formOpened: false
-    });
-  };
-
-  onEdit = () => {
-    this.setState({
-      formOpened: true
     });
   };
 
