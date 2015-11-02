@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { FieldWrapper } from './Fields/FieldWrapper';
+import { Field } from './Fields/Field';
 import { Avatar } from './Fields/Avatar';
 import { Name } from './Fields/Name';
 import { DisplayName } from './Fields/DisplayName';
@@ -177,56 +177,55 @@ export class ProfileForm extends React.Component {
 
   renderNameField() {
     return (
-      <FieldWrapper label="Your name" errors={this.state.errors.name}>
+      <Field label="Your name" errors={this.state.errors.name}>
         <Avatar personName={this.state.data.name}
                 value={this.state.data.avatar.url}
                 onChange={this.onChangeAvatar}/>
         <Name value={this.state.data.name}
               onChange={this.onChangeName} />
-      </FieldWrapper>
+      </Field>
     );
   }
 
   renderDisplayNameField() {
     return (
-      <FieldWrapper errors={this.state.errors.display_name}>
+      <Field errors={this.state.errors.display_name}>
         <DisplayName value={this.state.data.display_name}
                      onChange={this.onChangeDisplayName} />
-      </FieldWrapper>
+      </Field>
     );
   }
 
   renderEmailField() {
     return (
-      <FieldWrapper label="Your email" errors={this.state.errors.emails}>
+      <Field label="Your email" errors={this.state.errors.emails}>
         <Email emails={this.state.data.emails}
                onChange={this.onChangeEmails} />
-      </FieldWrapper>
+      </Field>
     );
   }
 
   renderPrimaryEmailField() {
     const emails = this.state.data.emails;
-
-    if (emails && emails.length > 1 && emails[1]) {
-      return (
-        <FieldWrapper label="Primary email" errors={this.state.errors.primary_email}>
-          <PrimaryEmail emails={emails}
-                        value={this.state.data.primary_email}
-                        onChange={this.onChangePrimaryEmail} />
-        </FieldWrapper>
-      );
+    if (!emails || !emails.length || !emails[1]) {
+      return null;
     }
 
-    return null;
+    return (
+      <Field label="Primary email" errors={this.state.errors.primary_email}>
+        <PrimaryEmail emails={emails}
+                      value={this.state.data.primary_email}
+                      onChange={this.onChangePrimaryEmail} />
+      </Field>
+    );
   }
 
   renderPhoneField() {
     return (
-      <FieldWrapper label="Phone #" errors={this.state.errors.phone}>
+      <Field label="Phone #" errors={this.state.errors.phone}>
         <Phone value={this.state.data.phone}
                onChange={this.onChangePhone} />
-      </FieldWrapper>
+      </Field>
     );
   }
 
@@ -237,11 +236,11 @@ export class ProfileForm extends React.Component {
     }
 
     return (
-      <FieldWrapper label="Language" errors={this.state.errors.language_id}>
+      <Field label="Language" errors={this.state.errors.language_id}>
         <Language languages={languages}
                   value={this.state.data.language_id}
                   onChange={this.onChangeLanguage} />
-      </FieldWrapper>
+      </Field>
     );
   }
 
@@ -249,21 +248,21 @@ export class ProfileForm extends React.Component {
     const { timezones } = this.props;
 
     return (
-      <FieldWrapper label="Time Zone" errors={this.state.errors.timezone}>
+      <Field label="Time Zone" errors={this.state.errors.timezone}>
         <Timezone timezones={timezones}
                   value={this.state.data.timezone}
                   onChange={this.onChangeTimezone} />
-      </FieldWrapper>
+      </Field>
     );
   }
 
   renderPasswordField() {
     return (
-      <FieldWrapper label="Password" errors={this.state.errors.password}>
+      <Field label="Password" errors={this.state.errors.password}>
         <Password
           value={this.state.data.password}
           onChange={this.onChangePassword} />
-      </FieldWrapper>
+      </Field>
     );
   }
 
@@ -271,7 +270,11 @@ export class ProfileForm extends React.Component {
     return (
       <div className="bucket">
         <div className="bucket-column submit">
-          <Loader left="45%" opacity={0} width={3} loaded={!this.state.submit}>
+          <Loader left="45%"
+                  opacity={0}
+                  width={3}
+                  loaded={!this.state.submit}>
+
             <input type="submit" value="Save" onClick={this.submitForm} />
           </Loader>
         </div>

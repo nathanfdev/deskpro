@@ -1,4 +1,4 @@
-.dpmw--popup-main { // Main popup
+.dpw--popup-main { // Main popup
   background: #eef1f3;
   color: #333;
   padding: 0px;
@@ -9,7 +9,7 @@
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   min-width: 460px;
 
-  .dpmw--popup-header {
+  .dpw--popup-header {
     background: #fff;
     color: #424242;
     border-bottom: 1px solid #d6d8da;
@@ -26,7 +26,7 @@
   }
 }
 
-.dpmw--popup-main.dpw--popup-main-pointer {// Create pointy bits when popping up
+.dpw--popup-main.dpw--popup-main-pointer {// Create pointy bits when popping up
   position: relative;
 
   &:before {
@@ -93,14 +93,14 @@
 
   // .dmw--popup-content-left & .dmw--popup-content-right are used for uneven content (for example the filter form and the checkboxes) and will require js to set their widths
   // add .even to the class (for example class='dpw--popup-content-right even') to have them stick at 50%
-  .dpw--popup-content-left, .dpmw--popup-content-right, .dpmw--popup-content-full {
+  .dpw--popup-content-left, .dpw--popup-content-right, .dpw--popup-content-full {
     padding: 5px 7px;
   }
 
-  .dpw--popup-content-left.even, .dpmw--popup-content-right.even { width: 50%; }
+  .dpw--popup-content-left.even, .dpw--popup-content-right.even { width: 50%; }
   .dpw--popup-content-left { float: left; }
-  .dpmw--popup-content-right { float: right; }
-  .dpmw--popup-content-of-three {// Three columns, same width
+  .dpw--popup-content-right { float: right; }
+  .dpw--popup-content-of-three {// Three columns, same width
     padding: 5px 2px 0px 2px;
     width: 33.333333333333333333%;
     float: left;
@@ -168,6 +168,7 @@
   border: 1px solid #e4e4e4;
   border-radius: 2px;
   font-size: 12px;
+  position: relative;
 
   a {
     color: #333;
@@ -182,7 +183,7 @@
     li {
       display: block;
       width: 100%;
-      padding: 1px;
+      padding: 5px;
       margin-bottom: 4px;
       margin-top: 4px;
       border-radius: 2px;

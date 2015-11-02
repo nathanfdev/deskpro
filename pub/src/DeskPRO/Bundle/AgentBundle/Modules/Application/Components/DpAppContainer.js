@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { DpAppRouteContainer } from './DpAppRouteContainer';
 import { LoginRouteContainer } from '../../Login/Components/LoginRouteContainer';
 import TicketsApp from '../../Tickets/Components/TicketsApp';
-import TasksApp from '../../Tasks/Components/TasksApp';
+import OldTasksApp from '../../OldTasks/Components/OldTasksApp';
+import { TasksApp } from '../../Tasks/Components/TasksApp';
 import { FeedbackApp } from '../../Feedback/Components/FeedbackApp';
 import { CrmApp } from '../../CRM/Components/CrmApp';
 import { ChatApp } from '../../Chat/Components/ChatApp';
@@ -14,7 +15,6 @@ import { ExampleApp } from '../../Example/Components/ExampleApp';
 import { loadMe } from '../RecordStores/Actions/meActions';
 import { setHasAuth } from '../../Login/Actions/loginActions';
 import { hashChanged } from '../../Application/Actions/routingActions';
-
 import Jquery from 'jquery';
 
 @connect()
@@ -33,10 +33,10 @@ export class DpAppContainer extends React.Component {
 
     Jquery.ajaxSetup({
       statusCode: {
-        200: function() {
+        200: () => {
           dispatch(setHasAuth(true));
         },
-        401: function() {
+        401: () => {
           dispatch(setHasAuth(false));
           history.pushState(null, `${DP_BASE_URL_RELATIVE}/agent/login`);
         }
@@ -69,6 +69,7 @@ export class DpAppContainer extends React.Component {
           <Route name="crm" path="crm" component={CrmApp}/>
           <Route name="chat" path="chat" component={ChatApp}/>
           <Route name="tickets" path="tickets" component={TicketsApp}/>
+          <Route name="old_tasks" path="old_tasks" component={OldTasksApp}/>
           <Route name="tasks" path="tasks" component={TasksApp}/>
           <Route name="publish" path="publish" component={PublishApp}/>
           <Route name="feedback" path="feedback" component={FeedbackApp}/>

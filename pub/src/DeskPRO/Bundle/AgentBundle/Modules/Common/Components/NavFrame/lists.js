@@ -39,7 +39,7 @@ export class ListItem extends BaseList {
   static propTypes = {
     children: PropTypes.node,
     count: PropTypes.number.isRequired,
-    label: PropTypes.string.isRequired,
+    label: PropTypes.string,
     active: PropTypes.bool.isRequired,
     onClick: PropTypes.func.isRequired
   };
@@ -49,7 +49,7 @@ export class ListItem extends BaseList {
     const classes = classNames('item', { 'active': active });
 
     let label = this.props.label;
-    let nested = children;
+    let nested = '';
 
     if (children instanceof Array && children.length) {
       children.forEach(child => {
@@ -59,6 +59,10 @@ export class ListItem extends BaseList {
           nested = child;
         }
       });
+    } else if (children instanceof Object && children.props.part === 'label') {
+      label = children;
+    } else {
+      nested = children;
     }
 
     return (
