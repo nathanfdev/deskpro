@@ -15,12 +15,14 @@ export class Projects extends React.Component {
     super(props);
 
     this.state = {
+      editProject: null,
       formOpened: false
     };
   }
 
-  onEdit = () => {
+  onEdit = project => {
     this.setState({
+      editProject: project,
       formOpened: true
     });
   };
@@ -33,6 +35,7 @@ export class Projects extends React.Component {
 
   closeForm = () => {
     this.setState({
+      editProject: null,
       formOpened: false
     });
   };
@@ -62,7 +65,7 @@ export class Projects extends React.Component {
                   positionAt="right+5 top-6">
 
           <ClickOut onClickOut={this.closeForm}>
-            <ProjectFormContainer />
+            <ProjectFormContainer project={this.state.editProject} />
           </ClickOut>
         </Detached>
       </Section>

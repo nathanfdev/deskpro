@@ -11,10 +11,12 @@ import { Unassign } from './Fields/Unassign';
 import { AgentsList } from './Fields/AgentsList';
 import { AgentTeamsList } from './Fields/AgentTeamsList';
 import { DepartmentsList } from './Fields/DepartmentsList';
+import Immutable from 'immutable';
 
 export class ProjectForm extends React.Component {
 
   static propTypes = {
+    project: PropTypes.object,
     dispatch: PropTypes.func.isRequired,
     me: PropTypes.object.isRequired,
     agents: PropTypes.object.isRequired,
@@ -25,13 +27,16 @@ export class ProjectForm extends React.Component {
   constructor(props) {
     super(props);
 
+    const emptyObject = Immutable.fromJS({});
+    const project = props.project || emptyObject;
+
     this.state = {
-      title: '',
+      title: project.get('title'),
       quickFilter: '',
       showOnlySelected: false,
-      agents: [],
-      agentTeams: [],
-      departments: []
+      agents: project.get('agents', emptyObject).toArray(),
+      agentTeams: project.get('teams', emptyObject).toArray(),
+      departments: project.get('departments', emptyObject).toArray()
     };
   }
 
@@ -103,12 +108,14 @@ export class ProjectForm extends React.Component {
   };
 
   render() {
-    const { agents, agentTeams, departments } = this.props;
+    const { agents, agentTeams, departments, project } = this.props;
 
     return (
       <div className="sidebar-hover">
         <div className="dpw--popup-main">
-          <Header>Project - Create New</Header>
+          <Header>
+            Project - {project ? 'Edit' : 'Create New'}
+          </Header>
 
           <form>
             <div className="dpw--popup-content">

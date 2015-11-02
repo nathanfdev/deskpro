@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 export class Header extends React.Component {
 
   static propTypes = {
-    children: PropTypes.string
+    children: PropTypes.any
   };
 
   render() {
