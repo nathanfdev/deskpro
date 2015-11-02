@@ -5281,29 +5281,39 @@ h1.fancy-header {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 .article-meta {
-  color: $text-color-lighter;
+  color: #8C8989;
   font-size: 0.9em;
+  line-height: 1.2em;
+  font-weight: 500;
 
-  .updated {
-    margin-left: 10px;
+  .updated { margin-left: 10px; }
+
+  hr {
+    display: inline-block;
+    vertical-align: middle;
+    width: 1px;
+    height: 20px;
+    background: #E6E6E6;
+    margin: 0px 8px;
   }
 
   .agent-avatar {
-    margin-right: 4px;
-    margin-left: 4px;
+    margin-right: 2px;
+    margin-left: 2px;
   }
 
-  span {
-    margin-right: 10px;
-  }
-  .comments {
-    margin-left: 10px;
-  }
   i {
     margin-right: 2px;
   }
+
+
   a {
     text-decoration: underline;
+    color: #787878;
+  }
+
+  .comments a {
+    text-decoration: none;
   }
 }
 
@@ -5354,13 +5364,18 @@ ul.categories-article-list {
 .kb-article {
   header, footer {
     @include clearfix;
-    a {
-      color: $text-color;
-      text-decoration: none;
-    }
 
     h1 {
       margin-bottom: 10px;
+      color: #2a5c95;
+      font-size: 18px;
+      a {
+        text-decoration: none;
+      }
+    }
+
+    a {
+      color: #b6b3b3;
     }
   }
 
@@ -5370,8 +5385,8 @@ ul.categories-article-list {
 
   header {
     border-bottom: 1px solid #e6e6e6;
-    padding-bottom: 25px;
-    margin-bottom: 15px;
+    padding-bottom: 20px;
+    margin-bottom: 10px;
   }
 
   p {
