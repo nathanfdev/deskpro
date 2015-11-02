@@ -1,8 +1,9 @@
 import React from 'react';
-import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { Section, SectionHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import { ProjectFormContainer } from './ProjectForm/ProjectFormContainer';
+import { ProjectItem } from './ProjectItem';
 
 export class Projects extends React.Component {
 
@@ -37,16 +38,8 @@ export class Projects extends React.Component {
         </SectionHeader>
 
         <ul>
-          <ListItem count={0}>
-            <div part="label">
-              <i className="fa fa-book" /> Example Project
-            </div>
-          </ListItem>
-          <ListItem count={2}>
-            <div part="label">
-              <i className="fa fa-book" /> Example Project2
-            </div>
-          </ListItem>
+          <ProjectItem label="Example Project" count={0} />
+          <ProjectItem label="Example Project 2" count={2} />
         </ul>
 
         <Detached isOpen={this.state.formOpened}
