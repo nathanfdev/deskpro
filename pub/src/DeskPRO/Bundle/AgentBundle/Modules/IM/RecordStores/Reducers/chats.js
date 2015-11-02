@@ -1,4 +1,4 @@
-import * as actions from '../Actions/imChatsActions';
+import * as actions from '../Actions/chatsActions';
 import { createReducer } from 'Ampliflux';
 import { createEmptyRecordStoreState, buildRecordStoreHandlers } from 'Ampliflux/common/record-store/handlers';
 

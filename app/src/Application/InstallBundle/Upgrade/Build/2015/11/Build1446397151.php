@@ -26,35 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-
-class DateTimeType extends AbstractType
+class Build1446397151 extends AbstractBuild
 {
-    public function getName()
+    public function run()
     {
-        return 'deskpro_datetime';
-    }
-
-    public function getParent()
-    {
-        return 'datetime';
-    }
-
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $current_date = new \DateTime();
-        $current_year = (int) $current_date->format('Y');
-        $resolver->setDefaults(
-            [
-                'years'       => range(($current_year - 100), ($current_year + 100)),
-                'placeholder' => '',
-            ]
-        );
+        $this->execMutateSql('ALTER TABLE agent_chat_message CHANGE message message LONGTEXT NOT NULL');
     }
 }

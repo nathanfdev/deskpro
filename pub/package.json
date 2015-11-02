@@ -5,7 +5,7 @@
   "author": "DeskPRO <support@deskpro.com>",
   "private": true,
   "dependencies": {
-    "anytime": "1.2.0",
+    "anytime": "^1.2.0",
     "babel": "5.8.23",
     "babel-core": "5.8.25",
     "babel-loader": "5.3.2",
@@ -36,6 +36,7 @@
     "immutable": "3.7.5",
     "intl-tel-input": "^6.4.0",
     "jquery": "2.1.4",
+    "jquery-datetimepicker": "^2.4.0",
     "jquery-ui": "1.10.5",
     "lodash": "3.10.1",
     "moment": "2.10.6",

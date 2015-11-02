@@ -188,6 +188,14 @@ class Messenger
         return !$forceReload ? $agentChatRepository->find($id) : $agentChatRepository->findOneBy(['id' => $id]);
     }
 
+    public function getChats(array $ids)
+    {
+        /** @var AgentChatRepository $agentChatRepository */
+        $agentChatRepository = $this->em->getRepository('App:AgentChat');
+
+        return $agentChatRepository->findBy(['id' => $ids]);
+    }
+
     /**
      * @param $type
      * @param $id

@@ -184,6 +184,10 @@ function getWebpackConfig(mode, isDevServer, isProd) {
       new ExtractTextPlugin("[name].css"),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': (isProd ? "\"production\"" : "\"development\"")
+      }),
+      new webpack.ProvidePlugin({
+        $: "jquery",
+        jQuery: "jquery"
       })
     ]
   };
