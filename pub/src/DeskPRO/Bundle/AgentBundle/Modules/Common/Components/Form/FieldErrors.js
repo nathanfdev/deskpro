@@ -4,11 +4,12 @@ export class FieldErrors extends React.Component {
 
   static propTypes = {
     errors: PropTypes.object,
-    name: PropTypes.string
+    name: PropTypes.string,
+    className: PropTypes.string
   };
 
   render() {
-    const { errors, name } = this.props;
+    const { errors, name, className = 'error' } = this.props;
     const fieldsErrors = errors && errors.fields || {};
 
     let key;
@@ -22,8 +23,8 @@ export class FieldErrors extends React.Component {
     }
 
     return (
-      <ul>
-        {fieldErrors.map(error => (<li>{error.message}</li>))}
+      <ul className={className}>
+        {fieldErrors.map((error, index) => (<li key={index}>{error.message}</li>))}
       </ul>
     );
   }

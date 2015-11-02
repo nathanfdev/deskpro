@@ -83,11 +83,25 @@
 
   .dpw--popup-content-line {
     margin-bottom: 3px;
-    &:last-child { margin-bottom: 0px; }
+    &:last-child { margin-bottom: 0; }
     &:after { // Clearfix
       content: "";
       display: table;
       clear: both;
+    }
+
+    ul {
+      &.error {
+        margin: 5px 0 0 0;
+        padding: 0;
+        list-style-type: none;
+
+        li {
+          font-size: 0.85em;
+          opacity: 0.5;
+          color: #ff0000;
+        }
+      }
     }
   }
 
