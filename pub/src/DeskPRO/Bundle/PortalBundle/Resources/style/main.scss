@@ -692,6 +692,7 @@ button, .button, input[type="submit"] {
     ul {
       margin-left: 0;
     }
+
   }
 
   ul {
@@ -912,6 +913,12 @@ button, .button, input[type="submit"] {
     font-weight: 400;
 
     li {
+      i[class*=" fa-file-"] {
+        margin-right: 5px;
+      }
+    }
+
+    li {
       @include whitespace;
 
       display: block;
@@ -995,6 +1002,11 @@ button, .button, input[type="submit"] {
       font-size: 10px;
       font-weight: 500;
       margin-right: 10px;
+
+      .agent-avatar {
+        position: relative;
+        top: -1px;
+      }
 
       a {
         margin-left: 5px;
@@ -6998,6 +7010,8 @@ body.with-agent-bar {
       color: #fff;
     }
   }
+
+  .datb-dropdown-content a i { top: -1px; }
 
   .datb-edit-context {
     display: inline-block;
