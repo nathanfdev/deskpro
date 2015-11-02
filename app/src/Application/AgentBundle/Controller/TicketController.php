@@ -2763,9 +2763,8 @@ class TicketController extends AbstractController
             $details['new_time'] = $charge->charge_time;
         }
 
-        if (!empty($custom_fields)) {
-            $field_manager->saveFormToObject($custom_fields, $charge);
-            $changes = $charge->getStateChangeRecorder()->getChanges();
+        $field_manager->saveFormToObject($custom_fields, $charge);
+        if ($changes = $charge->getStateChangeRecorder()->getChanges()) {
 
             $class      = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
             $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
