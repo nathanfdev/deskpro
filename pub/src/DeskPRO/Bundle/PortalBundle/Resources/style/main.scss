@@ -7499,10 +7499,10 @@ body.with-agent-bar {
 .multiselect {
   position: relative;
   margin-bottom: 10px;
+  cursor: pointer;
 
   .default {
     border: 1px solid $form-border-color;
-    cursor: pointer;
     width: 100%;
     display: block;
     padding: $form-padding-vertical $form-padding-horizontal;
