@@ -58,10 +58,12 @@ export class TaskCard extends React.Component {
   }
 
   renderDetails() {
+    const { task } = this.props;
+
     return (
       <CardLine>
         <div>
-            <Due due="N/A" />
+            <Due date={task.get('date_due')} />
             <Project project="Some Project" />
             <TicketLink ticket="Some ticket" />
         </div>

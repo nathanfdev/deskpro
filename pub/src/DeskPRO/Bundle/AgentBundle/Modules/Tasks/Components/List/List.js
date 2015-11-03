@@ -14,8 +14,8 @@ export class List extends React.Component {
         <Controls />
         <ListFrameContents>
           <TaskForm />
-          <TaskCard task={Immutable.fromJS({})} />
-          <TaskCard task={Immutable.fromJS({})} />
+          <TaskCard task={Immutable.fromJS({date_due: '2015-01-01'})} />
+          <TaskCard task={Immutable.fromJS({date_due: '2016-01-01'})} />
           <TaskCard task={Immutable.fromJS({})} />
           <TaskCard task={Immutable.fromJS({})} />
 
