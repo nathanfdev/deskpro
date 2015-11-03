@@ -1,10 +1,12 @@
 import React, { PropTypes } from 'react';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
+import classnames from 'classnames';
 
 export class Title extends React.Component {
 
   static propTypes = {
     value: PropTypes.string,
+    isDone: PropTypes.bool,
     onChange: PropTypes.func.isRequired
   };
 
@@ -61,7 +63,7 @@ export class Title extends React.Component {
   render() {
     return (
       <div className="card-title">
-        <div className="dpwd--card-title strikethrough">
+        <div className={classnames('dpwd--card-title', {'strikethrough': this.props.isDone})}>
           {this.state.editing ? this.renderForm() : this.renderHeader()}
         </div>
       </div>
