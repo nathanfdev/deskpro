@@ -1,7 +1,8 @@
 import React from 'react';
 import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 import { CardLine } from './CardLine';
-import { MarkDone } from './MarkDone';
+import { MarkDoneButton } from './MarkDoneButton';
+import { ShowDetailsButton } from './ShowDetailsButton';
 import { Title } from './Title';
 
 export class TaskCard extends React.Component {
@@ -76,19 +77,17 @@ export class TaskCard extends React.Component {
   render() {
     return (
       <Card minimized={!this.state.isDone} type="task">
-        <MarkDone isDone={this.state.isDone}
-                  onToggle={this.onToggleDone} />
+        <MarkDoneButton isDone={this.state.isDone}
+                        onToggle={this.onToggleDone} />
         <CardLine>
           <Title value={this.state.title}
                  isDone={this.state.isDone}
                  onChange={this.onTitleChange} />
 
           <div>
-            <div className="dpw--card-expand">
-              <a href="#" onClick={this.onToggleExpand}>
-                {this.state.expanded ? 'Collapse' : 'Expand'} <i className="fa fa-navicon"/>
-              </a>
-            </div>
+            <ShowDetailsButton expanded={this.state.expanded}
+                               onToggleExpand={this.onToggleExpand} />
+
             <div className="dpwd--card-assigned">
               <div className="dpw--avatar-face" style={{position: 'relative'}}>
                 <i className="fa fa-caret-down" />

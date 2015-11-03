@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-export class MarkDone extends React.Component {
+export class MarkDoneButton extends React.Component {
 
   static propTypes = {
     isDone: PropTypes.bool,
