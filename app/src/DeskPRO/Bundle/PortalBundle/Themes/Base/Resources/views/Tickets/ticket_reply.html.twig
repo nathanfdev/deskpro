@@ -1,18 +1,3 @@
-<style>
-    .form-error {
-        color: red;
-        border: 1px solid red;
-    }
-
-    .deskpro-form-widget {
-        margin-bottom: 15px;
-    }
-
-    .deskpro-date-form-widget select {
-        width: 30%;
-    }
-</style>
-
 {% if ticket.resolved and has_permission('tickets.reopen_resolved') %}
     <div class="item reply">
         <span class="badge" style="background: url({{ avatar_url(app.user, 50) }}) no-repeat; background-size: cover"></span>
