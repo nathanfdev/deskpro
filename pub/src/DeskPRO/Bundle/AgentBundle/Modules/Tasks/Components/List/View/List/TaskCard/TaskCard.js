@@ -80,16 +80,18 @@ export class TaskCard extends React.Component {
       <Card minimized={!this.state.isDone} type="task">
         <MarkDoneButton isDone={this.state.isDone}
                         onToggle={this.onToggleDone} />
+
         <CardLine>
           <Title value={this.state.title}
                  isDone={this.state.isDone}
                  onChange={this.onTitleChange} />
 
           <div>
-            <ShowDetailsButton expanded={this.state.expanded}
-                               onToggleExpand={this.onToggleExpand} />
-
-            <AssignButton />
+            {this.state.isDone
+              ? <ShowDetailsButton expanded={this.state.expanded}
+                                   onToggleExpand={this.onToggleExpand}/>
+              : <AssignButton />
+            }
           </div>
         </CardLine>
 
