@@ -1,9 +1,12 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classNames';
+import Loader from 'react-loader';
 import {
   BaseForm,
   Header,
   Popup,
   FieldGroup,
+  FullField,
   FloatField,
   CollectionField,
   QuickFilter,
@@ -20,6 +23,13 @@ export class AssignForm extends BaseForm {
     agents: PropTypes.object.isRequired,
     agentTeams: PropTypes.object.isRequired,
     departments: PropTypes.object.isRequired
+  };
+
+  onSubmit = event => {
+    event.preventDefault();
+    this.setState({
+      submit: true
+    });
   };
 
   render() {
@@ -69,6 +79,18 @@ export class AssignForm extends BaseForm {
                                  filter={this.state.quickFilter}
                                  onChange={this.onChangeDepartments} />
               </CollectionField>
+            </FieldGroup>
+
+            <FieldGroup>
+              <FullField>
+                <button type="submit"
+                        value="Save"
+                        className={classNames('dpw--popup-button', {'hidden': this.state.submit})}
+                        onClick={this.onSubmit}>Save</button>
+                <Loader opacity={0}
+                        width={3}
+                        loaded={!this.state.submit} />
+              </FullField>
             </FieldGroup>
           </div>
         </form>
