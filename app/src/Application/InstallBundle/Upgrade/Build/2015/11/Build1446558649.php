@@ -26,4 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1446558649);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1446558649 extends AbstractBuild
+{
+    public function run()
+    {
+        $sh = $this->getSchemaHelper();
+
+        $fk = $this->getSchemaHelper()->findForeignKey('round_robin_log', 'rr_id', 'round_robin', 'id');
+        if ($fk) {
+            $sh->getSchemaManager()->dropForeignKey($fk, 'round_robin_log');
+        }
+
+        $this->execMutateSql('ALTER TABLE round_robin_log ADD CONSTRAINT FK_4CB426EE1D063087 FOREIGN KEY (rr_id) REFERENCES round_robin (id) ON DELETE CASCADE', true);
+    }
+}
