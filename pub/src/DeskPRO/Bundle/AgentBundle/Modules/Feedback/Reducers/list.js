@@ -6,7 +6,6 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import Immutable from 'immutable';
 
 const initialState = {
-  isComments: false, // whether comments or feedbacks list is shown
   massAction: false,
   feedback: [],
   selected: [], // array of IDs
@@ -14,6 +13,7 @@ const initialState = {
 
   // currently viewed list GET parameters map
   currentListParams: {
+    isComments: false, // whether comments or feedback list is shown
     sort: 'date_created',
     order: constants.ORDER_DESC
   },
@@ -77,14 +77,8 @@ export default createReducer(initialState, {
     let newFilters = {};
     if (state.get('currentListParams').get('filters')) {
       newFilters = state.get('currentListParams').get('filters').toJS();
-      for (var property in payload) {
-        if (payload.hasOwnProperty(property)) {
-          newFilters[property] = payload[property];
-        }
-      }
-    } else {
-      newFilters = payload;
     }
+    newFilters[payload.filter] = payload.value;
     return state.setIn(['currentListParams', 'filters'], Immutable.fromJS(newFilters));
   },
 

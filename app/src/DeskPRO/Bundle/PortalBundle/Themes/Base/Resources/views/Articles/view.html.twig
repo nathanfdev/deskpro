@@ -7,23 +7,29 @@
 
   <article class="news kb-article">
     <header>
+
+      <div class="header-button-container">
+        <div class="header-buttons">
+          {% show kb_subscription_link %}
+          {#<a href="#">{{ phrase('portal.general.btn-email') }} <i class="fa fa-envelope"></i></a>#}
+          {#<a href="#">{{ phrase('portal.general.btn-print') }} <i class="fa fa-print"></i></a>#}
+          {#<a href="#">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>#}
+        </div>
+      </div>
+
       <h1>{{ article.real_title }}</h1>
 
       <div class="article-meta">
-        <span class="agent-avatar agent-avatar-mini"><img src="{{ avatar_url(article.person, 20) }}"></span>
-        {{ phrase('portal.articles.by-line', { name: article.person.name, date: article.date_published | date('Y-m-d') }) }}
-        <span class="comments"><i class="fa fa-comments"></i> <a href="#comments">{{ phrase('portal.general.comments-count', {count: article.num_comments}) }}</a></span>
+        <span style="background: url({{ avatar_url(article.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>
+        {{ article.person.name }}
+        <hr>
+        {{ article.date_published | date('Y-m-d') }}
+        <hr>
+        <span class="comments"><i class="fa fa-comments-o"></i> <a href="#comments">{{ phrase('portal.general.comments-count', {count: article.num_comments}) }}</a></span>
+        <hr>
+        <a href="{{ portal_path(article.primary_category) }}">{{ article.primary_category }}</a>
       </div>
     </header>
-
-    <div class="header-button-container">
-      <div class="header-buttons">
-        {% show kb_subscription_link %}
-        {#<a href="#">{{ phrase('portal.general.btn-email') }} <i class="fa fa-envelope"></i></a>#}
-        {#<a href="#">{{ phrase('portal.general.btn-print') }} <i class="fa fa-print"></i></a>#}
-        {#<a href="#">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>#}
-      </div>
-    </div>
 
     {% show kb_subscription_info %}
 

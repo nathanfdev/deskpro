@@ -38,17 +38,25 @@ use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\NewsCategory;
 use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class PublishFixture extends AbstractFixture implements ContainerAwareInterface, DependentFixtureInterface
+class PublishFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
     /**
      * @var ContainerInterface
      */
     private $container;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOrder()
+    {
+        return 0;
+    }
 
     /**
      * {@inheritdoc}

@@ -1,39 +1,55 @@
 import React, {Component, PropTypes} from 'react';
-import {ChoiceMenuOption} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/ChoiceMenu';
+import {ChoiceMenu, ChoiceMenuOption} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/ChoiceMenu';
 import { setFilterValue, loadFeedbackList } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 
 import { connect } from 'react-redux';
 @connect(state => ({
-  types: state.Feedback.nav.get('types')
+  types: state.Feedback.nav.get('types'),
+  filterParams: state.Feedback.list.get('currentListParams').get('filters')
 }))
 
 export class TypesCollectionContainer extends Component {
 
   static propTypes = {
     types: PropTypes.object.isRequired,
+    filterParams: PropTypes.object,
     dispatch: PropTypes.func.isRequired
   };
 
-  setFilter(model) {
-    const {dispatch} = this.props;
-    dispatch(setFilterValue(model));
+  setFilter(value) {
+    let values = [value];
+    const {dispatch, filterParams} = this.props;
+    if (filterParams && filterParams.get('category')) {
+      const types = filterParams.get('category').toJS();
+      const index = types.indexOf(value);
+      if (index > -1) {
+        values = types;
+        values.splice(index, 1);
+      } else {
+        values = types.concat(values);
+      }
+    }
+    dispatch(setFilterValue({ filter: 'category', value: values }));
     dispatch(loadFeedbackList());
   }
 
   render() {
-    const {types} = this.props;
+    const {types, filterParams} = this.props;
+    const values = filterParams && filterParams.get('category') ? filterParams.get('category').toJS() : null;
     return (
-      <ul>
-        {types.toJS().map((item, index) =>
-            <ChoiceMenuOption
-              key={index}
-              label={item.title}
-              type="category"
-              value={item.title}
-              onClick={this.setFilter.bind(this)}
-              />
-        )}
-      </ul>
+      <ChoiceMenu title="Feedback Type">
+        <ul>
+          {types.toJS().map((item, index) =>
+              <ChoiceMenuOption
+                key={index}
+                values={values}
+                label={item.title}
+                value={item.title}
+                onClick={this.setFilter.bind(this)}
+                />
+          )}
+        </ul>
+      </ChoiceMenu>
     );
   }
 }

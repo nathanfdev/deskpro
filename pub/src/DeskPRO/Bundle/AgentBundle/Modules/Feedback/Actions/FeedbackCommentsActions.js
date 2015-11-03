@@ -1,7 +1,8 @@
 import { createAction } from 'Ampliflux';
 import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
 import { loadFeedback } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackActions';
-import { commentsToReview } from './FeedbackListActions';
+import { currentListParamsSelector } from '../Selectors/list';
+import { setCurrentListParams, commentsToReview } from './FeedbackListActions';
 import { loadPeople } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { loadEmails } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/emailsActions';
 
@@ -19,9 +20,9 @@ export const getFeedbackForComments = createAction(
 
 export const getAuthors = createAction(
   'FEEDBACK_COMMENTS_GET_AUTHORS',
-    comments => dispatch => {
-    const ids = [],
-      unique = {};
+  (comments) => (dispatch) => {
+    const ids = [];
+    const unique = {};
     for (var key in comments.data) {
       if (typeof(unique[comments.data[key].person_id]) === 'undefined') {
         ids.push(comments.data[key].person_id);
@@ -35,37 +36,46 @@ export const getAuthors = createAction(
 
 export const loadCommentsList = createAction(
   'FEEDBACK_COMMENTS_LIST',
-  (params = {}) => dispatch => Feedback.commentsToReviewList(params).then(promise => {
-    const comments = promise.getData();
-    const ids = [];
-    for (var ind in comments.data) {
-      ids.push(comments.data[ind].feedback_id);
-    }
-    dispatch(getFeedbackForComments(ids));
-    dispatch(getAuthors(comments));
-    return comments;
-  })
+  (overwriteParams = {}) => (dispatch, getState) => {
+    const currentParams = currentListParamsSelector(getState()).toJS();
+    const params = { ...currentParams, ...overwriteParams };
+
+    dispatch(setCurrentListParams(params));
+    delete params.isComments;
+    return Feedback.commentsToReviewList(params).then(promise => {
+      const comments = promise.getData();
+      const ids = [];
+      for (var index in comments.data) {
+        if (comments.data.hasOwnProperty(index)) {
+          ids.push(comments.data[index].feedback_id);
+        }
+      }
+      dispatch(getFeedbackForComments(ids));
+      dispatch(getAuthors(comments));
+      return comments;
+    });
+  }
 );
 
 export const setTableSort = createAction(
   'FEEDBACK_COMMENTS_SET_TABLE_SORT',
   (sort, order) => dispatch => {
-    dispatch(loadCommentsList({sort: sort, order: order}));
-    return {sort, order};
+    dispatch(loadCommentsList({ sort: sort, order: order }));
+    return { sort, order };
   }
 );
 
 export const commentsToggleOrder = createAction(
   'FEEDBACK_COMMENTS_TOGGLE_ORDER',
-    order => dispatch => {
-    dispatch(loadCommentsList({sort: 'date_created', order: order}));
+  (order) => dispatch => {
+    dispatch(loadCommentsList({ sort: 'date_created', order: order }));
     return order;
   }
 );
 
 export const deleteComment = createAction(
   'FEEDBACK_COMMENTS_DELETE',
-    id => dispatch => {
+  (id) => dispatch => {
     Feedback.deleteFeedbackComment(id).then(()=> {
       dispatch(commentsToReview());
       dispatch(loadCommentsList());
@@ -76,7 +86,7 @@ export const deleteComment = createAction(
 
 export const editComment = createAction(
   'FEEDBACK_COMMENTS_EDIT',
-    data => dispatch => {
+  (data) => dispatch => {
     const commentId = data.commentId;
     delete data.commentId;
     Feedback.editComment(commentId, data).then(()=> {

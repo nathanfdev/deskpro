@@ -31,7 +31,7 @@ export function deleteFeedbackComment(id) {
   return DpApi.sendDelete('DP_API/feedback_comments/' + id);
 }
 
-/*
+/**
  * Feedback comments to review list
  * @return Promise
  */
@@ -42,11 +42,11 @@ export function commentsToReviewList(params) {
     paramsEncoded.push('order=' + params.order);
   }
   paramsEncoded.push('awaiting_validation=1');
-
+  console.log('DP_API/feedback_comments_list?' + paramsEncoded.join('&'));
   return DpApi.sendGet('DP_API/feedback_comments_list?' + paramsEncoded.join('&'));
 }
 
-/*
+/**
  * Update a feedbackComment
  * @param commentId
  * @param data

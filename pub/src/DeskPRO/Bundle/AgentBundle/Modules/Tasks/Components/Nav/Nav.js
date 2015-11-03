@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { NavFrame, NavFrameHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { Groups } from './Groups';
-import { Projects } from './Projects';
+import { Projects } from './Projects/Projects';
 import { Agents } from './Agents';
 import { Labels } from './Labels';
 
@@ -9,11 +9,13 @@ export class Nav extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    dpWindow: PropTypes.object.isRequired
+    dpWindow: PropTypes.object.isRequired,
+    projects: PropTypes.object.isRequired,
+    agents: PropTypes.object.isRequired
   };
 
   render() {
-    const { dispatch, dpWindow } = this.props;
+    const { dispatch, dpWindow, projects, agents } = this.props;
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
@@ -23,8 +25,8 @@ export class Nav extends React.Component {
 
         <div className="sidebar-list sidebar-list-filters">
           <Groups />
-          <Projects />
-          <Agents />
+          <Projects projects={projects} />
+          <Agents agents={agents} />
           <Labels />
         </div>
       </NavFrame>

@@ -78,6 +78,8 @@ class CustomDataPersonType extends AbstractType
 
         list($value_name, $form_type, $options) = $this->field_manager->getCustomPersonField($custom_data_field, $config->getOption('agent_interface'));
 
+        $options['error_bubbling'] = true;
+
         if ($config->getOption('ignore_validation')) {
             $options = array_merge($options, array(
                 'validation_groups' => array(),

@@ -3,14 +3,22 @@
 {# Basic structure #}
 
 {%- block form_row -%}
-    <div class="bucket">
+    <div class="bucket{% if not valid %} error{% endif %}">
         {% if not (checkbox_label is defined and checkbox_label) %}
-            {{- form_label(form) -}}
+            {{- form_label(form, null, {'label_attr': {'class': 'title'}}) -}}
         {% endif %}
-        {{- form_errors(form) -}}
         {{- form_widget(form) -}}
+        {{- form_errors(form) -}}
     </div>
 {%- endblock form_row -%}
+
+{% block form_errors -%}
+    {% if errors|length > 0 -%}
+        {%- for error in errors -%}
+            <div class="error-large no-hover">{{ error.message }}</div>
+        {%- endfor -%}
+    {%- endif %}
+{%- endblock form_errors %}
 
 
 {# Date and Time #}
@@ -88,7 +96,7 @@
                 {% set label = name|humanize %}
             {%- endif -%}
         {%- endif -%}
-        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}{% if required %} *{% endif %}</label>
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}{% if required %} *{% endif %}{% if not dp_no_validation_indicator is defined or not dp_no_validation_indicator %}<span class="form-item-valid{% if not  (submitted and valid) %} hidden{% endif %}"><i class="fa fa-check"></i></span>{% endif %}</label>
     {%- endif -%}
 {%- endblock form_label -%}
 
@@ -109,7 +117,7 @@
 
 {% block single_checkbox_widget %}
     {# we use a special type if its a single checkbox (toggle type) #}
-    <div class="dpx-checkbox-group">
+    <div class="dpx-checkbox-group dp-checkbox-group-widget">
         <input
             type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
         <label for="{{ id }}">{{ checkbox_label|trans }}</label>
@@ -296,7 +304,7 @@ HEIRARCHY
         {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
             {% set required = false %}
         {%- endif -%}
-        <select data-heirarchy="" {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+        <select data-heirarchy="" {{ block('widget_attributes') }}{% if multiple %} dpx-select-multiple="" multiple="multiple"{% else %} dpx-select=""{% endif %}>
             {% if empty_value is not none -%}
                 <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
             {%- endif %}
@@ -349,7 +357,7 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
 
 {% block deskpro_custom_field_choice_widget_expanded -%}
     <div {{ block('widget_container_attributes') }}>
-        <div class="{% if multiple %}dpx-checkbox-group{% endif %}">
+        <div class="{% if multiple %}dpx-checkbox-group{% endif %} dp-choice-widget-group">
             {%- for child in form %}
                 {% if form.vars.choices[child.vars.value] is defined %}
                     {% if form.vars.choices[child.vars.value].data|length == 0 %}
@@ -357,7 +365,7 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
                             <div class="radio-button">
                         {% endif %}
                         {{- form_widget(child) -}}
-                        {{- form_label(child) -}}
+                        {{- form_label(child, null, { dp_no_validation_indicator: true }) -}}
                         {% if not multiple %}
                             </div>
                         {% endif %}
@@ -372,7 +380,7 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
     {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
         {% set required = false %}
     {%- endif -%}
-    <select dpx-select="" {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+    <select {{ block('widget_attributes') }}{% if multiple %} dpx-select-multiple="" multiple="multiple"{% else %} dpx-select=""{% endif %}>
         {% if empty_value is not none -%}
             <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
         {%- endif %}

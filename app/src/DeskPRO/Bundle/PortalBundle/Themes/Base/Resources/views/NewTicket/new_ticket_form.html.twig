@@ -1,25 +1,32 @@
 <div id="new_ticket_page">
 
+    {#{% if form_errors|length > 0 %}#}
+        {#<div class="form-error-list">#}
+            {#<h1>There are some errors with your submission.</h1>#}
+            {#<ul>#}
+
+                {#{% for error in form_errors %}#}
+                    {#{% set error_view = error.origin.createView() %}#}
+                    {#{{ dump(error_view) }}#}
+                    {#<li>#}
+                        {#<a href="#{{ error_view.vars.id }}">#}
+                            {#<strong>{{ form_label(error_view) }}:</strong>#}
+                            {#<span>{{ error.message }}</span>#}
+                            {#<i class="fa fa-angle-double-right"></i>#}
+                        {#</a>#}
+                    {#</li>#}
+                {#{% endfor %}#}
+            {#</ul>#}
+        {#</div>#}
+    {#{% endif %}#}
+
     <!-- BEGIN NEW TICKET FORM -->
-    <style>
-        .form-error {
-            color: red;
-            border: 1px solid red;
-        }
-    </style>
     <div class="dp_ticket_form dpx-form">
-        {{ form_errors(form) }}
         {{ form_start(form, { attr: { class: 'form-ticket' } }) }}
         <div class="dynamic-fields-container">
             {% for widget in form.children if not widget.rendered and widget.vars.name not in ['_token', '_dp_csrf_token'] %}
                 <div class="column-full deskpro-form-widget field_{{ widget.vars.name }}" data-field="{{ widget.vars.name }}">
-                    <div class="{% if widget.vars.valid is defined and not widget.vars.valid %} form-error{% endif %}">
-                        {{ form_label(widget, null, {'label_attr': {'class': 'title'}}) }}
-                        {{ form_widget(widget) }}
-                        {% if widget.vars.valid is defined %}
-                            {{ form_errors(widget) }}
-                        {% endif %}
-                    </div>
+                    {{ form_row(widget) }}
                 </div>
             {% endfor %}
         </div>
@@ -32,12 +39,7 @@
     <div class="js_form_tpl" style="display: none;">
         {% for widget in form_full.children if not widget.rendered and widget.vars.name not in ['_token', '_dp_csrf_token'] %}
             <div class="column-full deskpro-form-widget field_{{ widget.vars.name }}" data-field="{{ widget.vars.name }}">
-                <div class="bucket">
-                    {{ form_label(widget, null, {'label_attr': {'class': 'title'}}) }}
-                    <div class="form-widget">
-                        {{ form_widget(widget) }}
-                    </div>
-                </div>
+                {{ form_row(widget) }}
             </div>
         {% endfor %}
     </div>

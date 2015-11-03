@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {QuickFilter} from './QuickFilter';
+import classNames from 'classnames';
 
 export class ChoiceMenu extends Component {
 
@@ -34,36 +35,37 @@ export class ChoiceMenu extends Component {
   }
 }
 
-export class ChoiceMenuHeader extends Component {
-
-  static propTypes = {
-    title: PropTypes.string.isRequired
-  };
-
-  render() {
-    return (
-      <div className="dpw-navigation-dropdown-mini-header">
-        {this.props.title}
-      </div>
-    );
-  }
-}
-
 export class ChoiceMenuOption extends Component {
 
   static propTypes = {
     label: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
+    values: PropTypes.array,
     onClick: PropTypes.func.isRequired,
     children: PropTypes.any
   };
 
+  componentWillMount() {
+    const { values, value } = this.props;
+    this.setState({
+      isActive: values && values.indexOf(value) > -1
+    });
+  }
+
+  componentWillReceiveProps() {
+    const { values, value } = this.props;
+    this.setState({
+      isActive: values && values.indexOf(value) > -1
+    });
+  }
+
   render() {
-    const {label, type, value, onClick} = this.props;
+    const {label, value, onClick} = this.props;
+    var classes = classNames('dpw--popup-item-person', { 'active': this.state.isActive });
+
     return (
       <li>
-        <div className="dpw--popup-item-person" onClick={onClick.bind(this, {[type]: value})}>
+        <div className={classes} onClick={onClick.bind(this, value)}>
           <span className="dpw-popup-item-collection-name">
             {label}
           </span>
@@ -78,20 +80,44 @@ export class ChoiceMenuOptionGroup extends Component {
 
   static propTypes = {
     node: PropTypes.object.isRequired,
+    values: PropTypes.array,
     type: PropTypes.string.isRequired,
     onClick: PropTypes.func.isRequired
   };
 
   render() {
-    const {node, type, onClick} = this.props;
+    const {node, type, values, onClick} = this.props;
     if (node.nested) {
       return (
         <ul>
           {node.nested.map((item, index) =>
-            <ChoiceMenuOption key={index} label={item.group} type={type} value={item.group} onClick={onClick}/>)}
+            <ChoiceMenuOption
+              key={index}
+              label={item.group}
+              type={type}
+              values={values}
+              value={item.group}
+              onClick={onClick}
+              />)}
         </ul>
       );
     }
     return (<div/>);
+  }
+}
+
+
+export class ChoiceMenuHeader extends Component {
+
+  static propTypes = {
+    title: PropTypes.string.isRequired
+  };
+
+  render() {
+    return (
+      <div className="dpw-navigation-dropdown-mini-header">
+        {this.props.title}
+      </div>
+    );
   }
 }

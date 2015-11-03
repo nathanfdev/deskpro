@@ -192,7 +192,6 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     private function loadFixtures(OutputInterface $output)
     {
         $output->writeln('Executing install fixtures...');
-        $output->writeln('Note: This will show a PHP notice due to a library bug. That is OK. Ignore.');
 
         $app   = $this->getApplication();
         $input = new ArrayInput(array(

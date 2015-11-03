@@ -31,7 +31,6 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
-use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
@@ -61,14 +60,20 @@ class FeedbackSelectCriteria extends Criteria
                         ->setParameter('validating', 'validating');
                     break;
                 case 'category':
-                    $qb
-                        ->andWhere('category.title = :category_title')
-                        ->setParameter('category_title', $value);
+                    if (is_array($value)) {
+                        $qb->andWhere('category.title IN (:category_title)');
+                    } else {
+                        $qb->andWhere('category.title = :category_title');
+                    }
+                    $qb->setParameter('category_title', $value);
                     break;
                 case 'status_category':
-                    $qb
-                        ->andWhere('statusCategory.title = :title')
-                        ->setParameter('title', $value);
+                    if (is_array($value)) {
+                        $qb->andWhere('statusCategory.title IN (:title)');
+                    } else {
+                        $qb->andWhere('statusCategory.title = :title');
+                    }
+                    $qb->setParameter('title', $value);
                     break;
                 case 'label':
                     $qb
@@ -80,14 +85,20 @@ class FeedbackSelectCriteria extends Criteria
                         ->andWhere('labels.label IS NULL');
                     break;
                 case 'custom_category':
-                    $qb
-                        ->andWhere('customCat.input = :input')
-                        ->setParameter('input', $value);
+                    if (is_array($value)) {
+                        $qb->andWhere('customCat.input IN (:input)');
+                    } else {
+                        $qb->andWhere('customCat.input = :input');
+                    }
+                    $qb->setParameter('input', $value);
                     break;
                 case 'status':
-                    $qb
-                        ->andWhere("$alias.status = :status")
-                        ->setParameter('status', $value);
+                    if (is_array($value)) {
+                        $qb->andWhere("$alias.status IN (:status)");
+                    } else {
+                        $qb->andWhere("$alias.status = :status");
+                    }
+                    $qb->setParameter('status', $value);
                     break;
                 case 'hidden_status':
                     $qb
@@ -139,15 +150,12 @@ class FeedbackSelectCriteria extends Criteria
                 'page',
                 'count',
                 'ids',
-                'created_from', 'created_to',
+                'created_from',
+                'created_to',
             ]
         );
         $resolver->setAllowedValues('awaiting_validation', '1');
         $resolver->setAllowedValues('no_labels', '1');
-        $resolver->setAllowedValues(
-            'status',
-            ['new', Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED, Feedback::STATUS_HIDDEN]
-        );
         $resolver->setAllowedValues(
             'sort',
             ['date_created', 'total_rating', 'num_ratings', 'id', 'title', 'status', 'category', 'author_name']

@@ -2,12 +2,11 @@ import React, {PropTypes} from 'react';
 import Formsy from 'formsy-react';
 import Moment from 'moment';
 import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
-import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
 import {FilterItem} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/FilterItem';
 import {DateTimePicker} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/DateTimePicker';
-import {ChoiceMenu} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/ChoiceMenu';
 import { setFilterValue, loadFeedbackList } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { TypesCollectionContainer } from './TypesCollectionContainer';
+import { CategoriesCollectionContainer } from './CategoriesCollectionContainer';
 import { StatusesCollectionContainer } from './StatusesCollectionContainer';
 
 const FilterByDropdown = React.createClass({
@@ -28,58 +27,152 @@ const FilterByDropdown = React.createClass({
    this.props.toggleDropdown();
    },*/
 
-  resetFilter(type) {
-    const {dispatch} = this.props;
-    dispatch(setFilterValue({ [type]: null }));
-    dispatch(loadFeedbackList());
+  getInitialFromTo(active) {
+    let from = null;
+    let to = null;
+    if (active) {
+      const {filterParams} = this.props;
+      if (filterParams.get('date_created')) {
+        const dateCreated = filterParams.get('date_created');
+        from = dateCreated.get('created_from');
+        to = dateCreated.get('created_to');
+      }
+    }
+    return { from: from, to: to };
   },
 
-  submitFilter(model) {
+  submitFilter(type, model) {
     const {dispatch} = this.props;
-    dispatch(setFilterValue(model));
+    dispatch(setFilterValue({ filter: type, value: model }));
     dispatch(loadFeedbackList());
     // this.props.toggleDropdown();
   },
 
-  checkIfActiveDateCreatedFilter() {
+  resetFilter(type) {
+    const {dispatch} = this.props;
+    dispatch(setFilterValue({ filter: type, value: null }));
+    dispatch(loadFeedbackList());
+  },
+
+  checkIfDateCreatedFilterIsActive() {
     const {filterParams} = this.props;
-    if (filterParams && (filterParams.get('created_from') || filterParams.get('created_to'))) {
+    if (filterParams && filterParams.get('date_created')) {
       return true;
     }
   },
 
-  checkIfActiveTypesFilter() {
+  checkIfTypesFilterIsActive() {
     const {filterParams} = this.props;
     if (filterParams && filterParams.get('category')) {
       return true;
     }
   },
 
-  checkIfActiveStatusesFilter() {
+  checkIfCategoriesFilterIsActive() {
+    const {filterParams} = this.props;
+    if (filterParams && filterParams.get('custom_category')) {
+      return true;
+    }
+  },
+
+  checkIfStatusesFilterIsActive() {
     const {filterParams} = this.props;
     if (filterParams && (filterParams.get('status') || filterParams.get('status_category'))) {
       return true;
     }
   },
 
-  renderDateCreatedItemContent(active) {
+  renderDateCreatedItemContent(active, initialFromTo) {
     if (active) {
-      const {filterParams} = this.props;
-      const from = filterParams.get('created_from') ? Moment(filterParams.get('created_from')).format('DD/MM/YYYY') : '...';
-      const to = filterParams.get('created_to') ? Moment(filterParams.get('created_to')).format('DD/MM/YYYY') : '...';
+      const from = initialFromTo.from ? Moment(initialFromTo.from).format('DD/MM/YYYY') : '...';
+      const to = initialFromTo.to ? Moment(initialFromTo.to).format('DD/MM/YYYY') : '...';
       return (
         <span className="dpw-navigation-dropdown-item-inline-info">{from} - {to}</span>
       );
     }
   },
 
+  renderTypeItemContent(active) {
+    if (active) {
+      const {filterParams} = this.props;
+      const chosenValues = filterParams.get('category').toJS();
+      return (
+        <span className="dpw-navigation-dropdown-item-inline-info">{chosenValues[0]}</span>
+      );
+    }
+  },
+
+  renderTypeItemExtraContent(active) {
+    if (active) {
+      const {filterParams} = this.props;
+      const chosenValues = filterParams.get('category').toJS();
+      const size = chosenValues.length;
+      if (size > 1) {
+        return (
+          <span className="dpw-navigation-dropdown-item-inline-info dpw-navigation-dropdown-item-inline-info-extra">
+            +{size - 1}
+          </span>
+        );
+      }
+    }
+  },
+
+  renderCategoryItemContent(active) {
+    if (active) {
+      const {filterParams} = this.props;
+      const chosenValues = filterParams.get('custom_category').toJS();
+      return (
+        <span className="dpw-navigation-dropdown-item-inline-info">{chosenValues[0]}</span>
+      );
+    }
+  },
+
+  renderCategoryItemExtraContent(active) {
+    if (active) {
+      const {filterParams} = this.props;
+      const chosenValues = filterParams.get('custom_category').toJS();
+      const size = chosenValues.length;
+      if (size > 1) {
+        return (
+          <span className="dpw-navigation-dropdown-item-inline-info dpw-navigation-dropdown-item-inline-info-extra">
+            +{size - 1}
+          </span>
+        );
+      }
+    }
+  },
+
+  renderStatusItemContent(active) {
+    if (active) {
+      const {filterParams} = this.props;
+      const chosenValues = filterParams.get('status').toJS();
+      return (
+        <span className="dpw-navigation-dropdown-item-inline-info">{chosenValues[0]}</span>
+      );
+    }
+  },
+
+  renderStatusItemExtraContent(active) {
+    if (active) {
+      const {filterParams} = this.props;
+      const chosenValues = filterParams.get('status').toJS();
+      const size = chosenValues.length;
+      if (size > 1) {
+        return (
+          <span className="dpw-navigation-dropdown-item-inline-info dpw-navigation-dropdown-item-inline-info-extra">
+            +{size - 1}
+          </span>
+        );
+      }
+    }
+  },
+
   render() {
-    const {filterParams} = this.props;
-    const initialFrom = filterParams && filterParams.get('created_from') ? filterParams.get('created_from') : null;
-    const initialTo = filterParams && filterParams.get('created_to') ? filterParams.get('created_to') : null;
-    const isDateCreatedFilterActive = this.checkIfActiveDateCreatedFilter();
-    const isTypesFilterActive = this.checkIfActiveTypesFilter();
-    const isStatusesFilterActive = this.checkIfActiveStatusesFilter();
+    const isDateCreatedFilterActive = this.checkIfDateCreatedFilterIsActive();
+    const initialFromTo = this.getInitialFromTo(isDateCreatedFilterActive);
+    const isTypesFilterActive = this.checkIfTypesFilterIsActive();
+    const isCategoriesFilterActive = this.checkIfCategoriesFilterIsActive();
+    const isStatusesFilterActive = this.checkIfStatusesFilterIsActive();
     return (
       <Menu>
         <FilterItem
@@ -89,10 +182,10 @@ const FilterByDropdown = React.createClass({
           icon="calendar-o"
           label="Type"
           >
+          {this.renderTypeItemContent(isTypesFilterActive)}
+          {this.renderTypeItemExtraContent(isTypesFilterActive)}
           <Menu>
-            <ChoiceMenu title="Feedback Type">
-              <TypesCollectionContainer/>
-            </ChoiceMenu>
+            <TypesCollectionContainer />
           </Menu>
         </FilterItem>
         <FilterItem
@@ -101,21 +194,22 @@ const FilterByDropdown = React.createClass({
           resetFilter={this.resetFilter}
           icon="calendar-o"
           label="Status">
+          {this.renderStatusItemContent(isStatusesFilterActive)}
+          {this.renderStatusItemExtraContent(isStatusesFilterActive)}
           <Menu>
-            <ChoiceMenu title="Feedback Status">
               <StatusesCollectionContainer/>
-            </ChoiceMenu>
           </Menu>
         </FilterItem>
         <FilterItem
           filterType="custom_category"
-          isActive={Boolean(filterParams && filterParams.custom_category)}
+          isActive={isCategoriesFilterActive}
           resetFilter={this.resetFilter}
           icon="calendar-o"
           label="Category">
+          {this.renderCategoryItemContent(isCategoriesFilterActive)}
+          {this.renderCategoryItemExtraContent(isCategoriesFilterActive)}
           <Menu>
-            <Item label="Sub-menu 2"/>
-            <Item label="Subterranean"/>
+            <CategoriesCollectionContainer />
           </Menu>
         </FilterItem>
         <FilterItem
@@ -125,7 +219,7 @@ const FilterByDropdown = React.createClass({
           icon="calendar-o"
           label="Date"
           >
-          {this.renderDateCreatedItemContent(isDateCreatedFilterActive)}
+          {this.renderDateCreatedItemContent(isDateCreatedFilterActive, initialFromTo)}
           <Menu>
             <div
               className="dpw-navigation-dropdown-panel dpw-navigation-date-picker-panel dpw-navigation-dropdown-panel-corner-left">
@@ -135,26 +229,25 @@ const FilterByDropdown = React.createClass({
               <div className="dpw-date-picker">
 
                 <div className="dpw-date-picker-panel-container">
-                  <Formsy.Form onValidSubmit={this.submitFilter}>
+                  <Formsy.Form onValidSubmit={this.submitFilter.bind(this, 'date_created')}>
                     <DateTimePicker
                       label="From"
                       name="created_from"
                       className="dpw-date-picker-left"
-                      initialValue={initialFrom}
+                      initialValue={initialFromTo.from}
                       />
                     <DateTimePicker
                       label="To"
                       name="created_to"
                       className="dpw-date-picker-right"
-                      initialValue={initialTo}
+                      initialValue={initialFromTo.to}
                       />
+
                     <div className=" dpw-date-picker-footer">
                       <button type="submit" className="dpw--panel-button">Apply Date Range Filter</button>
                     </div>
                   </Formsy.Form>
                 </div>
-
-
               </div>
             </div>
           </Menu>

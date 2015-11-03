@@ -692,6 +692,7 @@ button, .button, input[type="submit"] {
     ul {
       margin-left: 0;
     }
+
   }
 
   ul {
@@ -912,6 +913,12 @@ button, .button, input[type="submit"] {
     font-weight: 400;
 
     li {
+      i[class*=" fa-file-"] {
+        margin-right: 5px;
+      }
+    }
+
+    li {
       @include whitespace;
 
       display: block;
@@ -996,6 +1003,11 @@ button, .button, input[type="submit"] {
       font-weight: 500;
       margin-right: 10px;
 
+      .agent-avatar {
+        position: relative;
+        top: -1px;
+      }
+
       a {
         margin-left: 5px;
       }
@@ -1020,7 +1032,7 @@ button, .button, input[type="submit"] {
         margin-left: 4px;
         line-height: 4px;
         position: relative;
-        top: -1px;
+        top: 0px;
       }
 
       &:hover {
@@ -1255,6 +1267,7 @@ $search-btn-height: $search-height - 24;
   background: #f3f3f3;
   display: table;
   width: 100%;
+  margin-bottom: 10px;
 
   form {
     margin: 0;
@@ -1315,6 +1328,7 @@ $search-btn-height: $search-height - 24;
     border: 1px solid #dedede;
     border-top: 3px solid #3d77b6;
     z-index: 1999;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
 
     min-width: 600px;
 
@@ -1325,6 +1339,9 @@ $search-btn-height: $search-height - 24;
 
       a:hover {
         text-decoration: none;
+        .item-name {
+          text-decoration: underline;
+        }
       }
     }
 
@@ -1504,7 +1521,7 @@ $search-btn-height: $search-height - 24;
     font-size: 1em;
 
     &:focus, &.active {
-      border: 2px solid #3575bd;
+      border: 1px solid #3575bd;
       @include placeholder {
         opacity: 0;
       }
@@ -1727,6 +1744,9 @@ $search-btn-height: $search-height - 24;
         top: -1px;
         margin-right: 4px;
       }
+      .fa-support {
+        margin-right: 4px;
+      }
     }
 
     .select-action-dropdown {
@@ -1741,17 +1761,18 @@ $search-btn-height: $search-height - 24;
 
       .fa-caret-down {
         position: relative;
-        top: 12px; // placehodler to figure out why this keeps changes // was 18px, is 12px
+        top: 18px; // placehodler to figure out why this keeps changes // was 18px, is 12px // Was 12, is 18
       }
     }
   }
 }
 
 .search-form-suggestions {
-  padding-top: 1px;
   font-size: 11px;
   font-style: italic;
   color: #9f9b9b;
+  line-height: 1.2em;
+  padding-left: 10px;
 
   a {
     color: #aab8dc;
@@ -1766,6 +1787,7 @@ $tab-border: $divider-color;
 
 .tabs {
   margin-bottom: 20px;
+  font-size: 12px;
   ul {
     @include clearfix;
     @include blank-list;
@@ -1850,6 +1872,18 @@ $tab-border: $divider-color;
       }
     }
 
+    &.tab-active {
+      border: 1px solid $tab-border;
+      border-bottom: 1px solid rgba(255, 255, 255, 0);
+      background: $page-background;
+
+      .title { color: $button-color; }
+    }
+
+    &.tab-inactive {
+      .title { color: $text-color-lighter; }
+    }
+
     span {
       display: block;
     }
@@ -1862,7 +1896,9 @@ $tab-border: $divider-color;
   ul {
     padding-left: 0;
   }
+
   li.tab-active {
+
     .title {
       color: $text-color;
 
@@ -2183,21 +2219,12 @@ div.large-title {
 .header-button-container {
   position: relative;
   display: block;
-  float: none;
-  margin-top: 30px;
-  margin-bottom: 30px;
-  width: 100%;
-  height: 1px;
-  border-bottom: 1px solid $divider-color;
-  text-align: right;
+  float: right;
 
   .header-buttons {
     position: relative;
-    top: -12px;
     display: inline-block;
     float: none;
-    padding-right: 5px;
-    padding-left: 5px;
     background: $page-background;
   }
 }
@@ -2422,9 +2449,10 @@ h1 {
     opacity: 0.5;
     &:hover {
       opacity: 1;
+      text-decoration: underline;
     }
     i {
-      margin-left: 3px;
+      margin-left: 7px;
       position: relative;
       top: 1px;
     }
@@ -2719,7 +2747,7 @@ table {
 }
 
 li.related-article-item.active .expanded-content.intro .show-more-content-container,
-li.related-article-item:hover .expanded-content.intro .show-more-content-container, {
+li.related-article-item:hover .expanded-content.intro .show-more-content-container {
   opacity: 1;
 }
 
@@ -3170,8 +3198,9 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
 }
 
 .breadcrumbs {
-  margin-bottom: 15px;
+  margin-bottom: 30px;
   padding-left: $universal-left-padding;
+  line-height: 1.2em;
 
   ul {
     @include blank-list;
@@ -3186,7 +3215,7 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
 
   hr {
     position: relative;
-    top: -11px;
+    top: -8px;
     z-index: 99;
     height: 1px;
     border: 0;
@@ -4028,10 +4057,11 @@ ul.kb-checkbox-extra {
     color: #fff;
     position: absolute;
     text-transform: uppercase;
-    width: 42px;
+    width: 44px;
     height: 18px;
+    margin-top: -1px;
+    margin-left: -1px;
     text-align: center;
-    padding-top: 1px;
     border-top-left-radius: 2px;
     border-top-right-radius: 2px;
 
@@ -4272,6 +4302,12 @@ h1.fancy-header {
         top: 2px;
         left: 3px;
       }
+
+      @media screen and (-webkit-min-device-pixel-ratio:0) {
+        i {
+          left: 2px;
+        }
+      }
     }
   }
 
@@ -4338,7 +4374,7 @@ h1.fancy-header {
 
   .quick-jump {
     background: $page-background;
-    color: $text-color;;
+    color: $text-color;
     padding: 0;
     position: relative;
     display: inline-block;
@@ -4387,17 +4423,23 @@ h1.fancy-header {
       border-bottom: 1px solid $divider-color;
       border-left: 1px solid $divider-color;
       border-right: 1px solid $divider-color;
+      font-size: 11px;
       li {
         .cat-checkbox-title {
           white-space: nowrap;
           display: block;
           width: 100%;
+          line-height: 1.2em;
+          font-weight: 400;
+
           &:hover {
             background-color: $surface-main;
           }
           input {
             display: inline-block;
             margin-right: 4px;
+            position: relative;
+            top: -1px;
           }
           a {
             display: inline-block;
@@ -4420,9 +4462,12 @@ h1.fancy-header {
 .feedback-form {
   .main-input {
     @include clearfix;
-
     margin-top: 50px;
     margin-bottom: 60px;
+
+    > div {
+      display: inline;
+    }
 
     .input, .button, span {
       display: inline-block;
@@ -4434,6 +4479,14 @@ h1.fancy-header {
 
     .deskpro-choice-widget {
       display: inline-block;
+    }
+
+    select {
+      padding: 5px;
+      display: inline-block;
+      width: 55%;
+      position: relative;
+      top: -2px;
     }
 
     .input {
@@ -4452,13 +4505,14 @@ h1.fancy-header {
     }
 
     .button {
-      width: 25%;
+      width: auto;
       border: 1px solid $button-color-secondary;
       border-bottom: none;
       background: $button-color-secondary;
       text-align: center;
       text-shadow: none;
       margin-top: 10px;
+      padding: 10px;
     }
 
     @media screen and (max-width: 760px) {
@@ -4539,7 +4593,7 @@ h1.fancy-header {
   }
 
   p {
-    font-weight: 100;
+    font-weight: 400;
     font-size: 0.95em;
   }
 
@@ -4649,7 +4703,7 @@ h1.fancy-header {
     border-left: 1px solid $divider-color;
 
     h1 {
-      font-weight: 100;
+      font-weight: 400;
       font-size: 1.3em;
 
       .text-tag {
@@ -5269,29 +5323,39 @@ h1.fancy-header {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 .article-meta {
-  color: $text-color-lighter;
+  color: #8C8989;
   font-size: 0.9em;
+  line-height: 1.2em;
+  font-weight: 500;
 
-  .updated {
-    margin-left: 10px;
+  .updated { margin-left: 10px; }
+
+  hr {
+    display: inline-block;
+    vertical-align: middle;
+    width: 1px;
+    height: 20px;
+    background: #E6E6E6;
+    margin: 0px 8px;
   }
 
   .agent-avatar {
-    margin-right: 4px;
-    margin-left: 4px;
+    margin-right: 2px;
+    margin-left: 2px;
   }
 
-  span {
-    margin-right: 10px;
-  }
-  .comments {
-    margin-left: 10px;
-  }
   i {
     margin-right: 2px;
   }
+
+
   a {
     text-decoration: underline;
+    color: #787878;
+  }
+
+  .comments a {
+    text-decoration: none;
   }
 }
 
@@ -5342,18 +5406,29 @@ ul.categories-article-list {
 .kb-article {
   header, footer {
     @include clearfix;
-    a {
-      color: $text-color;
-      text-decoration: none;
-    }
 
     h1 {
       margin-bottom: 10px;
+      color: #2a5c95;
+      font-size: 18px;
+      a {
+        text-decoration: none;
+      }
+    }
+
+    a {
+      color: #b6b3b3;
     }
   }
 
   header, .padded {
     padding-left: 10px;
+  }
+
+  header {
+    border-bottom: 1px solid #e6e6e6;
+    padding-bottom: 20px;
+    margin-bottom: 10px;
   }
 
   p {
@@ -6510,7 +6585,7 @@ ul.big-button-collection {
   }
   // Left aligned
   &.thin {
-    margin-top: 20px;
+    margin-top: 10px;
   }
   //
 
@@ -6566,7 +6641,7 @@ ul.big-button-collection {
 
   &.small {
     // Same list for internal pages
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 
     li {
       margin-right: 0px;
@@ -6662,7 +6737,7 @@ ul.big-button-collection {
 
   .quick-jump {
     background: #fff;
-    color: #bdbdbd;
+    color: #b0acac;
     padding: 5px;
     font-size: 0.9em;
     position: absolute;
@@ -6670,6 +6745,7 @@ ul.big-button-collection {
     left: 10px;
     z-index: 300;
     cursor: pointer;
+    font-weight: 500;
 
     .fa-navicon {
       position: relative;
@@ -6900,8 +6976,8 @@ body.with-agent-bar {
   display: block;
   width: 250px;
   background: #444648;
-  position: absolute;
-  top: 10px;
+  position: fixed;
+  top: 40px;
   right: 10px;
 
   ul {
@@ -6991,6 +7067,8 @@ body.with-agent-bar {
       color: #fff;
     }
   }
+
+  .datb-dropdown-content a i { top: -1px; }
 
   .datb-edit-context {
     display: inline-block;
@@ -7559,6 +7637,9 @@ body.with-agent-bar {
   i {
     margin-left: 5px;
   }
+  &.hidden {
+    display: none;
+  }
 }
 
 input[type="text"], input[type="email"], input[type="password"], textarea, select, .multiselect {
@@ -7636,7 +7717,7 @@ form {
     margin-bottom: 7px;
     padding-left: $universal-left-padding;
     color: $text-color;
-    font-weight: darker;
+    font-weight: $text-color-darker;
   }
 
   .subtitle {
@@ -7739,6 +7820,8 @@ form {
     border: 1px solid $form-border-color;
     border-radius: 2px;
     background: $page-background;
+    display: inline-block;
+    width: auto;
   }
 }
 
@@ -7906,6 +7989,20 @@ form {
       // If there's no margin on the parent element
       margin-top: 10px;
     }
+    &.no-hover {
+      position: relative;
+
+      &:before {
+        position: absolute;
+        top: -8px;
+        left: 40px;
+        display: block;
+        width: 0;
+        border: 4px solid rgba(0, 0, 0, 0);
+        border-bottom: 4px solid $red;
+        content: " ";
+      }
+    }
   }
 
   .error {
@@ -7923,7 +8020,7 @@ form {
       line-height: 1.5em;
     }
 
-    input[type="text"], input[type="email"], input[type="password"] {
+    input[type="text"], input[type="email"], input[type="password"], textarea, select, .dp-choice-widget-group {
       border: 1px solid $red;
       background: #fff0ec;
     }

@@ -43,7 +43,12 @@ class OrganizationTransformer extends AbstractDataSerializerTransformer
      */
     public function getAutomaticProperties(DataTransformerRequest $request)
     {
-        return ['id', 'name', 'summary'];
+        return [
+            'id',
+            'name',
+            'summary',
+            'importance',
+        ];
     }
 
     /**

@@ -69,7 +69,7 @@ class TicketLayoutController extends BaseController
     }
 
     /**
-     * @Get("/departments/{dept_id}/ticket_layouts")
+     * @Get("/ticket_departments/{dept_id}/ticket_layouts")
      */
     public function getDepartment($dept_id)
     {

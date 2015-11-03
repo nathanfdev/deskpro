@@ -33,16 +33,25 @@ namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
 use Application\DeskPRO\Entity\Usergroup;
 use Doctrine\Common\DataFixtures\AbstractFixture;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class UsergroupFixture extends AbstractFixture implements ContainerAwareInterface
+class UsergroupFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
     /**
      * @var ContainerInterface
      */
     private $container;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOrder()
+    {
+        return 0;
+    }
 
     /**
      * {@inheritdoc}

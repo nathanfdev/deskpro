@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
+use Application\DeskPRO\Entity\CustomDefTicket;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 
 /**
@@ -44,7 +45,6 @@ class CustomDefTicketTransformer extends AbstractDataSerializerTransformer
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
         return [
-            'id',
             'app',
             'js_class',
             'has_form_template',
@@ -67,11 +67,14 @@ class CustomDefTicketTransformer extends AbstractDataSerializerTransformer
      */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\Entity\Task $data */
+        /** @var CustomDefTicket $data */
         $data = $transformation_request->getDataToBeTransformed();
 
-        return [
-            'type' => substr($data['handler_class'], strrpos($data['handler_class'], '\\') + 1),
+        $fields = [
+            'field_type' => 'ticket_field',
         ];
+        $fields = array_merge($fields, $data->toApiData());
+
+        return $fields;
     }
 }

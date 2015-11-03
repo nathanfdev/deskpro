@@ -6,15 +6,15 @@ import DpApi from '../DpApi';
  * @return {object} promise
  */
 export function loadDepartments(options = {}) {
-  return DpApi.sendGet('DP_API/departments?' + compileParams(options));
+  return DpApi.sendGet('DP_API/ticket_departments?' + compileParams(options));
 }
 
 export function loadDepartment(id) {
-  return DpApi.sendGet(`DP_API/departments/${id}`);
+  return DpApi.sendGet(`DP_API/ticket_departments/${id}`);
 }
 
 export function load(ids) {
-  return DpApi.sendGet('DP_API/departments?ids=' + ids.join(','));
+  return DpApi.sendGet('DP_API/ticket_departments?ids=' + ids.join(','));
 }
 
 /**

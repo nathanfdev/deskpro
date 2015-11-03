@@ -9,9 +9,7 @@ import { Phone } from './Fields/Phone';
 import { Language } from './Fields/Language';
 import { Timezone } from './Fields/Timezone';
 import { Password } from './Fields/Password';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
-import * as ProfilesActions from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/profilesActions';
-import Immutable from 'immutable';
+import { updateProfile } from '../../../../../Actions/profileActions';
 import Loader from 'react-loader';
 
 export class ProfileForm extends React.Component {
@@ -133,51 +131,39 @@ export class ProfileForm extends React.Component {
 
   submitForm = (event) => {
     event.preventDefault();
-
-    const { dispatch } = this.props;
-    const changeSubmitStatus = isSubmit => this.setState({
-      submit: isSubmit,
+    this.setState({
+      submit: true,
       errors: {}
     });
 
-    changeSubmitStatus(true);
-
+    const { dispatch } = this.props;
     const stateData = this.state.data;
     const submitData = {...stateData};
 
     if (submitData.avatar.blob_auth_id) {
       submitData.avatar_blob_auth_id = submitData.avatar.blob_auth_id;
     }
-
-    delete submitData.avatar;
-
     if (!submitData.phone.number) {
       delete submitData.phone;
     }
 
-    DpApi.sendPut('DP_API/me/profile', submitData)
-      .success(response => {
-        const records = {};
-        records[response.data.id] = response.data;
+    delete submitData.avatar;
 
-        dispatch(ProfilesActions.releaseProfiles('my'));
-        dispatch(ProfilesActions.setProfilesRequest('my', records, [response.data.id]));
-
-        changeSubmitStatus(false);
-      })
-      .catch(http => {
-        const fieldsErrors = Immutable.fromJS(http.xhr.responseJSON.errors ? http.xhr.responseJSON.errors.fields : {});
-        this.setState({
-          errors: fieldsErrors.map(fieldErrors => fieldErrors.get('errors')).toJS(),
-          submit: false
-        });
-      })
+    const promise = dispatch(updateProfile(submitData));
+    promise
+      .success(() => this.setState({
+        submit: false
+      }))
+      .catch(result => this.setState({
+        submit: false,
+        errors: result.getData().errors
+      }))
     ;
   };
 
   renderNameField() {
     return (
-      <Field label="Your name" errors={this.state.errors.name}>
+      <Field label="Your name" name="name" errors={this.state.errors}>
         <Avatar personName={this.state.data.name}
                 value={this.state.data.avatar.url}
                 onChange={this.onChangeAvatar}/>
@@ -189,7 +175,7 @@ export class ProfileForm extends React.Component {
 
   renderDisplayNameField() {
     return (
-      <Field errors={this.state.errors.display_name}>
+      <Field name="display_name" errors={this.state.errors}>
         <DisplayName value={this.state.data.display_name}
                      onChange={this.onChangeDisplayName} />
       </Field>
@@ -198,7 +184,7 @@ export class ProfileForm extends React.Component {
 
   renderEmailField() {
     return (
-      <Field label="Your email" errors={this.state.errors.emails}>
+      <Field label="Your email" name="emails" errors={this.state.errors}>
         <Email emails={this.state.data.emails}
                onChange={this.onChangeEmails} />
       </Field>
@@ -212,7 +198,7 @@ export class ProfileForm extends React.Component {
     }
 
     return (
-      <Field label="Primary email" errors={this.state.errors.primary_email}>
+      <Field label="Primary email" name="primary_email" errors={this.state.errors}>
         <PrimaryEmail emails={emails}
                       value={this.state.data.primary_email}
                       onChange={this.onChangePrimaryEmail} />
@@ -222,7 +208,7 @@ export class ProfileForm extends React.Component {
 
   renderPhoneField() {
     return (
-      <Field label="Phone #" errors={this.state.errors.phone}>
+      <Field label="Phone #" name="phone" errors={this.state.errors}>
         <Phone value={this.state.data.phone}
                onChange={this.onChangePhone} />
       </Field>
@@ -236,7 +222,7 @@ export class ProfileForm extends React.Component {
     }
 
     return (
-      <Field label="Language" errors={this.state.errors.language_id}>
+      <Field label="Language" name="language_id" errors={this.state.errors}>
         <Language languages={languages}
                   value={this.state.data.language_id}
                   onChange={this.onChangeLanguage} />
@@ -248,7 +234,7 @@ export class ProfileForm extends React.Component {
     const { timezones } = this.props;
 
     return (
-      <Field label="Time Zone" errors={this.state.errors.timezone}>
+      <Field label="Time Zone" name="timezone" errors={this.state.errors}>
         <Timezone timezones={timezones}
                   value={this.state.data.timezone}
                   onChange={this.onChangeTimezone} />
@@ -258,7 +244,7 @@ export class ProfileForm extends React.Component {
 
   renderPasswordField() {
     return (
-      <Field label="Password" errors={this.state.errors.password}>
+      <Field label="Password" name="password" errors={this.state.errors}>
         <Password
           value={this.state.data.password}
           onChange={this.onChangePassword} />
