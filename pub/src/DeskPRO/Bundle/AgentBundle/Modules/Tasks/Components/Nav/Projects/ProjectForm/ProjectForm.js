@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import * as TasksActions from '../../../../Actions/tasksActions';
+import { Popup } from './Popup';
 import { Header } from './Header';
 import { FieldGroup } from './Fields/FieldGroup';
 import { FullField } from './Fields/FullField';
@@ -137,83 +138,81 @@ export class ProjectForm extends React.Component {
     const { agents, agentTeams, departments, project } = this.props;
 
     return (
-      <div className="sidebar-hover">
-        <div className="dpw--popup-main">
-          <Header>
-            Project - {project ? 'Edit' : 'Create New'}
-          </Header>
+      <Popup>
+        <Header>
+          Project - {project ? 'Edit' : 'Create New'}
+        </Header>
 
-          <form>
-            <div className="dpw--popup-content">
-              <FieldGroup>
-                <FullField title="Title">
-                  <input name="title"
-                         type="text"
-                         placeholder="Title"
-                         value={this.state.title}
-                         onChange={this.onChangeTitle} />
+        <form>
+          <div className="dpw--popup-content">
+            <FieldGroup>
+              <FullField title="Title">
+                <input name="title"
+                       type="text"
+                       placeholder="Title"
+                       value={this.state.title}
+                       onChange={this.onChangeTitle} />
 
-                  <FieldErrors errors={this.state.errors} name="title" />
-                </FullField>
-              </FieldGroup>
+                <FieldErrors errors={this.state.errors} name="title" />
+              </FullField>
+            </FieldGroup>
 
-              <FieldGroup>
-                <FloatField align="left">
-                  <QuickFilter value={this.state.quickFilter}
-                               onChange={this.onChangeQuickFilter} />
-                </FloatField>
+            <FieldGroup>
+              <FloatField align="left">
+                <QuickFilter value={this.state.quickFilter}
+                             onChange={this.onChangeQuickFilter} />
+              </FloatField>
 
-                <FloatField align="right">
-                  <ShowOnlySelected value={this.state.showOnlySelected}
-                                    onChange={this.onChangeFilterSelected} />
-                  <Unassign onClick={this.onUnassignAll} />
-                </FloatField>
-              </FieldGroup>
+              <FloatField align="right">
+                <ShowOnlySelected value={this.state.showOnlySelected}
+                                  onChange={this.onChangeFilterSelected} />
+                <Unassign onClick={this.onUnassignAll} />
+              </FloatField>
+            </FieldGroup>
 
-              <FieldGroup>
-                <CollectionField>
-                  <div part="title">
-                    Agent <a href="#" onClick={this.onAssignSelf}>Assign to me</a>
-                  </div>
-                  <AgentsList values={agents}
-                              selected={this.state.agents}
-                              showOnlySelected={this.state.showOnlySelected}
-                              filter={this.state.quickFilter}
-                              onChange={this.onChangeAgents} />
-                </CollectionField>
+            <FieldGroup>
+              <CollectionField>
+                <div part="title">
+                  Agent <a href="#" onClick={this.onAssignSelf}>Assign to me</a>
+                </div>
+                <AgentsList values={agents}
+                            selected={this.state.agents}
+                            showOnlySelected={this.state.showOnlySelected}
+                            filter={this.state.quickFilter}
+                            onChange={this.onChangeAgents} />
+              </CollectionField>
 
-                <CollectionField title="Team">
-                  <AgentTeamsList values={agentTeams}
-                                  selected={this.state.agentTeams}
-                                  showOnlySelected={this.state.showOnlySelected}
-                                  filter={this.state.quickFilter}
-                                  onChange={this.onChangeAgentTeams} />
-                </CollectionField>
+              <CollectionField title="Team">
+                <AgentTeamsList values={agentTeams}
+                                selected={this.state.agentTeams}
+                                showOnlySelected={this.state.showOnlySelected}
+                                filter={this.state.quickFilter}
+                                onChange={this.onChangeAgentTeams} />
+              </CollectionField>
 
-                <CollectionField title="Department">
-                  <DepartmentsList values={departments}
-                                   selected={this.state.departments}
-                                   showOnlySelected={this.state.showOnlySelected}
-                                   filter={this.state.quickFilter}
-                                   onChange={this.onChangeDepartments} />
-                </CollectionField>
-              </FieldGroup>
+              <CollectionField title="Department">
+                <DepartmentsList values={departments}
+                                 selected={this.state.departments}
+                                 showOnlySelected={this.state.showOnlySelected}
+                                 filter={this.state.quickFilter}
+                                 onChange={this.onChangeDepartments} />
+              </CollectionField>
+            </FieldGroup>
 
-              <FieldGroup>
-                <FullField>
-                  <button type="submit"
-                          value="Save"
-                          className={classNames('dpw--popup-button', {'hidden': this.state.submit})}
-                          onClick={this.onSubmit}>Save</button>
-                  <Loader opacity={0}
-                          width={3}
-                          loaded={!this.state.submit} />
-                </FullField>
-              </FieldGroup>
-            </div>
-          </form>
-        </div>
-      </div>
+            <FieldGroup>
+              <FullField>
+                <button type="submit"
+                        value="Save"
+                        className={classNames('dpw--popup-button', {'hidden': this.state.submit})}
+                        onClick={this.onSubmit}>Save</button>
+                <Loader opacity={0}
+                        width={3}
+                        loaded={!this.state.submit} />
+              </FullField>
+            </FieldGroup>
+          </div>
+        </form>
+      </Popup>
     );
   }
 }
