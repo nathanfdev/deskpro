@@ -7527,18 +7527,18 @@ body.with-agent-bar {
 
     display: block;
     width: 100%;
-    border: 1px solid $button-color;
 
     ul {
       @include blank-list;
       position: absolute;
-      left: 0;
+      right: 0;
       z-index: 599;
       display: block;
       width: 100%;
-      border: 1px solid $button-color;
+      border: 1px solid $form-border-color;
       max-height: 300px;
       overflow-y: auto;
+      margin: 0;
 
       a {
         display: block;

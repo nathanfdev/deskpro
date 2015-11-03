@@ -126,7 +126,7 @@ export default class PortalSimpleSelectBox extends React.Component {
     }
 
     return (
-      <ul className={"level-" + this.state.level} onClick={this.dropdownClickHandler.bind(this)}>
+      <ul onClick={this.dropdownClickHandler.bind(this)}>
         {this.state.options.map((option) => {
             return (
               <SelectOption onClickOption={this.onClickOption.bind(this)}
