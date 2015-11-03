@@ -25,7 +25,6 @@ export class ProjectForm extends BaseForm {
   static propTypes = {
     project: PropTypes.object,
     dispatch: PropTypes.func.isRequired,
-    me: PropTypes.object.isRequired,
     agents: PropTypes.object.isRequired,
     agentTeams: PropTypes.object.isRequired,
     departments: PropTypes.object.isRequired
@@ -44,7 +43,7 @@ export class ProjectForm extends BaseForm {
       showOnlySelected: false,
       agents: project.get('agents', emptyObject).toArray(),
       agentTeams: project.get('teams', emptyObject).toArray(),
-      departments: project.get('departments', emptyObject).toArray(),
+      departments: project.get('departments', emptyObject).toArray()
     };
   }
 

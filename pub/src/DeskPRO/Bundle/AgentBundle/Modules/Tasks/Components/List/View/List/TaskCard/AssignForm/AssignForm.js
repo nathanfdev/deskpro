@@ -16,9 +16,7 @@ import {
 export class AssignForm extends BaseForm {
 
   static propTypes = {
-    project: PropTypes.object,
     dispatch: PropTypes.func.isRequired,
-    me: PropTypes.object.isRequired,
     agents: PropTypes.object.isRequired,
     agentTeams: PropTypes.object.isRequired,
     departments: PropTypes.object.isRequired

@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 export class BaseForm extends React.Component {
+
+  static propTypes = {
+    me: PropTypes.object.isRequired
+  };
 
   constructor(props) {
     super(props);
