@@ -3,6 +3,7 @@ import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Co
 import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 import { Controls } from './ControlBar/Controls';
 import { TaskForm } from './TaskForm';
+import { TaskCard } from './View/List/TaskCard';
 
 export class List extends React.Component {
 
@@ -12,6 +13,11 @@ export class List extends React.Component {
         <Controls />
         <ListFrameContents>
           <TaskForm />
+          <TaskCard />
+          <TaskCard />
+          <TaskCard />
+          <TaskCard />
+
         </ListFrameContents>
       </ListFrameContainer>
     );
