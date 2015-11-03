@@ -6,6 +6,7 @@ import { MarkDoneButton } from './MarkDoneButton';
 import { ShowDetailsButton } from './ShowDetailsButton';
 import { AssignButton } from './AssignButton';
 import { Comments } from './Comments';
+import { SubTasks } from './SubTasks';
 
 export class TaskCard extends React.Component {
 
@@ -63,12 +64,7 @@ export class TaskCard extends React.Component {
 
         <div>
             <Comments count={0} />
-
-            <span className="dpwd--card-line-item">
-              <div>
-                <span className="dpw--card-disc"/> 1/3 <i className="fa fa-folder-open"/>
-              </div>
-            </span>
+            <SubTasks current={1} total={3} />
         </div>
       </CardLine>
     );
