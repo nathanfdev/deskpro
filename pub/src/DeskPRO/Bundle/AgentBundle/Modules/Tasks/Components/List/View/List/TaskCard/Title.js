@@ -68,7 +68,7 @@ export class Title extends React.Component {
   render() {
     return (
       <div className="card-title">
-        <div className={classnames('dpwd--card-title', {'strikethrough': this.props.isDone})}>
+        <div className={classnames('dpwd--card-title', {'strikethrough': this.props.isDone && !this.state.editing})}>
           {this.state.editing ? this.renderForm() : this.renderHeader()}
         </div>
       </div>

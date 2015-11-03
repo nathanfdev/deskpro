@@ -11,7 +11,7 @@ export class TaskCard extends React.Component {
     this.state = {
       expanded: false,
       title: 'Task title',
-      isDone: false
+      isDone: true
     };
   }
 
