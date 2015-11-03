@@ -12,7 +12,7 @@ export class CategoriesCollectionContainer extends Component {
 
   static propTypes = {
     categories: PropTypes.object.isRequired,
-    filterParams: PropTypes.object.isRequired,
+    filterParams: PropTypes.object,
     dispatch: PropTypes.func.isRequired
   };
 
@@ -35,14 +35,14 @@ export class CategoriesCollectionContainer extends Component {
 
   render() {
     const {categories, filterParams} = this.props;
-    const value = filterParams && filterParams.get('custom_category') ? filterParams.get('custom_category').toJS() : null;
+    const values = filterParams && filterParams.get('custom_category') ? filterParams.get('custom_category').toJS() : null;
     return (
       <ChoiceMenu title="Feedback Category">
         <ul>
           {categories.toJS().map((item, index) =>
               <ChoiceMenuOption
                 key={index}
-                isActive={value && value.indexOf(item.group) > -1}
+                values={values}
                 label={item.group}
                 value={item.group}
                 onClick={this.setFilter.bind(this)}
