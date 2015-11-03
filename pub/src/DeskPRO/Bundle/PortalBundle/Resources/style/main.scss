@@ -4368,7 +4368,7 @@ h1.fancy-header {
 
   .quick-jump {
     background: $page-background;
-    color: $text-color;;
+    color: $text-color;
     padding: 0;
     position: relative;
     display: inline-block;
@@ -4417,17 +4417,23 @@ h1.fancy-header {
       border-bottom: 1px solid $divider-color;
       border-left: 1px solid $divider-color;
       border-right: 1px solid $divider-color;
+      font-size: 11px;
       li {
         .cat-checkbox-title {
           white-space: nowrap;
           display: block;
           width: 100%;
+          line-height: 1.2em;
+          font-weight: 400;
+
           &:hover {
             background-color: $surface-main;
           }
           input {
             display: inline-block;
             margin-right: 4px;
+            position: relative;
+            top: -1px;
           }
           a {
             display: inline-block;
@@ -4691,7 +4697,7 @@ h1.fancy-header {
     border-left: 1px solid $divider-color;
 
     h1 {
-      font-weight: 100;
+      font-weight: 400;
       font-size: 1.3em;
 
       .text-tag {
