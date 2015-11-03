@@ -58,7 +58,7 @@
 
                 {% if 'ticket_field' == item.getFieldType() and custom_fields[item.getFieldId()] %}
 				    {% set f = custom_fields[item.getFieldId()] %}
-					{% if not f.field_def.isFormField() and ticket.hasCustomField(f.id) %}
+					{% if f.field_def.isFormField() and ticket.hasCustomField(f.id) %}
                         <tr>
                             <th>{{f.title}}</th>
                             <td>
