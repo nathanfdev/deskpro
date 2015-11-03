@@ -19,9 +19,9 @@ export const getFeedbackForComments = createAction(
 
 export const getAuthors = createAction(
   'FEEDBACK_COMMENTS_GET_AUTHORS',
-    comments => dispatch => {
-    const ids = [],
-      unique = {};
+  (comments) => (dispatch) => {
+    const ids = [];
+    const unique = {};
     for (var key in comments.data) {
       if (typeof(unique[comments.data[key].person_id]) === 'undefined') {
         ids.push(comments.data[key].person_id);
@@ -33,32 +33,43 @@ export const getAuthors = createAction(
   }
 );
 
+export const setCommentsViewMode = createAction(
+  'FEEDBACK_SET_COMMENTS_VIEW_MODE',
+    value => value
+);
+
 export const loadCommentsList = createAction(
   'FEEDBACK_COMMENTS_LIST',
-  (params = {}) => dispatch => Feedback.commentsToReviewList(params).then(promise => {
-    const comments = promise.getData();
-    const ids = [];
-    for (var ind in comments.data) {
-      ids.push(comments.data[ind].feedback_id);
-    }
-    dispatch(getFeedbackForComments(ids));
-    dispatch(getAuthors(comments));
-    return comments;
-  })
+  (params = {}) => dispatch => {
+    delete params.comments;
+    return Feedback.commentsToReviewList(params).then(promise => {
+      const comments = promise.getData();
+      const ids = [];
+      for (var index in comments.data) {
+        if (comments.data.hasOwnProperty(index)) {
+          ids.push(comments.data[index].feedback_id);
+        }
+      }
+      dispatch(setCommentsViewMode(true));
+      dispatch(getFeedbackForComments(ids));
+      dispatch(getAuthors(comments));
+      return comments;
+    });
+  }
 );
 
 export const setTableSort = createAction(
   'FEEDBACK_COMMENTS_SET_TABLE_SORT',
   (sort, order) => dispatch => {
-    dispatch(loadCommentsList({sort: sort, order: order}));
-    return {sort, order};
+    dispatch(loadCommentsList({ sort: sort, order: order }));
+    return { sort, order };
   }
 );
 
 export const commentsToggleOrder = createAction(
   'FEEDBACK_COMMENTS_TOGGLE_ORDER',
     order => dispatch => {
-    dispatch(loadCommentsList({sort: 'date_created', order: order}));
+    dispatch(loadCommentsList({ sort: 'date_created', order: order }));
     return order;
   }
 );

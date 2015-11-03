@@ -2,6 +2,7 @@ import { createAction } from 'Ampliflux';
 import { pluck } from 'lodash';
 import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
 import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSetting';
+import { setCommentsViewMode } from './FeedbackCommentsActions';
 import { loadPeople } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { loadEmails } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/emailsActions';
 import { loadFeedbackCommentsCounter } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCommentsActions';
@@ -91,6 +92,7 @@ export const loadFeedbackList = createAction(
             ids.push(feedback.data[index].id);
           }
         }
+        dispatch(setCommentsViewMode(false));
         dispatch(getAuthors(feedback));
         dispatch(getCommentsCounter(ids));
         dispatch(getStatuses(ids));
