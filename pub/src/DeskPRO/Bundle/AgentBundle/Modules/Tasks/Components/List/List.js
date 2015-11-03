@@ -4,6 +4,7 @@ import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Compone
 import { Controls } from './ControlBar/Controls';
 import { TaskForm } from './TaskForm';
 import { TaskCard } from './View/List/TaskCard/TaskCard';
+import Immutable from 'immutable';
 
 export class List extends React.Component {
 
@@ -13,10 +14,10 @@ export class List extends React.Component {
         <Controls />
         <ListFrameContents>
           <TaskForm />
-          <TaskCard />
-          <TaskCard />
-          <TaskCard />
-          <TaskCard />
+          <TaskCard task={Immutable.fromJS({})} />
+          <TaskCard task={Immutable.fromJS({})} />
+          <TaskCard task={Immutable.fromJS({})} />
+          <TaskCard task={Immutable.fromJS({})} />
 
         </ListFrameContents>
       </ListFrameContainer>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 import { CardLine } from './CardLine';
 import { Title } from './Title';
@@ -12,6 +12,10 @@ import { Due } from './Due';
 import { TicketLink } from './TicketLink';
 
 export class TaskCard extends React.Component {
+
+  static propTypes = {
+    task: PropTypes.object.isRequired
+  };
 
   constructor(props) {
     super(props);
@@ -41,6 +45,10 @@ export class TaskCard extends React.Component {
     });
   };
 
+  isMinimized() {
+    return !this.state.expanded && this.state.isDone;
+  }
+
   renderDetails() {
     return (
       <CardLine>
@@ -60,7 +68,7 @@ export class TaskCard extends React.Component {
 
   render() {
     return (
-      <Card minimized={!this.state.isDone} type="task">
+      <Card minimized={this.isMinimized()} type="task">
         <MarkDoneButton isDone={this.state.isDone}
                         onToggle={this.onToggleDone} />
 
@@ -78,7 +86,7 @@ export class TaskCard extends React.Component {
           </div>
         </CardLine>
 
-        {(this.state.expanded || !this.state.isDone) && this.renderDetails()}
+        {!this.isMinimized() && this.renderDetails()}
       </Card>
     );
   }
