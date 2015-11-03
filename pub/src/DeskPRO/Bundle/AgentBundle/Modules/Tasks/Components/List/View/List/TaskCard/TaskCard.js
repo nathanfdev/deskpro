@@ -1,9 +1,10 @@
 import React from 'react';
 import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 import { CardLine } from './CardLine';
+import { Title } from './Title';
 import { MarkDoneButton } from './MarkDoneButton';
 import { ShowDetailsButton } from './ShowDetailsButton';
-import { Title } from './Title';
+import { AssignButton } from './AssignButton';
 
 export class TaskCard extends React.Component {
 
@@ -88,11 +89,7 @@ export class TaskCard extends React.Component {
             <ShowDetailsButton expanded={this.state.expanded}
                                onToggleExpand={this.onToggleExpand} />
 
-            <div className="dpwd--card-assigned">
-              <div className="dpw--avatar-face" style={{position: 'relative'}}>
-                <i className="fa fa-caret-down" />
-              </div>
-            </div>
+            <AssignButton />
           </div>
         </CardLine>
 
