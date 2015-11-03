@@ -23,9 +23,14 @@ export class TaskCard extends React.Component {
   };
 
   onToggleDone = () => {
-    console.log('onToggleDone');
     this.setState({
       isDone: !this.state.isDone
+    });
+  };
+
+  onToggleExpand = () => {
+    this.setState({
+      expanded: !this.state.expanded
     });
   };
 
@@ -41,7 +46,9 @@ export class TaskCard extends React.Component {
 
           <div>
             <div className="dpw--card-expand">
-              <a href="#">Detail button text <i className="fa fa-navicon"/></a>
+              <a href="#" onClick={this.onToggleExpand}>
+                {this.state.expanded ? 'Collapse' : 'Expand'} <i className="fa fa-navicon"/>
+              </a>
             </div>
             <div className="dpwd--card-assigned">
               <div className="dpw--avatar-face" style={{position: 'relative'}}>
