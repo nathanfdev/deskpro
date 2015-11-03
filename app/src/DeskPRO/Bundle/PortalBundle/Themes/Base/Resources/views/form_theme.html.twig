@@ -3,13 +3,25 @@
 {# Basic structure #}
 
 {%- block form_row -%}
-    <div class="bucket{% if not valid %} error{% endif %}">
-        {% if not (checkbox_label is defined and checkbox_label) %}
-            {{- form_label(form, null, {'label_attr': {'class': 'title'}}) -}}
-        {% endif %}
-        {{- form_widget(form) -}}
-        {{- form_errors(form) -}}
+    <div class="column-sixth">
+        <div class="bucket{% if not valid %} error{% endif %}">
+            {% if not (checkbox_label is defined and checkbox_label) %}
+                {{- form_label(form, null, {'label_attr': {'class': 'title'}}) -}}
+            {% endif %}
+            {{- form_widget(form) -}}
+            {{- form_errors(form) -}}
+        </div>
     </div>
+
+    {% if form.vars.help %}
+        <div class="column-third omega">
+            <div>
+                <div class="form-help">
+                    <p>{{ form.vars.help }}</p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 {%- endblock form_row -%}
 
 {% block form_errors -%}
@@ -284,9 +296,6 @@ HEIRARCHY
         {{- block('deskpro_heirarchical_choice_widget_expanded') -}}
     {% else %}
         {{- block('deskpro_heirarchical_choice_widget_collapsed') -}}
-    {% endif %}
-    {% if form.vars.help %}
-        <small class="help">{{ form.vars.help }}</small>
     {% endif %}
 {% endblock %}
 
