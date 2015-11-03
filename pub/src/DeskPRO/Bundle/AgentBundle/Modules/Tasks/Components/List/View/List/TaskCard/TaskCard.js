@@ -9,12 +9,16 @@ export class TaskCard extends React.Component {
     super(props);
 
     this.state = {
-      expanded: false
+      expanded: false,
+      title: 'Task title',
+      isDone: false
     };
   }
 
   onTitleChange = value => {
-    console.log(value);
+    this.setState({
+      title: value
+    });
   };
 
   render() {
@@ -31,7 +35,8 @@ export class TaskCard extends React.Component {
         </div>
 
         <CardLine>
-          <Title value="Task title"
+          <Title value={this.state.title}
+                 isDone={this.state.isDone}
                  onChange={this.onTitleChange} />
 
           <div>
