@@ -95,8 +95,9 @@ class PeopleController extends BaseController implements ClassResourceInterface
                 ->select('p')->from('DeskPRO:Person', 'p')->getQuery();
         }
 
+        // allow up to 200 when selecting by IDs
+        $count = $request->query->get('count', empty($query['ids']) ? 10 : 200);
         $page  = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
 
         $pager = new Pagerfanta(new DoctrineORMAdapter($people));
         $pager->setMaxPerPage($count);

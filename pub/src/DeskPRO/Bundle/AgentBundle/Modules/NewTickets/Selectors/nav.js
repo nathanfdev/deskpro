@@ -1,6 +1,5 @@
 import { createSelector } from 'reselect';
 import { mapKeyedFromArray, toPropsMap, reduceImmutableToProperty } from 'DeskPRO/Component/Util/Map';
-import Immutable from 'immutable';
 
 const stateSelector = state => state.NewTickets.nav;
 
@@ -22,15 +21,15 @@ export const editedFilterSelector = createSelector(
 
 export const labelsSelector = createSelector(
   stateSelector,
-  state => reduceImmutableToProperty('label', Immutable.fromJS(state.get('labels')))
+  state => reduceImmutableToProperty('label', state.get('labels'))
 );
 
 const starsSelector = createSelector(stateSelector, state => state.get('stars'));
-export const starNamesSelector = createSelector(starsSelector, stars => toPropsMap('id', 'name', Immutable.fromJS(stars)));
+export const starNamesSelector = createSelector(starsSelector, stars => toPropsMap('id', 'name', stars));
 
 export const starsCountSelector = createSelector(
   stateSelector,
-  state => Immutable.fromJS(state.get('starsCount'))
+  state => state.get('starsCount')
 );
 
 export const isDoneSelector = function(request) {

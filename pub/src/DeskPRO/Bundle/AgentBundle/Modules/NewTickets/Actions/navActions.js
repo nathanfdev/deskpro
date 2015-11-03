@@ -13,100 +13,6 @@ import { loadOrganizations as rsLoadOrganizations, releaseOrganizationsRequest a
 
 export const RECORD_STORE_REQUEST_ID = 'tickets_nav';
 
-/**
- * Load all filter sets counts
- */
-export const loadFilterSetsCount = createAction(
-  'TICKETS_NAV_LOAD_FILTER_SETS_COUNT',
-  () => dispatch => new Promise(resolve => DpApi.sendGet('DP_API/ticket_filter_sets/all/counts').success(
-    response => {
-      resolve(response.data);
-
-      // collect Person and Organization IDs used in counts to load needed entities
-      const personIds = [];
-      const organizationIds = [];
-      response.data.forEach(filterSetCount => {
-        filterSetCount.nested.forEach(filterCount => {
-          if (filterCount.nested && filterCount.nested.length) {
-            const grouping = filterCount.nested[0].grouped_by;
-            if (grouping === 'person') {
-              filterCount.nested.forEach(count => personIds.push(count.group));
-            } else if (grouping === 'organization') {
-              filterCount.nested.forEach(count => organizationIds.push(count.group));
-            }
-          }
-        });
-      });
-      if (personIds.length) dispatch(loadPeople(personIds));
-      if (organizationIds.length) dispatch(loadOrganizations(organizationIds));
-    }
-  ))
-);
-
-/**
- * Load all filter sets together with filters
- */
-export const loadFilterSets = createAction(
-  'TICKETS_NAV_LOAD_FILTER_SETS',
-  () => new Promise(resolve =>
-    DpApi.sendGet('DP_API/ticket_filter_sets?include=ticket_filter').success(response => resolve({
-      filterSets: response.data,
-      filters: Object.values(response.linked.ticket_filter)
-    }))
-  )
-);
-
-/**
- * Load count of a single filter
- */
-export const loadFilterCount = createAction(
-  'TICKETS_NAV_LOAD_FILTER_COUNT',
-  id => new Promise(resolve =>
-    DpApi.sendGet(`DP_API/ticket_filters/${id}/count`)
-         .success(response => resolve(response.data))
-  )
-);
-
-export const markFilterLoading = createAction('TICKETS_NAV_MARK_FILTER_AS_LOADING');
-
-export const loadPeople = createAction(
-  'TICKETS_NAV_LOAD_PEOPLE',
-  ids => dispatch => dispatch(rsLoadPeople(RECORD_STORE_REQUEST_ID, ids))
-);
-export const releasePeople = createAction(
-  'TICKETS_NAV_RELEASE_PEOPLE',
-  () => dispatch => dispatch(rsReleasePeopleRequest(RECORD_STORE_REQUEST_ID))
-);
-
-export const loadOrganizations = createAction(
-  'TICKETS_NAV_LOAD_ORGANIZATIONS',
-  ids => dispatch => dispatch(rsLoadOrganizations(RECORD_STORE_REQUEST_ID, ids))
-);
-export const releaseOrganizations = createAction(
-  'TICKETS_NAV_RELEASE_ORGANIZATIONS',
-  () => dispatch => dispatch(rsReleaseOrganizationsRequest(RECORD_STORE_REQUEST_ID))
-);
-
-export const loadLabels = createAction(
-  'TICKETS_NAV_LOAD_LABELS',
-  () => new Promise(resolve =>
-    DpApi.sendGet('DP_API/ticket_labels').success(response => resolve(response.data))
-  )
-);
-
-export const loadStarsCount = createAction(
-  'TICKETS_NAV_LOAD_STARS_COUNT',
-  () => new Promise(resolve =>
-    DpApi.sendGet('DP_API/ticket_stars_count').success(response => resolve(response.data.nested))
-  )
-);
-export const loadStars = createAction(
-  'TICKETS_NAV_LOAD_STARS',
-  () => new Promise(resolve =>
-    DpApi.sendGet('DP_API/ticket_stars').success(response => resolve(response.data))
-  )
-);
-
 export const startFilterEditing = createAction('TICKETS_NAV_FILTER_EDITING_START');
 export const closeFilterEditing = createAction('TICKETS_NAV_FILTER_EDITING_CLOSE');
 export const applyFilterEditing = createAction(
@@ -116,7 +22,7 @@ export const applyFilterEditing = createAction(
     dispatch(markFilterLoading(id));
     dispatch(closeFilterEditing());
 
-    // @todo Update record store gilter.grouped_by value on success
+    // @todo Update record store filter.grouped_by value on success
 
     DpApi.sendPut(`DP_API/ticket_filters/${id}`, {group_by: groupBy})
          .success(() => dispatch(loadFilterCount(id)));
@@ -146,3 +52,110 @@ export const unload = createAction(
     dispatch(releaseOrganizations());
   }
 );
+
+/**
+ * Load all filter sets counts
+ */
+const loadFilterSetsCount = createAction(
+  'TICKETS_NAV_LOAD_FILTER_SETS_COUNT',
+  () => dispatch => new Promise(resolve => DpApi.sendGet('DP_API/ticket_filter_sets/all/counts').success(
+    response => {
+      resolve(response.data);
+      loadPersonAndOrganizationIds(response.data, dispatch);
+    }
+  ))
+);
+
+/**
+ * Load all filter sets together with filters
+ */
+const loadFilterSets = createAction(
+  'TICKETS_NAV_LOAD_FILTER_SETS',
+  () => new Promise(resolve =>
+    DpApi.sendGet('DP_API/ticket_filter_sets?include=ticket_filter').success(response => resolve({
+      filterSets: response.data,
+      filters: Object.values(response.linked.ticket_filter)
+    }))
+  )
+);
+
+/**
+ * Load count of a single filter
+ */
+const loadFilterCount = createAction(
+  'TICKETS_NAV_LOAD_FILTER_COUNT',
+  id => dispatch => new Promise(resolve =>
+    DpApi.sendGet(`DP_API/ticket_filters/${id}/count`)
+         .success(response => {
+           resolve(response.data);
+           loadPersonAndOrganizationIds([{nested: [response.data]}], dispatch);
+         }
+    )
+  )
+);
+
+const markFilterLoading = createAction('TICKETS_NAV_MARK_FILTER_AS_LOADING');
+
+const loadPeople = createAction(
+  'TICKETS_NAV_LOAD_PEOPLE',
+  ids => dispatch => dispatch(rsLoadPeople(RECORD_STORE_REQUEST_ID, ids))
+);
+const releasePeople = createAction(
+  'TICKETS_NAV_RELEASE_PEOPLE',
+  () => dispatch => dispatch(rsReleasePeopleRequest(RECORD_STORE_REQUEST_ID))
+);
+
+const loadOrganizations = createAction(
+  'TICKETS_NAV_LOAD_ORGANIZATIONS',
+  ids => dispatch => dispatch(rsLoadOrganizations(RECORD_STORE_REQUEST_ID, ids))
+);
+const releaseOrganizations = createAction(
+  'TICKETS_NAV_RELEASE_ORGANIZATIONS',
+  () => dispatch => dispatch(rsReleaseOrganizationsRequest(RECORD_STORE_REQUEST_ID))
+);
+
+const loadLabels = createAction(
+  'TICKETS_NAV_LOAD_LABELS',
+  () => new Promise(resolve =>
+    DpApi.sendGet('DP_API/ticket_labels').success(response => resolve(response.data))
+  )
+);
+
+const loadStarsCount = createAction(
+  'TICKETS_NAV_LOAD_STARS_COUNT',
+  () => new Promise(resolve =>
+    DpApi.sendGet('DP_API/ticket_stars_count').success(response => resolve(response.data.nested))
+  )
+);
+const loadStars = createAction(
+  'TICKETS_NAV_LOAD_STARS',
+  () => new Promise(resolve =>
+    DpApi.sendGet('DP_API/ticket_stars').success(response => resolve(response.data))
+  )
+);
+
+/**
+ * Load Person and Organization entities used in filter sets count
+ *
+ * @param {array} filterSetsCount Filter sets count
+ * @param {function} dispatch Redux dispatch
+ * @returns {void}
+ */
+function loadPersonAndOrganizationIds(filterSetsCount, dispatch) {
+  const personIds = [];
+  const organizationIds = [];
+  filterSetsCount.forEach(filterSetCount => {
+    filterSetCount.nested.forEach(filterCount => {
+      if (filterCount.nested && filterCount.nested.length) {
+        const grouping = filterCount.nested[0].grouped_by;
+        if (grouping === 'person') {
+          filterCount.nested.forEach(count => personIds.push(count.group));
+        } else if (grouping === 'organization') {
+          filterCount.nested.forEach(count => organizationIds.push(count.group));
+        }
+      }
+    });
+  });
+  if (personIds.length) dispatch(loadPeople(personIds));
+  if (organizationIds.length) dispatch(loadOrganizations(organizationIds));
+}
