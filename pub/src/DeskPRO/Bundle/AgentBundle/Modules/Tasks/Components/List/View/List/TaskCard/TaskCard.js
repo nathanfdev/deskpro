@@ -1,6 +1,7 @@
 import React from 'react';
-import { Card } from '../../../../../../Common/Components/ListFrame/Card';
+import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 import { CardLine } from './CardLine';
+import { Title } from './Title';
 
 export class TaskCard extends React.Component {
 
@@ -8,8 +9,7 @@ export class TaskCard extends React.Component {
     super(props);
 
     this.state = {
-      expanded: false,
-      editing: false
+      expanded: false
     };
   }
 
@@ -27,16 +27,7 @@ export class TaskCard extends React.Component {
         </div>
 
         <CardLine>
-          <div className="card-title">
-            <div className="dpwd--card-title strikethrough">
-                <h1>Task title</h1>
-                <form className="inline-form">
-                  <h1 className="ignore-react-onclickoutside">
-                    <input type="text" name="title" value={'Task title'}/>
-                  </h1>
-                </form>
-            </div>
-          </div>
+          <Title value="Task title" />
 
           <div>
             <div className="dpw--card-expand">
