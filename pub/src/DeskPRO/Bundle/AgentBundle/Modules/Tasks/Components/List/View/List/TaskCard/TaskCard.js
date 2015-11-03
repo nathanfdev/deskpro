@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 import { CardLine } from './CardLine';
 import { Title } from './Title';
+import { Checkbox } from './Checkbox';
 import { MarkDoneButton } from './MarkDoneButton';
 import { ShowDetailsButton } from './ShowDetailsButton';
 import { AssignButton } from './AssignButton';
@@ -22,6 +23,7 @@ export class TaskCard extends React.Component {
 
     this.state = {
       expanded: false,
+      selected: false,
       title: 'Task title',
       isDone: true
     };
@@ -42,6 +44,12 @@ export class TaskCard extends React.Component {
   onToggleExpand = () => {
     this.setState({
       expanded: !this.state.expanded
+    });
+  };
+
+  onToggleSelect = () => {
+    this.setState({
+      selected: !this.state.selected
     });
   };
 
@@ -72,6 +80,9 @@ export class TaskCard extends React.Component {
         <MarkDoneButton isDone={this.state.isDone}
                         onToggle={this.onToggleDone} />
 
+
+        <Checkbox selected={this.state.selected}
+                  onToggle={this.onToggleSelect} />
         <CardLine>
           <Title value={this.state.title}
                  isDone={this.state.isDone}
