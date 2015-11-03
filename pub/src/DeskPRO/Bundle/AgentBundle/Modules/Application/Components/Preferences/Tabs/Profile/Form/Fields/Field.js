@@ -1,21 +1,21 @@
 import React, { PropTypes } from 'react';
+import { FieldErrors } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/FieldErrors';
 
 export class Field extends React.Component {
 
   static propTypes = {
+    name: PropTypes.string,
     label: PropTypes.string,
     children: PropTypes.any.isRequired,
     errors: PropTypes.array
   };
 
   renderErrors() {
-    const { errors } = this.props;
+    const { name, errors } = this.props;
     if (errors) {
       return (
         <div className="bucket-column">
-          <ul className="error">
-            {errors.map(error => (<li>{error.message}</li>))}
-          </ul>
+          <FieldErrors name={name} errors={errors} />
         </div>
       );
     }

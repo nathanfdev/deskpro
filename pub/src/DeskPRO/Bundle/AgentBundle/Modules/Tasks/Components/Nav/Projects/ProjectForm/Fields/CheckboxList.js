@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
+import classNames from 'classnames';
 
 export class CheckboxList extends React.Component {
 
@@ -35,14 +36,9 @@ export class CheckboxList extends React.Component {
       return null;
     }
 
-    const classNames = ['checkbox-button'];
-    if (checked) {
-      classNames.push('checked');
-    }
-
     return (
       <li key={index}>
-        <a className={classNames.join(' ')}
+        <a className={classNames('checkbox-button', {'checked': checked})}
            onClick={this.onClick.bind(this, value)}>
 
           <span className="checkbox"><i className="fa fa-check"></i></span>

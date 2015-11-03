@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import * as TasksActions from '../../../Actions/tasksActions';
+import * as TasksActions from '../../../../Actions/tasksActions';
 import { Header } from './Header';
 import { FieldGroup } from './Fields/FieldGroup';
 import { FullField } from './Fields/FullField';
@@ -11,10 +11,15 @@ import { Unassign } from './Fields/Unassign';
 import { AgentsList } from './Fields/AgentsList';
 import { AgentTeamsList } from './Fields/AgentTeamsList';
 import { DepartmentsList } from './Fields/DepartmentsList';
+import { FieldErrors } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/FieldErrors';
+import Immutable from 'immutable';
+import Loader from 'react-loader';
+import classNames from 'classnames';
 
 export class ProjectForm extends React.Component {
 
   static propTypes = {
+    project: PropTypes.object,
     dispatch: PropTypes.func.isRequired,
     me: PropTypes.object.isRequired,
     agents: PropTypes.object.isRequired,
@@ -25,13 +30,18 @@ export class ProjectForm extends React.Component {
   constructor(props) {
     super(props);
 
+    const emptyObject = Immutable.fromJS({});
+    const project = props.project || emptyObject;
+
     this.state = {
-      title: '',
+      title: project.get('title'),
       quickFilter: '',
       showOnlySelected: false,
-      agents: [],
-      agentTeams: [],
-      departments: []
+      agents: project.get('agents', emptyObject).toArray(),
+      agentTeams: project.get('teams', emptyObject).toArray(),
+      departments: project.get('departments', emptyObject).toArray(),
+      errors: {},
+      submit: false
     };
   }
 
@@ -93,22 +103,45 @@ export class ProjectForm extends React.Component {
 
   onSubmit = event => {
     event.preventDefault();
+    this.setState({
+      submit: true
+    });
 
-    TasksActions.createProject({
+    const { project, dispatch } = this.props;
+    const submitData = {
       title: this.state.title,
       departments: this.state.departments,
       teams: this.state.agentTeams,
       agents: this.state.agents
-    });
+    };
+
+    let promise;
+    if (project) {
+      promise = dispatch(TasksActions.editProject(project.get('id'), submitData));
+    } else {
+      promise = dispatch(TasksActions.createProject(submitData));
+    }
+
+    promise.then(
+      () => this.setState({
+        submit: false
+      }),
+      result => this.setState({
+        errors: result.getData().errors,
+        submit: false
+      })
+    );
   };
 
   render() {
-    const { agents, agentTeams, departments } = this.props;
+    const { agents, agentTeams, departments, project } = this.props;
 
     return (
       <div className="sidebar-hover">
         <div className="dpw--popup-main">
-          <Header>Project - Create New</Header>
+          <Header>
+            Project - {project ? 'Edit' : 'Create New'}
+          </Header>
 
           <form>
             <div className="dpw--popup-content">
@@ -119,6 +152,8 @@ export class ProjectForm extends React.Component {
                          placeholder="Title"
                          value={this.state.title}
                          onChange={this.onChangeTitle} />
+
+                  <FieldErrors errors={this.state.errors} name="title" />
                 </FullField>
               </FieldGroup>
 
@@ -168,8 +203,11 @@ export class ProjectForm extends React.Component {
                 <FullField>
                   <button type="submit"
                           value="Save"
-                          className="dpw--popup-button"
+                          className={classNames('dpw--popup-button', {'hidden': this.state.submit})}
                           onClick={this.onSubmit}>Save</button>
+                  <Loader opacity={0}
+                          width={3}
+                          loaded={!this.state.submit} />
                 </FullField>
               </FieldGroup>
             </div>

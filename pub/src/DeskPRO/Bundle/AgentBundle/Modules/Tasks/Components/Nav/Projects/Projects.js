@@ -1,18 +1,31 @@
-import React from 'react';
-import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import React, { PropTypes } from 'react';
+import { Section, SectionHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import { ProjectFormContainer } from './ProjectForm/ProjectFormContainer';
+import { ProjectItem } from './ProjectItem';
 
 export class Projects extends React.Component {
+
+  static propTypes = {
+    projects: PropTypes.object.isRequired
+  };
 
   constructor(props) {
     super(props);
 
     this.state = {
+      editProject: null,
       formOpened: false
     };
   }
+
+  onEdit = project => {
+    this.setState({
+      editProject: project,
+      formOpened: true
+    });
+  };
 
   openForm = () => {
     this.setState({
@@ -22,6 +35,7 @@ export class Projects extends React.Component {
 
   closeForm = () => {
     this.setState({
+      editProject: null,
       formOpened: false
     });
   };
@@ -37,16 +51,13 @@ export class Projects extends React.Component {
         </SectionHeader>
 
         <ul>
-          <ListItem count={0}>
-            <div part="label">
-              <i className="fa fa-book" /> Example Project
-            </div>
-          </ListItem>
-          <ListItem count={2}>
-            <div part="label">
-              <i className="fa fa-book" /> Example Project2
-            </div>
-          </ListItem>
+          {this.props.projects.map((project, index) =>
+            <ProjectItem project={project} key={index} onEdit={this.onEdit}>
+              <div part="label">
+                <i className="fa fa-book" /> {project.get('title')}
+              </div>
+            </ProjectItem>
+          )}
         </ul>
 
         <Detached isOpen={this.state.formOpened}
@@ -54,7 +65,7 @@ export class Projects extends React.Component {
                   positionAt="right+5 top-6">
 
           <ClickOut onClickOut={this.closeForm}>
-            <ProjectFormContainer />
+            <ProjectFormContainer project={this.state.editProject} />
           </ClickOut>
         </Detached>
       </Section>
