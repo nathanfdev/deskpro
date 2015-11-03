@@ -42,6 +42,6 @@ use FOS\RestBundle\Controller\Annotations\Route;
  */
 class OrganizationsController extends CrudController
 {
-    public static $exposeOnly = ['list'];
+    public static $exposeOnly = ['list', 'get'];
     public static $entity     = Organization::class;
 }

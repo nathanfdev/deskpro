@@ -3349,6 +3349,26 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return Chatable::PARTICIPANT_TYPE_AGENT;
     }
 
+    /**
+     * @return array
+     */
+    public function getLabelsArray()
+    {
+        return array_map(function ($label) { return $label->getLabel(); }, $this->labels->toArray());
+    }
+
+    /**
+     * @return array
+     */
+    public function getPhoneNumbersArray()
+    {
+        return array_map(function ($phone) { return [
+            'number' => $phone->number,
+            'ext'    => $phone->ext,
+            'label'  => $phone->label,
+        ]; }, $this->phone_numbers->toArray());
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -4012,6 +4032,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'fieldName'    => 'assigned_tasks',
                 'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\TaskAssignment',
                 'mappedBy'     => 'person',
+                'fetch'        => 'EXTRA_LAZY',
             )
         );
 
