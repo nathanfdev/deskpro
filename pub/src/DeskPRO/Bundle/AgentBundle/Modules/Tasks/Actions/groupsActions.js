@@ -3,7 +3,7 @@ import * as Tasks from 'DeskPRO/Bundle/AgentBundle/Services/Api/Tasks';
 
 const getRemainingCount = filter =>
   Tasks.loadTasksRemainingCount(filter).then(
-      result => result.getData()
+    result => result.getData().data.count
   );
 
 export const loadAllTasksRemainingCount = createAction(
