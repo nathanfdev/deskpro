@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 import { CardLine } from './CardLine';
+import { MarkDone } from './MarkDone';
 import { Title } from './Title';
 
 export class TaskCard extends React.Component {
@@ -21,19 +22,18 @@ export class TaskCard extends React.Component {
     });
   };
 
+  onToggleDone = () => {
+    console.log('onToggleDone');
+    this.setState({
+      isDone: !this.state.isDone
+    });
+  };
+
   render() {
     return (
       <Card minimized={true} type="task">
-        <div className="dpw--single-card-mark-done dpw--single-card-mark-done-minimized">
-          <span>Done</span>
-          <i className="fa fa-check"/>
-        </div>
-
-        <div className="dpw--single-card-mark-done">
-          <i className="fa fa-check"/>
-          <span>Mark Done</span>
-        </div>
-
+        <MarkDone isDone={this.state.isDone}
+                  onToggle={this.onToggleDone} />
         <CardLine>
           <Title value={this.state.title}
                  isDone={this.state.isDone}
