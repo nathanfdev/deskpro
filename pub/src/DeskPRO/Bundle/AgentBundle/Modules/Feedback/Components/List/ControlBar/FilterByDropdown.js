@@ -4,7 +4,6 @@ import Moment from 'moment';
 import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import {FilterItem} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/FilterItem';
 import {DateTimePicker} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/DateTimePicker';
-import {ChoiceMenu} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/ChoiceMenu';
 import { setFilterValue, loadFeedbackList } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { TypesCollectionContainer } from './TypesCollectionContainer';
 import { CategoriesCollectionContainer } from './CategoriesCollectionContainer';
@@ -143,6 +142,31 @@ const FilterByDropdown = React.createClass({
     }
   },
 
+  renderStatusItemContent(active) {
+    if (active) {
+      const {filterParams} = this.props;
+      const chosenValues = filterParams.get('status').toJS();
+      return (
+        <span className="dpw-navigation-dropdown-item-inline-info">{chosenValues[0]}</span>
+      );
+    }
+  },
+
+  renderStatusItemExtraContent(active) {
+    if (active) {
+      const {filterParams} = this.props;
+      const chosenValues = filterParams.get('status').toJS();
+      const size = chosenValues.length;
+      if (size > 1) {
+        return (
+          <span className="dpw-navigation-dropdown-item-inline-info dpw-navigation-dropdown-item-inline-info-extra">
+            +{size - 1}
+          </span>
+        );
+      }
+    }
+  },
+
   render() {
     const isDateCreatedFilterActive = this.checkIfDateCreatedFilterIsActive();
     const initialFromTo = this.getInitialFromTo(isDateCreatedFilterActive);
@@ -170,10 +194,10 @@ const FilterByDropdown = React.createClass({
           resetFilter={this.resetFilter}
           icon="calendar-o"
           label="Status">
+          {this.renderStatusItemContent(isStatusesFilterActive)}
+          {this.renderStatusItemExtraContent(isStatusesFilterActive)}
           <Menu>
-            <ChoiceMenu title="Feedback Status">
               <StatusesCollectionContainer/>
-            </ChoiceMenu>
           </Menu>
         </FilterItem>
         <FilterItem
@@ -224,8 +248,6 @@ const FilterByDropdown = React.createClass({
                     </div>
                   </Formsy.Form>
                 </div>
-
-
               </div>
             </div>
           </Menu>

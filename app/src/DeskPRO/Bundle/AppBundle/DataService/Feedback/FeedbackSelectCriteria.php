@@ -95,7 +95,7 @@ class FeedbackSelectCriteria extends Criteria
                     break;
                 case 'status':
                     if (is_array($value)) {
-                        $qb->andWhere("$alias.status = :status");
+                        $qb->andWhere("$alias.status IN (:status)");
                     } else {
                         $qb->andWhere("$alias.status = :status");
                     }
@@ -157,10 +157,6 @@ class FeedbackSelectCriteria extends Criteria
         );
         $resolver->setAllowedValues('awaiting_validation', '1');
         $resolver->setAllowedValues('no_labels', '1');
-        $resolver->setAllowedValues(
-            'status',
-            ['new', Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED, Feedback::STATUS_HIDDEN]
-        );
         $resolver->setAllowedValues(
             'sort',
             ['date_created', 'total_rating', 'num_ratings', 'id', 'title', 'status', 'category', 'author_name']

@@ -12,7 +12,7 @@ export class TypesCollectionContainer extends Component {
 
   static propTypes = {
     types: PropTypes.object.isRequired,
-    filterParams: PropTypes.object.isRequired,
+    filterParams: PropTypes.object,
     dispatch: PropTypes.func.isRequired
   };
 
@@ -35,14 +35,14 @@ export class TypesCollectionContainer extends Component {
 
   render() {
     const {types, filterParams} = this.props;
-    const value = filterParams && filterParams.get('category') ? filterParams.get('category').toJS() : null;
+    const values = filterParams && filterParams.get('category') ? filterParams.get('category').toJS() : null;
     return (
       <ChoiceMenu title="Feedback Type">
         <ul>
           {types.toJS().map((item, index) =>
               <ChoiceMenuOption
                 key={index}
-                isActive={value && value.indexOf(item.title) > -1}
+                values={values}
                 label={item.title}
                 value={item.title}
                 onClick={this.setFilter.bind(this)}
