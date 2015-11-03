@@ -5,6 +5,7 @@ import { Title } from './Title';
 import { MarkDoneButton } from './MarkDoneButton';
 import { ShowDetailsButton } from './ShowDetailsButton';
 import { AssignButton } from './AssignButton';
+import { Comments } from './Comments';
 
 export class TaskCard extends React.Component {
 
@@ -61,9 +62,7 @@ export class TaskCard extends React.Component {
         </div>
 
         <div>
-            <span className="dpwd--card-line-item">
-              0 <i className="fa fa-comment"/>
-            </span>
+            <Comments count={0} />
 
             <span className="dpwd--card-line-item">
               <div>
