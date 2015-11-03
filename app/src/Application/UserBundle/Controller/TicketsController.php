@@ -212,11 +212,6 @@ class TicketsController extends AbstractController
             return $this->redirectRoute('user_tickets');
         }
 
-        $allowed_ids = $this->person->getPermissionsManager()->Departments->getAllowedIds('tickets');
-        if (!$allowed_ids) {
-            return $this->redirectRoute('user_tickets');
-        }
-
         $dql_join = '';
         $sort     = $this->in->getString('sort');
         switch ($sort) {

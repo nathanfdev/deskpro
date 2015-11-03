@@ -474,18 +474,14 @@ class Ticket extends AbstractEntityRepository
         );
 
         if ($person->organization && $person->organization_manager) {
-            $allowed_ids = $person->getPermissionsManager()->Departments->getAllowedIds('tickets');
-            if ($allowed_ids) {
-                $counts['org'] = App::getDb()->fetchColumn('
-                    SELECT COUNT(DISTINCT tickets.id)
-                    FROM tickets
-                    LEFT JOIN tickets_participants ON tickets_participants.ticket_id = tickets.id
-                    WHERE
-                        tickets.organization_id = ? '.($status ? " AND tickets.status IN ($status) " : '').'
-                        AND tickets.department_id IN ('.implode(',', $allowed_ids).')
-                        AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
-                ', array($person->getOrganizationId()));
-            }
+            $counts['org'] = App::getDb()->fetchColumn('
+                SELECT COUNT(DISTINCT tickets.id)
+                FROM tickets
+                LEFT JOIN tickets_participants ON tickets_participants.ticket_id = tickets.id
+                WHERE
+                    tickets.organization_id = ? '.($status ? " AND tickets.status IN ($status) " : '').'
+                    AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
+            ', array($person->getOrganizationId()));
         }
 
         return $counts;
