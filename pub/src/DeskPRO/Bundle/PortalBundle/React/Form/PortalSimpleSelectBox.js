@@ -92,7 +92,7 @@ export default class PortalSimpleSelectBox extends React.Component {
     }
     this.setState({
       value: val,
-      expanded: false
+      expanded: this.props.multiple ? true : false
     });
     this.props.onChange(val);
   }
