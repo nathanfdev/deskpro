@@ -7,6 +7,7 @@ import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Pos
 
 @connect(state => ({
   filterParams: state.Feedback.list.get('currentListParams').get('filters'),
+  navItem: state.Feedback.list.get('currentListParams').get('navItem'),
   isComments: isCommentsSelector(state),
   statuses: state.Feedback.nav.get('statuses'),
   types: state.Feedback.nav.get('types')
@@ -17,6 +18,8 @@ export class FilterContainer extends Component {
   static propTypes = {
     toggleDropdown: PropTypes.func.isRequired,
     expanded: PropTypes.bool.isRequired,
+    isComments: PropTypes.bool,
+    navItem: PropTypes.object,
     dispatch: PropTypes.func.isRequired,
     statuses: PropTypes.object.isRequired,
     types: PropTypes.object.isRequired,
@@ -24,7 +27,7 @@ export class FilterContainer extends Component {
   };
 
   render() {
-    const {dispatch, expanded, toggleDropdown, filterParams, statuses, types, isComments} = this.props;
+    const {dispatch, expanded, toggleDropdown, filterParams, statuses, types, isComments, navItem} = this.props;
     let title = 'Filter By';
     let label = '';
     let filtersCounter = 0;
@@ -63,6 +66,7 @@ export class FilterContainer extends Component {
                     positionAt="left bottom"
                     positionTarget={this.refs.filterButton}>
           <FilterByDropdown
+            navItem={navItem}
             isComments={isComments}
             types={types}
             statuses={statuses}
