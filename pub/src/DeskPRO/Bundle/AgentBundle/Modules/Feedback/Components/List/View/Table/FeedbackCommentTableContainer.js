@@ -90,15 +90,10 @@ export class FeedbackCommentTableContainer extends Component {
 
 
   render() {
-    const { comments, viewFields, people, emails, commentsTableViewFields, feedbackFromStore, feedbackTypes } = this.props;
+    const { comments, viewFields, people, emails, feedbackFromStore, feedbackTypes } = this.props;
     let tableFields = (viewFields && viewFields.get('table')) ? viewFields.get('table').toJS() : defaultTableFields;
     const {ownViewFields} = this.state;
     tableFields = { ...ownViewFields, ...tableFields };
-    console.log('Table Fileds', tableFields);
-    // const tableViewFieldsFiltered = viewFields.get('table').toJS().filter(field => field.status !== constants.FIELD_HIDDEN);
-    // tableViewFieldsFiltered.sort((prev, next) => prev.priority - next.priority);
-    // const commentsTableViewFieldsFiltered = commentsTableViewFields.filter(field => field.status !== constants.FIELD_HIDDEN);
-    // commentsTableViewFieldsFiltered.sort((prev, next) => prev.priority - next.priority);
 
     return (
       <TableView>
@@ -150,7 +145,7 @@ export class FeedbackCommentTableContainer extends Component {
           {comments.map(
             (element, index) => {
               const feedback = feedbackFromStore.get(element.feedback_id).toJS();
-              console.log('Feedback', feedback);
+
               return (
                 <Row key={index}>
                   {tableFields.comment_id.isShown ?

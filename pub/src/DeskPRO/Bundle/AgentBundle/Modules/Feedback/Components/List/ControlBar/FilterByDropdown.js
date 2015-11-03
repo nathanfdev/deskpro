@@ -5,6 +5,7 @@ import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu
 import {FilterItem} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/FilterItem';
 import {DateTimePicker} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/DateTimePicker';
 import { setFilterValue, loadFeedbackList } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
+import { loadCommentsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
 import { TypesCollectionContainer } from './TypesCollectionContainer';
 import { CategoriesCollectionContainer } from './CategoriesCollectionContainer';
 import { StatusesCollectionContainer } from './StatusesCollectionContainer';
@@ -15,6 +16,7 @@ const FilterByDropdown = React.createClass({
     statuses: PropTypes.object.isRequired,
     types: PropTypes.object.isRequired,
     filterParams: PropTypes.object.isRequired,
+    isComments: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
     toggleDropdown: PropTypes.func.isRequired
   },
@@ -42,16 +44,24 @@ const FilterByDropdown = React.createClass({
   },
 
   submitFilter(type, model) {
-    const {dispatch} = this.props;
+    const {dispatch, isComments} = this.props;
     dispatch(setFilterValue({ filter: type, value: model }));
-    dispatch(loadFeedbackList());
+    if (isComments) {
+      dispatch(loadCommentsList());
+    } else {
+      dispatch(loadFeedbackList());
+    }
     // this.props.toggleDropdown();
   },
 
   resetFilter(type) {
-    const {dispatch} = this.props;
+    const {dispatch, isComments} = this.props;
     dispatch(setFilterValue({ filter: type, value: null }));
-    dispatch(loadFeedbackList());
+    if (isComments) {
+      dispatch(loadCommentsList());
+    } else {
+      dispatch(loadFeedbackList());
+    }
   },
 
   checkIfDateCreatedFilterIsActive() {
@@ -63,22 +73,27 @@ const FilterByDropdown = React.createClass({
 
   checkIfTypesFilterIsActive() {
     const {filterParams} = this.props;
-    if (filterParams && filterParams.get('category')) {
+    if (filterParams && filterParams.get('category') && filterParams.get('category').size > 0) {
       return true;
     }
   },
 
   checkIfCategoriesFilterIsActive() {
     const {filterParams} = this.props;
-    if (filterParams && filterParams.get('custom_category')) {
+    if (filterParams && filterParams.get('custom_category') && filterParams.get('custom_category').size > 0) {
       return true;
     }
   },
 
   checkIfStatusesFilterIsActive() {
     const {filterParams} = this.props;
-    if (filterParams && (filterParams.get('status') || filterParams.get('status_category'))) {
-      return true;
+    if (filterParams) {
+      if (filterParams.get('status') && filterParams.get('status').size > 0) {
+        return true;
+      }
+      if (filterParams.get('status_category') && filterParams.get('status_category').size > 0) {
+        return true;
+      }
     }
   },
 
@@ -144,18 +159,31 @@ const FilterByDropdown = React.createClass({
 
   renderStatusItemContent(active) {
     if (active) {
+      let chosenValues = [];
       const {filterParams} = this.props;
-      const chosenValues = filterParams.get('status').toJS();
-      return (
-        <span className="dpw-navigation-dropdown-item-inline-info">{chosenValues[0]}</span>
-      );
+      if (filterParams.get('status')) {
+        chosenValues = filterParams.get('status').toJS();
+      } else if (filterParams.get('status_category')) {
+        chosenValues = filterParams.get('status_category').toJS();
+      }
+      if (chosenValues.length > 0) {
+        return (
+          <span className="dpw-navigation-dropdown-item-inline-info">{chosenValues[0]}</span>
+        );
+      }
     }
   },
 
   renderStatusItemExtraContent(active) {
     if (active) {
+      let chosenValues = [];
       const {filterParams} = this.props;
-      const chosenValues = filterParams.get('status').toJS();
+      if (filterParams.get('status')) {
+        chosenValues = filterParams.get('status').toJS();
+      }
+      if (filterParams.get('status_category')) {
+        chosenValues = chosenValues.concat(filterParams.get('status_category').toJS());
+      }
       const size = chosenValues.length;
       if (size > 1) {
         return (
@@ -197,7 +225,7 @@ const FilterByDropdown = React.createClass({
           {this.renderStatusItemContent(isStatusesFilterActive)}
           {this.renderStatusItemExtraContent(isStatusesFilterActive)}
           <Menu>
-              <StatusesCollectionContainer/>
+            <StatusesCollectionContainer/>
           </Menu>
         </FilterItem>
         <FilterItem

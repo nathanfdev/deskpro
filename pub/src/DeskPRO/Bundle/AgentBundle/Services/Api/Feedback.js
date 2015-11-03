@@ -32,21 +32,6 @@ export function deleteFeedbackComment(id) {
 }
 
 /**
- * Feedback comments to review list
- * @return Promise
- */
-export function commentsToReviewList(params) {
-  const paramsEncoded = [];
-  if (params.sort && params.order) {
-    paramsEncoded.push('sort=' + params.sort);
-    paramsEncoded.push('order=' + params.order);
-  }
-  paramsEncoded.push('awaiting_validation=1');
-  console.log('DP_API/feedback_comments_list?' + paramsEncoded.join('&'));
-  return DpApi.sendGet('DP_API/feedback_comments_list?' + paramsEncoded.join('&'));
-}
-
-/**
  * Update a feedbackComment
  * @param commentId
  * @param data
@@ -148,6 +133,15 @@ export function getHidden() {
 export function getList(params) {
   console.log('DP_API/feedback/?' + compileParams(params));
   return DpApi.sendGet('DP_API/feedback/?' + compileParams(params));
+}
+
+/**
+ * Feedback comments to review list
+ * @return Promise
+ */
+export function commentsToReviewList(params) {
+  console.log('DP_API/feedback_comments_list?' + compileParams(params));
+  return DpApi.sendGet('DP_API/feedback_comments_list?' + compileParams(params));
 }
 
 /* @ToDo remove this method and endpoint */

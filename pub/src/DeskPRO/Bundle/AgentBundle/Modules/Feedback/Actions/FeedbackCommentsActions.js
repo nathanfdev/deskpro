@@ -5,6 +5,7 @@ import { currentListParamsSelector } from '../Selectors/list';
 import { setCurrentListParams, commentsToReview } from './FeedbackListActions';
 import { loadPeople } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { loadEmails } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/emailsActions';
+import Moment from 'moment';
 
 /**
  * Used to identify requests within record stores
@@ -24,10 +25,12 @@ export const getAuthors = createAction(
     const ids = [];
     const unique = {};
     for (var key in comments.data) {
-      if (typeof(unique[comments.data[key].person_id]) === 'undefined') {
-        ids.push(comments.data[key].person_id);
+      if (comments.data.hasOwnProperty(key)) {
+        if (typeof(unique[comments.data[key].person_id]) === 'undefined') {
+          ids.push(comments.data[key].person_id);
+        }
+        unique[comments.data[key].person_id] = 0;
       }
-      unique[comments.data[key].person_id] = 0;
     }
     dispatch(loadEmails(recordStoresId, ids));
     return dispatch(loadPeople(recordStoresId, ids));
@@ -38,10 +41,32 @@ export const loadCommentsList = createAction(
   'FEEDBACK_COMMENTS_LIST',
   (overwriteParams = {}) => (dispatch, getState) => {
     const currentParams = currentListParamsSelector(getState()).toJS();
-    const params = { ...currentParams, ...overwriteParams };
+    let params = { ...currentParams, ...overwriteParams };
 
     dispatch(setCurrentListParams(params));
     delete params.isComments;
+    const {navItem} = params;
+    if (navItem) {
+      delete params.navItem;
+      params = { ...params, ...navItem };
+    }
+    const {filters} = params;
+    if (filters) {
+      delete params.filters;
+      for (var property in filters) {
+        if (filters.hasOwnProperty(property)) {
+          if (property === 'date_created') {
+            for (var dateProperty in filters[property]) {
+              if (filters[property].hasOwnProperty(dateProperty) && filters[property][dateProperty]) {
+                params[dateProperty] = Moment(filters[property][dateProperty]).format('YYYY-MM-DD HH:mm:ss');
+              }
+            }
+          } else {
+            params[property] = filters[property];
+          }
+        }
+      }
+    }
     return Feedback.commentsToReviewList(params).then(promise => {
       const comments = promise.getData();
       const ids = [];
