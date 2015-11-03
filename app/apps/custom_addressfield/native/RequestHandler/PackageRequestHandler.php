@@ -69,6 +69,9 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
             }
         }
 
-        return $context->createJsonResponse($fields);
+        return $context->createJsonResponse(array(
+            'url' => $context->getContainer()->getSetting('core.deskpro_url'),
+            'fields' => $fields,
+        ));
     }
 }

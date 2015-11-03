@@ -15,7 +15,8 @@ define(function () {
     $scope.Ctrl.startSpinner('loadingFields');
     Api.sendGet('/apps/packages/custom_addressfield/get-fields').then(
       function (res) {
-        $scope.definitions.custom_field.options = res.data;
+        $scope.definitions.custom_field.options = res.data.fields;
+        $scope.asset = res.data.url + '/file.php/apps/custom_addressfield/js/UserInterface/test.js';
         $scope.Ctrl.stopSpinner('loadingFields');
       },
       function (res) {
