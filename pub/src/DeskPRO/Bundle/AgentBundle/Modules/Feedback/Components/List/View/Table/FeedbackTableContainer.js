@@ -81,9 +81,8 @@ export class FeedbackTableContainer extends Component {
   }
 
   render() {
-    const { feedback, viewFields, people, emails, feedbackTypes, feedbackCategories } = this.props;
-    const tableFields = (viewFields && viewFields.table) ? viewFields.table : defaultTableFields;
-    // filteredFields.sort((prev, next) => prev.priority - next.priority);
+    const { feedback, viewFields, people, emails, feedbackTypes } = this.props;
+    let tableFields = (viewFields && viewFields.table) ? viewFields.table : defaultTableFields;
 
     return (
       <TableView>

@@ -1,7 +1,8 @@
 import { createAction } from 'Ampliflux';
 import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
 import { loadFeedback } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackActions';
-import { commentsToReview } from './FeedbackListActions';
+import { currentListParamsSelector } from '../Selectors/list';
+import { setCurrentListParams, commentsToReview } from './FeedbackListActions';
 import { loadPeople } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { loadEmails } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/emailsActions';
 
@@ -33,15 +34,14 @@ export const getAuthors = createAction(
   }
 );
 
-export const setCommentsViewMode = createAction(
-  'FEEDBACK_SET_COMMENTS_VIEW_MODE',
-    value => value
-);
-
 export const loadCommentsList = createAction(
   'FEEDBACK_COMMENTS_LIST',
-  (params = {}) => dispatch => {
-    delete params.comments;
+  (overwriteParams = {}) => (dispatch, getState) => {
+    const currentParams = currentListParamsSelector(getState()).toJS();
+    const params = { ...currentParams, ...overwriteParams };
+
+    dispatch(setCurrentListParams(params));
+    delete params.isComments;
     return Feedback.commentsToReviewList(params).then(promise => {
       const comments = promise.getData();
       const ids = [];
@@ -50,7 +50,6 @@ export const loadCommentsList = createAction(
           ids.push(comments.data[index].feedback_id);
         }
       }
-      dispatch(setCommentsViewMode(true));
       dispatch(getFeedbackForComments(ids));
       dispatch(getAuthors(comments));
       return comments;
@@ -68,7 +67,7 @@ export const setTableSort = createAction(
 
 export const commentsToggleOrder = createAction(
   'FEEDBACK_COMMENTS_TOGGLE_ORDER',
-    order => dispatch => {
+  (order) => dispatch => {
     dispatch(loadCommentsList({ sort: 'date_created', order: order }));
     return order;
   }
@@ -76,7 +75,7 @@ export const commentsToggleOrder = createAction(
 
 export const deleteComment = createAction(
   'FEEDBACK_COMMENTS_DELETE',
-    id => dispatch => {
+  (id) => dispatch => {
     Feedback.deleteFeedbackComment(id).then(()=> {
       dispatch(commentsToReview());
       dispatch(loadCommentsList());
@@ -87,7 +86,7 @@ export const deleteComment = createAction(
 
 export const editComment = createAction(
   'FEEDBACK_COMMENTS_EDIT',
-    data => dispatch => {
+  (data) => dispatch => {
     const commentId = data.commentId;
     delete data.commentId;
     Feedback.editComment(commentId, data).then(()=> {
