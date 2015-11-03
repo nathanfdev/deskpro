@@ -13,6 +13,7 @@ import { StatusesCollectionContainer } from './StatusesCollectionContainer';
 const FilterByDropdown = React.createClass({
 
   propTypes: {
+    navItem: PropTypes.object,
     statuses: PropTypes.object.isRequired,
     types: PropTypes.object.isRequired,
     filterParams: PropTypes.object.isRequired,
@@ -161,9 +162,9 @@ const FilterByDropdown = React.createClass({
     if (active) {
       let chosenValues = [];
       const {filterParams} = this.props;
-      if (filterParams.get('status')) {
+      if (filterParams.get('status') && filterParams.get('status').size > 0) {
         chosenValues = filterParams.get('status').toJS();
-      } else if (filterParams.get('status_category')) {
+      } else if (filterParams.get('status_category') && filterParams.get('status_category').size > 0) {
         chosenValues = filterParams.get('status_category').toJS();
       }
       if (chosenValues.length > 0) {
@@ -195,14 +196,33 @@ const FilterByDropdown = React.createClass({
     }
   },
 
-  render() {
-    const isDateCreatedFilterActive = this.checkIfDateCreatedFilterIsActive();
-    const initialFromTo = this.getInitialFromTo(isDateCreatedFilterActive);
-    const isTypesFilterActive = this.checkIfTypesFilterIsActive();
-    const isCategoriesFilterActive = this.checkIfCategoriesFilterIsActive();
-    const isStatusesFilterActive = this.checkIfStatusesFilterIsActive();
-    return (
-      <Menu>
+  renderCategoryFilterItem(navItem) {
+    if (!navItem || !navItem.toJS().hasOwnProperty('custom_category')) {
+      const isCategoriesFilterActive = this.checkIfCategoriesFilterIsActive();
+
+      return (
+        <FilterItem
+          filterType="custom_category"
+          isActive={isCategoriesFilterActive}
+          resetFilter={this.resetFilter}
+          icon="calendar-o"
+          label="Category">
+          {this.renderCategoryItemContent(isCategoriesFilterActive)}
+          {this.renderCategoryItemExtraContent(isCategoriesFilterActive)}
+          <Menu>
+            <CategoriesCollectionContainer />
+          </Menu>
+        </FilterItem>
+      );
+    }
+    return (<div/>);
+  },
+
+  renderTypeFilterItem(navItem) {
+    if (!navItem || !navItem.toJS().hasOwnProperty('category')) {
+      const isTypesFilterActive = this.checkIfTypesFilterIsActive();
+
+      return (
         <FilterItem
           filterType="category"
           isActive={isTypesFilterActive}
@@ -216,6 +236,16 @@ const FilterByDropdown = React.createClass({
             <TypesCollectionContainer />
           </Menu>
         </FilterItem>
+      );
+    }
+    return (<div/>);
+  },
+
+  renderStatusFilterItem(navItem) {
+    if (!navItem || (!navItem.toJS().hasOwnProperty('status') && !navItem.toJS().hasOwnProperty('status_category'))) {
+      const isStatusesFilterActive = this.checkIfStatusesFilterIsActive();
+
+      return (
         <FilterItem
           filterType="status"
           isActive={isStatusesFilterActive}
@@ -228,18 +258,20 @@ const FilterByDropdown = React.createClass({
             <StatusesCollectionContainer/>
           </Menu>
         </FilterItem>
-        <FilterItem
-          filterType="custom_category"
-          isActive={isCategoriesFilterActive}
-          resetFilter={this.resetFilter}
-          icon="calendar-o"
-          label="Category">
-          {this.renderCategoryItemContent(isCategoriesFilterActive)}
-          {this.renderCategoryItemExtraContent(isCategoriesFilterActive)}
-          <Menu>
-            <CategoriesCollectionContainer />
-          </Menu>
-        </FilterItem>
+      );
+    }
+    return (<div/>);
+  },
+
+  render() {
+    const {navItem} = this.props;
+    const isDateCreatedFilterActive = this.checkIfDateCreatedFilterIsActive();
+    const initialFromTo = this.getInitialFromTo(isDateCreatedFilterActive);
+    return (
+      <Menu>
+        {this.renderTypeFilterItem(navItem)}
+        {this.renderStatusFilterItem(navItem)}
+        {this.renderCategoryFilterItem(navItem)}
         <FilterItem
           filterType="date_created"
           isActive={isDateCreatedFilterActive}

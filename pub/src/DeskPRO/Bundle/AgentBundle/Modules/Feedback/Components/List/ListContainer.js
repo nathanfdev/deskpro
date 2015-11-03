@@ -39,7 +39,7 @@ export class ListContainer extends Component {
     feedbackFromStore: PropTypes.array.isRequired,
     massAction: PropTypes.bool.isRequired,
     selected: PropTypes.array.isRequired,
-    isComments: PropTypes.bool.isRequired
+    isComments: PropTypes.bool
   };
 
   render() {
