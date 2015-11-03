@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import {
+  BaseForm,
   Header,
   Popup,
   FieldGroup,
@@ -12,7 +13,7 @@ import {
   DepartmentsList
 } from '../../../../../Form/index';
 
-export class AssignForm extends React.Component {
+export class AssignForm extends BaseForm {
 
   static propTypes = {
     project: PropTypes.object,
@@ -22,19 +23,6 @@ export class AssignForm extends React.Component {
     agentTeams: PropTypes.object.isRequired,
     departments: PropTypes.object.isRequired
   };
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      quickFilter: '',
-      agents: [],
-      agentTeams: [],
-      departments: [],
-      errors: {},
-      submit: false
-    };
-  }
 
   render() {
     const { agents, agentTeams, departments } = this.props;

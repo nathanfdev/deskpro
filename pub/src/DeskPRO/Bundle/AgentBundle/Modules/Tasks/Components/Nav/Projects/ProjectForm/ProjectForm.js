@@ -5,6 +5,7 @@ import Immutable from 'immutable';
 import Loader from 'react-loader';
 import classNames from 'classnames';
 import {
+  BaseForm,
   Header,
   Popup,
   FieldGroup,
@@ -19,7 +20,7 @@ import {
   DepartmentsList
 } from '../../../Form/index';
 
-export class ProjectForm extends React.Component {
+export class ProjectForm extends BaseForm {
 
   static propTypes = {
     project: PropTypes.object,
@@ -33,18 +34,17 @@ export class ProjectForm extends React.Component {
   constructor(props) {
     super(props);
 
+    const localState = this.state;
     const emptyObject = Immutable.fromJS({});
     const project = props.project || emptyObject;
 
     this.state = {
+      ...localState,
       title: project.get('title'),
-      quickFilter: '',
       showOnlySelected: false,
       agents: project.get('agents', emptyObject).toArray(),
       agentTeams: project.get('teams', emptyObject).toArray(),
       departments: project.get('departments', emptyObject).toArray(),
-      errors: {},
-      submit: false
     };
   }
 
@@ -54,53 +54,9 @@ export class ProjectForm extends React.Component {
     });
   };
 
-  onChangeQuickFilter = value => {
-    this.setState({
-      quickFilter: value
-    });
-  };
-
   onChangeFilterSelected = value => {
     this.setState({
       showOnlySelected: value
-    });
-  };
-
-  onAssignSelf = () => {
-    const id = this.props.me.get('id');
-    const selected = this.state.agents;
-    if (id && selected.indexOf(id) === -1) {
-      selected.push(id);
-    }
-
-    this.setState({
-      agents: selected
-    });
-  };
-
-  onUnassignAll = () => {
-    this.setState({
-      agents: [],
-      agentTeams: [],
-      departments: []
-    });
-  };
-
-  onChangeAgents = selected => {
-    this.setState({
-      agents: selected
-    });
-  };
-
-  onChangeAgentTeams = selected => {
-    this.setState({
-      agentTeams: selected
-    });
-  };
-
-  onChangeDepartments = selected => {
-    this.setState({
-      departments: selected
     });
   };
 
