@@ -185,6 +185,7 @@ $kanban-frame-width: 800px;
 
   .dp-list-frame {
     position: absolute;
+    z-index: 50;
     top: $window-header-height;
     left: $app-switcher-width + $nav-frame-width;
     bottom: 0;
