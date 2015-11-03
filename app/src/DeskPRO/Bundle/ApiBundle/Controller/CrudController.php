@@ -94,10 +94,7 @@ class CrudController extends BaseController
     public function getAction($id)
     {
         $this->checkExposed(__METHOD__);
-
-        $entity = $this->getDoctrine()->getRepository(static::$entity)->find($id);
-
-        if (!$entity) {
+        if (!$entity = $this->findEntity($id)) {
             throw $this->createNotFoundException();
         }
 
@@ -140,7 +137,7 @@ class CrudController extends BaseController
     {
         $this->checkExposed(__METHOD__);
 
-        return $this->handleForm(new static::$entity(), $request);
+        return $this->handleForm($this->instantiateEntity($request), $request);
     }
 
     /**
@@ -150,17 +147,17 @@ class CrudController extends BaseController
     {
         $this->checkExposed(__METHOD__);
 
-        return $this->handleForm($this->findOr404(static::$entity, $id), $request);
+        return $this->handleForm($entity = $this->findEntity($id), $request);
     }
 
     /**
      * @Delete("/{id}", requirements={"id"="\d+"})
      */
-    public function deleteAction($id)
+    public function deleteAction($id, Request $request)
     {
         $this->checkExposed(__METHOD__);
 
-        $entity = $this->findOr404(static::$entity, $id);
+        $entity = $this->findEntity($id);
 
         $em = $this->getManager();
         $em->remove($entity);
@@ -180,6 +177,16 @@ class CrudController extends BaseController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return object
+     */
+    protected function instantiateEntity(Request $request)
+    {
+        return new static::$entity();
     }
 
     /**
@@ -210,6 +217,16 @@ class CrudController extends BaseController
         }
 
         $qb->orderBy($alias.'.'.$sort, $order);
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return object
+     */
+    protected function findEntity($id)
+    {
+        return $this->findOr404(static::$entity, $id);
     }
 
     /**
