@@ -375,7 +375,7 @@ abstract class AbstractKernel extends BaseKernel
         }
 
         if ((defined('DP_INTERFACE') && DP_INTERFACE == 'user') && $is_page_load && isset($GLOBALS['DP_RENDERED_TEMPLATES']['UserBundle::layout.html.twig'])) {
-            if (!License::getLicense()->hasUserCopyrightHtml($response->getContent())) {
+            if (!($response instanceof RedirectResponse) && !License::getLicense()->hasUserCopyrightHtml($response->getContent())) {
                 // Dont show lic error when serving exception page in debug mode
                 if (!(strpos($response->getContent(), 'sf-exceptionreset') && $this->isDebug())) {
                     $response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('copyright', $request->getBaseUrl()));
