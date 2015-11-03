@@ -21,6 +21,7 @@ export class Title extends React.Component {
 
   onEdit = () => {
     this.setState({
+      value: this.props.value,
       editing: true
     });
   };
