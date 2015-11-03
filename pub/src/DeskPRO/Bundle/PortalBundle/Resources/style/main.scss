@@ -1339,6 +1339,9 @@ $search-btn-height: $search-height - 24;
 
       a:hover {
         text-decoration: none;
+        .item-name {
+          text-decoration: underline;
+        }
       }
     }
 

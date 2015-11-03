@@ -145,12 +145,14 @@ export default class OmniSearchResultSection extends React.Component {
         <h1><i className={this.props.nameIcon}></i> {this.props.name}</h1>
         <ul>
           {_.map(this.state.items.getNum(this.state.currently_displaying), (item) => {
-            let t = item.name;
+            let t = (<span className="item-name">{item.name}</span>);
             if (this.state.nameApi === 'news') {
-              t = (<span><span className="date-mark"><i className="fa fa-calendar-o"></i> {moment(item.date).fromNow()}</span>{item.name}</span>);
+              t = (<span><span className="date-mark"><i className="fa fa-calendar-o"></i> {moment(item.date).fromNow()}</span><span className="item-name">{item.name}</span></span>);
             } else if (this.state.nameApi === 'feedback') {
               let sign = item.rating < 0 ? '-' : '+';
-              t = (<span><span className="feedback-mark"><i className="fa fa-thumbs-up"></i>{sign + item.rating}</span>{item.name}</span>);
+              t = (<span><span className="feedback-mark"><i className="fa fa-thumbs-up"></i>{sign + item.rating}</span><span className="item-name">{item.name}</span></span>);
+            } else if (this.state.nameApi === 'download') {
+              t = (<span><i className="fa fa-file-pdf-o"></i><span className="item-name">{item.name}</span></span>);
             }
             return (<ListLink key={item.id} url={item.url} text={t}/>);
           })}
@@ -169,4 +171,3 @@ export default class OmniSearchResultSection extends React.Component {
     );
   }
 }
-
