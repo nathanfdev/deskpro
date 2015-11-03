@@ -1787,6 +1787,7 @@ $tab-border: $divider-color;
 
 .tabs {
   margin-bottom: 20px;
+  font-size: 12px;
   ul {
     @include clearfix;
     @include blank-list;
@@ -1871,6 +1872,18 @@ $tab-border: $divider-color;
       }
     }
 
+    &.tab-active {
+      border: 1px solid $tab-border;
+      border-bottom: 1px solid rgba(255, 255, 255, 0);
+      background: $page-background;
+
+      .title { color: $button-color; }
+    }
+
+    &.tab-inactive {
+      .title { color: $text-color-lighter; }
+    }
+
     span {
       display: block;
     }
@@ -1883,7 +1896,9 @@ $tab-border: $divider-color;
   ul {
     padding-left: 0;
   }
+
   li.tab-active {
+
     .title {
       color: $text-color;
 
@@ -7781,6 +7796,8 @@ form {
     border: 1px solid $form-border-color;
     border-radius: 2px;
     background: $page-background;
+    display: inline-block;
+    width: auto;
   }
 }
 
