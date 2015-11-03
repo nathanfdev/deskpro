@@ -5,14 +5,15 @@ export class TaskCard extends React.Component {
 
   render() {
     return (
-      <Card>
+      <Card minimized={true} type="task">
         <div className="dpw--single-card-mark-done dpw--single-card-mark-done-minimized">
           <span>Done</span>
           <i className="fa fa-check"/>
         </div>
 
-        <div className="dpm--card-checkbox">
+        <div className="dpw--single-card-mark-done" onClick={this.toggleDone}>
           <i className="fa fa-check"/>
+          <span>Mark Done</span>
         </div>
 
         <div className="dpw--card-line" onClick={this.expandDetails}>
@@ -42,7 +43,7 @@ export class TaskCard extends React.Component {
         <div className="dpw--card-line">
           <div className="dpw--card-line-left">
             <span className="overdue dpwd--card-line-item">
-              <i className="fa fa-calendar-o"/> Due: N/A}
+              <i className="fa fa-calendar-o"/> Due: N/A
               <input type="text" name="due-date" className="due-date-field" disabled="disabled"/>
             </span>
 
