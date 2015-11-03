@@ -2,20 +2,22 @@ import React, { PropTypes } from 'react';
 import * as TasksActions from '../../../../Actions/tasksActions';
 import { Popup } from './Popup';
 import { Header } from './Header';
-import { FieldGroup } from './Fields/FieldGroup';
-import { FullField } from './Fields/FullField';
-import { FloatField } from './Fields/FloatField';
-import { CollectionField } from './Fields/CollectionField';
-import { QuickFilter } from './Fields/QuickFilter';
-import { ShowOnlySelected } from './Fields/ShowOnlySelected';
-import { Unassign } from './Fields/Unassign';
-import { AgentsList } from './Fields/AgentsList';
-import { AgentTeamsList } from './Fields/AgentTeamsList';
-import { DepartmentsList } from './Fields/DepartmentsList';
 import { FieldErrors } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/FieldErrors';
 import Immutable from 'immutable';
 import Loader from 'react-loader';
 import classNames from 'classnames';
+import {
+  FieldGroup,
+  FullField,
+  FloatField,
+  CollectionField,
+  QuickFilter,
+  ShowOnlySelected,
+  Unassign,
+  AgentsList,
+  AgentTeamsList,
+  DepartmentsList
+} from '../../../Form/Fields/index';
 
 export class ProjectForm extends React.Component {
 
