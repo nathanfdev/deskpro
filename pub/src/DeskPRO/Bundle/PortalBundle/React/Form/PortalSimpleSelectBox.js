@@ -17,7 +17,12 @@ class SelectOption extends React.Component {
     const option = this.props.option;
     return (
       <li>
-        <a onClick={this.onClickOption.bind(this)} className={this.props.active ? 'active' : null}>{option.title}</a>
+        <a onClick={this.onClickOption.bind(this)} className={this.props.active ? 'active' : null}>
+          {this.props.multiple ? (
+              <span className={"checkbox" + (this.props.active ? " checked" : "")}><i className="fa fa-check"></i></span>
+          ) : null}
+          {" " + option.title}
+        </a>
       </li>
     );
   }
@@ -28,7 +33,7 @@ export default class PortalSimpleSelectBox extends React.Component {
     super(props);
     this.state = {
       options: props.options,
-      value: props.value,
+      value: this.props.multiple ? (props.value || []) : props.value,
       expanded: this.props.expanded || false,
       level: props.level || 1
     }
@@ -64,20 +69,44 @@ export default class PortalSimpleSelectBox extends React.Component {
   }
 
   changeToOption(option) {
-    console.log('selected option %o', option);
+    if (!option) {
+      return;
+    }
+    let val;
+    if (this.props.multiple) {
+      val = this.state.value;
+      if (!_.some(val, (v) => {
+            return _.parseInt(v.id) === _.parseInt(option.id);
+          })) {
+        val.push(option);
+      } else {
+        val = val.filter((opt) => {
+          return _.parseInt(opt.id) !== _.parseInt(option.id);
+        });
+      }
+      val = val.filter((v) => {
+        return typeof v !== 'undefined';
+      });
+    } else {
+      val = option;
+    }
     this.setState({
-      value: option,
+      value: val,
       expanded: false
     });
-    this.props.onChange(option);
+    this.props.onChange(val);
   }
 
 
   renderStaticHeader() {
-    if (!this.state.expanded && this.state.value) {
+    if (!this.state.expanded && (this.props.multiple ? this.state.value.length > 0 : this.state.value)) {
       return (
         <div className="default" onClick={this.onClickHeader.bind(this)}>
-          <span>{this.state.value.title}</span>
+          <span>{this.props.multiple ? (
+              this.state.value.map((opt) => {
+                return opt.title
+              }).join(', ')
+          ) : this.state.value.title}</span>
           <i className="fa fa-caret-down"></i>
         </div>
       );
@@ -103,7 +132,8 @@ export default class PortalSimpleSelectBox extends React.Component {
               <SelectOption onClickOption={this.onClickOption.bind(this)}
                             key={option.id}
                             option={option}
-                            active={option.id === (this.state.value ? this.state.value.id : null)}/>
+                            multiple={this.props.multiple}
+                            active={this.props.multiple ? _.includes(this.state.value, option) : this.state.value == option }/>
             );
           })
         }

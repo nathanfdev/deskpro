@@ -304,7 +304,7 @@ HEIRARCHY
         {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
             {% set required = false %}
         {%- endif -%}
-        <select data-heirarchy="" {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+        <select data-heirarchy="" {{ block('widget_attributes') }}{% if multiple %} dpx-select-multiple="" multiple="multiple"{% else %} dpx-select=""{% endif %}>
             {% if empty_value is not none -%}
                 <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
             {%- endif %}
@@ -380,7 +380,7 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
     {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
         {% set required = false %}
     {%- endif -%}
-    <select dpx-select="" {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+    <select {{ block('widget_attributes') }}{% if multiple %} dpx-select-multiple="" multiple="multiple"{% else %} dpx-select=""{% endif %}>
         {% if empty_value is not none -%}
             <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
         {%- endif %}
