@@ -7,6 +7,9 @@ import { ShowDetailsButton } from './ShowDetailsButton';
 import { AssignButton } from './AssignButton';
 import { Comments } from './Comments';
 import { SubTasks } from './SubTasks';
+import { Project } from './Project';
+import { Due } from './Due';
+import { TicketLink } from './TicketLink';
 
 export class TaskCard extends React.Component {
 
@@ -42,24 +45,9 @@ export class TaskCard extends React.Component {
     return (
       <CardLine>
         <div>
-            <span className="overdue dpwd--card-line-item">
-              <i className="fa fa-calendar-o"/> Due: N/A
-              <input type="text" name="due-date" className="due-date-field" disabled="disabled"/>
-            </span>
-
-            <span>
-              <span className="dpw--card-disc"/>
-              <span className="dpwd--card-line-item">
-                <i className="fa fa-book"/> Some project
-              </span>
-            </span>
-
-            <span>
-              <span className="dpw--card-disc"/>
-              <span className="dpwd--card-line-item">
-                <i className="fa fa-link"/> <a href="#">Ticket title</a>
-              </span>
-            </span>
+            <Due due="N/A" />
+            <Project project="Some Project" />
+            <TicketLink ticket="Some ticket" />
         </div>
 
         <div>
