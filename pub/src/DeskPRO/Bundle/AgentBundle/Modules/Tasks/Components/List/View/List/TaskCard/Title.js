@@ -12,6 +12,7 @@ export class Title extends React.Component {
     super(props);
 
     this.state = {
+      value: props.value,
       editing: false
     };
   }
@@ -22,20 +23,25 @@ export class Title extends React.Component {
     });
   };
 
-  onCloseEdit = () => {
+  onCloseEdit = event => {
+    event.preventDefault();
     this.setState({
       editing: false
     });
+
+    this.props.onChange(this.state.value);
   };
 
   onChange = event => {
-    this.props.onChange(event.target.value);
+    this.setState({
+      value: event.target.value
+    });
   };
 
   renderHeader() {
     return (
       <h1 onDoubleClick={this.onEdit}>
-        {this.props.value}
+        {this.state.value}
       </h1>
     );
   }
@@ -43,9 +49,9 @@ export class Title extends React.Component {
   renderForm() {
     return (
       <ClickOut onClickOut={this.onCloseEdit}>
-        <form className="inline-form">
+        <form className="inline-form" onSubmit={this.onCloseEdit}>
           <h1 className="ignore-react-onclickoutside">
-            <input type="text" name="title" value={this.props.value} onChange={this.onChange} />
+            <input type="text" name="title" value={this.state.value} onChange={this.onChange} />
           </h1>
         </form>
       </ClickOut>

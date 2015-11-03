@@ -13,6 +13,10 @@ export class TaskCard extends React.Component {
     };
   }
 
+  onTitleChange = value => {
+    console.log(value);
+  };
+
   render() {
     return (
       <Card minimized={true} type="task">
@@ -27,7 +31,8 @@ export class TaskCard extends React.Component {
         </div>
 
         <CardLine>
-          <Title value="Task title" />
+          <Title value="Task title"
+                 onChange={this.onTitleChange} />
 
           <div>
             <div className="dpw--card-expand">
