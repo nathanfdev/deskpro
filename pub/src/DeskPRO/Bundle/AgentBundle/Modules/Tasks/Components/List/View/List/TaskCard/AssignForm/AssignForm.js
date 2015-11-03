@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import classNames from 'classNames';
+import classNames from 'classnames';
 import Loader from 'react-loader';
 import {
   BaseForm,
