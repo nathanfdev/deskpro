@@ -1,4 +1,18 @@
 import React, { PropTypes } from 'react';
+import {
+  Header,
+  Popup,
+  FieldGroup,
+  FullField,
+  FloatField,
+  CollectionField,
+  QuickFilter,
+  ShowOnlySelected,
+  Unassign,
+  AgentsList,
+  AgentTeamsList,
+  DepartmentsList
+} from '../../../../../Form/index';
 
 export class AssignForm extends React.Component {
 
@@ -13,7 +27,9 @@ export class AssignForm extends React.Component {
 
   render() {
     return (
-      <div />
+      <Popup>
+        <Header>Assign to task</Header>
+      </Popup>
     );
   }
 }

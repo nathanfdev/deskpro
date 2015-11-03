@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import * as TasksActions from '../../../../Actions/tasksActions';
-import { Popup } from './Popup';
-import { Header } from './Header';
 import { FieldErrors } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/FieldErrors';
 import Immutable from 'immutable';
 import Loader from 'react-loader';
 import classNames from 'classnames';
 import {
+  Header,
+  Popup,
   FieldGroup,
   FullField,
   FloatField,
@@ -17,7 +17,7 @@ import {
   AgentsList,
   AgentTeamsList,
   DepartmentsList
-} from '../../../Form/Fields/index';
+} from '../../../Form/index';
 
 export class ProjectForm extends React.Component {
 
