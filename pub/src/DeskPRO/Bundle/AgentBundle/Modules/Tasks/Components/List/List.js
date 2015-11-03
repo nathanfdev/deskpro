@@ -3,7 +3,7 @@ import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Co
 import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 import { Controls } from './ControlBar/Controls';
 import { TaskForm } from './TaskForm';
-import { TaskCard } from './View/List/TaskCard';
+import { TaskCard } from './View/List/TaskCard/TaskCard';
 
 export class List extends React.Component {
 

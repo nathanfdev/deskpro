@@ -1,7 +1,17 @@
 import React from 'react';
-import { Card } from '../../../../../Common/Components/ListFrame/Card';
+import { Card } from '../../../../../../Common/Components/ListFrame/Card';
+import { CardLine } from './CardLine';
 
 export class TaskCard extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      expanded: false,
+      editing: false
+    };
+  }
 
   render() {
     return (
@@ -11,15 +21,15 @@ export class TaskCard extends React.Component {
           <i className="fa fa-check"/>
         </div>
 
-        <div className="dpw--single-card-mark-done" onClick={this.toggleDone}>
+        <div className="dpw--single-card-mark-done">
           <i className="fa fa-check"/>
           <span>Mark Done</span>
         </div>
 
-        <div className="dpw--card-line" onClick={this.expandDetails}>
-          <div className="dpw--card-line-left card-title">
+        <CardLine>
+          <div className="card-title">
             <div className="dpwd--card-title strikethrough">
-                <h1>Task title</h1> :
+                <h1>Task title</h1>
                 <form className="inline-form">
                   <h1 className="ignore-react-onclickoutside">
                     <input type="text" name="title" value={'Task title'}/>
@@ -28,7 +38,7 @@ export class TaskCard extends React.Component {
             </div>
           </div>
 
-          <div className="dpw--card-line-right">
+          <div>
             <div className="dpw--card-expand">
               <a href="#">Detail button text <i className="fa fa-navicon"/></a>
             </div>
@@ -38,10 +48,10 @@ export class TaskCard extends React.Component {
               </div>
             </div>
           </div>
-        </div>
+        </CardLine>
 
-        <div className="dpw--card-line">
-          <div className="dpw--card-line-left">
+        <CardLine>
+          <div>
             <span className="overdue dpwd--card-line-item">
               <i className="fa fa-calendar-o"/> Due: N/A
               <input type="text" name="due-date" className="due-date-field" disabled="disabled"/>
@@ -62,7 +72,7 @@ export class TaskCard extends React.Component {
             </span>
           </div>
 
-          <div className="dpw--card-line-right">
+          <div>
             <span className="dpwd--card-line-item">
               0 <i className="fa fa-comment"/>
             </span>
@@ -73,7 +83,7 @@ export class TaskCard extends React.Component {
               </div>
             </span>
           </div>
-        </div>
+        </CardLine>
       </Card>
     );
   }
