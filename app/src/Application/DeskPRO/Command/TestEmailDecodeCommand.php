@@ -194,7 +194,15 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
             $data['message_body']     = $this->cleanBodyText($data['message_body']);
             $data['fwd_message_body'] = $this->cleanBodyText($data['fwd_message_body']);
 
-            print_r($fwd_cutter->getData());
+            $rc            = new AgentReplyCodes($data['message_body'], $email_info['body_is_html']);
+            $reply_actions = $rc->getProperties();
+
+            if ($reply_actions) {
+                $data['message_body']  = $rc->getNewBody();
+                $data['reply_actions'] = $reply_actions;
+            }
+
+            print_r($data);
         } elseif ($input->getOption('reply-codes')) {
             $logger = new \Orb\Log\Logger();
             $ar_w   = new \Orb\Log\Writer\ArrayWriter();
