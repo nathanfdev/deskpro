@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { ProjectForm } from './ProjectForm';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
@@ -16,14 +16,6 @@ import { loadAllDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Rec
   departments: allDepartmentsSelector(state)
 }))
 export class ProjectFormContainer extends React.Component {
-
-  static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    me: PropTypes.object.isRequired,
-    agents: PropTypes.object.isRequired,
-    agentTeams: PropTypes.object.isRequired,
-    departments: PropTypes.object.isRequired
-  };
 
   constructor(props) {
     super(props);
