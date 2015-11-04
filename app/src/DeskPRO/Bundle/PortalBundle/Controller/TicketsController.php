@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\TicketTrigger;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
 use DeskPRO\Bundle\PortalBundle\Model\TicketFilter;
+use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -48,55 +49,33 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class TicketsController extends AbstractController
 {
     /**
+     * @Route("/tickets/resolved/{type}", name="portal_tickets_resolved", defaults={"type":"own", "resolved_only": true}, requirements={"type":"organization"})
      * @Route("/tickets/{type}", name="portal_tickets", defaults={"type":"own"}, requirements={"type":"organization"})
      * @Route("/tickets", name="user_tickets")
      * @Route("/tickets/organization", name="user_tickets_organization", defaults={"type":"organization"})
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
      */
-    public function indexAction(Request $request, $type)
+    public function indexAction(Request $request, $type, $resolved_only = false)
     {
-        $person   = $this->getUser();
-        $per_page = $this->getBrandSetting('portal.per_page_tickets');
+        $person = $this->getUser();
 
         // access to organization list?
         if ($type === 'organization' && !($person->organization && $person->organization_manager)) {
             return $this->redirectToRoute('portal_tickets');
         }
 
-        // create data service filters
-        $awaiting_user_sort_param = 'user_sort';
-        $awaiting_user_filter     = new TicketFilter(
-            $type,
-            TicketFilter::CATEGORY_AWAITING_USER,
-            $request->query->get($awaiting_user_sort_param, 'activity'),
-            $request->query->get($awaiting_user_sort_dir_param = 'user_direction', 'desc')
-        );
-        $awaiting_agent_filter = new TicketFilter(
-            $type,
-            TicketFilter::CATEGORY_AWAITING_AGENT,
-            $request->query->get($awaiting_agent_sort_param = 'agent_sort', 'activity'),
-            $request->query->get($awaiting_agent_sort_dir_param = 'agent_direction', 'desc')
-        );
-        $resolved_filter = new TicketFilter(
-            $type,
-            TicketFilter::CATEGORY_RESOLVED,
-            $request->query->get($resolved_sort_param = 'resolved_sort', 'activity'),
-            $request->query->get($resolved_sort_dir_param = 'resolved_direction', 'desc')
-        );
-
-        // page
-        $awaiting_user_pg_param  = 'user_page';
-        $awaiting_user_pg        = $request->query->get($awaiting_user_pg_param, 1);
-        $awaiting_agent_pg_param = 'agent_page';
-        $awaiting_agent_pg       = $request->query->get($awaiting_agent_pg_param, 1);
-        $resolved_pg_param       = 'resolved_page';
-        $resolved_pg             = $request->query->get($resolved_pg_param, 1);
-
-        // fetch data
-        $tds                  = $this->getTicketsDataService();
-        $awaiting_user_pager  = $tds->getPager($person, $awaiting_user_filter, $awaiting_user_pg, $per_page);
-        $awaiting_agent_pager = $tds->getPager($person, $awaiting_agent_filter, $awaiting_agent_pg, $per_page);
-        $resolved_pager       = $tds->getPager($person, $resolved_filter, $resolved_pg, $per_page);
+        // create ticket list tables
+        /* @var TicketListTable[] $tables */
+        $ticket_categories = $resolved_only ?
+            [
+                TicketFilter::CATEGORY_RESOLVED => $this->phrase('portal.tickets.list_status_resolved'),
+            ]
+            :
+            [
+                TicketFilter::CATEGORY_AWAITING_USER  => $this->phrase('portal.tickets.list_status_user'),
+                TicketFilter::CATEGORY_AWAITING_AGENT => $this->phrase('portal.tickets.list_status_agent'),
+            ];
+        $tables = $this->makeTicketListTables($type,  $ticket_categories, $person, $request);
 
         // BREADCRUMBS
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketList();
@@ -104,30 +83,34 @@ class TicketsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Tickets:index.html.twig',
             array(
-                'awaiting_user_tickets'           => $awaiting_user_pager,
-                'awaiting_user_tickets_pg_param'  => $awaiting_user_pg_param,
-                'awaiting_user_sort'              => $awaiting_user_filter->getSort(),
-                'awaiting_user_sort_param'        => $awaiting_user_sort_param,
-                'awaiting_user_sort_dir'          => $awaiting_user_filter->getSortDirection(),
-                'awaiting_user_sort_dir_param'    => $awaiting_user_sort_dir_param,
-                'awaiting_agent_tickets'          => $awaiting_agent_pager,
-                'awaiting_agent_tickets_pg_param' => $awaiting_agent_pg_param,
-                'awaiting_agent_sort'             => $awaiting_agent_filter->getSort(),
-                'awaiting_agent_sort_param'       => $awaiting_agent_sort_param,
-                'awaiting_agent_sort_dir'         => $awaiting_agent_filter->getSortDirection(),
-                'awaiting_agent_sort_dir_param'   => $awaiting_agent_sort_dir_param,
-                'resolved_tickets'                => $resolved_pager,
-                'resolved_tickets_pg_param'       => $resolved_pg_param,
-                'resolved_sort'                   => $resolved_filter->getSort(),
-                'resolved_sort_param'             => $resolved_sort_param,
-                'resolved_sort_dir'               => $resolved_filter->getSortDirection(),
-                'resolved_sort_dir_param'         => $resolved_sort_dir_param,
-                'type'                            => $type,
-                'person'                          => $person,
-                'breadcrumbs'                     => $breadcrumbs,
-                'page_title'                      => $this->createPageTitle()->tickets(),
+                'ticket_list_tables' => $tables,
+                'resolved_only'      => $resolved_only,
+                'open_ticket_count'  => $this->getTicketsDataService()->getTicketCount($person, 'open'),
+                'type'               => $type,
+                'person'             => $person,
+                'breadcrumbs'        => $breadcrumbs,
+                'page_title'         => $this->createPageTitle()->tickets(),
             )
         );
+    }
+
+    protected function makeTicketListTables($type, array $categories, Person $person, Request $request)
+    {
+        $tds      = $this->getTicketsDataService();
+        $per_page = $this->getBrandSetting('portal.per_page_tickets');
+        $tables   = [];
+
+        foreach ($categories as $category => $title) {
+            $tables[] = $table = new TicketListTable(
+                $category,
+                $type,
+                $title
+            );
+            $table->makeFilterWithRequest($request, $per_page);
+            $table->makePagerUsingDataService($tds, $person);
+        }
+
+        return $tables;
     }
 
     /**
