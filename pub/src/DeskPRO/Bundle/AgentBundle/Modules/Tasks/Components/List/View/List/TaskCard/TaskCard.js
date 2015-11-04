@@ -10,7 +10,7 @@ import { Comments } from './Comments';
 import { SubTasks } from './SubTasks';
 import { Project } from './Project';
 import { DueDate } from './DueDate';
-import { TicketLink } from './TicketLink';
+import { TicketLinkContainer } from './TicketLinkContainer';
 
 export class TaskCard extends React.Component {
 
@@ -26,6 +26,8 @@ export class TaskCard extends React.Component {
       selected: false,
       title: 'Task title',
       dueDate: props.task.get('date_due'),
+      project: 'Some Project',
+      ticketLink: 'Some Ticket',
       isDone: true
     };
   }
@@ -70,8 +72,8 @@ export class TaskCard extends React.Component {
         <div>
             <DueDate value={this.state.dueDate}
                      onChange={this.onChangeDate} />
-            <Project project="Some Project" />
-            <TicketLink ticket="Some ticket" />
+            {this.state.project && <Project project={this.state.project} />}
+            {this.state.ticketLink && <TicketLinkContainer ticket={this.state.ticketLink} />}
         </div>
 
         <div>
