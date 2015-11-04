@@ -82,23 +82,23 @@ INSERT INTO `feedback_comments` (`id`, `feedback_id`, `person_id`, `ip_address`,
 if (!function_exists('create_user')) {
     function create_user($fname, $lname, $email, $pass, $agent = false, $admin = false, $is_deleted = false)
     {
-        $user = new \Application\DeskPRO\Entity\Person();
+        $user             = new \Application\DeskPRO\Entity\Person();
         $user->first_name = $fname;
-        $user->last_name = $lname;
+        $user->last_name  = $lname;
         $user->setEmail($email, true);
         $user->setPassword($pass);
-        $user->is_user = true;
+        $user->is_user      = true;
         $user->is_confirmed = true;
-        $user->is_deleted = $is_deleted;
+        $user->is_deleted   = $is_deleted;
 
         if ($agent || $admin) {
             $user->is_agent_confirmed = true;
-            $user->is_agent = true;
-            $user->can_agent = true;
+            $user->is_agent           = true;
+            $user->can_agent          = true;
         }
 
         if ($admin) {
-            $user->can_admin = true;
+            $user->can_admin   = true;
             $user->can_billing = true;
             $user->can_reports = true;
         }
@@ -497,10 +497,10 @@ $em->getConnection()->executeUpdate(
 $faker = \Faker\Factory::create();
 
 // the content publisher agent guy
-$publisher = new \Application\DeskPRO\Entity\Person();
-$publisher->name = 'Corporate Content';
+$publisher            = new \Application\DeskPRO\Entity\Person();
+$publisher->name      = 'Corporate Content';
 $publisher->can_agent = true;
-$publisher->is_agent = true;
+$publisher->is_agent  = true;
 $publisher->addEmailAddressString('content.publisher@deskprodemo.com');
 $publisher->setPassword('publisher');
 
@@ -508,7 +508,7 @@ $em->persist($publisher);
 $em->flush($publisher);
 
 // a regular dude
-$person = new \Application\DeskPRO\Entity\Person();
+$person       = new \Application\DeskPRO\Entity\Person();
 $person->name = 'Joe Kool';
 $person->addEmailAddressString('joe@deskprodemo.com');
 $person->setPassword('joe');
@@ -520,7 +520,7 @@ $em->flush($person);
 // articles
 //////////////////////////////////////////////////////////////
 
-$ac = new \Application\DeskPRO\Entity\ArticleCategory();
+$ac        = new \Application\DeskPRO\Entity\ArticleCategory();
 $ac->title = 'Germany Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
@@ -528,14 +528,14 @@ $em->persist($ac);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\Article();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
     $a->setCategories(array($ac));
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
     $em->persist($a);
 }
 
-$ac = new \Application\DeskPRO\Entity\ArticleCategory();
+$ac        = new \Application\DeskPRO\Entity\ArticleCategory();
 $ac->title = 'Finland Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
@@ -543,14 +543,14 @@ $em->persist($ac);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\Article();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
     $a->setCategories(array($ac, $em->getRepository('DeskPRO:ArticleCategory')->find(1)));
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
     $em->persist($a);
 }
 
-$ac = new \Application\DeskPRO\Entity\ArticleCategory();
+$ac        = new \Application\DeskPRO\Entity\ArticleCategory();
 $ac->title = 'Japan Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
@@ -558,7 +558,7 @@ $em->persist($ac);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\Article();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
     $a->setCategories(array($ac));
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -569,7 +569,7 @@ for ($i = 0; $i < 15; ++$i) {
 // news
 //////////////////////////////////////////////////////////////
 
-$ac = new \Application\DeskPRO\Entity\NewsCategory();
+$ac        = new \Application\DeskPRO\Entity\NewsCategory();
 $ac->title = 'Canada Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
@@ -577,14 +577,14 @@ $em->persist($ac);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\News();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
     $em->persist($a);
 }
 
-$ac = new \Application\DeskPRO\Entity\NewsCategory();
+$ac        = new \Application\DeskPRO\Entity\NewsCategory();
 $ac->title = 'U.S. Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
@@ -592,7 +592,7 @@ $em->persist($ac);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\News();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -604,7 +604,7 @@ $ac = $em->getRepository('DeskPRO:NewsCategory')->find(1);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\News();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -621,27 +621,27 @@ if (!function_exists('make_blob')) {
         $storage = new \Application\DeskPRO\BlobStorage\DeskproBlobStorage($em);
 
         $blob = $storage->createBlobRecordFromFile(
-            realpath(__DIR__ . '/../../../../../web/images/dp-logo-130.png'),
+            realpath(__DIR__.'/../../../../../web/images/dp-logo-130.png'),
             'dp-logo-130.png',
             'image/png'
         );
 
-        $blob->authcode = rand(0, 18) . rand(0, 18) . rand(0, 18) . rand(0, 18) . rand(0, 18) . rand(0, 18);
+        $blob->authcode = rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18);
 
         return $blob;
     }
 }
 
-$ac = new \Application\DeskPRO\Entity\DownloadCategory();
+$ac        = new \Application\DeskPRO\Entity\DownloadCategory();
 $ac->title = 'Canada Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
 
 for ($i = 0; $i < 15; ++$i) {
     $blob = make_blob($em);
-    $a = new \Application\DeskPRO\Entity\Download();
+    $a    = new \Application\DeskPRO\Entity\Download();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -649,16 +649,16 @@ for ($i = 0; $i < 15; ++$i) {
     $em->persist($a);
 }
 
-$ac = new \Application\DeskPRO\Entity\DownloadCategory();
+$ac        = new \Application\DeskPRO\Entity\DownloadCategory();
 $ac->title = 'U.S. Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
 
 for ($i = 0; $i < 15; ++$i) {
     $blob = make_blob($em);
-    $a = new \Application\DeskPRO\Entity\Download();
+    $a    = new \Application\DeskPRO\Entity\Download();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -670,9 +670,9 @@ $ac = $em->getRepository('DeskPRO:DownloadCategory')->find(1);
 
 for ($i = 0; $i < 15; ++$i) {
     $blob = make_blob($em);
-    $a = new \Application\DeskPRO\Entity\Download();
+    $a    = new \Application\DeskPRO\Entity\Download();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
+    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -719,7 +719,7 @@ if (!function_exists('rand_fb_status_pair')) {
 for ($i = 0; $i < 30; ++$i) {
     $a = new \Application\DeskPRO\Entity\Feedback();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(750) . '<br><br>' . $faker->text(1000));
+    $a->setContent($faker->text(750).'<br><br>'.$faker->text(1000));
     $a->setCategory($DEFAULT_IDEA_CAT);
     $fbinfo = rand_fb_status_pair($em);
     $a->setStatus($fbinfo['status']);
@@ -731,7 +731,7 @@ for ($i = 0; $i < 30; ++$i) {
 for ($i = 0; $i < 30; ++$i) {
     $a = new \Application\DeskPRO\Entity\Feedback();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(750) . '<br><br>' . $faker->text(1000));
+    $a->setContent($faker->text(750).'<br><br>'.$faker->text(1000));
     $a->setCategory($FEEDBACK_BUG);
     $fbinfo = rand_fb_status_pair($em);
     $a->setStatus($fbinfo['status']);
@@ -745,7 +745,7 @@ $ac = $em->getRepository('DeskPRO:DownloadCategory')->find(1);
 for ($i = 0; $i < 30; ++$i) {
     $a = new \Application\DeskPRO\Entity\Feedback();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(750) . '<br><br>' . $faker->text(1000));
+    $a->setContent($faker->text(750).'<br><br>'.$faker->text(1000));
     $a->setCategory($FEEDBACK_FEATURE);
     $fbinfo = rand_fb_status_pair($em);
     $a->setStatus($fbinfo['status']);
@@ -764,7 +764,7 @@ foreach (array('default', 'foo', 'bar', 'baz') as $type) {
     for ($i = 1; $i <= 10; ++$i) {
         $a = new \DeskPRO\Bundle\AppBundle\Entity\SandboxWidget();
         $a->setType($type);
-        $a->setName(ucfirst($type) . ' ' . $i);
+        $a->setName(ucfirst($type).' '.$i);
         $a->setInventory(5);
         $em->persist($a);
     }
@@ -865,7 +865,7 @@ $em->getConnection()->executeUpdate(
     "
 REPLACE INTO `ticket_layouts` (`id`, `department_id`, `is_enabled`, `user_layout`, `agent_layout`, `date_updated`)
 VALUES
-	(1, NULL, 1, '{\"@CLASS\":\"Application\\\\\\\\DeskPRO\\\\\\\\TicketLayout\\\\\\\\Layout\",\"@DATA\":{\"version\":1,\"fields\":[{\"version\":1,\"field_type\":\"department\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"subject\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"priority\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"category\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"product\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"1\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"2\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"3\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"4\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"5\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"6\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"7\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"8\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"17\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"25\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"34\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"product\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"category\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"priority\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"message\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"user_email\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"attach\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}}]}}', '{\"@CLASS\":\"Application\\\\\\\\DeskPRO\\\\\\\\TicketLayout\\\\\\\\Layout\",\"@DATA\":{\"version\":1,\"fields\":[{\"version\":1,\"field_type\":\"department\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"subject\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"1\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"2\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"3\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"4\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"5\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"6\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"7\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"8\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"17\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"25\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"34\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"message\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"user_email\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}}]}}', '2015-10-29 14:51:32');
+	(1, NULL, 1, '{\"@CLASS\":\"Application\\\\\\\\DeskPRO\\\\\\\\TicketLayout\\\\\\\\Layout\",\"@DATA\":{\"version\":1,\"fields\":[{\"version\":1,\"field_type\":\"department\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"user_name_and_email\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"subject\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"priority\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"category\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"product\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"1\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"2\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"3\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"4\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"5\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"6\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"7\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"8\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"17\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"25\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"34\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"product\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"category\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"priority\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"message\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"user_email\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"attach\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}}]}}', '{\"@CLASS\":\"Application\\\\\\\\DeskPRO\\\\\\\\TicketLayout\\\\\\\\Layout\",\"@DATA\":{\"version\":1,\"fields\":[{\"version\":1,\"field_type\":\"department\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"subject\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"1\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"2\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"3\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"4\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"5\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"6\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"7\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"8\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"17\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"25\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"ticket_field\",\"field_id\":\"34\",\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"value\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"message\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}},{\"version\":1,\"field_type\":\"user_email\",\"field_id\":null,\"options\":{\"criteria\":null,\"on_newticket\":true,\"on_viewticket\":true,\"on_viewticket_mode\":\"always\",\"on_editticket\":true}}]}}', '2015-10-29 14:51:32');
 
 "
 );
@@ -892,5 +892,17 @@ VALUES
 	(4, 'Workflow 1', 10),
 	(5, 'Workflow 2', 20),
 	(6, 'Workflow 3', 30);
+"
+);
+
+$em->getConnection()->executeUpdate(
+    "
+INSERT INTO `department_permissions` (`department_id`, `usergroup_id`, `person_id`, `app`, `name`, `value`)
+VALUES
+	(1, 1, NULL, 'tickets', 'full', '1'),
+	(2, 1, NULL, 'tickets', 'full', '1'),
+	(3, 1, NULL, 'chat', 'full', '1'),
+	(4, 1, NULL, 'chat', 'full', '1');
+
 "
 );
