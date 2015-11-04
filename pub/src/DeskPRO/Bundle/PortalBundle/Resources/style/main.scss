@@ -7705,6 +7705,10 @@ input[type="text"], input[type="email"], input[type="password"], textarea {
   }
 }
 
+.email-present {
+  border: 1px dashed $form-border-color;
+}
+
 textarea {
   min-height: 70px;
 }

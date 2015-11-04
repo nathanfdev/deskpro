@@ -3,26 +3,43 @@
 {# Basic structure #}
 
 {%- block form_row -%}
-    <div class="column-sixth">
+    {% set root_and_not_hidden = has_root_parent and not fully_hidden %}
+    {% if root_and_not_hidden %}
+    <div class="column-half">
         <div class="bucket{% if not valid %} error{% endif %}">
+    {% endif %}
             {% if not (checkbox_label is defined and checkbox_label) %}
                 {{- form_label(form, null, {'label_attr': {'class': 'title'}}) -}}
             {% endif %}
             {{- form_widget(form) -}}
             {{- form_errors(form) -}}
+    {% if root_and_not_hidden %}
         </div>
     </div>
+    {% endif %}
 
-    {% if form.vars.help %}
+    {% if root_and_not_hidden and help %}
         <div class="column-third omega">
-            <div>
-                <div class="form-help">
-                    <p>{{ form.vars.help }}</p>
-                </div>
+            <div class="form-help">
+                <p>{{ help }}</p>
             </div>
         </div>
     {% endif %}
 {%- endblock form_row -%}
+
+{%- block deskpro_combined_type_row -%}
+    <div class="column-half">
+        <div class="bucket">
+            {{ form_row(form.children|first) }}
+        </div>
+    </div>
+
+    <div class="column-half omega">
+        <div class="bucket">
+            {{ form_row(form.children|last) }}
+        </div>
+    </div>
+{%- endblock -%}
 
 {% block form_errors -%}
     {% if errors|length > 0 -%}
@@ -31,6 +48,29 @@
         {%- endfor -%}
     {%- endif %}
 {%- endblock form_errors %}
+
+{# Some of these "custom" compound types would normally get the outer decoration (bucket, cols, etc) twice #}
+{# so with this, we don't include them twice #}
+{#{% block deskpro_custom_data_row %}#}
+    {#{% if not (checkbox_label is defined and checkbox_label) %}#}
+        {#{{- form_label(form, null, {'label_attr': {'class': 'title'}}) -}}#}
+    {#{% endif %}#}
+    {#{% for child in form.children %}#}
+        {#{{ form_row(child) }}#}
+    {#{% endfor %}#}
+{#{% endblock %}#}
+{#{% block deskpro_custom_data_person_row %}#}
+    {#{{ block('deskpro_custom_data_row') }}#}
+{#{% endblock %}#}
+{#{% block deskpro_custom_data_ticket_row %}#}
+    {#{{ block('deskpro_custom_data_row') }}#}
+{#{% endblock %}#}
+{#{% block deskpro_custom_data_feedback_row %}#}
+    {#{{ block('deskpro_custom_data_row') }}#}
+{#{% endblock %}#}
+{#{% block deskpro_custom_data_organization_row %}#}
+    {#{{ block('deskpro_custom_data_row') }}#}
+{#{% endblock %}#}
 
 
 {# Date and Time #}
@@ -141,12 +181,16 @@
     <div {{ block('widget_container_attributes') }}>
         {% set count = form|length %}
         {% if count > 1 %}
-            {%- for child in form %}
-                {{- form_widget(child) -}}
-                {{- form_label(child) -}}<br>
-            {% endfor -%}
+            <div class="dp-choice-widget-group email-present">
+                {%- for child in form %}
+                    <div class="radio-button">
+                        {{- form_widget(child) -}}
+                        {{- form_label(child, null, { dp_no_validation_indicator: true }) -}}
+                    </div>
+                {% endfor -%}
+            </div>
         {% else %}
-            <strong>{{ person.primary_email_address }}</strong>
+                <input class="email-present" type="text" disabled="disabled" value="{{ person.primary_email_address }}" />
         {% endif %}
     </div>
 {% endblock deskpro_person_email_choice_widget %}
@@ -286,7 +330,6 @@
         </div>
     {% endspaceless %}
 {% endblock deskpro_captcha_widget %}
-
 
 {###
 HEIRARCHY

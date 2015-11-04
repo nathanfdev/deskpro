@@ -46,6 +46,7 @@ class DeskproFormExtension extends AbstractTypeExtension
             array(
                 'help'          => '',
                 'force_boolean' => false,
+                'fully_hidden'  => false,
             )
         );
     }
@@ -59,7 +60,10 @@ class DeskproFormExtension extends AbstractTypeExtension
 
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['help'] = $options['help'];
+        $view->vars['help']            = $options['help'];
+        $view->vars['is_root']         = $form->isRoot();
+        $view->vars['has_root_parent'] = $form->getParent() ? $form->getParent()->isRoot() : false;
+        $view->vars['fully_hidden']    = $options['fully_hidden'];
     }
 
     public function getExtendedType()
