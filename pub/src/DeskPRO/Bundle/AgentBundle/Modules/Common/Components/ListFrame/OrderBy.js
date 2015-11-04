@@ -11,7 +11,7 @@ export class OrderBy extends Component {
   };
 
   render() {
-    const { order, currentSortOption, toggleDropdown } = this.props;
+    const { order, currentSortOption = {label: '', icon: ''}, toggleDropdown } = this.props;
     const label = `${currentSortOption.label} (${order})`;
     return (
       <li>

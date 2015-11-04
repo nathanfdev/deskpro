@@ -528,6 +528,9 @@ class Task implements EntityInterface, NotifyPropertyChanged
         $this->labels->add($label);
     }
 
+    /**
+     * @param LabelTask $label
+     */
     public function removeLabel(LabelTask $label)
     {
         $this->labels->removeElement($label);
@@ -565,6 +568,9 @@ class Task implements EntityInterface, NotifyPropertyChanged
         return $this->assigned;
     }
 
+    /**
+     * @return ArrayCollection
+     */
     public function getDepartments()
     {
         $departments = [];
@@ -579,6 +585,9 @@ class Task implements EntityInterface, NotifyPropertyChanged
         return new ArrayCollection($departments);
     }
 
+    /**
+     * @return ArrayCollection
+     */
     public function getTeams()
     {
         $departments = [];
@@ -593,6 +602,9 @@ class Task implements EntityInterface, NotifyPropertyChanged
         return new ArrayCollection($departments);
     }
 
+    /**
+     * @return ArrayCollection
+     */
     public function getAgents()
     {
         $departments = [];

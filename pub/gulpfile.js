@@ -127,7 +127,8 @@ function getWebpackConfig(mode, isDevServer, isProd) {
       ],
       alias: {
         'invariant': 'fbjs/lib/invariant',
-        'warning': 'fbjs/lib/warning'
+        'warning': 'fbjs/lib/warning',
+        'jquery.ui': 'jquery-ui'
       }
     },
     resolveLoader: {
@@ -174,7 +175,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
             'css-loader?sourceMap!sass-loader?sourceMap&outputStyle=expanded&' +
             'includePaths[]=' + (path.resolve(__dirname, './bower_components')) + '&' +
             'includePaths[]=' + (path.resolve(__dirname, './node_modules')),
-            { "publicPath": './' }
+            { 'publicPath': './' }
           )
         }
       ],

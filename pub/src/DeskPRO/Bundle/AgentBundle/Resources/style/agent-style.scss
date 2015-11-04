@@ -2,7 +2,7 @@
 @import "raw/styles";
 @import "include";
 @import "loading/login";
-@import "global-widgets/table-view", "global-widgets/id-container", "global-widgets/timer", "global-widgets/pagination", "global-widgets/control-bar", "global-widgets/radio", "global-widgets/cards", "global-widgets/fonts";
+@import "global-widgets/table-view", "global-widgets/id-container", "global-widgets/timer", "global-widgets/pagination", "global-widgets/control-bar", "global-widgets/radio", "global-widgets/cards", "global-widgets/fonts", "global-widgets/calendar";
 @import "global-widgets/popup", "global-widgets/avatar";
 @import "global-widgets/navigation-dropdown/navigation-dropdowns";
 @import "feedback/cards";
@@ -185,6 +185,7 @@ $kanban-frame-width: 800px;
 
   .dp-list-frame {
     position: absolute;
+    z-index: 50;
     top: $window-header-height;
     left: $app-switcher-width + $nav-frame-width;
     bottom: 0;
