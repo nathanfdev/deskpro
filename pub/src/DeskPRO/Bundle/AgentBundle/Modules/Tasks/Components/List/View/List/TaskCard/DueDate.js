@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import moment from 'moment';
 import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
-import { Calendar } from './Calendar';
+import { Calendar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Calendar';
 
 export class DueDate extends React.Component {
 

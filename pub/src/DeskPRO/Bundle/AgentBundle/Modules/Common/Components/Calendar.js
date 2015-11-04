@@ -17,9 +17,7 @@ export class Calendar extends React.Component {
     $datePicker.datepicker({
       showButtonPanel: true,
       currentText: value,
-      onSelect: newDate => {
-        onChange(newDate);
-      }
+      onSelect: newDate => onChange(newDate)
     });
   }
 
