@@ -1,8 +1,6 @@
 import { createAction } from 'Ampliflux';
-import * as recordStoreActions from 'Ampliflux/common/record-store/actions';
-import { createRecordsRequest } from 'Ampliflux/common/record-store/actions';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import * as rsa from 'Ampliflux/common/record-store/actions';
 
-export const releaseLanguages = createAction('RELEASE_LANGUAGES', recordStoreActions.releaseRecords());
-export const releaseLanguagesRequest = createAction('RELEASE_LANGUAGES_REQUEST', recordStoreActions.releaseRequest());
-export const setLanguagesRequest = createAction('SET_LANGUAGES_REQUEST', recordStoreActions.setRequestRecords());
+export const releaseLanguages = createAction('RELEASE_LANGUAGES', rsa.releaseRecords());
+export const releaseLanguagesRequest = createAction('RELEASE_LANGUAGES_REQUEST', rsa.releaseRequest());
+export const setLanguagesRequest = createAction('SET_LANGUAGES_REQUEST', rsa.setRequestRecords());

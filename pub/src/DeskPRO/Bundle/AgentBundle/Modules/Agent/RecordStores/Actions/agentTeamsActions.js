@@ -1,7 +1,6 @@
 import { createAction } from 'Ampliflux';
-import * as recordStoreActions from 'Ampliflux/common/record-store/actions';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import * as rsa from 'Ampliflux/common/record-store/actions';
 
-export const releaseAgentTeams = createAction('RELEASE_AGENT_TEAMS', recordStoreActions.releaseRecords());
-export const releaseRequest = createAction('RELEASE_AGENT_TEAMS_REQUEST', recordStoreActions.releaseRequest());
-export const setAgentTeamsRequest = createAction('SET_AGENT_TEAMS_REQUEST', recordStoreActions.setRequestRecords());
+export const releaseAgentTeams = createAction('RELEASE_AGENT_TEAMS', rsa.releaseRecords());
+export const releaseRequest = createAction('RELEASE_AGENT_TEAMS_REQUEST', rsa.releaseRequest());
+export const setAgentTeamsRequest = createAction('SET_AGENT_TEAMS_REQUEST', rsa.setRequestRecords());
