@@ -418,21 +418,25 @@
 {% block cf_contextual_choice_widget %}
 	{% spaceless %}
 		{{ form_widget(form.children.value) }}
+        <script type="text/javascript">
+            function add_another_{{ form.vars.id }}(){
+                var select = document.getElementById('{{ form.children.value.vars.id }}')
+                  , select2 = document.getElementById('s2id_{{ form.children.value.vars.id }}')
+                  , input = document.getElementById('{{ form.children.custom_choice.vars.id }}')
+                  , link = document.getElementById('link_add_another_{{ form.vars.id }}')
+                  ;
+                if (select) select.style.display = 'none';
+                if (select2) select2.style.display = 'none';
+                if (input) {
+                    input.style.display = 'inline-block';
+                    input.focus();
+                }
+                link.style.display = 'none';
+                return false;
+            };
+        </script>
 		{% if form.vars.allow_edit %}
-			<a href="#" onclick="
-					{# todo: should be done in clearer way #}
-					var select = document.getElementById('{{ form.children.value.vars.id }}'),
-						select2 = document.getElementById('s2id_{{ form.children.value.vars.id }}'),
-						input = document.getElementById('{{ form.children.custom_choice.vars.id }}');
-					if (select) select.style.display = 'none';
-					if (select2) select2.style.display = 'none';
-					if (input) {
-						input.style.display = 'inline-block';
-						input.focus();
-					}
-					this.style.display = 'none';
-					return false;
-					">
+			<a id="link_add_another_{{ form.vars.id }}" href="#" onclick="add_another_{{ form.vars.id }}()">
 				Add another
 			</a>
 			{{ form_widget(form.children.custom_choice) }}
