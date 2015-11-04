@@ -9,7 +9,7 @@ import { AssignButton } from './AssignButton';
 import { Comments } from './Comments';
 import { SubTasks } from './SubTasks';
 import { Project } from './Project';
-import { Due } from './Due';
+import { DueDate } from './DueDate';
 import { TicketLink } from './TicketLink';
 
 export class TaskCard extends React.Component {
@@ -63,7 +63,7 @@ export class TaskCard extends React.Component {
     return (
       <CardLine>
         <div>
-            <Due date={task.get('date_due')} />
+            <DueDate date={task.get('date_due')} />
             <Project project="Some Project" />
             <TicketLink ticket="Some ticket" />
         </div>
