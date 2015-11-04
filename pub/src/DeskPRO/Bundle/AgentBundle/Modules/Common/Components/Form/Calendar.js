@@ -26,7 +26,7 @@ export class Calendar extends React.Component {
   }
 
   componentWillUnmount() {
-    this.getInput().destroy();
+    this.getInput().datepicker('destroy');
   }
 
   getInput() {
