@@ -1320,11 +1320,28 @@ $search-btn-height: $search-height - 24;
     left: 12px;
     background: #fafafa;
     border: 1px solid #dedede;
-    border-top: 3px solid #3d77b6;
+    // border-top: 3px solid #3d77b6;
+    padding-top: 3px;
     z-index: 1999;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
-
     min-width: 600px;
+
+    &:before, &:after {
+      content: "";
+      position: absolute;
+      top: 0px;
+      height: 3px;
+      background: #3d77b6;
+      width: 60%;
+    }
+
+    &:before {
+      left: -1px;
+    }
+
+    &:after {
+      right: -1px;
+    }
 
     .search-result-collection {
       padding: 10px 20px;
