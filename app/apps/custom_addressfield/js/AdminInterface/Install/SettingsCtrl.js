@@ -20,7 +20,17 @@ define(function () {
     Api.sendGet('/apps/packages/custom_addressfield/get-fields').then(
       function (res) {
         $scope.definitions.custom_field.options = res.data.fields;
-        $scope.asset = res.data.url + 'file.php/apps/custom_addressfield/js/UserInterface/test.js';
+        var $els = $('<tag></tag>');
+
+        [
+          'apps/custom_addressfield/js/vendor/dawa_autocomplete.js',
+          'apps/custom_addressfield/js/UserInterface/CustomAdds.js'
+        ].forEach(function(el){
+            $els.append($('<script></script>').attr('src', res.data.url + 'file.php/' + el));
+          });
+
+        $scope.assets = $els.html();
+
         $scope.Ctrl.stopSpinner('loadingFields');
       },
       function (res) {
