@@ -30,7 +30,7 @@ export const applyFilterEditing = createAction(
 
 export const initialLoad = createAction(
   'TICKETS_NAV_INITIAL_LOAD',
-  () => dispatch =>  new Promise(
+  () => dispatch => new Promise(
     resolve => {
       const batch = 'DP_API/batch'
         + '?get[filterSetsCount]=DP_API/ticket_filter_sets/all/counts'

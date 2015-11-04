@@ -2,7 +2,7 @@ import { createAction } from 'Ampliflux';
 import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 
 import * as widgetActions from '../RecordStores/Actions/widgetActions';
-import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
+//import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
 
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 
@@ -17,7 +17,7 @@ export const viewFilter = createAction('EG_WIDGET_LOAD_FILTER', (params) => disp
   });
 
   // For the sake of example, imagine we also needed to load this other data
-  const p2 = dispatch(loadAllAgents());
+  //const p2 = dispatch(loadAllAgents());
 
   return Promise.all([p1, p2]);
 });

@@ -4,7 +4,7 @@ import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 
 export const releasePeople = createAction('RELEASE_PEOPLE', recordStoreActions.releaseRecords());
 export const releasePeopleRequest = createAction('RELEASE_PEOPLE_REQUEST', recordStoreActions.releaseRequest());
-export const setPeopleRequest = createAction('SET_PEOPLE', recordStoreActions.setRequestRecords());
+export const setPeopleRequest = createAction('SET_PEOPLE_REQUEST', recordStoreActions.setRequestRecords());
 export const loadPeople = createAction(
   'LOAD_PEOPLE',
   recordStoreActions.requestRecords(
