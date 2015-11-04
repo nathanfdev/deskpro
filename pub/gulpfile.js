@@ -175,7 +175,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
             'css-loader?sourceMap!sass-loader?sourceMap&outputStyle=expanded&' +
             'includePaths[]=' + (path.resolve(__dirname, './bower_components')) + '&' +
             'includePaths[]=' + (path.resolve(__dirname, './node_modules')),
-            { "publicPath": './' }
+            { 'publicPath': './' }
           )
         }
       ],
