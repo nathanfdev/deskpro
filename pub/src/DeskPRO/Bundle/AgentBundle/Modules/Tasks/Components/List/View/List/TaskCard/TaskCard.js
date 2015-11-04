@@ -25,6 +25,7 @@ export class TaskCard extends React.Component {
       expanded: false,
       selected: false,
       title: 'Task title',
+      dueDate: props.task.get('date_due'),
       isDone: true
     };
   }
@@ -54,7 +55,9 @@ export class TaskCard extends React.Component {
   };
 
   onChangeDate = value => {
-    console.log(value);
+    this.setState({
+      dueDate: value
+    });
   };
 
   isMinimized() {
@@ -62,12 +65,10 @@ export class TaskCard extends React.Component {
   }
 
   renderDetails() {
-    const { task } = this.props;
-
     return (
       <CardLine>
         <div>
-            <DueDate value={task.get('date_due')}
+            <DueDate value={this.state.dueDate}
                      onChange={this.onChangeDate} />
             <Project project="Some Project" />
             <TicketLink ticket="Some ticket" />
