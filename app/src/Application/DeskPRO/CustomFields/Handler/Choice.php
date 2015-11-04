@@ -212,11 +212,14 @@ class Choice extends HandlerAbstract
             ('agent' === DP_INTERFACE && $this->field_def->getOption('agent_required'))
         );
 
-        $attr = array(
-            'data-map'          => json_encode($root),
-            'data-custom-field' => 'choice-'.($this->expanded ? 'expanded' : 'collapsed').($this->multiple ? '-multiple' : null),
-            'data-max-depth'    => $max_depth,
-        );
+        $attr                      = $this->field_def->getOption('attr', array());
+        $attr['data-map']          = json_encode($root);
+        $attr['data-custom-field'] = 'choice-'.($this->expanded ? 'expanded' : 'collapsed').($this->multiple ? '-multiple' : null);
+        $attr['data-max-depth']    = $max_depth;
+
+        if ($class = $this->field_def->getOption('custom_css_classname')) {
+            $attr['class'] = @$attr['class'].' '.$class;
+        }
 
         if (!$this->multiple) {
             // turns off legacy select2 handler
