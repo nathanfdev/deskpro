@@ -9,7 +9,10 @@ import { loadPeople as rsLoadPeople, releasePeopleRequest as rsReleasePeopleRequ
   from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { loadOrganizations as rsLoadOrganizations, releaseOrganizationsRequest as rsReleaseOrganizationsRequest }
   from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/organizationsActions';
+import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 
+// ---------------------------------------------------------------------------------------------------------------------
+// Public
 
 export const RECORD_STORE_REQUEST_ID = 'tickets_nav';
 
@@ -31,18 +34,30 @@ export const applyFilterEditing = createAction(
 
 export const initialLoad = createAction(
   'TICKETS_NAV_INITIAL_LOAD',
-  () => dispatch => {
-    dispatch(loadFilterSetsCount());
-    dispatch(loadFilterSets());
-    dispatch(loadLabels());
-    dispatch(loadStarsCount());
-    dispatch(loadStars());
+  () => dispatch =>  new Promise(
+    resolve => {
+      const batch = 'DP_API/batch'
+        + '?get[filterSetsCount]=DP_API/ticket_filter_sets/all/counts'
+        + '&get[filterSets]=DP_API/ticket_filter_sets'
+        + '&get[filters]=DP_API/ticket_filters'
+        + '&get[labels]=DP_API/ticket_labels'
+        + '&get[starsCount]=DP_API/ticket_stars_count'
+        + '&get[stars]=DP_API/ticket_stars'
+      ;
+      DpApi.sendGet(batch).success(({responses}) => {
+        const payload = flattenBatchResponses(responses);
+        payload.starsCount = payload.starsCount.nested;
+        resolve(payload);
+        loadPersonAndOrganizationIds(payload.filterSetsCount, dispatch);
+      });
 
-    dispatch(loadAllDepartments());
-    dispatch(loadAllAgents());
-    dispatch(loadAllAgentTeams());
-    dispatch(loadAll());
-  }
+      // @todo move to app bootstrap
+      dispatch(loadAllDepartments());
+      dispatch(loadAllAgents());
+      dispatch(loadAllAgentTeams());
+      dispatch(loadAll());
+    }
+  )
 );
 
 export const unload = createAction(
@@ -53,31 +68,8 @@ export const unload = createAction(
   }
 );
 
-/**
- * Load all filter sets counts
- */
-const loadFilterSetsCount = createAction(
-  'TICKETS_NAV_LOAD_FILTER_SETS_COUNT',
-  () => dispatch => new Promise(resolve => DpApi.sendGet('DP_API/ticket_filter_sets/all/counts').success(
-    response => {
-      resolve(response.data);
-      loadPersonAndOrganizationIds(response.data, dispatch);
-    }
-  ))
-);
-
-/**
- * Load all filter sets together with filters
- */
-const loadFilterSets = createAction(
-  'TICKETS_NAV_LOAD_FILTER_SETS',
-  () => new Promise(resolve =>
-    DpApi.sendGet('DP_API/ticket_filter_sets?include=ticket_filter').success(response => resolve({
-      filterSets: response.data,
-      filters: Object.values(response.linked.ticket_filter)
-    }))
-  )
-);
+// ---------------------------------------------------------------------------------------------------------------------
+// Private
 
 /**
  * Load count of a single filter
@@ -94,12 +86,15 @@ const loadFilterCount = createAction(
   )
 );
 
-const markFilterLoading = createAction('TICKETS_NAV_MARK_FILTER_AS_LOADING');
+const markFilterLoading = createAction(
+  'TICKETS_NAV_MARK_FILTER_AS_LOADING'
+);
 
 const loadPeople = createAction(
   'TICKETS_NAV_LOAD_PEOPLE',
   ids => dispatch => dispatch(rsLoadPeople(RECORD_STORE_REQUEST_ID, ids))
 );
+
 const releasePeople = createAction(
   'TICKETS_NAV_RELEASE_PEOPLE',
   () => dispatch => dispatch(rsReleasePeopleRequest(RECORD_STORE_REQUEST_ID))
@@ -109,29 +104,10 @@ const loadOrganizations = createAction(
   'TICKETS_NAV_LOAD_ORGANIZATIONS',
   ids => dispatch => dispatch(rsLoadOrganizations(RECORD_STORE_REQUEST_ID, ids))
 );
+
 const releaseOrganizations = createAction(
   'TICKETS_NAV_RELEASE_ORGANIZATIONS',
   () => dispatch => dispatch(rsReleaseOrganizationsRequest(RECORD_STORE_REQUEST_ID))
-);
-
-const loadLabels = createAction(
-  'TICKETS_NAV_LOAD_LABELS',
-  () => new Promise(resolve =>
-    DpApi.sendGet('DP_API/ticket_labels').success(response => resolve(response.data))
-  )
-);
-
-const loadStarsCount = createAction(
-  'TICKETS_NAV_LOAD_STARS_COUNT',
-  () => new Promise(resolve =>
-    DpApi.sendGet('DP_API/ticket_stars_count').success(response => resolve(response.data.nested))
-  )
-);
-const loadStars = createAction(
-  'TICKETS_NAV_LOAD_STARS',
-  () => new Promise(resolve =>
-    DpApi.sendGet('DP_API/ticket_stars').success(response => resolve(response.data))
-  )
 );
 
 /**

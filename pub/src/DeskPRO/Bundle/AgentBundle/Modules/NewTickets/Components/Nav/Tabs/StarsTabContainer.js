@@ -5,7 +5,7 @@ import { starsCountSelector, starNamesSelector, isDoneSelector } from '../../../
 import { StarsTab } from './StarsTab';
 
 @connect(state => ({
-  isDone: isDoneSelector('starsCount')(state) && isDoneSelector('stars')(state),
+  isDone: isDoneSelector(state),
   starsCount: starsCountSelector(state),
   starNames: starNamesSelector(state)
 }))

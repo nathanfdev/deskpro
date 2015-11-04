@@ -32,14 +32,12 @@ export const starsCountSelector = createSelector(
   state => state.get('starsCount')
 );
 
-export const isDoneSelector = function(request) {
-  return createSelector(
-    stateSelector,
-    state => state.getIn(['done', request])
-  );
-};
+export const isDoneSelector = createSelector(
+  stateSelector,
+  state => state.getIn(['async', 'done'])
+);
 
 export const loadingFilterIdsSelector = createSelector(
   stateSelector,
-  state => state.get('filtersLoading')
+  state => state.getIn(['async', 'filtersLoading'])
 );

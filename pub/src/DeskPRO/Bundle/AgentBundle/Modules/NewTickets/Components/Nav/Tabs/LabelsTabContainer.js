@@ -5,7 +5,7 @@ import { labelsSelector, isDoneSelector } from '../../../Selectors/nav';
 import { LabelsTab } from './LabelsTab';
 
 @connect(state => ({
-  isDone: isDoneSelector('labels')(state),
+  isDone: isDoneSelector(state),
   labels: labelsSelector(state)
 }))
 export class LabelsTabContainer extends Component {

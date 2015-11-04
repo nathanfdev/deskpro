@@ -5,7 +5,7 @@ import { filterSetsSelector, filterSetsCountSelector, isDoneSelector } from '../
 import { FiltersTab } from './FiltersTab';
 
 @connect(state => ({
-  isDone: isDoneSelector('filterSetsCount')(state) && isDoneSelector('filterSets')(state),
+  isDone: isDoneSelector(state),
   filterSetsCount: filterSetsCountSelector(state),
   filterSets: filterSetsSelector(state)
 }))
