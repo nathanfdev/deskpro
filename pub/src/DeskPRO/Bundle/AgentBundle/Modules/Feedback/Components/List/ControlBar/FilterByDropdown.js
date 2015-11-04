@@ -4,8 +4,8 @@ import Moment from 'moment';
 import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import {FilterItem} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/FilterItem';
 import {DateTimePicker} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/DateTimePicker';
-import {ChoiceMenu} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/ChoiceMenu';
 import { setFilterValue, loadFeedbackList } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
+import { loadCommentsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
 import { TypesCollectionContainer } from './TypesCollectionContainer';
 import { CategoriesCollectionContainer } from './CategoriesCollectionContainer';
 import { StatusesCollectionContainer } from './StatusesCollectionContainer';
@@ -13,9 +13,11 @@ import { StatusesCollectionContainer } from './StatusesCollectionContainer';
 const FilterByDropdown = React.createClass({
 
   propTypes: {
+    navItem: PropTypes.object,
     statuses: PropTypes.object.isRequired,
     types: PropTypes.object.isRequired,
     filterParams: PropTypes.object.isRequired,
+    isComments: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
     toggleDropdown: PropTypes.func.isRequired
   },
@@ -43,16 +45,24 @@ const FilterByDropdown = React.createClass({
   },
 
   submitFilter(type, model) {
-    const {dispatch} = this.props;
+    const {dispatch, isComments} = this.props;
     dispatch(setFilterValue({ filter: type, value: model }));
-    dispatch(loadFeedbackList());
+    if (isComments) {
+      dispatch(loadCommentsList());
+    } else {
+      dispatch(loadFeedbackList());
+    }
     // this.props.toggleDropdown();
   },
 
   resetFilter(type) {
-    const {dispatch} = this.props;
+    const {dispatch, isComments} = this.props;
     dispatch(setFilterValue({ filter: type, value: null }));
-    dispatch(loadFeedbackList());
+    if (isComments) {
+      dispatch(loadCommentsList());
+    } else {
+      dispatch(loadFeedbackList());
+    }
   },
 
   checkIfDateCreatedFilterIsActive() {
@@ -64,22 +74,27 @@ const FilterByDropdown = React.createClass({
 
   checkIfTypesFilterIsActive() {
     const {filterParams} = this.props;
-    if (filterParams && filterParams.get('category')) {
+    if (filterParams && filterParams.get('category') && filterParams.get('category').size > 0) {
       return true;
     }
   },
 
   checkIfCategoriesFilterIsActive() {
     const {filterParams} = this.props;
-    if (filterParams && filterParams.get('custom_category')) {
+    if (filterParams && filterParams.get('custom_category') && filterParams.get('custom_category').size > 0) {
       return true;
     }
   },
 
   checkIfStatusesFilterIsActive() {
     const {filterParams} = this.props;
-    if (filterParams && (filterParams.get('status') || filterParams.get('status_category'))) {
-      return true;
+    if (filterParams) {
+      if (filterParams.get('status') && filterParams.get('status').size > 0) {
+        return true;
+      }
+      if (filterParams.get('status_category') && filterParams.get('status_category').size > 0) {
+        return true;
+      }
     }
   },
 
@@ -143,14 +158,71 @@ const FilterByDropdown = React.createClass({
     }
   },
 
-  render() {
-    const isDateCreatedFilterActive = this.checkIfDateCreatedFilterIsActive();
-    const initialFromTo = this.getInitialFromTo(isDateCreatedFilterActive);
-    const isTypesFilterActive = this.checkIfTypesFilterIsActive();
-    const isCategoriesFilterActive = this.checkIfCategoriesFilterIsActive();
-    const isStatusesFilterActive = this.checkIfStatusesFilterIsActive();
-    return (
-      <Menu>
+  renderStatusItemContent(active) {
+    if (active) {
+      let chosenValues = [];
+      const {filterParams} = this.props;
+      if (filterParams.get('status') && filterParams.get('status').size > 0) {
+        chosenValues = filterParams.get('status').toJS();
+      } else if (filterParams.get('status_category') && filterParams.get('status_category').size > 0) {
+        chosenValues = filterParams.get('status_category').toJS();
+      }
+      if (chosenValues.length > 0) {
+        return (
+          <span className="dpw-navigation-dropdown-item-inline-info">{chosenValues[0]}</span>
+        );
+      }
+    }
+  },
+
+  renderStatusItemExtraContent(active) {
+    if (active) {
+      let chosenValues = [];
+      const {filterParams} = this.props;
+      if (filterParams.get('status')) {
+        chosenValues = filterParams.get('status').toJS();
+      }
+      if (filterParams.get('status_category')) {
+        chosenValues = chosenValues.concat(filterParams.get('status_category').toJS());
+      }
+      const size = chosenValues.length;
+      if (size > 1) {
+        return (
+          <span className="dpw-navigation-dropdown-item-inline-info dpw-navigation-dropdown-item-inline-info-extra">
+            +{size - 1}
+          </span>
+        );
+      }
+    }
+  },
+
+  renderCategoryFilterItem(navItem) {
+    if (!navItem || !navItem.toJS().hasOwnProperty('custom_category')) {
+      const isCategoriesFilterActive = this.checkIfCategoriesFilterIsActive();
+
+      return (
+        <FilterItem
+          filterType="custom_category"
+          isActive={isCategoriesFilterActive}
+          resetFilter={this.resetFilter}
+          icon="calendar-o"
+          label="Category">
+          {this.renderCategoryItemContent(isCategoriesFilterActive)}
+          {this.renderCategoryItemExtraContent(isCategoriesFilterActive)}
+          <Menu>
+            <CategoriesCollectionContainer />
+          </Menu>
+        </FilterItem>
+      );
+    }
+    return (<div/>);
+  },
+
+  renderTypeFilterItem(navItem) {
+    if (!navItem || !navItem.toJS().hasOwnProperty('category')) {
+      const isTypesFilterActive = this.checkIfTypesFilterIsActive();
+
+      return (
         <FilterItem
           filterType="category"
           isActive={isTypesFilterActive}
@@ -164,30 +236,42 @@ const FilterByDropdown = React.createClass({
             <TypesCollectionContainer />
           </Menu>
         </FilterItem>
+      );
+    }
+    return (<div/>);
+  },
+
+  renderStatusFilterItem(navItem) {
+    if (!navItem || (!navItem.toJS().hasOwnProperty('status') && !navItem.toJS().hasOwnProperty('status_category'))) {
+      const isStatusesFilterActive = this.checkIfStatusesFilterIsActive();
+
+      return (
         <FilterItem
           filterType="status"
           isActive={isStatusesFilterActive}
           resetFilter={this.resetFilter}
           icon="calendar-o"
           label="Status">
+          {this.renderStatusItemContent(isStatusesFilterActive)}
+          {this.renderStatusItemExtraContent(isStatusesFilterActive)}
           <Menu>
-            <ChoiceMenu title="Feedback Status">
-              <StatusesCollectionContainer/>
-            </ChoiceMenu>
+            <StatusesCollectionContainer/>
           </Menu>
         </FilterItem>
-        <FilterItem
-          filterType="custom_category"
-          isActive={isCategoriesFilterActive}
-          resetFilter={this.resetFilter}
-          icon="calendar-o"
-          label="Category">
-          {this.renderCategoryItemContent(isCategoriesFilterActive)}
-          {this.renderCategoryItemExtraContent(isCategoriesFilterActive)}
-          <Menu>
-            <CategoriesCollectionContainer />
-          </Menu>
-        </FilterItem>
+      );
+    }
+    return (<div/>);
+  },
+
+  render() {
+    const {navItem} = this.props;
+    const isDateCreatedFilterActive = this.checkIfDateCreatedFilterIsActive();
+    const initialFromTo = this.getInitialFromTo(isDateCreatedFilterActive);
+    return (
+      <Menu>
+        {this.renderTypeFilterItem(navItem)}
+        {this.renderStatusFilterItem(navItem)}
+        {this.renderCategoryFilterItem(navItem)}
         <FilterItem
           filterType="date_created"
           isActive={isDateCreatedFilterActive}
@@ -224,8 +308,6 @@ const FilterByDropdown = React.createClass({
                     </div>
                   </Formsy.Form>
                 </div>
-
-
               </div>
             </div>
           </Menu>

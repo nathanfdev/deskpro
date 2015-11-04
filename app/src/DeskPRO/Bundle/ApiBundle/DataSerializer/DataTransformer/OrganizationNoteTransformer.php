@@ -29,19 +29,28 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
+namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
-use Application\DeskPRO\Entity\Organization;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use FOS\RestBundle\Controller\Annotations\Route;
+use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 
 /**
- * Class OrganizationsController.
- *
- * @Route("/organizations")
+ * Class OrganizationNoteTransformer.
  */
-class OrganizationsController extends CrudController
+class OrganizationNoteTransformer extends AbstractDataSerializerTransformer
 {
-    public static $exposeOnly = ['list', 'get'];
-    public static $entity     = Organization::class;
+    /**
+     * {@inheritdoc}
+     */
+    public function getAutomaticProperties(DataTransformerRequest $request)
+    {
+        return ['id', 'organization', 'agent', 'note'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCustomProperties(DataTransformerRequest $request)
+    {
+        return [];
+    }
 }

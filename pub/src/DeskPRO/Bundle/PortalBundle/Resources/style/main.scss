@@ -1339,6 +1339,9 @@ $search-btn-height: $search-height - 24;
 
       a:hover {
         text-decoration: none;
+        .item-name {
+          text-decoration: underline;
+        }
       }
     }
 
@@ -1784,6 +1787,7 @@ $tab-border: $divider-color;
 
 .tabs {
   margin-bottom: 20px;
+  font-size: 12px;
   ul {
     @include clearfix;
     @include blank-list;
@@ -1868,6 +1872,18 @@ $tab-border: $divider-color;
       }
     }
 
+    &.tab-active {
+      border: 1px solid $tab-border;
+      border-bottom: 1px solid rgba(255, 255, 255, 0);
+      background: $page-background;
+
+      .title { color: $button-color; }
+    }
+
+    &.tab-inactive {
+      .title { color: $text-color-lighter; }
+    }
+
     span {
       display: block;
     }
@@ -1880,7 +1896,9 @@ $tab-border: $divider-color;
   ul {
     padding-left: 0;
   }
+
   li.tab-active {
+
     .title {
       color: $text-color;
 
@@ -3847,6 +3865,8 @@ ul.kb-checkbox-extra {
 
 .flashes {
 
+  margin-top: 5px;
+
   .flash {
     position: relative;
     display: block;
@@ -4284,6 +4304,12 @@ h1.fancy-header {
         top: 2px;
         left: 3px;
       }
+
+      @media screen and (-webkit-min-device-pixel-ratio:0) {
+        i {
+          left: 2px;
+        }
+      }
     }
   }
 
@@ -4350,7 +4376,7 @@ h1.fancy-header {
 
   .quick-jump {
     background: $page-background;
-    color: $text-color;;
+    color: $text-color;
     padding: 0;
     position: relative;
     display: inline-block;
@@ -4399,17 +4425,23 @@ h1.fancy-header {
       border-bottom: 1px solid $divider-color;
       border-left: 1px solid $divider-color;
       border-right: 1px solid $divider-color;
+      font-size: 11px;
       li {
         .cat-checkbox-title {
           white-space: nowrap;
           display: block;
           width: 100%;
+          line-height: 1.2em;
+          font-weight: 400;
+
           &:hover {
             background-color: $surface-main;
           }
           input {
             display: inline-block;
             margin-right: 4px;
+            position: relative;
+            top: -1px;
           }
           a {
             display: inline-block;
@@ -4432,9 +4464,12 @@ h1.fancy-header {
 .feedback-form {
   .main-input {
     @include clearfix;
-
     margin-top: 50px;
     margin-bottom: 60px;
+
+    > div {
+      display: inline;
+    }
 
     .input, .button, span {
       display: inline-block;
@@ -4446,6 +4481,14 @@ h1.fancy-header {
 
     .deskpro-choice-widget {
       display: inline-block;
+    }
+
+    select {
+      padding: 5px;
+      display: inline-block;
+      width: 55%;
+      position: relative;
+      top: -2px;
     }
 
     .input {
@@ -4464,13 +4507,14 @@ h1.fancy-header {
     }
 
     .button {
-      width: 25%;
+      width: auto;
       border: 1px solid $button-color-secondary;
       border-bottom: none;
       background: $button-color-secondary;
       text-align: center;
       text-shadow: none;
       margin-top: 10px;
+      padding: 10px;
     }
 
     @media screen and (max-width: 760px) {
@@ -4551,7 +4595,7 @@ h1.fancy-header {
   }
 
   p {
-    font-weight: 100;
+    font-weight: 400;
     font-size: 0.95em;
   }
 
@@ -4661,7 +4705,7 @@ h1.fancy-header {
     border-left: 1px solid $divider-color;
 
     h1 {
-      font-weight: 100;
+      font-weight: 400;
       font-size: 1.3em;
 
       .text-tag {
@@ -7368,10 +7412,8 @@ body.with-agent-bar {
 .radio-button {
   position: relative;
   display: inline-block;
-  margin-top: 5px;
-  margin-right: 50px;
-  margin-bottom: 10px;
-  margin-left: 10px;
+  min-width: 125px;
+  margin: 6px 10px 6px 0px;
 
   input[type="radio"] {
     display: none;
@@ -7380,8 +7422,8 @@ body.with-agent-bar {
     &:checked + label {
       &:after {
         position: absolute;
-        top: 6px;
-        left: 16px;
+        top: 5px;
+        left: 5px;
         display: block;
         float: left;
         margin-right: 3px;
@@ -7397,13 +7439,17 @@ body.with-agent-bar {
 
   label {
     cursor: pointer;
+    &.title {
+      padding-left: 0;
+    }
 
     &:before {
       display: block;
       float: left;
       margin-right: 8px;
-      width: 19px;
-      height: 19px;
+      width: 17px;
+      height: 17px;
+      line-height: 1.3em;
       border: 2px solid $button-color;
       border-radius: 24px;
       content: "";
@@ -7455,10 +7501,10 @@ body.with-agent-bar {
 .multiselect {
   position: relative;
   margin-bottom: 10px;
+  cursor: pointer;
 
   .default {
     border: 1px solid $form-border-color;
-    cursor: pointer;
     width: 100%;
     display: block;
     padding: $form-padding-vertical $form-padding-horizontal;
@@ -7483,18 +7529,18 @@ body.with-agent-bar {
 
     display: block;
     width: 100%;
-    border: 1px solid $button-color;
 
     ul {
       @include blank-list;
       position: absolute;
-      left: 0;
+      right: 0;
       z-index: 599;
       display: block;
       width: 100%;
-      border: 1px solid $button-color;
+      border: 1px solid $form-border-color;
       max-height: 300px;
       overflow-y: auto;
+      margin: 0;
 
       a {
         display: block;
@@ -7661,6 +7707,10 @@ input[type="text"], input[type="email"], input[type="password"], textarea {
   }
 }
 
+.email-present {
+  border: 1px dashed $form-border-color;
+}
+
 textarea {
   min-height: 70px;
 }
@@ -7691,8 +7741,8 @@ form {
 
 .checkbox-container {
   display: inline-block;
-  min-width: 120px;
-  margin-left: 10px;
+  min-width: 125px;
+  margin: 6px 10px 6px 0px;
   cursor: pointer;
 }
 
@@ -7702,12 +7752,12 @@ form {
   display: inline-block;
   width: 17px;
   height: 17px;
-  line-height: 1.1em;
+  line-height: 1.3em;
   border-radius: 2px;
   vertical-align: middle;
   text-align: center;
   margin-top: -4px;
-  margin-right: 2px;
+  margin-right: 10px;
   color: #333;
   cursor: pointer;
 
@@ -7778,6 +7828,8 @@ form {
     border: 1px solid $form-border-color;
     border-radius: 2px;
     background: $page-background;
+    display: inline-block;
+    width: auto;
   }
 }
 

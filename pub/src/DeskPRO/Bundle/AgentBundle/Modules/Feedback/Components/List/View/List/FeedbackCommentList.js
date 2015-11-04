@@ -5,13 +5,13 @@ export class FeedbackCommentList extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    comments: PropTypes.array.isRequired,
+    comments: PropTypes.object.isRequired,
     toggleSelected: PropTypes.func.isRequired,
-    people: PropTypes.array.isRequired,
-    emails: PropTypes.array.isRequired,
-    feedback: PropTypes.array.isRequired,
+    people: PropTypes.object.isRequired,
+    emails: PropTypes.object.isRequired,
+    feedback: PropTypes.object.isRequired,
     massAction: PropTypes.bool.isRequired,
-    selected: PropTypes.array.isRequired
+    selected: PropTypes.object.isRequired
   };
 
   render() {

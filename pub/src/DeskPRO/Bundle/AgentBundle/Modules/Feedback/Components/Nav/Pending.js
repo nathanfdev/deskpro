@@ -25,7 +25,8 @@ export class Pending extends Component {
           <ListItemContainer
             count={commentsToReviewCount}
             label="Comments to Review"
-            onClick={commentsView.bind(this, {name: 'feedback_comments'})}
+            listOptions={ {'isComments': true, navItem: { awaiting_validation: 1 } } }
+            //onClick={commentsView.bind(this, {name: 'feedback_comments'})}
             />
         </ul>
       </Section>

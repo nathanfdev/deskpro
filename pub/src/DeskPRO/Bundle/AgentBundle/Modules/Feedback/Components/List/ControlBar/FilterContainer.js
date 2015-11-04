@@ -2,10 +2,13 @@ import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import { FilterBy } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { FilterByDropdown } from './FilterByDropdown';
+import { isCommentsSelector } from '../../../Selectors/list';
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 
 @connect(state => ({
   filterParams: state.Feedback.list.get('currentListParams').get('filters'),
+  navItem: state.Feedback.list.get('currentListParams').get('navItem'),
+  isComments: isCommentsSelector(state),
   statuses: state.Feedback.nav.get('statuses'),
   types: state.Feedback.nav.get('types')
 }))
@@ -15,6 +18,8 @@ export class FilterContainer extends Component {
   static propTypes = {
     toggleDropdown: PropTypes.func.isRequired,
     expanded: PropTypes.bool.isRequired,
+    isComments: PropTypes.bool,
+    navItem: PropTypes.object,
     dispatch: PropTypes.func.isRequired,
     statuses: PropTypes.object.isRequired,
     types: PropTypes.object.isRequired,
@@ -22,21 +27,27 @@ export class FilterContainer extends Component {
   };
 
   render() {
-    const {dispatch, expanded, toggleDropdown, filterParams, statuses, types} = this.props;
+    const {dispatch, expanded, toggleDropdown, filterParams, statuses, types, isComments, navItem} = this.props;
     let title = 'Filter By';
     let label = '';
     let filtersCounter = 0;
     if (filterParams) {
-      title += ':';
+      title = 'Filtered By:';
       if (filterParams.get('date_created')) {
         label = 'Created';
         filtersCounter++;
       }
-      if (filterParams.get('status') || filterParams.get('status_category')) {
+      if ((filterParams.get('status') && filterParams.get('status').size > 0)
+        ||
+        (filterParams.get('status_category') && filterParams.get('status_category').size > 0)) {
         label = 'Status';
         filtersCounter++;
       }
-      if (filterParams.get('category')) {
+      if (filterParams.get('category') && filterParams.get('category').size > 0) {
+        label = 'Type';
+        filtersCounter++;
+      }
+      if (filterParams.get('custom_category') && filterParams.get('custom_category').size > 0) {
         label = 'Type';
         filtersCounter++;
       }
@@ -55,6 +66,8 @@ export class FilterContainer extends Component {
                     positionAt="left bottom"
                     positionTarget={this.refs.filterButton}>
           <FilterByDropdown
+            navItem={navItem}
+            isComments={isComments}
             types={types}
             statuses={statuses}
             filterParams={filterParams}

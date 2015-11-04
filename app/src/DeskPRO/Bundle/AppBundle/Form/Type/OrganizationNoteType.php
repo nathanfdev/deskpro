@@ -29,19 +29,27 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
-use Application\DeskPRO\Entity\Organization;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use FOS\RestBundle\Controller\Annotations\Route;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
 
-/**
- * Class OrganizationsController.
- *
- * @Route("/organizations")
- */
-class OrganizationsController extends CrudController
+class OrganizationNoteType extends AbstractType
 {
-    public static $exposeOnly = ['list', 'get'];
-    public static $entity     = Organization::class;
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'task_star';
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array                $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('note', 'text');
+    }
 }

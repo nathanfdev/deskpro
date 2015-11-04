@@ -31,17 +31,37 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
-use Application\DeskPRO\Entity\Organization;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use FOS\RestBundle\Controller\Annotations\Route;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class OrganizationsController.
- *
- * @Route("/organizations")
+ * Class OrganizationsCountsController.
  */
-class OrganizationsController extends CrudController
+class OrganizationsCountsController extends BaseController
 {
-    public static $exposeOnly = ['list', 'get'];
-    public static $entity     = Organization::class;
+    /**
+     * @ApiDoc(
+     *      description="Count Organizations",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     * @Get("/organizations/counts", name="api_organizations_counts")
+     */
+    public function getCountAction()
+    {
+        $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $qb->select('count(o)')
+           ->from('DeskPRO:Organization', 'o');
+        $count = $qb->getQuery()->getSingleScalarResult();
+
+        return View::create(
+            $this->createRepresentation(Count::fromValue($count)),
+            Response::HTTP_OK
+        );
+    }
 }

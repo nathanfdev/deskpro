@@ -59,6 +59,8 @@ export const loadFeedbackList = createAction(
       const currentParams = currentListParamsSelector(getState()).toJS();
 
       let params = { ...currentParams, ...overwriteParams };
+      params.isComments = false;
+      delete params.isComments;
       dispatch(setCurrentListParams(params));
       const {navItem} = params;
       if (navItem) {

@@ -30,7 +30,7 @@ export const currentListOrderSelector = createSelector(
 
 export const isCommentsSelector = createSelector(
   stateSelector,
-    list => list.get('isComments')
+    list => list.get('currentListParams').get('isComments')
 );
 
 export const peopleSelector = createSelector(

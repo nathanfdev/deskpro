@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
@@ -76,14 +75,12 @@ class PersonTransformer extends AbstractDataSerializerTransformer
             'can_agent',
             'can_admin',
             'can_billing',
-            'is_vacation_mode',
             'disable_autoresponses',
             'disable_autoresponses_log',
             'is_confirmed',
             'is_agent_confirmed',
             'is_deleted',
             'is_disabled',
-            'importance',
             'creation_system',
             'name',
             'first_name',
@@ -96,11 +93,10 @@ class PersonTransformer extends AbstractDataSerializerTransformer
             'organization_position',
             'organization_manager',
             'timezone',
-            'phone_numbers',
             'date_created',
             'date_last_login',
             'browser',
-            'assigned_tasks', // TODO: shouldnt be here
+            'usergroups',
         ];
     }
 
@@ -117,16 +113,13 @@ class PersonTransformer extends AbstractDataSerializerTransformer
         #------------------------------
 
         $ret = [
-            'emails'            => [],
-            'validating_emails' => [],
-            'primary_email'     => [],
+            'emails'        => [],
+            'primary_email' => [],
         ];
 
         foreach ($person->getEmails() as $email) {
             if ($email->is_validated) {
                 $ret['emails'][] = $email->getEmail();
-            } else {
-                $ret['validating_emails'][] = $email->getEmail();
             }
         }
 
@@ -146,6 +139,12 @@ class PersonTransformer extends AbstractDataSerializerTransformer
         } else {
             $ret['last_seen'] = false;
         }
+
+        // Labels
+        $ret['labels'] = $person->getLabelsArray();
+
+        // Phone numbers
+        $ret['phone_numbers'] = $person->getPhoneNumbersArray();
 
         return $ret;
     }

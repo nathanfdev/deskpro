@@ -40,14 +40,28 @@ export class ChoiceMenuOption extends Component {
   static propTypes = {
     label: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
+    values: PropTypes.array,
     onClick: PropTypes.func.isRequired,
-    isActive: PropTypes.bool,
     children: PropTypes.any
   };
 
+  componentWillMount() {
+    const { values, value } = this.props;
+    this.setState({
+      isActive: values && values.indexOf(value) > -1
+    });
+  }
+
+  componentWillReceiveProps() {
+    const { values, value } = this.props;
+    this.setState({
+      isActive: values && values.indexOf(value) > -1
+    });
+  }
+
   render() {
-    const {label, value, isActive, onClick} = this.props;
-    var classes = classNames('dpw--popup-item-person', { 'active': isActive });
+    const {label, value, onClick} = this.props;
+    var classes = classNames('dpw--popup-item-person', { 'active': this.state.isActive });
 
     return (
       <li>
@@ -66,17 +80,25 @@ export class ChoiceMenuOptionGroup extends Component {
 
   static propTypes = {
     node: PropTypes.object.isRequired,
+    values: PropTypes.array,
     type: PropTypes.string.isRequired,
     onClick: PropTypes.func.isRequired
   };
 
   render() {
-    const {node, type, onClick} = this.props;
+    const {node, type, values, onClick} = this.props;
     if (node.nested) {
       return (
         <ul>
           {node.nested.map((item, index) =>
-            <ChoiceMenuOption key={index} label={item.group} type={type} value={item.group} onClick={onClick}/>)}
+            <ChoiceMenuOption
+              key={index}
+              label={item.group}
+              type={type}
+              values={values}
+              value={item.group}
+              onClick={onClick}
+              />)}
         </ul>
       );
     }

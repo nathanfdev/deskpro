@@ -33,10 +33,10 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Helpdesk;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Orb\Util\Arrays;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -53,6 +53,8 @@ class DiscoveryController extends BaseController
      */
     public function discoverAction(Request $request)
     {
+        //TODO use a model
+        //TODO use brand stack
         //$brand = $this->get('brand_stack')->getActive();
         //$helpdesk_url = rtrim($brand->getSetting('core.deskpro_url'), '/') . '/';
 
@@ -70,6 +72,107 @@ class DiscoveryController extends BaseController
 
         return View::create(
             $this->dataSerialize(new PrimitiveArray($ret)),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Used by apps when they need to know general information about a helpdesk such as which features are enabled",
+     *     statusCodes={200="Success"}
+     * )
+     * @Get("/helpdesk/agent-client/info", name="api_helpdesk_agent_client_info")
+     */
+    public function agentClientInfoAction()
+    {
+        //TODO use a model/transformer
+
+        /** @var \Application\DeskPRO\DependencyInjection\DeskproContainer $container */
+        $container = $this->container;
+
+        /** @var \Application\DeskPRO\Settings\Settings $settings */
+        $settings = $container->get('deskpro.core.settings');
+
+        /** @var \Application\DeskPRO\CustomFields\TicketFieldManager $field_manager */
+        $field_manager = $this->container->getSystemService('ticket_fields_manager');
+
+        /** @var \Application\DeskPRO\Entity\Person $me */
+        $me = $this->getUser();
+        $me->loadHelper('Agent');
+        $me->loadHelper('AgentTeam');
+        $me->loadHelper('AgentPermissions');
+        $me->loadHelper('PermissionsManager');
+
+        $data = [];
+
+        $data['settings'] = [
+            'multi_lang' => $settings->get('core.enable_languages'),
+            'helpdesk_name' => $settings->get('core.deskpro_name'),
+            'attachments' => [
+                'agents' => [
+                    'max_size'  => $settings->get('core.attach_agent_maxsize'),
+                    'whitelist' => Arrays::removeEmptyString(explode(',', $settings->get('core.attach_agent_must_exts') ?: '')) ?: null,
+                    'blacklist' => Arrays::removeEmptyString(explode(',', $settings->get('core.attach_agent_not_exts') ?: '')) ?: null
+                ]
+            ]
+        ];
+
+        $data['tickets'] = [
+            'enabled'            => $me->hasPerm('agent_tickets.use'),
+            'ref_code'           => $settings->get('core_tickets.use_ref'),
+            'archiving'          => $settings->get('core_tickets.use_archive'),
+            'field_info' => [
+                'product' => [
+                    'enabled'    => $field_manager->isProductEnabled(),
+                    'default_id' => $settings->get('core.default_prod_id') ?: null
+                ],
+                'category' => [
+                    'enabled'    => $field_manager->isCategoryEnabled(),
+                    'default_id' => $settings->get('core.default_ticket_cat') ?: null,
+                ],
+                'workflow' => [
+                    'enabled'    => $field_manager->isWorkflowEnabled(),
+                    'default_id' => $settings->get('core.default_ticket_work') ?: null,
+                ],
+                'priority' => [
+                    'enabled'    => $field_manager->isPriorityEnabled(),
+                    'default_id' => $settings->get('core.default_ticket_pri') ?: null
+                ],
+                'custom' => [
+                    'has_any' => count($field_manager->getFields()) > 0
+                ]
+            ],
+            'billing' => [
+                'enabled' => $settings->get('core_tickets.enable_billing'),
+                'currency_name' => $settings->get('core_tickets.enable_billing') ? $settings->get('core_tickets.billing_currency') : null,
+            ],
+            'timelog' => [
+                'enabled' => $settings->get('core_tickets.enable_timelog'),
+            ]
+        ];
+
+        $data['chat'] = [
+            'enabled' => $settings->get('core.apps_chat') && $me->hasPerm('agent_chat.use')
+        ];
+
+        $data['crm'] = [
+            'enabled' => $me->hasPerm('agent_people.use')
+        ];
+
+        $data['feedback'] = [
+            'enabled' => $me->hasPerm('core.apps_feedback')
+        ];
+
+        $data['publish'] = [
+            'enabled' => $me->hasPerm('core.apps_kb')
+        ];
+
+        $data['tasks'] = [
+            'enabled' => $me->hasPerm('core.apps_tasks')
+        ];
+
+        return View::create(
+            $this->dataSerialize(new PrimitiveArray($data)),
             Response::HTTP_OK
         );
     }
