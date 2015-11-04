@@ -3,6 +3,7 @@ import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Co
 import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 import { Controls } from './ControlBar/Controls';
 import { TaskForm } from './TaskForm';
+import { ListGroup } from './ListGroup';
 import { TaskCard } from './View/List/TaskCard/TaskCard';
 import Immutable from 'immutable';
 
@@ -14,11 +15,15 @@ export class List extends React.Component {
         <Controls />
         <ListFrameContents>
           <TaskForm />
-          <TaskCard task={Immutable.fromJS({date_due: '2015-01-01 11:15'})} />
-          <TaskCard task={Immutable.fromJS({date_due: '2016-01-01'})} />
-          <TaskCard task={Immutable.fromJS({date_due: '2015-11-04 20:00'})} />
-          <TaskCard task={Immutable.fromJS({})} />
 
+          <ListGroup title="Overdue">
+            <TaskCard task={Immutable.fromJS({date_due: '2015-01-01 11:15'})} />
+            <TaskCard task={Immutable.fromJS({date_due: '2016-01-01'})} />
+          </ListGroup>
+          <ListGroup title="Other">
+            <TaskCard task={Immutable.fromJS({date_due: '2015-11-04 20:00'})} />
+            <TaskCard task={Immutable.fromJS({})} />
+          </ListGroup>
         </ListFrameContents>
       </ListFrameContainer>
     );
