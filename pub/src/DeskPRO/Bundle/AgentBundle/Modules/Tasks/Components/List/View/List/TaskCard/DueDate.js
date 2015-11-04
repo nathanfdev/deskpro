@@ -23,7 +23,7 @@ export class DueDate extends React.Component {
         <span className={classNames({'overdue': isOverdue})} onClick={this.onOpenCalendar}>
           <i className="fa fa-calendar-o"/> Due:
           <Calendar ref="calendar"
-                    value={value}
+                    value={moment(value).format('MM/DD/YYYY hh:mm')}
                     onChange={onChange} />
         </span>
 

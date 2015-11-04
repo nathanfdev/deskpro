@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import jQuery from 'jquery';
 import datetimepicker from 'jquery-ui-timepicker-addon';
 
-
 export class Calendar extends React.Component {
 
   static propTypes = {
@@ -12,13 +11,18 @@ export class Calendar extends React.Component {
   };
 
   componentDidMount() {
-    this.getInput().datetimepicker({
-      showButtonPanel: true,
-      controlType: 'select',
-      oneLine: true,
-      timeFormat: 'hh:mm tt',
-      onSelect: newDate => this.props.onChange(newDate)
-    });
+    const { value, onChange } = this.props;
+    this
+      .getInput()
+      .datetimepicker({
+        showButtonPanel: true,
+        controlType: 'select',
+        oneLine: true,
+        timeFormat: 'hh:mm tt',
+        onSelect: newDate => onChange(newDate)
+      })
+      .datepicker('setDate', value)
+    ;
   }
 
   componentWillUnmount() {
@@ -35,7 +39,7 @@ export class Calendar extends React.Component {
 
   render() {
     return (
-      <input type="text" value={this.props.value} disabled="disabled" />
+      <input type="text" disabled="disabled" />
     );
   }
 }
