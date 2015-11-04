@@ -8,7 +8,8 @@ import { Calendar } from './Calendar';
 export class DueDate extends React.Component {
 
   static propTypes = {
-    date: PropTypes.string
+    value: PropTypes.string,
+    onChange: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -32,9 +33,9 @@ export class DueDate extends React.Component {
   };
 
   render() {
-    const { date } = this.props;
-    const dateFormatted = date && moment(date).format('hh:mm a');
-    const isOverdue = date && moment(date).isBefore();
+    const { value, onChange } = this.props;
+    const dateFormatted = value && moment(value).format('hh:mm a');
+    const isOverdue = value && moment(value).isBefore();
 
     return (
       <div className="dpwd--card-line-item">
@@ -47,7 +48,8 @@ export class DueDate extends React.Component {
                   positionAt="right+5 top-10">
 
           <ClickOut onClickOut={this.onCloseCalendar}>
-            <Calendar />
+            <Calendar value={value}
+                      onChange={onChange} />
           </ClickOut>
         </Detached>
       </div>

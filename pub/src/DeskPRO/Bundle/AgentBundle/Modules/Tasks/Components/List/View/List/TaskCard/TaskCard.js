@@ -53,6 +53,10 @@ export class TaskCard extends React.Component {
     });
   };
 
+  onChangeDate = value => {
+    console.log(value);
+  };
+
   isMinimized() {
     return !this.state.expanded && this.state.isDone;
   }
@@ -63,7 +67,8 @@ export class TaskCard extends React.Component {
     return (
       <CardLine>
         <div>
-            <DueDate date={task.get('date_due')} />
+            <DueDate value={task.get('date_due')}
+                     onChange={this.onChangeDate} />
             <Project project="Some Project" />
             <TicketLink ticket="Some ticket" />
         </div>
