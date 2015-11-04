@@ -3865,6 +3865,8 @@ ul.kb-checkbox-extra {
 
 .flashes {
 
+  margin-top: 5px;
+
   .flash {
     position: relative;
     display: block;
@@ -7410,10 +7412,8 @@ body.with-agent-bar {
 .radio-button {
   position: relative;
   display: inline-block;
-  margin-top: 5px;
-  margin-right: 50px;
-  margin-bottom: 10px;
-  margin-left: 10px;
+  min-width: 125px;
+  margin: 6px 10px 6px 0px;
 
   input[type="radio"] {
     display: none;
@@ -7422,8 +7422,8 @@ body.with-agent-bar {
     &:checked + label {
       &:after {
         position: absolute;
-        top: 6px;
-        left: 16px;
+        top: 5px;
+        left: 5px;
         display: block;
         float: left;
         margin-right: 3px;
@@ -7439,13 +7439,17 @@ body.with-agent-bar {
 
   label {
     cursor: pointer;
+    &.title {
+      padding-left: 0;
+    }
 
     &:before {
       display: block;
       float: left;
       margin-right: 8px;
-      width: 19px;
-      height: 19px;
+      width: 17px;
+      height: 17px;
+      line-height: 1.3em;
       border: 2px solid $button-color;
       border-radius: 24px;
       content: "";
@@ -7497,10 +7501,10 @@ body.with-agent-bar {
 .multiselect {
   position: relative;
   margin-bottom: 10px;
+  cursor: pointer;
 
   .default {
     border: 1px solid $form-border-color;
-    cursor: pointer;
     width: 100%;
     display: block;
     padding: $form-padding-vertical $form-padding-horizontal;
@@ -7525,18 +7529,18 @@ body.with-agent-bar {
 
     display: block;
     width: 100%;
-    border: 1px solid $button-color;
 
     ul {
       @include blank-list;
       position: absolute;
-      left: 0;
+      right: 0;
       z-index: 599;
       display: block;
       width: 100%;
-      border: 1px solid $button-color;
+      border: 1px solid $form-border-color;
       max-height: 300px;
       overflow-y: auto;
+      margin: 0;
 
       a {
         display: block;
@@ -7703,6 +7707,10 @@ input[type="text"], input[type="email"], input[type="password"], textarea {
   }
 }
 
+.email-present {
+  border: 1px dashed $form-border-color;
+}
+
 textarea {
   min-height: 70px;
 }
@@ -7733,8 +7741,8 @@ form {
 
 .checkbox-container {
   display: inline-block;
-  min-width: 120px;
-  margin-left: 10px;
+  min-width: 125px;
+  margin: 6px 10px 6px 0px;
   cursor: pointer;
 }
 
@@ -7744,12 +7752,12 @@ form {
   display: inline-block;
   width: 17px;
   height: 17px;
-  line-height: 1.1em;
+  line-height: 1.3em;
   border-radius: 2px;
   vertical-align: middle;
   text-align: center;
   margin-top: -4px;
-  margin-right: 2px;
+  margin-right: 10px;
   color: #333;
   cursor: pointer;
 

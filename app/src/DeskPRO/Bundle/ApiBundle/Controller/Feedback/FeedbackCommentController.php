@@ -71,10 +71,15 @@ class FeedbackCommentController extends BaseController
         $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
         $qb
             ->select('c')
-            ->from('DeskPRO:FeedbackComment', 'c');
+            ->from('DeskPRO:FeedbackComment', 'c')
+            ->innerJoin('c.feedback', 'feedback');
         $awaitingValidation = $request->get('awaiting_validation');
         $sort               = $request->get('sort');
         $order              = $request->get('order');
+        $category           = $request->get('category');
+        $custom_category    = $request->get('custom_category');
+        $status             = $request->get('status');
+        $status_category    = $request->get('status_category');
         if ($awaitingValidation) {
             $qb
                 ->andWhere('c.status IN (:validating)')
@@ -83,6 +88,29 @@ class FeedbackCommentController extends BaseController
         }
         if ($sort && $order) {
             $qb->orderBy("c.$sort", $order);
+        }
+        if ($category) {
+            $qb
+                ->innerJoin('feedback.category', 'type')
+                ->andWhere('type.title IN (:type)')
+                ->setParameter('type', $category);
+        }
+        if ($custom_category) {
+            $qb
+                ->innerJoin('feedback.custom_data', 'category')
+                ->andWhere('category.input IN (:category)')
+                ->setParameter('category', $custom_category);
+        }
+        if ($status) {
+            $qb
+                ->andWhere('feedback.status IN (:status)')
+                ->setParameter('status', $status);
+        }
+        if ($status_category) {
+            $qb
+                ->innerJoin('feedback.status_category', 'statusCategory')
+                ->andWhere('statusCategory.title IN (:title)')
+                ->setParameter('title', $status_category);
         }
         $comments = $qb->getQuery()->getResult();
 

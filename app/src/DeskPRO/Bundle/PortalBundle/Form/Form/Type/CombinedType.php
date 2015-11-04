@@ -29,19 +29,36 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
+namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
-use Application\DeskPRO\Entity\Organization;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use FOS\RestBundle\Controller\Annotations\Route;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-/**
- * Class OrganizationsController.
- *
- * @Route("/organizations")
- */
-class OrganizationsController extends CrudController
+class CombinedType extends AbstractType
 {
-    public static $exposeOnly = ['list', 'get'];
-    public static $entity     = Organization::class;
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        foreach ($options['forms'] as $form) {
+            $builder->add($form['name'], $form['type'], $form['options']);
+        }
+    }
+
+    public function getName()
+    {
+        return 'deskpro_combined_type';
+    }
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setRequired(['forms']);
+
+        $resolver->setAllowedTypes([
+            'forms' => 'array', // an array of form types with their option sets
+        ]);
+
+        $resolver->setDefaults([
+            'mapped' => false,
+        ]);
+    }
 }

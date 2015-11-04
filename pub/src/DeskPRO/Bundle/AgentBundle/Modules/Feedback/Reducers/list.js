@@ -6,7 +6,6 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import Immutable from 'immutable';
 
 const initialState = {
-  isComments: false, // whether comments or feedbacks list is shown
   massAction: false,
   feedback: [],
   selected: [], // array of IDs
@@ -14,6 +13,7 @@ const initialState = {
 
   // currently viewed list GET parameters map
   currentListParams: {
+    isComments: false, // whether comments or feedback list is shown
     sort: 'date_created',
     order: constants.ORDER_DESC
   },

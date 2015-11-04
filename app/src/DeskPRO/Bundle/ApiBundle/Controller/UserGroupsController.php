@@ -52,6 +52,7 @@ class UserGroupsController extends BaseController
      */
     public function cgetAction()
     {
+        /** @var \DeskPRO\Bundle\AppBundle\DataService\UserGroups\UserGroupsDataService $service */
         $service = $this->get('data.user_groups');
 
         return View::create(

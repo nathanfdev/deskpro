@@ -33,22 +33,23 @@ namespace DeskPRO\Bundle\PortalBundle\Form;
 
 class FormFields
 {
-    const DEPARTMENT    = 'department';
-    const SUBJECT       = 'subject';
-    const MESSAGE       = 'message';
-    const USER_EMAIL    = 'user_email';
-    const USER_NAME     = 'user_name';
-    const USER_TIMEZONE = 'user_timezone';
-    const USER_LANGUAGE = 'user_language';
-    const USER_FIELD    = 'user_field';
-    const ORG_FIELD     = 'org_field';
-    const TICKET_FIELD  = 'ticket_field';
-    const CUSTOM_FIELD  = 'custom_field';
-    const CATEGORY      = 'category';
-    const PRIORITY      = 'priority';
-    const WORKFLOW      = 'workflow';
-    const PRODUCT       = 'product';
-    const CAPTCHA       = 'captcha';
-    const CC            = 'cc';
-    const ATTACH        = 'attach';
+    const DEPARTMENT          = 'department';
+    const SUBJECT             = 'subject';
+    const MESSAGE             = 'message';
+    const USER_NAME_AND_EMAIL = 'user_name_and_email';
+    const USER_EMAIL          = 'user_email';
+    const USER_NAME           = 'user_name';
+    const USER_TIMEZONE       = 'user_timezone';
+    const USER_LANGUAGE       = 'user_language';
+    const USER_FIELD          = 'user_field';
+    const ORG_FIELD           = 'org_field';
+    const TICKET_FIELD        = 'ticket_field';
+    const CUSTOM_FIELD        = 'custom_field';
+    const CATEGORY            = 'category';
+    const PRIORITY            = 'priority';
+    const WORKFLOW            = 'workflow';
+    const PRODUCT             = 'product';
+    const CAPTCHA             = 'captcha';
+    const CC                  = 'cc';
+    const ATTACH              = 'attach';
 }

@@ -142,7 +142,7 @@ class BaseController extends FOSRestController
      *
      * @return BadRequestHttpException
      */
-    protected function createBadRequestException($message)
+    protected function createBadRequestException($message = null)
     {
         return new BadRequestHttpException($message);
     }
