@@ -52,7 +52,7 @@ class DateTime extends Date
             return array();
         }
 
-        $date = \DateTime::createFromFormat('Y-m-d H:i', $value, App::getCurrentPerson()->getDateTimezone());
+        $date = \DateTime::createFromFormat($this->getFormat(), $value, App::getCurrentPerson()->getDateTimezone());
         if (!$date) {
             return array();
         }
@@ -64,34 +64,9 @@ class DateTime extends Date
         );
     }
 
-    public function getFormField($data = null)
+    protected function getFormat()
     {
-        $setData = null;
-        if ($data and !empty($data['value'])) {
-            try {
-                if (ctype_digit($data['value'])) {
-                    $date = new \DateTime('@'.$data['value']);
-                    if ($date) {
-                        $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
-                        $setData = $date->format('Y-m-d H:i');
-                    }
-                } else {
-                    $date = \DateTime::createFromFormat('Y-m-d H:i', $data['value']);
-                    if ($date) {
-                        $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
-                        $setData = $date->format('Y-m-d H:i');
-                    }
-                }
-            } catch (\Exception $e) {
-                $setData = null;
-            }
-        }
-
-        $field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'text', $setData, array(
-            'required' => false,
-        ));
-
-        return $field;
+        return 'Y-m-d H:i';
     }
 
     public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
@@ -104,7 +79,7 @@ class DateTime extends Date
 
         // Timestamp value
         if (strlen($data) == 10 && ctype_digit($data)) {
-            $data = date('Y-m-d H:i', $data);
+            $data = date($this->getFormat(), $data);
         }
 
         #------------------------------
@@ -128,7 +103,7 @@ class DateTime extends Date
         }
 
         if ($data) {
-            $date = \DateTime::createFromFormat('Y-m-d H:i', $data, App::getCurrentPerson()->getDateTimezone());
+            $date = \DateTime::createFromFormat($this->getFormat(), $data, App::getCurrentPerson()->getDateTimezone());
             if (!$date) {
                 return $this->makeErrorArray(array('date_invalid'));
             }

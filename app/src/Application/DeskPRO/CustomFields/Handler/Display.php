@@ -31,7 +31,6 @@
  */
 namespace Application\DeskPRO\CustomFields\Handler;
 
-use Application\DeskPRO\App;
 use Orb\Util\Strings;
 
 /**
@@ -40,12 +39,9 @@ use Orb\Util\Strings;
  */
 class Display extends HandlerAbstract
 {
-    public function getFormField($data = null)
+    public function getWidgetName()
     {
-        $setData = '';
-        $field   = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'hidden', $setData, array('required' => false));
-
-        return $field;
+        return 'hidden';
     }
 
     public function renderHtml($data = null, array $template_vars = array())

@@ -26,27 +26,8 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace Application\DeskPRO\CustomFields\Handler;
-
-/**
- * Handles the text field.
- */
-class Textarea extends Text
-{
-    public function getRenderTemplateVars($context = 'html')
-    {
-        if ($context == 'html') {
-            return array('nl2br' => true);
-        }
-
-        return array();
-    }
-
-    public function getWidgetName()
-    {
-        return 'textarea';
-    }
-}
+return array(
+    'api' => array(
+        'package_request_handler' => 'custom_addressfield\\RequestHandler\\PackageRequestHandler',
+    ),
+);
