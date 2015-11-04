@@ -114,7 +114,8 @@ class FixBlobPathsCommand extends ContainerAwareCommand
             return;
         }
 
-        preg_match_all('#/file.php/(\d+)([A-Z0-9]+)/#', $content, $matches, PREG_SET_ORDER);
+        // trailing 0 = was a db row. todo: add handling of fs -> db as well
+        preg_match_all('#/file.php/(\d+)([A-Z]+0)/#', $content, $matches, PREG_SET_ORDER);
 
         if (!$matches) {
             return;
