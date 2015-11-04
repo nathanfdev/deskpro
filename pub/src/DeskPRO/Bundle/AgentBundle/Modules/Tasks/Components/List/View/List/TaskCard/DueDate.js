@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import ReactDOM from 'react-dom';
+import jQuery from 'jquery';
+import datetimepicker from 'jquery-ui-timepicker-addon';
 import moment from 'moment';
-import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
-import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
-import { Calendar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Calendar';
 
 export class DueDate extends React.Component {
 
@@ -12,46 +12,41 @@ export class DueDate extends React.Component {
     onChange: PropTypes.func.isRequired
   };
 
-  constructor(props) {
-    super(props);
+  componentDidMount() {
+    const { value, onChange } = this.props;
 
-    this.state = {
-      calendarOpened: false
-    };
+    this.getInput().datetimepicker({
+      showButtonPanel: true,
+      currentText: value,
+      controlType: 'select',
+      oneLine: true,
+      timeFormat: 'hh:mm tt',
+      onSelect: newDate => onChange(newDate)
+    });
+  }
+
+  componentWillUnmount() {
+    this.getInput().destroy();
   }
 
   onOpenCalendar = () => {
-    this.setState({
-      calendarOpened: true
-    });
+    this.getInput().datetimepicker('show');
   };
 
-  onCloseCalendar = () => {
-    this.setState({
-      calendarOpened: false
-    });
-  };
+  getInput() {
+    return jQuery(ReactDOM.findDOMNode(this.refs.calendar));
+  }
 
   render() {
-    const { value, onChange } = this.props;
+    const { value } = this.props;
     const dateFormatted = value && moment(value).format('hh:mm a');
     const isOverdue = value && moment(value).isBefore();
 
     return (
-      <div className="dpwd--card-line-item">
+      <div className="dpwd--card-line-item" onClick={this.onOpenCalendar}>
         <span className={classNames({'overdue': isOverdue})} onClick={this.onOpenCalendar}>
-          <i className="fa fa-calendar-o"/> Due: {dateFormatted || 'N/A'}
+          <i className="fa fa-calendar-o"/> Due: <input value={value} value={dateFormatted || 'N/A'} ref="calendar" disabled="disabled" />
         </span>
-
-        <Detached isOpen={this.state.calendarOpened}
-                  positionTarget={this}
-                  positionAt="right+5 top-10">
-
-          <ClickOut onClickOut={this.onCloseCalendar}>
-            <Calendar value={value}
-                      onChange={onChange} />
-          </ClickOut>
-        </Detached>
       </div>
     );
   }
