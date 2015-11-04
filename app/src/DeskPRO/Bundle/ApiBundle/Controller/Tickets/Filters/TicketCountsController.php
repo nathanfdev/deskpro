@@ -34,10 +34,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Filters;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
+use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketCountsDataService;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
-use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -71,7 +69,7 @@ class TicketCountsController extends BaseController
     public function getTicketFilterSetCountAction($id)
     {
         $set   = $this->findOr404('App:TicketFilterSet', $id);
-        $count = $this->getFilterSetTicketsCount($set);
+        $count = $this->getCountsService()->getFilterSetTicketsCount($set);
 
         return View::create(
             $this->createRepresentation($count),
@@ -96,7 +94,7 @@ class TicketCountsController extends BaseController
 
         $filter_set_counts = [];
         foreach ($sets as $set) {
-            $filter_set_counts[] = $this->getFilterSetTicketsCount($set);
+            $filter_set_counts[] = $this->getCountsService()->getFilterSetTicketsCount($set);
         }
 
         return View::create(
@@ -137,8 +135,7 @@ class TicketCountsController extends BaseController
         if (!$filter = $filters->getFilter($id)) {
             throw $this->createNotFoundException();
         }
-        $group_by = $this->getTicketFilterGroupBy($filter);
-        $count    = $this->getTicketFilterCount($filter, $group_by);
+        $count = $this->getCountsService()->getTicketFilterCount($filter, $request->get('group_by'));
 
         return View::create($this->createRepresentation($count), Response::HTTP_OK);
     }
@@ -171,7 +168,7 @@ class TicketCountsController extends BaseController
         /** @var TicketFilter[] $filters */
         $filters = $this->get('data.filters')->getFilters();
         foreach ($filters as $filter) {
-            $filter_count = $this->getTicketFilterCount(
+            $filter_count = $this->getCountsService()->getTicketFilterCount(
                 $filter,
                 isset($group_by[$filter->getId()]) ? $group_by[$filter->getId()] : null
             );
@@ -183,80 +180,10 @@ class TicketCountsController extends BaseController
     }
 
     /**
-     * @param TicketFilter $filter
-     * @param sting        $group_by
-     *
-     * @return Count
+     * @return TicketCountsDataService
      */
-    private function getTicketFilterCount(TicketFilter $filter, $group_by = null)
+    private function getCountsService()
     {
-        $group_by or $group_by = $this->getTicketFilterGroupBy($filter);
-
-        $engine  = $this->get('term_engine.dbal_ticket_filters.engine');
-        $context = new TermEngineContext($this->getUser());
-        if ($group_by) {
-            $context->addGroupByFromString($group_by);
-        }
-
-        /** @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery $tickets_query */
-        $tickets_query = $engine->evaluate($filter, $context);
-
-        if ($group_by) {
-            $filter_counts = $tickets_query->fetchGroupedCount();
-            $filter_count  = Count::create(0, $filter->getId(), [], 'filter');
-            foreach ($filter_counts as $nested_count) {
-                $value = $nested_count['count'];
-                unset($nested_count['count']);
-                $group = array_pop($nested_count);
-                $group = ctype_digit($group) ? (int) $group : $group;
-
-                $filter_count->addNestedInstance(
-                    Count::create($value, $group, [], $group_by),
-                    true
-                );
-            }
-
-            return $filter_count;
-        } else {
-            return Count::create($tickets_query->fetchCount(), $filter->getId(), [], 'filter');
-        }
-    }
-
-    /**
-     * Workhorse function for the count operations.
-     *
-     * @param TicketFilterSet $set
-     *
-     * @return array
-     */
-    private function getFilterSetTicketsCount(TicketFilterSet $set)
-    {
-        $total  = 0;
-        $counts = [];
-
-        /** @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngine $engine */
-        $engine = $this->get('term_engine.dbal_ticket_filters.engine');
-
-        foreach ($set->getFilters() as $filter) {
-            $filter_count = $this->getTicketFilterCount($filter);
-            $counts[]     = $filter_count;
-            $total += $filter_count->getCount();
-        }
-
-        return Count::create($total, $set->getId(), $counts);
-    }
-
-    /**
-     * @param TicketFilter $filter
-     *
-     * @return string|null
-     */
-    private function getTicketFilterGroupBy(TicketFilter $filter)
-    {
-        $name    = TicketFiltersController::CUSTOM_FILTER_GROUP_BY_PREFIX.$filter->getId();
-        $person  = $this->getUser();
-        $setting = $this->getManager()->find(PersonSetting::class, compact('name', 'person'));
-
-        return $setting ? $setting->getValue() : null;
+        return $this->get('data.tickets.ticket_counts');
     }
 }

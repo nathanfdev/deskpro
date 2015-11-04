@@ -32,7 +32,6 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Filters;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
@@ -315,7 +314,7 @@ class TicketFiltersController extends BaseController
         $tickets    = $this->getEm()->getRepository('DeskPRO:Ticket')->findBy(['id' => $ticket_ids]);
 
         // retrieve total count and wrap results in Pagerfanta
-        $total        = $this->getTicketFilterCount($filter)->getCount();
+        $total        = $this->get('data.tickets.ticket_counts')->getTicketFilterCount($filter)->getCount();
         $pagerAdapter = new FixedAdapter($total, $tickets);
         $pager        = new Pagerfanta($pagerAdapter);
         $pager->setCurrentPage($currentPage);
