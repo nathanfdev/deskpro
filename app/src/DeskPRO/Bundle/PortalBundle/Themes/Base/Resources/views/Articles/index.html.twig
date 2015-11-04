@@ -5,12 +5,11 @@
     {% show breadcrumbs %}
   </div>
 
-  <header class="section-header padded">
-      <h1 style="padding-bottom: 10px;">{{ phrase('portal.articles.section-title') }}</h1>
-      <div class="header-buttons">
-        {% show rss_link %}
-      </div>
+  <header class="large-title">
+      <div class="header-buttons">{% show rss_link %}</div>
+      <h1>{{ phrase('portal.articles.section-title') }}</h1>
       <p>{{ phrase('portal.articles.section-desc') }}</p>
   </header>
+
   {% show section kb with { articles_options: { count: 5 } } %}
 {% endblock inner_content %}

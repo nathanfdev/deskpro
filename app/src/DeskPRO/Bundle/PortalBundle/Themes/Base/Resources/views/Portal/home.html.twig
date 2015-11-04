@@ -29,12 +29,13 @@
 {% if can_use_news() %}
     <section>
         <article class="news front-page-news">
-            <div class="large-title clearfix">
+            <div class="large-title">
                 <h1>
                     <a href="{{ path('portal_news') }}">
                         {{ phrase('portal.news.section-title') }}
                     </a>
                 </h1>
+                <p>This is a subtitle to test the subtitles on these large title items</p><!-- TODO (subtitle main style) the subtitle -->
             </div>
             {% show section news_list_excerpts with { count: 2, show_category_link: true } %}
         </article>

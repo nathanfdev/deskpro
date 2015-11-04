@@ -5,14 +5,11 @@
         {% show breadcrumbs %}
     </div>
     <div class="downloads main-downloads">
-    <header class="section-header padded">
+
+    <header class="large-title">
+        <div class="header-buttons">{% show rss_link %}</div>
         <h1>{{ phrase('portal.downloads.section-title') }}</h1>
-        <div class="header-buttons">
-            {% show rss_link %}
-        </div>
-        <p>
-            {{ phrase('portal.downloads.section-desc') }}
-        </p>
+        <p>{{ phrase('portal.downloads.section-desc') }}</p>
     </header>
 
     {% show section download_cats_simple %}

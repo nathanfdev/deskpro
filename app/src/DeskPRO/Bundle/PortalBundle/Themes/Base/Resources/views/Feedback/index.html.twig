@@ -5,11 +5,12 @@
         {% show breadcrumbs %}
     </div>
     <article class="feedback main-feedback" id="feedback_page">
-        <header class="section-header">
+        <header class="large-title">
             <h1>{{ phrase('portal.feedback.section-title') }}</h1>
-
-            <p>{{ phrase('portal.feedback.section-desc') }}</p>
+            <p>{{ phrase('portal.feedback.section-desc') }}</p><!-- TODO this is the same subtitle as "TODO (subtitle main style)" from the front page except without a link in the h1 -->
         </header>
+
+
 
         <article class="feedback-form-interactive">
             {% if rerendering_saved %}
