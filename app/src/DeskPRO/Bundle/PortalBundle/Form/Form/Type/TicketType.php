@@ -372,6 +372,9 @@ class TicketType extends AbstractType
             case FormFields::MESSAGE:
                 $this->addMessage($form_context, $field, $ignore_validation);
                 break;
+            case FormFields::USER_NAME_AND_EMAIL:
+                $this->addUserNameAndEmail($form_context, $field, $ignore_validation);
+                break;
             case FormFields::DEPARTMENT:
                 $this->addDepartment($form_context, $field, $ignore_validation);
                 break;
@@ -473,28 +476,75 @@ class TicketType extends AbstractType
         ));
     }
 
+    private function addUserNameAndEmail(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
+    {
+        $form_context->getForm()->add(
+            $field->getId(),
+            'deskpro_combined_type',
+            [
+                'forms' => [
+                    $this->createUserName($form_context, $field, $ignore_validation),
+                    $this->createUserEmail($form_context, $field, $ignore_validation),
+                ],
+            ]
+        );
+    }
+
+    private function addUserName(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
+    {
+        $form = $this->createUserName($form_context, $field, $ignore_validation);
+        $form_context->getForm()->add(
+            $form['name'],
+            $form['type'],
+            $form['options']
+        );
+    }
+
+    private function createUserName(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
+    {
+        return [
+            'name'    => FormFields::USER_NAME,
+            'type'    => 'text',
+            'options' => [
+                'property_path' => 'person.name',
+                'label'         => $this->phrase('portal.forms.label_name'),
+                'empty_data'    => $form_context->getPerson()->getName(),
+            ],
+        ];
+    }
+
     private function addUserEmail(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
+    {
+        $form = $this->createUserEmail($form_context, $field, $ignore_validation);
+        $form_context->getForm()->add(
+            $form['name'],
+            $form['type'],
+            $form['options']
+        );
+    }
+
+    private function createUserEmail(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         $person = $form_context->getPerson();
         if ($person->isUser()) {
-            $form_context->getForm()->add(
-                $field->getId(),
-                'deskpro_person_email_choice',
-                array(
+            return [
+                'name'    => FormFields::USER_EMAIL,
+                'type'    => 'deskpro_person_email_choice',
+                'options' => [
                     'property_path' => 'ticket_person_email',
                     'label'         => $this->phrase('portal.forms.label_email'),
                     'person'        => $person,
-                )
-            );
+                ],
+            ];
         } else {
-            $form_context->getForm()->add(
-                $field->getId(),
-                'deskpro_person_email',
-                array(
+            return [
+                'name'    => FormFields::USER_EMAIL,
+                'type'    => 'deskpro_person_email',
+                'options' => [
                     'property_path' => 'person.primary_email',
                     'label'         => false,
-                )
-            );
+                ],
+            ];
         }
     }
 
@@ -503,15 +553,6 @@ class TicketType extends AbstractType
         $form_context->getForm()->add($field->getId(), 'timezone', array(
             'property_path' => 'person.timezone',
             'label'         => $this->phrase('portal.forms.label_timezone'),
-        ));
-    }
-
-    private function addUserName(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
-    {
-        $form_context->getForm()->add($field->getId(), 'text', array(
-            'property_path' => 'person.name',
-            'label'         => $this->phrase('portal.forms.label_name'),
-            'empty_data'    => $form_context->getPerson()->getName(),
         ));
     }
 

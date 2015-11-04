@@ -126,11 +126,10 @@ class TicketLayoutFactory
 
     protected function verifyRequiredFields(Layout $layout)
     {
-        $required_fields = array(
-            FormFields::SUBJECT    => 0,
-            FormFields::MESSAGE    => 0,
-            FormFields::USER_EMAIL => 0,
-        );
+        $required_fields = [
+            FormFields::SUBJECT => 0,
+            FormFields::MESSAGE => 0,
+        ];
 
         /** @var \Application\DeskPRO\TicketLayout\LayoutField $layout_field */
         foreach ($layout as $layout_field) {
@@ -147,6 +146,25 @@ class TicketLayoutFactory
                 $new->enableOnEdit();
                 $new->enableOnView();
                 $layout->add($new);
+            }
+        }
+
+        // if no email input exists, add the new USER_NAME_AND_EMAIL
+        if (!$layout->has(FormFields::USER_EMAIL) && !$layout->has(FormFields::USER_NAME_AND_EMAIL)) {
+            $new = new LayoutField(FormFields::USER_NAME_AND_EMAIL);
+            $new->enableOnNew();
+            $new->enableOnEdit();
+            $new->enableOnView();
+            $layout->add($new);
+        }
+
+        // finally, if USER_NAME_AND_EMAIL exists, remove USER_EMAIL and USER_NAME as they are redundant
+        if ($layout->has(FormFields::USER_NAME_AND_EMAIL)) {
+            if ($layout->has(FormFields::USER_EMAIL)) {
+                $layout->remove(FormFields::USER_EMAIL);
+            }
+            if ($layout->has(FormFields::USER_NAME)) {
+                $layout->remove(FormFields::USER_NAME);
             }
         }
     }
