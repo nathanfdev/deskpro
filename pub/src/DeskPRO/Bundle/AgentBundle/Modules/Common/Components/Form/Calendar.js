@@ -1,11 +1,13 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import jQuery from 'jquery';
+import classNames from 'classnames';
 import datetimepicker from 'jquery-ui-timepicker-addon';
 
 export class Calendar extends React.Component {
 
   static propTypes = {
+    type: PropTypes.string,
     value: PropTypes.string,
     onChange: PropTypes.func.isRequired
   };
@@ -39,7 +41,9 @@ export class Calendar extends React.Component {
 
   render() {
     return (
-      <input type="text" disabled="disabled" />
+      <input type="text"
+             disabled="disabled"
+             className={classNames({'ui-datepicker-hidden': this.props.type === 'hidden'})} />
     );
   }
 }

@@ -19,12 +19,15 @@ export class DueDate extends React.Component {
     const isOverdue = value && moment(value).isBefore();
 
     return (
-      <div className="dpwd--card-line-item" onClick={this.onOpenCalendar}>
-        <span className={classNames({'overdue': isOverdue})} onClick={this.onOpenCalendar}>
-          <i className="fa fa-calendar-o"/> Due:
+      <div className="dpwd--card-line-item" onDoubleClick={this.onOpenCalendar}>
+        <span className={classNames({'overdue': isOverdue})}>
+          <i className="fa fa-calendar-o"/>
           <Calendar ref="calendar"
+                    type="hidden"
                     value={moment(value).format('MM/DD/YYYY hh:mm')}
                     onChange={onChange} />
+
+          Due: {moment(value).format('MM-DD-YYYY hh:mm a')}
         </span>
 
       </div>
