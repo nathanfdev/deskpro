@@ -61,12 +61,19 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 body {
+  margin: 0px;
   padding: 20px;
   background: $world-background;
   color: $text-color;
   font-size: 0.85em;
   font-family: $fonts;
   line-height: 1.75em;
+}
+
+@media screen and (max-width: 760px) {
+  body {
+    padding: 0px;
+  }
 }
 
 *, *:before, *:after {
@@ -1271,7 +1278,6 @@ $search-btn-height: $search-height - 24;
   .search-form {
     display: table-cell;
     padding: 12px;
-    /* height: $search-height; */
     position: relative;
 
     .input-wrap {
@@ -1304,6 +1310,15 @@ $search-btn-height: $search-height - 24;
       bottom: 12px;
       width: 150px;
       cursor: pointer;
+
+        @media screen and (max-width: 760px) {
+          margin-top: 10px;
+          position: relative;
+          top: 0px;
+          right: 0px;
+          bottom: 0px;
+          width: 100%;
+        }
     }
 
     .fa-search {
@@ -1313,6 +1328,35 @@ $search-btn-height: $search-height - 24;
       color: #cecece;
     }
   }
+
+  @media screen and (max-width: 760px) {
+    .search-form {
+      display: block;
+      width: 100%;
+
+      .input-wrap {
+        position: relative;
+        width: 100%;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+      }
+
+      .button {
+        position: relative;
+        width: 100%;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+        width: 100%;
+
+      }
+    }
+  }
+
+
 
   .expanded-search-results {
     position: absolute;
@@ -1563,6 +1607,9 @@ $search-btn-height: $search-height - 24;
     width: 25px;
     position: relative;
     text-align: center;
+    @media screen and (max-width: 760px) {
+      display: none;
+    }
 
     &:before {
       content: "";
@@ -1596,6 +1643,11 @@ $search-btn-height: $search-height - 24;
     padding: 12px;
     width: 255px;
     position: relative;
+
+    @media screen and (max-width: 760px) {
+      display: block;
+      width: 100%;
+    }
 
     .dropdown-content {
       position: absolute;
@@ -6706,6 +6758,8 @@ ul.big-button-collection {
     font-weight: 300;
   }
 
+
+
   &.small {
     // Same list for internal pages
     margin-bottom: 15px;
@@ -6746,7 +6800,50 @@ ul.big-button-collection {
       }
     }
   }
+}
 
+@media screen and (max-width: 760px) {
+  ul.big-button-collection {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    li {
+      display: block;
+      padding: 0;
+      margin: 0;
+      height: auto;
+      width: 100%;
+      margin: 5px 0px;
+      font-weight: 400;
+    }
+    a, &.small a {
+      display: block;
+      width: 100%;
+      height: auto;
+      text-align: left;
+      padding: 0;
+      margin: 0;
+      padding: 10px;
+
+      .title, .subtitle, .fa {
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+        font-size: 16px;
+        font-weight: 400;
+      }
+
+      .fa {
+        margin-right: 2px;
+        font-size: 17px;
+      }
+
+      .subtitle {
+        display: block;
+        margin-top: 4px;
+        font-size: 12px;
+      }
+    }
+  }
 }
 
 .breadcrumbs ul.big-button-collection {
