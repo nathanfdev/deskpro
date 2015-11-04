@@ -92,7 +92,8 @@ function handleSetRequestRecords(state, requestId, setRecords, ids, mode) {
 
   const mergeState = Immutable.fromJS({
     records: state.get('records').merge(setRecords),
-    requests: state.get('requests').merge({ [requestId]: recordIds})
+    requests: state.get('requests').merge({[requestId]: recordIds}),
+    status: state.get('status').merge({[requestId]: {isDone: true}})
   });
 
   return state.merge(mergeState);
