@@ -2178,21 +2178,13 @@ header {
     font-weight: 400;
   }
 
-  .article-meta {
-    padding-top: 5px;
-  }
+  .article-meta { padding-top: 5px; }
 }
 
 .news-header.main-list {
-  h1 {
-    font-size: 19px;
-  }
-
-  .article-meta {
-    padding-top: 15px;
-  }
+  h1 { font-size: 19px; }
+  .article-meta { padding-top: 15px; }
 }
-
 
 // Will reuse this late for lists of articles (possibly)
 .flat-news-header {
