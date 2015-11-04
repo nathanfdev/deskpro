@@ -159,7 +159,7 @@
              </table>
 
              {% if ticket_table.pager.haveToPaginate() %}
-                {{ pagerfanta(ticket_table.pager, null, { pageParameter: '['~ticket_table.page_name~']' }) }}
+                {{ pagerfanta(ticket_table.pager, null, { pageParameter: '['~ticket_table.pageName~']' }) }}
              {% endif %}
          </div>
         </div>
