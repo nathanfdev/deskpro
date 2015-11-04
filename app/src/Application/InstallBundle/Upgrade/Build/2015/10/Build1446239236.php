@@ -28,6 +28,8 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
+use Orb\Util\Strings;
+
 class Build1446239236 extends AbstractBuild
 {
     public function run()
@@ -41,43 +43,26 @@ class Build1446239236 extends AbstractBuild
             $update = false;
 
             foreach ($terms as &$term) {
-                if (0 !== strpos(@$term['type'], 'ticket_field')) {
+                if (0 !== strpos(@$term['type'], 'ticket_field') && 0 !== strpos(@$term['type'], 'person_field') && 0 !== strpos(@$term['type'], 'org_field')) {
                     continue;
                 }
-                $id = trim($term['type'], 'ticket_field[]');
+                $id = Strings::extractRegexMatch('#\[(\d+)\]$#', $term['type']);
 
                 if (isset($term['options']['custom_fields']['field_'.$id])) {
                     continue;
                 }
 
-                if (is_numeric($term['options'])) {
-                    $term['options'] = array(
-                        'custom_fields' => array(
-                            'field_'.$id => $term['options'],
-                        ),
-                    );
-                    $update = true;
-                    continue;
+                $options = $term['options'];
+                if (isset($options['value'])) {
+                    $options = $options['value'];
                 }
 
-                if (is_array($term['options'])) {
-                    $isNum = true;
-                    foreach ($term['options'] as $k => $v) {
-                        if (!is_numeric($k)) {
-                            $isNum = false;
-                        }
-                    }
-
-                    if ($isNum) {
-                        $term['options'] = array(
-                            'custom_fields' => array(
-                                'field_'.$id => $term['options'],
-                            ),
-                        );
-                        $update = true;
-                        continue;
-                    }
-                }
+                $term['options'] = array(
+                    'custom_fields' => array(
+                        'field_'.$id => $options,
+                    ),
+                );
+                $update = true;
             }
 
             if ($update) {

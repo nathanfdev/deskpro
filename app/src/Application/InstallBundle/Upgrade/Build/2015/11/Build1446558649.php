@@ -32,6 +32,8 @@ class Build1446558649 extends AbstractBuild
 {
     public function run()
     {
+        $this->out('Correct round_robin_log FK');
+
         $sh = $this->getSchemaHelper();
 
         $fk = $this->getSchemaHelper()->findForeignKey('round_robin_log', 'rr_id', 'round_robin', 'id');
