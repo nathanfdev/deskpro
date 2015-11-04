@@ -25,9 +25,14 @@ export class TaskCard extends React.Component {
       expanded: false,
       selected: false,
       title: 'Task title',
-      dueDate: props.task.get('date_due'),
+      dateDue: props.task.get('date_due'),
       project: 'Some Project',
       ticketLink: 'Some Ticket',
+      comments: 1,
+      subTasks: {
+        current: 1,
+        total: 3
+      },
       isDone: true
     };
   }
@@ -58,7 +63,7 @@ export class TaskCard extends React.Component {
 
   onChangeDate = value => {
     this.setState({
-      dueDate: value
+      dateDue: value
     });
   };
 
@@ -70,15 +75,16 @@ export class TaskCard extends React.Component {
     return (
       <CardLine>
         <div>
-            <DueDate value={this.state.dueDate}
+            <DueDate value={this.state.dateDue}
                      onChange={this.onChangeDate} />
             {this.state.project && <Project project={this.state.project} />}
             {this.state.ticketLink && <TicketLinkContainer ticket={this.state.ticketLink} />}
         </div>
 
         <div>
-            <Comments count={0} />
-            <SubTasks current={1} total={3} />
+            <Comments count={this.state.comments} />
+            <SubTasks current={this.state.subTasks.current}
+                      total={this.state.subTasks.total} />
         </div>
       </CardLine>
     );
