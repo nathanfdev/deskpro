@@ -35,9 +35,12 @@ namespace custom_addressfield\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;
+use Application\DeskPRO\Entity\CustomDefTicket;
 
 class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 {
+    const ATTR_KEY = 'data-customadds';
+
     /**
      * {@inheritdoc}
      */
@@ -46,6 +49,8 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         switch ($context->getAction()) {
             case 'get-fields':
                 return $this->getFieldsAction($context);
+            case 'selected':
+                return $this->selectedAction($context);
             default:
                 throw $context->createNotFoundException();
         }
@@ -70,8 +75,40 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         }
 
         return $context->createJsonResponse(array(
-            'url' => $context->getContainer()->getSetting('core.deskpro_url'),
+            'url'    => $context->getContainer()->getSetting('core.deskpro_url'),
             'fields' => $fields,
         ));
+    }
+
+    /**
+     * @param ApiPackageRequestContext $context
+     *
+     * @return array
+     */
+    public function selectedAction(ApiPackageRequestContext $context)
+    {
+        $fieldId = $context->getRequest()->get('field_id');
+        $manager = $context->getContainer()->getTicketFieldManager();
+        foreach ($manager->getFields() as $field) {
+            /** @var $field CustomDefTicket */
+            if ('Textarea' !== substr($field->handler_class, strrpos($field->handler_class, '\\') + 1)) {
+                continue;
+            }
+
+            if ($fieldId != $field->id) {
+                $attr = $field->getOption('attr');
+                if (isset($attr[self::ATTR_KEY])) {
+                    unset($attr[self::ATTR_KEY]);
+                }
+                $field->setOption('attr', $attr);
+                continue;
+            }
+
+            $field->setOption('attr', array(self::ATTR_KEY => '1'));
+        }
+
+        $context->getEm()->flush();
+
+        return $context->createResponse('');
     }
 }
