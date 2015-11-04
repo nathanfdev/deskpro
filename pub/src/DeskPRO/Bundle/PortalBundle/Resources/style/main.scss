@@ -2159,6 +2159,45 @@ header {
 .news-header {
   line-height: 1.2em;
   border-bottom: 1px solid $divider-color;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  padding-left: 10px;
+
+  .news-header-info {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  a {
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
+  }
+
+  h1 {
+    font-size: 15px;
+    font-weight: 400;
+  }
+
+  .article-meta {
+    padding-top: 5px;
+  }
+}
+
+.news-header.main-list {
+  h1 {
+    font-size: 19px;
+  }
+
+  .article-meta {
+    padding-top: 15px;
+  }
+}
+
+
+// Will reuse this late for lists of articles (possibly)
+.flat-news-header {
+  line-height: 1.2em;
+  border-bottom: 1px solid $divider-color;
   padding-bottom: 20px;
   padding-left: 10px;
   margin-bottom: 20px;
@@ -2183,6 +2222,8 @@ header {
   }
 }
 
+
+
 .article-meta {
   color: $text-color;
   font-size: 0.9em;
@@ -2201,7 +2242,7 @@ header {
     display: inline-block;
     vertical-align: middle;
     width: 1px;
-    height: 20px;
+    height: 21px;
     background: #E6E6E6;
     margin: 0px 8px;
   }
@@ -2271,6 +2312,7 @@ header {
     margin-top: 7px;
     color: #7b7b7b;
     line-height: 1.5em;
+    max-width: 800px;
   }
 
   h1 {
@@ -4011,9 +4053,6 @@ ul.kb-checkbox-extra {
 
 .kb-article-news {
   margin-bottom: 50px;
-  hr {
-    margin: 20px 0;
-  }
 }
 
 .expand {
@@ -5438,7 +5477,7 @@ ul.categories-article-list {
 
     h1 {
       color: #5A5A5A;
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 400;
       margin-bottom: 6px;
       a { text-decoration: none; }
@@ -5452,7 +5491,7 @@ ul.categories-article-list {
   header {
     border-bottom: 1px solid #e6e6e6;
     padding-bottom: 20px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
   }
 
   p {
