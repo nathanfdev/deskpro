@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import moment from 'moment';
 import { Calendar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/Calendar';
+import { DateString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/DateString';
 
 export class DueDate extends React.Component {
 
@@ -27,7 +28,7 @@ export class DueDate extends React.Component {
                     value={moment(value).format('MM/DD/YYYY hh:mm')}
                     onChange={onChange} />
 
-          Due: {moment(value).format('MM-DD-YYYY hh:mm a')}
+          Due: <DateString value={value} />
         </span>
 
       </div>
