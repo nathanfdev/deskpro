@@ -44,6 +44,11 @@ export const getStatuses = createAction(
     ids => dispatch => dispatch(loadFeedbackStatuses(recordStoresId, ids))
 );
 
+export const setLabelsFilterMode = createAction(
+  'FEEDBACK_SET_LABELS_FILTER_MODE',
+    mode => mode
+);
+
 export const getCategories = createAction(
   'FEEDBACK_GET_CATEGORIES',
     ids => dispatch => dispatch(loadFeedbackCategories(recordStoresId, ids))

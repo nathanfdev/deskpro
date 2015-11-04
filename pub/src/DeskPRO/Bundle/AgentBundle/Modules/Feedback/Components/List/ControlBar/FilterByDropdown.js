@@ -2,13 +2,14 @@ import React, {PropTypes} from 'react';
 import Formsy from 'formsy-react';
 import Moment from 'moment';
 import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
-import {FilterItem} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/FilterItem';
-import {DateTimePicker} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/DateTimePicker';
+import { FilterItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/FilterItem';
+import { DateTimePicker } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/DateTimePicker';
 import { setFilterValue, loadFeedbackList } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { loadCommentsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
 import { TypesCollectionContainer } from './TypesCollectionContainer';
 import { CategoriesCollectionContainer } from './CategoriesCollectionContainer';
 import { StatusesCollectionContainer } from './StatusesCollectionContainer';
+import { LabelsFilterContainer } from './LabelsFilterContainer';
 
 const FilterByDropdown = React.createClass({
 
@@ -310,6 +311,17 @@ const FilterByDropdown = React.createClass({
                 </div>
               </div>
             </div>
+          </Menu>
+        </FilterItem>
+        <FilterItem
+          filterType="labels"
+          // isActive={isDateCreatedFilterActive}
+          resetFilter={this.resetFilter}
+          icon="calendar-o"
+          label="Labels"
+          >
+          <Menu>
+            <LabelsFilterContainer/>
           </Menu>
         </FilterItem>
       </Menu>

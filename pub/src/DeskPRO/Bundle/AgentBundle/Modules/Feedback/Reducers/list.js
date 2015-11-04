@@ -35,6 +35,8 @@ export default createReducer(initialState, {
 
   [actions.setCurrentListParams]: (state, payload) => state.set('currentListParams', Immutable.fromJS(payload)),
 
+  [actions.setLabelsFilterMode]: (state, payload) => state.setIn(['currentListParams', 'filters', 'labels', 'mode'], payload),
+
   [commentsActions.loadCommentsList]: async({
     success: (state, payload) => state.set('comments', payload.data)
   }),

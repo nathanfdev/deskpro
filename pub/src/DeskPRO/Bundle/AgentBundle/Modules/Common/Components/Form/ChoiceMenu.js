@@ -12,17 +12,12 @@ export class ChoiceMenu extends Component {
   render() {
     return (
       <div className="dpw-navigation-dropdown-panel dpw-navigation-dropdown-panel-corner-left">
-
         <div className="dpw-navigation-dropdown-panel-content">
-
           <div className="dpw-navigation-dropdown-panel-content-line">
             <div className="dpw-navigation-dropdown-panel-content-full">
               <ChoiceMenuHeader title={this.props.title}/>
-
               <div className="dpw-departments-long-list">
-
                 <QuickFilter/>
-
                 <div className="dpw--popup-item-collection">
                   {this.props.children}
                 </div>
