@@ -5429,43 +5429,34 @@ h1.fancy-header {
 ul.categories-article-list {
   @include blank-list;
 
-  margin-top: 20px;
-
-  li {
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    padding-left: 10px;
-    border-bottom: 1px solid $divider-color;
-  }
-
   a {
-    text-decoration: none;
-    font-size: 1em;
+    // text-decoration: none;
+    // font-size: 1em;
 
     h1 {
       color: $button-color;
-      font-size: 1.2em;
+      // font-size: 1.2em;
     }
 
     .article-meta {
-      color: $text-color-lighter;
+      // color: $text-color-lighter;
 
-      span {
-        margin-right: 0;
-        margin-left: 0;
-      }
+      // span {
+      //   margin-right: 0;
+      //   margin-left: 0;
+      // }
 
       .focus {
         color: $text-color-darker;
       }
 
-      .agent-avatar {
-        margin-right: 3px;
-      }
+      // .agent-avatar {
+      //   margin-right: 3px;
+      // }
 
-      .comments {
-        margin-left: 10px;
-      }
+      // .comments {
+      //   margin-left: 10px;
+      // }
     }
   }
 }
