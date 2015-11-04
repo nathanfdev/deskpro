@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import jQuery from 'jquery';
-import datepicker from 'jquery-ui/datepicker';
+import datetimepicker from 'jquery-ui-timepicker-addon';
 
 export class Calendar extends React.Component {
 
@@ -14,9 +14,12 @@ export class Calendar extends React.Component {
     const { value, onChange } = this.props;
     const $datePicker = jQuery(ReactDOM.findDOMNode(this));
 
-    $datePicker.datepicker({
+    $datePicker.datetimepicker({
       showButtonPanel: true,
       currentText: value,
+      controlType: 'select',
+      oneLine: true,
+      timeFormat: 'hh:mm tt',
       onSelect: newDate => onChange(newDate)
     });
   }
