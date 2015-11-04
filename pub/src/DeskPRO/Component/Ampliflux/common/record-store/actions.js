@@ -43,8 +43,11 @@ export function setRequestRecords(defaultMode = MODE_APPEND) {
       ids = [];
     }
 
-    if (!Immutable.Map.isMap(records)) {
+    if (!Immutable.Iterable.isIterable(records)) {
       records = Immutable.fromJS(records);
+    }
+    if (!Immutable.Map.isMap(records)) {
+      records = mapKeyedFromArray(records, 'id');
     }
 
     if (collectIds) {
