@@ -121,10 +121,11 @@ class SafeFile
 
             return $res;
         } else {
-            $p = strtolower(str_replace('\\', '/', $path));
+            $p = str_replace('\\', '/', $path);
             if (@is_dir($p)) {
                 $p = rtrim($p, '/').'/';
             }
+            $p = strtolower($p);
 
             return $p;
         }

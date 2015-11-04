@@ -114,4 +114,9 @@ class SafeFileTest extends \DpUnitTestCase
         $this->assertFalse(SafeFile::isValid('/example/foo/bar/baz/exact.txt', '/example/foo/bar/baz/'));
         $this->assertFalse(SafeFile::isValid('/example/foo/bar/baz/exact.txt', array('/example/foo/bar/baz/', '/example/foo/bar/baz/exact.txt')));
     }
+
+    public function testCase()
+    {
+        $this->assertTrue(SafeFile::matchesList(__FILE__, strtoupper(__DIR__)));
+    }
 }
