@@ -51,9 +51,9 @@ class TicketListTable
         $this->ticket_category     = $ticket_category;
         $this->ticket_type         = $ticket_type;
         $this->title               = $title;
-        $this->page_name           = $ticket_type.'_page';
-        $this->sort_name           = $ticket_type.'_sort';
-        $this->sort_direction_name = $ticket_type.'_sort_direction';
+        $this->page_name           = $ticket_category.'_page';
+        $this->sort_name           = $ticket_category.'_sort';
+        $this->sort_direction_name = $ticket_category.'_sort_direction';
         $this->ticket_filter       = null;
         $this->pager               = null;
     }
