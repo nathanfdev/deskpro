@@ -4329,10 +4329,9 @@ h1.fancy-header {
 
 .slider-list {
   @include blank-list;
-
   display: block;
-  margin-bottom: 20px;
-  padding-bottom: 20px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
   border-bottom: 1px solid $divider-color;
   line-height: 1em;
 
@@ -4426,7 +4425,7 @@ h1.fancy-header {
   @include blank-list;
 
   display: block;
-  margin-bottom: 18px;
+  margin-bottom: 10px;
   border-bottom: 1px solid $divider-color;
 
   li {
@@ -4683,7 +4682,7 @@ h1.fancy-header {
 
   .feedback-item-controls, .feedback-item-content {
     display: block;
-    padding-top: 10px;
+    padding-top: 0px;
     padding-bottom: 10px;
   }
 
@@ -4695,33 +4694,35 @@ h1.fancy-header {
   .feedback-status {
     display: inline-block;
     float: right;
-    padding: 0 1em;
-    border-bottom: 1px solid $button-color-secondary-darker;
-    border-radius: 199px;
-    background: $button-color-secondary;
+    padding: 1px 10px;
+    border-radius: 2px;
+    background: #36c562;
     color: #ffffff;
     text-transform: uppercase;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
     font-weight: 500;
     font-size: 0.8em;
     a {
       text-decoration: none;
       color: #ffffff;
     }
+
+    i {
+      margin-right: 4px;
+    }
   }
 
   .feedback-item-controls {
     float: left;
-    width: 100px;
+    width: 105px;
 
     a {
       position: relative;
       display: block;
       margin-bottom: 10px;
       padding: 5px 0;
-      width: 85px;
+      width: 95px;
       border: 1px solid $divider-color;
-      border-radius: 4px;
+      border-radius: 2px;
       color: inherit;
       text-align: center;
       text-decoration: none;
@@ -4779,41 +4780,47 @@ h1.fancy-header {
 
     .counter {
       position: absolute;
-      top: -7px;
-      right: -10px;
+      top: -6px;
+      right: -7px;
       display: block;
-      padding: 5px 7px;
+      min-width: 23px;
+      height: 23px;
+      text-align: center;
       border-radius: 199px;
       background: #14d3a1;
       color: #ffffff;
-      font-weight: 600;
-      font-size: 0.85em;
+      font-weight: 700;
+      font-size: 10px;
       line-height: 1em;
+      border: 4px solid #fff;
+      padding-top: 2px;
     }
   }
 
   .feedback-item-content {
     overflow: hidden;
-    padding-left: 15px;
+    padding-left: 10px;
     border-left: 1px solid $divider-color;
 
     h1 {
       font-weight: 400;
-      font-size: 1.3em;
+      font-size: 16px;
+      margin-bottom: 10px;
 
       .text-tag {
-        top: -2px;
+        top: -3px;
         left: 0;
-        margin-right: 5px;
-        padding: 5px 5px;
-        background: $grey;
-        color: $text-color;
+        margin-right: 10px;
+        padding: 7px 10px;
+        background: #eaeaea;
+        color: #ababab;
         &:after {
           display: none;
         }
         a {
           text-decoration: none;
-          color: $text-color;
+          color: inherit;
+          padding-left: 2px;
         }
       }
       a {
@@ -4823,8 +4830,8 @@ h1.fancy-header {
     }
 
     .comment {
-      margin: 5px 0;
-      font-style: italic;
+      margin: 5px 0 10px 0;
+      color: #5f5f5f;
     }
   }
 
