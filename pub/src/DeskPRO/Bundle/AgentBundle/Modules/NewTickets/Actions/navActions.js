@@ -1,10 +1,6 @@
 import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import { editedFilterIdSelector } from '../Selectors/nav';
-import { loadAllDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
-import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
-import { loadAllAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions';
-import { loadAll } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/RecordStores/Actions/languagesActions';
 import { loadPeople as rsLoadPeople, releasePeopleRequest as rsReleasePeopleRequest }
   from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { loadOrganizations as rsLoadOrganizations, releaseOrganizationsRequest as rsReleaseOrganizationsRequest }
@@ -50,12 +46,6 @@ export const initialLoad = createAction(
         resolve(payload);
         loadPersonAndOrganizationIds(payload.filterSetsCount, dispatch);
       });
-
-      // @todo move to app bootstrap
-      dispatch(loadAllDepartments());
-      dispatch(loadAllAgents());
-      dispatch(loadAllAgentTeams());
-      dispatch(loadAll());
     }
   )
 );

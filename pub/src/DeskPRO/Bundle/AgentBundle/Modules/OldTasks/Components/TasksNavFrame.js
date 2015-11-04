@@ -9,8 +9,6 @@ import TaskNavLabels from '../Components/TaskNavLabels';
 import { NavFrameHeader, NavFrame } from '../../Common/Components/NavFrame/index';
 import jQuery from 'jquery';
 
-import { loadAllAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions';
-import { loadAllDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
 import { loadAllProjects } from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/RecordStores/Actions/projectActions';
 import { loadAllTaskLabels } from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/RecordStores/Actions/taskLabelActions';
 
@@ -64,8 +62,6 @@ export default class TasksNavFrame extends React.Component {
     const { dispatch } = this.props;
 
     dispatch(loadAllProjects());
-    dispatch(loadAllAgentTeams());
-    dispatch(loadAllDepartments());
     dispatch(loadAllTaskLabels());
 
     dispatch(TaskActions.loadTasks());

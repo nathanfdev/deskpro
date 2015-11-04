@@ -3,7 +3,6 @@ import { AgentsListItem } from './AgentsListItem';
 import { connect } from 'react-redux';
 
 // agents
-import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 
@@ -27,11 +26,6 @@ export class AgentsList extends Component {
       value: false,
       agents: this.filterAgents.bind(this)
     };
-  }
-
-  componentWillMount() {
-    const { dispatch } = this.props;
-    dispatch(loadAllAgents());
   }
 
   onChange(event) {
