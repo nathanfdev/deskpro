@@ -127,8 +127,9 @@ class TicketLayoutFactory
     protected function verifyRequiredFields(Layout $layout)
     {
         $required_fields = [
-            FormFields::SUBJECT => 0,
-            FormFields::MESSAGE => 0,
+            FormFields::DEPARTMENT => 0,
+            FormFields::SUBJECT    => 0,
+            FormFields::MESSAGE    => 0,
         ];
 
         /** @var \Application\DeskPRO\TicketLayout\LayoutField $layout_field */
