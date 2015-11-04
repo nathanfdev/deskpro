@@ -52,7 +52,6 @@ use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
-use Application\DeskPRO\TicketLayout\LayoutField;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Application\DeskPRO\Tickets\TicketActions\AgentAction;
@@ -371,7 +370,7 @@ class TicketController extends AbstractController
         if ($this->person->hasPerm('agent_problems.view')) {
             $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
                 array('is_open' => true),
-                array('title'   => 'asc')
+                array('title' => 'asc')
             );
 
             if ($problem = $ticket->problems->first()) {
@@ -1792,9 +1791,9 @@ class TicketController extends AbstractController
             $hidden_data = $this->_getHiddenBarData($ticket);
 
             return $this->createJsonResponse(array(
-                'success'              => true,
-                'ticket_deleted'       => true,
-                'hidden_html'          => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', array(
+                'success'        => true,
+                'ticket_deleted' => true,
+                'hidden_html'    => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', array(
                     'ticket'           => $ticket,
                     'ticket_perms'     => $this->_getTicketPerms($ticket),
                     'ticket_deleted'   => $hidden_data['ticket_deleted'],
@@ -1924,8 +1923,8 @@ class TicketController extends AbstractController
         $this->container->getBlobStorage()->deleteBlobRecord($blob);
 
         return $this->createJsonResponse(array(
-            'success'                        => true,
-            'message_html'                   => $this->renderView('AgentBundle:Ticket:ticket-message.html.twig', array(
+            'success'      => true,
+            'message_html' => $this->renderView('AgentBundle:Ticket:ticket-message.html.twig', array(
                 'message'                    => $message,
                 'ticket_message_attachments' => $ticket_message_attachments,
                 'ticket_attachments'         => $ticket_attachments,
@@ -2072,6 +2071,16 @@ class TicketController extends AbstractController
                         $this->em->flush();
                     }
 
+                    if ($this->request->request->has('custom_person_fields')) {
+                        $person_field_manager->saveFormToObject($this->request->get('custom_person_fields') ?: array(), $ticket->person);
+                        $this->em->persist($ticket->person);
+                    }
+
+                    if ($this->request->request->has('custom_org_fields') && $ticket->person->organization) {
+                        $org_field_manager->saveFormToObject($this->request->get('custom_org_fields') ?: array(), $ticket->person->organization);
+                        $this->em->persist($ticket->person->organization);
+                    }
+
                     if ($this->settings->get('core.problems.enabled')) {
                         if (isset($actions['problem_id'])) {
                             $id    = (int) $actions['problem_id'];
@@ -2142,7 +2151,7 @@ class TicketController extends AbstractController
         if ($this->person->hasPerm('agent_problems.view')) {
             $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
                 array('is_open' => true),
-                array('title'   => 'asc')
+                array('title' => 'asc')
             );
 
             if ($problem = $ticket->problems->first()) {
@@ -2661,8 +2670,8 @@ class TicketController extends AbstractController
         $this->em->flush();
 
         return $this->createJsonResponse(array(
-            'inserted'           => true,
-            'html'               => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
+            'inserted' => true,
+            'html'     => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
                 'ticket_perms'   => $this->_getTicketPerms($ticket),
                 'ticket'         => $ticket,
                 'charge'         => $charge,
@@ -2765,7 +2774,6 @@ class TicketController extends AbstractController
 
         $field_manager->saveFormToObject($custom_fields, $charge);
         if ($changes = $charge->getStateChangeRecorder()->getChanges()) {
-
             $class      = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
             $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
             $obj        = unserialize($serialized);
@@ -2790,8 +2798,8 @@ class TicketController extends AbstractController
         $billing_fields[$charge['id']] = $field_manager->getDisplayArrayForObject($charge);
 
         return $this->createJsonResponse(array(
-            'updated'            => true,
-            'html'               => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
+            'updated' => true,
+            'html'    => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
                 'ticket'         => $ticket,
                 'charge'         => $charge,
                 'billing_fields' => $billing_fields,
@@ -2886,8 +2894,8 @@ class TicketController extends AbstractController
             $tm->saveTicket($ticket, $context);
 
             $data = array(
-                'inserted'         => true,
-                'html'             => $this->renderView('AgentBundle:Ticket:view-sla-row.html.twig', array(
+                'inserted' => true,
+                'html'     => $this->renderView('AgentBundle:Ticket:view-sla-row.html.twig', array(
                     'ticket'       => $ticket,
                     'ticket_sla'   => $ticket_sla,
                     'ticket_perms' => $this->_getTicketPerms($ticket),
@@ -3012,9 +3020,9 @@ class TicketController extends AbstractController
         $hidden_data = $this->_getHiddenBarData($ticket);
 
         return $this->createJsonResponse(array(
-            'success'              => true,
-            'banned'               => $this->in->getBool('ban'),
-            'hidden_html'          => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', array(
+            'success'     => true,
+            'banned'      => $this->in->getBool('ban'),
+            'hidden_html' => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', array(
                 'ticket'           => $ticket,
                 'ticket_perms'     => $this->_getTicketPerms($ticket),
                 'ticket_deleted'   => $hidden_data['ticket_deleted'],
@@ -3057,8 +3065,8 @@ class TicketController extends AbstractController
         $hidden_data = $this->_getHiddenBarData($ticket);
 
         return $this->createJsonResponse(array(
-            'success'              => true,
-            'hidden_html'          => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', array(
+            'success'     => true,
+            'hidden_html' => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', array(
                 'ticket'           => $ticket,
                 'ticket_perms'     => $this->_getTicketPerms($ticket),
                 'ticket_deleted'   => $hidden_data['ticket_deleted'],
@@ -3802,7 +3810,7 @@ class TicketController extends AbstractController
 
         $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
             array('is_open' => true),
-            array('title'   => 'asc')
+            array('title' => 'asc')
         );
 
         $agent_map = array();
@@ -3974,17 +3982,12 @@ class TicketController extends AbstractController
             $validator = new \Application\AgentBundle\Validator\NewTicketValidator();
             $layout    = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
 
-            // agent newticket form has a quick create-user form
-            // which doesnt include custom fields at the moment so
-            // remove them from validator so we can still create the ticket
-            $layout = $layout->filter(function (LayoutField $f) {
-                return $f->getFieldType() != 'user_field';
-            });
-
-            $layout                    = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newticket->getMockTicket());
-            $newticket->ticket_fields  = $this->request->request->get('custom_fields', array());
-            $newticket->billing_fields = $this->request->request->get('billing_fields', array());
-            $newticket->status         = $set_status;
+            $layout                          = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newticket->getMockTicket());
+            $newticket->ticket_fields        = $this->request->request->get('custom_fields', array());
+            $newticket->custom_person_fields = $this->request->request->get('custom_person_fields', array());
+            $newticket->custom_org_fields    = $this->request->request->get('custom_org_fields', array());
+            $newticket->billing_fields       = $this->request->request->get('billing_fields', array());
+            $newticket->status               = $set_status;
             $validator->setLayout($layout);
             $newticket->setLayout($layout);
 
@@ -4381,9 +4384,11 @@ class TicketController extends AbstractController
         if ($org = $person->organization) {
             $manager->merge($new_custom_fields, $manager->createFormForOwner($mock, $org, $layout, array('allow_edit' => true)));
         }
-        $custom_person_fields = $this->container->getPersonFieldManager()->getDisplayArrayForObject($person);
-        $custom_org_fields    = $person->organization
-            ? $this->container->getOrgFieldManager()->getDisplayArrayForObject($person->organization)
+        $custom_person_fields_form = $this->get('form.factory')->createNamedBuilder('custom_person_fields', 'form');
+        $custom_org_fields_form    = $this->get('form.factory')->createNamedBuilder('custom_org_fields', 'form');
+        $custom_person_fields      = $this->container->getPersonFieldManager()->getDisplayArrayForObject($person, $custom_person_fields_form);
+        $custom_org_fields         = $person->organization
+            ? $this->container->getOrgFieldManager()->getDisplayArrayForObject($person->organization, $custom_org_fields_form)
             : array();
 
         return $this->render('AgentBundle:Ticket:newticket-custom-fields-row.html.twig', array(
