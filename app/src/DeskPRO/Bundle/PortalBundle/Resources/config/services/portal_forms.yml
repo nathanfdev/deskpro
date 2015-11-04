@@ -252,6 +252,12 @@ services:
       - { name: form.type, alias: deskpro_department }
 
 
+  form.combined:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CombinedType
+    tags:
+      - { name: form.type, alias: deskpro_combined_type }
+
+
   form.product:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ProductType
     tags:
