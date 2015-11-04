@@ -17,6 +17,8 @@ export class Calendar extends React.Component {
     this
       .getInput()
       .datetimepicker({
+        changeMonth: true,
+        changeYear: true,
         showButtonPanel: true,
         controlType: 'select',
         oneLine: true,
