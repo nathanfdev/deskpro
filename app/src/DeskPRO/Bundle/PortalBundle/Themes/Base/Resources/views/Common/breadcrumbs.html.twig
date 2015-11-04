@@ -7,7 +7,8 @@ Uncomment this section to show buttons to other sections of the helpdesk
   {% if breadcrumbs is defined %}
     {% for item in breadcrumbs %}
       <li>
-        <a href="{{ item.url }}">
+        <a href="{{ item.url }}"{% if loop.last %} class="active-page"{% endif %}><!-- TODO remove whitespace from the generated text (else we get blank space underlines) -->
+          {% if loop.first %}<i class="fa fa-home"></i>{% endif %}
           {% if item.phrase %}
             {{ phrase(item.phrase) }}
           {% elseif item.var.title is defined %}
@@ -23,4 +24,3 @@ Uncomment this section to show buttons to other sections of the helpdesk
     {% endfor %}
   {% endif %}
 </ul>
-<hr/>
