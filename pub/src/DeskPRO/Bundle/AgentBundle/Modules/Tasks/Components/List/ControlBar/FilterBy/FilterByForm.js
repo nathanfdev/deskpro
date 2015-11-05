@@ -1,13 +1,28 @@
-import React from 'react';
-import { Popup, Header } from '../../../Form/index';
+import React, { PropTypes } from 'react';
+import {
+  BaseForm,
+  Popup,
+  Header,
+  AgentsList,
+  AgentTeamsList,
+  DepartmentsList } from '../../../Form/index';
 
-export class FilterByForm extends React.Component {
+export class FilterByForm extends BaseForm {
+
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    agents: PropTypes.object.isRequired,
+    agentTeams: PropTypes.object.isRequired,
+    departments: PropTypes.object.isRequired
+  };
 
   onSubmit = event => {
     event.preventDefault();
   };
 
   render() {
+    const { departments, agentTeams, agents } = this.props;
+
     return (
       <Popup indicator="none">
         <Header>
@@ -24,10 +39,19 @@ export class FilterByForm extends React.Component {
             <div className="sidebar-hover-content-box">
               <h2>Assignment</h2>
               <div className="sidebar-hover-checkbox-collection">
+                <DepartmentsList values={departments}
+                                 selected={this.state.departments}
+                                 onChange={this.onChangeDepartments} />
               </div>
               <div className="sidebar-hover-checkbox-collection">
+                <AgentTeamsList values={agentTeams}
+                                selected={this.state.agentTeams}
+                                onChange={this.onChangeAgentTeams} />
               </div>
               <div className="sidebar-hover-checkbox-collection">
+                <AgentsList values={agents}
+                            selected={this.state.agents}
+                            onChange={this.onChangeAgents} />
               </div>
             </div>
             <div className="sidebar-hover-content-box">
