@@ -7,11 +7,11 @@ import { Provider } from 'react-redux';
 import { combineReducerHierarchy } from 'Ampliflux';
 import * as ampMiddleware from 'Ampliflux/middleware';
 import AppReducers from './AgentApp_Reducers.js';
-import { DpAppContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/DpAppContainer';
+import { DpAppContainer } from './Modules/Application/Components/DpAppContainer';
+import { preloadData } from './Modules/Application/Actions/bootstrapActions';
 import { batchedUpdatesMiddleware } from 'redux-batched-updates';
 import { IntlProvider } from 'react-intl';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
-
 import Immutable from 'immutable';
 window.Immutable = Immutable;
 
@@ -60,6 +60,7 @@ export default class AgentApp {
     );
     const makeStore = compose(middleware)(createStore);
     const store = makeStore(reducer);
+    store.dispatch(preloadData());
 
     ReactDOM.render(
       <div>

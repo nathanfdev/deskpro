@@ -3,19 +3,38 @@ import classNames from 'classnames';
 import { pureRender } from 'Ampliflux';
 import { connect } from 'react-redux';
 import { updateRoutingState } from '../../../Application/Actions/routingActions';
-
+import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
 
 class BaseList extends Component {
-  renderCount(count, active) {
+  renderCount(count) {
     if (count >= 0) {
-      const classes = classNames('list-counter', { 'active': active });
-
       return (
         <div className="list-counter-bucket">
-          <a className={classes} href="#">{count}</a>
+          {this.renderItemControl()}
+          <a className="list-counter active" href="#">{count}</a>
         </div>
       );
     }
+  }
+
+  renderItemControl() {
+    const { onItemControlClick } = this.props;
+
+    if (!onItemControlClick) {
+      return '';
+    }
+
+    const onClick = (e) => {
+      e.preventDefault();
+      onItemControlClick(e);
+    };
+
+    return (
+      <a href="" className="list-counter-dropdown active" onClick={onClick}>
+        <span>&nbsp;</span>
+        <i className="fa fa-angle-down"></i>
+      </a>
+    );
   }
 }
 
@@ -67,7 +86,7 @@ export class ListItem extends BaseList {
 
     return (
       <li className="counter-display">
-        {this.renderCount(count, active)}
+        {this.renderCount(count)}
         <a href="#" className={classes} onClick={onClick}>
           {label}
         </a>
@@ -111,6 +130,7 @@ export class ListItemStatefulContainer extends Component {
 export class NestedList extends BaseList {
   static propTypes = {
     onClick: PropTypes.func.isRequired,
+    onItemControlClick: PropTypes.func,
     groups: PropTypes.object,
     items: PropTypes.object,
     depth: PropTypes.number,
@@ -129,17 +149,14 @@ export class NestedList extends BaseList {
     const hasNested = nested && nested.length;
 
     const parts = {};
-    if (hasNested || this.props.alwaysExpanded) {
+    const label = this.props.groups[group] ? this.props.groups[group] : '—';
+    if (hasNested) {
       const expanded = this.state.expanded.indexOf(group) > -1;
-      parts.label = (
-        <span className="icon">
-          <i className={'fa fa-caret-' + (expanded ? 'down' : 'right')}></i>
-          {this.props.groups[group]}
-        </span>
-      );
+      const caret = this.props.alwaysExpanded ? '' : <i className={'fa fa-caret-' + (expanded ? 'down' : 'right')}></i>;
+      parts.label = <span className="icon">{caret} {label}</span>;
       parts.nested = this.renderNested(nested, group, depth);
     } else {
-      parts.label = this.props.groups[group];
+      parts.label = label;
       parts.nested = '';
     }
 
@@ -188,7 +205,7 @@ export class NestedList extends BaseList {
     if (hasNested && isExpanded) {
       return (
         <ul className={'with-connectors depth-' + depth}>
-          {nested.map(item => this.renderListItem(item, depth + 1))}
+          {nested.map(item => this.renderListItem({...item, parent: group}, depth + 1))}
         </ul>
       );
     }
@@ -197,9 +214,15 @@ export class NestedList extends BaseList {
   renderListItem({nested, group, count}, depth) {
     this.ensureValidDepth(depth);
     const parts = this.getListItemParts(nested, group, depth);
+    const { onItemControlClick } = this.props;
 
     return (
-      <ListItem key={group} count={count} onClick={this.toggleExpanded(group)}>
+      <ListItem
+        key={group}
+        count={count}
+        onClick={this.toggleExpanded(group)}
+        onItemControlClick={onItemControlClick ? onItemControlClick(group) : null}
+      >
         <div part="label">{parts.label}</div>
         <div part="nested">{parts.nested}</div>
       </ListItem>
@@ -216,6 +239,22 @@ export class NestedList extends BaseList {
       <ul className={className}>
         {this.props.items.map(item => this.renderListItem(item, depth))}
       </ul>
+    );
+  }
+}
+
+export class ListItemLabelSpinner extends React.Component {
+  render() {
+    return <Spinner width="14" height="14" />;
+  }
+}
+
+export class ListItemSpinner extends React.Component {
+  render() {
+    return (
+      <div style={{marginTop: '3px', marginBottom: '1px'}}>
+        <Spinner width="20" height="20" marginLeft="10" />
+      </div>
     );
   }
 }

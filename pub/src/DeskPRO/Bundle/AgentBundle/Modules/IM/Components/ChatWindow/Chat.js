@@ -13,7 +13,6 @@ import { SearchForm } from './SearchForm';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 import { addMessage } from '../../Actions/messagesActions';
 
-import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 
 @connect(state => ({
@@ -38,10 +37,6 @@ export class Chat extends React.Component {
       searchTyped: '',
       searchShown: false
     };
-  }
-
-  componentWillMount() {
-    this.props.dispatch(loadAllAgents());
   }
 
   isAgentChat() {

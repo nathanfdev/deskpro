@@ -3,14 +3,11 @@ import { connect } from 'react-redux';
 import * as ui from '../../Actions/uiActions';
 import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
 // agents
-import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 // teams
-import { loadMyAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions';
 import { myAgentTeamsSelector, myAgentTeamsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
 // departmetns
-import { loadMyDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
 import { myDepartmentsSelector, myDepartmentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
 
 @connect(state => ({
@@ -40,13 +37,6 @@ export class Header extends React.Component {
     toggleSearch: PropTypes.func.isRequired,
     online: PropTypes.bool.isRequired
   };
-
-  componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch(loadAllAgents());
-    dispatch(loadMyAgentTeams());
-    dispatch(loadMyDepartments());
-  }
 
   closeChat = () => {
     this.props.dispatch(ui.closeChat());

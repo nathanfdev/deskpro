@@ -31,18 +31,18 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
+use Application\DeskPRO\DBAL\Connection;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Application\DeskPRO\DBAL\Connection;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class TicketsFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
-    private $num_problems = 100;
-    private $num_labels = 100;
+    private $num_problems        = 100;
+    private $num_labels          = 100;
     private $ticket_max_messages = 10;
 
     private $num_tickets = 250;
@@ -72,7 +72,6 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
      */
     private $department_ids;
 
-
     /**
      * @var int[]
      */
@@ -92,6 +91,11 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
      * @var int[]
      */
     private $people_ids;
+
+    /**
+     * @var int - our test user for portal
+     */
+    private $joe_id;
 
     /**
      * @var string[]
@@ -133,39 +137,41 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
     public function load(ObjectManager $manager)
     {
         $this->manager = $manager;
-        $this->db = $this->container->get('database_connection');
+        $this->db      = $this->container->get('database_connection');
         $this->initIds();
         $this->loadProblems();
         $this->loadLabels();
         $this->loadTickets();
+        $this->loadTicketsForJoe();
         $this->loadTicketMessages();
         $this->loadTicketProps();
     }
 
     private function initIds()
     {
-        $this->agent_ids       = $this->db->fetchAllCol("SELECT id FROM people WHERE is_agent = 1");
-        $this->agent_team_ids  = $this->db->fetchAllCol("SELECT id FROM agent_teams");
-        $this->people_ids      = $this->db->fetchAllCol("SELECT id FROM people WHERE is_agent = 0");
-        $this->department_ids  = $this->db->fetchAllCol("SELECT id FROM departments WHERE is_tickets_enabled = 1");
+        $this->agent_ids      = $this->db->fetchAllCol('SELECT id FROM people WHERE is_agent = 1');
+        $this->agent_team_ids = $this->db->fetchAllCol('SELECT id FROM agent_teams');
+        $this->people_ids     = $this->db->fetchAllCol('SELECT id FROM people WHERE is_agent = 0');
+        $this->joe_id         = $this->db->fetchColumn("SELECT people.id FROM people JOIN people_emails pe ON people.id = pe.person_id WHERE pe.email = 'joe@deskprodemo.com';");
+        $this->department_ids = $this->db->fetchAllCol('SELECT id FROM departments WHERE is_tickets_enabled = 1');
     }
 
     private function loadProblems()
     {
         $batch = [];
 
-        for ($i = 0; $i < $this->num_problems; $i++) {
+        for ($i = 0; $i < $this->num_problems; ++$i) {
             $batch[] = array(
                 'person_id' => $this->faker->randomElement($this->agent_ids),
-                'title' => $this->faker->sentence(4),
-                'created' => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'is_open' => (int)$this->faker->boolean(25)
+                'title'     => $this->faker->sentence(4),
+                'created'   => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'is_open'   => (int) $this->faker->boolean(25),
             );
         }
 
         $this->db->batchInsert('problems', $batch);
 
-        $this->problem_ids = $this->db->fetchAllCol("SELECT id FROM problems");
+        $this->problem_ids = $this->db->fetchAllCol('SELECT id FROM problems');
     }
 
     private function loadLabels()
@@ -174,10 +180,10 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
 
         $batch = [];
 
-        for ($i = 0; $i < $this->num_labels; $i++) {
+        for ($i = 0; $i < $this->num_labels; ++$i) {
             $l = $this->faker->unique()->company;
             if ($l) {
-                $l = strtolower($l);
+                $l       = strtolower($l);
                 $batch[] = array('label_type' => 'ticket', 'label' => $l, 'color' => $this->faker->hexColor, 'total' => 0);
             }
         }
@@ -191,41 +197,80 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
     {
         $batch = [];
 
-        for ($i = 0; $i < $this->num_tickets; $i++) {
-
+        for ($i = 0; $i < $this->num_tickets; ++$i) {
             if ($this->faker->boolean(60)) {
                 $status = 'awaiting_agent';
             } else {
                 $status = $this->faker->randomElement(array('awaiting_user', 'resolved'));
             }
 
-            $subj = $this->faker->realText($this->faker->numberBetween(10, 20));
+            $subj    = $this->faker->realText($this->faker->numberBetween(10, 20));
             $batch[] = array(
-                'department_id'            => $this->faker->randomElement($this->department_ids),
-                'agent_id'                 => $this->faker->boolean(90) ? $this->faker->randomElement($this->agent_ids) : null,
-                'person_id'                => $this->faker->randomElement($this->people_ids),
-                'agent_team_id'            => $this->agent_team_ids && $this->faker->boolean(40) ? $this->faker->randomElement($this->agent_team_ids) : null,
-                'ref'                      => Strings::random(15, Strings::CHARS_ALPHANUM_IU),
-                'status'                   => $status,
-                'urgency'                  => $this->faker->numberBetween(1, 10),
-                'subject'                  => $subj,
-                'original_subject'         => $subj,
-                'date_created'             => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_resolved'            => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_archived'            => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_first_agent_assign'  => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_first_agent_reply'   => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_last_agent_reply'    => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_last_user_reply'     => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_agent_waiting'       => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_user_waiting'        => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_status'              => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'department_id'           => $this->faker->randomElement($this->department_ids),
+                'agent_id'                => $this->faker->boolean(90) ? $this->faker->randomElement($this->agent_ids) : null,
+                'person_id'               => $this->faker->randomElement($this->people_ids),
+                'agent_team_id'           => $this->agent_team_ids && $this->faker->boolean(40) ? $this->faker->randomElement($this->agent_team_ids) : null,
+                'ref'                     => Strings::random(15, Strings::CHARS_ALPHANUM_IU),
+                'status'                  => $status,
+                'urgency'                 => $this->faker->numberBetween(1, 10),
+                'subject'                 => $subj,
+                'original_subject'        => $subj,
+                'date_created'            => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_resolved'           => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_archived'           => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_first_agent_assign' => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_first_agent_reply'  => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_last_agent_reply'   => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_last_user_reply'    => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_agent_waiting'      => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_user_waiting'       => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_status'             => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
             );
         }
 
         $this->db->batchInsert('tickets', $batch);
 
-        $this->ticket_ids = $this->db->fetchAllCol("SELECT id FROM tickets");
+        $this->ticket_ids = $this->db->fetchAllCol('SELECT id FROM tickets');
+    }
+
+    private function loadTicketsForJoe()
+    {
+        $batch = [];
+
+        for ($i = 0; $i < $this->num_tickets; ++$i) {
+            if ($this->faker->boolean(33)) {
+                $status = 'awaiting_agent';
+            } else {
+                $status = $this->faker->randomElement(array('awaiting_user', 'resolved'));
+            }
+
+            $subj    = $this->faker->realText($this->faker->numberBetween(40, 60));
+            $batch[] = array(
+                'department_id'           => $this->faker->randomElement($this->department_ids),
+                'agent_id'                => $this->faker->boolean(90) ? $this->faker->randomElement($this->agent_ids) : null,
+                'person_id'               => $this->joe_id,
+                'agent_team_id'           => $this->agent_team_ids && $this->faker->boolean(40) ? $this->faker->randomElement($this->agent_team_ids) : null,
+                'ref'                     => Strings::random(15, Strings::CHARS_ALPHANUM_IU),
+                'status'                  => $status,
+                'urgency'                 => $this->faker->numberBetween(1, 10),
+                'subject'                 => $subj,
+                'original_subject'        => $subj,
+                'date_created'            => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_resolved'           => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_archived'           => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_first_agent_assign' => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_first_agent_reply'  => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_last_agent_reply'   => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_last_user_reply'    => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_agent_waiting'      => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_user_waiting'       => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_status'             => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+            );
+        }
+
+        $this->db->batchInsert('tickets', $batch);
+
+        $this->ticket_ids = $this->db->fetchAllCol('SELECT id FROM tickets');
     }
 
     private function loadTicketMessages()
@@ -234,33 +279,33 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
 
         foreach ($this->ticket_ids as $ticket_id) {
             $num = $this->faker->numberBetween(1, $this->ticket_max_messages);
-            for ($i = 0; $i < $num; $i++) {
+            for ($i = 0; $i < $num; ++$i) {
                 $as_agent = $this->faker->boolean(50);
 
-                $text = [];
+                $text   = [];
                 $text[] = $this->faker->realText($this->faker->numberBetween(100, 300));
 
                 if ($this->faker->boolean(50)) {
                     $text[] = $this->faker->realText($this->faker->numberBetween(100, 300));
                 }
                 if ($this->faker->boolean(20)) {
-                    $text[] = '<img src="' . $this->faker->imageUrl(200, 100, 'cats') . '" />';
+                    $text[] = '<img src="'.$this->faker->imageUrl(200, 100, 'cats').'" />';
                 }
                 if ($this->faker->boolean(50)) {
-                    $text[] = '<strong>' . $this->faker->realText($this->faker->numberBetween(10, 150)) . '</strong>';
+                    $text[] = '<strong>'.$this->faker->realText($this->faker->numberBetween(10, 150)).'</strong>';
                 }
                 if ($this->faker->boolean(10)) {
                     $text[] = $this->faker->realText($this->faker->numberBetween(150, 800));
                 }
 
-                $text = implode("<br/><br/>", $text);
+                $text = implode('<br/><br/>', $text);
 
                 $batch[] = array(
                     'ticket_id'       => $ticket_id,
                     'person_id'       => $as_agent ? $this->faker->randomElement($this->agent_ids) : $this->faker->randomElement($this->people_ids),
                     'date_created'    => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
                     'creation_system' => 'web',
-                    'is_agent_note'   => (int)($as_agent && $this->faker->boolean(10)),
+                    'is_agent_note'   => (int) ($as_agent && $this->faker->boolean(10)),
                     'ip_address'      => $this->faker->ipv4,
                     'hostname'        => $this->faker->domainName,
                     'geo_country'     => $this->faker->countryCode,
@@ -276,26 +321,26 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
     private function loadTicketProps()
     {
         $labels_batch = [];
-        $probs_batch = [];
-        $parts_batch = [];
+        $probs_batch  = [];
+        $parts_batch  = [];
 
         foreach ($this->ticket_ids as $ticket_id) {
             foreach ($this->faker->randomElements($this->labels, $this->faker->numberBetween(1, 5)) as $l) {
                 $labels_batch[] = array('ticket_id' => $ticket_id, 'label' => $l);
             }
             $probs_batch[] = array('ticket_id' => $ticket_id, 'problem_id' => $this->faker->randomElement($this->problem_ids));
-            $people_ids = $this->faker->randomElements($this->people_ids, $this->faker->numberBetween(1, 4));
+            $people_ids    = $this->faker->randomElements($this->people_ids, $this->faker->numberBetween(1, 4));
             foreach ($people_ids as $pid) {
                 $parts_batch[] = array(
                     'ticket_id' => $ticket_id,
-                    'person_id' => $pid
+                    'person_id' => $pid,
                 );
             }
             $people_ids = $this->faker->randomElements($this->agent_ids, $this->faker->numberBetween(1, 2));
             foreach ($people_ids as $pid) {
                 $parts_batch[] = array(
                     'ticket_id' => $ticket_id,
-                    'person_id' => $pid
+                    'person_id' => $pid,
                 );
             }
         }

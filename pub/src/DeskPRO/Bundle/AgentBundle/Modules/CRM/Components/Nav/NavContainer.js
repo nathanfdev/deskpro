@@ -1,8 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../Actions/crmNavActions';
-import { loadAllAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions';
-import { loadAllUserGroups } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/userGroupsActions';
 import { agentTeamNamesSelector }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
 import { userGroupNamesSelector }
@@ -33,8 +31,6 @@ export class NavContainer extends React.Component {
     dispatch(actions.loadTeamsCounts());
     dispatch(actions.loadPersonLabels());
     dispatch(actions.loadOrganizationLabels());
-    dispatch(loadAllUserGroups());
-    dispatch(loadAllAgentTeams());
   }
 
   render() {

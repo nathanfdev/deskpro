@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { createStoreSelectors, createRequestSelectorsBuilder } from 'Ampliflux/common/record-store/selectors';
-import { reduceMapToProperty } from 'DeskPRO/Component/Util/Map';
+import { reduceImmutableToProperty } from 'DeskPRO/Component/Util/Map';
 
 function agentTeamsStateSel(state) {
   return state.RecordStores.Agent.agentTeams;
@@ -26,5 +26,5 @@ export const myAgentTeamsStatusSelector = createSelector(
 
 export const agentTeamNamesSelector = createSelector(
   agentTeamsSelector,
-  teams => reduceMapToProperty('name', teams.toJS())
+  teams => reduceImmutableToProperty('name', teams)
 );

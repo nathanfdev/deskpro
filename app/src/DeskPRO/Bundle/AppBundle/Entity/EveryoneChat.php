@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;

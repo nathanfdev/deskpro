@@ -86,7 +86,7 @@ class LabelTaskTransformer implements DataTransformerInterface
     public function reverseTransform($label)
     {
         if (!$this->task) {
-            return null;
+            return;
         }
 
         if ($this->task->getLabels()->contains($label)) {

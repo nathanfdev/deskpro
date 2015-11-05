@@ -3,7 +3,6 @@ import { TeamsListItem } from './TeamsListItem';
 import { connect } from 'react-redux';
 
 // teams
-import { loadMyAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions';
 import { myAgentTeamsSelector, myAgentTeamsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
 
 @connect(state => ({
@@ -17,11 +16,6 @@ export class TeamsList extends Component {
     teamsStatus: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
   };
-
-  componentWillMount() {
-    const { dispatch } = this.props;
-    dispatch(loadMyAgentTeams());
-  }
 
   render() {
     return (

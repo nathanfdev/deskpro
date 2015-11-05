@@ -31,8 +31,8 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\LabelPerson;
+use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -72,7 +72,7 @@ class FirstAdminFixture extends AbstractFixture implements OrderedFixtureInterfa
 
         // Marks the admin as incomplete so it
         // can be reset via start wizard
-        $label = new LabelPerson();
+        $label        = new LabelPerson();
         $label->label = 'not_user';
         $admin->addLabel($label);
         $manager->persist($label);

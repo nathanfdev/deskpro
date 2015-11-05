@@ -159,3 +159,17 @@ export class IdContainer extends Component {
     );
   }
 }
+
+export class TableCheckbox extends Component {
+  static propTypes = {
+    onClick: PropTypes.func,
+    selected: PropTypes.bool
+  };
+
+  render() {
+    const { selected, onClick } = this.props;
+    return (
+      <input type="checkbox" checked={selected} className="dpw--checkbox" onClick={onClick} />
+    );
+  }
+}

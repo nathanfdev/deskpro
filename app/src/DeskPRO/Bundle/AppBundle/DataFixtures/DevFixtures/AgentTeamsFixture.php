@@ -52,9 +52,9 @@ class AgentTeamsFixture extends AbstractFixture implements OrderedFixtureInterfa
     public function load(ObjectManager $manager)
     {
         foreach (array('Support', 'Level 1', 'Level 2') as $k => $title) {
-            $team = new AgentTeam();
+            $team       = new AgentTeam();
             $team->name = $title;
-            $this->addReference('team.' . $k, $team);
+            $this->addReference('team.'.$k, $team);
             $manager->persist($team);
         }
 

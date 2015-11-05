@@ -119,6 +119,7 @@ class PortalExtension extends \Twig_Extension
             new \Twig_SimpleFunction('user_up_voted', array($this, 'didUserUpVote')),
             new \Twig_SimpleFunction('user_down_voted', array($this, 'didUserDownVote')),
             new \Twig_SimpleFunction('file_css_class', array($this, 'getFileCssClass')),
+            new \Twig_SimpleFunction('ticket_view', array($this, 'getTicketView')),
         );
     }
 
@@ -181,6 +182,11 @@ class PortalExtension extends \Twig_Extension
         }
 
         return;
+    }
+
+    public function getTicketView(Entity\Ticket $ticket)
+    {
+        return $this->container->get('tickets.view')->getUserTicketView($ticket);
     }
 
     public function getPublicTicketId($ticket)

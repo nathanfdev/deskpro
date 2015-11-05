@@ -95,7 +95,7 @@ class PortalController extends AbstractController
         } else {
             $page_vars = array(
                 'user'         => $user,
-                'ticket_count' => $this->getTicketsDataService()->getTicketCount($user),
+                'ticket_count' => $this->getTicketsDataService()->getTicketCount($user, 'open'),
             );
         }
 
@@ -117,8 +117,8 @@ class PortalController extends AbstractController
         $page_vars = array(
             'display_registration_link' => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(
             ),
-                'ticket_count'              => $user ? $this->getTicketsDataService()->getTicketCount($user) : 0,
-                'user'                      => $user,
+            'ticket_count'                  => $user ? $this->getTicketsDataService()->getTicketCount($user, 'open') : 0,
+            'user'                          => $user,
             'login_text_button_usersources' => $auth_manager->getLoginTextButtonUsersources(),
             'login_icon_usersources'        => $auth_manager->getLoginIconUsersources(),
             'show_forgot_password'          => $auth_manager->isForgotPasswordVisible(),

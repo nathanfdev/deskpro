@@ -32,8 +32,8 @@
 namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor;
 
 use Doctrine\Common\Annotations\Reader;
-use Nelmio\ApiDocBundle\Util\DocCommentExtractor;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Nelmio\ApiDocBundle\Util\DocCommentExtractor;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Resource\FileResource;
@@ -77,11 +77,12 @@ class CachingApiDocExtractor extends ApiDocExtractor
         parent::__construct($container, $router, $reader, $commentExtractor, $controllerNameParser, $handlers, $annotationsProviders);
 
         $this->cacheFile = $cacheFile;
-        $this->debug = $debug;
+        $this->debug     = $debug;
     }
 
     /**
-     * @param  string      $view View name
+     * @param string $view View name
+     *
      * @return array|mixed
      */
     public function all($view = ApiDoc::DEFAULT_VIEW)
@@ -91,7 +92,7 @@ class CachingApiDocExtractor extends ApiDocExtractor
         if (!$cache->isFresh()) {
             $resources = array();
             foreach ($this->getRoutes() as $route) {
-                if ( null !== ($method = $this->getReflectionMethod($route->getDefault('_controller')))
+                if (null !== ($method = $this->getReflectionMethod($route->getDefault('_controller')))
                     && null !== ($annotation = $this->reader->getMethodAnnotation($method, self::ANNOTATION_CLASS))) {
                     $file        = $method->getDeclaringClass()->getFileName();
                     $resources[] = new FileResource($file);
@@ -116,12 +117,12 @@ class CachingApiDocExtractor extends ApiDocExtractor
     }
 
     /**
-     * @param  string      $view
+     * @param string $view
+     *
      * @return ConfigCache
      */
     private function getViewCache($view)
     {
         return new ConfigCache($this->cacheFile.'.'.$view, $this->debug);
     }
-
 }

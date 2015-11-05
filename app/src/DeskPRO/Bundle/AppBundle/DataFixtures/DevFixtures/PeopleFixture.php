@@ -31,15 +31,15 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
+use Application\DeskPRO\DBAL\Connection;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Application\DeskPRO\DBAL\Connection;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class PeopleFixtures extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
+class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
     private $num_people = 500;
     private $num_agents = 10;
@@ -94,7 +94,7 @@ class PeopleFixtures extends AbstractFixture implements ContainerAwareInterface,
     public function load(ObjectManager $manager)
     {
         $this->manager = $manager;
-        $this->db = $this->container->get('database_connection');
+        $this->db      = $this->container->get('database_connection');
 
         $this->loadPeople($this->num_agents, true);
         $this->loadPeople($this->num_people, false);
@@ -104,41 +104,41 @@ class PeopleFixtures extends AbstractFixture implements ContainerAwareInterface,
     {
         $batch = [];
 
-        $creation_string = 'api.dev.' . time();
+        $creation_string = 'api.dev.'.time();
 
-        for ($i = 0; $i < $num; $i++) {
+        for ($i = 0; $i < $num; ++$i) {
             $fname = $this->faker->firstName;
             $lname = $this->faker->lastName;
 
             $batch[] = [
-                'is_contact' => 1,
-                'is_user' => 1,
-                'is_agent' => (int)$is_agent,
-                'can_agent' => (int)1,
-                'is_confirmed' => 1,
+                'is_contact'         => 1,
+                'is_user'            => 1,
+                'is_agent'           => (int) $is_agent,
+                'can_agent'          => (int) 1,
+                'is_confirmed'       => 1,
                 'is_agent_confirmed' => 1,
-                'creation_system' => $creation_string,
-                'name' => "$fname $lname",
-                'first_name' => $fname,
-                'last_name' => $lname,
-                'secret_string' => Strings::random(40),
-                'timezone' => $this->faker->timezone,
-                'password' => '$2a$11$dsjhQYwUUT/W7tqbp4D2iuqksIV4gpNxFmEvbUDh7Li96R6WO5u02',
-                'password_scheme' => 'bcrypt',
-                'salt' => Strings::random(40),
-                'date_created' => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_password_set' => $this->faker->dateTimeThisMonth->format('Y-m-d H:i:s'),
+                'creation_system'    => $creation_string,
+                'name'               => "$fname $lname",
+                'first_name'         => $fname,
+                'last_name'          => $lname,
+                'secret_string'      => Strings::random(40),
+                'timezone'           => $this->faker->timezone,
+                'password'           => '$2a$11$dsjhQYwUUT/W7tqbp4D2iuqksIV4gpNxFmEvbUDh7Li96R6WO5u02',
+                'password_scheme'    => 'bcrypt',
+                'salt'               => Strings::random(40),
+                'date_created'       => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_password_set'  => $this->faker->dateTimeThisMonth->format('Y-m-d H:i:s'),
             ];
         }
 
         $this->db->batchInsert('people', $batch);
 
-        $people_ids = $this->db->fetchAllCol("SELECT id FROM people WHERE creation_system = ?", array($creation_string));
+        $people_ids = $this->db->fetchAllCol('SELECT id FROM people WHERE creation_system = ?', array($creation_string));
 
         $batch = [];
         foreach ($people_ids as $pid) {
-            $email = $this->faker->safeEmail;
-            list (, $domain) = explode('@', $email);
+            $email          = $this->faker->safeEmail;
+            list(, $domain) = explode('@', $email);
 
             $batch[] = [
                 'person_id'      => $pid,
@@ -151,11 +151,11 @@ class PeopleFixtures extends AbstractFixture implements ContainerAwareInterface,
         }
 
         $this->db->batchInsert('people_emails', $batch, true);
-        $this->db->executeUpdate("
+        $this->db->executeUpdate('
             UPDATE people
             JOIN people_emails ON (people_emails.person_id = people.id)
             SET people.primary_email_id = people_emails.id
             WHERE people.primary_email_id IS NULL
-        ");
+        ');
     }
 }

@@ -3,7 +3,6 @@ import { DepartmentsListItem } from './DepartmentsListItem';
 import { connect } from 'react-redux';
 
 // departmetns
-import { loadMyDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
 import { myDepartmentsSelector, myDepartmentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
 
 @connect(state => ({
@@ -17,11 +16,6 @@ export class DepartmentsList extends Component {
     departmentsStatus: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
   };
-
-  componentWillMount() {
-    const { dispatch } = this.props;
-    dispatch(loadMyDepartments());
-  }
 
   render() {
     return (
