@@ -221,7 +221,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     /**
      * Find an existing data record for a field id.
      *
-     * @param int $field_id
+     * @param int|CustomDefOrganization $field_id
      *
      * @return CustomDataOrganization
      */

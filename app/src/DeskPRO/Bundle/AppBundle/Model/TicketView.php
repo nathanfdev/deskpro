@@ -31,9 +31,9 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Model;
 
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * These mirror the link annotations from Application\DeskPRO\Entity\Ticket.
@@ -48,29 +48,79 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
  */
 class TicketView
 {
-    public $ticket;
-    public $attribute_list = array();
+    /**
+     * @var Ticket
+     */
+    protected $ticket;
 
-    public function __call($name, $args)
+    /**
+     * @var TicketViewProperty[]
+     */
+    protected $properties = array();
+
+    public function __construct(Ticket $ticket)
     {
-        return $this->__get($name);
+        $this->properties = [];
+        $this->ticket     = $ticket;
     }
 
-    public function __get($name)
+    public function getTicket()
     {
-        if (isset($this->attribute_list[$name])) {
-            return $this->attribute_list[$name];
-        }
-        if (isset($this->ticket->$name)) {
-            return $this->ticket->$name;
-        }
+        return $this->ticket;
+    }
 
-        // try an accesssor so twig will call the right function to get the value
-        $accessor = PropertyAccess::createPropertyAccessor();
-        try {
-            return $accessor->getValue($this->ticket, $name);
-        } catch (\Exception $e) {
-            return;
+    /**
+     * A proxy for the object router to use when generating links.
+     *
+     * @return string
+     */
+    public function getAuth()
+    {
+        return $this->ticket->getAuth();
+    }
+
+    /**
+     * Gets a ticket proprty by ID.
+     *
+     * The IDs are consts on this class, but also require a DB ID separated by _. For example, ticket_def_6.
+     * IDs are generated consistently in the TicketViewService
+     *
+     * @param string $id the id of the property
+     *
+     * @return TicketViewProperty
+     */
+    public function getProperty($id)
+    {
+        if ($this->hasProperty($id)) {
+            return $this->properties[$id];
         }
+    }
+
+    public function addProperty($id, $label, $value, $is_always_visible = false)
+    {
+        $this->appendProperty(new TicketViewProperty($id, $label, $value, $is_always_visible));
+    }
+
+    public function appendProperty(TicketViewProperty $property)
+    {
+        if ($this->hasProperty($property->getId())) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'cannot add a TicketViewProperty to TicketView because a property with the ID "%s" already exists.',
+                    $property->getId()
+                )
+            );
+        }
+        $this->properties[$property->getId()] = $property;
+    }
+
+    public function hasProperty($id)
+    {
+        return array_key_exists($id, $this->properties);
+    }
+
+    public function getProperties()
+    {
+        return $this->properties;
     }
 }

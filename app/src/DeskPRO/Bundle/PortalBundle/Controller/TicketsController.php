@@ -165,7 +165,8 @@ class TicketsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Tickets:view.html.twig',
             array(
-                'ticket'      => $ticket_view,
+                'ticket'      => $ticket,
+                'ticket_view' => $ticket_view,
                 'timeline'    => $timeline,
                 'can_edit'    => $this->isGranted('TICKET_EDIT', $ticket),
                 'form'        => $form->createView(),
@@ -206,7 +207,8 @@ class TicketsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Tickets:guest-view.html.twig',
             array(
-                'ticket'      => $ticket_view,
+                'ticket'      => $ticket,
+                'ticket_view' => $ticket_view,
                 'timeline'    => $timeline,
                 'breadcrumbs' => $breadcrumbs,
                 'page_title'  => $this->createPageTitle()->tickets($ticket),

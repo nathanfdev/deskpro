@@ -1713,7 +1713,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     /**
      * Find an existing data record for a field id.
      *
-     * @param int $field_id
+     * @param int|CustomDefPerson $field_id
      *
      * @return CustomDataPerson
      */

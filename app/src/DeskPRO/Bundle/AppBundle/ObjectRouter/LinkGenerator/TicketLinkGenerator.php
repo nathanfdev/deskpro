@@ -79,7 +79,7 @@ class TicketLinkGenerator implements LinkGeneratorInterface
     public function generate($ticket, $type, $context, $extra_params, $reference_type)
     {
         if ($ticket instanceof TicketView) {
-            $ticket = $ticket->ticket;
+            $ticket = $ticket->getTicket();
         }
 
         if (ObjectRouter::CONTEXT_PORTAL !== $context) {

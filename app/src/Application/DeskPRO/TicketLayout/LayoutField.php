@@ -180,6 +180,9 @@ class LayoutField implements \Serializable
     }
 
     /**
+     * If it's a custom data definition, this is the corrosponding ID in the DB.
+     * Static fields like "department" or "subject" return null here.
+     *
      * @return int|null
      */
     public function getFieldId()

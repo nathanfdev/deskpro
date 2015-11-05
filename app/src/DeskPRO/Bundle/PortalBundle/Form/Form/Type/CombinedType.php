@@ -58,7 +58,8 @@ class CombinedType extends AbstractType
         ]);
 
         $resolver->setDefaults([
-            'mapped' => false,
+            'mapped'       => false,
+            'inherit_data' => true,
         ]);
     }
 }
