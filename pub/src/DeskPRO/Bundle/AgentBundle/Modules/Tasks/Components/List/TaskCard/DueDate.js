@@ -50,7 +50,7 @@ export class DueDate extends React.Component {
                   positionAt="center botton">
 
           <ClickOut onClickOut={this.onCloseCalendar}>
-            <HiddenDateTimePicker refs="calendar" onChange={onChange} />
+            <HiddenDateTimePicker onChange={onChange} />
           </ClickOut>
         </Detached>
       </div>
