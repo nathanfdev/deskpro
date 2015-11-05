@@ -5,6 +5,15 @@ import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/C
 import { OrderBy } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { OrderByDropdown } from './OrderByDropdown';
 
+const sortOptions = [
+  { field: 'list', label: 'List', icon: 'list' },
+  { field: 'project', label: 'Project', icon: 'briefcase' },
+  { field: 'date_due', label: 'Due Date', icon: 'calendar' },
+  { field: 'date_done', label: 'Done Date', icon: 'calendar' },
+  { field: 'date_created', label: 'Created Date', icon: 'calendar' },
+  { field: 'assignee', label: 'Assignee', icon: 'user' }
+];
+
 @connect()
 export class OrderByContainer extends React.Component {
 
@@ -31,6 +40,7 @@ export class OrderByContainer extends React.Component {
   render() {
     return (
       <OrderBy ref="button"
+               sortOptions={sortOptions}
                toggleDropdown={this.onOpenDropdown}>
 
         <Detached isOpen={this.state.dropdownOpened}
@@ -38,7 +48,7 @@ export class OrderByContainer extends React.Component {
                   positionTarget={this.refs.button}>
 
           <ClickOut onClickOut={this.onCloseDropDown}>
-            <OrderByDropdown />
+            <OrderByDropdown sortOptions={sortOptions} />
           </ClickOut>
         </Detached>
       </OrderBy>
