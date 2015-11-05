@@ -22,7 +22,8 @@ export default class MenuFooterOptions extends React.Component {
           <span className="dpwd-radio-button-disc"/>
           <span className="radio-button-title">{option.label}</span>
         </a>
-      </span>);
+      </span>
+    );
   }
 
   render() {
