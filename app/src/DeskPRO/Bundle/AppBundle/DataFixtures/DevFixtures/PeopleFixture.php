@@ -43,6 +43,7 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
 {
     private $num_people = 500;
     private $num_agents = 10;
+    private $num_labels = 100;
 
     /**
      * @var \Faker\Generator
@@ -63,6 +64,16 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
      * @var Connection
      */
     private $db;
+
+    /**
+     * @var string[]
+     */
+    private $labels;
+
+    /**
+     * @var array
+     */
+    private $people_ids = [];
 
     /**
      * {@inheritdoc}
@@ -96,8 +107,32 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
         $this->manager = $manager;
         $this->db      = $this->container->get('database_connection');
 
+        $this->loadLabels();
         $this->loadPeople($this->num_agents, true);
         $this->loadPeople($this->num_people, false);
+
+        $this->people_ids = $this->db->fetchAllCol("SELECT id FROM people");
+
+        $this->loadPeopleProps();
+    }
+
+    private function loadLabels()
+    {
+        $this->faker->unique(true);
+
+        $batch = [];
+
+        for ($i = 0; $i < $this->num_labels; $i++) {
+            $l = $this->faker->unique()->company;
+            if ($l) {
+                $l = strtolower($l);
+                $batch[] = array('label_type' => 'people', 'label' => $l, 'color' => $this->faker->hexColor, 'total' => 0);
+            }
+        }
+
+        $this->db->batchInsert('label_defs', $batch, true);
+
+        $this->labels = $this->db->fetchAllCol("SELECT label FROM label_defs WHERE label_type = 'people'");
     }
 
     private function loadPeople($num, $is_agent)
@@ -157,5 +192,20 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
             SET people.primary_email_id = people_emails.id
             WHERE people.primary_email_id IS NULL
         ');
+    }
+
+    private function loadPeopleProps()
+    {
+        $labels_batch = [];
+
+        foreach ($this->people_ids as $people_id) {
+            foreach ($this->faker->randomElements($this->labels, $this->faker->numberBetween(1, 5)) as $l) {
+                $labels_batch[] = array('person_id' => $people_id, 'label' => $l);
+            }
+        }
+
+        if ($labels_batch) {
+            $this->db->batchInsert('labels_people', $labels_batch, true);
+        }
     }
 }

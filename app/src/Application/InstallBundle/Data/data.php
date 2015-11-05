@@ -773,28 +773,6 @@ foreach (array('default', 'foo', 'bar', 'baz') as $type) {
 $em->flush();
 
 ################################################################################
-# TEMPORARY TEST DATA: Labels
-################################################################################
-
-$em->getConnection()->executeUpdate(
-    "
-    INSERT INTO `label_defs`
-        (`label_type`, `label`, `color`, `total`)
-    VALUES
-        ('feedback', 'First feedback label', 'red', 0),
-        ('feedback', 'Second feedback label', 'white', 0),
-        ('feedback', 'Third feedback label', 'red', 0),
-        ('organization', 'First organization label', 'red', 1),
-        ('organization', 'Second organization label', 'blue', 2),
-        ('organization', 'Third organization label', 'green', 42),
-        ('person', 'First person label', 'white', 1),
-        ('person', 'Second person label', 'red', 3),
-        ('person', 'Third person label', 'yellow', 3)
-    ;
-"
-);
-
-################################################################################
 # Add some brands to test different themes
 ################################################################################
 //INSERT INTO brands (name, theme_id) VALUES ('Default Brand', 'standard')
