@@ -11,9 +11,6 @@ import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordS
 import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
 import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
 import { loadAllProjects } from '../../../../RecordStores/Actions/projectActions';
-import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
-import { loadAllAgentTeams } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions';
-import { loadAllDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
 
 @connect(state => ({
   projects: allProjectsSelector(state),
@@ -29,9 +26,6 @@ export class FilterByContainer extends React.Component {
 
     props.dispatch(loadAllProjects());
     props.dispatch(loadAllTaskLabels());
-    props.dispatch(loadAllAgents());
-    props.dispatch(loadAllAgentTeams());
-    props.dispatch(loadAllDepartments());
 
     this.state = {
       dropdownOpened: false
