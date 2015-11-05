@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import { mapKeyedFromArray, toPropsMap, reduceImmutableToProperty } from 'DeskPRO/Component/Util/Map';
 
-const stateSelector = state => state.NewTickets.nav;
+const stateSelector = state => state.Tickets.nav;
 
 export const filterSetsSelector = createSelector(stateSelector, state => state.get('filterSets'));
 

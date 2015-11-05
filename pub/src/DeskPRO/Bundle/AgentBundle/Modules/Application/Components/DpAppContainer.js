@@ -3,8 +3,7 @@ import { Router, Route, Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import { DpAppRouteContainer } from './DpAppRouteContainer';
 import { LoginRouteContainer } from '../../Login/Components/LoginRouteContainer';
-import { NewTicketsApp } from '../../NewTickets/Components/NewTicketsApp';
-import TicketsApp from '../../Tickets/Components/TicketsApp';
+import { TicketsApp } from '../../Tickets/Components/TicketsApp';
 import OldTasksApp from '../../OldTasks/Components/OldTasksApp';
 import { TasksApp } from '../../Tasks/Components/TasksApp';
 import { FeedbackApp } from '../../Feedback/Components/FeedbackApp';
@@ -71,7 +70,6 @@ export class DpAppContainer extends React.Component {
           <Route name="chat" path="chat" component={ChatApp}/>
           <Route name="tickets" path="tickets" component={TicketsApp}/>
           <Route name="old_tasks" path="old_tasks" component={OldTasksApp}/>
-          <Route name="new-tickets" path="new-tickets" component={NewTicketsApp}/>
           <Route name="tasks" path="tasks" component={TasksApp}/>
           <Route name="publish" path="publish" component={PublishApp}/>
           <Route name="feedback" path="feedback" component={FeedbackApp}/>

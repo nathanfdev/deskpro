@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-const stateSelector = state => state.NewTickets.list;
+const stateSelector = state => state.Tickets.list;
 
 export const listParamsSelector = createSelector(
   stateSelector,
