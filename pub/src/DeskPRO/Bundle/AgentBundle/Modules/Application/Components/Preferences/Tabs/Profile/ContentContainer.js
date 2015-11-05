@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Content } from './Content';
-import * as LanguagesActions from 'DeskPRO/Bundle/AgentBundle/Modules/Common/RecordStores/Actions/languagesActions';
 import * as TimezonesActions from 'DeskPRO/Bundle/AgentBundle/Modules/Common/RecordStores/Actions/timezonesActions';
 import * as ProfilesActions from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/profilesActions';
 import { languagesSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/RecordStores/Selectors/languagesSelectors';
@@ -27,7 +26,6 @@ export class ContentContainer extends React.Component {
   constructor(props) {
     super(props);
 
-    props.dispatch(LanguagesActions.loadAll());
     props.dispatch(TimezonesActions.loadAll());
     props.dispatch(ProfilesActions.loadMy());
   }
