@@ -35,6 +35,13 @@ use Symfony\Component\HttpFoundation\Request;
 
 class TicketListTable
 {
+    const COL_DEPARTMENT_SUBJECT = 'department_subject';
+    const COL_AGENT              = 'agent';
+    const COL_DATE_CREATED       = 'date_created';
+    const COL_DATE_ACTIVITY      = 'date_activity';
+    const COL_DATE_USER          = 'date_user';
+    const COL_DATE_AGENT         = 'date_agent';
+
     protected $ticket_type;
     protected $ticket_category;
     protected $ticket_filter;
@@ -45,6 +52,8 @@ class TicketListTable
     protected $sort_name;
     protected $sort_direction_name;
     protected $title;
+    protected $columns;
+    protected $active_columns_name;
 
     public function __construct($ticket_category, $ticket_type, $title)
     {
@@ -54,8 +63,10 @@ class TicketListTable
         $this->page_name           = $ticket_category.'_page';
         $this->sort_name           = $ticket_category.'_sort';
         $this->sort_direction_name = $ticket_category.'_sort_direction';
+        $this->active_columns_name = $ticket_category.'_cols';
         $this->ticket_filter       = null;
         $this->pager               = null;
+        $this->active_columns      = [];
     }
 
     public function makeFilterWithRequest(Request $request, $per_page = 10)
@@ -66,8 +77,12 @@ class TicketListTable
             $request->query->get($this->sort_name, 'activity'),
             $request->query->get($this->sort_direction_name, 'desc')
         );
-        $this->page     = $request->query->get($this->page_name, 1);
-        $this->per_page = $per_page;
+        $this->page           = $request->query->get($this->page_name, 1);
+        $this->per_page       = $per_page;
+        $this->active_columns = explode(',', $request->query->get(
+            $this->active_columns_name,
+            implode(',', $this->getDefaultColumns())
+        )); //comma seperated list of col ids (consts on this class)
     }
 
     public function makePagerUsingDataService(TicketsDataService $data_service, Person $person)
@@ -79,6 +94,32 @@ class TicketListTable
         $this->pager = $data_service->getPager($person, $this->ticket_filter, $this->page, $this->per_page);
 
         return $this->pager;
+    }
+
+    public function getColumns()
+    {
+        return [
+            self::COL_DEPARTMENT_SUBJECT,
+            self::COL_AGENT,
+            self::COL_DATE_CREATED,
+            self::COL_DATE_ACTIVITY,
+            self::COL_DATE_USER,
+            self::COL_DATE_AGENT,
+        ];
+    }
+
+    public function getDefaultColumns()
+    {
+        return [
+            self::COL_DEPARTMENT_SUBJECT,
+            self::COL_DATE_CREATED,
+            self::COL_DATE_ACTIVITY,
+        ];
+    }
+
+    public function getActiveColumns()
+    {
+        return $this->active_columns;
     }
 
     /**

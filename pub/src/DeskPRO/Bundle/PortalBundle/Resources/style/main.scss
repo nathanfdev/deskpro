@@ -2105,15 +2105,18 @@ header {
 
 // All sort of small popups for buttons/forms etc
 .popup-tiny {
-  position: relative;
+  position: absolute;
+  right: 0;
   display: block;
   margin-bottom: 20px;
   padding: 10px;
   max-width: 300px;
+  min-width: 200px;
   border: 1px solid $divider-color;
   border-radius: 4px;
   background: $world-background;
   color: $text-color;
+  z-index: 299;
 
   input[type="text"], input[type="email"] {
     padding: 0.5em 0.75em;
