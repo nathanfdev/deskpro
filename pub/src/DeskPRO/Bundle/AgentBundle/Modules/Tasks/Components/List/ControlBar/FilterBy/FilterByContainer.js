@@ -53,6 +53,7 @@ export class FilterByContainer extends React.Component {
   render() {
     return (
       <FilterBy ref="button"
+                title="Filter by:"
                 toggleDropdown={this.onOpenDropdown}>
 
         <Detached isOpen={this.state.dropdownOpened}
