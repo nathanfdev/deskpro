@@ -4,10 +4,15 @@ import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item
 import MenuFooter from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooter';
 import MenuFooterOptions from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterOptions';
 
+
 export class OrderByDropdown extends React.Component {
 
   static propTypes = {
     sortOptions: PropTypes.object
+  };
+
+  toggleListOrder = value => {
+    console.log(value);
   };
 
   renderOption(option) {
@@ -25,7 +30,11 @@ export class OrderByDropdown extends React.Component {
         {sortOptions.map(option => this.renderOption(option))}
 
         <MenuFooter>
-          <MenuFooterOptions>
+          <MenuFooterOptions options={[
+            {id: 'asc', onClick: this.toggleListOrder.bind(this, 'asc'), label: 'Asc'},
+            {id: 'desc', onClick: this.toggleListOrder.bind(this, 'desc'), label: 'Desc'}
+          ]}>
+
             Sort
           </MenuFooterOptions>
         </MenuFooter>
