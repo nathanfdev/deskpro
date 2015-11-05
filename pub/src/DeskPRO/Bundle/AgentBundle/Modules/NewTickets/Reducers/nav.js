@@ -33,7 +33,7 @@ export default createReducer(initialState, {
     done: setValue('async.done', true)
   }),
 
-  'TICKETS_NAV_MARK_FILTER_AS_LOADING': (state, id) => {
+  TICKETS_NAV_MARK_FILTER_AS_LOADING: (state, id) => {
     if (!state.getIn(['async', 'filtersLoading']).includes(id)) {
       return state.setIn(['async', 'filtersLoading'], state.getIn(['async', 'filtersLoading']).push(id));
     }
@@ -41,7 +41,7 @@ export default createReducer(initialState, {
     return state;
   },
 
-  'TICKETS_NAV_LOAD_FILTER_COUNT': async({
+  TICKETS_NAV_LOAD_FILTER_COUNT: async({
     success: (state, newFilterCount) => {
       const filterSets = state.get('filterSetsCount').toJS();
 

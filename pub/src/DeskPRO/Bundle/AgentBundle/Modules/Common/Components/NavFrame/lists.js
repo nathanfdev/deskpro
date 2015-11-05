@@ -205,7 +205,7 @@ export class NestedList extends BaseList {
     if (hasNested && isExpanded) {
       return (
         <ul className={'with-connectors depth-' + depth}>
-          {nested.map(item => this.renderListItem(item, depth + 1))}
+          {nested.map(item => this.renderListItem({...item, parent: group}, depth + 1))}
         </ul>
       );
     }

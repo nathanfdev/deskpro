@@ -5,6 +5,7 @@ import { ListItem, ListItemLabelSpinner, ListItemSpinner }
 import { startFilterEditing } from '../../../../Actions/navActions';
 import { navItemLabelsSelector } from '../../../../Selectors/nav-item-labels';
 import { loadingFilterIdsSelector } from '../../../../Selectors/nav';
+import { applyListParams } from '../../../../Actions/listActions';
 
 @connect(state => ({
   notDoneFilters: loadingFilterIdsSelector(state),
@@ -16,21 +17,24 @@ export class ListItemContainer extends Component {
     labels: PropTypes.object.isRequired,
     count: PropTypes.number.isRequired,
     group: PropTypes.number.isRequired,
-    editable: PropTypes.bool.isRequired,
+    isTopLevel: PropTypes.bool.isRequired,
+    listFilters: PropTypes.object.isRequired,
     grouped_by: PropTypes.string,
     children: PropTypes.node
   };
 
   render() {
-    const { count, group, grouped_by, editable, notDoneFilters, children } = this.props;
+    const { dispatch, count, group, grouped_by, isTopLevel, notDoneFilters, listFilters, children } = this.props;
 
     const props = {
       count,
       children,
+      onClick: () => dispatch(applyListParams(listFilters)),
       label: this.getItemLabel(),
-      onClick: () => alert('list item clicked'),
-      onItemControlClick: editable ? this.startFilterEditing(group) : null
+      onItemControlClick: isTopLevel ? this.startFilterEditing(group) : null
     };
+
+    // check if filter is being loaded to show spinner
     const isNotDoneFilterItem = (grouped_by === 'filter') && notDoneFilters.includes(group);
 
     return isNotDoneFilterItem ? <ListItemSpinner /> : <ListItem {...props} />;

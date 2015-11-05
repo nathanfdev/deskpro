@@ -5,14 +5,15 @@ import { UrgencyList } from './UrgencyList';
 import Immutable from 'immutable';
 
 export class NestedList extends BaseNestedList {
-  renderListItem({nested, group, count, grouped_by}, depth) {
+  renderListItem({nested, group, count, grouped_by, parent}, depth) {
     this.ensureValidDepth(depth);
 
     const props = {
       count,
       group,
       grouped_by,
-      editable: depth === 1
+      isTopLevel: depth === 1,
+      listFilters: parent ? {filter: parent, [grouped_by]: group} : {filter: group}
     };
 
     const isGroupedByUrgency = nested && nested.length && nested[0].grouped_by === 'urgency';
