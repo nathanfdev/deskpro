@@ -6,24 +6,26 @@ export class LabelsFilter extends Component {
 
   static propTypes = {
     changeMode: PropTypes.func.isRequired,
+    selectLabel: PropTypes.func.isRequired,
+    selectedLabels: PropTypes.object,
     allLabels: PropTypes.array.isRequired,
     params: PropTypes.object
   };
 
   render() {
-    const {params, changeMode, allLabels} = this.props;
+    const {params, changeMode, allLabels, selectLabel, selectedLabels} = this.props;
     return (
       <div className="dpw-navigation-dropdown-panel dpw-navigation-dropdown-panel-corner-left">
         <LabelsMatchingMode mode={params.get('mode')} changeMode={changeMode}/>
 
         <div className="dpw-navigation-dropdown-panel-content">
           <div className="dpw-navigation-dropdown-panel-content-line">
-            <SelectedLabels/>
+            <SelectedLabels selectedLabels={selectedLabels}/>
             <hr/>
             <div className="dpw-navigation-dropdown-panel-content-full">
               <div className="dpw-label-long-list">
                 <QuickFilter />
-                <LabelsCollection allLabels={allLabels}/>
+                <LabelsCollection allLabels={allLabels} selectLabel={selectLabel}/>
               </div>
             </div>
           </div>
@@ -95,36 +97,52 @@ export class AnyLabelMatchingMode extends Component {
 }
 
 export class SelectedLabels extends Component {
+
+  static propTypes = {
+    selectedLabels: PropTypes.object
+  };
+
   render() {
-    return (
-      <div className="dpw-navigation-dropdown-panel-content-full">
-        <div className="dpw-label-pile">
-          <ul className="dpw-label-list">
-            <li><a href="#" className="dpw-item-label"><i className="fa fa-times"></i> diditwork</a></li>
-            <li><a href="#" className="dpw-item-label"><i className="fa fa-times"></i> android</a></li>
-            <li><a href="#" className="dpw-item-label"><i className="fa fa-times"></i> windows</a></li>
-            <li><a href="#" className="dpw-item-label"><i className="fa fa-times"></i> mac</a></li>
-          </ul>
+    const { selectedLabels } = this.props;
+    if (selectedLabels) {
+      return (
+        <div className="dpw-navigation-dropdown-panel-content-full">
+          <div className="dpw-label-pile">
+            <ul className="dpw-label-list">
+              {selectedLabels.map((item, index) =>
+                  <li key={index}>
+                    <a href="#" className="dpw-item-label"><i className="fa fa-times"></i> {item}</a>
+                  </li>
+              )}
+            </ul>
+          </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return (<div/>);
+    }
   }
 }
 
 export class LabelsCollection extends Component {
 
   static propTypes = {
+    selectLabel: PropTypes.func.isRequired,
     allLabels: PropTypes.array.isRequired
   };
 
   render() {
-    const {allLabels} = this.props;
+    const {allLabels, selectLabel} = this.props;
     return (
       <div className="dpw-label-list-content">
         <ul className="dpw-label-list">
           {allLabels.map(
             (item, index) =>
-              <li key={index}><a href="#" className="dpw-item-label">{item}</a></li>
+              <li key={index}>
+                <a href="#" className="dpw-item-label" onClick={selectLabel.bind(this, item)}>
+                  {item}
+                </a>
+              </li>
           )}
         </ul>
       </div>
