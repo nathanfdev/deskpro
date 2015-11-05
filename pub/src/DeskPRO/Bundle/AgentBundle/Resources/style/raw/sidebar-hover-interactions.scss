@@ -263,6 +263,10 @@ aside.sidebar {
   .sidebar-hover-content-box {
     padding: 0 10px;
     margin-bottom: 10px;
+
+    span {
+      margin-right: 5px;
+    }
   }
 
   .sidebar-hover-content-box.full-panel {

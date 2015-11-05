@@ -57,13 +57,13 @@ export class FilterByForm extends BaseForm {
             <div className="sidebar-hover-content-box">
               <h2>Created</h2>
               <div className="filter-date">
-                After:  &nbsp;
+                <span>After:</span>
                 <a href="#">
                   <i className="fa fa-calendar-o" /> <span className="filter-created-after">N/A</span>
                 </a>
               </div>
               <div className="filter-date">
-                Before:  &nbsp;
+                <span>Before:</span>
                 <a href="#">
                   <i className="fa fa-calendar-o" /> <span className="filter-created-before">N/A</span>
                 </a>
@@ -72,13 +72,13 @@ export class FilterByForm extends BaseForm {
             <div className="sidebar-hover-content-box">
               <h2>Due</h2>
               <div className="filter-date">
-                After:  &nbsp;
+                <span>After:</span>
                 <a href="#">
                   <i className="fa fa-calendar-o" /> <span className="filter-due-after">N/A</span>
                 </a>
               </div>
               <div className="filter-date">
-                Before:  &nbsp;
+                <span>Before:</span>
                 <a href="#">
                   <i className="fa fa-calendar-o" /> <span className="filter-due-before">N/A</span>
                 </a>
@@ -87,13 +87,13 @@ export class FilterByForm extends BaseForm {
             <div className="sidebar-hover-content-box">
               <h2>Completed</h2>
               <div className="filter-date">
-                After: &nbsp;
+                <span>After:</span>
                 <a href="#">
                   <i className="fa fa-calendar-o" /> <span className="filter-done-after">N/A</span>
                 </a>
               </div>
               <div className="filter-date">
-                Before: &nbsp;
+                <span>Before:</span>
                 <a href="#">
                   <i className="fa fa-calendar-o" /> <span className="filter-done-before">N/A</span>
                 </a>
@@ -118,7 +118,7 @@ export class FilterByForm extends BaseForm {
               </div>
             </div>
             <div className="sidebar-hover-content-box">
-              <button type="submit" value="Apply" className="button">Apply</button> &nbsp;
+              <span><button type="submit" value="Apply" className="button">Apply</button></span>
               <a href="#" className="button">Clear</a>
             </div>
           </form>
