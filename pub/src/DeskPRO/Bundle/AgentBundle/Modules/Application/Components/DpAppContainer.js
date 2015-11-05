@@ -3,7 +3,7 @@ import { Router, Route, Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import { DpAppRouteContainer } from './DpAppRouteContainer';
 import { LoginRouteContainer } from '../../Login/Components/LoginRouteContainer';
-import TicketsApp from '../../Tickets/Components/TicketsApp';
+import { TicketsApp } from '../../Tickets/Components/TicketsApp';
 import OldTasksApp from '../../OldTasks/Components/OldTasksApp';
 import { TasksApp } from '../../Tasks/Components/TasksApp';
 import { FeedbackApp } from '../../Feedback/Components/FeedbackApp';

@@ -325,7 +325,7 @@ class Connection extends \Doctrine\DBAL\Connection
         # Validate values and build params
         #------------------------------
 
-        $res = null;
+        $res                     = null;
         $multiple_values_batches = array_chunk($multiple_values, 200, false);
         foreach ($multiple_values_batches as $multiple_values) {
             $cols       = null;
@@ -341,7 +341,7 @@ class Connection extends \Doctrine\DBAL\Connection
                         $cols[] = $k;
                     }
                     $cols_count = count($cols);
-                    $value_tpl = '(' . implode(',', array_fill(0, $cols_count, '?')) . ')';
+                    $value_tpl  = '('.implode(',', array_fill(0, $cols_count, '?')).')';
                 }
 
                 if (count($vals) != $cols_count) {
@@ -363,7 +363,7 @@ class Connection extends \Doctrine\DBAL\Connection
             # Build sql
             #------------------------------
 
-            $sql = 'INSERT ' . ($ignore ? 'IGNORE' : '') . " INTO `$table` (`" . implode('`,`', $cols) . '`) VALUES ' . implode(',', $value_parts);
+            $sql = 'INSERT '.($ignore ? 'IGNORE' : '')." INTO `$table` (`".implode('`,`', $cols).'`) VALUES '.implode(',', $value_parts);
 
             $res = $this->executeUpdate($sql, $params);
         }

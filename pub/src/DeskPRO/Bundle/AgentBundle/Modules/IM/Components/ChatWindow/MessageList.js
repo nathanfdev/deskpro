@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
 import { Message } from './Message';
 import { loadMessages, markMessages, refreshCounts } from '../../Actions/messagesActions';
-import { loadAllAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentsActions';
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 
@@ -28,7 +27,6 @@ export class MessageList extends React.Component {
   };
 
   componentDidMount() {
-    this.props.dispatch(loadAllAgents());
     this.refresh();
     const interval = setInterval(this.refresh, 5000);
     const countsInterval = setInterval(() => this.props.dispatch(refreshCounts()), 5000);

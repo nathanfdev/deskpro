@@ -112,7 +112,7 @@ class Count
      *
      * @return Count
      */
-    public static function create($value, $group, array $nested, $grouped_by)
+    public static function create($value, $group, array $nested, $grouped_by = null)
     {
         $count = new self();
         $count->setCount($value);

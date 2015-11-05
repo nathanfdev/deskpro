@@ -32,13 +32,9 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Filters;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
-use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
-use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
@@ -49,11 +45,12 @@ use Pagerfanta\Adapter\FixedAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TicketFiltersController extends BaseController
 {
+    const CUSTOM_FILTER_GROUP_BY_PREFIX = 'agent.ticket_filter.group_by.';
+
     /**
      * @ApiDoc(
      *      description="get a list of filters",
@@ -125,115 +122,6 @@ class TicketFiltersController extends BaseController
     }
 
     /**
-     * @ApiDoc(
-     *      description="get a filter's count",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the filter",
-     *              "dataType"="integer"
-     *          },
-     *          {
-     *              "name"="group_by",
-     *              "requirement"=".+",
-     *              "description"="the grouping order you want",
-     *              "dataType"="string",
-     *              "required"=false
-     *          },
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
-     * )
-     * @Get("/ticket_filters/{id}/count")
-     */
-    public function getTicketsCountAction(Request $request, $id)
-    {
-        $filters = $this->get('data.filters');
-        if (!$filter = $filters->getFilter($id)) {
-            throw $this->createNotFoundException();
-        }
-        $group_by = $request->query->get('group_by');
-        $count    = $this->getTicketFilterCount($filter, $group_by);
-
-        return View::create($this->createRepresentation($count), Response::HTTP_OK);
-    }
-
-    /**
-     * @param TicketFilter $filter
-     * @param sting        $group_by
-     *
-     * @return Count
-     */
-    private function getTicketFilterCount(TicketFilter $filter, $group_by = null)
-    {
-        $engine  = $this->get('term_engine.dbal_ticket_filters.engine');
-        $context = new TermEngineContext($this->getUser());
-        if ($group_by) {
-            $context->addGroupByFromString($group_by);
-        }
-
-        /** @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery $tickets_query */
-        $tickets_query = $engine->evaluate($filter, $context);
-
-        if ($group_by) {
-            $total  = 0;
-            $nested = $tickets_query->fetchGroupedCount();
-            $nested = array_map(function ($count) use (&$total, $group_by) {
-                $total += $count['count'];
-
-                return Count::fromValueAndGroup($count['count'], (int) $count[$group_by]);
-            }, $nested);
-
-            return Count::create($total, null, $nested, $group_by);
-        } else {
-            return Count::fromValueAndGroup($tickets_query->fetchCount(), $filter->getId());
-        }
-    }
-
-    /**
-     * @ApiDoc(
-     *      description="get all filters counts",
-     *      requirements={
-     *          {
-     *              "name"="group_by",
-     *              "requirement"=".+",
-     *              "description"="the grouping order you want",
-     *              "dataType"="string",
-     *              "required"=false
-     *          },
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
-     * )
-     * @Get("/ticket_filters_counts")
-     */
-    public function getAllFiltersCountsAction(Request $request)
-    {
-        $count    = Count::fromValue(0);
-        $group_by = $request->get('group_by');
-
-        /** @var TicketFilter[] $filters */
-        $filters = $this->get('data.filters')->getFilters();
-        foreach ($filters as $filter) {
-            $filter_count = $this->getTicketFilterCount(
-                $filter,
-                isset($group_by[$filter->getId()]) ? $group_by[$filter->getId()] : null
-            );
-            $count->addNestedInstance($filter_count);
-            $count->add($filter_count->getCount());
-        }
-
-        return View::create($this->createRepresentation($count), Response::HTTP_OK);
-    }
-
-    /**
      * @Post("/ticket_filters", name="post_ticket_filters")
      *
      * @ApiDoc(
@@ -298,35 +186,83 @@ class TicketFiltersController extends BaseController
      * @Put("/ticket_filters/{id}", name="put_ticket_filters")
      *
      * @ApiDoc(
-     *      description="modify a filter",
+     *      description="modify filter grouping",
      *      requirements={
      *          {
      *              "name"="id",
      *              "requirement"="\d+",
      *              "description"="the id of the filter",
      *              "dataType"="integer"
+     *          },
+     *          {
+     *              "name"="group_by",
+     *              "description"="new filter grouping",
+     *              "dataType"="string"
      *          }
      *      },
-     *      input={"class"="filter","name"=""},
      *      statusCodes={
      *          204="Updated",
      *          404="Not Found",
      *          400="Bad Request"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
+     *      }
      * )
      *
      * @Put("/ticket_filters/{id}", name="api_ticket_filters_put")
      */
     public function putAction(Request $request, $id)
     {
-        $filter = $this->get('data.filters')->getFilter($id);
+        $filter  = $this->findOr404(TicketFilter::class, $id);
+        $content = json_decode($request->getContent(), true);
 
-        if (!$filter) {
-            throw new NotFoundHttpException();
+        // Remove existing setting if got no or empty group_by
+        if (!array_key_exists('group_by', $content) || !$content['group_by']) {
+            $this->removeFilterGroupByPersonSetting($filter);
+
+            return new Response(null, Response::HTTP_NO_CONTENT);
         }
 
-        return $this->handleFormSubmission($request, $filter);
+        // Save the group_by in filter setting
+        else {
+            $setting = $this->findOrCreateFilterGroupByPersonSetting($filter);
+            $setting->setValue($content['group_by']);
+            $this->getManager()->persist($setting);
+            $this->getManager()->flush();
+
+            return new Response(null, Response::HTTP_NO_CONTENT);
+        }
+    }
+
+    /**
+     * @param TicketFilter $filter
+     *
+     * @return PersonSetting
+     */
+    private function findOrCreateFilterGroupByPersonSetting(TicketFilter $filter)
+    {
+        $settingName = self::CUSTOM_FILTER_GROUP_BY_PREFIX.$filter->getId();
+        $person      = $this->getUser();
+
+        $personSetting = $this->getManager()->find(PersonSetting::class, ['person' => $person, 'name' => $settingName]);
+        if (!$personSetting) {
+            $personSetting = new PersonSetting($person, $settingName);
+        }
+
+        return $personSetting;
+    }
+
+    /**
+     * @param TicketFilter $filter
+     */
+    private function removeFilterGroupByPersonSetting(TicketFilter $filter)
+    {
+        $settingName = self::CUSTOM_FILTER_GROUP_BY_PREFIX.$filter->getId();
+        $person      = $this->getUser();
+
+        $personSetting = $this->getManager()->find(PersonSetting::class, ['person' => $person, 'name' => $settingName]);
+        if ($personSetting) {
+            $this->getManager()->remove($personSetting);
+            $this->getManager()->flush();
+        }
     }
 
     /**
@@ -378,7 +314,7 @@ class TicketFiltersController extends BaseController
         $tickets    = $this->getEm()->getRepository('DeskPRO:Ticket')->findBy(['id' => $ticket_ids]);
 
         // retrieve total count and wrap results in Pagerfanta
-        $total        = $this->getTicketFilterCount($filter)->getCount();
+        $total        = $this->get('data.tickets.ticket_counts')->getTicketFilterCount($filter)->getCount();
         $pagerAdapter = new FixedAdapter($total, $tickets);
         $pager        = new Pagerfanta($pagerAdapter);
         $pager->setCurrentPage($currentPage);
@@ -426,44 +362,6 @@ class TicketFiltersController extends BaseController
             array(),
             Response::HTTP_OK
         );
-    }
-
-    /**
-     * we will be making this more abstract for general use by other controllers.
-     */
-    protected function handleFormSubmission(Request $request, TicketFilter $filter)
-    {
-        $status = $filter->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
-
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'filter', $filter)->getForm();
-
-        $submitted = $request->request->all();
-
-        try {
-            $form->submit($submitted, $request->getMethod() !== 'PUT');
-        } catch (TermTypeDoesNotExistException $e) {
-            throw new WrappedApiErrorException(
-                new BadRequestHttpException(ApiErrors::TERM_TYPE_DOES_NOT_EXIST),
-                array(
-                    'type' => $e->getMessage(),
-                )
-            );
-        }
-
-        if ($form->isValid()) {
-            $this->getDoctrine()->getManager()->persist($filter);
-            $this->getDoctrine()->getManager()->flush($filter);
-
-            return View::create(
-                $this->dataSerialize($filter),
-                $status,
-                array(
-                    'Location' => $this->generateUrl('api_ticket_filters_get', array('id' => $filter->getId())),
-                )
-            );
-        }
-
-        throw new InvalidFormException($form); // let our listeners generate the form error response
     }
 
     // A bit of comfort.

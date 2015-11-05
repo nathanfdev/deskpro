@@ -1,23 +1,14 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { AppContainer } from 'DeskPRO/Component/AppContainer';
+import { NavContainer } from './Nav/NavContainer';
+import { ListContainer } from './List/ListContainer';
 
-import TicketsSidebarHoverFrame from './TicketsSidebarHoverFrame';
-import TicketsNavFrame from './TicketsNavFrame';
-import TicketsListFrame from './TicketsListFrame';
-import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
-
-@connect(state => ({
-  user: meSelector(state),
-  dpWindow: state.Application.dpWindow
-}))
-export default class TicketsApp extends React.Component {
+export class TicketsApp extends React.Component {
   render() {
     return (
-      <AppContainer thisAppId="tickets" {...this.props}>
-        <TicketsSidebarHoverFrame />
-        <TicketsNavFrame {...this.props} />
-        <TicketsListFrame />
+      <AppContainer thisAppId="tickets">
+        <NavContainer />
+        <ListContainer />
       </AppContainer>
     );
   }

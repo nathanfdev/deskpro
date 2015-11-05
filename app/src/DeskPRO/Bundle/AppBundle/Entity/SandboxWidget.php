@@ -197,7 +197,7 @@ class SandboxWidget implements EntityInterface, NotifyPropertyChanged
     /**
      * {@inheritdoc}
      */
-    function __toString()
+    public function __toString()
     {
         return $this->name;
     }

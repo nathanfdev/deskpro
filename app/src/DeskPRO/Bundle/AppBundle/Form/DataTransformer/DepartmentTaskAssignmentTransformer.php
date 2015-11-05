@@ -86,7 +86,7 @@ class DepartmentTaskAssignmentTransformer implements DataTransformerInterface
     public function reverseTransform($department)
     {
         if (!$this->task) {
-            return null;
+            return;
         }
 
         if (!$department instanceof Department) {

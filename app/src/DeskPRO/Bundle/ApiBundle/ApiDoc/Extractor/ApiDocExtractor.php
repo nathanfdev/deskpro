@@ -41,8 +41,9 @@ class ApiDocExtractor extends BaseApiDocExtractor
      */
     public function getRoutes()
     {
-        return array_filter($this->router->getRouteCollection()->all(), function(Route $r) {
+        return array_filter($this->router->getRouteCollection()->all(), function (Route $r) {
             $ctrl = $r->getDefault('_controller');
+
             return $ctrl && preg_match('#^DeskPRO\\\\Bundle\\\\ApiBundle\\\\#', $ctrl);
         });
     }

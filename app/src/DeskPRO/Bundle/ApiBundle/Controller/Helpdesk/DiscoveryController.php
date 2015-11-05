@@ -58,10 +58,10 @@ class DiscoveryController extends BaseController
         //$brand = $this->get('brand_stack')->getActive();
         //$helpdesk_url = rtrim($brand->getSetting('core.deskpro_url'), '/') . '/';
 
-        $s = $this->get('deskpro.core.settings');
-        $helpdesk_url = rtrim($s->get('core.deskpro_url'), '/') . '/';
+        $s            = $this->get('deskpro.core.settings');
+        $helpdesk_url = rtrim($s->get('core.deskpro_url'), '/').'/';
 
-        $base_api_url = $helpdesk_url . 'api/v2/';
+        $base_api_url = $helpdesk_url.'api/v2/';
 
         $ret = [
             'is_deskpro'   => true,
@@ -106,25 +106,25 @@ class DiscoveryController extends BaseController
         $data = [];
 
         $data['settings'] = [
-            'multi_lang' => $settings->get('core.enable_languages'),
+            'multi_lang'    => $settings->get('core.enable_languages'),
             'helpdesk_name' => $settings->get('core.deskpro_name'),
-            'attachments' => [
+            'attachments'   => [
                 'agents' => [
                     'max_size'  => $settings->get('core.attach_agent_maxsize'),
                     'whitelist' => Arrays::removeEmptyString(explode(',', $settings->get('core.attach_agent_must_exts') ?: '')) ?: null,
-                    'blacklist' => Arrays::removeEmptyString(explode(',', $settings->get('core.attach_agent_not_exts') ?: '')) ?: null
-                ]
-            ]
+                    'blacklist' => Arrays::removeEmptyString(explode(',', $settings->get('core.attach_agent_not_exts') ?: '')) ?: null,
+                ],
+            ],
         ];
 
         $data['tickets'] = [
-            'enabled'            => $me->hasPerm('agent_tickets.use'),
-            'ref_code'           => $settings->get('core_tickets.use_ref'),
-            'archiving'          => $settings->get('core_tickets.use_archive'),
+            'enabled'    => $me->hasPerm('agent_tickets.use'),
+            'ref_code'   => $settings->get('core_tickets.use_ref'),
+            'archiving'  => $settings->get('core_tickets.use_archive'),
             'field_info' => [
                 'product' => [
                     'enabled'    => $field_manager->isProductEnabled(),
-                    'default_id' => $settings->get('core.default_prod_id') ?: null
+                    'default_id' => $settings->get('core.default_prod_id') ?: null,
                 ],
                 'category' => [
                     'enabled'    => $field_manager->isCategoryEnabled(),
@@ -136,39 +136,39 @@ class DiscoveryController extends BaseController
                 ],
                 'priority' => [
                     'enabled'    => $field_manager->isPriorityEnabled(),
-                    'default_id' => $settings->get('core.default_ticket_pri') ?: null
+                    'default_id' => $settings->get('core.default_ticket_pri') ?: null,
                 ],
                 'custom' => [
-                    'has_any' => count($field_manager->getFields()) > 0
-                ]
+                    'has_any' => count($field_manager->getFields()) > 0,
+                ],
             ],
             'billing' => [
-                'enabled' => $settings->get('core_tickets.enable_billing'),
+                'enabled'       => $settings->get('core_tickets.enable_billing'),
                 'currency_name' => $settings->get('core_tickets.enable_billing') ? $settings->get('core_tickets.billing_currency') : null,
             ],
             'timelog' => [
                 'enabled' => $settings->get('core_tickets.enable_timelog'),
-            ]
+            ],
         ];
 
         $data['chat'] = [
-            'enabled' => $settings->get('core.apps_chat') && $me->hasPerm('agent_chat.use')
+            'enabled' => $settings->get('core.apps_chat') && $me->hasPerm('agent_chat.use'),
         ];
 
         $data['crm'] = [
-            'enabled' => $me->hasPerm('agent_people.use')
+            'enabled' => $me->hasPerm('agent_people.use'),
         ];
 
         $data['feedback'] = [
-            'enabled' => $me->hasPerm('core.apps_feedback')
+            'enabled' => $me->hasPerm('core.apps_feedback'),
         ];
 
         $data['publish'] = [
-            'enabled' => $me->hasPerm('core.apps_kb')
+            'enabled' => $me->hasPerm('core.apps_kb'),
         ];
 
         $data['tasks'] = [
-            'enabled' => $me->hasPerm('core.apps_tasks')
+            'enabled' => $me->hasPerm('core.apps_tasks'),
         ];
 
         return View::create(
