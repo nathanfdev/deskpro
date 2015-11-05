@@ -4,6 +4,7 @@ import { LabelsFilter } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Componen
 import { setLabelsFilterMode } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { connect } from 'react-redux';
 @connect(state => ({
+  allLabels: state.Feedback.nav.get('labels'),
   filterParams: state.Feedback.list.get('currentListParams').get('filters')
 }))
 
@@ -11,6 +12,7 @@ export class LabelsFilterContainer extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
+    allLabels: PropTypes.array.isRequired,
     filterParams: PropTypes.object
   };
 
@@ -20,10 +22,14 @@ export class LabelsFilterContainer extends Component {
   }
 
   render() {
-    const {filterParams} = this.props;
+    const {filterParams, allLabels} = this.props;
     const labelsParams = filterParams && filterParams.get('labels') ? filterParams.get('labels') : Immutable.fromJS({ mode: 'all' });
     return (
-      <LabelsFilter params={labelsParams} changeMode={this.changeMode.bind(this)}/>
+      <LabelsFilter
+        params={labelsParams}
+        changeMode={this.changeMode.bind(this)}
+        allLabels={allLabels}
+        />
     );
   }
 }

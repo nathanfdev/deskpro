@@ -6,11 +6,12 @@ export class LabelsFilter extends Component {
 
   static propTypes = {
     changeMode: PropTypes.func.isRequired,
+    allLabels: PropTypes.array.isRequired,
     params: PropTypes.object
   };
 
   render() {
-    const {params, changeMode} = this.props;
+    const {params, changeMode, allLabels} = this.props;
     return (
       <div className="dpw-navigation-dropdown-panel dpw-navigation-dropdown-panel-corner-left">
         <LabelsMatchingMode mode={params.get('mode')} changeMode={changeMode}/>
@@ -22,7 +23,7 @@ export class LabelsFilter extends Component {
             <div className="dpw-navigation-dropdown-panel-content-full">
               <div className="dpw-label-long-list">
                 <QuickFilter />
-                <LabelsCollection/>
+                <LabelsCollection allLabels={allLabels}/>
               </div>
             </div>
           </div>
@@ -111,22 +112,20 @@ export class SelectedLabels extends Component {
 }
 
 export class LabelsCollection extends Component {
+
+  static propTypes = {
+    allLabels: PropTypes.array.isRequired
+  };
+
   render() {
+    const {allLabels} = this.props;
     return (
       <div className="dpw-label-list-content">
         <ul className="dpw-label-list">
-          <li><a href="#" className="dpw-item-label">diditwork</a></li>
-          <li><a href="#" className="dpw-item-label">android</a></li>
-          <li><a href="#" className="dpw-item-label">windows</a></li>
-          <li><a href="#" className="dpw-item-label">mac</a></li>
-          <li><a href="#" className="dpw-item-label">diditwork</a></li>
-          <li><a href="#" className="dpw-item-label">android</a></li>
-          <li><a href="#" className="dpw-item-label">windows</a></li>
-          <li><a href="#" className="dpw-item-label">mac</a></li>
-          <li><a href="#" className="dpw-item-label">diditwork</a></li>
-          <li><a href="#" className="dpw-item-label">android</a></li>
-          <li><a href="#" className="dpw-item-label">windows</a></li>
-          <li><a href="#" className="dpw-item-label">mac</a></li>
+          {allLabels.map(
+            (item, index) =>
+              <li key={index}><a href="#" className="dpw-item-label">{item}</a></li>
+          )}
         </ul>
       </div>
     );
