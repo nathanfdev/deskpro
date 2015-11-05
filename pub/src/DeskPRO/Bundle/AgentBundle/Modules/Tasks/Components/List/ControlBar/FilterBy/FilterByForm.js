@@ -5,7 +5,8 @@ import {
   Header,
   AgentsList,
   AgentTeamsList,
-  DepartmentsList } from '../../../Form/index';
+  DepartmentsList,
+  ProjectsList } from '../../../Form/index';
 
 export class FilterByForm extends BaseForm {
 
@@ -13,7 +14,24 @@ export class FilterByForm extends BaseForm {
     dispatch: PropTypes.func.isRequired,
     agents: PropTypes.object.isRequired,
     agentTeams: PropTypes.object.isRequired,
-    departments: PropTypes.object.isRequired
+    departments: PropTypes.object.isRequired,
+    projects: PropTypes.object.isRequired
+  };
+
+  constructor(props) {
+    super(props);
+
+    const localState = this.state;
+    this.state = {
+      ...localState,
+      projects: []
+    };
+  }
+
+  onChangeProjects = selected => {
+    this.setState({
+      projects: selected
+    });
   };
 
   onSubmit = event => {
@@ -21,7 +39,7 @@ export class FilterByForm extends BaseForm {
   };
 
   render() {
-    const { departments, agentTeams, agents } = this.props;
+    const { departments, agentTeams, agents, projects } = this.props;
 
     return (
       <Popup indicator="none">
@@ -102,7 +120,9 @@ export class FilterByForm extends BaseForm {
             <div className="sidebar-hover-content-box">
               <h2>Projects</h2>
               <div className="sidebar-hover-checkbox-collection">
-
+                <ProjectsList values={projects}
+                            selected={this.state.projects}
+                            onChange={this.onChangeProjects} />
               </div>
             </div>
             <div className="sidebar-hover-content-box">

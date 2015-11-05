@@ -10,6 +10,7 @@ import { Unassign } from './Fields/Unassign';
 import { AgentsList } from './Fields/AgentsList';
 import { AgentTeamsList } from './Fields/AgentTeamsList';
 import { DepartmentsList } from './Fields/DepartmentsList';
+import { ProjectsList } from './Fields/ProjectsList';
 import { BaseForm } from './BaseForm';
 
 export {
@@ -25,5 +26,6 @@ export {
   Unassign,
   AgentsList,
   AgentTeamsList,
-  DepartmentsList
+  DepartmentsList,
+  ProjectsList
 };
