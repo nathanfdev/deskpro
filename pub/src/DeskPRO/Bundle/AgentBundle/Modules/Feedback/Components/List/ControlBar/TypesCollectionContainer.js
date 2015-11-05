@@ -1,10 +1,13 @@
 import React, {Component, PropTypes} from 'react';
 import {ChoiceMenu, ChoiceMenuOption} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/ChoiceMenu';
 import { setFilterValue, loadFeedbackList } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
+import { isCommentsSelector } from '../../../Selectors/list';
+import { loadCommentsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
 
 import { connect } from 'react-redux';
 @connect(state => ({
   types: state.Feedback.nav.get('types'),
+  isComments: isCommentsSelector(state),
   filterParams: state.Feedback.list.get('currentListParams').get('filters')
 }))
 
@@ -13,12 +16,13 @@ export class TypesCollectionContainer extends Component {
   static propTypes = {
     types: PropTypes.object.isRequired,
     filterParams: PropTypes.object,
+    isComments: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired
   };
 
   setFilter(value) {
     let values = [value];
-    const {dispatch, filterParams} = this.props;
+    const {dispatch, filterParams, isComments} = this.props;
     if (filterParams && filterParams.get('category')) {
       const types = filterParams.get('category').toJS();
       const index = types.indexOf(value);
@@ -30,7 +34,11 @@ export class TypesCollectionContainer extends Component {
       }
     }
     dispatch(setFilterValue({ filter: 'category', value: values }));
-    dispatch(loadFeedbackList());
+    if (isComments) {
+      dispatch(loadCommentsList());
+    } else {
+      dispatch(loadFeedbackList());
+    }
   }
 
   render() {

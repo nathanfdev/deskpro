@@ -146,7 +146,7 @@ class TicketsDataService extends AbstractDataService
      * Returns the count of tickets that can be seen by the user by default. You can optionally provide a status to count on.
      *
      * @param Person $person
-     * @param string $status
+     * @param string $status "open" [awaiting user or agent], "all" [open + resolved], or a specific status
      *
      * @return int|null
      */
@@ -163,7 +163,12 @@ class TicketsDataService extends AbstractDataService
             function () use ($em, $person, $status) {
                 $qb = $em->createQueryBuilder();
 
-                if ('all' !== $status) {
+                if ('open' === $status) {
+                    $status_list = array(
+                        Ticket::STATUS_AWAITING_AGENT,
+                        Ticket::STATUS_AWAITING_USER,
+                    );
+                } elseif ('all' !== $status) {
                     $status_list = array($status);
                 } else {
                     $status_list = array(

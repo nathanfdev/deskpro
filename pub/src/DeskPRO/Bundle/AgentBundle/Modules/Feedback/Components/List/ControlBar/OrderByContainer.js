@@ -24,7 +24,7 @@ export class OrderByContainer extends Component {
     sort: PropTypes.object.isRequired,
     toggleDropdown: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
-    isComments: PropTypes.bool.isRequired
+    isComments: PropTypes.bool
   };
 
   render() {

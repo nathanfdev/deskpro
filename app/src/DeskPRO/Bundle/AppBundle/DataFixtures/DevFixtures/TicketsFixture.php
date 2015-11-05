@@ -93,6 +93,11 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
     private $people_ids;
 
     /**
+     * @var int - our test user for portal
+     */
+    private $joe_id;
+
+    /**
      * @var string[]
      */
     private $labels;
@@ -137,6 +142,7 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
         $this->loadProblems();
         $this->loadLabels();
         $this->loadTickets();
+        $this->loadTicketsForJoe();
         $this->loadTicketMessages();
         $this->loadTicketProps();
     }
@@ -146,6 +152,7 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
         $this->agent_ids      = $this->db->fetchAllCol('SELECT id FROM people WHERE is_agent = 1');
         $this->agent_team_ids = $this->db->fetchAllCol('SELECT id FROM agent_teams');
         $this->people_ids     = $this->db->fetchAllCol('SELECT id FROM people WHERE is_agent = 0');
+        $this->joe_id         = $this->db->fetchColumn("SELECT people.id FROM people JOIN people_emails pe ON people.id = pe.person_id WHERE pe.email = 'joe@deskprodemo.com';");
         $this->department_ids = $this->db->fetchAllCol('SELECT id FROM departments WHERE is_tickets_enabled = 1');
     }
 
@@ -202,6 +209,46 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
                 'department_id'           => $this->faker->randomElement($this->department_ids),
                 'agent_id'                => $this->faker->boolean(90) ? $this->faker->randomElement($this->agent_ids) : null,
                 'person_id'               => $this->faker->randomElement($this->people_ids),
+                'agent_team_id'           => $this->agent_team_ids && $this->faker->boolean(40) ? $this->faker->randomElement($this->agent_team_ids) : null,
+                'ref'                     => Strings::random(15, Strings::CHARS_ALPHANUM_IU),
+                'status'                  => $status,
+                'urgency'                 => $this->faker->numberBetween(1, 10),
+                'subject'                 => $subj,
+                'original_subject'        => $subj,
+                'date_created'            => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_resolved'           => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_archived'           => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_first_agent_assign' => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_first_agent_reply'  => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_last_agent_reply'   => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_last_user_reply'    => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_agent_waiting'      => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_user_waiting'       => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_status'             => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+            );
+        }
+
+        $this->db->batchInsert('tickets', $batch);
+
+        $this->ticket_ids = $this->db->fetchAllCol('SELECT id FROM tickets');
+    }
+
+    private function loadTicketsForJoe()
+    {
+        $batch = [];
+
+        for ($i = 0; $i < $this->num_tickets; ++$i) {
+            if ($this->faker->boolean(33)) {
+                $status = 'awaiting_agent';
+            } else {
+                $status = $this->faker->randomElement(array('awaiting_user', 'resolved'));
+            }
+
+            $subj    = $this->faker->realText($this->faker->numberBetween(40, 60));
+            $batch[] = array(
+                'department_id'           => $this->faker->randomElement($this->department_ids),
+                'agent_id'                => $this->faker->boolean(90) ? $this->faker->randomElement($this->agent_ids) : null,
+                'person_id'               => $this->joe_id,
                 'agent_team_id'           => $this->agent_team_ids && $this->faker->boolean(40) ? $this->faker->randomElement($this->agent_team_ids) : null,
                 'ref'                     => Strings::random(15, Strings::CHARS_ALPHANUM_IU),
                 'status'                  => $status,

@@ -37,6 +37,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class CustomDataTicketType extends AbstractType
@@ -56,6 +59,18 @@ class CustomDataTicketType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'preDataEvent'));
         $builder->addEventListener(FormEvents::POST_SUBMIT, array($this, 'postSubmitEvent'));
         $builder->addEventListener(FormEvents::SUBMIT, array($this, 'submitEvent'));
+    }
+
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        foreach ($form->all() as $child) {
+            // set it to the first child's label
+            if (!$view->vars['help']) {
+                if ($child_help = $child->getConfig()->getOption('help')) {
+                    $view->vars['help'] = $child_help;
+                }
+            }
+        }
     }
 
     public function preDataEvent(FormEvent $event)
@@ -132,6 +147,14 @@ class CustomDataTicketType extends AbstractType
         $resolver->setDefaults(array(
             'data_class'        => 'Application\DeskPRO\Entity\CustomDataTicket',
             'ignore_validation' => false,
+            'fully_hidden'      => function (Options $options) {
+                /** @var \Application\DeskPRO\Entity\CustomDefTicket $field */
+                if ($field = $options['custom_data_field']) {
+                    return $field->getHandlerClass() === 'Application\DeskPRO\CustomFields\Handler\Hidden';
+                }
+
+                return false;
+            },
         ));
         $resolver->setRequired(array(
             'custom_data_field',

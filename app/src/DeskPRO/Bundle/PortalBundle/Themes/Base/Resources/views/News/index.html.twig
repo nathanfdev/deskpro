@@ -1,16 +1,18 @@
 {% extends 'Theme::layout.html.twig' %}
+
 {% block inner_content %}
   <div class="breadcrumbs">
     {% show breadcrumbs %}
   </div>
+
   <article class="news main-news">
-    <header class="section-header padded">
-      <div class="header-button-container">
-        <div class="header-buttons">
-          {% show rss_link %}
-        </div>
-      </div>
+
+    <header class="large-title"><!-- TODO actual content -->
+        <div class="header-buttons">{% show rss_link %}</div>
+        <h1>News</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea</p>
     </header>
+
     {% show news_cats_tabs %}
     {% show news_list_full with { show_pager: true } %}
   </article>

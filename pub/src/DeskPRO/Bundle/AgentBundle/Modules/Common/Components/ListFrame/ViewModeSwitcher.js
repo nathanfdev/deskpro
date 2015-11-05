@@ -10,7 +10,7 @@ export class ViewModeSwitcher extends Component {
   };
 
   render() {
-    const { currentViewMode, toggleDropdown } = this.props;
+    const { currentViewMode = {icon: '', label: ''}, toggleDropdown } = this.props;
     const label = currentViewMode.label.substring(0, currentViewMode.label.indexOf(' '));
 
     return (

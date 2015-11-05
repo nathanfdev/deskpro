@@ -44,6 +44,16 @@ export const getStatuses = createAction(
     ids => dispatch => dispatch(loadFeedbackStatuses(recordStoresId, ids))
 );
 
+export const setLabelsFilterMode = createAction(
+  'FEEDBACK_SET_LABELS_FILTER_MODE',
+    mode => mode
+);
+
+export const selectLabel = createAction(
+  'FEEDBACK_SELECT_LABEL',
+    label => label
+);
+
 export const getCategories = createAction(
   'FEEDBACK_GET_CATEGORIES',
     ids => dispatch => dispatch(loadFeedbackCategories(recordStoresId, ids))
@@ -54,55 +64,54 @@ export const setCurrentListParams = createAction(
 );
 
 export const loadFeedbackList = createAction(
-    'FEEDBACK_LIST',
-    (overwriteParams = {}) => (dispatch, getState)=> {
-      const currentParams = currentListParamsSelector(getState()).toJS();
+  'FEEDBACK_LIST',
+  (overwriteParams = {}) => (dispatch, getState)=> {
+    const currentParams = currentListParamsSelector(getState()).toJS();
 
-      let params = { ...currentParams, ...overwriteParams };
-      params.isComments = false;
-      dispatch(setCurrentListParams(params));
-      delete params.isComments;
-      const {navItem} = params;
-      if (navItem) {
-        delete params.navItem;
-        params = { ...params, ...navItem };
-      }
-      const {filters} = params;
-      if (filters) {
-        delete params.filters;
-        for (var property in filters) {
-          if (filters.hasOwnProperty(property)) {
-            if (property === 'date_created') {
-              for (var dateProperty in filters[property]) {
-                if (filters[property].hasOwnProperty(dateProperty) && filters[property][dateProperty]) {
-                  params[dateProperty] = Moment(filters[property][dateProperty]).format('YYYY-MM-DD HH:mm:ss');
-                }
-              }
-            } else {
-              params[property] = filters[property];
-            }
-          }
-        }
-      }
-
-      return () => Feedback.getList(params).then(promise => {
-        const feedback = promise.getData();
-        const ids = [];
-        for (var index in feedback.data) {
-          if (feedback.data.hasOwnProperty(index)) {
-            ids.push(feedback.data[index].id);
-          }
-        }
-        dispatch(getAuthors(feedback));
-        dispatch(getCommentsCounter(ids));
-        dispatch(getStatuses(ids));
-        dispatch(getCategories(ids));
-
-        return feedback;
-      });
+    let params = { ...currentParams, ...overwriteParams };
+    params.isComments = false;
+    delete params.isComments;
+    dispatch(setCurrentListParams(params));
+    const {navItem} = params;
+    if (navItem) {
+      delete params.navItem;
+      params = { ...params, ...navItem };
     }
-  )
-  ;
+    const {filters} = params;
+    if (filters) {
+      delete params.filters;
+      for (var property in filters) {
+        if (filters.hasOwnProperty(property)) {
+          if (property === 'date_created') {
+            for (var dateProperty in filters[property]) {
+              if (filters[property].hasOwnProperty(dateProperty) && filters[property][dateProperty]) {
+                params[dateProperty] = Moment(filters[property][dateProperty]).format('YYYY-MM-DD HH:mm:ss');
+              }
+            }
+          } else {
+            params[property] = filters[property];
+          }
+        }
+      }
+    }
+
+    return () => Feedback.getList(params).then(promise => {
+      const feedback = promise.getData();
+      const ids = [];
+      for (var index in feedback.data) {
+        if (feedback.data.hasOwnProperty(index)) {
+          ids.push(feedback.data[index].id);
+        }
+      }
+      dispatch(getAuthors(feedback));
+      dispatch(getCommentsCounter(ids));
+      dispatch(getStatuses(ids));
+      dispatch(getCategories(ids));
+
+      return feedback;
+    });
+  }
+);
 
 export const feedbackToValidate = createAction(
   'FEEDBACK_TO_VALIDATE',

@@ -5,164 +5,236 @@
         {% show breadcrumbs %}
     </div>
 
-    <div class="column-full">
-      <div>
-      <nav class="tabs secondary-tabs">
-        <ul>
-          <li class="tab-active">
-            <a href="#">
-              <div>
-                <span class="title">Open Tickets <div class="text-tag rating-tag">3 awaiting response</div></span>
-              </div>
-            </a>
-          </li>
-
-          <li class="tab-inactive">
-            <a href="#">
-              <div>
-                <span class="title">Resolved</span>
-              </div>
-            </a>
-          </li>
-
-          <li class="tab-solo">
-            <form class="form-filter">
-              <div class="bucket">
-                <span>Filter: </span>
-                <input placeholder="Type filters here" type="text">
-              </div>
-            </form>
-          </li>
-        </ul>
-        </nav>
-      </div>
-    </div>
-
-    <div class="column-full">
-        {% if type == 'own' and person.organization and person.organization_manager %}
-            <a class="button" href="{{ path('portal_tickets', { type: 'organization' }) }}">
-                {{ phrase('portal.tickets.list_switch_to_organization') }}
-            </a>
-        {% endif %}
-        {% if type == 'organization' %}
-            <a class="button" href="{{ path('portal_tickets') }}">
-                {{ phrase('portal.tickets.list_switch_to_my_tickets') }}
-            </a>
-        {% endif %}
-
-        {% macro sort_link(label, sort_value, sort, sort_param, sort_dir, sort_dir_param) %}
-            {% set queryParams = app.request.query.all|merge({(sort_param):sort_value}) %}
-            {% set isActive = sort_value == sort %}
-            {% if isActive %}
-                {% set linkDir = sort_dir == 'desc' ? 'asc' : 'desc' %}
-            {% else %}
-                {% set linkDir = 'desc' %}
-            {% endif %}
-            {% set queryParams = app.request.query.all|merge({(sort_param):sort_value, (sort_dir_param):linkDir}) %}
-            {% set url = path(app.request.attributes.get('_route'), queryParams) %}
-            {% set sort_icon = sort_dir == 'desc' ? '&darr;' : '&uarr;' %}
-            <a href="{{ url }}">{{ label }}{% if isActive %}{{ sort_icon|raw }}{% endif %}</a>
-        {% endmacro %}
-
-        {% macro tickets_table(tickets_pager, title, pg_param, sort_param, sort, sort_dir_param, sort_dir) %}
+    <div id="ticket_list_page">
         <div class="column-full">
-         <div><!-- Table Header -->
-             <header class="titled-header">
-                 <h1>{{ title }}</h1>
-             </header>
+            <div>
+                <nav class="tabs secondary-tabs">
+                    <ul>
+                        <li class="{{ resolved_only ? 'tab-inactive' : 'tab-active' }}">
+                            <a href="{{ path('portal_tickets') }}">
+                                <div>
+                                    <div class="title">
+                                        Open Tickets
+                                        {% if open_ticket_count > 0 %}
+                                            <div class="text-tag rating-tag">{{ open_ticket_count }} awaiting response</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
 
-             <div class="table-meta">
-              <div class="table-controls">
-                <a href="#" class="column-control"></a>
-                <a href="#" class="expand-control"><i class="fa fa-caret-right"></i></a>
-              </div>
+                        <li class="{{ resolved_only ? 'tab-active' : 'tab-inactive' }}">
+                            <a href="{{ path('portal_tickets_resolved') }}">
+                                <div>
+                                    <span class="title">Resolved</span>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li class="tab-solo">
+                            <form class="form-filter">
+                                <div class="bucket">
+                                    <span>Filter: </span>
+                                    <input placeholder="Type filters here" type="text">
+                                </div>
+                            </form>
+                        </li>
+                    </ul>
+                </nav>
             </div>
-
-             <!-- Table -->
-             <table class="user-ticket-list">
-                 <thead>
-                 <tr>
-                     <td class="table-header">
-                         {{ _self.sort_link(
-                             phrase('portal.tickets.list_department'),
-                             'department',
-                             sort,
-                             sort_param,
-                             sort_dir,
-                             sort_dir_param
-                         ) }}
-                         /
-                         {{ _self.sort_link(
-                         phrase('portal.tickets.list_subject'),
-                             'subject',
-                              sort,
-                              sort_param,
-                              sort_dir,
-                              sort_dir_param
-                         ) }}
-                     </td>
-                     <td class="table-header">
-                         {{ _self.sort_link(
-                             phrase('portal.tickets.list_date_created'),
-                             'created',
-                             sort,
-                             sort_param,
-                             sort_dir,
-                             sort_dir_param
-                         ) }}
-                     </td>
-                     <td class="table-header right">
-                         {{ _self.sort_link(
-                             phrase('portal.tickets.list_last_action'),
-                             'activity',
-                             sort,
-                             sort_param,
-                             sort_dir,
-                             sort_dir_param
-                         ) }}
-                     </td>
-                 </tr>
-                 </thead>
-                 <tbody>
-                 {% for ticket in tickets_pager %}
-                     <tr class="item-row">
-                         <td>
-                             <a href="{{ portal_path(ticket) }}">
-                                 <span class="status-tag">{{ ticket_status(ticket) }}</span>
-                                 <span class="focus">[{{ ticket.department }}]</span>
-                                 {{ ticket.subject }}
-                             </a>
-                         </td>
-                         <td>
-                             <a href="{{ portal_path(ticket) }}">
-                                 <span class="date">{{ ticket.date_created|date }}</span>
-                             </a>
-                         </td>
-                         <td class="info-block">
-                             {% set last_message = ticket.messages|last %}
-                             {% if last_message %}
-                             <a href="{{ portal_path(ticket) }}">
-                                 <img src="{{ avatar_url(last_message.person) }}" class="avatar">
-                                 <span class="person">{{ last_message.person.display_name_user }}</span>
-                                 <span class="date">{{ ticket.last_activity_date|date }}</span>
-                             </a>
-                             {% endif %}
-                         </td>
-                     </tr>
-                 {% endfor %}
-                 </tbody>
-             </table>
-
-             {% if tickets_pager.haveToPaginate() %}
-                {{ pagerfanta(tickets_pager, null, { pageParameter: '['~pg_param~']' }) }}
-             {% endif %}
-         </div>
         </div>
-        {% endmacro %}
 
-        {{ _self.tickets_table(awaiting_user_tickets,phrase('portal.tickets.list_status_user'),awaiting_user_tickets_pg_param,awaiting_user_sort_param,awaiting_user_sort,awaiting_user_sort_dir_param,awaiting_user_sort_dir) }}
+        <div class="column-full">
+            {% if type == 'own' and person.organization and person.organization_manager %}
+                <a class="button" href="{{ path('portal_tickets', { type: 'organization' }) }}">
+                    {{ phrase('portal.tickets.list_switch_to_organization') }}
+                </a>
+            {% endif %}
+            {% if type == 'organization' %}
+                <a class="button" href="{{ path('portal_tickets') }}">
+                    {{ phrase('portal.tickets.list_switch_to_my_tickets') }}
+                </a>
+            {% endif %}
 
-        {{ _self.tickets_table(awaiting_agent_tickets,phrase('portal.tickets.list_status_agent'),awaiting_agent_tickets_pg_param,awaiting_agent_sort_param,awaiting_agent_sort,awaiting_agent_sort_dir_param,awaiting_agent_sort_dir) }}
+            {% macro sort_link(label, sort_value, sort, sort_param, sort_dir, sort_dir_param) %}
+                {% set queryParams = app.request.query.all|merge({(sort_param):sort_value}) %}
+                {% set isActive = sort_value == sort %}
+                {% if isActive %}
+                    {% set linkDir = sort_dir == 'desc' ? 'asc' : 'desc' %}
+                {% else %}
+                    {% set linkDir = 'desc' %}
+                {% endif %}
+                {% set queryParams = app.request.query.all|merge({(sort_param):sort_value, (sort_dir_param):linkDir}) %}
+                {% set url = path(app.request.attributes.get('_route'), queryParams) %}
+                {% set sort_icon = sort_dir == 'desc' ? '&darr;' : '&uarr;' %}
+                <a href="{{ url }}">{{ label }}{% if isActive %}{{ sort_icon|raw }}{% endif %}</a>
+            {% endmacro %}
 
-        {{ _self.tickets_table(resolved_tickets,phrase('portal.tickets.list_status_resolved'),resolved_tickets_pg_param,resolved_sort_param,resolved_sort,resolved_sort_dir_param,resolved_sort_dir) }}
+            {% macro tickets_table(ticket_table, id) %}
+                <div class="column-full">
+                    <div class="ticket-table">
+                        <!-- Table Header -->
+                        <header class="titled-header">
+                            <h1>{{ ticket_table.title }}</h1>
+                        </header>
+
+                        <div class="table-meta">
+                            <div class="table-controls">
+                                <a href="#" class="clickaway-dropdown column-control" data-clickaway-target="table_list_{{ id }}" data-columns="{{ ticket_table.columns|join(',') }}" data-active-columns="{{ ticket_table.activeColumns|join(',') }}"></a>
+                                <div class="popup-tiny" id="table_list_{{ id }}" style="display:none;">
+
+                                </div>
+                                <a href="#" class="expand-control"><i class="fa fa-caret-right"></i></a>
+                            </div>
+                        </div>
+
+
+
+
+                        <!-- Table -->
+                        <table class="user-ticket-list">
+                            <thead>
+                            <tr>
+                                <td class="table-header" data-col="department_subject">
+                                    {{ _self.sort_link(
+                                    phrase('portal.tickets.list_department'),
+                                    'department',
+                                    ticket_table.ticketFilter.sort,
+                                    ticket_table.sortName,
+                                    ticket_table.ticketFilter.sortDirection,
+                                    ticket_table.sortDirectionName
+                                    ) }}
+                                    /
+                                    {{ _self.sort_link(
+                                    phrase('portal.tickets.list_subject'),
+                                    'subject',
+                                    ticket_table.ticketFilter.sort,
+                                    ticket_table.sortName,
+                                    ticket_table.ticketFilter.sortDirection,
+                                    ticket_table.sortDirectionName
+                                    ) }}
+                                </td>
+                                <td class="table-header" data-col="agent">
+                                    {{ _self.sort_link(
+                                    'Agent',
+                                    'agent',
+                                    ticket_table.ticketFilter.sort,
+                                    ticket_table.sortName,
+                                    ticket_table.ticketFilter.sortDirection,
+                                    ticket_table.sortDirectionName
+                                    ) }}
+                                </td>
+                                <td class="table-header" data-col="date_created">
+                                    {{ _self.sort_link(
+                                    phrase('portal.tickets.list_date_created'),
+                                    'created',
+                                    ticket_table.ticketFilter.sort,
+                                    ticket_table.sortName,
+                                    ticket_table.ticketFilter.sortDirection,
+                                    ticket_table.sortDirectionName
+                                    ) }}
+                                </td>
+                                <td class="table-header right" data-col="date_activity">
+                                    {{ _self.sort_link(
+                                    phrase('portal.tickets.list_last_action'),
+                                    'activity',
+                                    ticket_table.ticketFilter.sort,
+                                    ticket_table.sortName,
+                                    ticket_table.ticketFilter.sortDirection,
+                                    ticket_table.sortDirectionName
+                                    ) }}
+                                </td>
+                                <td class="table-header right" data-col="date_user">
+                                    {{ _self.sort_link(
+                                    'Last User Reply',
+                                    'date_user',
+                                    ticket_table.ticketFilter.sort,
+                                    ticket_table.sortName,
+                                    ticket_table.ticketFilter.sortDirection,
+                                    ticket_table.sortDirectionName
+                                    ) }}
+                                </td>
+                                <td class="table-header right" data-col="date_agent">
+                                    {{ _self.sort_link(
+                                    'Last Agent Reply',
+                                    'date_user',
+                                    ticket_table.ticketFilter.sort,
+                                    ticket_table.sortName,
+                                    ticket_table.ticketFilter.sortDirection,
+                                    ticket_table.sortDirectionName
+                                    ) }}
+                                </td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for ticket in ticket_table.pager %}
+                                <tr class="item-row">
+                                    <td data-col="department_subject">
+                                        <a href="{{ portal_path(ticket) }}">
+                                            <span class="status-tag">{{ ticket_status(ticket) }}</span>
+                                            <span class="focus">[{{ ticket.department }}]</span>
+                                            {{ ticket.subject }}
+                                        </a>
+                                    </td>
+                                    <td class="info-block" data-col="agent">
+                                        <a href="{{ portal_path(ticket) }}">
+                                            {% if ticket.agent %}
+                                                <img src="{{ avatar_url(ticket.agent) }}" class="avatar">
+                                                <span class="person">{{ ticket.agent.display_name_user }}</span>
+                                            {% endif %}
+                                        </a>
+                                    </td>
+                                    <td class="info-block" data-col="date_created">
+                                        <a href="{{ portal_path(ticket) }}">
+                                            <span class="date">{{ ticket.date_created|date }}</span>
+                                        </a>
+                                    </td>
+                                    <td class="info-block" data-col="date_activity">
+                                        {% set last_message = ticket.messages|last %}
+                                        {% if last_message %}
+                                            <a href="{{ portal_path(ticket) }}">
+                                                <img src="{{ avatar_url(last_message.person) }}" class="avatar">
+                                                <span class="person">{{ last_message.person.display_name_user }}</span>
+                                                <span class="date">{{ ticket.last_activity_date|date }}</span>
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                    <td class="info-block" data-col="date_user">
+                                        {% if ticket.date_last_user_reply %}
+                                            <a href="{{ portal_path(ticket) }}">
+                                                {% if ticket.person %}
+                                                    <img src="{{ avatar_url(ticket.person) }}" class="avatar">
+                                                    <span class="person">{{ ticket.person.display_name_user }}</span>
+                                                {% endif %}
+                                                <span class="date">{{ ticket.date_last_user_reply|date }}</span>
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                    <td class="info-block" data-col="date_agent">
+                                        {% if ticket.date_last_agent_reply %}
+                                            <a href="{{ portal_path(ticket) }}">
+                                                {% if ticket.agent %}
+                                                    <img src="{{ avatar_url(ticket.agent) }}" class="avatar">
+                                                    <span class="person">{{ ticket.agent.display_name_user }}</span>
+                                                {% endif %}
+                                                <span class="date">{{ ticket.date_last_agent_reply|date }}</span>
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+                        {% if ticket_table.pager.haveToPaginate() %}
+                            {{ pagerfanta(ticket_table.pager, null, { pageParameter: '['~ticket_table.pageName~']' }) }}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endmacro %}
+
+            {% for table in ticket_list_tables %}
+                {{ _self.tickets_table(table, loop.index) }}
+            {% endfor %}
+    </div>
 {% endblock inner_content %}
