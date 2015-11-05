@@ -45,7 +45,7 @@
     "node-neat": "1.7.2",
     "node-sass": "3.3.3",
     "node-uuid": "1.4.3",
-    "react": "0.14.1",
+    "react": "0.14.*",
     "react-addons-create-fragment": "0.14.0",
     "react-addons-shallow-compare": "^0.14.0",
     "react-dnd": "2.0.2",
