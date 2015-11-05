@@ -6,7 +6,8 @@ import {
   AgentsList,
   AgentTeamsList,
   DepartmentsList,
-  ProjectsList } from '../../../Form/index';
+  ProjectsList,
+  LabelsList } from '../../../Form/index';
 
 export class FilterByForm extends BaseForm {
 
@@ -15,7 +16,8 @@ export class FilterByForm extends BaseForm {
     agents: PropTypes.object.isRequired,
     agentTeams: PropTypes.object.isRequired,
     departments: PropTypes.object.isRequired,
-    projects: PropTypes.object.isRequired
+    projects: PropTypes.object.isRequired,
+    labels: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -24,7 +26,8 @@ export class FilterByForm extends BaseForm {
     const localState = this.state;
     this.state = {
       ...localState,
-      projects: []
+      projects: [],
+      labels: []
     };
   }
 
@@ -34,12 +37,18 @@ export class FilterByForm extends BaseForm {
     });
   };
 
+  onChangeLabels = selected => {
+    this.setState({
+      labels: selected
+    });
+  };
+
   onSubmit = event => {
     event.preventDefault();
   };
 
   render() {
-    const { departments, agentTeams, agents, projects } = this.props;
+    const { departments, agentTeams, agents, projects, labels } = this.props;
 
     return (
       <Popup indicator="none">
@@ -121,14 +130,16 @@ export class FilterByForm extends BaseForm {
               <h2>Projects</h2>
               <div className="sidebar-hover-checkbox-collection">
                 <ProjectsList values={projects}
-                            selected={this.state.projects}
-                            onChange={this.onChangeProjects} />
+                              selected={this.state.projects}
+                              onChange={this.onChangeProjects} />
               </div>
             </div>
             <div className="sidebar-hover-content-box">
               <h2>Labels</h2>
               <div className="sidebar-hover-checkbox-collection">
-
+                <LabelsList values={labels}
+                            selected={this.state.labels}
+                            onChange={this.onChangeLabels} />
               </div>
             </div>
             <div className="sidebar-hover-content-box">

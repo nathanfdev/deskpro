@@ -5,6 +5,8 @@ import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/C
 import { FilterBy } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { FilterByForm } from './FilterByForm';
 import { allProjectsSelector } from '../../../../RecordStores/Selectors/projectSelectors';
+import { allTaskLabelsSelector } from '../../../../RecordStores/Selectors/taskLabelSelectors';
+import { loadAllTaskLabels } from '../../../../RecordStores/Actions/taskLabelActions';
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
 import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
@@ -15,6 +17,7 @@ import { loadAllDepartments } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Rec
 
 @connect(state => ({
   projects: allProjectsSelector(state),
+  labels: allTaskLabelsSelector(state),
   agents: agentsSelector(state),
   agentTeams: agentTeamsSelector(state),
   departments: allDepartmentsSelector(state)
@@ -25,6 +28,7 @@ export class FilterByContainer extends React.Component {
     super(props);
 
     props.dispatch(loadAllProjects());
+    props.dispatch(loadAllTaskLabels());
     props.dispatch(loadAllAgents());
     props.dispatch(loadAllAgentTeams());
     props.dispatch(loadAllDepartments());
