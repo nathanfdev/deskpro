@@ -38,9 +38,14 @@ export class OrderByContainer extends React.Component {
   };
 
   render() {
+    const currentSortOption = sortOptions[0];
+    const order = 'asc';
+
     return (
       <OrderBy ref="button"
+               currentSortOption={currentSortOption}
                sortOptions={sortOptions}
+               order={order}
                toggleDropdown={this.onOpenDropdown}>
 
         <Detached isOpen={this.state.dropdownOpened}
@@ -48,7 +53,9 @@ export class OrderByContainer extends React.Component {
                   positionTarget={this.refs.button}>
 
           <ClickOut onClickOut={this.onCloseDropDown}>
-            <OrderByDropdown sortOptions={sortOptions} />
+            <OrderByDropdown order={order}
+                             currentSortOption={currentSortOption}
+                             sortOptions={sortOptions} />
           </ClickOut>
         </Detached>
       </OrderBy>

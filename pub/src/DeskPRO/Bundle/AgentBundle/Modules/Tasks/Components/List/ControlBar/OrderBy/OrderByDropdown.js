@@ -8,6 +8,7 @@ import MenuFooterOptions from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Compone
 export class OrderByDropdown extends React.Component {
 
   static propTypes = {
+    currentSortOption: PropTypes.object,
     sortOptions: PropTypes.object
   };
 
@@ -15,9 +16,11 @@ export class OrderByDropdown extends React.Component {
     console.log(value);
   };
 
-  renderOption(option) {
+  renderOption(option, index) {
     return (
-      <Item label={option.label}
+      <Item key={index}
+            label={option.label}
+            isActive={this.props.currentSortOption === option}
             icon={option.icon} />
     );
   }
@@ -27,7 +30,7 @@ export class OrderByDropdown extends React.Component {
 
     return (
       <Menu>
-        {sortOptions.map(option => this.renderOption(option))}
+        {sortOptions.map((option, index) => this.renderOption(option, index))}
 
         <MenuFooter>
           <MenuFooterOptions options={[
