@@ -52,7 +52,7 @@ export class Projects extends React.Component {
 
     return (
       <ListItemContainer key={index}
-                         label={`${project.get('id')}-${project.get('title')}`}
+                         label={`project-${project.get('id')}-${project.get('title')}`}
                          count={project.get('remaining')}
                          onEdit={this.onEdit.bind(this, project)}
                          onClick={this.onSelectProject.bind(this, filter)}
