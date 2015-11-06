@@ -27,8 +27,6 @@ export class ListItemContainer extends React.Component {
 
   loadList = () => {
     const { listOptions, dispatch } = this.props;
-
-    console.log(listOptions);
     dispatch(TasksActions.applyListParams(listOptions));
   };
 
