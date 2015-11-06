@@ -107,7 +107,6 @@
 
             {%- macro col_data(ticket, ticket_table, col) -%}
                 {% if col.id == 'department_subject' %}
-                    <span class="status-tag">{{ ticket_status(ticket) }}</span>
                     <span class="focus">[{{ ticket.department }}]</span>
                     {{ ticket.subject }}
                 {% else %}
