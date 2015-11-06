@@ -57,16 +57,21 @@
             {% endif %}
 
             {%- macro sort_link(ticket_table, label, sort_value) -%}
-                {% set queryParams = app.request.query.all|merge({(ticket_table.sortName):ticket_table.ticketFilter.sort}) %}
-                {% set isActive = ticket_table.ticketFilter.sort == ticket_table.ticketFilter.sortDirection %}
+                {% set sort = ticket_table.ticketFilter.sort %}
+                {% set sort_param = ticket_table.sortName %}
+                {% set sort_dir = ticket_table.ticketFilter.sortDirection %}
+                {% set sort_dir_param = ticket_table.sortDirectionName %}
+
+                {% set queryParams = app.request.query.all|merge({(sort_param):sort_value}) %}
+                {% set isActive = sort_value == sort %}
                 {% if isActive %}
-                    {% set linkDir = ticket_table.ticketFilter.sortDirection == 'desc' ? 'asc' : 'desc' %}
+                    {% set linkDir = sort_dir == 'desc' ? 'asc' : 'desc' %}
                 {% else %}
                     {% set linkDir = 'desc' %}
                 {% endif %}
-                {% set queryParams = app.request.query.all|merge({(ticket_table.sortName):ticket_table.ticketFilter.sort, (ticket_table.sortDirectionName):linkDir}) %}
+                {% set queryParams = app.request.query.all|merge({(sort_param):sort_value, (sort_dir_param):linkDir}) %}
                 {% set url = path(app.request.attributes.get('_route'), queryParams) %}
-                {% set sort_icon = ticket_table.ticketFilter.sortDirection == 'desc' ? '&darr;' : '&uarr;' %}
+                {% set sort_icon = sort_dir == 'desc' ? '&darr;' : '&uarr;' %}
                 <a href="{{ url }}">{{ label }}{% if isActive %}{{ sort_icon|raw }}{% endif %}</a>
             {%- endmacro -%}
 

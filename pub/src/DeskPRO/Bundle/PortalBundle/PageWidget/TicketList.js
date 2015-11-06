@@ -54,9 +54,11 @@ class ColumnControlWidget extends PageWidget {
 
         // setup pagination links, they need the updated selected cols
         const new_cols = active_col_ids.join(',');
-        $('.pagination a').each(function() {
+        var update_links = function() {
           $(this).attr('href', updateQueryStringParameter($(this).attr('href'), table.active_columns_param, new_cols));
-        });
+        };
+        $('.table-header a').each(update_links);
+        $('.pagination a').each(update_links);
 
         $td_total_cols.attr('colspan', active_col_ids.length);
       });

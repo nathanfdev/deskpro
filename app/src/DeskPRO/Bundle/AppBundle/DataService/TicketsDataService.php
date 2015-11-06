@@ -111,13 +111,6 @@ class TicketsDataService extends AbstractDataService
 
                 // sort
                 switch ($filter->getSort()) {
-                    // TODO: last activity algorithm (same as Ticket::getLastActivityDate())
-                    case TicketFilter::SORT_ACTIVITY:
-                        $qb->addOrderBy('t.date_last_user_reply', $filter->getSortDirection());
-                        $qb->addOrderBy('t.date_last_agent_reply', $filter->getSortDirection());
-                        $qb->addOrderBy('t.date_created', $filter->getSortDirection());
-                        break;
-
                     case TicketFilter::SORT_DEPARTMENT:
                         $qb->join('t.department', 'd');
                         $qb->orderBy('d.title', $filter->getSortDirection());
@@ -128,8 +121,26 @@ class TicketsDataService extends AbstractDataService
                         break;
 
                     case TicketFilter::SORT_CREATED:
-                    default:
                         $qb->orderBy('t.date_created', $filter->getSortDirection());
+                        break;
+
+                    case TicketFilter::SORT_LAST_USER:
+                        $qb->addOrderBy('t.date_last_user_reply', $filter->getSortDirection());
+                        break;
+
+                    case TicketFilter::SORT_LAST_AGENT:
+                        $qb->addOrderBy('t.date_last_agent_reply', $filter->getSortDirection());
+                        break;
+
+                    case TicketFilter::SORT_AGENT:
+                        $qb->orderBy('t.agent', $filter->getSortDirection());
+                        break;
+                    // TODO: last activity algorithm (same as Ticket::getLastActivityDate())
+                    case TicketFilter::SORT_ACTIVITY:
+                        $qb->addOrderBy('t.date_last_user_reply', $filter->getSortDirection());
+                        $qb->addOrderBy('t.date_last_agent_reply', $filter->getSortDirection());
+                        $qb->addOrderBy('t.date_created', $filter->getSortDirection());
+                        break;
                 }
 
                 // search query
