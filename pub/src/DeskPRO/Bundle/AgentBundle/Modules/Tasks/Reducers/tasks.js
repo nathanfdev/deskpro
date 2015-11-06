@@ -6,7 +6,7 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-  [TasksActions.applyListParams]: (state, payload) => {
+  [TasksActions.setListParams]: (state, payload) => {
     return state.set('listParams', payload);
   }
 });
