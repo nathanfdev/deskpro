@@ -1,7 +1,7 @@
 {% set field_input %}
 	{% if field_handler_name == 'Toggle' and field_def.getOption('label_text') %}<label>{% endif %}
 	{% block field_input %}
-		{{ form_widget(formView, {'id': elId, 'attr':{'class': field_def.getOption('custom_css_classname', '')}}) }}
+		{{ form_widget(formView, {'id': elId}) }}
 	{% endblock %}
 	{% if field_handler_name == 'Toggle' and field_def.getOption('label_text') %} {{ field_def.getOption('label_text')|raw }}</label>{% endif %}
 {% endset %}

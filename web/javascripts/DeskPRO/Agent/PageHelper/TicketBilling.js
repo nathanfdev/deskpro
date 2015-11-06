@@ -38,6 +38,9 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
             next: 'fa fa-chevron-right'
           }
         });
+				$(this).on('dp.change', function(){
+					$(this).trigger('change');
+				});
       });
 
       $('.Date input:not(.datetimepickerinit)', wrap).each(function () {
@@ -54,6 +57,9 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
             next: 'fa fa-chevron-right'
           }
         });
+				$(this).on('dp.change', function(){
+					$(this).trigger('change');
+				});
       });
     };
 

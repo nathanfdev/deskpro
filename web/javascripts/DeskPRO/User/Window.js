@@ -180,7 +180,10 @@ DeskPRO.User.Window = new Orb.Class({
 					previous: 'fa fa-chevron-left',
 					next: 'fa fa-chevron-right'
 				}
-			})
+			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
+			});
 		});
 		$('.DateTime.customfield input').each(function(){
 			$(this).datetimepicker({
@@ -194,6 +197,9 @@ DeskPRO.User.Window = new Orb.Class({
 					previous: 'fa fa-chevron-left',
 					next: 'fa fa-chevron-right'
 				}
+			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
 			});
 		});
 

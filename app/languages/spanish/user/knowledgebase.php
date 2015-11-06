@@ -35,7 +35,7 @@ return array(
     'user.knowledgebase.knowledgebase'            => 'Base de conocimiento',
     'user.knowledgebase.link_view-all'            => 'Ver el artículo 1|Ver los artículos {{count}}',
     'user.knowledgebase.related_articles'         => 'Artículos relacionados',
-    'user.knowledgebase.sidebar_description'      => 'Nuestra base de conocimiento tiene 1 consulta realizada a nuestro equipo de soporte que puede responder su consulta| Nuestra base de conocimiento tiene {{count}} consultas realizada a nuestro equipo de soporte que puede responder su consulta',
+    'user.knowledgebase.sidebar_description'      => 'Nuestra base de conocimiento tiene 1 artículo escrito por nuestro equipo de soporte que puede responder su consulta|Nuestra base de conocimiento tiene {{count}} artículos escritos por nuestro equipo de soporte que puede responder su consulta',
     'user.knowledgebase.subscribe-article'        => '<a href="{{link}}">Suscribete</a> a este articulo para obtener una notificacion al correo cuando este sea modificado.',
     'user.knowledgebase.subscribe-category'       => '<a href="{{link}}">Suscribete</a> a esta categoria para obtener una notificacion al correo cuando los articulos nuevos sean publicados.',
     'user.knowledgebase.title'                    => 'Base de conocimiento',

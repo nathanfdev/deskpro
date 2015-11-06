@@ -79,11 +79,11 @@ class TicketTableDataService extends AbstractDataService
     public function __construct(
         EntityManager $em,
         TicketsDataService $ticket_data_service,
-        BrandStack $brand_stack,
         LanguageManager $language_manager,
         DepartmentDataService $department_data_service,
         TicketLayoutFactory $ticket_layout_factory,
-        FormFieldManager $form_field_manager
+        FormFieldManager $form_field_manager,
+        BrandStack $brand_stack = null
     ) {
         parent::__construct($em);
         $this->ticket_data_service     = $ticket_data_service;
@@ -96,9 +96,13 @@ class TicketTableDataService extends AbstractDataService
 
     public function makeTicketTable(Person $person, Request $request, $ticket_type, $category, $category_title)
     {
-        $columns  = $this->makeColumnControl($person);
-        $per_page = $this->brand_stack->getActive()->getSetting('portal.per_page_tickets', 10);
-        $table    = new TicketListTable($category, $ticket_type, $category_title, $columns, $request, $per_page);
+        $columns = $this->makeColumnControl($person);
+        if ($this->brand_stack) {
+            $per_page = $this->brand_stack->getActive()->getSetting('portal.per_page_tickets', 10);
+        } else {
+            $per_page = 10;
+        }
+        $table = new TicketListTable($category, $ticket_type, $category_title, $columns, $request, $per_page);
         $table->makePagerUsingDataService($this->ticket_data_service, $person);
 
         return $table;

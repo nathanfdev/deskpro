@@ -139,7 +139,7 @@ class LayoutField implements \Serializable
                         }
                         break;
                     case 'CheckWorkflow':
-                        if (!empty($term_info['options']['priority_ids'])) {
+                        if (!empty($term_info['options']['workflow_ids'])) {
                             $term = new Terms\CheckWorkflow($term_info['op'], $term_info['options']);
                         }
                         break;

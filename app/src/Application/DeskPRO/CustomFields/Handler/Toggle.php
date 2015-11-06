@@ -31,23 +31,23 @@
  */
 namespace Application\DeskPRO\CustomFields\Handler;
 
-use Application\DeskPRO\App;
-
 /**
  * Handles the toggle field.
  */
 class Toggle extends HandlerAbstract
 {
+    public function getWidgetName()
+    {
+        return 'checkbox';
+    }
+
     public function getFormField($data = null)
     {
-        $setData = null;
         if ($data and !empty($data['value'])) {
-            $setData = true;
+            $data['value'] = true;
         }
 
-        $field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'checkbox', $setData, array('required' => false));
-
-        return $field;
+        return parent::getFormField($data);
     }
 
     public function getDataFromForm(array $form_data)

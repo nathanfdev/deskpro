@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Kernel;
 
 require_once DP_ROOT.'/sys/DpShutdown.php';
@@ -38,6 +37,7 @@ require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 use Application\DeskPRO\App;
 use Application\DeskPRO\Console\CronApplication;
 use DeskPRO\Bundle\PortalBundle\HttpCache\PortalHttpCache;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Doctrine\DBAL\DBALException;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -102,6 +102,20 @@ class KernelBooter
             xdebug_start_trace($file);
             define('DP_DEBUG_TRACE_FILE', $file.'.xt');
         }
+
+        #------------------------------
+        # Set global blacklist/whitelist for file op
+        #------------------------------
+
+        require DP_ROOT.'/src/DeskPRO/Component/Filesystem/SafeFile.php';
+        SafeFile::setEmitWarningsOption(true);
+        SafeFile::addBlacklistFile(DP_WEB_ROOT.'/config.php');
+        SafeFile::addBlacklistDir(dp_get_backup_dir());
+        SafeFile::addBlacklistDir(dp_get_debug_dir());
+        SafeFile::addBlacklistDir(dp_get_blob_dir());
+        SafeFile::addBlacklistDir(dp_get_cache_dir());
+        SafeFile::addBlacklistDir(dp_get_tmp_dir());
+        SafeFile::addBlacklistDir(dp_get_data_dir());
     }
 
     /**

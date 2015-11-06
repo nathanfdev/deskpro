@@ -60,7 +60,7 @@ return array(
     'user.tickets.form_error_captcha_invalid'          => 'The code you entered is incorrect.',
     'user.tickets.form_error_category'                 => 'Please choose a category',
     'user.tickets.form_error_department'               => 'Please choose a department',
-    'user.tickets.form_error_message'                  => 'Please enter at couple of words here (at least 10 characters)',
+    'user.tickets.form_error_message'                  => 'Please enter a couple of words here (at least 10 characters)',
     'user.tickets.form_error_priority'                 => 'Please choose a priority',
     'user.tickets.form_error_product'                  => 'Please choose a product',
     'user.tickets.form_error_subject'                  => 'Please enter a sentence to describe your question (at least 5 characters)',

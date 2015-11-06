@@ -111,6 +111,8 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
             return (bool) $field_data;
         } elseif ($op == 'not_isset') {
             return !((bool) $field_data);
+        } elseif ('touched' === $op || 'nottouched' === $op) {
+            return $this->isStringMatch($ticket, $context, 'custom_data.'.$field_id, $options->get('value'));
         }
 
         if (!$field_data) {

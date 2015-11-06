@@ -1,4 +1,31 @@
 <?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 /**
  * Contains NTLMSoapClient.
  */
@@ -23,36 +50,51 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
  * @link http://rabaix.net/en/articles/2008/03/13/using-soap-php-with-ntlm-authentication
- * @author Thomas Rabaix
  *
- * @package php-ews\Auth
+ * @author Thomas Rabaix
  */
 class NTLMSoapClient extends SoapClient
 {
     /**
-     * cURL resource used to make the SOAP request
+     * cURL resource used to make the SOAP request.
      *
      * @var resource
      */
     protected $ch;
 
     /**
-     * Whether or not to validate ssl certificates
+     * Whether or not to validate ssl certificates.
      *
-     * @var boolean
+     * @var bool
      */
     protected $validate = false;
 
     /**
-     * Performs a SOAP request
+     * @var string|null
+     */
+    private $preferred_http_auth = null;
+
+    /**
+     * @var string
+     */
+    protected $__last_request_headers = '';
+
+    /**
+     * @var string
+     */
+    protected $__last_response = '';
+
+    /**
+     * Performs a SOAP request.
      *
      * @link http://php.net/manual/en/function.soap-soapclient-dorequest.php
      *
-     * @param string $request the xml soap request
+     * @param string $request  the xml soap request
      * @param string $location the url to request
-     * @param string $action the soap action.
-     * @param integer $version the soap version
-     * @param integer $one_way
+     * @param string $action   the soap action.
+     * @param int    $version  the soap version
+     * @param int    $one_way
+     *
      * @return string the xml soap response.
      */
     public function __doRequest($request, $location, $action, $version, $one_way = 0)
@@ -72,38 +114,45 @@ class NTLMSoapClient extends SoapClient
         $user      = $this->user;
         $pass      = $this->password;
         $validate  = $this->validate;
-        $make_curl = function($httpauth) use ($location, $validate, $request, $headers, $user, $pass) {
+        $make_curl = function ($httpauth) use ($location, $validate, $request, $headers, $user, $pass) {
             $ch = curl_init($location);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $validate);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $validate);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($ch, CURLOPT_POST, true );
+            curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
             curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
             curl_setopt($ch, CURLOPT_HTTPAUTH, $httpauth);
             curl_setopt($ch, CURLOPT_USERPWD, $user.':'.$pass);
+
             return $ch;
         };
 
-        foreach (array(CURLAUTH_NTLM, CURLAUTH_BASIC) as $httpauth) {
+        foreach (array($this->preferred_http_auth, CURLAUTH_NTLM, CURLAUTH_BASIC) as $httpauth) {
+            if ($httpauth === null) {
+                // first time this is run, preferred auth is unknown and will be null
+                continue;
+            }
+
             $this->ch = $make_curl($httpauth);
             $response = curl_exec($this->ch);
+            $code     = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
 
-            // A 401 would happen if auth is wrong or if the
-            // NTLM/BASIC was wrong/not accepted, so
-            // any other return code means we dont need to retry
-            if (curl_getinfo($this->ch, CURLINFO_HTTP_CODE) != 401) {
+            // success type means we dont need to try others
+            if ($code >= 200 && $code <= 399) {
+                $this->preferred_http_auth = $httpauth;
                 break;
             }
         }
 
-        // TODO: Add some real error handling.
+        $this->__last_response = $response;
+
         // If the response if false than there was an error and we should throw
         // an exception.
         if ($response === false) {
             throw new EWS_Exception(
-                'Curl error: ' . curl_error($this->ch),
+                'Curl error: '.curl_error($this->ch),
                 curl_errno($this->ch)
             );
         }
@@ -112,7 +161,7 @@ class NTLMSoapClient extends SoapClient
     }
 
     /**
-     * Returns last SOAP request headers
+     * Returns last SOAP request headers.
      *
      * @link http://php.net/manual/en/function.soap-soapclient-getlastrequestheaders.php
      *
@@ -120,13 +169,21 @@ class NTLMSoapClient extends SoapClient
      */
     public function __getLastRequestHeaders()
     {
-        return implode('n', $this->__last_request_headers) . "\n";
+        return implode("\n", $this->__last_request_headers)."\n";
     }
 
     /**
-     * Sets whether or not to validate ssl certificates
+     * @return string
+     */
+    public function __getLastResponse()
+    {
+        return $this->__last_response;
+    }
+
+    /**
+     * Sets whether or not to validate ssl certificates.
      *
-     * @param boolean $validate
+     * @param bool $validate
      */
     public function validateCertificate($validate = true)
     {

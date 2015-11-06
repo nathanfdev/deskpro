@@ -125,6 +125,7 @@ return array(
     'agent.tickets.disable_agent_notifs_action'         => 'Disable agent notifications',
     'agent.tickets.disable_all_notifs_action'           => 'Disable all notifications',
     'agent.tickets.disabled_user_notifs_action'         => 'Disable user notifications',
+    'agent.tickets.discard_draft'                       => 'Discard Draft',
     'agent.tickets.draft'                               => 'Draft Message',
     'agent.tickets.draft_message'                       => 'Draft Message',
     'agent.tickets.draft_note'                          => 'Draft Note',
