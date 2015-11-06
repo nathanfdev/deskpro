@@ -38,7 +38,6 @@
     "jquery": "2.1.4",
     "jquery-datetimepicker": "^2.4.0",
     "jquery-ui": "1.10.5",
-    "jquery-ui-timepicker-addon": "^1.5.5",
     "lodash": "3.10.1",
     "moment": "2.10.6",
     "node-bourbon": "4.2.3",

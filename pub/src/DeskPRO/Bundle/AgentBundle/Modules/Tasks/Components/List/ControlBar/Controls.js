@@ -1,23 +1,25 @@
 import React from 'react';
 import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameMenu';
-import { OrderBy, FilterBy, ViewModeSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
-import { MassActionCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar';
+import { MassActionCheckboxContainer } from './MassAction/MassActionCheckboxContainer';
+import { OrderByContainer } from './OrderBy/OrderByContainer';
+import { FilterByContainer } from './FilterBy/FilterByContainer';
+import { ViewModeSwitcherContainer } from './ViewMode/ViewModeSwitcherContainer';
 
 export class Controls extends React.Component {
 
   render() {
     return (
       <ListFrameMenu>
-        <MassActionCheckbox />
-        <OrderBy />
+        <MassActionCheckboxContainer />
+        <OrderByContainer />
         <li>
           <hr/>
         </li>
-        <FilterBy />
+        <FilterByContainer />
         <li>
           <hr/>
         </li>
-        <ViewModeSwitcher />
+        <ViewModeSwitcherContainer />
       </ListFrameMenu>
     );
   }

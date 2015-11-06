@@ -26,10 +26,14 @@ export class Nav extends React.Component {
         </NavFrameHeader>
 
         <div className="sidebar-list sidebar-list-filters">
-          <Groups groups={groups} />
-          <Projects projects={projects} />
-          <Agents agents={agents} />
-          <Labels labels={labels} />
+          <Groups groups={groups}
+                  dispatch={dispatch} />
+          <Projects projects={projects}
+                    dispatch={dispatch} />
+          <Agents agents={agents}
+                  dispatch={dispatch} />
+          <Labels labels={labels}
+                  dispatch={dispatch} />
         </div>
       </NavFrame>
     );

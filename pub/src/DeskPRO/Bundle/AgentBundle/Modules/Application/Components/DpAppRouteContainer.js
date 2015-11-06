@@ -39,9 +39,11 @@ export class DpAppRouteContainer extends React.Component {
       return <DpAppLoading />;
     }
 
-    this.welcomePageTimer = setTimeout(() => dispatch(AppActions.hideWelcomePage()), 3000);
     if (dpWindow.get('showWelcomePage')) {
-      return (<WelcomeBack user={user} />);
+      this.welcomePageTimer = setTimeout(() => dispatch(AppActions.hideWelcomePage()), 3000);
+      return (
+        <WelcomeBack user={user} />
+      );
     }
 
     return (

@@ -42,7 +42,9 @@ export class ProjectItem extends ListItem {
 
   renderCount(count, active) {
     return (
-      <div onMouseEnter={this.onShowEditIcon} onMouseLeave={this.onHideEditIcon}>
+      <div onMouseEnter={this.onShowEditIcon}
+           onMouseLeave={this.onHideEditIcon}>
+
         {this.state.showEditIcon
           ? this.renderEditButton()
           : super.renderCount(this.props.project.get('remaining'), active)
