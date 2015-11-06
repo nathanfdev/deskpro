@@ -5,13 +5,14 @@ import { Message } from './Message';
 import { loadMessages, markMessages, refreshCounts } from '../../Actions/messagesActions';
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
-
+import Loader from 'react-loader';
 
 @connect(state => ({
   me: meSelector(state),
   agents: agentsSelector(state),
   agentsStatus: agentsStatusSelector(state),
   messages: state.IM.messages,
+  messagesStatus: state.IM.messages.loadingMessages
 }))
 export class MessageList extends React.Component {
 
@@ -82,8 +83,9 @@ export class MessageList extends React.Component {
 
   render() {
     const messages = this.props.messages.getIn(['chatMessages', this.props.current.id]) || [];
+    const loaded = !this.props.messages.loadingMessages;
     return (
-      <div>
+       <Loader loaded={loaded}>
         {this.controls()}
         <ul ref="list" className="chat-message-list">
           {
@@ -96,7 +98,7 @@ export class MessageList extends React.Component {
             })
           }
         </ul>
-      </div>
+      </Loader>
     );
   }
 }
