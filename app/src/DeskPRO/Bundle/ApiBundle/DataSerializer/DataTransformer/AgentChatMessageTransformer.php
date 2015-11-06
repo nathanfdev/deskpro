@@ -36,6 +36,7 @@
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 
 /**
  * Class AgentChatMessageTransformer.
@@ -64,6 +65,11 @@ class AgentChatMessageTransformer extends AbstractDataSerializerTransformer
      */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        return [];
+        /** @var AgentChatMessage $entity */
+        $entity = $transformation_request->getDataToBeTransformed();
+
+        return [
+            'old' => $entity->getDateCreated() < new \DateTime('-12 hour'),
+        ];
     }
 }

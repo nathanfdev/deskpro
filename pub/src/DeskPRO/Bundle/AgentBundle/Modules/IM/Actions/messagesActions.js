@@ -27,7 +27,8 @@ export const addMessageOptimistic = createAction(
           message: message,
           metadata: null,
           person_id: me.get('id'),
-          person_name: me.get('name')
+          person_name: me.get('name'),
+          old: false
         }
       };
 

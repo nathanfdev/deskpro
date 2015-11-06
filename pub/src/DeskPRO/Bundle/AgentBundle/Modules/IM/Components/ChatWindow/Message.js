@@ -11,8 +11,12 @@ export class Message extends React.Component {
   };
 
   renderMy = () => {
+    let className = 'chat-message yours';
+    if(this.props.message.old === true) {
+      className += ' old';
+    }
     return (
-      <li className="chat-message yours old">
+      <li className={className}>
         <div className="message-read-mark">
           <i className="fa fa-check"></i>
           {(this.props.message.status > 1) ? <i className="fa fa-check"></i> : null}
@@ -25,8 +29,12 @@ export class Message extends React.Component {
 
   renderNotMy = () => {
     const author = this.props.agents.get(this.props.message.person_id);
+    let className = 'chat-message';
+    if(this.props.message.old === true) {
+      className += ' old';
+    }
     return (
-      <li className="chat-message old">
+      <li className={className}>
         <a title={this.props.message.person_name} className="chat-avatar">
           <PersonAvatar person={author} size="22"/>
         </a>
