@@ -4,7 +4,6 @@ import { Groups } from './Groups';
 import { Projects } from './Projects/Projects';
 import { Agents } from './Agents';
 import { Labels } from './Labels/Labels';
-import * as TasksActions from '../../Actions/tasksActions';
 
 export class Nav extends React.Component {
 
@@ -14,15 +13,11 @@ export class Nav extends React.Component {
     projects: PropTypes.object.isRequired,
     agents: PropTypes.object.isRequired,
     labels: PropTypes.object.isRequired,
-    groups: PropTypes.object.isRequired
-  };
-
-  onApplyListParams = filter => {
-    this.props.dispatch(TasksActions.applyListParams(filter));
+    groupsState: PropTypes.object.isRequired
   };
 
   render() {
-    const { dispatch, dpWindow, projects, agents, labels, groups } = this.props;
+    const { dispatch, dpWindow, projects, agents, labels, groupsState } = this.props;
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
@@ -31,14 +26,10 @@ export class Nav extends React.Component {
         </NavFrameHeader>
 
         <div className="sidebar-list sidebar-list-filters">
-          <Groups groups={groups}
-                  dispatch={dispatch} />
-          <Projects projects={projects}
-                    onApplyListParams={this.onApplyListParams} />
-          <Agents agents={agents}
-                  onApplyListParams={this.onApplyListParams} />
-          <Labels labels={labels}
-                  dispatch={dispatch} />
+          <Groups groupsState={groupsState} />
+          <Projects projects={projects} />
+          <Agents agents={agents} />
+          <Labels labels={labels} />
         </div>
       </NavFrame>
     );

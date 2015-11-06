@@ -42,15 +42,13 @@ export class Projects extends React.Component {
   };
 
   renderItem(project, index) {
-    const filter = {project: project.get('id')};
-
     return (
       <ListItemContainer key={index}
-                         label={`project-${project.get('id')}-${project.get('title')}`}>
+                         label={`project-${project.get('id')}-${project.get('title')}`}
+                         listOptions={{navItem: {project: project.get('id')}}}>
 
         <ListItem count={project.get('remaining')}
-                  onEdit={this.onEdit.bind(this, project)}
-                  onClick={this.props.onApplyListParams.bind(this, filter)}>
+                  onEdit={this.onEdit.bind(this, project)}>
 
           <div part="label">
             <i className="fa fa-book" /> {project.get('title')}

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { hashStateSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
 import { urlSanitize } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Service/routing';
 import { ListItemStatefulContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import * as TasksActions from '../../Actions/tasksActions';
 
 @connect(state => ({
   activeItemId: hashStateSelectorFactory(['nav', 'active'])(state)
@@ -25,7 +26,10 @@ export class ListItemContainer extends React.Component {
   }
 
   loadList = () => {
-    console.log(this.props.listOptions);
+    const { listOptions, dispatch } = this.props;
+
+    console.log(listOptions);
+    dispatch(TasksActions.applyListParams(listOptions));
   };
 
   render() {

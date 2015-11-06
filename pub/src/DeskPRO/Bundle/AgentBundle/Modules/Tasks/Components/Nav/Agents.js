@@ -10,30 +10,23 @@ export class Agents extends React.Component {
     agents: PropTypes.object.isRequired
   };
 
-  renderItem(agent, index) {
-    const filter = {agent: agent.get('id')};
-
-    return (
-      <ListItemContainer key={index}
-                         label={`agent-${agent.get('id')}-${agent.get('name')}`}>
-
-        <ListItem onClick={this.props.onApplyListParams.bind(this, filter)}
-                  count={0}>
-
-          <div part="label">
-            <PersonAvatar person={agent} size={16} /> {agent.get('name')}
-          </div>
-        </ListItem>
-      </ListItemContainer>
-    );
-  }
-
   render() {
     return (
       <Section>
         <SectionHeader>Agents</SectionHeader>
         <ul>
-          {this.props.agents.map((agent, index) => this.renderItem(agent, index))}
+          {this.props.agents.map((agent, index) =>
+            <ListItemContainer key={index}
+                               label={`agent-${agent.get('id')}-${agent.get('name')}`}
+                               listOptions={{navItem: {agent: agent.get('id')}}}>
+
+              <ListItem count={0}>
+                <div part="label">
+                  <PersonAvatar person={agent} size={16} /> {agent.get('name')}
+                </div>
+              </ListItem>
+            </ListItemContainer>
+          )}
         </ul>
       </Section>
     );

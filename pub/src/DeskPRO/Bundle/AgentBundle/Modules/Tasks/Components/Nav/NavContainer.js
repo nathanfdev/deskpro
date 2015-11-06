@@ -13,7 +13,7 @@ import * as GroupsActions from '../../Actions/groupsActions';
   agents: agentsSelector(state),
   projects: allProjectsSelector(state),
   labels: allTaskLabelsSelector(state),
-  groups: state.Tasks.groups
+  groupsState: state.Tasks.groups
 }))
 export class NavContainer extends React.Component {
 
