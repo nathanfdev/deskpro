@@ -37,6 +37,7 @@ use Application\DeskPRO\App;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Html\Html2Text;
 use Orb\Util\Strings;
 
 /**
@@ -487,13 +488,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     public function getMessageText()
     {
         $message = $this->message;
-        $message = strip_tags($message);
-
-        // Decode entities in the HTML back to characters,
-        // This is needed so when outputting, they arent double-encoded by twig
-        // (And its just proper!)
-        $message = \Orb\Util\Strings::htmlEntityDecodeUtf8($message);
-
+        $message = Html2Text::convertHtml($message);
         return $message;
     }
 

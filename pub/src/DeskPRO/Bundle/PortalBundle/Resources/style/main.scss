@@ -7861,7 +7861,7 @@ input[type="text"], input[type="email"], input[type="password"], textarea, selec
   max-width: 620px;
 }
 
-input[type="text"], input[type="email"], input[type="password"], textarea, select {
+input[type="text"], input[type="email"], input[type="password"], textarea, select, .dp-medium-rte {
   margin-bottom: 10px;
   font-size: $font-mid;
   font-weight: 400;
@@ -7877,7 +7877,7 @@ input[type="text"], input[type="email"], input[type="password"], textarea, selec
   font-weight: 400;
 }
 
-input[type="text"], input[type="email"], input[type="password"], textarea {
+input[type="text"], input[type="email"], input[type="password"], textarea, .dp-medium-rte {
   border: 1px solid $form-border-color;
   border-radius: 2px;
   background: $form-input;
@@ -7915,6 +7915,14 @@ input[type="text"], input[type="email"], input[type="password"], textarea {
 
   &.email-present {
     border: 1px dashed $form-border-color;
+  }
+}
+
+.dp-medium-rte {
+  min-height: 100px;
+
+  &.medium-editor-placeholder:after {
+    padding: 0.75em 1em;
   }
 }
 
