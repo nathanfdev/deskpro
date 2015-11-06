@@ -3,12 +3,12 @@ import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Mod
 import { ListItemContainer } from './ListItemContainer';
 
 const groups = [
-  { countKey: 'myTasksCount', filter: {group: 'my'}, label: 'My Tasks' },
-  { countKey: 'teamTasksCount', filter: {group: 'team'}, label: 'My Team Tasks' },
-  { countKey: 'deptTasksCount', filter: {group: 'department'}, label: 'My Department Tasks' },
-  { countKey: 'delegatedTasksCount', filter: {group: 'delegated'}, label: 'My Delegated Tasks' },
-  { countKey: 'unassignedTasksCount', filter: {group: 'unassigned'}, label: 'Unassigned Tasks' },
-  { countKey: 'allTasksCount', filter: {group: 'all'}, label: 'All Tasks' }
+  { countKey: 'myTasksCount', filter: {agents: ['me']}, label: 'My Tasks' },
+  { countKey: 'teamTasksCount', filter: {teams: ['me']}, label: 'My Team Tasks' },
+  { countKey: 'deptTasksCount', filter: {departments: ['me']}, label: 'My Department Tasks' },
+  { countKey: 'delegatedTasksCount', filter: {agents: ['not_me'], creator: 'me'}, label: 'My Delegated Tasks' },
+  { countKey: 'unassignedTasksCount', filter: {agents: ['null'], teams: ['null'], departments: ['null']}, label: 'Unassigned Tasks' },
+  { countKey: 'allTasksCount', filter: {done: 'all'}, label: 'All Tasks' }
 ];
 
 export class Groups extends React.Component {

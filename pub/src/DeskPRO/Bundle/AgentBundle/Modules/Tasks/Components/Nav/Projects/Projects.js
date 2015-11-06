@@ -45,7 +45,7 @@ export class Projects extends React.Component {
     return (
       <ListItemContainer key={index}
                          urlHash={`project-${project.get('id')}-${project.get('title')}`}
-                         listOptions={{project: project.get('id')}}>
+                         listOptions={{projects: [project.get('id')]}}>
 
         <ListItem count={project.get('remaining')}
                   onEdit={this.onEdit.bind(this, project)}>
