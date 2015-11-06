@@ -24,7 +24,7 @@ export class ListItemContainer extends React.Component {
     this.itemId = urlSanitize(props.label);
   }
 
-  loadList = event => {
+  loadList = () => {
     console.log(this.props.listOptions);
   };
 

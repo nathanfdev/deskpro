@@ -1,14 +1,14 @@
 import React, { PropTypes } from 'react';
 import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
-import { Section, SectionHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import { ProjectFormContainer } from './ProjectForm/ProjectFormContainer';
-import { ProjectItem } from './ProjectItem';
 import * as TasksActions from '../../../Actions/tasksActions';
 
 export class Projects extends React.Component {
 
   static propTypes = {
+    currentFilter: PropTypes.object,
     dispatch: PropTypes.func.isRequired,
     projects: PropTypes.object.isRequired
   };
@@ -42,9 +42,29 @@ export class Projects extends React.Component {
     });
   };
 
-  onSelectProject = project => {
-    this.props.dispatch(TasksActions.applyListParams({project: project.get('id')}));
+  onSelectProject = filter => {
+    this.props.dispatch(TasksActions.applyListParams(filter));
   };
+
+  renderItem(project, index) {
+    const filter = {project: project.get('id')};
+    console.log(filter, this.props.currentFilter, filter === this.props.currentFilter);
+
+    return (
+      <ListItem project={project}
+                   key={index}
+                   filter={filter}
+                   active={filter === this.props.currentFilter}
+                   count={project.get('remaining')}
+                   onEdit={this.onEdit.bind(this, project)}
+                   onClick={this.onSelectProject.bind(this, filter)}>
+
+        <div part="label">
+          <i className="fa fa-book" /> {project.get('title')}
+        </div>
+      </ListItem>
+    );
+  }
 
   render() {
     return (
@@ -57,17 +77,7 @@ export class Projects extends React.Component {
         </SectionHeader>
 
         <ul>
-          {this.props.projects.map((project, index) =>
-            <ProjectItem project={project}
-                         key={index}
-                         onEdit={this.onEdit}
-                         onClick={this.onSelectProject.bind(this, project)}>
-
-              <div part="label">
-                <i className="fa fa-book" /> {project.get('title')}
-              </div>
-            </ProjectItem>
-          )}
+          {this.props.projects.map((project, index) => this.renderItem(project, index))}
         </ul>
 
         <Detached isOpen={this.state.formOpened}

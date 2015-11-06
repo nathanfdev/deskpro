@@ -14,8 +14,28 @@ export class ListItem extends BaseList {
     onClick: PropTypes.func.isRequired
   };
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showEditIcon: false
+    };
+  }
+
+  onShowEditIcon = () => {
+    this.setState({
+      showEditIcon: true
+    });
+  };
+
+  onHideEditIcon = () => {
+    this.setState({
+      showEditIcon: false
+    });
+  };
+
   render() {
-    const { children, count, active, onClick } = this.props;
+    const { children, count, active, onClick, onEdit } = this.props;
     const classes = classNames('item', { 'active': active });
 
     let label = this.props.label;
@@ -37,7 +57,11 @@ export class ListItem extends BaseList {
 
     return (
       <li className="counter-display">
-        {this.renderCount(count)}
+        <div onMouseEnter={this.onShowEditIcon}
+             onMouseLeave={this.onHideEditIcon}>
+
+          {this.state.showEditIcon && onEdit ? this.renderEditButton() : this.renderCount(count)}
+        </div>
         <a href="#" className={classes} onClick={onClick}>
           {label}
         </a>

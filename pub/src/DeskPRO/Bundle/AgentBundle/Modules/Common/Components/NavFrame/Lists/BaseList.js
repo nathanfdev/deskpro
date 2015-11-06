@@ -20,9 +20,9 @@ export class BaseList extends React.Component {
       return '';
     }
 
-    const onClick = (e) => {
-      e.preventDefault();
-      onItemControlClick(e);
+    const onClick = event => {
+      event.preventDefault();
+      onItemControlClick(event);
     };
 
     return (
@@ -30,6 +30,18 @@ export class BaseList extends React.Component {
         <span>&nbsp;</span>
         <i className="fa fa-angle-down"></i>
       </a>
+    );
+  }
+
+  renderEditButton() {
+    const { onEdit } = this.props;
+
+    return (
+      <div className="list-counter-bucket">
+        <a href="#" className="edit-icon" onClick={onEdit}>
+          <i className="fa fa-cog" />
+        </a>
+      </div>
     );
   }
 }
