@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import Loader from 'react-loader';
 import { connect } from 'react-redux';
-import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
 
 // components
 import { Footer } from './Footer';
