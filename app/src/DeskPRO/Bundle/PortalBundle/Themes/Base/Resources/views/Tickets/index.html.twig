@@ -89,6 +89,7 @@
                     'subject'
                     ) }}
                 {% else %}
+                    {% set make_link = true %}
                     {% if col.id == 'agent' %}
                         {% set label = phrase('portal.tickets.list_agent' ) %}
                     {% elseif col.id == 'date_activity' %}
@@ -101,16 +102,21 @@
                         {% set label = phrase('portal.tickets.list_date_last_agent') %}
                     {% else  %}
                         {% set label = col.label %}
+                        {% set make_link = false %}
                     {% endif %}
-                    {{ _self.sort_link(
+                    {% if make_link %}
+                        {{ _self.sort_link(
                         ticket_table,
                         label,
                         col.id
-                    ) }}
+                        ) }}
+                    {% else %}
+                        {{ label }}
+                    {% endif %}
                 {% endif %}
             {%- endmacro -%}
 
-            {%- macro col_data(ticket, ticket_table, col) -%}
+            {%- macro col_data(ticket, ticket_view, ticket_table, col) -%}
                 {% if col.id == 'department_subject' %}
                     <span class="focus">[{{ ticket.department }}]</span>
                     {{ ticket.subject }}
@@ -146,7 +152,10 @@
                             <span class="date">{{ ticket.date_last_agent_reply|date }}</span>
                         {% endif %}
                     {% else  %}
-                        {% set label = col.label %}
+                        {% set property = ticket_view.getProperty(col.id) %}
+                        {% if property and property.isVisible() %}
+                            {{ property.value }}
+                        {% endif %}
                     {% endif %}
                 {% endif %}
             {%- endmacro -%}
@@ -191,11 +200,12 @@
                                 </tr>
                             {% endif %}
                             {% for ticket in ticket_table.pager %}
+                                {% set ticket_view = ticket_view(ticket) %}
                                 <tr class="item-row">
                                 {% for col in ticket_table.columns %}
                                     <td class="info-block" data-col="{{ col.id }}"{% if not ticket_table.isActive(col) %} style="display:none;"{% endif %}>
                                         <a href="{{ portal_path(ticket) }}">
-                                            {{ _self.col_data(ticket, ticket_table, col) }}
+                                            {{ _self.col_data(ticket, ticket_view, ticket_table, col) }}
                                         </a>
                                     </td>
                                 {% endfor %}

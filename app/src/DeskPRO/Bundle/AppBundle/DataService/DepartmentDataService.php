@@ -51,7 +51,8 @@ class DepartmentDataService extends AbstractDataService
     }
 
     /**
-     * An array of departments that are allowed for this person in tickets.
+     * An array of departments
+     * that are allowed for this person in tickets.
      *
      * If a department that is returned has a parent, the calling code is expected to
      * deal with parent hierarchies (the parent's are not returned here).

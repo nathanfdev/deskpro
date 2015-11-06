@@ -10,7 +10,7 @@ services:
 
   tickets.table:
       class: DeskPRO\Bundle\AppBundle\DataService\TicketTableDataService
-      arguments: [@doctrine.orm.default_entity_manager, @data.tickets, @brand_stack, @language_manager]
+      arguments: [@doctrine.orm.default_entity_manager, @data.tickets, @brand_stack, @language_manager, @data.departments, @ticket_layout_factory, @form_field_manager]
 
   tickets.custom_per_field_manager:
       class: DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomPerFieldManager
