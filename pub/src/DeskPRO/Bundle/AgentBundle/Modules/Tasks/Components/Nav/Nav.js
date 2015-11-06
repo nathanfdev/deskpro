@@ -4,6 +4,7 @@ import { Groups } from './Groups';
 import { Projects } from './Projects/Projects';
 import { Agents } from './Agents';
 import { Labels } from './Labels';
+import * as TasksActions from '../../Actions/tasksActions';
 
 export class Nav extends React.Component {
 
@@ -14,6 +15,10 @@ export class Nav extends React.Component {
     agents: PropTypes.object.isRequired,
     labels: PropTypes.object.isRequired,
     groups: PropTypes.object.isRequired
+  };
+
+  onApplyListParams = filter => {
+    this.props.dispatch(TasksActions.applyListParams(filter));
   };
 
   render() {
@@ -29,9 +34,9 @@ export class Nav extends React.Component {
           <Groups groups={groups}
                   dispatch={dispatch} />
           <Projects projects={projects}
-                    dispatch={dispatch} />
+                    onApplyListParams={this.onApplyListParams} />
           <Agents agents={agents}
-                  dispatch={dispatch} />
+                  onApplyListParams={this.onApplyListParams} />
           <Labels labels={labels}
                   dispatch={dispatch} />
         </div>

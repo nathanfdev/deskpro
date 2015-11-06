@@ -4,13 +4,11 @@ import { Section, SectionHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Commo
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import { ProjectFormContainer } from './ProjectForm/ProjectFormContainer';
 import { ListItemContainer } from '../ListItemContainer';
-import * as TasksActions from '../../../Actions/tasksActions';
 
 export class Projects extends React.Component {
 
   static propTypes = {
-    currentFilter: PropTypes.object,
-    dispatch: PropTypes.func.isRequired,
+    onApplyListParams: PropTypes.func.isRequired,
     projects: PropTypes.object.isRequired
   };
 
@@ -43,10 +41,6 @@ export class Projects extends React.Component {
     });
   };
 
-  onSelectProject = filter => {
-    this.props.dispatch(TasksActions.applyListParams(filter));
-  };
-
   renderItem(project, index) {
     const filter = {project: project.get('id')};
 
@@ -55,7 +49,7 @@ export class Projects extends React.Component {
                          label={`project-${project.get('id')}-${project.get('title')}`}
                          count={project.get('remaining')}
                          onEdit={this.onEdit.bind(this, project)}
-                         onClick={this.onSelectProject.bind(this, filter)}
+                         onClick={this.props.onApplyListParams.bind(this, filter)}
                          listOptions={filter}>
 
         <div part="label">

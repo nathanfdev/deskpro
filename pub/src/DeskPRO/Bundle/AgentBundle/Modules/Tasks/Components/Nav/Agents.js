@@ -2,17 +2,12 @@ import React, { PropTypes } from 'react';
 import { Section, SectionHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 import { ListItemContainer } from './ListItemContainer';
-import * as TasksActions from '../../Actions/tasksActions';
 
 export class Agents extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
+    onApplyListParams: PropTypes.func.isRequired,
     agents: PropTypes.object.isRequired
-  };
-
-  onSelectAgent = filter => {
-    this.props.dispatch(TasksActions.applyListParams(filter));
   };
 
   renderItem(agent, index) {
@@ -21,7 +16,7 @@ export class Agents extends React.Component {
     return (
       <ListItemContainer key={index}
                          label={`agent-${agent.get('id')}-${agent.get('name')}`}
-                         onClick={this.onSelectAgent.bind(this, filter)}
+                         onClick={this.props.onApplyListParams.bind(this, filter)}
                          count={0}>
 
         <div part="label">
