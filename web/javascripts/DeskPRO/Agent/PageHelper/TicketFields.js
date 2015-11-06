@@ -354,7 +354,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			}).bind(this),
 			(function(xhr, code, message) {
         this.closeEditMode();
-        var div = $('<div><strong>Server error</strong></div>');
+        var div = $('<div><strong>Server error: </strong>' + message + '</div>');
         DeskPRO_Window.showAlert(div);
 				console.error(message);
 			}).bind(this)
