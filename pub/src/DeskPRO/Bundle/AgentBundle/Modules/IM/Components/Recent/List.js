@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
+import Loader from 'react-loader';
 
 import { Item } from './Item';
 
@@ -72,7 +72,17 @@ export class List extends React.Component {
     this.props.dispatch(actions.startChat(id, type));
   };
 
-  renderList = () => {
+
+
+  render() {
+    const { recentChatsStatus, agentsStatus, teamsStatus, departmentsStatus, meStatus } = this.props;
+    const loaded = (
+      recentChatsStatus.get('isDone')
+      && agentsStatus.get('isDone')
+      && teamsStatus.get('isDone')
+      && departmentsStatus.get('isDone')
+      && meStatus.get('isDone')
+    );
     const { agents, teams, departments, recentChats, me, dispatch, counts, loadingCounts } = this.props;
     const sortedChats = recentChats.sort((first, second) => {
       const fDate = Date.parse(first.get('date_last_message'));
@@ -80,42 +90,27 @@ export class List extends React.Component {
       if (fDate === sDate) return 0;
       return sDate - fDate;
     }).slice(0, 5);
+
     return (
-    <span>
-      {
-        sortedChats.map((chat, index) => {
-          return (
-            <Item
-              startChat={this.startChat}
-              me={me}
-              counts={loadingCounts ? {} : counts}
-              key={index}
-              chat={chat}
-              teams={teams}
-              agents={agents}
-              departments={departments}
-              dispatch={dispatch}
-              />
+      <Loader loaded={loaded} opacity={0} width={3} scale={0.5} left="125%" color="#fff" component="span">
+        {
+          sortedChats.map((chat, index) => {
+            return (
+              <Item
+                startChat={this.startChat}
+                me={me}
+                counts={loadingCounts ? {} : counts}
+                key={index}
+                chat={chat}
+                teams={teams}
+                agents={agents}
+                departments={departments}
+                dispatch={dispatch}
+                />
             );
-        })
-      }
-    </span>);
-  };
-
-  renderLoading = () => {
-    return <span className="chat-avatar-loading"><Spinner width="20" height="20" assignClass="recent-spinner"/> Loading recent chats... </span>;
-  };
-
-  render() {
-    const { recentChatsStatus, agentsStatus, teamsStatus, departmentsStatus, meStatus } = this.props;
-    return (
-      recentChatsStatus.get('isDone')
-      && agentsStatus.get('isDone')
-      && teamsStatus.get('isDone')
-      && departmentsStatus.get('isDone')
-      && meStatus.get('isDone')
-    )
-      ? this.renderList()
-      : this.renderLoading();
+          })
+        }
+      </Loader>
+    );
   }
 }

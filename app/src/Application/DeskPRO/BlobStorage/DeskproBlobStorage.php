@@ -153,7 +153,7 @@ class DeskproBlobStorage implements Loggable
     {
         if (!isset($this->adapters[$id])) {
             $this->logger->logError("[DeskproBlobStorage] (getAdapter) No adapter by id: $id");
-            throw new \InvalidArgumentException("No adapter by id `$id`");
+            throw new BlobStorageException("No adapter by id `$id`", BlobStorageException::INVALID_ADAPTER_ID);
         }
 
         return $this->adapters[$id];
@@ -201,7 +201,7 @@ class DeskproBlobStorage implements Loggable
     public function setPreferredAdapterId($id)
     {
         if (!isset($this->adapters[$id])) {
-            throw new \InvalidArgumentException("No adapter by id `$id`");
+            throw new BlobStorageException("No adapter by id `$id`", BlobStorageException::INVALID_ADAPTER_ID);
         }
 
         $this->preferred_adapter_id = $id;
@@ -365,7 +365,7 @@ class DeskproBlobStorage implements Loggable
 
             $this->db->delete('blobs', $blob_array['id']);
 
-            throw new \RuntimeException('Failed to store blob, no adapters succeeded', 1, $prev_e);
+            throw new BlobStorageException('Failed to store blob, no adapters succeeded', BlobStorageException::FAILED_BLOB_STORE, $prev_e);
         }
 
         $blob_entity_tmp->authcode = $blob->getMeta('authcode');
@@ -513,7 +513,7 @@ class DeskproBlobStorage implements Loggable
 
             $this->db->delete('blobs', $blob_array['id']);
 
-            throw new \RuntimeException('Failed to store blob, no adapters succeeded', 1, $prev_e);
+            throw new BlobStorageException('Failed to store blob, no adapters succeeded', BlobStorageException::FAILED_BLOB_STORE, $prev_e);
         }
 
         $blob_entity_tmp->authcode = $blob->getMeta('authcode');
@@ -691,7 +691,7 @@ class DeskproBlobStorage implements Loggable
     {
         $blob_row = $this->db->fetchAssoc('SELECT * FROM blobs WHERE id = ?', array($blob_row_id));
         if (!$blob_row) {
-            throw new \InvalidArgumentException("Could not find blob with ID $blob_row_id");
+            throw new BlobStorageException("Could not find blob with ID $blob_row_id", BlobStorageException::INVALID_BLOB_ID);
         }
 
         return $this->copyBlobRowToString($blob_row);

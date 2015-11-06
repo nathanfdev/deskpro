@@ -58,7 +58,7 @@ return array(
     'user.profile.lost_password_explain'               => 'Glemt dit password? Udfyld med din email herover og klik på knappen nedenfor',
     'user.profile.lost_password_send_btn'              => 'Send nustil instruktioner',
     'user.profile.lost_password_sent'                  => 'Hvis vi har en konto med denne email adresse, så har vi sendt instruktioner omkring nulstilning af dit password til den.',
-    'user.profile.lost_qm'                             => 'fortabt?',
+    'user.profile.lost_qm'                             => 'glemt?',
     'user.profile.new_password'                        => 'Nyt password',
     'user.profile.or_connect_with'                     => 'Eller tilslut med',
     'user.profile.password'                            => 'Password',

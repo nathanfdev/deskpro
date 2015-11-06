@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
+import Loader from 'react-loader';
 import { connect } from 'react-redux';
-import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
+
+import * as ui from '../../Actions/uiActions';
 
 // components
 import { Footer } from './Footer';
@@ -30,6 +32,12 @@ export class Chat extends React.Component {
     dispatch: PropTypes.func.isRequired
   };
 
+  /**
+   * Mixins
+   * @type {Array}
+   */
+  mixins = [require('react-onclickoutside')];
+
   constructor(props) {
     super(props);
     this.state = {
@@ -38,6 +46,15 @@ export class Chat extends React.Component {
       searchShown: false
     };
   }
+
+  /**
+   * Handle clicks outside the item
+   * @param {Event} event Click event
+   * @return {void}
+   */
+  handleClickOutside = () => {
+    this.props.dispatch(ui.closeChat())
+  };
 
   isAgentChat() {
     return this.props.current.chat_type === 'agent';
@@ -57,9 +74,13 @@ export class Chat extends React.Component {
   }
 
   messageList = () => {
-    return (this.props.current.id)
-      ? <MessageList current={this.props.current} searchQuery={this.state.searchQuery}/>
-      : <Spinner width="40" height="40"/>;
+    return (
+      <div style={{minHeight: 75}}>
+        <Loader loaded={this.props.current.id} opacity={0} width={3} top="45%">
+          <MessageList current={this.props.current} searchQuery={this.state.searchQuery}/>
+        </Loader>
+      </div>
+    );
   };
 
   handleType = (event) => {

@@ -29,7 +29,7 @@
 return array(
     'agent.tasks.add_another_task'   => 'Dodaj następne zadanie',
     'agent.tasks.all_tasks'          => 'Wszystkie Zadania',
-    'agent.tasks.assigned_to_by'     => 'Przydzielony do zadanie przez {{name}}',
+    'agent.tasks.assigned_to_by'     => 'Przydzielony do zadania przez {{name}}',
     'agent.tasks.completed_by'       => 'Zadanie ukończone przez {{name}}',
     'agent.tasks.completed_tasks'    => 'Ukończone Zadania',
     'agent.tasks.count'              => 'Liczba',
@@ -53,5 +53,5 @@ return array(
     'agent.tasks.task_has_deal_x'    => 'Zadanie połączone z: Umowa "{{label}}"',
     'agent.tasks.task_has_ticket_x'  => 'Zadanie połączone z: Zgłoszenie "{{label}}"',
     'agent.tasks.tasks_i_delegated'  => 'Zadania, które oddelegowałem',
-    'agent.tasks.team_assigned_by'   => 'Twój zespół został przypisany do tego zadania przez {{name}}',
+    'agent.tasks.team_assigned_by'   => 'Twój zespół został przydzielony do tego zadania przez {{name}}',
 );

@@ -32,6 +32,7 @@ use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchContextInterface;
 use Application\DeskPRO\NewSearch\SearchEngine\UserSearchInterface;
+use Application\DeskPRO\Search\Adapter\MysqlAdapter;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\OptionsArray;
@@ -97,10 +98,17 @@ class UserSearch implements UserSearchInterface
 
         $limit_types = "'".implode('\',\'', $types)."'";
 
-        $query_words = explode(' ', $query);
+        $query2 = Strings::decodeHtmlEntities($query);
+        $query2 = Strings::decodeUnicodeEntities($query2);
+        $query2 = Strings::utf8_accents_to_ascii($query2);
+
+        $query_words = Arrays::removeEmptyString(explode(' ', trim($query.' '.$query2)));
+
         if (!$query_words) {
             return new ResultSet();
         }
+
+        $query_words = array_unique($query_words);
 
         $params = array();
         $likes  = array();
@@ -116,6 +124,26 @@ class UserSearch implements UserSearchInterface
                 break;
             }
         }
+
+        if (count($likes) < self::MAX_WORDS) {
+            $exist_labels = $this->db->fetchAllCol('
+                SELECT DISTINCT label
+                FROM label_defs
+                WHERE label IN (?)
+            ', array($query_words), array(Connection::PARAM_STR_ARRAY));
+            foreach ($exist_labels as $l) {
+                $l = MysqlAdapter::encodeLabel($l);
+                if ($l) {
+                    $likes[]  = 'content_search.content LIKE ?';
+                    $params[] = '%'.$l.'%';
+                }
+
+                if (count($likes) >= self::MAX_WORDS) {
+                    break;
+                }
+            }
+        }
+
         if ($likes) {
             $where = "
                 content_search.object_type IN ($limit_types)

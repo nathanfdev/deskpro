@@ -192,7 +192,7 @@ class AgentReplyCodes implements Loggable
      */
     public function getNewBody()
     {
-        return $this->new_body;
+        return trim($this->new_body);
     }
 
     /**

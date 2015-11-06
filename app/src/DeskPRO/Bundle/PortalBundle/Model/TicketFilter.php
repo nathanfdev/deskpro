@@ -40,8 +40,11 @@ class TicketFilter
     const CATEGORY_AWAITING_USER  = 'awaiting_user';
     const CATEGORY_RESOLVED       = 'resolved';
 
-    const SORT_CREATED    = 'created';
-    const SORT_ACTIVITY   = 'activity';
+    const SORT_AGENT      = 'agent';
+    const SORT_CREATED    = 'date_created';
+    const SORT_ACTIVITY   = 'date_activity';
+    const SORT_LAST_AGENT = 'date_agent';
+    const SORT_LAST_USER  = 'date_user';
     const SORT_DEPARTMENT = 'department';
     const SORT_SUBJECT    = 'subject';
 
@@ -68,12 +71,34 @@ class TicketFilter
      */
     protected $sort_direction;
 
-    public function __construct($type = null, $category = null, $sort = null, $sort_direction = null)
+    /**
+     * @var string some text to search for in the ticket
+     */
+    private $search_query;
+
+    public function __construct($type = null, $category = null, $sort = null, $sort_direction = null, $search_query = null)
     {
         $this->setType($type);
         $this->setCategory($category);
         $this->setSort($sort);
         $this->setSortDirection($sort_direction);
+        $this->setSearchQuery($search_query);
+    }
+
+    /**
+     * @param string $search_query
+     */
+    public function setSearchQuery($search_query)
+    {
+        $this->search_query = $search_query;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSearchQuery()
+    {
+        return $this->search_query;
     }
 
     /**
@@ -129,7 +154,7 @@ class TicketFilter
      */
     public function setSort($sort)
     {
-        if (!in_array($sort, array(self::SORT_ACTIVITY, self::SORT_CREATED, self::SORT_DEPARTMENT, self::SORT_SUBJECT))) {
+        if (!in_array($sort, array(self::SORT_ACTIVITY, self::SORT_CREATED, self::SORT_DEPARTMENT, self::SORT_SUBJECT, self::SORT_AGENT, self::SORT_LAST_AGENT, self::SORT_LAST_USER))) {
             $sort = self::SORT_ACTIVITY;
         }
 

@@ -27,12 +27,16 @@
  */
 
 return array(
+    'user.knowledgebase.article-viewed'       => 'Bu makale {{count}} defa incelendi',
     'user.knowledgebase.article_not_found'    => 'Makale bulunamadı.',
+    'user.knowledgebase.auto_action_on_date'  => 'Otomatik {{action}} ve {{date}}',
     'user.knowledgebase.category_no-articles' => 'Bu kategoride makale yok',
     'user.knowledgebase.knowledgebase'        => 'Bilgi Bankası',
     'user.knowledgebase.link_view-all'        => '1 makaleyi göster|{{count}} makaleyi göster',
     'user.knowledgebase.related_articles'     => 'İlişkili Makaleler',
-    'user.knowledgebase.sidebar_description'  => 'Bilgi bankamız sorunuzla ilgili 1 makale içeriyor |Bilgi bankamız sorunuzla ilgili {{count}} makale içeriyor',
+    'user.knowledgebase.sidebar_description'  => 'Bilgi bankamız sorunuzla ilgili {{count}} makale içeriyor',
+    'user.knowledgebase.subscribe-article'    => 'Bu makale ile ilgili güncel bildirim almak için <a href="{{link}}">Abone</a> olunuz.',
+    'user.knowledgebase.subscribe-category'   => 'Yeni makalelerden mail ile haberdar olmak için <a href="{{link}}">Abone</a> olunuz.',
     'user.knowledgebase.title'                => 'Bilgi Bankası',
     'user.knowledgebase.title-articles'       => '1 makale var|{{count}} makale var',
     'user.knowledgebase.title-articles-paged' => 'Makaleler gösteriliyor {{first}}/{{last}} Toplam:{{total}}',

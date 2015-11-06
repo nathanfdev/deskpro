@@ -17,9 +17,6 @@
 								<div class="inner-group" dp-error-class="form_props.title">
 									<input type="text" class="form-control" name="title" ng-model="EditCtrl.form.title"
 										   style="width: 50%;" required autofocus/>
-									<span class="help-block">
-										{{ phrase('adm.ticket_filters.title_explain') }}
-									</span>
 								</div>
 							</div>
 						</div>
@@ -28,7 +25,7 @@
 								<h3>Event</h3>
 							</div>
 							<div class="col-lg-10">
-								The ticket has been awaiting user for <dp-time-with-unit ng-model="EditCtrl.form.event_trigger_time"/>
+								The ticket has been resolved for <dp-time-with-unit ng-model="EditCtrl.form.event_trigger_time"/>
 							</div>
 						</div>
 					</div>

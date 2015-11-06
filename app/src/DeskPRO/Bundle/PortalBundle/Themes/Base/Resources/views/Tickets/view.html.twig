@@ -71,11 +71,13 @@
     <div class="container">
       <table>
         {# see the TicketViewService in AppBundle's data services #}
-        {% for attr,val in ticket.attribute_list %}
-          <tr>
-            <td>{{ attr }}</td>
-            <td>{{ val }}</td>
-          </tr>
+        {% for property in ticket_view.properties %}
+          {% if property.isVisible %}
+            <tr>
+              <td>{{ property.label }}</td>
+              <td>{{ property.value }}</td>
+            </tr>
+          {% endif %}
         {% endfor %}
       </table>
     </div>

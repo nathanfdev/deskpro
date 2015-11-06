@@ -136,6 +136,9 @@ class RoundRobinLogEntry extends DomainObject
         $metadata->mapManyToOne(array(
             'fieldName'    => 'rr',
             'targetEntity' => 'Application\DeskPRO\Entity\RoundRobin',
+            'joinColumns'  => array(array(
+                'onDelete' => 'cascade',
+            )),
         ));
     }
 }

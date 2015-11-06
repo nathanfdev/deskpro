@@ -33,6 +33,8 @@ class Build1444822921 extends AbstractBuild
     public function run()
     {
         $this->out('Add email_accounts.is_read_active');
-        $this->execMutateSql('ALTER TABLE email_accounts ADD is_read_active TINYINT(1) NOT NULL');
+
+        // eating error because may have been added via previous upgrade script
+        $this->execMutateSql('ALTER TABLE email_accounts ADD is_read_active TINYINT(1) NOT NULL', true);
     }
 }

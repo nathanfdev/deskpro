@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO;
 
 use Application\DeskPRO\DependencyInjection\AppSecretPass;
@@ -87,6 +86,7 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
             'Application\\DeskPRO\\Command\\DevLoadDataCommand',
             'Application\\DeskPRO\\Command\\DevRebuildSyncDataCommand',
             'Application\\DeskPRO\\Command\\DevTestApiCommand',
+            'Application\\DeskPRO\\Command\\FixBlobPathsCommand',
             'Application\\DeskPRO\\Command\\GenBuildClassCommand',
             'Application\\DeskPRO\\Command\\GenerateSchemaFileCommand',
             'Application\\DeskPRO\\Command\\GenerateReportFileCommand',

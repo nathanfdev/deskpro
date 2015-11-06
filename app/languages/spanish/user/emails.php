@@ -61,6 +61,7 @@ return array(
     'user.emails.register-welcome'            => 'Gracias por su registro. Ahora puedes iniciar sesión con tu dirección de correo {{to_email}} en nuestra mesa de soporte:',
     'user.emails.registration_closed'         => 'Apreciado/a {{name}},<br /><br /><br /><br />los nuevos tickets solo se aceptan desde miembros de nuestro servicio. Si tiene una cuenta abierta en nuestro sistema, envíenos de nuevo el correo electrónico desde dicha cuenta.',
     'user.emails.reject_resolved'             => 'Tu respuesta no fue aceptada porque tu ticket ha sido marcado como resuelto. Nuestros agentes no han leido o respuesto este mensaje.',
+    'user.emails.reject_resolved-new'         => 'Si desea crear un nuevo ticket, puede enviar un nuevo correo electrónico a <a href="mailto:{{email_to}}">{{email_to}}</a> o puede rellenar nuestro formulario en línea:<br /><a href="{{link}}">{{link}}</a>',
     'user.emails.ticket_access_ticket_online' => 'Ver y gestionar este ticket:',
     'user.emails.ticket_cc-new'               => 'Ha sido incluido en un ticket abierto por {{name}}.',
     'user.emails.ticket_flood'                => 'Ha enviado recientemente un correo electrónico a nuestro servicio. Nuestro sistema automático ha detectado que ha enviado demasiados mensajes que probablememte son automáticos.<br /><br />Para proteger nuestro sistema de un bucle de auto-respuestas, no se le enviarán nuevas notificaciones por correo electrónico.',

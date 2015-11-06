@@ -76,6 +76,8 @@ class TicketLayoutFactory
      */
     public function getLayoutForTicketForm($department = null)
     {
+        // TODO: add a quick cahing layer here so that we only ever calc this once per department in a request
+        // TODO: do what we do in the DataService's with the in memory hash map.
         $layout = null;
         if ($department) {
             $layout = $this->entity_manager->createQuery('SELECT l FROM DeskPRO:TicketLayout l WHERE l.department = :department')

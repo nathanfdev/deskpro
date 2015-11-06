@@ -2110,8 +2110,8 @@ header {
   display: block;
   margin-bottom: 20px;
   padding: 10px;
-  max-width: 300px;
-  min-width: 200px;
+  max-width: 250px;
+  min-width: 250px;
   border: 1px solid $divider-color;
   border-radius: 4px;
   background: $world-background;
@@ -6447,7 +6447,7 @@ ul.categories-article-list {
 .table-controls {
   position: absolute;
   top: -20px;
-  right: 10px;
+  right: 4px;
   padding: 0 5px;
   background: $page-background;
 
@@ -6564,15 +6564,24 @@ ul.categories-article-list {
   }
 }
 
-.user-ticket-list {
+.ticket-table .pagination {
   margin-bottom: 60px;
+}
+
+.user-ticket-list {
+  margin-bottom: 5px;
   width: 100%;
   font-size: 13px;
+  overflow-y: scroll;
 
   td, td:first-child {
     padding: 0;
     vertical-align: middle;
     text-align: left;
+
+    &.ticket-ref {
+      width: 50px;
+    }
   }
 
   td.table-header {
@@ -6580,10 +6589,12 @@ ul.categories-article-list {
     padding: $form-padding-vertical $form-padding-horizontal;
     padding-bottom: $form-padding-vertical + 0.5em;
     font-size: 0.9em;
+    min-width: 200px;
 
     &:first-child {
       // Align the first sorting link to the content
-      padding-left: 32px;
+      width: 50px;
+      min-width: 0;
     }
 
     a {

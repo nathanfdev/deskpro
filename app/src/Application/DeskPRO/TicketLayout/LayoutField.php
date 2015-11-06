@@ -139,7 +139,7 @@ class LayoutField implements \Serializable
                         }
                         break;
                     case 'CheckWorkflow':
-                        if (!empty($term_info['options']['priority_ids'])) {
+                        if (!empty($term_info['options']['workflow_ids'])) {
                             $term = new Terms\CheckWorkflow($term_info['op'], $term_info['options']);
                         }
                         break;
@@ -180,6 +180,9 @@ class LayoutField implements \Serializable
     }
 
     /**
+     * If it's a custom data definition, this is the corrosponding ID in the DB.
+     * Static fields like "department" or "subject" return null here.
+     *
      * @return int|null
      */
     public function getFieldId()

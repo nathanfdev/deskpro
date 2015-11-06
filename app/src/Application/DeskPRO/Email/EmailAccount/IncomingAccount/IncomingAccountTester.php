@@ -239,12 +239,48 @@ class IncomingAccountTester
             }
 
             $ids = $storage->searchIds(100, $unread_only, $folder);
-
             $this->logger->logInfo('Read IDs: '.implode(', ', $ids));
             $this->message_count = count($ids);
 
             $this->is_success = true;
+        } catch (\EWS_Exception $e) {
+            switch ($e->getCode()) {
+                case '401':
+                    $this->logger->logError('Your username or password is incorrect.');
+                    break;
+                case '0':
+                    if ($e->getMessage() == 'looks like we got no XML document') {
+                        $this->logger->logError("It looks like the service URL is incorrect. Double-check the URL. It usually looks something like 'https://ews.example.com/EWS/Exchange.asmx'.");
+                    }
+                    break;
+                case '404':
+                    $this->logger->logError("The API endpoint returned a 404 Not Found. Double-check the URL. It usually looks something like 'https://ews.example.com/EWS/Exchange.asmx'.");
+                    break;
+                case '403':
+                    $this->logger->logError('The API endpoint is returning a 403 Forbidden status code. This means that the user you provided does not have permission to use the service. '
+                    ."This could mean that the user doesn't have permission to use the service from this network, or it could be that the specific services that DeskPRO requires are not allowed. "
+                    .'You should ask your sysadmin to check the permissions on this user.');
+                    break;
+                default:
+                    $this->logger->logError('Unknown error. Details:');
+            }
+            $this->logger->logError(str_repeat('-', 35));
+            $this->logger->logError(sprintf('Error: %s', $e->getMessage()));
+            $this->logger->logError(sprintf('(Code: %s:%s)', get_class($e), $e->getCode()));
+            $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
+            $this->is_success = false;
         } catch (\Exception $e) {
+            switch ($e->getCode()) {
+                case '0':
+                    if ($e->getMessage() == 'looks like we got no XML document') {
+                        $this->logger->logError("It looks like the service URL is incorrect. Double-check the URL. It usually looks something like 'https://ews.example.com/EWS/Exchange.asmx'.");
+                    }
+                    break;
+                default:
+                    $this->logger->logError('Unknown error. Details:');
+            }
+
+            $this->logger->logError(str_repeat('-', 35));
             $this->logger->logError(sprintf('Error: %s', $e->getMessage()));
             $this->logger->logError(sprintf('(Code: %s:%s)', get_class($e), $e->getCode()));
             $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));

@@ -139,6 +139,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 					next: 'fa fa-chevron-right'
 				}
 			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
+			});
 		});
 
 		$('.DateTime.customfield input', this.display).each(function(){
@@ -153,6 +156,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 					previous: 'fa fa-chevron-left',
 					next: 'fa fa-chevron-right'
 				}
+			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
 			});
 		});
 
@@ -319,31 +325,40 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		var customFieldData = this.display.find('.custom-field input, .custom-field textarea, .custom-field select').serializeArray();
 		customFieldData.unshift({name: 'custom_fields[]', value: ''});
 
-		changeManager.saveChanges(customFieldData, (function(data) {
-			this.updateDisplay();
-			this.closeEditMode();
+		changeManager.saveChanges(
+			customFieldData,
+			(function(data) {
+				this.updateDisplay();
+				this.closeEditMode();
 
-			if (data.data && data.data.perm_errors) {
-				var div = $('<div/>');
-				div.append('<strong>You do not have permission to change some fields. The following changes were not saved:</strong>');
+				if (data.data && data.data.perm_errors) {
+					var div = $('<div/>');
+					div.append('<strong>You do not have permission to change some fields. The following changes were not saved:</strong>');
 
-				var list = $('<ul />');
-				list.appendTo(div);
+					var list = $('<ul />');
+					list.appendTo(div);
 
-				Array.each(data.data.perm_errors, function(err) {
-					var li = $('<li/>');
-					li.text(err.capitalize());
-					li.appendTo(list);
-				});
+					Array.each(data.data.perm_errors, function(err) {
+						var li = $('<li/>');
+						li.text(err.capitalize());
+						li.appendTo(list);
+					});
 
-				DeskPRO_Window.showAlert(div);
-			}
+					DeskPRO_Window.showAlert(div);
+				}
 
-			if (data.data && data.data.reload) {
-				this.page.closeSelf();
-				DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'old-agent/tickets/' + this.page.meta.ticket_id);
-			}
-		}).bind(this));
+				if (data.data && data.data.reload) {
+					this.page.closeSelf();
+					DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + this.page.meta.ticket_id);
+				}
+			}).bind(this),
+			(function(xhr, code, message) {
+        this.closeEditMode();
+        var div = $('<div><strong>Server error: </strong>' + message + '</div>');
+        DeskPRO_Window.showAlert(div);
+				console.error(message);
+			}).bind(this)
+		);
 	},
 
 	replaceHolders: function(html) {

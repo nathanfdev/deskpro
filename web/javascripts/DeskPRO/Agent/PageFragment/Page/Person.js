@@ -674,7 +674,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 								previous: 'fa fa-chevron-left',
 								next: 'fa fa-chevron-right'
 							}
-						})
+						});
+						$(this).on('dp.change', function(){
+							$(this).trigger('change');
+						});
 					});
 
 					$('.DateTime.customfield input', fieldsForm).each(function(){
@@ -689,6 +692,9 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 								previous: 'fa fa-chevron-left',
 								next: 'fa fa-chevron-right'
 							}
+						});
+						$(this).on('dp.change', function(){
+							$(this).trigger('change');
 						});
 					});
 				}

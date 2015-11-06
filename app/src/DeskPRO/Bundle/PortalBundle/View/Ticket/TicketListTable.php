@@ -30,18 +30,13 @@ namespace DeskPRO\Bundle\PortalBundle\View\Ticket;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\DataService\TicketsDataService;
+use DeskPRO\Bundle\AppBundle\Model\TicketColumn;
+use DeskPRO\Bundle\AppBundle\Model\TicketColumns;
 use DeskPRO\Bundle\PortalBundle\Model\TicketFilter;
 use Symfony\Component\HttpFoundation\Request;
 
 class TicketListTable
 {
-    const COL_DEPARTMENT_SUBJECT = 'department_subject';
-    const COL_AGENT              = 'agent';
-    const COL_DATE_CREATED       = 'date_created';
-    const COL_DATE_ACTIVITY      = 'date_activity';
-    const COL_DATE_USER          = 'date_user';
-    const COL_DATE_AGENT         = 'date_agent';
-
     protected $ticket_type;
     protected $ticket_category;
     protected $ticket_filter;
@@ -52,10 +47,13 @@ class TicketListTable
     protected $sort_name;
     protected $sort_direction_name;
     protected $title;
+    /**
+     * @var TicketColumns
+     */
     protected $columns;
     protected $active_columns_name;
 
-    public function __construct($ticket_category, $ticket_type, $title)
+    public function __construct($ticket_category, $ticket_type, $title, TicketColumns $columns, Request $request)
     {
         $this->ticket_category     = $ticket_category;
         $this->ticket_type         = $ticket_type;
@@ -67,22 +65,70 @@ class TicketListTable
         $this->ticket_filter       = null;
         $this->pager               = null;
         $this->active_columns      = [];
+        $this->columns             = $columns;
+        $this->makeFilterWithRequest($request);
     }
 
-    public function makeFilterWithRequest(Request $request, $per_page = 10)
+    /**
+     * @return string
+     */
+    public function compileJsObj()
+    {
+        $js = "(function () {\n";
+        $js .= "\treturn {\n";
+        $js .= "\t\tcolumns: [\n";
+
+        $fields_js = array();
+        foreach ($this->columns->getColumns() as $column) {
+            $bit_js = "\t\t\t{\n";
+            $bit_js .= "\t\t\t\tid:                    '{$column->getId()}',\n";
+            $bit_js .= "\t\t\t\tlabel:                  '{$column->getLabel()}',\n";
+            $bit_js .= "\t\t\t\ttype:                  '{$column->getType()}',\n";
+            $bit_js .= "\t\t\t\tactive:                  ".($this->isActive($column) ? 'true' : 'false')."\n";
+            $bit_js .= "\t\t\t}";
+            $fields_js[] = $bit_js;
+        }
+
+        $js .= implode(",\n", $fields_js)."\n\t\t],\n";
+
+        $js .= "\t\tactive_columns: [\n";
+        $js .= "\t\t\t'".implode("',\n\t\t\t'", $this->active_columns)."'\n";
+        $js .= "\t\t],\n";
+
+        $js .= "\t\tactive_columns_param: '{$this->active_columns_name}'\n";
+
+        $js .= "\t}\n";
+
+        $js .= '})()';
+
+        return $js;
+    }
+
+    public function isActive(TicketColumn $column)
+    {
+        return in_array($column->getId(), $this->active_columns);
+    }
+
+    protected function makeFilterWithRequest(Request $request, $per_page = 10)
     {
         $this->ticket_filter = new TicketFilter(
             $this->ticket_type,
             $this->ticket_category,
             $request->query->get($this->sort_name, 'activity'),
-            $request->query->get($this->sort_direction_name, 'desc')
+            $request->query->get($this->sort_direction_name, 'desc'),
+            $request->query->get('q')
         );
         $this->page           = $request->query->get($this->page_name, 1);
         $this->per_page       = $per_page;
         $this->active_columns = explode(',', $request->query->get(
             $this->active_columns_name,
-            implode(',', $this->getDefaultColumns())
+            implode(',', $this->getDefaultColumnsIds())
         )); //comma seperated list of col ids (consts on this class)
+    }
+
+    public function getColumns()
+    {
+        return $this->columns;
     }
 
     public function makePagerUsingDataService(TicketsDataService $data_service, Person $person)
@@ -96,30 +142,19 @@ class TicketListTable
         return $this->pager;
     }
 
-    public function getColumns()
-    {
-        return [
-            self::COL_DEPARTMENT_SUBJECT,
-            self::COL_AGENT,
-            self::COL_DATE_CREATED,
-            self::COL_DATE_ACTIVITY,
-            self::COL_DATE_USER,
-            self::COL_DATE_AGENT,
-        ];
-    }
-
-    public function getDefaultColumns()
-    {
-        return [
-            self::COL_DEPARTMENT_SUBJECT,
-            self::COL_DATE_CREATED,
-            self::COL_DATE_ACTIVITY,
-        ];
-    }
-
     public function getActiveColumns()
     {
         return $this->active_columns;
+    }
+
+    public function getDefaultColumnsIds()
+    {
+        // if the request does not specify columns to show in the table initially, we use these columns
+        return [
+            TicketColumn::TYPE_DEPARTMENT_SUBJECT,
+            TicketColumn::TYPE_DATE_CREATED,
+            TicketColumn::TYPE_DATE_ACTIVITY,
+        ];
     }
 
     /**

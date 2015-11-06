@@ -63,7 +63,7 @@ return array(
     'agent.people.im'                                       => 'IM',
     'agent.people.im_account_placeholder'                   => 'Nazwa Użytkownika',
     'agent.people.is_agent'                                 => 'jest Agentem',
-    'agent.people.list_title'                               => '1 Osoba|{{count}} Osób',
+    'agent.people.list_title'                               => '1 Kontakt|{{count}} Kontaktów',
     'agent.people.login_as_user'                            => 'Zaloguj jako Użytkownik',
     'agent.people.make_primary_email'                       => 'utwórz jako główny',
     'agent.people.manager'                                  => 'Menadżer',
