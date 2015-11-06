@@ -6564,8 +6564,12 @@ ul.categories-article-list {
   }
 }
 
-.user-ticket-list {
+.ticket-table .pagination {
   margin-bottom: 60px;
+}
+
+.user-ticket-list {
+  margin-bottom: 5px;
   width: 100%;
   font-size: 13px;
   overflow-y: scroll;
@@ -6574,6 +6578,10 @@ ul.categories-article-list {
     padding: 0;
     vertical-align: middle;
     text-align: left;
+
+    &.ticket-ref {
+      width: 50px;
+    }
   }
 
   td.table-header {
@@ -6585,7 +6593,8 @@ ul.categories-article-list {
 
     &:first-child {
       // Align the first sorting link to the content
-      padding-left: 32px;
+      width: 50px;
+      min-width: 0;
     }
 
     a {

@@ -182,6 +182,9 @@
                         <table class="user-ticket-list">
                             <thead>
                             <tr>
+                                <td class="table-header ticket-ref">
+                                    Reference
+                                </td>
                                 {% for col in ticket_table.columns %}
                                     <td class="table-header" data-col="{{ col.id }}"{% if not ticket_table.isActive(col)  %} style="display:none;"{% endif %}>
                                         {{ _self.col_header(ticket_table, col) }}
@@ -202,6 +205,9 @@
                             {% for ticket in ticket_table.pager %}
                                 {% set ticket_view = ticket_view(ticket) %}
                                 <tr class="item-row">
+                                    <td class="first-in-line ticket-ref">
+                                        {{ ticket_public_id(ticket) }}
+                                    </td>
                                 {% for col in ticket_table.columns %}
                                     <td class="info-block" data-col="{{ col.id }}"{% if not ticket_table.isActive(col) %} style="display:none;"{% endif %}>
                                         <a href="{{ portal_path(ticket) }}">

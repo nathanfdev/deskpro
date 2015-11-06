@@ -67,7 +67,7 @@ class ColumnControlWidget extends PageWidget {
         $('.table-header a').each(update_links);
         $('.pagination a').each(update_links);
 
-        $td_total_cols.attr('colspan', active_col_ids.length);
+        $td_total_cols.attr('colspan', active_col_ids.length + 1); // +1 for ticket ref (fixed)
       });
     }
     sync_table_with_active_col_ids(table.active_columns);
