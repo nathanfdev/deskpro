@@ -17,7 +17,7 @@ export class Agents extends React.Component {
         <ul>
           {this.props.agents.map((agent, index) =>
             <ListItemContainer key={index}
-                               label={`agent-${agent.get('id')}-${agent.get('name')}`}
+                               urlHash={`agent-${agent.get('id')}-${agent.get('name')}`}
                                listOptions={{agent: agent.get('id')}}>
 
               <ListItem count={0}>

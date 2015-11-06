@@ -13,16 +13,13 @@ export class ListItemContainer extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     activeItemId: PropTypes.string,
-    label: PropTypes.string.isRequired,
-    isComments: PropTypes.bool,
-    count: PropTypes.number.isRequired,
-    children: PropTypes.node,
+    urlHash: PropTypes.string.isRequired,
     listOptions: PropTypes.object.isRequired
   };
 
   constructor(props) {
     super(props);
-    this.itemId = urlSanitize(props.label);
+    this.itemId = urlSanitize(props.urlHash);
   }
 
   componentDidMount() {

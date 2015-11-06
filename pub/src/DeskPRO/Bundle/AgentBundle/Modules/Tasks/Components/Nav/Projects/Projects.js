@@ -44,7 +44,7 @@ export class Projects extends React.Component {
   renderItem(project, index) {
     return (
       <ListItemContainer key={index}
-                         label={`project-${project.get('id')}-${project.get('title')}`}
+                         urlHash={`project-${project.get('id')}-${project.get('title')}`}
                          listOptions={{project: project.get('id')}}>
 
         <ListItem count={project.get('remaining')}
