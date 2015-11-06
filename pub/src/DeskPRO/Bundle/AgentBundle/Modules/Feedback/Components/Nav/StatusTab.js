@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { ListItemContainer } from './ListItemContainer';
 import { NestedList } from './NestedList';
 
@@ -22,12 +23,14 @@ export class StatusTab extends Component {
 
     return (
       <ul>
-        <ListItemContainer
-          label="New"
-          count={this.props.statuses.new}
-          listOptions={{navItem: {status: 'new'}}}
-          />
-        <NestedList items={items} alwaysExpanded/>
+        <ListItemContainer label="New"
+                           listOptions={{navItem: {status: 'new'}}}>
+
+          <ListItem label="New"
+                    count={this.props.statuses.new} />
+        </ListItemContainer>
+
+        <NestedList items={items} alwaysExpanded />
       </ul>
     );
   }

@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { ListItemContainer } from './ListItemContainer';
 
 export class TypeTab extends Component {
@@ -11,12 +12,13 @@ export class TypeTab extends Component {
     return (
       <ul>
         {types.map((item, index) =>
-            <ListItemContainer
-              key={index}
-              count={item.get('value')}
-              label={item.get('title')}
-              listOptions={{navItem: {category: item.get('title')}}}
-              />
+            <ListItemContainer key={index}
+                               label={item.get('title')}
+                               listOptions={{navItem: {category: item.get('title')}}}>
+
+              <ListItem count={item.get('value')}
+                        label={item.get('title')} />
+            </ListItemContainer>
         )}
       </ul>
     );

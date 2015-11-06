@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Section, SectionHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { ListItemContainer } from './ListItemContainer';
 
 export class Groups extends React.Component {
@@ -15,24 +15,35 @@ export class Groups extends React.Component {
       <Section>
         <SectionHeader>Tasks</SectionHeader>
         <ul>
-          <ListItemContainer count={groups.get('myTasksCount')}
-                             label="My Tasks"
-                             listOptions={{navItem: {custom_category: 1}}} />
-          <ListItemContainer count={groups.get('teamTasksCount')}
-                             label="My Team Tasks"
-                             listOptions={{navItem: {custom_category: 2}}} />
-          <ListItemContainer count={groups.get('deptTasksCount')}
-                             label="My Department Tasks"
-                             listOptions={{navItem: {custom_category: 3}}} />
-          <ListItemContainer count={groups.get('delegatedTasksCount')}
-                             label="Delegated Tasks"
-                             listOptions={{navItem: {custom_category: 4}}} />
-          <ListItemContainer count={groups.get('unassignedTasksCount')}
-                             label="Unassigned Tasks"
-                             listOptions={{navItem: {custom_category: 5}}} />
-          <ListItemContainer count={groups.get('allTasksCount')}
-                             label="All Tasks"
-                             listOptions={{navItem: {custom_category: 6}}} />
+          <ListItemContainer label="My Tasks">
+            <ListItem count={groups.get('myTasksCount')}
+                      label="My Tasks" />
+          </ListItemContainer>
+
+          <ListItemContainer label="My Team Tasks">
+            <ListItem count={groups.get('teamTasksCount')}
+                      label="My Team Tasks" />
+          </ListItemContainer>
+
+          <ListItemContainer label="My Department Tasks">
+            <ListItem count={groups.get('deptTasksCount')}
+                      label="My Department Tasks" />
+          </ListItemContainer>
+
+          <ListItemContainer label="Delegated Tasks">
+            <ListItem count={groups.get('delegatedTasksCount')}
+                      label="Delegated Tasks" />
+          </ListItemContainer>
+
+          <ListItemContainer label="Unassigned Tasks">
+            <ListItem count={groups.get('unassignedTasksCount')}
+                      label="Unassigned Tasks" />
+          </ListItemContainer>
+
+          <ListItemContainer label="All Tasks">
+            <ListItem count={groups.get('allTasksCount')}
+                      label="All Tasks" />
+          </ListItemContainer>
         </ul>
       </Section>
     );

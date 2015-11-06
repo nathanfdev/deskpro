@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
-import { Section, SectionHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import { ProjectFormContainer } from './ProjectForm/ProjectFormContainer';
 import { ListItemContainer } from '../ListItemContainer';
@@ -46,15 +46,16 @@ export class Projects extends React.Component {
 
     return (
       <ListItemContainer key={index}
-                         label={`project-${project.get('id')}-${project.get('title')}`}
-                         count={project.get('remaining')}
-                         onEdit={this.onEdit.bind(this, project)}
-                         onClick={this.props.onApplyListParams.bind(this, filter)}
-                         listOptions={filter}>
+                         label={`project-${project.get('id')}-${project.get('title')}`}>
 
-        <div part="label">
-          <i className="fa fa-book" /> {project.get('title')}
-        </div>
+        <ListItem count={project.get('remaining')}
+                  onEdit={this.onEdit.bind(this, project)}
+                  onClick={this.props.onApplyListParams.bind(this, filter)}>
+
+          <div part="label">
+            <i className="fa fa-book" /> {project.get('title')}
+          </div>
+        </ListItem>
       </ListItemContainer>
     );
   }
