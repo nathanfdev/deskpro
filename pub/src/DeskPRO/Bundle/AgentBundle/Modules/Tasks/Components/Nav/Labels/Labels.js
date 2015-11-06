@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Section, SectionHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { ListItemContainer } from '../ListItemContainer';
+import { LabelItem } from './LabelItem';
 
 export class Labels extends React.Component {
 
@@ -8,14 +10,12 @@ export class Labels extends React.Component {
   };
 
   renderLabel(label, index) {
-    const name = label.get('label');
-    const char = name && name.substr(0, 1).toUpperCase();
-
     return (
-      <li key={index}>
-        <span className="labelCharacter">{char}</span>
-        <a href="#" className="item-label active">{name}</a>
-      </li>
+      <ListItemContainer key={index}
+                         label={`label-${label.get('label')}`}>
+
+        <LabelItem label={label} onClick={() => {}} />
+      </ListItemContainer>
     );
   }
 

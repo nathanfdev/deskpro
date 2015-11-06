@@ -3,7 +3,7 @@ import { NavFrame, NavFrameHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Com
 import { Groups } from './Groups';
 import { Projects } from './Projects/Projects';
 import { Agents } from './Agents';
-import { Labels } from './Labels';
+import { Labels } from './Labels/Labels';
 import * as TasksActions from '../../Actions/tasksActions';
 
 export class Nav extends React.Component {
