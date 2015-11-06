@@ -37,22 +37,20 @@ export class ListItemContainer extends Component {
     }
   }
 
-  loadList(options) {
-    return (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (options.isComments) {
-        this.props.dispatch(commentActions.loadCommentsList(options));
-      } else {
-        this.props.dispatch(actions.loadFeedbackList(options));
-      }
-    };
-  }
+  loadList = () => {
+    const { listOptions } = this.props;
+
+    if (listOptions.isComments) {
+      this.props.dispatch(commentActions.loadCommentsList(listOptions));
+    } else {
+      this.props.dispatch(actions.loadFeedbackList(listOptions));
+    }
+  };
 
   render() {
     const props = {
       groupId: 'nav',
-      onClick: this.loadList(this.props.listOptions),
+      onClick: this.loadList,
       itemId: this.itemId,
       label: this.props.label,
       count: this.props.count,

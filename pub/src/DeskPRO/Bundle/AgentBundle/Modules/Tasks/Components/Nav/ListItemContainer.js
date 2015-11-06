@@ -25,9 +25,6 @@ export class ListItemContainer extends React.Component {
   }
 
   loadList = event => {
-    event.preventDefault();
-    event.stopPropagation();
-
     console.log(this.props.listOptions);
   };
 

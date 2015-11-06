@@ -25,6 +25,9 @@ export class ListItemStatefulContainer extends React.Component {
 
       // decorating original "onClick" with additional URL state saving functionality
       onClick(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
         props.onClick(event);
         props.dispatch(updateRoutingState(props.groupId, 'active', props.itemId));
       }
