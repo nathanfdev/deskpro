@@ -34,6 +34,7 @@ export class MessageList extends React.Component {
       interval: interval,
       countsInterval: countsInterval
     };
+    this.shouldScrollBottom = true;
   }
 
   componentWillReceiveProps(newProps) {
