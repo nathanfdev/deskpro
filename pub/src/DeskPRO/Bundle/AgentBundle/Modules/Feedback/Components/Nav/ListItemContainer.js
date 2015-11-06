@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { ListItemStatefulContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { ListItemRouteContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import * as actions from '../../Actions/FeedbackListActions';
 import * as commentActions from '../../Actions/FeedbackCommentsActions';
 import { hashStateSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
@@ -58,7 +58,7 @@ export class ListItemContainer extends Component {
     };
 
     return (
-      <ListItemStatefulContainer {...props} />
+      <ListItemRouteContainer {...props} />
     );
   }
 }

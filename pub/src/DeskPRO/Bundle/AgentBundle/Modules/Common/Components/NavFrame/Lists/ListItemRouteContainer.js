@@ -5,7 +5,7 @@ import { updateRoutingState } from '../../../../Application/Actions/routingActio
 @connect(state => ({
   state: state.Application.routing.get('hash')
 }))
-export class ListItemStatefulContainer extends React.Component {
+export class ListItemRouteContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
