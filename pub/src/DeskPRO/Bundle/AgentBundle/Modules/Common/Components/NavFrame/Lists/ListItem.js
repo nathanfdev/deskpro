@@ -11,7 +11,8 @@ export class ListItem extends BaseList {
     count: PropTypes.number.isRequired,
     label: PropTypes.string,
     active: PropTypes.bool.isRequired,
-    onClick: PropTypes.func.isRequired
+    onClick: PropTypes.func.isRequired,
+    onEdit: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -62,6 +63,7 @@ export class ListItem extends BaseList {
 
           {this.state.showEditIcon && onEdit ? this.renderEditButton() : this.renderCount(count)}
         </div>
+
         <a href="#" className={classes} onClick={onClick}>
           {label}
         </a>
