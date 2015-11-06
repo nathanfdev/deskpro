@@ -11,12 +11,13 @@ export class ListItemRouteContainer extends React.Component {
     dispatch: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
     groupId: PropTypes.string.isRequired,
-    itemId: PropTypes.string.isRequired
+    itemId: PropTypes.string.isRequired,
+    onClick: PropTypes.string.isRequired,
+    children: PropTypes.node.isRequired
   };
 
   render() {
-    const props = this.props;
-    const { groupId, itemId, dispatch, onClick } = props;
+    const { state, groupId, itemId, dispatch, onClick } = this.props;
     const child = this.props.children;
     const childProps = child.props;
 
@@ -24,7 +25,7 @@ export class ListItemRouteContainer extends React.Component {
       ...childProps,
 
       // declaring "active" property accordingly to the URL state
-      active: props.state.getIn([groupId, 'active']) === itemId,
+      active: state.getIn([groupId, 'active']) === itemId,
 
       // decorating original "onClick" with additional URL state saving functionality
       onClick: event => {
