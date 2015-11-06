@@ -68,12 +68,34 @@ class TicketFilter
      */
     protected $sort_direction;
 
-    public function __construct($type = null, $category = null, $sort = null, $sort_direction = null)
+    /**
+     * @var string some text to search for in the ticket
+     */
+    private $search_query;
+
+    public function __construct($type = null, $category = null, $sort = null, $sort_direction = null, $search_query = null)
     {
         $this->setType($type);
         $this->setCategory($category);
         $this->setSort($sort);
         $this->setSortDirection($sort_direction);
+        $this->setSearchQuery($search_query);
+    }
+
+    /**
+     * @param string $search_query
+     */
+    public function setSearchQuery($search_query)
+    {
+        $this->search_query = $search_query;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSearchQuery()
+    {
+        return $this->search_query;
     }
 
     /**

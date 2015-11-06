@@ -94,6 +94,7 @@ class TicketsController extends AbstractController
                 'breadcrumbs'        => $breadcrumbs,
                 'page_title'         => $this->createPageTitle()->tickets(),
                 'ticket_list_js'     => $ticket_list_js,
+                'search_query'       => $request->query->get('q', ''),
             )
         );
     }

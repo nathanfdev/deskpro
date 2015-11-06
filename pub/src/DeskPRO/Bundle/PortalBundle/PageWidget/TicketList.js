@@ -16,6 +16,7 @@ class ColumnControlWidget extends PageWidget {
     const $table = this.$element.closest('.ticket-table');
     const $display_table = $table.find('.user-ticket-list');
     const $pagination = $table.find('.pagination');
+    const $td_total_cols = $table.find('.span-total-cols');
     const $table_controls = $table.find('.table-controls');
     const $col_control_button = $table_controls.find('.column-control');
     const $popup = $table_controls.find('.popup-tiny');
@@ -56,6 +57,8 @@ class ColumnControlWidget extends PageWidget {
         $('.pagination a').each(function() {
           $(this).attr('href', updateQueryStringParameter($(this).attr('href'), table.active_columns_param, new_cols));
         });
+
+        $td_total_cols.attr('colspan', active_col_ids.length);
       });
     }
     sync_table_with_active_col_ids(table.active_columns);

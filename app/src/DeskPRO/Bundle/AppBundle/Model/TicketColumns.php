@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Model;
 
-class TicketColumns implements \IteratorAggregate
+class TicketColumns implements \IteratorAggregate, \Countable
 {
     /**
      * @var TicketColumn[]
@@ -66,5 +66,10 @@ class TicketColumns implements \IteratorAggregate
     public function getIterator()
     {
         return new \ArrayIterator($this->columns);
+    }
+
+    public function count()
+    {
+        return count($this->columns);
     }
 }

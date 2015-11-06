@@ -111,7 +111,6 @@ class TicketsDataService extends AbstractDataService
 
                 // sort
                 switch ($filter->getSort()) {
-
                     // TODO: last activity algorithm (same as Ticket::getLastActivityDate())
                     case TicketFilter::SORT_ACTIVITY:
                         $qb->addOrderBy('t.date_last_user_reply', $filter->getSortDirection());
@@ -131,6 +130,12 @@ class TicketsDataService extends AbstractDataService
                     case TicketFilter::SORT_CREATED:
                     default:
                         $qb->orderBy('t.date_created', $filter->getSortDirection());
+                }
+
+                // search query
+                if ($q = $filter->getSearchQuery()) {
+                    $qb->andWhere('(t.subject LIKE :query');
+                    $qb->setParameter('query', '%'.$q.'%');
                 }
 
                 $pager = new Pagerfanta(new DoctrineORMAdapter($qb));

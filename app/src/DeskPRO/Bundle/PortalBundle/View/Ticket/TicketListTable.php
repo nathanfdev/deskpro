@@ -115,7 +115,8 @@ class TicketListTable
             $this->ticket_type,
             $this->ticket_category,
             $request->query->get($this->sort_name, 'activity'),
-            $request->query->get($this->sort_direction_name, 'desc')
+            $request->query->get($this->sort_direction_name, 'desc'),
+            $request->query->get('q')
         );
         $this->page           = $request->query->get($this->page_name, 1);
         $this->per_page       = $per_page;

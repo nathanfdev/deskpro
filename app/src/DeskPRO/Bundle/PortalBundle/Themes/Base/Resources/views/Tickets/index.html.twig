@@ -32,10 +32,10 @@
                         </li>
 
                         <li class="tab-solo">
-                            <form class="form-filter">
+                            <form class="form-filter" method="GET" action="{{ path('portal_tickets', { type: type }) }}">
                                 <div class="bucket">
-                                    <span>Filter: </span>
-                                    <input placeholder="Type filters here" type="text">
+                                    <span>Search in Tickets:</span>
+                                    <input title="Search in Tickets" name="q" value="{{ search_query }}" type="text" />
                                 </div>
                             </form>
                         </li>
@@ -149,7 +149,6 @@
             {% macro tickets_table(ticket_table, id) %}
                 <div class="column-full">
                     <div class="ticket-table" data-id="{{ id }}">
-                        <!-- Table Header -->
                         <header class="titled-header">
                             <h1>{{ ticket_table.title }}</h1>
                         </header>
@@ -160,6 +159,7 @@
                                 <a href="#" class="column-control"></a>
                                 <div class="popup-tiny" style="display:none;">
                                 </div>
+                                {# below was an old idea of expanding the table over the sdiebar, if present #}
                                 {#<a href="#" class="expand-control"><i class="fa fa-caret-right"></i></a>#}
                             </div>
                         </div>
@@ -176,6 +176,15 @@
                             </tr>
                             </thead>
                             <tbody>
+                            {% if ticket_table.ticketFilter.searchQuery %}
+                                <tr class="first-in-line">
+                                    <td class="span-total-cols" colspan="{{ ticket_table.columns|length }}">
+                                        <div class="filter-warning">
+                                            <i class="fa fa-eye"></i> You have an active filter on this view. <a href="{{ path('portal_tickets', { type: ticket_table.ticketFilter.type }) }}">Click here to clear it</a> and see everything.
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endif %}
                             {% for ticket in ticket_table.pager %}
                                 <tr class="item-row">
                                 {% for col in ticket_table.columns %}
@@ -185,6 +194,12 @@
                                         </a>
                                     </td>
                                 {% endfor %}
+                                </tr>
+                            {% else %}
+                                <tr class="item-row">
+                                    <td class="span-total-cols" colspan="{{ ticket_table.columns|length }}">
+                                        No tickets! (should we just make the table disappear in this case?)
+                                    </td>
                                 </tr>
                             {% endfor %}
                             </tbody>
