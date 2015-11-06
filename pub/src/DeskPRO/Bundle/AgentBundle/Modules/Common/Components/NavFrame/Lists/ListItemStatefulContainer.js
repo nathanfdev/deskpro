@@ -17,19 +17,21 @@ export class ListItemStatefulContainer extends React.Component {
 
   render() {
     const props = this.props;
+    const { groupId, itemId, dispatch, onClick } = props;
+
     const newProps = {
       ...props,
 
       // declaring "active" property accordingly to the URL state
-      active: props.state.getIn([props.groupId, 'active']) === props.itemId,
+      active: props.state.getIn([groupId, 'active']) === itemId,
 
       // decorating original "onClick" with additional URL state saving functionality
-      onClick(event) {
+      onClick: event => {
         event.preventDefault();
         event.stopPropagation();
 
-        props.onClick(event);
-        props.dispatch(updateRoutingState(props.groupId, 'active', props.itemId));
+        onClick(event);
+        dispatch(updateRoutingState(groupId, 'active', itemId));
       }
     };
 
