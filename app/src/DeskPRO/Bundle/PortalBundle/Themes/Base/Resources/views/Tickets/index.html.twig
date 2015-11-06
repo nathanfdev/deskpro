@@ -90,15 +90,15 @@
                     ) }}
                 {% else %}
                     {% if col.id == 'agent' %}
-                        {% set label = 'Assigned Agent' %}
+                        {% set label = phrase('portal.tickets.list_agent' ) %}
                     {% elseif col.id == 'date_activity' %}
                         {% set label = phrase('portal.tickets.list_last_action') %}
                     {% elseif col.id == 'date_created' %}
                         {% set label = phrase('portal.tickets.list_date_created') %}
                     {% elseif col.id == 'date_user' %}
-                        {% set label = 'Last User Reply' %}
+                        {% set label = phrase('portal.tickets.list_date_last_user') %}
                     {% elseif col.id == 'date_agent' %}
-                        {% set label = 'Last Agent Reply' %}
+                        {% set label = phrase('portal.tickets.list_date_last_agent') %}
                     {% else  %}
                         {% set label = col.label %}
                     {% endif %}

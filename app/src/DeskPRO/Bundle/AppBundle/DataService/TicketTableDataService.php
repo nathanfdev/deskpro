@@ -87,7 +87,7 @@ class TicketTableDataService extends AbstractDataService
 
         $column_control->addColumn(
             TicketColumn::TYPE_AGENT,
-            'Assigned Agent',
+            $this->phrase('portal.tickets.list_agent'),
             TicketColumn::TYPE_AGENT
         );
 
@@ -105,13 +105,13 @@ class TicketTableDataService extends AbstractDataService
 
         $column_control->addColumn(
             TicketColumn::TYPE_DATE_USER,
-            'Last User Reply',
+            $this->phrase('portal.tickets.list_date_last_user'),
             TicketColumn::TYPE_DATE_USER
         );
 
         $column_control->addColumn(
             TicketColumn::TYPE_DATE_AGENT,
-            'Last Agent Reply',
+            $this->phrase('portal.tickets.list_date_last_agent'),
             TicketColumn::TYPE_DATE_AGENT
         );
 
