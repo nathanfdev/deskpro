@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
-import Immutable from 'immutable';
 
 export class Agents extends React.Component {
 
