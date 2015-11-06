@@ -80,7 +80,7 @@ export class Header extends React.Component {
         render = this.wrapHeaderText(text);
         break;
       default:
-        render = <Loader loaded={false} opacity={0} scale={0.5} left={20} components="span" color="#fff" width={3} top="45%"/>
+        render = <Loader loaded={false} opacity={0} scale={0.5} left="20" components="span" color="#fff" width={3} top="45%"/>
     }
 
     return render;

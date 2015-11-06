@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react';
+import Loader from 'react-loader';
 import classNames from 'classnames';
 import { pureRender } from 'Ampliflux';
 import { connect } from 'react-redux';
 import { updateRoutingState } from '../../../Application/Actions/routingActions';
-import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
 
 class BaseList extends Component {
   renderCount(count) {
@@ -245,7 +245,7 @@ export class NestedList extends BaseList {
 
 export class ListItemLabelSpinner extends React.Component {
   render() {
-    return <Spinner width="14" height="14" />;
+    return <Loader loaded={false} scale={0.35} left="50%" top="50%" color="green" width={3} component="span" />
   }
 }
 
@@ -253,7 +253,7 @@ export class ListItemSpinner extends React.Component {
   render() {
     return (
       <div style={{marginTop: '3px', marginBottom: '1px'}}>
-        <Spinner width="20" height="20" marginLeft="10" />
+        <Loader loaded={false} scale={0.5} left="50%" top="50%" color="green" width={3}/>
       </div>
     );
   }

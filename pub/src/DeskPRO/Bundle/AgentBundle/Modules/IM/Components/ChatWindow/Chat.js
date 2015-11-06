@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react';
 import Loader from 'react-loader';
 import { connect } from 'react-redux';
 
+import * as ui from '../../Actions/uiActions';
+
 // components
 import { Footer } from './Footer';
 import { Header } from './Header';
@@ -30,6 +32,12 @@ export class Chat extends React.Component {
     dispatch: PropTypes.func.isRequired
   };
 
+  /**
+   * Mixins
+   * @type {Array}
+   */
+  mixins = [require('react-onclickoutside')];
+
   constructor(props) {
     super(props);
     this.state = {
@@ -38,6 +46,15 @@ export class Chat extends React.Component {
       searchShown: false
     };
   }
+
+  /**
+   * Handle clicks outside the item
+   * @param {Event} event Click event
+   * @return {void}
+   */
+  handleClickOutside = () => {
+    this.props.dispatch(ui.closeChat())
+  };
 
   isAgentChat() {
     return this.props.current.chat_type === 'agent';
