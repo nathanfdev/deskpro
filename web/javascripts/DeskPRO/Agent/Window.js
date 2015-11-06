@@ -4412,6 +4412,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 				case 38: // up
 				case 40: // down
 					// these don't hide as that messes up the keydown handler
+					if (!obj.agentNotifyList.is(':visible')) {
+						return;
+					}
 					e.stopImmediatePropagation();
 					e.preventDefault();
 					return;

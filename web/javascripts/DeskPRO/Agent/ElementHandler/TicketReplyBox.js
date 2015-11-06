@@ -1030,7 +1030,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		if (this.el.hasClass('dp-note-on')) {
 			this.getElById('replybox_notetab_btn').click();
 		}
-    },
+	},
 
 	setReplyAsOptionName: function(name) {
 		var item = this.getElById('status_menu').find('li[data-type="' + name + '"]').first();
