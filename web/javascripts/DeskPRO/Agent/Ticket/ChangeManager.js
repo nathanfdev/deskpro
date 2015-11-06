@@ -288,7 +288,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 	/**
 	 * Save the changes for all queued items
 	 */
-	saveChanges: function(data, callback) {
+	saveChanges: function(data, callback, onError) {
 		data = data || [];
 
 		var saving_classes = [];
@@ -395,7 +395,8 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 					}
 
 					this.fireEvent('updateResult', [data]);
-				}
+				},
+        error: onError
 			});
 		}
 	},
@@ -458,7 +459,10 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
       context:  this,
       success:  function (data) {
         this.fireEvent('updateResult', [data]);
-      }
+      },
+			error: function() {
+
+			}
     });
   },
 
