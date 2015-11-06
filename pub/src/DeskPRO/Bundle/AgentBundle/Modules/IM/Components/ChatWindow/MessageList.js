@@ -1,18 +1,17 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
 import { Message } from './Message';
 import { loadMessages, markMessages, refreshCounts } from '../../Actions/messagesActions';
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
+
 
 @connect(state => ({
   me: meSelector(state),
   agents: agentsSelector(state),
   agentsStatus: agentsStatusSelector(state),
   messages: state.IM.messages,
-  loadingMessages: state.IM.messages.get('loadingMessages')
 }))
 export class MessageList extends React.Component {
 
@@ -81,7 +80,7 @@ export class MessageList extends React.Component {
     this.markNewMessages();
   };
 
-  renderMessages() {
+  render() {
     const messages = this.props.messages.getIn(['chatMessages', this.props.current.id]) || [];
     return (
       <div>
@@ -90,23 +89,14 @@ export class MessageList extends React.Component {
           {
             messages.map((message, index) => {
               return (<Message
-                key={index}
-                message={message}
-                agents={this.props.agents}
-                me={this.props.me}/>);
+                  key={index}
+                  message={message}
+                  agents={this.props.agents}
+                  me={this.props.me}/>);
             })
           }
         </ul>
       </div>
     );
-  }
-
-  renderLoading() {
-    return <Spinner ref="list" width="40" height="40" />;
-  }
-
-  render() {
-    const loading = this.props.messages.loadingMessages;
-    return !loading ? this.renderMessages() : this.renderLoading();
   }
 }

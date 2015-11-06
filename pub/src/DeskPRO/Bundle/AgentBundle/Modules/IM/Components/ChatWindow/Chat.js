@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import Loader from 'react-loader';
 import { connect } from 'react-redux';
 import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
 
@@ -57,9 +58,13 @@ export class Chat extends React.Component {
   }
 
   messageList = () => {
-    return (this.props.current.id)
-      ? <MessageList current={this.props.current} searchQuery={this.state.searchQuery}/>
-      : <Spinner width="40" height="40"/>;
+    return (
+      <div style={{minHeight: 75}}>
+        <Loader loaded={this.props.current.id} opacity={0} width={3} top="45%">
+          <MessageList current={this.props.current} searchQuery={this.state.searchQuery}/>
+        </Loader>
+      </div>
+    );
   };
 
   handleType = (event) => {

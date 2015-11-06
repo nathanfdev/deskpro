@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
+import Loader from 'react-loader';
 import { connect } from 'react-redux';
 import * as ui from '../../Actions/uiActions';
-import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
 // agents
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
@@ -80,7 +80,7 @@ export class Header extends React.Component {
         render = this.wrapHeaderText(text);
         break;
       default:
-        render = <Spinner width="20" height="20" />;
+        render = <Loader loaded={false} opacity={0} scale={0.5} left={20} components="span" color="#fff" width={3} top="45%"></Loader>
     }
 
     return render;

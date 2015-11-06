@@ -6,6 +6,10 @@
   z-index: 299;
   top: 0px;
 
+  header {
+    position: relative;
+  }
+
   .user-status {// User status disc on popup header
     display: inline-block;
     width: 7px;
