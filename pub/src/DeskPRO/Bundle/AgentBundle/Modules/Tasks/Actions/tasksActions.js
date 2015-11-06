@@ -5,89 +5,47 @@ export const setListParams = createAction('TASKS_SET_LIST_PARAMS');
 export const loadList = createAction(
   'TASKS_LOAD_TASK_LIST',
   params => () => {
-    // Make sure we don't accidentally break the filter details
-    const filter = params;
     const filterElements = {};
 
-    if (filter.done && filter.done !== 'all') {
-      filterElements.is_done = (filter.done === 'done');
+    if (params.done && params.done !== 'all') {
+      filterElements.is_done = (params.done === 'done');
     }
-
-    if (filter.projects && filter.projects.length > 0) {
-      filterElements.project = filter.projects;
+    if (params.projects && params.projects.length > 0) {
+      filterElements.project = params.projects;
     }
-
-    if (filter.agents && filter.agents.length > 0) {
-      filterElements.assigned = filter.agents;
+    if (params.agents && params.agents.length > 0) {
+      filterElements.assigned = params.agents;
     }
-
-    if (filter.teams && filter.teams.length > 0) {
-      filterElements.assigned_team = filter.teams;
+    if (params.teams && params.teams.length > 0) {
+      filterElements.assigned_team = params.teams;
     }
-
-    if (filter.departments && filter.departments.length > 0) {
-      filterElements.assigned_department = filter.departments;
+    if (params.departments && params.departments.length > 0) {
+      filterElements.assigned_department = params.departments;
     }
-
-    if (filter.creator) {
-      filterElements.creator = filter.creator;
+    if (params.creator) {
+      filterElements.creator = params.creator;
     }
-
-    if (filter.labels && filter.labels.length > 0) {
-      filterElements.labels = filter.labels;
+    if (params.labels && params.labels.length > 0) {
+      filterElements.labels = params.labels;
     }
-
-    if (filter.lists && filter.lists.length > 0) {
-      filterElements.lists = filter.lists;
+    if (params.lists && params.lists.length > 0) {
+      filterElements.lists = params.lists;
     }
-
-    if (typeof filter.has_attachments !== 'undefined' && filter.has_attachments !== 'all') {
-      filterElements.attachments = (filter.has_attachments === 'has') ? 'not_null' : 'null';
+    if (params.page) {
+      filterElements.page = params.page;
     }
-
-    if (filter.created_after) {
-      filterElements.created_after = filter.created_after;
-    }
-
-    if (filter.created_before) {
-      filterElements.created_before = filter.created_before;
-    }
-
-    if (filter.due_after) {
-      filterElements.due_after = filter.due_after;
-    }
-
-    if (filter.due_before) {
-      filterElements.due_before = filter.due_before;
-    }
-
-    if (filter.done_after) {
-      filterElements.done_after = filter.done_after;
-    }
-
-    if (filter.done_before) {
-      filterElements.done_before = filter.done_before;
-    }
-
-    if (filter.page) {
-      filterElements.page = filter.page;
-    }
-
-    if (filter.order_by) {
-      filterElements.order_by = filter.order_by;
+    if (params.order_by) {
+      filterElements.order_by = params.order_by;
     } else {
       filterElements.order_by = 'due';
     }
-
-    if (filter.sort) {
-      filterElements.sort = filter.sort;
+    if (params.sort) {
+      filterElements.sort = params.sort;
     } else {
       filterElements.sort = 'asc';
     }
 
-    const compiled = 'tasks?' + Tasks.compileParams(filterElements);
-
-    Tasks.loadAddress(compiled);
+    Tasks.loadAddress('tasks?' + Tasks.compileParams(filterElements));
 
     return params;
   }
