@@ -26,7 +26,7 @@ export class Groups extends React.Component {
         <ul>
           {groups.map(group =>
             <ListItemContainer label={group.label}
-                               listOptions={{navItem: group.filter}}>
+                               listOptions={group.filter}>
 
               <ListItem count={groupsState.get(group.countKey)}
                         label={group.label} />

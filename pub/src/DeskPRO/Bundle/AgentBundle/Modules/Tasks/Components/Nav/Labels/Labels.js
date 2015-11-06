@@ -18,7 +18,7 @@ export class Labels extends React.Component {
             {this.props.labels.map((label, index) =>
               <ListItemContainer key={index}
                                  label={`label-${label.get('label')}`}
-                                 listOptions={{navItem: {label: label.get('id')}}}>
+                                 listOptions={{label: label.get('id')}}>
 
                 <LabelItem label={label} />
               </ListItemContainer>
