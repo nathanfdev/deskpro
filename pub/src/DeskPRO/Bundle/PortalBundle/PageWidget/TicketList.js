@@ -25,10 +25,17 @@ class ColumnControlWidget extends PageWidget {
 
     $col_control_button.click(function(e) {
       e.preventDefault();
+      e.stopPropagation();
       if ($popup.is(':visible')) {
         $popup.hide();
       } else {
         $popup.show();
+      }
+    });
+    $(document).click(function(e) {
+      // if not a part of the popup, close it
+      if (!$(e.target).closest('.popup-tiny').length) {
+        $popup.hide();
       }
     });
 
