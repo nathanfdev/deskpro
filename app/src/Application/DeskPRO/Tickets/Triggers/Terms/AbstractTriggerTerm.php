@@ -106,6 +106,9 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
             case 'nottouched':
             case 'changed':
                 foreach ($this->options->getRequiredNames() as $name) {
+                    if ('field_id' === $name) {
+                        continue;
+                    }
                     $this->options->set($name, null);
                 }
                 break;
