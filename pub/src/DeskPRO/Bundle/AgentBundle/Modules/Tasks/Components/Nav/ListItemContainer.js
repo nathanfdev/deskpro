@@ -25,6 +25,13 @@ export class ListItemContainer extends React.Component {
     this.itemId = urlSanitize(props.label);
   }
 
+  componentDidMount() {
+    const { activeItemId } = this.props;
+    if (activeItemId === this.itemId) {
+      this.loadList();
+    }
+  }
+
   loadList = () => {
     const { listOptions, dispatch } = this.props;
     dispatch(TasksActions.applyListParams(listOptions));
