@@ -109,6 +109,11 @@ class TicketsDataService extends AbstractDataService
 
                 }
 
+                // search query
+                if ($q = $filter->getSearchQuery()) {
+                    $qb->andWhere('t.subject LIKE :query')->setParameter('query', '%'.$q.'%');
+                }
+
                 // sort
                 switch ($filter->getSort()) {
                     case TicketFilter::SORT_DEPARTMENT:
@@ -141,12 +146,6 @@ class TicketsDataService extends AbstractDataService
                         $qb->addOrderBy('t.date_last_agent_reply', $filter->getSortDirection());
                         $qb->addOrderBy('t.date_created', $filter->getSortDirection());
                         break;
-                }
-
-                // search query
-                if ($q = $filter->getSearchQuery()) {
-                    $qb->andWhere('(t.subject LIKE :query');
-                    $qb->setParameter('query', '%'.$q.'%');
                 }
 
                 $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
