@@ -12,6 +12,8 @@ import Loader from 'react-loader';
   agents: agentsSelector(state),
   agentsStatus: agentsStatusSelector(state),
   messages: state.IM.messages,
+  page: state.IM.messages.get('page'),
+  pages: state.IM.messages.get('pages'),
   messagesStatus: state.IM.messages.loadingMessages
 }))
 export class MessageList extends React.Component {
@@ -73,8 +75,16 @@ export class MessageList extends React.Component {
     }
   }
 
+  loadOld = () => {
+    this.props.dispatch(loadMessages(this.props.current.id, this.props.searchQuery, this.props.page+1));
+  };
+
   controls = () => {
-    return <div className="chat-controls"><a href="#">Load old messages</a></div>;
+    return (
+      <li className="chat-controls">
+        {this.props.page < this.props.pages ? <a href="#" onClick={this.loadOld}>Load old messages</a>: null}
+      </li>
+    );
   };
 
   refresh = () => {
@@ -87,8 +97,9 @@ export class MessageList extends React.Component {
     const loaded = !this.props.messages.loadingMessages;
     return (
        <Loader loaded={loaded}>
-        {this.controls()}
+
         <ul ref="list" className="chat-message-list">
+          {this.controls()}
           {
             messages.map((message, index) => {
               return (<Message

@@ -75,7 +75,7 @@ class MessagesController extends AbstractController
         $messages       = $search_service->searchInChat($chat, $search_string, $orderBy);
 
         $pager = new Pagerfanta(new ArrayAdapter(array_reverse($messages)));
-        $pager->setMaxPerPage(150);
+        $pager->setMaxPerPage(5);
         $pager->setCurrentPage($page);
 
         return View::create(
