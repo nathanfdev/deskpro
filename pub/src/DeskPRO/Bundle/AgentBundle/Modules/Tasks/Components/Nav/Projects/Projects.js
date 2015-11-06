@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
-import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { Section, SectionHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import { ProjectFormContainer } from './ProjectForm/ProjectFormContainer';
+import { ListItemContainer } from '../ListItemContainer';
 import * as TasksActions from '../../../Actions/tasksActions';
 
 export class Projects extends React.Component {
@@ -48,21 +49,19 @@ export class Projects extends React.Component {
 
   renderItem(project, index) {
     const filter = {project: project.get('id')};
-    console.log(filter, this.props.currentFilter, filter === this.props.currentFilter);
 
     return (
-      <ListItem project={project}
-                   key={index}
-                   filter={filter}
-                   active={filter === this.props.currentFilter}
-                   count={project.get('remaining')}
-                   onEdit={this.onEdit.bind(this, project)}
-                   onClick={this.onSelectProject.bind(this, filter)}>
+      <ListItemContainer key={index}
+                         label={`${project.get('id')}-${project.get('title')}`}
+                         count={project.get('remaining')}
+                         onEdit={this.onEdit.bind(this, project)}
+                         onClick={this.onSelectProject.bind(this, filter)}
+                         listOptions={filter}>
 
         <div part="label">
           <i className="fa fa-book" /> {project.get('title')}
         </div>
-      </ListItem>
+      </ListItemContainer>
     );
   }
 
