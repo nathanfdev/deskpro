@@ -53,7 +53,7 @@ use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomPerFieldManager;
 use DeskPRO\Bundle\PortalBundle\Form\FormFields;
 use Doctrine\ORM\EntityManager;
 
-class TicketViewService extends AbstractDataService
+class TicketViewDataService extends AbstractDataService
 {
     /**
      * @var FormFieldManager

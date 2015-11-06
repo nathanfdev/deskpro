@@ -382,7 +382,7 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\DataService\TicketViewService
+     * @return \DeskPRO\Bundle\AppBundle\DataService\TicketViewDataService
      */
     protected function getTicketsViewService()
     {
