@@ -1,11 +1,21 @@
 import React, { PropTypes } from 'react';
 import Moment from 'moment';
+import { BaseTaskCard } from '../../BaseTaskCard';
+import { Checkbox } from './Checkbox';
 
-export class TaskCard extends React.Component {
+export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
     task: PropTypes.object.isRequired
   };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      selected: false
+    };
+  }
 
   render() {
     const { task } = this.props;
@@ -13,9 +23,7 @@ export class TaskCard extends React.Component {
     return (
       <tr key={task.get('id')}>
         <td>
-            <span className="checkbox">
-              <i className="fa fa-check selected" />
-            </span>
+          <Checkbox selected={this.state.selected} onToggle={this.onToggleSelect} />
           <a href="#">{task.get('title')}</a>
         </td>
         <td>{task.get('project')}</td>

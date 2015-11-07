@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Header } from './Header/Header';
 import { ListGroup } from './ListGroup';
-import { TaskCard } from './TaskCard';
+import { TaskCard } from './TaskCard/TaskCard';
 
 export class TableView extends React.Component {
 

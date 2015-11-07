@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { BaseTaskCard } from '../../BaseTaskCard';
 import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 import { CardLine } from './CardLine';
 import { Title } from './Title';
@@ -12,7 +13,7 @@ import { Project } from './Project';
 import { DueDate } from './DueDate';
 import { TicketLinkContainer } from './TicketLinkContainer';
 
-export class TaskCard extends React.Component {
+export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
     task: PropTypes.object.isRequired
@@ -52,12 +53,6 @@ export class TaskCard extends React.Component {
   onToggleExpand = () => {
     this.setState({
       expanded: !this.state.expanded
-    });
-  };
-
-  onToggleSelect = () => {
-    this.setState({
-      selected: !this.state.selected
     });
   };
 
