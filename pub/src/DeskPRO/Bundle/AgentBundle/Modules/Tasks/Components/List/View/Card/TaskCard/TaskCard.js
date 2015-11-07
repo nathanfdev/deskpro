@@ -31,8 +31,8 @@ export class TaskCard extends BaseTaskCard {
       ticketLink: 'Some Ticket',
       comments: 1,
       subTasks: {
-        current: 1,
-        total: 3
+        current: props.task.get('subtasks_done'),
+        total: props.task.get('subtasks_total')
       },
       isDone: props.task.get('is_done')
     };
@@ -78,8 +78,10 @@ export class TaskCard extends BaseTaskCard {
 
         <div>
             <Comments count={this.state.comments} />
-            <SubTasks current={this.state.subTasks.current}
-                      total={this.state.subTasks.total} />
+            {this.state.subTasks.total > 0 &&
+              <SubTasks current={this.state.subTasks.current}
+                        total={this.state.subTasks.total} />
+            }
         </div>
       </CardLine>
     );
