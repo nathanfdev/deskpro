@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import Loader from 'react-loader';
 import { connect } from 'react-redux';
-
+import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import * as ui from '../../Actions/uiActions';
 
 // components
@@ -32,11 +32,6 @@ export class Chat extends React.Component {
     dispatch: PropTypes.func.isRequired
   };
 
-  /**
-   * Mixins
-   * @type {Array}
-   */
-  mixins = [require('react-onclickoutside')];
 
   constructor(props) {
     super(props);
@@ -46,15 +41,6 @@ export class Chat extends React.Component {
       searchShown: false
     };
   }
-
-  /**
-   * Handle clicks outside the item
-   * @param {Event} event Click event
-   * @return {void}
-   */
-  handleClickOutside = () => {
-    this.props.dispatch(ui.closeChat())
-  };
 
   isAgentChat() {
     return this.props.current.chat_type === 'agent';
@@ -88,6 +74,10 @@ export class Chat extends React.Component {
     const newState = {...oldState};
     newState.searchTyped = event.target.value;
     this.setState(newState);
+  };
+
+  handleOnClose = () => {
+    this.props.dispatch(ui.closeChat());
   };
 
   handleSearch = (event) => {
@@ -125,13 +115,16 @@ export class Chat extends React.Component {
 
   render() {
     return (
+    <ClickOut onClickOut={this.handleOnClose}>
       <div className="dropdown active-chat-dropdown" id="active-chat-dropdown">
-        <Header toggleSearch={this.toggleSearch} online={this.isOnline()}/>
+        <Header toggleSearch={this.toggleSearch} onClose={this.handleOnClose} online={this.isOnline()}/>
         { this.searchForm() }
         { this.messageList() }
         { this.offline() }
         <Footer handleAddMessage={this.handleAddMessage}/>
       </div>
+    </ClickOut>
+
     );
   }
 }

@@ -39,6 +39,7 @@
     "jquery-datetimepicker": "^2.4.0",
     "jquery-ui": "1.10.5",
     "lodash": "3.10.1",
+    "medium-editor": "^5.10.0",
     "moment": "2.10.6",
     "node-bourbon": "4.2.3",
     "node-libs-browser": "0.5.3",

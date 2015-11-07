@@ -5,13 +5,16 @@ import { Message } from './Message';
 import { loadMessages, markMessages, refreshCounts } from '../../Actions/messagesActions';
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
-
+import Loader from 'react-loader';
 
 @connect(state => ({
   me: meSelector(state),
   agents: agentsSelector(state),
   agentsStatus: agentsStatusSelector(state),
   messages: state.IM.messages,
+  page: state.IM.messages.get('page'),
+  pages: state.IM.messages.get('pages'),
+  messagesStatus: state.IM.messages.loadingMessages
 }))
 export class MessageList extends React.Component {
 
@@ -33,6 +36,7 @@ export class MessageList extends React.Component {
       interval: interval,
       countsInterval: countsInterval
     };
+    this.shouldScrollBottom = true;
   }
 
   componentWillReceiveProps(newProps) {
@@ -71,8 +75,16 @@ export class MessageList extends React.Component {
     }
   }
 
+  loadOld = () => {
+    this.props.dispatch(loadMessages(this.props.current.id, this.props.searchQuery, this.props.page+1));
+  };
+
   controls = () => {
-    return <div className="chat-controls"><a href="#">Load old messages</a></div>;
+    return (
+      <li className="chat-controls">
+        {this.props.page < this.props.pages ? <a href="#" onClick={this.loadOld}>Load old messages</a>: null}
+      </li>
+    );
   };
 
   refresh = () => {
@@ -82,10 +94,12 @@ export class MessageList extends React.Component {
 
   render() {
     const messages = this.props.messages.getIn(['chatMessages', this.props.current.id]) || [];
+    const loaded = !this.props.messages.loadingMessages;
     return (
-      <div>
-        {this.controls()}
+       <Loader loaded={loaded}>
+
         <ul ref="list" className="chat-message-list">
+          {this.controls()}
           {
             messages.map((message, index) => {
               return (<Message
@@ -96,7 +110,7 @@ export class MessageList extends React.Component {
             })
           }
         </ul>
-      </div>
+      </Loader>
     );
   }
 }

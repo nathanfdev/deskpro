@@ -35,12 +35,11 @@ export class Header extends React.Component {
     current: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     toggleSearch: PropTypes.func.isRequired,
-    online: PropTypes.bool.isRequired
+    online: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired
   };
 
-  closeChat = () => {
-    this.props.dispatch(ui.closeChat());
-  };
+
 
   calculateAgentText = () => {
     const { agents, current, me } = this.props;
@@ -98,7 +97,7 @@ export class Header extends React.Component {
         <div className="header-controls">
           <a href="#" onClick={this.props.toggleSearch}><i className="fa fa-search"></i> Search IM</a>
             <span className="close">
-              <a href="#" onClick={this.closeChat}><i className="fa fa-times"></i></a>
+              <a href="#" onClick={this.props.onClose}><i className="fa fa-times"></i></a>
             </span>
         </div>
         { this.renderHeader() }

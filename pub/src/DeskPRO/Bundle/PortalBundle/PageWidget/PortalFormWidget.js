@@ -5,6 +5,7 @@ import DpxMultipleSelectBox from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/
 import DpxCheckboxGroup from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpxCheckboxGroup";
 import DpxDateWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpxDateWidget";
 import DpDropzone from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpDropzone";
+import DpxRte from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpxRte";
 
 
 
@@ -20,5 +21,6 @@ export default class DpInteractiveFormWidget extends PageWidget {
     this.addWidgetDef(DpxMultipleSelectBox, "select[dpx-select-multiple]");
     this.addWidgetDef(DpxCheckboxGroup, ".dpx-checkbox-group");
     this.addWidgetDef(DpDropzone, ".dpx-attachements");
+    this.addWidgetDef(DpxRte, "[data-rte]");
   }
 }
