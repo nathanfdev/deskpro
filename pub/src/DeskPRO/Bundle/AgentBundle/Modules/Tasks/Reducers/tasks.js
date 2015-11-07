@@ -17,6 +17,5 @@ export default createReducer(initialState, {
     success: setFullPayload('elements'),
     start: setValue('async.done', false),
     done: setValue('async.done', true)
-  }),
-  [TasksActions.changeView]: setFullPayload('view')
+  })
 });

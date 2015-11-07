@@ -56,5 +56,3 @@ export const applyListParams = createAction(
       dispatch(loadList(params));
     }
 );
-
-export const changeView = createAction('TASKS_CHANGE_VIEW');

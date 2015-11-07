@@ -12,16 +12,16 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 export class List extends React.Component {
 
   static propTypes = {
-    view: PropTypes.string.isRequired,
+    currentView: PropTypes.string.isRequired,
     tasks: PropTypes.array.isRequired,
     loaded: PropTypes.bool.isRequired,
     listParams: PropTypes.object.isRequired
   };
 
   renderView() {
-    const { tasks, view } = this.props;
+    const { tasks, currentView } = this.props;
 
-    switch (view) {
+    switch (currentView) {
       case constants.VIEW_MODE_CALENDAR:
         return <CalendarView tasks={tasks} />;
       case constants.VIEW_MODE_TABLE:

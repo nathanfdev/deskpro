@@ -5,7 +5,8 @@ import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/C
 import { ViewModeSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { ViewModeDropdown } from './ViewModeDropdown';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import { changeView } from '../../../../Actions/tasksActions';
+import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
+import { currentViewModeSelector } from '../../../../Selectors/tasks';
 
 const viewModeOptions = {
   [constants.VIEW_MODE_CARD]: { label: 'Card View', icon: 'list' },
@@ -15,7 +16,7 @@ const viewModeOptions = {
 };
 
 @connect(state => ({
-  currentView: state.Tasks.tasks.get('view')
+  currentView: currentViewModeSelector(state)
 }))
 export class ViewModeContainer extends React.Component {
 
@@ -32,7 +33,8 @@ export class ViewModeContainer extends React.Component {
     };
   }
 
-  onOpenDropdown = () => {
+  onOpenDropdown = event => {
+    event.preventDefault();
     this.setState({
       dropdownOpened: true
     });
@@ -45,12 +47,13 @@ export class ViewModeContainer extends React.Component {
   };
 
   onChangeView = type => {
-    this.props.dispatch(changeView(type));
+    this.props.dispatch(updateRoutingState('list', 'view', type));
     this.onCloseDropDown();
   };
 
   render() {
     const { currentView } = this.props;
+    console.log(currentView);
 
     return (
       <ViewModeSwitcher ref="button"
