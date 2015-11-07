@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
 import { changeView } from '../../../../Actions/tasksActions';
+import jQuery from 'jquery';
 
 export class ViewModeDropdown extends React.Component {
 
@@ -11,26 +12,22 @@ export class ViewModeDropdown extends React.Component {
     viewModeOptions: PropTypes.array.isRequired
   };
 
-  onChangeView = option => {
-    this.props.dispatch(changeView(option.type));
+  onChangeView = type => {
+    this.props.dispatch(changeView(type));
   };
 
-  renderOption(option, index) {
-    return (
-      <Item key={index}
-            label={option.label}
-            isActive={this.props.currentView === option.type}
-            onClick={this.onChangeView.bind(this, option)}
-            icon={option.icon} />
-    );
-  }
-
   render() {
-    const { viewModeOptions } = this.props;
+    const { viewModeOptions, currentView } = this.props;
 
     return (
       <Menu>
-        {viewModeOptions.map((option, index) => this.renderOption(option, index))}
+        {jQuery.map(viewModeOptions, (option, type) =>
+          <Item key={type}
+                label={option.label}
+                isActive={currentView === type}
+                onClick={this.onChangeView.bind(this, type)}
+                icon={option.icon} />
+        )}
       </Menu>
     );
   }
