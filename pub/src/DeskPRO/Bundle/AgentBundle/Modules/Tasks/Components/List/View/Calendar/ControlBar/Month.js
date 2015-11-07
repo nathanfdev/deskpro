@@ -9,12 +9,12 @@ export class Month extends React.Component {
 
   onPreviousMonth = () => {
     const { date, onChange } = this.props;
-    onChange(date.add(1, 'months'));
+    onChange(date.subtract(1, 'months'));
   };
 
   onNextMonth = () => {
     const { date, onChange } = this.props;
-    onChange(date.subtract(1, 'months'));
+    onChange(date.add(1, 'months'));
   };
 
   render() {

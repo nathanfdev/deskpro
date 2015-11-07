@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import { Controls } from './ControlBar/Controls';
+import { Header } from './Header';
 import { TaskCard } from './TaskCard/TaskCard';
+import moment from 'moment';
 
 export class CalendarView extends React.Component {
 
@@ -8,10 +10,29 @@ export class CalendarView extends React.Component {
     tasks: PropTypes.object.isRequired
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      date: moment()
+    };
+  }
+
+  onChangeDate = date => {
+    this.setState({
+      date: date
+    });
+  };
+
   render() {
     return (
       <div>
-        <Controls />
+        <Controls date={this.state.date}
+                  onChange={this.onChangeDate} />
+
+        <table className="calendar-content">
+          <Header date={this.state.date} />
+        </table>
+
         {this.props.tasks.map((task, index) => <TaskCard task={task} key={index} />)}
       </div>
     );
