@@ -17,11 +17,7 @@ export class TableView extends React.Component {
                   currentDirection="desc" />
 
           <ListGroup title="Overdue">
-            <TaskCard />
-            <TaskCard />
-            <TaskCard />
-            <TaskCard />
-            <TaskCard />
+            {this.props.tasks.map((task, index) => <TaskCard task={task} key={index} />)}
           </ListGroup>
         </table>
       </div>
