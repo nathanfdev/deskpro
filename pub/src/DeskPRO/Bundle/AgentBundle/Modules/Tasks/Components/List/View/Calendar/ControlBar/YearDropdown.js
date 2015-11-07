@@ -11,13 +11,14 @@ export class YearDropdown extends React.Component {
 
   onChange = (event, year) => {
     event.preventDefault();
-    this.props.onChange(year);
+
+    const { date, onChange } = this.props;
+    onChange(date.year(year));
   };
 
   render() {
-    const { date } = this.props;
-    const selectedYear = parseInt(moment(date).format('YYYY'), 10);
-    const thisYear = parseInt(moment().format('YYYY'), 10);
+    const selectedYear = this.props.date.year();
+    const thisYear = moment().year();
     const years = [thisYear];
 
     for (let num = 1; num <= 5; num++) {
