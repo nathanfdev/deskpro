@@ -16,8 +16,6 @@ export class Controls extends React.Component {
     this.setState({
       date: date
     });
-
-    console.log(date);
   };
 
   render() {
