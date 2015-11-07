@@ -24,7 +24,7 @@ export class TaskCard extends React.Component {
     this.state = {
       expanded: false,
       selected: false,
-      title: 'Task title',
+      title: props.task.get('title'),
       dateDue: props.task.get('date_due'),
       project: 'Some Project',
       ticketLink: 'Some Ticket',
@@ -33,7 +33,7 @@ export class TaskCard extends React.Component {
         current: 1,
         total: 3
       },
-      isDone: true
+      isDone: props.task.get('is_done')
     };
   }
 
