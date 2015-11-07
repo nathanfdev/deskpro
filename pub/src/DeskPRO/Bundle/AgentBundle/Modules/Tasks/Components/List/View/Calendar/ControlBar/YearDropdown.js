@@ -1,4 +1,6 @@
 import React, { PropTypes } from 'react';
+import moment from 'moment';
+import classNames from 'classnames';
 
 export class YearDropdown extends React.Component {
 
@@ -7,16 +9,35 @@ export class YearDropdown extends React.Component {
     onChange: PropTypes.func.isRequired
   };
 
+  onChange = (event, year) => {
+    event.preventDefault();
+    this.props.onChange(year);
+  };
+
   render() {
+    const { date } = this.props;
+    const selectedYear = parseInt(moment(date).format('YYYY'), 10);
+    const thisYear = parseInt(moment().format('YYYY'), 10);
+    const years = [thisYear];
+
+    for (let num = 1; num <= 5; num++) {
+      years.unshift(thisYear - num);
+      years.push(thisYear + num);
+    }
+
     return (
       <div className="dpw-value-dropdown">
         <ul>
-          <li><a href="#">2010</a></li>
-          <li><a href="#">2011</a></li>
-          <li><a href="#">2012</a></li>
-          <li><a href="#">2013</a></li>
-          <li><a href="#">2014</a></li>
-          <li><a href="#">2015</a></li>
+          {years.map(year =>
+            <li key={year}>
+              <a href="#"
+                 className={classNames({'active': selectedYear === year})}
+                 onClick={event => this.onChange.bind(this, event, year)()}>
+
+                {year}
+              </a>
+            </li>
+          )}
         </ul>
       </div>
     );

@@ -6,7 +6,8 @@ import { YearDropdown } from './YearDropdown';
 export class Year extends React.Component {
 
   static propTypes = {
-    date: PropTypes.object.isRequired
+    date: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -29,10 +30,17 @@ export class Year extends React.Component {
     });
   };
 
+  onChangeDate = date => {
+    this.onCloseDropdown();
+    console.log(date);
+  };
+
   render() {
+    const { date } = this.props;
+
     return (
       <div className="dpwd-calendar-controls-year">
-        <span className="dpwd-calendar-controls-year-text">{this.props.date}</span>
+        <span className="dpwd-calendar-controls-year-text">{date}</span>
         <span className="dpwd-calendar-controls-year-dropdown"
               ref="button"
               onClick={this.onOpenDropdown}>
@@ -41,10 +49,12 @@ export class Year extends React.Component {
         </span>
 
         <Detached isOpen={this.state.dropdownOpened}
-                  positionTarget={this.refs.button}>
+                  positionTarget={this.refs.button}
+                  positionAt="left bottom">
 
           <ClickOut onClickOut={this.onCloseDropdown}>
-            <YearDropdown {...this.props} />
+            <YearDropdown date={date}
+                          onChange={this.onChangeDate} />
           </ClickOut>
         </Detached>
       </div>
