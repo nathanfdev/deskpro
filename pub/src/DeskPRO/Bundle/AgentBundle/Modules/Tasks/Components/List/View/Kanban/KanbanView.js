@@ -1,4 +1,6 @@
 import React, { PropTypes } from 'react';
+import { ListGroup } from './ListGroup';
+import { TaskCard } from './TaskCard/TaskCard';
 
 export class KanbanView extends React.Component {
 
@@ -8,7 +10,11 @@ export class KanbanView extends React.Component {
 
   render() {
     return (
-      <div>KanbanView</div>
+      <div>
+        <ListGroup title="Overdue">
+          {this.props.tasks.map((task, index) => <TaskCard task={task} key={index} />)}
+        </ListGroup>
+      </div>
     );
   }
 }
