@@ -1,10 +1,11 @@
 import { createAction } from 'Ampliflux';
+import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import * as Tasks from 'DeskPRO/Bundle/AgentBundle/Services/Api/Tasks';
 
 export const setListParams = createAction('TASKS_SET_LIST_PARAMS');
 export const loadList = createAction(
   'TASKS_LOAD_TASK_LIST',
-  params => () => {
+  params => new Promise(resolve => {
     const filterElements = {};
 
     if (params.done && params.done !== 'all') {
@@ -28,9 +29,6 @@ export const loadList = createAction(
     if (params.labels && params.labels.length > 0) {
       filterElements.labels = params.labels;
     }
-    if (params.lists && params.lists.length > 0) {
-      filterElements.lists = params.lists;
-    }
     if (params.page) {
       filterElements.page = params.page;
     }
@@ -45,10 +43,10 @@ export const loadList = createAction(
       filterElements.sort = 'asc';
     }
 
-    Tasks.loadAddress('tasks?' + Tasks.compileParams(filterElements));
-
-    return params;
-  }
+    return DpApi
+      .sendGet('DP_API/tasks?' + Tasks.compileParams(filterElements))
+      .success(response => resolve(response.data));
+  })
 );
 
 export const applyListParams = createAction(
