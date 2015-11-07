@@ -14,7 +14,8 @@ export class List extends React.Component {
   static propTypes = {
     view: PropTypes.string.isRequired,
     tasks: PropTypes.array.isRequired,
-    loaded: PropTypes.bool.isRequired
+    loaded: PropTypes.bool.isRequired,
+    listParams: PropTypes.object.isRequired
   };
 
   renderView() {
@@ -34,14 +35,18 @@ export class List extends React.Component {
   }
 
   render() {
+    const { listParams, loaded } = this.props;
+
     return (
       <ListFrameContainer>
         <Controls />
-        <Loader loaded={this.props.loaded}>
-          <ListFrameContents>
-            {this.renderView()}
-          </ListFrameContents>
-        </Loader>
+        {listParams &&
+          <Loader loaded={loaded}>
+            <ListFrameContents>
+              {this.renderView()}
+            </ListFrameContents>
+          </Loader>
+        }
       </ListFrameContainer>
     );
   }
