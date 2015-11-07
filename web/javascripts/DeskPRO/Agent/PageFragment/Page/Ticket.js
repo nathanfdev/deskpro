@@ -18,6 +18,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.popoutPage = null;
 		this.lastActiveDate = null;
 		this.ticketReplyBox = null;
+    if (DeskPRO_Window.$q) {
+      this.initDeferred = DeskPRO_Window.$q.defer();
+      this.initPromise = this.initDeferred.promise;
+    }
 	},
 
 	getAlertId: function() {
@@ -874,6 +878,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     }, 1500);
 
     this.replaceLinks();
+    this.initDeferred && this.initDeferred.resolve();
 	},
 
 	setTicketReplyBox: function(rb) {
@@ -2775,6 +2780,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 
 	doTicketUpdate: function() {
+    var self = this;
 		if (this.doTicketUpdateRunning) {
 			this.doTicketUpdateRunning.abort();
 			this.doTicketUpdateRunning = null;
@@ -2787,7 +2793,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 		formData.push({
 			name: 'last_log_id',
-			value: this.getEl('messages_wrap').find('.log-row').last().data('log-id')
+			value: this.getEl('logs_wrap').find('.log-row').last().data('log-id')
 		});
 
 		this.doTicketUpdateRunning = $.ajax({
@@ -2798,7 +2804,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			context: this,
 			success: function(result) {
 				this.alertTab();
-				this.handleTicketUpdate(result);
+
+        if (this.initPromise) {
+          this.initPromise.then(function(){
+            self.handleTicketUpdate(result);
+          });
+        } else {
+          this.handleTicketUpdate(result);
+        }
 			}
 		});
 	},
