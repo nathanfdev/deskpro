@@ -7,7 +7,7 @@ export class Controls extends React.Component {
   render() {
     return (
       <div className="dpwd-calendar-controls">
-        <Year />
+        <Year date="2015" />
         <Month />
       </div>
     );
