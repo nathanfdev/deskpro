@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { Controls } from './ControlBar/Controls';
 
 export class CalendarView extends React.Component {
 
@@ -8,7 +9,9 @@ export class CalendarView extends React.Component {
 
   render() {
     return (
-      <div>CalendarView</div>
+      <div>
+        <Controls />
+      </div>
     );
   }
 }
