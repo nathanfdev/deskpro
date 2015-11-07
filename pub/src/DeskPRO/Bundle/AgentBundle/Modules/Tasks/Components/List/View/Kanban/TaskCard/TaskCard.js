@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import Moment from 'moment';
 import { BaseTaskCard } from '../../BaseTaskCard';
 
 export class TaskCard extends BaseTaskCard {
@@ -31,7 +32,7 @@ export class TaskCard extends BaseTaskCard {
                   </span>
               </div>
               <div>
-                <i className="fa fa-calendar-o" /> Due: N/A
+                <i className="fa fa-calendar-o" /> Due: {task.get('date_due') ? Moment(task.get('date_due')).local().format('MMMM D, YYYY') : 'N/A'}
               </div>
             </div>
             <hr/>
