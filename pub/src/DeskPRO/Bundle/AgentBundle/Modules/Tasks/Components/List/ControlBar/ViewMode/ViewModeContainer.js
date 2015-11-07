@@ -5,6 +5,7 @@ import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/C
 import { ViewModeSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { ViewModeDropdown } from './ViewModeDropdown';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { changeView } from '../../../../Actions/tasksActions';
 
 const viewModeOptions = {
   [constants.VIEW_MODE_CARD]: { label: 'Card View', icon: 'list' },
@@ -19,6 +20,7 @@ const viewModeOptions = {
 export class ViewModeContainer extends React.Component {
 
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     currentView: PropTypes.string.isRequired
   };
 
@@ -42,18 +44,27 @@ export class ViewModeContainer extends React.Component {
     });
   };
 
+  onChangeView = type => {
+    this.props.dispatch(changeView(type));
+    this.onCloseDropDown();
+  };
+
   render() {
+    const { currentView } = this.props;
+
     return (
       <ViewModeSwitcher ref="button"
                         toggleDropdown={this.onOpenDropdown}
-                        currentViewMode={viewModeOptions[this.props.currentView]}>
+                        currentViewMode={viewModeOptions[currentView]}>
 
         <Detached isOpen={this.state.dropdownOpened}
                   positionAt="left bottom"
                   positionTarget={this.refs.button}>
 
           <ClickOut onClickOut={this.onCloseDropDown}>
-            <ViewModeDropdown viewModeOptions={viewModeOptions} {...this.props} />
+            <ViewModeDropdown viewModeOptions={viewModeOptions}
+                              currentView={currentView}
+                              onChangeView={this.onChangeView} />
           </ClickOut>
         </Detached>
       </ViewModeSwitcher>
