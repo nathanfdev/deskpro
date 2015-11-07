@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 import { Controls } from './ControlBar/Controls';
 import { CardView } from './View/Card/CardView';
 import { KanbanView } from './View/Kanban/KanbanView';
@@ -37,7 +38,9 @@ export class List extends React.Component {
       <ListFrameContainer>
         <Controls />
         <Loader loaded={this.props.loaded}>
-          {this.renderView()}
+          <ListFrameContents>
+            {this.renderView()}
+          </ListFrameContents>
         </Loader>
       </ListFrameContainer>
     );

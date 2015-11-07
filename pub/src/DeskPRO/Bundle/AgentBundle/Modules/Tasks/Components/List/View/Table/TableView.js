@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
 
+import { Header } from './Header';
+
 export class TableView extends React.Component {
 
   static propTypes = {
@@ -8,7 +10,11 @@ export class TableView extends React.Component {
 
   render() {
     return (
-      <div>TableView</div>
+      <div>
+        <table cellSpacing="0" className="condensed-task-list">
+          <Header />
+        </table>
+      </div>
     );
   }
 }
