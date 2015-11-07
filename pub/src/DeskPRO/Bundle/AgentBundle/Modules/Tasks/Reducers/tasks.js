@@ -4,7 +4,8 @@ import * as TasksActions from '../Actions/tasksActions';
 
 const initialState = {
   listParams: null,
-  elements: [],
+  elements: {},
+  view: 'card',
   async: {
     done: null
   }
@@ -16,5 +17,6 @@ export default createReducer(initialState, {
     success: setFullPayload('elements'),
     start: setValue('async.done', false),
     done: setValue('async.done', true)
-  })
+  }),
+  [TasksActions.changeView]: setFullPayload('view')
 });

@@ -7,7 +7,7 @@ import Immutable from 'immutable';
 export class CardView extends React.Component {
 
   static propTypes = {
-    tasks: PropTypes.array.isRequired
+    tasks: PropTypes.object.isRequired
   };
 
   render() {

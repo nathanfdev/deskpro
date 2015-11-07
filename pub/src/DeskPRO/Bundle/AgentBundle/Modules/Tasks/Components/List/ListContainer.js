@@ -4,7 +4,8 @@ import { List } from './List';
 
 @connect(state => ({
   tasks: state.Tasks.tasks.get('elements'),
-  loaded: state.Tasks.tasks.getIn(['async', 'done'])
+  loaded: state.Tasks.tasks.getIn(['async', 'done']),
+  view: state.Tasks.tasks.get('view')
 }))
 export class ListContainer extends React.Component {
 
