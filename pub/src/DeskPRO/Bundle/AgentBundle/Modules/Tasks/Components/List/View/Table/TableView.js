@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
-
-import { Header } from './Header';
+import { Header } from './Header/Header';
 
 export class TableView extends React.Component {
 
@@ -12,7 +11,8 @@ export class TableView extends React.Component {
     return (
       <div>
         <table cellSpacing="0" className="condensed-task-list">
-          <Header />
+          <Header currentOrder="project"
+                  currentDirection="desc" />
         </table>
       </div>
     );
