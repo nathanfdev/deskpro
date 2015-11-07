@@ -12,7 +12,7 @@ const weekdays = [
   'Saturday'
 ];
 
-export class Header extends React.Component {
+export class CalendarHeader extends React.Component {
 
   static propTypes = {
     date: PropTypes.object.isRequired
