@@ -53,7 +53,6 @@ export class ViewModeContainer extends React.Component {
 
   render() {
     const { currentView } = this.props;
-    console.log(currentView);
 
     return (
       <ViewModeSwitcher ref="button"
