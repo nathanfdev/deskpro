@@ -32,7 +32,7 @@ export class CalendarView extends React.Component {
 
         <table className="calendar-content">
           <CalendarHeader date={this.state.date} />
-          <CalendarBody />
+          <CalendarBody date={this.state.date} />
         </table>
 
         {this.props.tasks.map((task, index) => <TaskCard task={task} key={index} />)}
