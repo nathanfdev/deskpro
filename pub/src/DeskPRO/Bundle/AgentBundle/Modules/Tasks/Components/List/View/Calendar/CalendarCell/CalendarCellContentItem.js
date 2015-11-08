@@ -42,7 +42,9 @@ export class CalendarCellContentItem extends React.Component {
         </a>
 
         <Detached isOpen={this.state.taskCardOpened}
-                  positionTarget={this.refs.button}>
+                  positionTarget={this.refs.button}
+                  positionAt="right top-5"
+                  zIndex={1001}>
 
           <ClickOut onClickOut={this.onCloseTaskCard}
                     ignoreNodes={[this.refs.button]}>

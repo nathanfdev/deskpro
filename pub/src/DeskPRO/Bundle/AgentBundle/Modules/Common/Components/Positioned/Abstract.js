@@ -16,6 +16,7 @@ export default class Abstract extends React.Component {
     positionAt: PropTypes.string,
     positionMy: PropTypes.string,
     positionTarget: PropTypes.any,
+    zIndex: PropTypes.number,
     collision: PropTypes.object,
     onOpen: PropTypes.func,
     onClose: PropTypes.func,
@@ -61,13 +62,16 @@ export default class Abstract extends React.Component {
    * @return {void}
    */
   updatePosition() {
-    const { positionCalc, positionTarget, positionMy, positionAt, collision } = this.props;
+    const { positionCalc, positionTarget, positionMy, positionAt, collision, zIndex } = this.props;
+    const $node = jQuery(this.node);
+    $node.css('position', 'absolute');
 
     if (positionCalc) {
       const positionResult = positionCalc();
-      jQuery(this.node).css('position', 'absolute')
+      $node
         .css('top', positionResult.top)
-        .css('left', positionResult.left);
+        .css('left', positionResult.left)
+      ;
     } else {
       const placement = this.props.position ||
         {
@@ -93,8 +97,11 @@ export default class Abstract extends React.Component {
           console.error('No position target specified');
         }
 
-        jQuery(this.node).css('position', 'absolute').position(placement);
+        $node.position(placement);
       }
+    }
+    if (zIndex) {
+      $node.css('z-index', zIndex);
     }
   }
 
