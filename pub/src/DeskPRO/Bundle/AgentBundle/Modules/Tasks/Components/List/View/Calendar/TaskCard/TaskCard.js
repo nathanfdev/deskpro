@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { BaseTaskCard } from '../../BaseTaskCard';
+import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 
 export class TaskCard extends BaseTaskCard {
 
@@ -8,10 +9,19 @@ export class TaskCard extends BaseTaskCard {
   };
 
   render() {
+    const { task } = this.props;
+
     return (
-      <div>
-        {this.props.task.get('title')}
-      </div>
+      <Card statusBars={false}
+            type="floating">
+        <div className="dpw--card-line">
+          <div className="dpw--card-line-left card-title">
+            <div className="dpwd--card-title strikethrough">
+              <h1>{task.get('title')}</h1>
+            </div>
+          </div>
+        </div>
+      </Card>
     );
   }
 }

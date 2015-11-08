@@ -19,7 +19,7 @@ export class CalendarCellContentItem extends React.Component {
   onOpenTaskCard = event => {
     event.preventDefault();
     this.setState({
-      taskCardOpened: false
+      taskCardOpened: true
     });
   };
 
@@ -45,7 +45,7 @@ export class CalendarCellContentItem extends React.Component {
                   positionTarget={this.refs.button}>
 
           <ClickOut onClickOut={this.onCloseTaskCard}>
-            <TaskCard />
+            <TaskCard task={task} />
           </ClickOut>
         </Detached>
       </li>
