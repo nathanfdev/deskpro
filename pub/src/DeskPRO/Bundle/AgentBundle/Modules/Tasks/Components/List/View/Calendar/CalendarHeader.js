@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import moment from 'moment';
+import DateRange from 'moment-range';
 
 export class CalendarHeader extends React.Component {
 
@@ -10,18 +11,21 @@ export class CalendarHeader extends React.Component {
 
   render() {
     const today = moment();
-    const currentMonth = today.isSame(this.props.date, 'month');
+    const range = moment.range(moment().startOf('isoweek'), moment().endOf('isoweek'));
+
+    const items = [];
+    range.by('days', weekday => items.push(weekday));
 
     return (
       <thead>
         <tr>
-          {moment.weekdays().map(weekday =>
-            <td key={weekday}
+          {items.map(weekday =>
+            <td key={weekday.isoWeekday()}
                 className={classNames({
-                  'dpwd-calendar-header-today': currentMonth && today.format('dddd') === weekday
+                  'dpwd-calendar-header-today': weekday.isSame(today, 'day')
                 })}>
 
-              {weekday}
+              {weekday.format('dddd')}
             </td>
           )}
         </tr>
