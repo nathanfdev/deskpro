@@ -6,7 +6,8 @@ export class CalendarCell extends React.Component {
 
   static propTypes = {
     dayDate: PropTypes.object.isRequired,
-    date: PropTypes.object.isRequired
+    date: PropTypes.object.isRequired,
+    tasks: PropTypes.object.isRequired
   };
 
   render() {

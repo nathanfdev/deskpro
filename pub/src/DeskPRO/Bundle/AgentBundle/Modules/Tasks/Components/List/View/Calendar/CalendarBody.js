@@ -6,7 +6,8 @@ import DateRange from 'moment-range';
 export class CalendarBody extends React.Component {
 
   static propTypes = {
-    date: PropTypes.object.isRequired
+    date: PropTypes.object.isRequired,
+    tasks: PropTypes.object.isRequired
   };
 
   getCalendarMap() {
@@ -32,12 +33,15 @@ export class CalendarBody extends React.Component {
   }
 
   render() {
+    const { date, tasks } = this.props;
+
     return (
       <tbody>
         {this.getCalendarMap().map((week, index) =>
           <tr key={index}>
             {week.map(day => <CalendarCell dayDate={day}
-                                           date={this.props.date} />)}
+                                           date={date}
+                                           tasks={tasks} />)}
           </tr>
         )}
       </tbody>
