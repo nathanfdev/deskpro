@@ -2,16 +2,6 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import moment from 'moment';
 
-const weekdays = [
-  'Sunday',
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday'
-];
-
 export class CalendarHeader extends React.Component {
 
   static propTypes = {
@@ -25,7 +15,7 @@ export class CalendarHeader extends React.Component {
     return (
       <thead>
         <tr>
-          {weekdays.map(weekday =>
+          {moment.weekdays().map(weekday =>
             <td key={weekday}
                 className={classNames({
                   'dpwd-calendar-header-today': currentMonth && today.format('dddd') === weekday
