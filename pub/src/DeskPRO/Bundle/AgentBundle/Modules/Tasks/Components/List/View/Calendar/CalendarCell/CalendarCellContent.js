@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { CalendarCellDropdown } from './CalendarCellDropdown';
 import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
+import { CalendarCellContentItem } from './CalendarCellContentItem';
 
 export class CalendarCellContent extends React.Component {
 
@@ -18,14 +19,14 @@ export class CalendarCellContent extends React.Component {
     };
   }
 
-  onOpenDropdown = event => {
+  onOpenAdditionalDropdown = event => {
     event.preventDefault();
     this.setState({
       dropdownOpened: true
     });
   };
 
-  onCloseDropdown = () => {
+  onCloseAdditionalDropdown = () => {
     this.setState({
       dropdownOpened: false
     });
@@ -39,19 +40,15 @@ export class CalendarCellContent extends React.Component {
     return (
       <div>
         <ul>
-          {shortList.map(task =>
-            <li key={task.get('id')}>
-              {task.get('title')}
-            </li>
-          )}
-          {additionalList.length > 0 &&
+          {shortList.map(task => <CalendarCellContentItem task={task} />)}
+          {additionalList.count() &&
             <li>
               <a href="#"
                  ref="button"
                  className="dpwd-calendar-tasks-show-more"
-                 onClick={this.onOpenDropdown}>
+                 onClick={this.onOpenAdditionalDropdown}>
 
-                + {additionalList.length} tasks <i className="fa fa-sort" />
+                + {additionalList.count()} tasks <i className="fa fa-sort" />
               </a>
             </li>
           }
@@ -61,7 +58,7 @@ export class CalendarCellContent extends React.Component {
                   positionTarget={this.refs.button}
                   positionAt="left bottom+5">
 
-          <ClickOut onClickOut={this.onCloseDropdown}>
+          <ClickOut onClickOut={this.onCloseAdditionalDropdown}>
             <CalendarCellDropdown tasks={additionalList} />
           </ClickOut>
         </Detached>

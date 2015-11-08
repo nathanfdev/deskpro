@@ -17,7 +17,7 @@ export class CalendarCellDropdown extends React.Component {
             <div className="dpw--popup-content-full">
               <div className="dpwd-calendar-tasks dpwd-calendar-tasks-flat">
                 <ul>
-                  {this.props.tasks.map(task => <CalendarCellDropdownCard task={task} />)}
+                  {this.props.tasks.map(task => <CalendarCellDropdownCard key={task.get('id')} task={task} />)}
                 </ul>
               </div>
             </div>
