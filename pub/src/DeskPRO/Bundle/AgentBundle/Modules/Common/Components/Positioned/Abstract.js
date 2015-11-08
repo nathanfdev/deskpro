@@ -61,8 +61,10 @@ export default class Abstract extends React.Component {
    * @return {void}
    */
   updatePosition() {
-    if (this.props.positionCalc) {
-      const positionResult = this.props.positionCalc();
+    const { positionCalc, positionTarget, positionMy, positionAt, collision } = this.props;
+
+    if (positionCalc) {
+      const positionResult = positionCalc();
       jQuery(this.node).css('position', 'absolute')
         .css('top', positionResult.top)
         .css('left', positionResult.left);
@@ -75,16 +77,16 @@ export default class Abstract extends React.Component {
           collision: 'none'
         };
 
-      placement.my = this.props.positionMy || placement.my;
-      placement.at = this.props.positionAt || placement.at;
+      placement.my = positionMy || placement.my;
+      placement.at = positionAt || placement.at;
 
-      if (this.props.positionTarget) {
-        placement.of = this.props.positionTarget;
-        if (!(this.props.positionTarget instanceof jQuery) && ReactDOM.findDOMNode(this.props.positionTarget) !== null) {
-          placement.of = ReactDOM.findDOMNode(this.props.positionTarget);
+      if (positionTarget) {
+        placement.of = positionTarget;
+        if (!(positionTarget instanceof jQuery) && ReactDOM.findDOMNode(positionTarget) !== null) {
+          placement.of = ReactDOM.findDOMNode(positionTarget);
         }
 
-        placement.collision = this.props.collision || placement.collision;
+        placement.collision = collision || placement.collision;
 
         // Error out if we don't have a position target
         if (placement.of === null) {
@@ -101,14 +103,12 @@ export default class Abstract extends React.Component {
    * @return {bool} Whether the function should run
    */
   shouldFire() {
-    const isOpen = this.props.isOpen || false;
-    const fire = (isOpen === this.state.isOpen);
-
+    const { isOpen = false } = this.props;
     this.setState({
       isOpen: isOpen
     });
 
-    return fire;
+    return isOpen === this.state.isOpen;
   }
 
   /**
@@ -116,22 +116,21 @@ export default class Abstract extends React.Component {
    * @return {void}
    */
   renderContent() {
-    const isOpen = this.props.isOpen || false;
-
+    const { isOpen = false, children, onOpen, onClose } = this.props;
     const renderSubtreeIntoContainer = ReactDOM.unstable_renderSubtreeIntoContainer;
 
     // Render the component with react, or don't if the prop changes
     if (isOpen) {
       // Put the element inside a div that we can position
-      renderSubtreeIntoContainer(this, <div className="positioned-element">{this.props.children}</div>, this.node);
+      renderSubtreeIntoContainer(this, <div className="positioned-element">{children}</div>, this.node);
       this.updatePosition();
-      if (this.shouldFire() && this.props.onOpen) {
-        this.props.onOpen();
+      if (this.shouldFire() && onOpen) {
+        onOpen();
       }
     } else {
       renderSubtreeIntoContainer(this, <div />, this.node);
-      if (this.shouldFire() && this.props.onClose) {
-        this.props.onClose();
+      if (this.shouldFire() && onClose) {
+        onClose();
       }
     }
   }
@@ -141,6 +140,6 @@ export default class Abstract extends React.Component {
    * @return {React.Element} The rendered element
    */
   render() {
-    return (<div/>);
+    return <div/>;
   }
 }
