@@ -59,7 +59,10 @@ export class CalendarCellContent extends React.Component {
                   positionAt="left bottom+5">
 
           <ClickOut onClickOut={this.onCloseAdditionalDropdown}>
-            <CalendarCellDropdown tasks={additionalList} />
+            <CalendarCellDropdown>
+              {this.props.tasks.map(task => <CalendarCellContentItem key={task.get('id')}
+                                                                     task={task} />)}
+            </CalendarCellDropdown>
           </ClickOut>
         </Detached>
       </div>

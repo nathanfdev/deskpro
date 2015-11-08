@@ -1,10 +1,9 @@
 import React, { PropTypes } from 'react';
-import { CalendarCellContentItem } from './CalendarCellContentItem';
 
 export class CalendarCellDropdown extends React.Component {
 
   static propTypes = {
-    tasks: PropTypes.object.isRequired
+    children: PropTypes.node
   };
 
   render() {
@@ -17,8 +16,7 @@ export class CalendarCellDropdown extends React.Component {
             <div className="dpw--popup-content-full">
               <div className="dpwd-calendar-tasks dpwd-calendar-tasks-flat">
                 <ul>
-                  {this.props.tasks.map(task => <CalendarCellContentItem key={task.get('id')}
-                                                                         task={task} />)}
+                  {this.props.children}
                 </ul>
               </div>
             </div>
