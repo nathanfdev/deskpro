@@ -7,11 +7,11 @@ export class CalendarCell extends React.Component {
   static propTypes = {
     dayDate: PropTypes.object.isRequired,
     date: PropTypes.object.isRequired,
-    tasks: PropTypes.object.isRequired
+    children: PropTypes.node
   };
 
   render() {
-    const { dayDate, date } = this.props;
+    const { dayDate, date, children } = this.props;
 
     const today = moment();
     const firstDayOfMonth = moment(date).startOf('month');
@@ -26,6 +26,7 @@ export class CalendarCell extends React.Component {
         <div className={classNames('dpwd-calendar-day', {'dpwd-calendar-day-today': today.isSame(dayDate, 'day')})}>
           <span className="dpwd-calendar-day-mark">{dayDate.date()}</span>
           <div className="dpwd-calendar-tasks">
+            {children}
           </div>
         </div>
       </td>
