@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Section, SectionHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { ListItemContainer } from './ListItemContainer';
 
 export class Pending extends Component {
@@ -17,17 +17,23 @@ export class Pending extends Component {
       <Section>
         <SectionHeader>Pending</SectionHeader>
         <ul>
-          <ListItemContainer
-            count={toValidateCount}
-            label="Feedback to Validate"
-            listOptions={ {navItem: { awaiting_validation: 1 } } }
-            />
-          <ListItemContainer
-            count={commentsToReviewCount}
-            label="Comments to Review"
-            listOptions={ {'isComments': true, navItem: { awaiting_validation: 1 } } }
-            //onClick={commentsView.bind(this, {name: 'feedback_comments'})}
-            />
+          <ListItemContainer label="Feedback to Validate"
+                             listOptions={{navItem: {awaiting_validation: 1}}}>
+
+            <ListItem count={toValidateCount}
+                      label="Feedback to Validate" />
+          </ListItemContainer>
+
+          <ListItemContainer label="Comments to Review"
+                             listOptions={{'isComments': true, navItem: {awaiting_validation: 1}}}>
+
+            <ListItem
+              count={commentsToReviewCount}
+              label="Comments to Review"
+              // onClick={commentsView.bind(this, {name: 'feedback_comments'})}
+              />
+
+          </ListItemContainer>
         </ul>
       </Section>
     );

@@ -14,7 +14,7 @@ import {
   AgentsList,
   AgentTeamsList,
   DepartmentsList
-} from '../../../Form/index';
+} from '../../../../../Form/index';
 
 export class AssignForm extends BaseForm {
 

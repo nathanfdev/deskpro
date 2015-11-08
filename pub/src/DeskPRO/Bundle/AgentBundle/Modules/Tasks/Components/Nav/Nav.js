@@ -3,7 +3,7 @@ import { NavFrame, NavFrameHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Com
 import { Groups } from './Groups';
 import { Projects } from './Projects/Projects';
 import { Agents } from './Agents';
-import { Labels } from './Labels';
+import { Labels } from './Labels/Labels';
 
 export class Nav extends React.Component {
 
@@ -13,11 +13,11 @@ export class Nav extends React.Component {
     projects: PropTypes.object.isRequired,
     agents: PropTypes.object.isRequired,
     labels: PropTypes.object.isRequired,
-    groups: PropTypes.object.isRequired
+    groupsState: PropTypes.object.isRequired
   };
 
   render() {
-    const { dispatch, dpWindow, projects, agents, labels, groups } = this.props;
+    const { dispatch, dpWindow, projects, agents, labels, groupsState } = this.props;
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
@@ -26,14 +26,10 @@ export class Nav extends React.Component {
         </NavFrameHeader>
 
         <div className="sidebar-list sidebar-list-filters">
-          <Groups groups={groups}
-                  dispatch={dispatch} />
-          <Projects projects={projects}
-                    dispatch={dispatch} />
-          <Agents agents={agents}
-                  dispatch={dispatch} />
-          <Labels labels={labels}
-                  dispatch={dispatch} />
+          <Groups groupsState={groupsState} />
+          <Projects projects={projects} />
+          <Agents agents={agents} />
+          <Labels labels={labels} />
         </div>
       </NavFrame>
     );

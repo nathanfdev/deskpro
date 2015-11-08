@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { BaseTaskCard } from '../../BaseTaskCard';
 import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 import { CardLine } from './CardLine';
 import { Title } from './Title';
@@ -12,7 +13,7 @@ import { Project } from './Project';
 import { DueDate } from './DueDate';
 import { TicketLinkContainer } from './TicketLinkContainer';
 
-export class TaskCard extends React.Component {
+export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
     task: PropTypes.object.isRequired
@@ -24,16 +25,16 @@ export class TaskCard extends React.Component {
     this.state = {
       expanded: false,
       selected: false,
-      title: 'Task title',
+      title: props.task.get('title'),
       dateDue: props.task.get('date_due'),
       project: 'Some Project',
       ticketLink: 'Some Ticket',
       comments: 1,
       subTasks: {
-        current: 1,
-        total: 3
+        current: props.task.get('subtasks_done'),
+        total: props.task.get('subtasks_total')
       },
-      isDone: true
+      isDone: props.task.get('is_done')
     };
   }
 
@@ -52,12 +53,6 @@ export class TaskCard extends React.Component {
   onToggleExpand = () => {
     this.setState({
       expanded: !this.state.expanded
-    });
-  };
-
-  onToggleSelect = () => {
-    this.setState({
-      selected: !this.state.selected
     });
   };
 
@@ -83,8 +78,10 @@ export class TaskCard extends React.Component {
 
         <div>
             <Comments count={this.state.comments} />
-            <SubTasks current={this.state.subTasks.current}
-                      total={this.state.subTasks.total} />
+            {this.state.subTasks.total > 0 &&
+              <SubTasks current={this.state.subTasks.current}
+                        total={this.state.subTasks.total} />
+            }
         </div>
       </CardLine>
     );

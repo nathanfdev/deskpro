@@ -68,12 +68,12 @@ class TicketMessageType extends AbstractType
             'label'       => $options['message_label'],
             'required'    => $options['required'],
             'attr'        => ['data-rte-field' => 'text'],
-            'constraints' => $constraints
+            'constraints' => $constraints,
         ));
 
         $builder->add('message_html', 'hidden', array(
             'attr'        => ['data-rte-field' => 'html'],
-            'constraints' => $constraints
+            'constraints' => $constraints,
         ));
 
         $builder->add('message_format', 'hidden', array(
@@ -106,7 +106,7 @@ class TicketMessageType extends AbstractType
     public function onPreSubmit(FormEvent $event)
     {
         $messageData = $event->getData();
-        $form = $event->getForm();
+        $form        = $event->getForm();
 
         if ($messageData['message_format'] === 'text') {
             $form->remove('message_html');
@@ -137,7 +137,7 @@ class TicketMessageType extends AbstractType
             'data_class'          => 'Application\\DeskPRO\\Entity\\TicketMessage',
             'message_label'       => $this->language_manager->phrase('portal.forms.label_message'),
             'message_constraints' => [],
-            'attr'                => ['data-rte' => '1']
+            'attr'                => ['data-rte' => '1'],
         ));
         $resolver->setRequired(array(
             'person',

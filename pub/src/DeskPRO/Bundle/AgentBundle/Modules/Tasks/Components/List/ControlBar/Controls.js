@@ -3,7 +3,7 @@ import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Compone
 import { MassActionCheckboxContainer } from './MassAction/MassActionCheckboxContainer';
 import { OrderByContainer } from './OrderBy/OrderByContainer';
 import { FilterByContainer } from './FilterBy/FilterByContainer';
-import { ViewModeSwitcherContainer } from './ViewMode/ViewModeSwitcherContainer';
+import { ViewModeContainer } from './ViewMode/ViewModeContainer';
 
 export class Controls extends React.Component {
 
@@ -19,7 +19,7 @@ export class Controls extends React.Component {
         <li>
           <hr/>
         </li>
-        <ViewModeSwitcherContainer />
+        <ViewModeContainer />
       </ListFrameMenu>
     );
   }

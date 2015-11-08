@@ -489,6 +489,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     {
         $message = $this->message;
         $message = Html2Text::convertHtml($message);
+
         return $message;
     }
 
