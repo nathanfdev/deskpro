@@ -10,10 +10,8 @@ export class CalendarBody extends React.Component {
   };
 
   getCalendarMap() {
-    const today = moment(this.props.date);
-
-    const firstDayOfMonth = moment(today).startOf('month');
-    const lastDayOfMonth = moment(today).endOf('month');
+    const firstDayOfMonth = moment(this.props.date).startOf('month');
+    const lastDayOfMonth = moment(this.props.date).endOf('month');
 
     const start = moment(firstDayOfMonth).subtract(firstDayOfMonth.isoWeekday() - 1, 'day');
     const end = moment(lastDayOfMonth).add(7 - lastDayOfMonth.isoWeekday(), 'day');
@@ -38,7 +36,8 @@ export class CalendarBody extends React.Component {
       <tbody>
         {this.getCalendarMap().map((week, index) =>
           <tr key={index}>
-            {week.map(day => <CalendarCell dayDate={day} />)}
+            {week.map(day => <CalendarCell dayDate={day}
+                                           date={this.props.date} />)}
           </tr>
         )}
       </tbody>

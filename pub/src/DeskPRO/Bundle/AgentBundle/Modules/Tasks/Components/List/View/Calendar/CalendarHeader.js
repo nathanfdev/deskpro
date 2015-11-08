@@ -10,7 +10,7 @@ export class CalendarHeader extends React.Component {
 
   render() {
     const today = moment();
-    const currentMonth = today.isSame(this.props.date, 'month') && today.isSame(this.props.date, 'year');
+    const currentMonth = today.isSame(this.props.date, 'month');
 
     return (
       <thead>
