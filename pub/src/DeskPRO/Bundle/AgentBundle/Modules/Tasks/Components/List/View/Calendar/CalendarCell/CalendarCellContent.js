@@ -32,10 +32,13 @@ export class CalendarCellContent extends React.Component {
   };
 
   render() {
+    const { tasks } = this.props;
+    const shortList = tasks.slice(0, 2);
+
     return (
       <div>
         <ul>
-          {this.props.tasks.map(task =>
+          {shortList.map(task =>
             <li key={task.get('id')}>
               {task.get('title')}
             </li>
@@ -56,7 +59,7 @@ export class CalendarCellContent extends React.Component {
                   positionAt="left bottom+5">
 
           <ClickOut onClickOut={this.onCloseDropdown}>
-            <CalendarCellDropdown />
+            <CalendarCellDropdown tasks={tasks} />
           </ClickOut>
         </Detached>
       </div>
