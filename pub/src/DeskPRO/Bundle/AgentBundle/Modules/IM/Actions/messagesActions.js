@@ -9,7 +9,7 @@ export const loadMessages = createAction(
       const messages = response.data.data;
       const meta = response.data.meta.pagination;
       return new Promise((resolve) => {
-        resolve({chat_id: chatId, messages: messages, page: meta.current_page, pages: meta.total_pages});
+        resolve({chat_id: chatId, messages: messages, page: meta.current_page, pages: meta.total_pages, searchQuery: searchQuery});
       });
     });
   }

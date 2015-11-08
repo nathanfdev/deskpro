@@ -39,8 +39,6 @@ export class Header extends React.Component {
     onClose: PropTypes.func.isRequired
   };
 
-
-
   calculateAgentText = () => {
     const { agents, current, me } = this.props;
     if (agents && agents.size > 0) {

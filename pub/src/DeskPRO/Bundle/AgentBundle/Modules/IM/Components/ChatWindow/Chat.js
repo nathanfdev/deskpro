@@ -3,6 +3,7 @@ import Loader from 'react-loader';
 import { connect } from 'react-redux';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import * as ui from '../../Actions/uiActions';
+import jQuery from 'jquery';
 
 // components
 import { Footer } from './Footer';
@@ -76,7 +77,7 @@ export class Chat extends React.Component {
     this.setState(newState);
   };
 
-  handleOnClose = () => {
+  handleOnClose = (event) => {
     this.props.dispatch(ui.closeChat());
   };
 
@@ -92,6 +93,10 @@ export class Chat extends React.Component {
     const oldState = this.state;
     const newState = {...oldState};
     newState.searchShown = !oldState.searchShown;
+    if (!newState.searchShown) {
+      newState.searchTyped = '';
+      newState.searchQuery = '';
+    }
     this.setState(newState);
   };
 
@@ -100,7 +105,14 @@ export class Chat extends React.Component {
   };
 
   searchForm() {
-    return (this.state.searchShown) ? <SearchForm handleType={this.handleType} handleSearch={this.handleSearch} /> : null;
+    return (this.state.searchShown)
+      ?
+      <SearchForm
+        handleClear={this.handleClear}
+        handleType={this.handleType}
+        handleSearch={this.handleSearch}
+        searching={this.state.searchTyped}/>
+      : null;
   }
 
   static typing() {
@@ -115,7 +127,10 @@ export class Chat extends React.Component {
 
   render() {
     return (
-    <ClickOut onClickOut={this.handleOnClose}>
+    <ClickOut
+      onClickOut={this.handleOnClose}
+      ignoreNodes={[jQuery('#active-chat-search-clear')]}
+      >
       <div className="dropdown active-chat-dropdown" id="active-chat-dropdown">
         <Header toggleSearch={this.toggleSearch} onClose={this.handleOnClose} online={this.isOnline()}/>
         { this.searchForm() }

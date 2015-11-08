@@ -5,6 +5,7 @@ import Immutable from 'immutable';
 
 const initialState = {
   chatMessages: {},
+  searchMessages: {},
   loadingMessages: true,
   counts: {},
   countsLoading: true
@@ -12,14 +13,20 @@ const initialState = {
 export default createReducer(initialState, {
   [actions.loadMessages]: async(
     {
-      begin: (state) => state.set('loadingMessages', true),
+      start: (state) => state.set('loadingMessages', true),
       success: (state, payload) => {
-        if (!state.getIn(['chatMessages', payload.chat_id])) {
-          return state.setIn(['chatMessages', payload.chat_id], payload);
+        let path;
+        if (payload.searchQuery) {
+          path = ['searchMessages', payload.chat_id];
+        } else {
+          path = ['chatMessages', payload.chat_id];
+        }
+        if (!state.getIn(path) || (payload.searchQuery && state.getIn(path).searchQuery !== payload.searchQuery)) {
+          return state.setIn(path, payload);
         }
         // OMG!!!
-        const messages = state.getIn(['chatMessages', payload.chat_id]).messages;
-        const page = state.getIn(['chatMessages', payload.chat_id]).page;
+        const messages = state.getIn(path).messages;
+        const page = state.getIn(path).page;
         const union = {};
         messages.map((message) => union[message.id] = message);
         payload.messages.map((message) => union[message.id] = message);
@@ -28,7 +35,7 @@ export default createReducer(initialState, {
           page: Math.max(page, payload.page),
           pages: payload.pages
         };
-        return state.setIn(['chatMessages', payload.chat_id], obj);
+        return state.setIn(path, obj);
       },
       done: (state) => state.set('loadingMessages', false)
     }

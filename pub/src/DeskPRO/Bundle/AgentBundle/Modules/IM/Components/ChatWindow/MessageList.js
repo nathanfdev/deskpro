@@ -12,9 +12,7 @@ import Loader from 'react-loader';
   agents: agentsSelector(state),
   agentsStatus: agentsStatusSelector(state),
   messages: state.IM.messages,
-  page: state.IM.messages.get('page'),
-  pages: state.IM.messages.get('pages'),
-  messagesStatus: state.IM.messages.loadingMessages
+  messagesLoaded: !state.IM.messages.get('loadingMessages')
 }))
 export class MessageList extends React.Component {
 
@@ -24,14 +22,16 @@ export class MessageList extends React.Component {
     agentsStatus: PropTypes.object.isRequired,
     current: PropTypes.object.isRequired,
     messages: PropTypes.object.isRequired,
+    messagesLoaded: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
     searchQuery: PropTypes.string.isRequired
   };
 
+
   componentDidMount() {
     this.refresh();
-    const interval = setInterval(this.refresh, 15000);
-    const countsInterval = setInterval(() => this.props.dispatch(refreshCounts()), 15000);
+    const interval = setInterval(this.refresh, 5000);
+    const countsInterval = setInterval(() => this.props.dispatch(refreshCounts()), 5000);
     this.state = {
       interval: interval,
       countsInterval: countsInterval
@@ -47,12 +47,12 @@ export class MessageList extends React.Component {
 
   componentWillUpdate = () => {
     const node = ReactDOM.findDOMNode(this.refs.list);
-    this.shouldScrollBottom = node.scrollTop + node.offsetHeight === node.scrollHeight;
+    this.shouldScrollBottom = this.props.messagesLoaded && node && (node.scrollTop + node.offsetHeight === node.scrollHeight);
   };
 
   componentDidUpdate = () => {
-    if (this.shouldScrollBottom) {
-      const node = ReactDOM.findDOMNode(this.refs.list);
+    const node = ReactDOM.findDOMNode(this.refs.list);
+    if (this.shouldScrollBottom && node) {
       node.scrollTop = node.scrollHeight;
     }
   };
@@ -62,11 +62,21 @@ export class MessageList extends React.Component {
     clearInterval(this.state.countsInterval);
   }
 
+  getPath = () => {
+    let path;
+    if (!this.props.searchQuery) {
+      path = ['chatMessages', this.props.current.id];
+    } else {
+      path = ['searchMessages', this.props.current.id];
+    }
+    return path;
+  };
+
   markNewMessages() {
     const ids = [];
     const { messages } = this.props;
-    const path = ['chatMessages', this.props.current.id];
-    const msg = messages.getIn(path) ? messages.getIn(path).messages : [];
+
+    const msg = messages.getIn(this.getPath()) ? messages.getIn(this.getPath()).messages : [];
     msg.map((message) => {
       if (message.status < 1 && message.person_id !== this.props.me.get('id')) {
         ids.push(message.id);
@@ -79,16 +89,14 @@ export class MessageList extends React.Component {
 
   loadOld = () => {
     const { messages } = this.props;
-    const path = ['chatMessages', this.props.current.id];
-    const page = messages.getIn(path) ? messages.getIn(path).page : 1;
+    const page = messages.getIn(this.getPath()) ? messages.getIn(this.getPath()).page : 1;
     this.props.dispatch(loadMessages(this.props.current.id, this.props.searchQuery, page + 1));
   };
 
   controls = () => {
     const { messages } = this.props;
-    const path = ['chatMessages', this.props.current.id];
-    const page = messages.getIn(path) ? messages.getIn(path).page : 1;
-    const pages = messages.getIn(path) ? messages.getIn(path).pages : 1;
+    const page = messages.getIn(this.getPath()) ? messages.getIn(this.getPath()).page : 1;
+    const pages = messages.getIn(this.getPath()) ? messages.getIn(this.getPath()).pages : 1;
     return (
       <li className="chat-controls">
         {page < pages ? <a href="#" onClick={this.loadOld}>Load old messages</a> : null}
@@ -101,29 +109,44 @@ export class MessageList extends React.Component {
     this.markNewMessages();
   };
 
+
+  renderList(msg) {
+    return (
+      <ul ref="list" className="chat-message-list">
+        { this.controls() }
+        {
+          msg.map((message, index) => {
+            return (<Message
+              key={index}
+              message={message}
+              agents={this.props.agents}
+              me={this.props.me}/>);
+          })
+        }
+      </ul>
+    );
+  }
+
+  renderEmpty = () => {
+    return (
+      <ul ref="list" className="chat-message-list">
+        <li className="chat-controls">
+          <a>Sorry, nothing found here</a>
+        </li>
+      </ul>
+    );
+  };
+
   render() {
     const { messages } = this.props;
-    const path = ['chatMessages', this.props.current.id];
-    const msg = messages.getIn(path) ? messages.getIn(path).messages : [];
+    const msg = messages.getIn(this.getPath()) ? messages.getIn(this.getPath()).messages : [];
     msg.sort((first, second) => {
       return first.id - second.id;
     });
-    const loaded = !this.props.messages.loadingMessages;
+    const loaded = this.props.messagesLoaded || msg.length > 0;
     return (
        <Loader loaded={loaded}>
-
-        <ul ref="list" className="chat-message-list">
-          { this.controls() }
-          {
-            msg.map((message, index) => {
-              return (<Message
-                  key={index}
-                  message={message}
-                  agents={this.props.agents}
-                  me={this.props.me}/>);
-            })
-          }
-        </ul>
+         { msg.length > 0 ? this.renderList(msg) : this.renderEmpty()}
       </Loader>
     );
   }
