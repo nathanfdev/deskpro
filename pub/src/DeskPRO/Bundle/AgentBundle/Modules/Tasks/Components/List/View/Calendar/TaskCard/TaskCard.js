@@ -14,6 +14,7 @@ export class TaskCard extends BaseTaskCard {
     return (
       <Card statusBars={false}
             type="floating">
+
         <div className="dpw--card-line">
           <div className="dpw--card-line-left card-title">
             <div className="dpwd--card-title strikethrough">

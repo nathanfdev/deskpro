@@ -39,7 +39,8 @@ export class CalendarCellContent extends React.Component {
     return (
       <div>
         <ul>
-          {shortList.map(task => <CalendarCellContentItem task={task} />)}
+          {shortList.map(task => <CalendarCellContentItem key={task.get('id')}
+                                                          task={task} />)}
           {additionalList.count() &&
             <li>
               <a href="#"
