@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import jQuery from 'jquery';
 import position from 'jquery-ui/position';
@@ -10,16 +10,16 @@ export default class Abstract extends React.Component {
    * @type {Object}
    */
   static propTypes = {
-    isOpen: React.PropTypes.bool,
-    positionCalc: React.PropTypes.func,
-    position: React.PropTypes.object,
-    positionAt: React.PropTypes.string,
-    positionMy: React.PropTypes.string,
-    positionTarget: React.PropTypes.any,
-    collision: React.PropTypes.object,
-    onOpen: React.PropTypes.func,
-    onClose: React.PropTypes.func,
-    children: React.PropTypes.any
+    isOpen: PropTypes.bool,
+    positionCalc: PropTypes.func,
+    position: PropTypes.object,
+    positionAt: PropTypes.string,
+    positionMy: PropTypes.string,
+    positionTarget: PropTypes.any,
+    collision: PropTypes.object,
+    onOpen: PropTypes.func,
+    onClose: PropTypes.func,
+    children: PropTypes.any
   };
 
   /**
