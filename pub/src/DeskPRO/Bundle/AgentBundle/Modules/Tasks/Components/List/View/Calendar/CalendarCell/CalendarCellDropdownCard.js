@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 
-export class CalendarCellDropdownItem extends React.Component {
+export class CalendarCellDropdownCard extends React.Component {
 
   render() {
     return (
-      <div>
+      <li>
         CalendarCellDropdownItem
-      </div>
+      </li>
     );
   }
 }

@@ -10,6 +10,27 @@ export class CalendarCellContent extends React.Component {
     tasks: PropTypes.object.isRequired
   };
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      dropdownOpened: false
+    };
+  }
+
+  onOpenDropdown = event => {
+    event.preventDefault();
+    this.setState({
+      dropdownOpened: true
+    });
+  };
+
+  onCloseDropdown = () => {
+    this.setState({
+      dropdownOpened: false
+    });
+  };
+
   render() {
     return (
       <div>
@@ -20,14 +41,21 @@ export class CalendarCellContent extends React.Component {
             </li>
           )}
           <li>
-            <a href="#" className="dpwd-calendar-tasks-show-more">
+            <a href="#"
+               ref="button"
+               className="dpwd-calendar-tasks-show-more"
+               onClick={this.onOpenDropdown}>
+
               + 10 tasks <i className="fa fa-sort" />
             </a>
           </li>
         </ul>
 
-        <Detached>
-          <ClickOut>
+        <Detached isOpen={this.state.dropdownOpened}
+                  positionTarget={this.refs.button}
+                  positionAt="left bottom+5">
+
+          <ClickOut onClickOut={this.onCloseDropdown}>
             <CalendarCellDropdown />
           </ClickOut>
         </Detached>
