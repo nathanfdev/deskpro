@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import { CalendarCell } from './CalendarCell/CalendarCell';
-import { CalendarCellContent } from './CalendarCell/CalendarCellContent';
+import { CalendarCell } from './Cell/CalendarCell';
+import { CalendarCellContent } from './Cell/CalendarCellContent';
 import moment from 'moment';
 import DateRange from 'moment-range';
 
