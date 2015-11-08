@@ -39,6 +39,7 @@ export default createReducer(initialState, {
       // const chatMessages = state.getIn(['chatMessages', payload.chat_id]);
       // chatMessages.messages.push(payload.message);
       // return state.setIn(['chatMessages', payload.chat_id], chatMessages);
+      return state;
     }
   }),
   [actions.refreshCounts]: async({
