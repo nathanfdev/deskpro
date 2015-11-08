@@ -30,8 +30,8 @@ export class MessageList extends React.Component {
 
   componentDidMount() {
     this.refresh();
-    const interval = setInterval(this.refresh, 5000);
-    const countsInterval = setInterval(() => this.props.dispatch(refreshCounts()), 5000);
+    const interval = setInterval(this.refresh, 15000);
+    const countsInterval = setInterval(() => this.props.dispatch(refreshCounts()), 15000);
     this.state = {
       interval: interval,
       countsInterval: countsInterval
@@ -64,8 +64,10 @@ export class MessageList extends React.Component {
 
   markNewMessages() {
     const ids = [];
-    const messages = this.props.messages.getIn(['chatMessages', this.props.current.id]) || [];
-    messages.map((message) => {
+    const { messages } = this.props;
+    const path = ['chatMessages', this.props.current.id];
+    const msg = messages.getIn(path) ? messages.getIn(path).messages : [];
+    msg.map((message) => {
       if (message.status < 1 && message.person_id !== this.props.me.get('id')) {
         ids.push(message.id);
       }
@@ -76,13 +78,20 @@ export class MessageList extends React.Component {
   }
 
   loadOld = () => {
-    this.props.dispatch(loadMessages(this.props.current.id, this.props.searchQuery, this.props.page+1));
+    const { messages } = this.props;
+    const path = ['chatMessages', this.props.current.id];
+    const page = messages.getIn(path) ? messages.getIn(path).page : 1;
+    this.props.dispatch(loadMessages(this.props.current.id, this.props.searchQuery, page + 1));
   };
 
   controls = () => {
+    const { messages } = this.props;
+    const path = ['chatMessages', this.props.current.id];
+    const page = messages.getIn(path) ? messages.getIn(path).page : 1;
+    const pages = messages.getIn(path) ? messages.getIn(path).pages : 1;
     return (
       <li className="chat-controls">
-        {this.props.page < this.props.pages ? <a href="#" onClick={this.loadOld}>Load old messages</a>: null}
+        {page < pages ? <a href="#" onClick={this.loadOld}>Load old messages</a> : null}
       </li>
     );
   };
@@ -93,15 +102,20 @@ export class MessageList extends React.Component {
   };
 
   render() {
-    const messages = this.props.messages.getIn(['chatMessages', this.props.current.id]) || [];
+    const { messages } = this.props;
+    const path = ['chatMessages', this.props.current.id];
+    const msg = messages.getIn(path) ? messages.getIn(path).messages : [];
+    msg.sort((first, second) => {
+      return first.id - second.id;
+    });
     const loaded = !this.props.messages.loadingMessages;
     return (
        <Loader loaded={loaded}>
 
         <ul ref="list" className="chat-message-list">
-          {this.controls()}
+          { this.controls() }
           {
-            messages.map((message, index) => {
+            msg.map((message, index) => {
               return (<Message
                   key={index}
                   message={message}

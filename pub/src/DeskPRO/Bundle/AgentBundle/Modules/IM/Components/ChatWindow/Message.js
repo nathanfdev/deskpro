@@ -12,7 +12,7 @@ export class Message extends React.Component {
 
   renderMy = () => {
     let className = 'chat-message yours';
-    if(this.props.message.old === true) {
+    if (this.props.message.old === true) {
       className += ' old';
     }
     return (
@@ -30,7 +30,7 @@ export class Message extends React.Component {
   renderNotMy = () => {
     const author = this.props.agents.get(this.props.message.person_id);
     let className = 'chat-message';
-    if(this.props.message.old === true) {
+    if (this.props.message.old === true) {
       className += ' old';
     }
     return (

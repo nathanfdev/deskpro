@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
 
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
@@ -74,8 +75,8 @@ class MessagesController extends AbstractController
         $search_service = $this->get('deskpro.agentchat.history');
         $messages       = $search_service->searchInChat($chat, $search_string, $orderBy);
 
-        $pager = new Pagerfanta(new ArrayAdapter(array_reverse($messages)));
-        $pager->setMaxPerPage(5);
+        $pager = new Pagerfanta(new ArrayAdapter($messages));
+        $pager->setMaxPerPage(9);
         $pager->setCurrentPage($page);
 
         return View::create(

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\AgentChat;
 
 use Application\DeskPRO\Entity\Person;
@@ -90,14 +91,18 @@ class History
      */
     public function searchInChat(AgentChat $chat, $searchString, $orderBy)
     {
-        $ids      = $this->getSearcher()->searchInChat($chat, $searchString);
-        $messages = array();
+        $ids    = $this->getSearcher()->searchInChat($chat, $searchString);
+        $result = [];
         if ($ids) {
             $messageRepo = $this->em->getRepository('App:AgentChatMessage');
             $messages    = $messageRepo->findBy(array('id' => $ids), array($orderBy => 'DESC'));
+            foreach ($messages as $message) {
+                /* @var AgentChatMessage $message */
+                $result[$message->getId()] = $message;
+            }
         }
 
-        return $messages;
+        return $result;
     }
 
     /**
