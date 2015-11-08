@@ -34,6 +34,7 @@ export class CalendarCellContent extends React.Component {
   render() {
     const { tasks } = this.props;
     const shortList = tasks.slice(0, 2);
+    const additionalList = tasks.slice(2);
 
     return (
       <div>
@@ -43,15 +44,17 @@ export class CalendarCellContent extends React.Component {
               {task.get('title')}
             </li>
           )}
-          <li>
-            <a href="#"
-               ref="button"
-               className="dpwd-calendar-tasks-show-more"
-               onClick={this.onOpenDropdown}>
+          {additionalList.length > 0 &&
+            <li>
+              <a href="#"
+                 ref="button"
+                 className="dpwd-calendar-tasks-show-more"
+                 onClick={this.onOpenDropdown}>
 
-              + 10 tasks <i className="fa fa-sort" />
-            </a>
-          </li>
+                + {additionalList.length} tasks <i className="fa fa-sort" />
+              </a>
+            </li>
+          }
         </ul>
 
         <Detached isOpen={this.state.dropdownOpened}
@@ -59,7 +62,7 @@ export class CalendarCellContent extends React.Component {
                   positionAt="left bottom+5">
 
           <ClickOut onClickOut={this.onCloseDropdown}>
-            <CalendarCellDropdown tasks={tasks} />
+            <CalendarCellDropdown tasks={additionalList} />
           </ClickOut>
         </Detached>
       </div>
