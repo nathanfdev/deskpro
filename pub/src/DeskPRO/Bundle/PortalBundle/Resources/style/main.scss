@@ -8153,9 +8153,19 @@ form {
     width: 100%;
 
     #{$form-widget-selector} {
-      width: 75%;
+      width: 100%;
       max-width: 620px;
     }
+
+    .column-full {
+      #{$form-widget-selector} {
+        width: 75%;
+      }
+    }
+  }
+
+  .field_user_name_and_email {
+    width: 60%;
   }
 }
 
