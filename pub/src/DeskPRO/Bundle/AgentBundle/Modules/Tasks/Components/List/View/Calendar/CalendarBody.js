@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import { CalendarCell } from './CalendarCell/CalendarCell';
-import { CalendarCellContent } from './CalendarCell/CalendarCellContent';
+import { CalendarCell } from './Cell/CalendarCell';
+import { CalendarCellContent } from './Cell/CalendarCellContent';
 import moment from 'moment';
 import DateRange from 'moment-range';
 
@@ -41,7 +41,8 @@ export class CalendarBody extends React.Component {
         {this.getCalendarMap().map((week, index) =>
           <tr key={index}>
             {week.map(day =>
-              <CalendarCell dayDate={day}
+              <CalendarCell key={day.day()}
+                            dayDate={day}
                             date={date}>
 
                 <CalendarCellContent tasks={tasks}

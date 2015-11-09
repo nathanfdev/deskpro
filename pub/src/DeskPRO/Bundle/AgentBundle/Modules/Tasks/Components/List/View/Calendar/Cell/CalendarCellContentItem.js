@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react';
 import { TaskCard } from '../TaskCard/TaskCard';
 import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
+import classNames from 'classnames';
+import moment from 'moment';
 
 export class CalendarCellContentItem extends React.Component {
 
@@ -16,6 +18,10 @@ export class CalendarCellContentItem extends React.Component {
     };
   }
 
+  componentWillUnmount() {
+    this.isUnmounted = true;
+  }
+
   onOpenTaskCard = event => {
     event.preventDefault();
     this.setState({
@@ -24,6 +30,10 @@ export class CalendarCellContentItem extends React.Component {
   };
 
   onCloseTaskCard = () => {
+    if (this.isUnmounted) {
+      return;
+    }
+
     this.setState({
       taskCardOpened: false
     });
@@ -33,7 +43,9 @@ export class CalendarCellContentItem extends React.Component {
     const { task } = this.props;
 
     return (
-      <li>
+      <li className={classNames(
+        {'urgent': moment(task.get('date_due')).isBefore(moment(), 'day')}
+      )}>
         <a href="#"
            ref="button"
            onClick={this.onOpenTaskCard}>
@@ -47,7 +59,7 @@ export class CalendarCellContentItem extends React.Component {
                   zIndex={1001}>
 
           <ClickOut onClickOut={this.onCloseTaskCard}
-                    ignoreNodes={[this.refs.button]}>
+                    additionalNodes={[this.refs.button, '.assign-form']}>
 
             <TaskCard task={task} />
           </ClickOut>

@@ -14,7 +14,7 @@ import {
   AgentsList,
   AgentTeamsList,
   DepartmentsList
-} from '../../../../../Form/index';
+} from '../../../Form/index';
 
 export class AssignForm extends BaseForm {
 
@@ -36,7 +36,7 @@ export class AssignForm extends BaseForm {
     const { agents, agentTeams, departments } = this.props;
 
     return (
-      <Popup>
+      <Popup additionalClassNames="assign-form">
         <Header>Assign to Task</Header>
 
         <form>

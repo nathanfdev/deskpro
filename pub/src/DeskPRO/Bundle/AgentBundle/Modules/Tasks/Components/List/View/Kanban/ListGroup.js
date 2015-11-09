@@ -11,7 +11,7 @@ export class ListGroup extends React.Component {
     const { title, children } = this.props;
 
     return (
-      <div>
+      <div className="list">
         <h1 className="kanban-list-header">{title}</h1>
         {children}
       </div>

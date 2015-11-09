@@ -20,6 +20,7 @@ export class ViewModeDropdown extends React.Component {
           <Item key={type}
                 label={option.label}
                 isActive={currentView === type}
+                checked={currentView === type}
                 onClick={onChangeView.bind(this, type)}
                 icon={option.icon} />
         )}

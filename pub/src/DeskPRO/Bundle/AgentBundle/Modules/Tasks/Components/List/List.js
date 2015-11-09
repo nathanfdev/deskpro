@@ -41,7 +41,11 @@ export class List extends React.Component {
       <ListFrameContainer>
         <Controls />
         {listParams &&
-          <Loader loaded={loaded}>
+          <Loader loaded={loaded}
+                  color="green"
+                  opacity={0}
+                  width={3}>
+
             <ListFrameContents>
               {this.renderView()}
             </ListFrameContents>

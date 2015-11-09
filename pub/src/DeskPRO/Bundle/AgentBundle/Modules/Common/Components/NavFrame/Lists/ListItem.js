@@ -1,18 +1,18 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { pureRender } from 'Ampliflux';
-import { BaseList } from './BaseList';
 
 @pureRender
-export class ListItem extends BaseList {
+export class ListItem extends React.Component {
 
   static propTypes = {
     children: PropTypes.node,
-    count: PropTypes.number.isRequired,
+    count: PropTypes.any.isRequired,
     label: PropTypes.string,
     active: PropTypes.bool.isRequired,
     onClick: PropTypes.func.isRequired,
-    onEdit: PropTypes.func.isRequired
+    onEdit: PropTypes.func.isRequired,
+    onItemControlClick: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -35,9 +35,49 @@ export class ListItem extends BaseList {
     });
   };
 
+  renderEditButton() {
+    const onClick = event => {
+      event.preventDefault();
+      this.props.onEdit(event);
+    };
+
+    return (
+      <a href="#" className="edit-icon" onClick={onClick}>
+        <i className="fa fa-cog" />
+      </a>
+    );
+  }
+
+  renderCountIcon() {
+    const { count = 0 } = this.props;
+
+    return (
+      <a className="list-counter active" href="#">{Number.isInteger(count) ? count : 0}</a>
+    );
+  }
+
+  renderItemControl() {
+    const { onItemControlClick } = this.props;
+
+    if (!onItemControlClick) {
+      return '';
+    }
+
+    const onClick = event => {
+      event.preventDefault();
+      onItemControlClick(event);
+    };
+
+    return (
+      <a href="" className="list-counter-dropdown active" onClick={onClick}>
+        <span>&nbsp;</span>
+        <i className="fa fa-angle-down"></i>
+      </a>
+    );
+  }
+
   render() {
-    const { children, count, active, onClick, onEdit } = this.props;
-    const classes = classNames('item', { 'active': active });
+    const { children, active, onClick, onEdit } = this.props;
 
     let label = this.props.label;
     let nested = '';
@@ -58,13 +98,18 @@ export class ListItem extends BaseList {
 
     return (
       <li className="counter-display">
-        <div onMouseEnter={this.onShowEditIcon}
+        <div className="list-counter-bucket"
+             onMouseEnter={this.onShowEditIcon}
              onMouseLeave={this.onHideEditIcon}>
 
-          {this.state.showEditIcon && onEdit ? this.renderEditButton() : this.renderCount(count)}
+          {this.renderItemControl()}
+          {this.state.showEditIcon && onEdit ? this.renderEditButton() : this.renderCountIcon()}
         </div>
 
-        <a href="#" className={classes} onClick={onClick}>
+        <a href="#"
+           className={classNames('item', { 'active': active })}
+           onClick={onClick}>
+
           {label}
         </a>
 

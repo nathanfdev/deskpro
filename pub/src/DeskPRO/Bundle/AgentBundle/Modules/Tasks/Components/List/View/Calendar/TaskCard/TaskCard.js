@@ -1,6 +1,17 @@
 import React, { PropTypes } from 'react';
-import { BaseTaskCard } from '../../BaseTaskCard';
 import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
+import {
+  BaseTaskCard,
+  CardLine,
+  Title,
+  DateDue,
+  SubTasks,
+  Comments,
+  ShowDetailsButton,
+  AssignButton,
+  TicketLinkContainer,
+  Project
+} from '../../../TaskCard/index';
 
 export class TaskCard extends BaseTaskCard {
 
@@ -8,20 +19,48 @@ export class TaskCard extends BaseTaskCard {
     task: PropTypes.object.isRequired
   };
 
-  render() {
-    const { task } = this.props;
-
+  renderDetails() {
     return (
-      <Card statusBars={false}
-            type="floating">
+      <CardLine>
+        <div>
+          <DateDue value={this.state.dateDue}
+                   onChange={this.onChangeDate} />
 
-        <div className="dpw--card-line">
-          <div className="dpw--card-line-left card-title">
-            <div className="dpwd--card-title strikethrough">
-              <h1>{task.get('title')}</h1>
-            </div>
-          </div>
+          {this.state.project && <Project project={this.state.project} />}
+          {this.state.ticketLink && <TicketLinkContainer ticket={this.state.ticketLink} />}
         </div>
+
+        <div>
+          <Comments count={this.state.comments} />
+          {this.state.subTasks.total > 0 &&
+            <SubTasks current={this.state.subTasks.current}
+                      total={this.state.subTasks.total} />
+          }
+        </div>
+      </CardLine>
+    );
+  }
+
+  render() {
+    return (
+      <Card minimized={this.isMinimized()}
+            statusBars={false}
+            type="task"
+            additionalClasses="calendar-task-card">
+
+        <CardLine>
+          <Title value={this.state.title}
+                 isDone={this.state.isDone}
+                 onChange={this.onTitleChange} />
+
+          {this.state.isDone
+            ? <ShowDetailsButton expanded={this.state.expanded}
+                                 onToggleExpand={this.onToggleExpand}/>
+            : <AssignButton />
+          }
+        </CardLine>
+
+        {!this.isMinimized() && this.renderDetails()}
       </Card>
     );
   }

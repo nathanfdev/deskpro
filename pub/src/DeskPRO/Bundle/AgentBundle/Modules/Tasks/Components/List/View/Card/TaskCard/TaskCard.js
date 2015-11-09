@@ -1,47 +1,24 @@
 import React, { PropTypes } from 'react';
-import { BaseTaskCard } from '../../BaseTaskCard';
 import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
-import { CardLine } from './CardLine';
-import { Title } from './Title';
 import { Checkbox } from './Checkbox';
 import { MarkDoneButton } from './MarkDoneButton';
-import { ShowDetailsButton } from './ShowDetailsButton';
-import { AssignButton } from './AssignButton';
-import { Comments } from './Comments';
-import { SubTasks } from './SubTasks';
-import { Project } from './Project';
-import { DueDate } from './DueDate';
-import { TicketLinkContainer } from './TicketLinkContainer';
+import {
+  BaseTaskCard,
+  CardLine,
+  Title,
+  DateDue,
+  SubTasks,
+  Comments,
+  ShowDetailsButton,
+  AssignButton,
+  TicketLinkContainer,
+  Project
+} from '../../../TaskCard/index';
 
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
     task: PropTypes.object.isRequired
-  };
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      expanded: false,
-      selected: false,
-      title: props.task.get('title'),
-      dateDue: props.task.get('date_due'),
-      project: 'Some Project',
-      ticketLink: 'Some Ticket',
-      comments: 1,
-      subTasks: {
-        current: props.task.get('subtasks_done'),
-        total: props.task.get('subtasks_total')
-      },
-      isDone: props.task.get('is_done')
-    };
-  }
-
-  onTitleChange = value => {
-    this.setState({
-      title: value
-    });
   };
 
   onToggleDone = () => {
@@ -50,28 +27,13 @@ export class TaskCard extends BaseTaskCard {
     });
   };
 
-  onToggleExpand = () => {
-    this.setState({
-      expanded: !this.state.expanded
-    });
-  };
-
-  onChangeDate = value => {
-    this.setState({
-      dateDue: value
-    });
-  };
-
-  isMinimized() {
-    return !this.state.expanded && this.state.isDone;
-  }
-
   renderDetails() {
     return (
       <CardLine>
         <div>
-            <DueDate value={this.state.dateDue}
+            <DateDue value={this.state.dateDue}
                      onChange={this.onChangeDate} />
+
             {this.state.project && <Project project={this.state.project} />}
             {this.state.ticketLink && <TicketLinkContainer ticket={this.state.ticketLink} />}
         </div>
@@ -101,13 +63,11 @@ export class TaskCard extends BaseTaskCard {
                  isDone={this.state.isDone}
                  onChange={this.onTitleChange} />
 
-          <div>
-            {this.state.isDone
-              ? <ShowDetailsButton expanded={this.state.expanded}
-                                   onToggleExpand={this.onToggleExpand}/>
-              : <AssignButton />
-            }
-          </div>
+          {this.state.isDone
+            ? <ShowDetailsButton expanded={this.state.expanded}
+                                 onToggleExpand={this.onToggleExpand}/>
+            : <AssignButton />
+          }
         </CardLine>
 
         {!this.isMinimized() && this.renderDetails()}

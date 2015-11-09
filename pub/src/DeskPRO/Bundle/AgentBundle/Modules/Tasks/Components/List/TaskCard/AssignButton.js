@@ -13,13 +13,21 @@ export class AssignButton extends React.Component {
     };
   }
 
-  openForm = () => {
+  componentWillUnmount() {
+    this.isUnmounted = true;
+  }
+
+  onOpenForm = () => {
     this.setState({
       formOpened: true
     });
   };
 
-  closeForm = () => {
+  onCloseForm = () => {
+    if (this.isUnmounted) {
+      return;
+    }
+
     this.setState({
       formOpened: false
     });
@@ -28,7 +36,9 @@ export class AssignButton extends React.Component {
   render() {
     return (
       <div>
-        <div className="dpwd--card-assigned" onClick={this.openForm}>
+        <div className="dpwd--card-assigned"
+             onClick={this.onOpenForm} ref="button">
+
           <div className="dpw--avatar-face" style={{position: 'relative'}}>
             <i className="fa fa-caret-down" />
           </div>
@@ -36,9 +46,12 @@ export class AssignButton extends React.Component {
 
         <Detached isOpen={this.state.formOpened}
                   positionTarget={this}
-                  positionAt="right+5 top-10">
+                  positionAt="right+5 top-10"
+                  zIndex={1002}>
 
-          <ClickOut onClickOut={this.closeForm}>
+          <ClickOut onClickOut={this.onCloseForm}
+                    additionalNodes={[this.refs.button, 'assign-form']}>
+
             <AssignFormContainer />
           </ClickOut>
         </Detached>
