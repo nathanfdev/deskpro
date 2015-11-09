@@ -3,29 +3,73 @@
 {# Basic structure #}
 
 {%- block form_row -%}
-    {% set root_and_not_hidden = has_root_parent and not fully_hidden %}
-    {% if root_and_not_hidden %}
-    <div class="column-half">
-        <div class="bucket{% if not valid %} error{% endif %}">
-    {% endif %}
-            {% if not (checkbox_label is defined and checkbox_label) %}
-                {{- form_label(form, null, {'label_attr': {'class': 'title'}}) -}}
-            {% endif %}
-            {{- form_widget(form) -}}
-            {{- form_errors(form) -}}
-    {% if root_and_not_hidden %}
-        </div>
-    </div>
-    {% endif %}
-
-    {% if root_and_not_hidden and help %}
-        <div class="column-third omega">
-            <div class="form-help">
-                <p>{{ help }}</p>
-            </div>
-        </div>
+    {% if help %}
+        {{ block('form_row_help_text') }}
+    {% else %}
+        {{ block('form_row_nohelp') }}
     {% endif %}
 {%- endblock form_row -%}
+
+
+{%- block form_row_nohelp -%}
+    {% set root_and_not_hidden = has_root_parent and not fully_hidden %}
+
+    {# containers #}
+    {% if root_and_not_hidden %}<div class="column-full"><div class="bucket{% if not valid %} error{% endif %}">{% endif %}
+
+    {{- form_label(form, null, {'label_attr': {'class': 'title'}}) -}}
+    {{- form_widget(form) -}}
+    {{- form_errors(form) -}}
+
+    {# /containers #}
+    {% if root_and_not_hidden %}</div></div>{% endif %}
+{%- endblock form_row_nohelp -%}
+
+{%- block form_row_help_text -%}
+    {% set root_and_not_hidden = has_root_parent and not fully_hidden %}
+
+    {# containers #}
+    {% if root_and_not_hidden %}<div class="column-full"><div class="bucket{% if not valid %} error{% endif %}">{% endif %}
+
+    {{- form_label(form, null, {'label_attr': {'class': 'title with-sub'}}) -}}
+    {% if root_and_not_hidden %}
+        <div class="form-help">
+            <p>{{ help }}</p>
+        </div>
+    {% endif %}
+    {{- form_widget(form) -}}
+    {{- form_errors(form) -}}
+
+    {# /containers #}
+    {% if root_and_not_hidden %}</div></div>{% endif %}
+{%- endblock form_row_help_text -%}
+
+{%- block form_row_help_col -%}
+    {% set root_and_not_hidden = has_root_parent and not fully_hidden %}
+
+    {# containers #}
+    {% if root_and_not_hidden %}
+        <div class="column-full"><div class="bucket{% if not valid %} error{% endif %}">
+        <table class="dp-formtable-tablerow" width="100%"><tr><td class="dp-formtable-controls" valign="top">
+    {% endif %}
+
+    {{- form_label(form, null, {'label_attr': {'class': 'title'}}) -}}
+    {{- form_widget(form) -}}
+    {{- form_errors(form) -}}
+
+    {# /containers #}
+    {% if root_and_not_hidden %}
+                </td>
+                <td class="dp-formtable-help" valign="top" width="33%">
+                    <div class="form-help">
+                        <p>{{ help }}</p>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        </div></div>
+    {% endif %}
+{%- endblock form_row_help_col -%}
 
 {%- block deskpro_combined_type_row -%}
     <div class="column-half">
@@ -161,9 +205,8 @@
             <label for="{{ id }}"><input
                         type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />{{ checkbox_label|trans }}
             </label>
-        {% else %}
-            {{ parent() }}
         {% endif %}
+        {{ parent() }}
     {% endspaceless %}
 {% endblock checkbox_widget %}
 

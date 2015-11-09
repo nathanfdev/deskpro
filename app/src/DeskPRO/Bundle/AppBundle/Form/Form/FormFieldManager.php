@@ -238,7 +238,7 @@ class FormFieldManager
                     'single_checkbox',
                     'value',
                     $this->getGeneralOptionsForField($field_type, array(
-                        'checkbox_label' => $field_type->getOption('label_text') ?: $field_type->getTitle(),
+                        'checkbox_label' => $field_type->getOption('label_text') ?: '',
                         'force_boolean'  => true,
                     ), $agent_interface), );
 

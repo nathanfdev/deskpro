@@ -65,7 +65,7 @@ body {
   padding: 20px;
   background: $world-background;
   color: $text-color;
-  font-size: 0.85em;
+  font-size: $font-default;
   font-family: $fonts;
   line-height: 1.75em;
 }
@@ -82,8 +82,13 @@ body {
 
 .world {
   padding: $world-padding;
-  padding-top: 0;
+  padding-top: $world-padding / 2;
   background: $page-background;
+
+  @if $with-world-framed {
+    border: 1px solid darken($world-background, 10%);
+    border-radius: 3px;
+  }
 }
 
 @media screen and (max-width: 760px) {
@@ -180,8 +185,8 @@ hr {
 
 .section-header {
   margin-top: 15px;
-  margin-bottom: 30px;
-  padding-left: $universal-left-padding;
+  margin-bottom: 15px;
+  padding-left: 0;
 
   @media screen and (max-width: 760px) {
     margin-bottom: 15px;
@@ -2710,16 +2715,18 @@ h1 {
 // All Tables
 table {
   border-collapse: collapse;
-  border-spacing: 0px;
+  border-spacing: 0;
+  font-size: 100%;
   tr {
     td {
       padding: 5px 10px;
       color: $text-color-darker;
       vertical-align: top;
+      font-size: 100%;
 
       &:first-child {
         color: $text-color-lighter;
-        text-align: right;
+        text-align: left;
       }
     }
   }
@@ -3435,17 +3442,19 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
 }
 
 .breadcrumbs {
-  margin-bottom: 20px;
-  padding-left: $universal-left-padding;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-bottom: 10px;
+  padding-left: 0;
   border-bottom: 1px solid $divider-color;
-  line-height: 1.2em;
+  line-height: 100%;
 
   ul {
     @include blank-list;
     position: relative;
     z-index: 100;
     display: inline-block;
-    padding: 0px 0px 12px 0px;
+    padding: 0 0 0 0;
     background: $page-background;
     color: #8b8b8b;
   }
@@ -7624,7 +7633,7 @@ body.with-agent-bar {
   position: relative;
   display: inline-block;
   min-width: 125px;
-  margin: 6px 10px 6px 0px;
+  margin: 0 10px 0 0px;
 
   input[type="radio"] {
     display: none;
@@ -7648,8 +7657,10 @@ body.with-agent-bar {
     }
   }
 
-  label {
+  label, label.title {
     cursor: pointer;
+    font-size: 0.9em;
+    line-height: 18px;
     &.title {
       padding-left: 0;
     }
@@ -7657,7 +7668,7 @@ body.with-agent-bar {
     &:before {
       display: block;
       float: left;
-      margin-right: 8px;
+      margin-right: 6px;
       width: 17px;
       height: 17px;
       line-height: 1.3em;
@@ -7668,12 +7679,29 @@ body.with-agent-bar {
   }
 }
 
+table.dp-formtable-tablerow {
+  margin: 0;
+  padding: 0;
+  border: none;
+
+  td {
+    border-collapse: collapse;
+    padding: 0;
+    padding-right: $universal-left-padding;
+    vertical-align: top;
+
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+
+  td.dp-formtable-help {
+    border-left: 1px solid $divider-color;
+  }
+}
+
 .form-help {
-  position: relative;
-  top: -5px;
-  margin-bottom: 5px;
-  padding: 5px 0 5px 20px;
-  border-left: 1px solid $divider-color;
+  padding: 0 0 9px 0;
 
   h1 {
     display: block;
@@ -7684,7 +7712,13 @@ body.with-agent-bar {
 
   p {
     font-size: 0.9em;
+    line-height: 110%;
+    color: $text-color-lighter;
   }
+}
+
+table .form-help {
+  padding: 5px 0 5px 20px;
 }
 
 .form-meta {
@@ -7862,7 +7896,6 @@ input[type="text"], input[type="email"], input[type="password"], textarea, selec
 }
 
 input[type="text"], input[type="email"], input[type="password"], textarea, select, .dp-medium-rte {
-  margin-bottom: 10px;
   font-size: $font-mid;
   font-weight: 400;
   width: 100%;
@@ -8002,9 +8035,12 @@ form {
   .title {
     display: block;
     margin-bottom: 7px;
-    padding-left: $universal-left-padding;
+    padding-left: 0;
     color: $text-color;
-    font-weight: $text-color-darker;
+    font-size: 100%;
+    &.with-sub {
+      margin-bottom: 0;
+    }
   }
 
   .subtitle {
@@ -8021,8 +8057,9 @@ form {
 .checkbox-container {
   display: inline-block;
   min-width: 125px;
-  margin: 6px 10px 6px 0px;
+  margin: 0 10px 0 0;
   cursor: pointer;
+  font-size: 0.9em;
 }
 
 .checkbox {
@@ -8035,8 +8072,8 @@ form {
   border-radius: 2px;
   vertical-align: middle;
   text-align: center;
-  margin-top: -4px;
-  margin-right: 10px;
+  margin-top: -3px;
+  margin-right: 6px;
   color: #333;
   cursor: pointer;
 
@@ -8089,8 +8126,13 @@ form {
   }
 
   .bucket {
-    margin-bottom: 10px;
+    margin-bottom: 18px;
     width: 100%;
+
+    #{$form-widget-selector} {
+      width: 75%;
+      max-width: 620px;
+    }
   }
 }
 

@@ -572,6 +572,10 @@ class TicketType extends AbstractType
     {
         $field_def = $this->field_manager->getCustomTicketFieldById($field->getFieldId(), $form_context);
 
+        if (!$field_def) {
+            return false;
+        }
+
         if (!$field_def->is_enabled) {
             return false;
         }
