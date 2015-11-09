@@ -329,10 +329,12 @@ class FormFieldManager
             $opts = array();
 
             if ($min) {
-                $opts['min'] = $min;
+                $opts['min']        = $min;
+                $opts['minMessage'] = 'The value is too short. It must be at least '.$min.' characters';
             }
             if ($max) {
-                $opts['max'] = $max;
+                $opts['max']        = $max;
+                $opts['maxMessage'] = 'The value is too long. It must be '.$max.' or less characters';
             }
 
             $constraints[] = new Length($opts);
@@ -350,7 +352,7 @@ class FormFieldManager
             );
             // becase we are requiring it must match a regex, and the UI doesn't allow
             // it to be also "not required" we must ensure both
-             $constraints[] = new NotNull();
+             $constraints[] = new NotNull(array('message' => 'This value is required'));
         }
 
         $options['constraints'] = $constraints;
