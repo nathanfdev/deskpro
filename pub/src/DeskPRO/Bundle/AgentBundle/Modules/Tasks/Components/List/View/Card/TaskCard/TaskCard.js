@@ -10,7 +10,7 @@ import { AssignButton } from './AssignButton';
 import { Comments } from './Comments';
 import { SubTasks } from './SubTasks';
 import { Project } from './Project';
-import { DueDate } from './DueDate';
+import { DateDue } from './DateDue';
 import { TicketLinkContainer } from './TicketLinkContainer';
 
 export class TaskCard extends BaseTaskCard {
@@ -70,7 +70,7 @@ export class TaskCard extends BaseTaskCard {
     return (
       <CardLine>
         <div>
-            <DueDate value={this.state.dateDue}
+            <DateDue value={this.state.dateDue}
                      onChange={this.onChangeDate} />
             {this.state.project && <Project project={this.state.project} />}
             {this.state.ticketLink && <TicketLinkContainer ticket={this.state.ticketLink} />}

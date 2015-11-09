@@ -6,7 +6,7 @@ import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Posit
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import { DateString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/DateString';
 
-export class DueDate extends React.Component {
+export class DateDue extends React.Component {
 
   static propTypes = {
     value: PropTypes.string,
