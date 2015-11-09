@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { BaseTaskCard } from '../../../TaskCard/BaseTaskCard';
+import { DateDue } from '../../../TaskCard/DateDue';
 import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 import { CardLine } from './CardLine';
 import { Title } from './Title';
@@ -10,7 +11,6 @@ import { AssignButton } from './AssignButton';
 import { Comments } from './Comments';
 import { SubTasks } from './SubTasks';
 import { Project } from './Project';
-import { DateDue } from './DateDue';
 import { TicketLinkContainer } from './TicketLinkContainer';
 
 export class TaskCard extends BaseTaskCard {
@@ -18,25 +18,6 @@ export class TaskCard extends BaseTaskCard {
   static propTypes = {
     task: PropTypes.object.isRequired
   };
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      expanded: false,
-      selected: false,
-      title: props.task.get('title'),
-      dateDue: props.task.get('date_due'),
-      project: 'Some Project',
-      ticketLink: 'Some Ticket',
-      comments: 1,
-      subTasks: {
-        current: props.task.get('subtasks_done'),
-        total: props.task.get('subtasks_total')
-      },
-      isDone: props.task.get('is_done')
-    };
-  }
 
   onTitleChange = value => {
     this.setState({
@@ -53,12 +34,6 @@ export class TaskCard extends BaseTaskCard {
   onToggleExpand = () => {
     this.setState({
       expanded: !this.state.expanded
-    });
-  };
-
-  onChangeDate = value => {
-    this.setState({
-      dateDue: value
     });
   };
 

@@ -47,7 +47,8 @@ export class DateDue extends React.Component {
         </span>
         <Detached isOpen={this.state.isOpen}
                   positionTarget={this}
-                  positionAt="center botton">
+                  positionAt="center botton"
+                  zIndex={1002}>
 
           <ClickOut onClickOut={this.onCloseCalendar}>
             <HiddenDateTimePicker value={value}
