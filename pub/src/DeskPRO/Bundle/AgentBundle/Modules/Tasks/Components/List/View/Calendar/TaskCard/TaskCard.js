@@ -8,7 +8,8 @@ import {
   SubTasks,
   Comments,
   ShowDetailsButton,
-  AssignButton
+  AssignButton,
+  TicketLinkContainer
 } from '../../../TaskCard/index';
 
 export class TaskCard extends BaseTaskCard {
@@ -31,12 +32,7 @@ export class TaskCard extends BaseTaskCard {
               </span>
             </span>
 
-            <span>
-              <span className="dpw--card-disc" />
-              <span className="dpwd--card-line-item">
-                <i className="fa fa-link" /> <a href="#">Ticket title</a>
-              </span>
-            </span>
+          {this.state.ticketLink && <TicketLinkContainer ticket={this.state.ticketLink} />}
         </div>
 
         <div>

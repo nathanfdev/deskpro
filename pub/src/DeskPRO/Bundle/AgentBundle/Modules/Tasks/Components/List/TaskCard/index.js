@@ -6,6 +6,7 @@ import { DateDue } from './DateDue';
 import { SubTasks } from './SubTasks';
 import { ShowDetailsButton } from './ShowDetailsButton';
 import { AssignButton } from './AssignButton';
+import { TicketLinkContainer } from './TicketLinkContainer';
 
 export default {
   BaseTaskCard,
@@ -15,5 +16,6 @@ export default {
   DateDue,
   SubTasks,
   ShowDetailsButton,
-  AssignButton
+  AssignButton,
+  TicketLinkContainer
 };

@@ -3,7 +3,6 @@ import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListF
 import { Checkbox } from './Checkbox';
 import { MarkDoneButton } from './MarkDoneButton';
 import { Project } from './Project';
-import { TicketLinkContainer } from './TicketLinkContainer';
 import {
   BaseTaskCard,
   CardLine,
@@ -12,7 +11,8 @@ import {
   SubTasks,
   Comments,
   ShowDetailsButton,
-  AssignButton
+  AssignButton,
+  TicketLinkContainer
 } from '../../../TaskCard/index';
 
 export class TaskCard extends BaseTaskCard {
