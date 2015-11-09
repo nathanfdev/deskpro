@@ -7635,6 +7635,13 @@ body.with-agent-bar {
   min-width: 125px;
   margin: 0 10px 0 0px;
 
+  &:focus {
+    outline: none;
+    label {
+      outline: 1px dotted #aaa;
+    }
+  }
+
   input[type="radio"] {
     display: none;
     border: 2px solid $button-color;
@@ -8083,6 +8090,10 @@ form {
   margin: 0 10px 0 0;
   cursor: pointer;
   font-size: 0.9em;
+
+  &:focus {
+    outline: 1px dotted #aaa;
+  }
 }
 
 .checkbox {

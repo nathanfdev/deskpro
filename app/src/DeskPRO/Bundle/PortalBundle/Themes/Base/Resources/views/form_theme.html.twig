@@ -226,7 +226,7 @@
         {% if count > 1 %}
             <div class="dp-choice-widget-group email-present">
                 {%- for child in form %}
-                    <div class="radio-button">
+                    <div class="radio-button dpx-radio-button">
                         {{- form_widget(child) -}}
                         {{- form_label(child, null, { dp_no_validation_indicator: true }) -}}
                     </div>
@@ -457,7 +457,7 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
                 {% if form.vars.choices[child.vars.value] is defined %}
                     {% if form.vars.choices[child.vars.value].data|length == 0 %}
                         {% if not multiple %}
-                            <div class="radio-button">
+                            <div class="radio-button dpx-radio-button">
                         {% endif %}
                         {{- form_widget(child) -}}
                         {{- form_label(child, null, { dp_no_validation_indicator: true }) -}}
