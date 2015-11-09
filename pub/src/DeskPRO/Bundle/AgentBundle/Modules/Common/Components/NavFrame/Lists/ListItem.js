@@ -1,10 +1,9 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { pureRender } from 'Ampliflux';
-import { BaseList } from './BaseList';
 
 @pureRender
-export class ListItem extends BaseList {
+export class ListItem extends React.Component {
 
   static propTypes = {
     children: PropTypes.node,
@@ -104,7 +103,7 @@ export class ListItem extends BaseList {
              onMouseLeave={this.onHideEditIcon}>
 
           {this.renderItemControl()}
-          {(this.state.showEditIcon && onEdit) ? this.renderEditButton() : this.renderCountIcon()}
+          {this.state.showEditIcon && onEdit ? this.renderEditButton() : this.renderCountIcon()}
         </div>
 
         <a href="#"
