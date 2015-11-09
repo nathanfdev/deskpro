@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
-import { BaseList } from './BaseList';
+import { ListItem } from './ListItem';
 
-export class NestedList extends BaseList {
+export class NestedList extends React.Component {
 
   static propTypes = {
     onClick: PropTypes.func.isRequired,
