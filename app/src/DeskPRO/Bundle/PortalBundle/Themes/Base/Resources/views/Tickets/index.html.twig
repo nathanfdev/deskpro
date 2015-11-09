@@ -32,7 +32,7 @@
                         </li>
 
                         <li class="tab-solo">
-                            <form class="form-filter" method="GET"  id="ticket_list_search_form" action="{{ path('portal_tickets', { type: type }) }}">
+                            <form class="form-filter" method="GET"  id="ticket_list_search_form" action="{{ path('portal_tickets', { type: type }) }}" novalidate>
                                 <div class="bucket">
                                     <span>Search in Tickets:</span>
                                     <input title="Search in Tickets" name="q" value="{{ search_query }}" type="text" />
