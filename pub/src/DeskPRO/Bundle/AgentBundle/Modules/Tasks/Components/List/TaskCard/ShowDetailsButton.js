@@ -7,13 +7,16 @@ export class ShowDetailsButton extends React.Component {
     onToggleExpand: PropTypes.func.isRequired
   };
 
-  render() {
-    const { expanded, onToggleExpand } = this.props;
+  onClick = event => {
+    event.preventDefault();
+    this.props.onToggleExpand();
+  };
 
+  render() {
     return (
       <div className="dpw--card-expand">
-        <a href="#" onClick={onToggleExpand}>
-          {expanded ? 'Collapse' : 'Expand'} <i className="fa fa-navicon"/>
+        <a href="#" onClick={this.onClick}>
+          {this.props.expanded ? 'Collapse' : 'Expand'} <i className="fa fa-navicon"/>
         </a>
       </div>
     );
