@@ -7,7 +7,7 @@ const initialState = {
   chatMessages: {},
   searchMessages: {},
   loadingMessages: true,
-  counts: {},
+  counts: [],
   countsLoading: true
 };
 export default createReducer(initialState, {

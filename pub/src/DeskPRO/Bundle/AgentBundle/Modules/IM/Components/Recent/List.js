@@ -46,7 +46,7 @@ export class List extends React.Component {
     departments: PropTypes.object.isRequired,
     recentChats: PropTypes.object.isRequired,
     current: PropTypes.object.isRequired,
-    counts: PropTypes.object.isRequired,
+    counts: PropTypes.array.isRequired,
     countsLoading: PropTypes.bool.isRequired,
     teamsStatus: PropTypes.object.isRequired,
     agentsStatus: PropTypes.object.isRequired,
