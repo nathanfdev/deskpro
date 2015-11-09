@@ -34,11 +34,14 @@ export class BaseList extends React.Component {
   }
 
   renderEditButton() {
-    const { onEdit } = this.props;
+    const onClick = event => {
+      event.preventDefault();
+      this.props.onEdit(event);
+    };
 
     return (
       <div className="list-counter-bucket">
-        <a href="#" className="edit-icon" onClick={onEdit}>
+        <a href="#" className="edit-icon" onClick={onClick}>
           <i className="fa fa-cog" />
         </a>
       </div>
