@@ -9,7 +9,8 @@ import {
   Comments,
   ShowDetailsButton,
   AssignButton,
-  TicketLinkContainer
+  TicketLinkContainer,
+  Project
 } from '../../../TaskCard/index';
 
 export class TaskCard extends BaseTaskCard {
@@ -25,13 +26,7 @@ export class TaskCard extends BaseTaskCard {
           <DateDue value={this.state.dateDue}
                    onChange={this.onChangeDate} />
 
-            <span>
-              <span className="dpw--card-disc" />
-              <span className="dpwd--card-line-item">
-                <i className="fa fa-book" /> Project title
-              </span>
-            </span>
-
+          {this.state.project && <Project project={this.state.project} />}
           {this.state.ticketLink && <TicketLinkContainer ticket={this.state.ticketLink} />}
         </div>
 

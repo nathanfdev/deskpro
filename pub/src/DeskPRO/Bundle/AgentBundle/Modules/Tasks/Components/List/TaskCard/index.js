@@ -7,6 +7,7 @@ import { SubTasks } from './SubTasks';
 import { ShowDetailsButton } from './ShowDetailsButton';
 import { AssignButton } from './AssignButton';
 import { TicketLinkContainer } from './TicketLinkContainer';
+import { Project } from './Project';
 
 export default {
   BaseTaskCard,
@@ -17,5 +18,6 @@ export default {
   SubTasks,
   ShowDetailsButton,
   AssignButton,
-  TicketLinkContainer
+  TicketLinkContainer,
+  Project
 };
