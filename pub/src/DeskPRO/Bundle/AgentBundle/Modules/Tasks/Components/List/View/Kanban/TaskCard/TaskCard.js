@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { Checkbox } from './Checkbox';
 import {
   BaseTaskCard,
   Title,
@@ -20,11 +21,8 @@ export class TaskCard extends BaseTaskCard {
           <div className="card-status-bar status-bar-left" />
           <div className="card-status-bar status-bar-right" />
 
-          <div className="card-checkbox">
-              <span className="checkbox">
-                <i className="fa fa-check" />
-              </span>
-          </div>
+          <Checkbox selected={this.state.selected}
+                    onToggle={this.onToggleSelect} />
 
           <div className="content">
             <Title value={this.state.title}
