@@ -1,21 +1,25 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import { OrderBy } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { OrderByDropdown } from './OrderByDropdown';
 
-const sortOptions = [
-  { field: 'list', label: 'List', icon: 'list' },
-  { field: 'project', label: 'Project', icon: 'briefcase' },
-  { field: 'date_due', label: 'Due Date', icon: 'calendar' },
-  { field: 'date_done', label: 'Done Date', icon: 'calendar' },
-  { field: 'date_created', label: 'Created Date', icon: 'calendar' },
-  { field: 'assignee', label: 'Assignee', icon: 'user' }
-];
+const sortOptions = {
+  list: { label: 'List', icon: 'list' },
+  project: { label: 'Project', icon: 'briefcase' },
+  date_due: { label: 'Due Date', icon: 'calendar' },
+  date_done: { label: 'Done Date', icon: 'calendar' },
+  date_created: { label: 'Created Date', icon: 'calendar' },
+  assignee: { label: 'Assignee', icon: 'user' }
+};
 
 @connect()
 export class OrderByContainer extends React.Component {
+
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired
+  };
 
   constructor(props) {
     super(props);
@@ -25,7 +29,8 @@ export class OrderByContainer extends React.Component {
     };
   }
 
-  onOpenDropdown = () => {
+  onOpenDropdown = event => {
+    event.preventDefault();
     this.setState({
       dropdownOpened: true
     });
@@ -35,6 +40,16 @@ export class OrderByContainer extends React.Component {
     this.setState({
       dropdownOpened: false
     });
+  };
+
+  onToggleListSort = value => {
+    console.log(value);
+    this.onCloseDropDown();
+  };
+
+  onToggleListOrder = value => {
+    console.log(value);
+    this.onCloseDropDown();
   };
 
   render() {
@@ -55,7 +70,9 @@ export class OrderByContainer extends React.Component {
           <ClickOut onClickOut={this.onCloseDropDown}>
             <OrderByDropdown order={order}
                              currentSortOption={currentSortOption}
-                             sortOptions={sortOptions} />
+                             sortOptions={sortOptions}
+                             onToggleListSort={this.onToggleListSort}
+                             onToggleListOrder={this.onToggleListOrder} />
           </ClickOut>
         </Detached>
       </OrderBy>

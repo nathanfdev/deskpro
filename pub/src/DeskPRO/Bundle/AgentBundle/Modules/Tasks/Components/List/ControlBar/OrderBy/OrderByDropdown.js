@@ -3,39 +3,36 @@ import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu
 import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
 import MenuFooter from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooter';
 import MenuFooterOptions from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterOptions';
-
+import jQuery from 'jquery';
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export class OrderByDropdown extends React.Component {
 
   static propTypes = {
     currentSortOption: PropTypes.object,
-    sortOptions: PropTypes.object
+    sortOptions: PropTypes.object,
+    onToggleListSort: PropTypes.func.isRequired,
+    onToggleListOrder: PropTypes.func.isRequired
   };
-
-  toggleListOrder = value => {
-    console.log(value);
-  };
-
-  renderOption(option, index) {
-    return (
-      <Item key={index}
-            label={option.label}
-            isActive={this.props.currentSortOption === option}
-            icon={option.icon} />
-    );
-  }
 
   render() {
-    const { sortOptions = [] } = this.props;
+    const { sortOptions = [], onToggleListSort, onToggleListOrder } = this.props;
 
     return (
       <Menu>
-        {sortOptions.map((option, index) => this.renderOption(option, index))}
+        {jQuery.map(sortOptions, (option, type) =>
+          <Item key={type}
+                label={option.label}
+                isActive={this.props.currentSortOption === type}
+                checked={this.props.currentSortOption === type}
+                onClick={onToggleListSort.bind(this, type)}
+                icon={option.icon} />
+        )}
 
         <MenuFooter>
           <MenuFooterOptions options={[
-            {id: 'asc', onClick: this.toggleListOrder.bind(this, 'asc'), label: 'Asc'},
-            {id: 'desc', onClick: this.toggleListOrder.bind(this, 'desc'), label: 'Desc'}
+            { id: constants.ORDER_ASC, onClick: onToggleListOrder.bind(this, 'asc'), label: 'Asc' },
+            { id: constants.ORDER_DESC, onClick: onToggleListOrder.bind(this, 'desc'), label: 'Desc' }
           ]}>
 
             Sort
