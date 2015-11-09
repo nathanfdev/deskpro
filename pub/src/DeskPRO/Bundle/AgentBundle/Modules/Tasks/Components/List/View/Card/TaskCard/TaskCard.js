@@ -1,12 +1,19 @@
 import React, { PropTypes } from 'react';
-import { BaseTaskCard, CardLine, Title, DateDue, SubTasks, Comments } from '../../../TaskCard/index';
 import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 import { Checkbox } from './Checkbox';
 import { MarkDoneButton } from './MarkDoneButton';
-import { ShowDetailsButton } from './ShowDetailsButton';
-import { AssignButton } from './AssignButton';
 import { Project } from './Project';
 import { TicketLinkContainer } from './TicketLinkContainer';
+import {
+  BaseTaskCard,
+  CardLine,
+  Title,
+  DateDue,
+  SubTasks,
+  Comments,
+  ShowDetailsButton,
+  AssignButton
+} from '../../../TaskCard/index';
 
 export class TaskCard extends BaseTaskCard {
 
@@ -65,13 +72,11 @@ export class TaskCard extends BaseTaskCard {
                  isDone={this.state.isDone}
                  onChange={this.onTitleChange} />
 
-          <div>
-            {this.state.isDone
-              ? <ShowDetailsButton expanded={this.state.expanded}
-                                   onToggleExpand={this.onToggleExpand}/>
-              : <AssignButton />
-            }
-          </div>
+          {this.state.isDone
+            ? <ShowDetailsButton expanded={this.state.expanded}
+                                 onToggleExpand={this.onToggleExpand}/>
+            : <AssignButton />
+          }
         </CardLine>
 
         {!this.isMinimized() && this.renderDetails()}

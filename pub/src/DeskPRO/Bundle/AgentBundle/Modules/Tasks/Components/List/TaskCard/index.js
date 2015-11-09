@@ -4,6 +4,8 @@ import { Title } from './Title';
 import { Comments } from './Comments';
 import { DateDue } from './DateDue';
 import { SubTasks } from './SubTasks';
+import { ShowDetailsButton } from './ShowDetailsButton';
+import { AssignButton } from './AssignButton';
 
 export default {
   BaseTaskCard,
@@ -11,5 +13,7 @@ export default {
   Title,
   Comments,
   DateDue,
-  SubTasks
+  SubTasks,
+  ShowDetailsButton,
+  AssignButton
 };

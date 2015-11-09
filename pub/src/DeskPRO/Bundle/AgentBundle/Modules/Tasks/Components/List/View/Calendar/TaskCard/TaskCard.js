@@ -1,6 +1,15 @@
 import React, { PropTypes } from 'react';
-import { BaseTaskCard, CardLine, Title, DateDue, SubTasks, Comments } from '../../../TaskCard/index';
 import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
+import {
+  BaseTaskCard,
+  CardLine,
+  Title,
+  DateDue,
+  SubTasks,
+  Comments,
+  ShowDetailsButton,
+  AssignButton
+} from '../../../TaskCard/index';
 
 export class TaskCard extends BaseTaskCard {
 
@@ -21,9 +30,11 @@ export class TaskCard extends BaseTaskCard {
                  isDone={this.state.isDone}
                  onChange={this.onTitleChange} />
 
-          <div className="dpwd--card-assigned">
-            <div className="dpw--avatar-face">assigneeAvatar</div>
-          </div>
+          {this.state.isDone
+            ? <ShowDetailsButton expanded={this.state.expanded}
+                                 onToggleExpand={this.onToggleExpand}/>
+            : <AssignButton />
+          }
         </CardLine>
 
         <CardLine>
