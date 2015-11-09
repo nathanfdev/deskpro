@@ -160,6 +160,13 @@
                 {% endif %}
             {%- endmacro -%}
 
+            {%- macro col_td_class(ticket, ticket_view, ticket_table, col) -%}
+                {%- if col.id == 'department_subject' -%}
+                {%- else -%}
+                    info-block
+                {%- endif -%}
+            {%- endmacro -%}
+
             {% macro tickets_table(ticket_table, id) %}
                 <div class="column-full">
                     <div class="ticket-table" data-id="{{ id }}">
@@ -209,7 +216,7 @@
                                         {{ ticket_public_id(ticket) }}
                                     </td>
                                 {% for col in ticket_table.columns %}
-                                    <td class="info-block" data-col="{{ col.id }}"{% if not ticket_table.isActive(col) %} style="display:none;"{% endif %}>
+                                    <td class="{{ _self.col_td_class(ticket, ticket_view, ticket_table, col) }}" data-col="{{ col.id }}"{% if not ticket_table.isActive(col) %} style="display:none;"{% endif %}>
                                         <a href="{{ portal_path(ticket) }}">
                                             {{ _self.col_data(ticket, ticket_view, ticket_table, col) }}
                                         </a>
