@@ -46,7 +46,8 @@ export class AssignButton extends React.Component {
 
         <Detached isOpen={this.state.formOpened}
                   positionTarget={this}
-                  positionAt="right+5 top-10">
+                  positionAt="right+5 top-10"
+                  zIndex={1002}>
 
           <ClickOut onClickOut={this.onCloseForm}
                     additionalNodes={[this.refs.button, 'assign-form']}>
