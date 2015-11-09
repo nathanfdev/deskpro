@@ -235,7 +235,6 @@ export default class PortalSimpleSelectBox extends React.Component {
       focusIdx = currentIdx + 1;
     }
 
-    console.log(options);
     options[focusIdx].focus();
   }
 
