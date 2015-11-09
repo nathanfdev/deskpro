@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react';
 import { TaskCard } from '../TaskCard/TaskCard';
 import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
+import classNames from 'classnames';
+import moment from 'moment';
 
 export class CalendarCellContentItem extends React.Component {
 
@@ -33,7 +35,9 @@ export class CalendarCellContentItem extends React.Component {
     const { task } = this.props;
 
     return (
-      <li>
+      <li className={classNames(
+        {'urgent': moment(task.get('date_due')).isBefore(moment(), 'day')}
+      )}>
         <a href="#"
            ref="button"
            onClick={this.onOpenTaskCard}>
