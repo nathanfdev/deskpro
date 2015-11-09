@@ -37,7 +37,6 @@ export class ListItem extends BaseList {
 
   render() {
     const { children, count, active, onClick, onEdit } = this.props;
-    const classes = classNames('item', { 'active': active });
 
     let label = this.props.label;
     let nested = '';
@@ -64,7 +63,10 @@ export class ListItem extends BaseList {
           {this.state.showEditIcon && onEdit ? this.renderEditButton() : this.renderCount(count)}
         </div>
 
-        <a href="#" className={classes} onClick={onClick}>
+        <a href="#"
+           className={classNames('item', { 'active': active })}
+           onClick={onClick}>
+
           {label}
         </a>
 
