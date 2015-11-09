@@ -1,7 +1,5 @@
 import React, { PropTypes } from 'react';
-import { BaseTaskCard } from '../../../TaskCard/BaseTaskCard';
-import { Title } from '../../../TaskCard/Title';
-import { DateDue } from '../../../TaskCard/DateDue';
+import { BaseTaskCard, Title, DateDue, SubTasks, Comments } from '../../../TaskCard/index';
 import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 
 export class TaskCard extends BaseTaskCard {
@@ -53,12 +51,11 @@ export class TaskCard extends BaseTaskCard {
           </div>
 
           <div className="dpw--card-line-right">
-            <span className="dpwd--card-line-item">
-              1 <i className="fa fa-comment" />
-            </span>
-            <span className="dpwd--card-line-item">
-              <div><span className="dpw--card-disc" /> 1/3 <i className="fa fa-folder-open"/></div>
-            </span>
+            <Comments count={this.state.comments} />
+            {this.state.subTasks.total > 0 &&
+            <SubTasks current={this.state.subTasks.current}
+                      total={this.state.subTasks.total} />
+            }
           </div>
         </div>
       </Card>
