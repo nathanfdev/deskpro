@@ -13,6 +13,10 @@ export class AssignButton extends React.Component {
     };
   }
 
+  componentWillUnmount() {
+    this.isUnmounted = true;
+  }
+
   onOpenForm = () => {
     this.setState({
       formOpened: true
@@ -20,6 +24,10 @@ export class AssignButton extends React.Component {
   };
 
   onCloseForm = () => {
+    if (this.isUnmounted) {
+      return;
+    }
+
     this.setState({
       formOpened: false
     });

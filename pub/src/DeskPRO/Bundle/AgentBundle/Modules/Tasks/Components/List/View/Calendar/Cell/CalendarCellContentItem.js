@@ -18,6 +18,10 @@ export class CalendarCellContentItem extends React.Component {
     };
   }
 
+  componentWillUnmount() {
+    this.isUnmounted = true;
+  }
+
   onOpenTaskCard = event => {
     event.preventDefault();
     this.setState({
@@ -26,6 +30,10 @@ export class CalendarCellContentItem extends React.Component {
   };
 
   onCloseTaskCard = () => {
+    if (this.isUnmounted) {
+      return;
+    }
+
     this.setState({
       taskCardOpened: false
     });
