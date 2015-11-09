@@ -35,7 +35,7 @@ export class ClickOut extends React.Component {
       }
     }
 
-    const nodes = additionalNodes || [];
+    const nodes = [...additionalNodes] || [];
     nodes.push(this.refs.container);
 
     let outside = true;
