@@ -1,6 +1,9 @@
 import React, { PropTypes } from 'react';
-import Moment from 'moment';
-import { BaseTaskCard } from '../../../TaskCard/BaseTaskCard';
+import {
+  BaseTaskCard,
+  Title,
+  DateDue,
+} from '../../../TaskCard/index';
 
 export class TaskCard extends BaseTaskCard {
 
@@ -9,8 +12,6 @@ export class TaskCard extends BaseTaskCard {
   };
 
   render() {
-    const { task } = this.props;
-
     return (
       <div>
         <div className="card task-card">
@@ -24,7 +25,10 @@ export class TaskCard extends BaseTaskCard {
           </div>
 
           <div className="content">
-            <h1 className="complete">{task.get('title')}</h1>
+            <Title value={this.state.title}
+                   isDone={this.state.isDone}
+                   onChange={this.onTitleChange} />
+
             <div className="card-line task-details">
               <div className="top-right-box">
                   <span className="assignment">
@@ -32,7 +36,8 @@ export class TaskCard extends BaseTaskCard {
                   </span>
               </div>
               <div>
-                <i className="fa fa-calendar-o" /> Due: {task.get('date_due') ? Moment(task.get('date_due')).local().format('MMMM D, YYYY') : 'N/A'}
+                <DateDue value={this.state.dateDue}
+                         onChange={this.onChangeDate} />
               </div>
             </div>
             <hr/>
