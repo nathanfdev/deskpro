@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { BaseTaskCard } from '../../../TaskCard/BaseTaskCard';
+import { Title } from '../../../TaskCard/Title';
 import { DateDue } from '../../../TaskCard/DateDue';
 import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 
@@ -18,10 +19,10 @@ export class TaskCard extends BaseTaskCard {
             additionalClasses={`calendar-task-card-${task.get('id')}`}>
 
         <div className="dpw--card-line">
-          <div className="dpw--card-line-left card-title">
-            <div className="dpwd--card-title strikethrough">
-              <h1>{task.get('title')}</h1>
-            </div>
+          <div className="dpw--card-line-left">
+            <Title value={this.state.title}
+                   isDone={this.state.isDone}
+                   onChange={this.onTitleChange} />
           </div>
 
           <div className="dpw--card-line-right">

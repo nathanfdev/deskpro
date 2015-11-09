@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import { BaseTaskCard } from '../../../TaskCard/BaseTaskCard';
+import { Title } from '../../../TaskCard/Title';
 import { DateDue } from '../../../TaskCard/DateDue';
 import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 import { CardLine } from './CardLine';
-import { Title } from './Title';
 import { Checkbox } from './Checkbox';
 import { MarkDoneButton } from './MarkDoneButton';
 import { ShowDetailsButton } from './ShowDetailsButton';
@@ -17,12 +17,6 @@ export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
     task: PropTypes.object.isRequired
-  };
-
-  onTitleChange = value => {
-    this.setState({
-      title: value
-    });
   };
 
   onToggleDone = () => {
