@@ -38,4 +38,14 @@ export class BaseTaskCard extends React.Component {
       dateDue: value
     });
   };
+
+  onToggleExpand = () => {
+    this.setState({
+      expanded: !this.state.expanded
+    });
+  };
+
+  isMinimized() {
+    return !this.state.expanded && this.state.isDone;
+  }
 }

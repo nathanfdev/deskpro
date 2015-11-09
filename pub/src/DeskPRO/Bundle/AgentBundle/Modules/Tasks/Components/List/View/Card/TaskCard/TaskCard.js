@@ -27,16 +27,6 @@ export class TaskCard extends BaseTaskCard {
     });
   };
 
-  onToggleExpand = () => {
-    this.setState({
-      expanded: !this.state.expanded
-    });
-  };
-
-  isMinimized() {
-    return !this.state.expanded && this.state.isDone;
-  }
-
   renderDetails() {
     return (
       <CardLine>

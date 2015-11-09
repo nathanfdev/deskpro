@@ -17,30 +17,12 @@ export class TaskCard extends BaseTaskCard {
     task: PropTypes.object.isRequired
   };
 
-  render() {
-    const { task } = this.props;
-
+  renderDetails() {
     return (
-      <Card statusBars={false}
-            type="floating"
-            additionalClasses={`calendar-task-card-${task.get('id')}`}>
-
-        <CardLine>
-          <Title value={this.state.title}
-                 isDone={this.state.isDone}
-                 onChange={this.onTitleChange} />
-
-          {this.state.isDone
-            ? <ShowDetailsButton expanded={this.state.expanded}
-                                 onToggleExpand={this.onToggleExpand}/>
-            : <AssignButton />
-          }
-        </CardLine>
-
-        <CardLine>
-          <div>
-            <DateDue value={this.state.dateDue}
-                     onChange={this.onChangeDate} />
+      <CardLine>
+        <div>
+          <DateDue value={this.state.dateDue}
+                   onChange={this.onChangeDate} />
 
             <span>
               <span className="dpw--card-disc" />
@@ -55,16 +37,41 @@ export class TaskCard extends BaseTaskCard {
                 <i className="fa fa-link" /> <a href="#">Ticket title</a>
               </span>
             </span>
-          </div>
+        </div>
 
-          <div>
-            <Comments count={this.state.comments} />
-            {this.state.subTasks.total > 0 &&
-            <SubTasks current={this.state.subTasks.current}
-                      total={this.state.subTasks.total} />
-            }
-          </div>
+        <div>
+          <Comments count={this.state.comments} />
+          {this.state.subTasks.total > 0 &&
+          <SubTasks current={this.state.subTasks.current}
+                    total={this.state.subTasks.total} />
+          }
+        </div>
+      </CardLine>
+    );
+  }
+
+  render() {
+    const { task } = this.props;
+
+    return (
+      <Card minimized={this.isMinimized()}
+            statusBars={false}
+            type="task"
+            additionalClasses={`calendar-task-card-${task.get('id')}`}>
+
+        <CardLine>
+          <Title value={this.state.title}
+                 isDone={this.state.isDone}
+                 onChange={this.onTitleChange} />
+
+          {this.state.isDone
+            ? <ShowDetailsButton expanded={this.state.expanded}
+                                 onToggleExpand={this.onToggleExpand}/>
+            : <AssignButton />
+          }
         </CardLine>
+
+        {!this.isMinimized() && this.renderDetails()}
       </Card>
     );
   }
