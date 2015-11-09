@@ -99,9 +99,23 @@ export default class PortalSimpleSelectBox extends React.Component {
 
 
   renderStaticHeader() {
+    const classes = ['default'];
+    if (this.state.expanded) {
+      classes.push('expanded');
+    } else {
+      classes.push('collapsed');
+    }
+    if (this.state.value) {
+      classes.push('with-value');
+    } else {
+      classes.push('with-no-value');
+    }
+
+    const className = classes.join(' ');
+
     if (!this.state.expanded && (this.props.multiple ? this.state.value.length > 0 : this.state.value)) {
       return (
-        <div className="default" onClick={this.onClickHeader.bind(this)}>
+        <div className={className} onClick={this.onClickHeader.bind(this)}>
           <span>{this.props.multiple ? (
               this.state.value.map((opt) => {
                 return opt.title
@@ -112,7 +126,7 @@ export default class PortalSimpleSelectBox extends React.Component {
       );
     } else {
       return (
-        <div className="default" onClick={this.onClickHeader.bind(this)}>
+        <div className={className} onClick={this.onClickHeader.bind(this)}>
           <span>Select...</span>
           <i className="fa fa-caret-down"></i>
         </div>

@@ -22,6 +22,7 @@ $fonts: apple-system, ".SFNSText-Regular", "Helvetica Neue", "Segoe UI", "Roboto
 $divider-color: rgba(0, 0, 0, 0.1);
 $universal-left-padding: 10px;
 $main-color: #3575bd;
+$main-color-light: lighten(#3575bd, 45%);
 
 // Font sizes
 $font-small: 0.8em;
@@ -98,3 +99,4 @@ $max-width: 1080px;
 $with-world-framed: $world-background != $page-background;
 
 $form-widget-selector: 'input[type="text"], input[type="email"], input[type="[password"], textarea, .dp-choice-widget-group, .dp-medium-rte-wrapper';
+$zindex-very-top: 5000;

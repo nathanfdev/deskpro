@@ -7750,6 +7750,7 @@ table .form-help {
 
   .default {
     border: 1px solid $form-border-color;
+    border-radius: 2px;
     width: 100%;
     display: block;
     padding: $form-padding-vertical $form-padding-horizontal;
@@ -7761,6 +7762,11 @@ table .form-help {
       color: $button-text;
       border: 1px solid $button-color;
       background: $button-color;
+    }
+
+    &.expanded {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
     }
 
     i[class^='fa-caret'], i[class*=' fa-caret'] {
@@ -7779,13 +7785,16 @@ table .form-help {
       @include blank-list;
       position: absolute;
       right: 0;
-      z-index: 599;
+      z-index: $zindex-very-top;
       display: block;
       width: 100%;
       border: 1px solid $form-border-color;
       max-height: 300px;
       overflow-y: auto;
-      margin: 0;
+      margin: -1px 0 0 0;
+
+      border-bottom-left-radius: 2px;
+      border-bottom-right-radius: 2px;
 
       a {
         display: block;
@@ -7796,13 +7805,27 @@ table .form-help {
         text-decoration: none;
 
         &:hover, &.active {
-          background: $button-color;
-          color: $button-text;
+          background: lighten($main-color-light, 3%);
+          color: #444;
+          .checkbox {
+            color: #444;
+          }
 
           .checkbox {
             background: rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(0, 0, 0, 0.1);
-            color: #fff;
+          }
+        }
+        &.active {
+          background: $main-color-light;
+          color: #444;
+          .checkbox {
+            color: #444;
+          }
+
+          .checkbox {
+            background: rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
           }
         }
       }
