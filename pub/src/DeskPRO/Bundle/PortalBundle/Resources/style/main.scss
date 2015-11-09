@@ -7918,11 +7918,71 @@ input[type="text"], input[type="email"], input[type="password"], textarea, .dp-m
   }
 }
 
-.dp-medium-rte {
-  min-height: 100px;
+.dp-medium-rte-wrapper {
+  position: relative;
 
-  &.medium-editor-placeholder:after {
-    padding: 0.75em 1em;
+  .dp-medium-rte {
+    min-height: 125px;
+    padding-top: 38px; // padding to make room for the fixed toolbar
+
+    &.medium-editor-placeholder:after {
+      padding: 0.75em 1em;
+    }
+  }
+
+  .medium-editor-toolbar {
+    visibility: visible;
+    background: #f3f3f3;
+    border: none;
+    border-bottom: 1px solid darken(#f3f3f3, 10%);
+    border-radius: 0;
+    box-shadow: none;
+
+    top: 1px;
+    right: 1px;
+    left: 1px;
+
+    &.medium-editor-toolbar-active {
+      button {
+        color: #777;
+      }
+    }
+
+    button {
+      background: transparent;
+      border-radius: 0;
+      border: none;
+      box-shadow: none;
+      color: #aaa;
+      padding: 8px;
+      height: 30px;
+      min-width: 30px;
+      line-height: 15px;
+      text-shadow: none;
+
+      &:hover, &.medium-editor-button-active {
+        color: #444;
+        background: transparent;
+      }
+    }
+  }
+
+  .medium-editor-toolbar-form {
+    background: #f3f3f3;
+    border: none;
+    border-bottom: 1px solid darken(#f3f3f3, 10%);
+    border-radius: 0;
+    box-shadow: none;
+
+    .medium-editor-toolbar-input {
+      background: transparent;
+      height: 30px;
+      color: #444;
+    }
+
+    a {
+      color: #777;
+    }
   }
 }
 

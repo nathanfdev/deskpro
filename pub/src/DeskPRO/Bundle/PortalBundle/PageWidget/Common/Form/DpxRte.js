@@ -24,13 +24,22 @@ export default class DpxRte extends PageWidget {
     const $format  = this.$element.find('input[data-rte-field="format"]');
 
     $txt.val($html.val());
+    $txt.wrap('<div class="dp-medium-rte-wrapper" />');
+
+    const $wrap = $txt.parent();
 
     $txt.addClass('dp-medium-rte');
     const editor = new MediumEditor($txt.get(0), {
-      static: true,
-      sticky: true,
-      updateOnEmptySelection: true,
-      targetBlank: true
+      toolbar: {
+        buttons: ['bold', 'italic', 'underline', 'anchor', 'unorderedlist', 'orderedlist', 'quote', 'pre', 'removeFormat'],
+        static: true,
+        sticky: true,
+        updateOnEmptySelection: true,
+        align: 'left',
+        relativeContainer: $wrap.get(0)
+      },
+      targetBlank: true,
+      buttonLabels: 'fontawesome'
     });
 
     $format.val('html');
