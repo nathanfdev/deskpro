@@ -3,6 +3,7 @@ import { CalendarCellDropdown } from './CalendarCellDropdown';
 import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import { CalendarCellContentItem } from './CalendarCellContentItem';
+import moment from 'moment';
 
 export class CalendarCellContent extends React.Component {
 
@@ -33,8 +34,10 @@ export class CalendarCellContent extends React.Component {
 
   render() {
     const { tasks, dayDate } = this.props;
-    const shortList = tasks.slice(0, 2);
-    const additionalList = tasks.slice(2);
+
+    const dayTasks = tasks.filter(task => dayDate.isSame(moment(task.get('date_due')), 'day'));
+    const shortList = dayTasks.slice(0, 2);
+    const additionalList = dayTasks.slice(2);
 
     return (
       <div>
