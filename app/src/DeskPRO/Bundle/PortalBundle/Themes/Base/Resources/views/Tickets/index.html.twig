@@ -32,7 +32,7 @@
                         </li>
 
                         <li class="tab-solo">
-                            <form class="form-filter" method="GET" action="{{ path('portal_tickets', { type: type }) }}">
+                            <form class="form-filter" method="GET"  id="ticket_list_search_form" action="{{ path('portal_tickets', { type: type }) }}">
                                 <div class="bucket">
                                     <span>Search in Tickets:</span>
                                     <input title="Search in Tickets" name="q" value="{{ search_query }}" type="text" />
@@ -204,7 +204,7 @@
                                 <tr class="first-in-line">
                                     <td class="span-total-cols" colspan="{{ ticket_table.columns|length }}">
                                         <div class="filter-warning">
-                                            <i class="fa fa-eye"></i> You have an active filter on this view. <a href="{{ path('portal_tickets', { type: ticket_table.ticketFilter.type }) }}">Click here to clear it</a> and see everything.
+                                            <i class="fa fa-eye"></i> You have an active filter on this view. <a class="dpx-active-filter-link" href="{{ path('portal_tickets', { type: ticket_table.ticketFilter.type }) }}">Click here to clear it</a> and see everything.
                                         </div>
                                     </td>
                                 </tr>

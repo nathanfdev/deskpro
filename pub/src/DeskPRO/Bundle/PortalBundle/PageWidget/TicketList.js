@@ -39,7 +39,25 @@ class ColumnControlWidget extends PageWidget {
       }
     });
 
+    function updateQueryStringParameter(uri, key, value) {
+      var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+      var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+      if (uri.match(re)) {
+        return uri.replace(re, '$1' + key + "=" + value + '$2');
+      }
+      else {
+        return uri + separator + key + "=" + value;
+      }
+    }
+
     function sync_table_with_active_col_ids(active_col_ids) {
+      const new_cols = active_col_ids.join(',');
+
+      const active_filter_link = $display_table.find('.dpx-active-filter-link');
+      if (active_filter_link.length > 0) {
+        active_filter_link.attr('href', updateQueryStringParameter(active_filter_link.attr('href'), table.active_columns_param, new_cols));
+      }
+
       $display_table.find('[data-col]').each(function() {
         const $this = $(this);
         if ($.inArray($this.data('col'), active_col_ids) < 0) {
@@ -48,19 +66,9 @@ class ColumnControlWidget extends PageWidget {
           $this.show();
         }
 
-        function updateQueryStringParameter(uri, key, value) {
-          var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
-          var separator = uri.indexOf('?') !== -1 ? "&" : "?";
-          if (uri.match(re)) {
-            return uri.replace(re, '$1' + key + "=" + value + '$2');
-          }
-          else {
-            return uri + separator + key + "=" + value;
-          }
-        }
+
 
         // setup pagination links, they need the updated selected cols
-        const new_cols = active_col_ids.join(',');
         var update_links = function() {
           $(this).attr('href', updateQueryStringParameter($(this).attr('href'), table.active_columns_param, new_cols));
         };
@@ -69,6 +77,23 @@ class ColumnControlWidget extends PageWidget {
 
         $td_total_cols.attr('colspan', active_col_ids.length + 1); // +1 for ticket ref (fixed)
       });
+
+      const tlf = $('#ticket_list_search_form');
+
+      let found = false;
+      tlf.find('input[type=hidden]').each(function() {
+        let $i = $(this);
+        if ($i.attr('name') == table.active_columns.param) {
+          $i.val(new_cols);
+          found = true;
+        }
+      });
+
+      if (!found) {
+        const new_input = $('<input type="hidden">');
+        new_input.attr('name', table.active_columns_param).val(new_cols);
+        tlf.append(new_input);
+      }
     }
     sync_table_with_active_col_ids(table.active_columns);
 
