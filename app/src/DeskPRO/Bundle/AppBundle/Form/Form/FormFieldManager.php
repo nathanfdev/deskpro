@@ -41,6 +41,7 @@ use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\Regex;
 
 /**
@@ -341,7 +342,15 @@ class FormFieldManager
 
         // regex
         if ($regex = $field_type->getRegex($isAgent)) {
-            $constraints[] = new Regex(array('pattern' => Strings::getInputRegexPattern($regex)));
+            $constraints[] = new Regex(
+                array(
+                    'pattern' => Strings::getInputRegexPattern($regex),
+                    'message' => 'This value does not match the expected format',
+                )
+            );
+            // becase we are requiring it must match a regex, and the UI doesn't allow
+            // it to be also "not required" we must ensure both
+             $constraints[] = new NotNull();
         }
 
         $options['constraints'] = $constraints;
