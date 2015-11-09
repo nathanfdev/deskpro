@@ -13,7 +13,8 @@ export class TaskCard extends BaseTaskCard {
 
     return (
       <Card statusBars={false}
-            type="floating">
+            type="floating"
+            additionalClasses={`calendar-task-card-${task.get('id')}`}>
 
         <div className="dpw--card-line">
           <div className="dpw--card-line-left card-title">

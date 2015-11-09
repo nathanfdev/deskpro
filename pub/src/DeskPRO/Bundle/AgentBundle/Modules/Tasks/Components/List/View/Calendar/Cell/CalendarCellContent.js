@@ -3,6 +3,7 @@ import { CalendarCellDropdown } from './CalendarCellDropdown';
 import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import { CalendarCellContentItem } from './CalendarCellContentItem';
+import jQuery from 'jquery';
 
 export class CalendarCellContent extends React.Component {
 
@@ -41,7 +42,7 @@ export class CalendarCellContent extends React.Component {
         <ul>
           {shortList.map(task => <CalendarCellContentItem key={task.get('id')}
                                                           task={task} />)}
-          {additionalList.count() &&
+          {additionalList.count() > 0 &&
             <li>
               <a href="#"
                  ref="button"
@@ -58,10 +59,12 @@ export class CalendarCellContent extends React.Component {
                   positionTarget={this.refs.button}
                   positionAt="left bottom+5">
 
-          <ClickOut onClickOut={this.onCloseAdditionalDropdown}>
+          <ClickOut onClickOut={this.onCloseAdditionalDropdown}
+                    additionalNodes={additionalList.map(task => `.calendar-task-card-${task.get('id')}`).toArray()}>
+
             <CalendarCellDropdown>
-              {this.props.tasks.map(task => <CalendarCellContentItem key={task.get('id')}
-                                                                     task={task} />)}
+              {additionalList.map(task => <CalendarCellContentItem key={task.get('id')}
+                                                                   task={task} />)}
             </CalendarCellDropdown>
           </ClickOut>
         </Detached>
