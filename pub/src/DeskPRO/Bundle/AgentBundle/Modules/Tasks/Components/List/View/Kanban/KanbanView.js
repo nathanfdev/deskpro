@@ -10,7 +10,7 @@ export class KanbanView extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="kanban kanban-columns">
         <ListGroup title="Overdue">
           {this.props.tasks.map((task, index) => <TaskCard task={task} key={index} />)}
         </ListGroup>
