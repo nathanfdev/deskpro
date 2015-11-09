@@ -507,12 +507,31 @@ $publisher->setPassword('publisher');
 $em->persist($publisher);
 $em->flush($publisher);
 
+// an org
+$organization = new \Application\DeskPRO\Entity\Organization();
+$organization->setName('Mana Publishing');
+$organization->setImportance(5);
+
 // a regular dude
 $person       = new \Application\DeskPRO\Entity\Person();
 $person->name = 'Joe Kool';
 $person->addEmailAddressString('joe@deskprodemo.com');
 $person->setPassword('joe');
+$person->setOrganization($organization);
 
+// an organization
+$mana       = new \Application\DeskPRO\Entity\Person();
+$mana->name = 'Mana Ger';
+$mana->addEmailAddressString('manager@deskprodemo.com');
+$mana->setPassword('manager');
+$mana->setOrganization($organization);
+$mana->organization_manager = true;
+$mana->setOrganizationPosition('MANAGER');
+
+$em->persist($mana);
+$em->persist($organization);
+$em->flush($mana);
+$em->flush($organization);
 $em->persist($person);
 $em->flush($person);
 
