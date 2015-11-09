@@ -855,6 +855,12 @@ $collection->create('api_people_groups', array(
     'methods'    => array('GET'),
 ));
 
+$collection->create('api_people_authlogin', array(
+    'path'       => '/people/auth-login',
+    'controller' => 'ApiBundle:Person:authLogin',
+    'methods'    => array('POST'),
+));
+
 $collection->create('api_agents_list', array(
     'path'       => '/agents',
     'controller' => 'ApiBundle:Agents:listAgents',

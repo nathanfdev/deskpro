@@ -242,12 +242,12 @@ class PersonController extends AbstractController
         $date_created_end   = $this->in->getUint('date_created_end');
         if ($date_created_end) {
             $terms[] = array('type' => PersonSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1'             => $date_created_start,
-                'date2'             => $date_created_end,
+                'date1' => $date_created_start,
+                'date2' => $date_created_end,
             ));
         } elseif ($date_created_start) {
             $terms[] = array('type' => PersonSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1'             => $date_created_start,
+                'date1' => $date_created_start,
             ));
         }
 
@@ -2467,5 +2467,34 @@ class PersonController extends AbstractController
         }
 
         return $this->createApiResponse($ret);
+    }
+
+    public function authLoginAction()
+    {
+        $username = $this->in->getString('email') ?: $this->in->getString('username');
+        $password = $this->in->getString('password');
+        $manager  = $this->container->getSystemService('authentication_manager');
+
+        $result = $manager->authenticateFormLogin($username, $password);
+
+        // if we are using local auth in the user interface, and we fail, try agent form login sources as well
+        if (!$result->isValid()) {
+            $manager = $manager->cloneForInterface('agent');
+            $result  = $manager->authenticateFormLogin($username, $password);
+        }
+
+        if (!$result->isValid()) {
+            return $this->createJsonResponse(array(
+                'error_code'    => 'invalid_credentials',
+                'error_message' => 'Invalid email address or password',
+            ), 401);
+        }
+
+        $identity = $result->getIdentity();
+
+        return $this->createJsonResponse(array(
+            'success' => 'true',
+            'person'  => $identity['person']->toApiData(),
+        ), 200);
     }
 }
