@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { BaseTaskCard } from '../../BaseTaskCard';
+import { BaseTaskCard } from '../../../TaskCard/BaseTaskCard';
 import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 import { CardLine } from './CardLine';
 import { Title } from './Title';

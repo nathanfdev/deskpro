@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import Moment from 'moment';
-import { BaseTaskCard } from '../../BaseTaskCard';
+import { BaseTaskCard } from '../../../TaskCard/BaseTaskCard';
 
 export class TaskCard extends BaseTaskCard {
 
