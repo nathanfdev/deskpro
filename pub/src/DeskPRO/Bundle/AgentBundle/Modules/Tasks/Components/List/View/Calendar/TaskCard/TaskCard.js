@@ -33,8 +33,8 @@ export class TaskCard extends BaseTaskCard {
         <div>
           <Comments count={this.state.comments} />
           {this.state.subTasks.total > 0 &&
-          <SubTasks current={this.state.subTasks.current}
-                    total={this.state.subTasks.total} />
+            <SubTasks current={this.state.subTasks.current}
+                      total={this.state.subTasks.total} />
           }
         </div>
       </CardLine>

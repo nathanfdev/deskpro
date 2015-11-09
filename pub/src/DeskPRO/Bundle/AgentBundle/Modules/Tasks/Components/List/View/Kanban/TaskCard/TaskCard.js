@@ -3,6 +3,8 @@ import {
   BaseTaskCard,
   Title,
   DateDue,
+  SubTasks,
+  Comments
 } from '../../../TaskCard/index';
 
 export class TaskCard extends BaseTaskCard {
@@ -42,12 +44,11 @@ export class TaskCard extends BaseTaskCard {
             </div>
             <hr/>
             <div className="card-line task-properties">
-              <span>0 <i className="fa fa-comment"/></span>
-
-                <span>
-                  <span className="disc"/>
-                  <div className="subtask-count">1/2 <i className="fa fa-folder-open"/></div>
-                </span>
+              <Comments count={this.state.comments} />
+              {this.state.subTasks.total > 0 &&
+                <SubTasks current={this.state.subTasks.current}
+                          total={this.state.subTasks.total} />
+              }
             </div>
           </div>
         </div>
