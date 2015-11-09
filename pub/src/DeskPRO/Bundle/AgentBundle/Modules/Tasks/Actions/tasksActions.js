@@ -2,7 +2,9 @@ import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import * as Tasks from 'DeskPRO/Bundle/AgentBundle/Services/Api/Tasks';
 
-export const setListParams = createAction('TASKS_SET_LIST_PARAMS');
+export const setListParamsFilter = createAction('TASKS_SET_LIST_PARAMS_FILTER');
+export const setListParamsSort = createAction('TASKS_SET_LIST_PARAMS_SORT');
+export const setListParamsOrder = createAction('TASKS_SET_LIST_PARAMS_ORDER');
 export const loadList = createAction(
   'TASKS_LOAD_TASK_LIST',
   params => new Promise(resolve => {
@@ -52,7 +54,7 @@ export const loadList = createAction(
 export const applyListParams = createAction(
   'TASKS_APPLY_LIST_PARAMS',
     params => dispatch => {
-      dispatch(setListParams(params));
+      dispatch(setListParamsFilter(params));
       dispatch(loadList(params));
     }
 );
