@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { BaseTaskCard, Title, DateDue, SubTasks, Comments } from '../../../TaskCard/index';
+import { BaseTaskCard, CardLine, Title, DateDue, SubTasks, Comments } from '../../../TaskCard/index';
 import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 
 export class TaskCard extends BaseTaskCard {
@@ -16,22 +16,18 @@ export class TaskCard extends BaseTaskCard {
             type="floating"
             additionalClasses={`calendar-task-card-${task.get('id')}`}>
 
-        <div className="dpw--card-line">
-          <div className="dpw--card-line-left">
-            <Title value={this.state.title}
-                   isDone={this.state.isDone}
-                   onChange={this.onTitleChange} />
-          </div>
+        <CardLine>
+          <Title value={this.state.title}
+                 isDone={this.state.isDone}
+                 onChange={this.onTitleChange} />
 
-          <div className="dpw--card-line-right">
-            <div className="dpwd--card-assigned">
-              <div className="dpw--avatar-face">assigneeAvatar</div>
-            </div>
+          <div className="dpwd--card-assigned">
+            <div className="dpw--avatar-face">assigneeAvatar</div>
           </div>
-        </div>
+        </CardLine>
 
-        <div className="dpw--card-line">
-          <div className="dpw--card-line-left">
+        <CardLine>
+          <div>
             <DateDue value={this.state.dateDue}
                      onChange={this.onChangeDate} />
 
@@ -50,14 +46,14 @@ export class TaskCard extends BaseTaskCard {
             </span>
           </div>
 
-          <div className="dpw--card-line-right">
+          <div>
             <Comments count={this.state.comments} />
             {this.state.subTasks.total > 0 &&
             <SubTasks current={this.state.subTasks.current}
                       total={this.state.subTasks.total} />
             }
           </div>
-        </div>
+        </CardLine>
       </Card>
     );
   }

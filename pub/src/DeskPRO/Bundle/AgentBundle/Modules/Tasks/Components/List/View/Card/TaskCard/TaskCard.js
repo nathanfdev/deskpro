@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
-import { BaseTaskCard, Title, DateDue, SubTasks, Comments } from '../../../TaskCard/index';
+import { BaseTaskCard, CardLine, Title, DateDue, SubTasks, Comments } from '../../../TaskCard/index';
 import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
-import { CardLine } from './CardLine';
 import { Checkbox } from './Checkbox';
 import { MarkDoneButton } from './MarkDoneButton';
 import { ShowDetailsButton } from './ShowDetailsButton';
