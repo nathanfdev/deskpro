@@ -51,7 +51,7 @@ export class CalendarCellContentItem extends React.Component {
                   zIndex={1001}>
 
           <ClickOut onClickOut={this.onCloseTaskCard}
-                    ignoreNodes={[this.refs.button]}>
+                    additionalNodes={[this.refs.button, '.assign-form']}>
 
             <TaskCard task={task} />
           </ClickOut>

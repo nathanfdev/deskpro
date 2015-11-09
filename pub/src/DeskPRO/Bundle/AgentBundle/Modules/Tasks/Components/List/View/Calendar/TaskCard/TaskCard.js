@@ -51,13 +51,11 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
-    const { task } = this.props;
-
     return (
       <Card minimized={this.isMinimized()}
             statusBars={false}
             type="task"
-            additionalClasses={`calendar-task-card-${task.get('id')}`}>
+            additionalClasses="calendar-task-card">
 
         <CardLine>
           <Title value={this.state.title}

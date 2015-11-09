@@ -62,7 +62,7 @@ export class CalendarCellContent extends React.Component {
                   positionAt="left bottom+5">
 
           <ClickOut onClickOut={this.onCloseAdditionalDropdown}
-                    additionalNodes={additionalList.map(task => `.calendar-task-card-${task.get('id')}`).toArray()}>
+                    additionalNodes={['.calendar-task-card', '.assign-form']}>
 
             <CalendarCellDropdown dayDate={dayDate}>
               {additionalList.map(task => <CalendarCellContentItem key={task.get('id')}

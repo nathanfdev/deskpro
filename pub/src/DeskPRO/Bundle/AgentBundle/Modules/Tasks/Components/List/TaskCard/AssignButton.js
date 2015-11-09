@@ -41,7 +41,7 @@ export class AssignButton extends React.Component {
                   positionAt="right+5 top-10">
 
           <ClickOut onClickOut={this.onCloseForm}
-                    additionalNodes={[this.refs.button]}>
+                    additionalNodes={[this.refs.button, 'assign-form']}>
 
             <AssignFormContainer />
           </ClickOut>

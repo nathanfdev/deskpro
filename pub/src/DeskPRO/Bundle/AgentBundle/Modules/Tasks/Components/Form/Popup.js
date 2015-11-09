@@ -5,14 +5,19 @@ export class Popup extends React.Component {
 
   static propTypes = {
     indicator: PropTypes.string,
+    additionalClassNames: PropTypes.string,
     children: PropTypes.node
   };
 
   render() {
-    const { indicator, children } = this.props;
+    const { indicator, children, additionalClassNames } = this.props;
 
     return (
-      <div className={classNames('sidebar-hover', {'hide-indicator': indicator === 'none'})}>
+      <div className={classNames(
+        'sidebar-hover',
+        additionalClassNames,
+        {'hide-indicator': indicator === 'none'}
+      )}>
         <div className="dpw--popup-main">
           {children}
         </div>
