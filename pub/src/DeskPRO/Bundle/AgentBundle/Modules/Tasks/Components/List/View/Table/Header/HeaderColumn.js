@@ -6,14 +6,20 @@ export class HeaderColumn extends React.Component {
     title: PropTypes.string.isRequired,
     order: PropTypes.string,
     currentOrder: PropTypes.string,
-    currentDirection: PropTypes.string
+    currentDirection: PropTypes.string,
+    onChange: PropTypes.func.isRequired
+  };
+
+  onChange = () => {
+    const { order, currentOrder, currentDirection, onChange } = this.props;
+    onChange(order, order === currentOrder && currentDirection === 'desc' ? 'asc' : 'desc');
   };
 
   render() {
     const { title, currentOrder, order, currentDirection } = this.props;
 
     return (
-      <th className="clickable-column">
+      <th className="clickable-column" onClick={this.onChange}>
         {title}
         {order && currentOrder === order &&
           <span>
