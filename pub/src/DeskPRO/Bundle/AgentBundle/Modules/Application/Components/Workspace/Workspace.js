@@ -53,7 +53,9 @@ export class Workspace extends React.Component {
     dispatch(AppActions.closeWorkspace());
   };
 
-  close = () => {
+  close = event => {
+    event.preventDefault();
+
     this.resetAll();
     this.props.dispatch(AppActions.closeWorkspace());
   };

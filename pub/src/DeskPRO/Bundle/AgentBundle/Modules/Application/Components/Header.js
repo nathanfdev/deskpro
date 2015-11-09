@@ -11,11 +11,13 @@ export class Header extends React.Component {
     dispatch: PropTypes.func.isRequired
   };
 
-  toggleWorkspace = () => {
+  toggleWorkspace = event => {
+    event.preventDefault();
     this.props.dispatch(AppActions.toggleWorkspace());
   };
 
-  togglePreferences = () => {
+  togglePreferences = event => {
+    event.preventDefault();
     this.props.dispatch(AppActions.togglePreferences());
   };
 
