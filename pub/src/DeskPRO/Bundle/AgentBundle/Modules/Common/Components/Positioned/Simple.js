@@ -8,10 +8,8 @@ export default class Simple extends Abstract {
    * @inheritDoc
    */
   static propTypes = {
-    isOpen: React.PropTypes.bool.isRequired,
-    onOpen: React.PropTypes.func,
-    onClose: React.PropTypes.func,
-    children: React.PropTypes.any
+    isOpen: PropTypes.bool.isRequired,
+    children: PropTypes.any
   };
 
   /**
