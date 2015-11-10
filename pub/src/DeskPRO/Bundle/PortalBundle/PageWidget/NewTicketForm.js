@@ -1,6 +1,7 @@
 import _ from "lodash";
 import React from "react";
 import ReactDOM from "react-dom"
+import PortalApp from "DeskPRO/Bundle/PortalBundle/PortalApp";
 import PageWidget from "DeskPRO/Component/PageWidget/PageWidget";
 import NewTicketSuggestions from "DeskPRO/Bundle/PortalBundle/React/NewTicketSuggestions";
 import DynamicForm from "DeskPRO/Bundle/AppBundle/Form/DynamicForm.js";
@@ -103,8 +104,10 @@ export default class NewTicketForm extends PageWidget {
         return _.flatten(newFields);
       },
       onFieldsUpdated: () => {
-        this.runWidgets($formEl);
         updateLastDepId();
+      },
+      onPostUpdate: () => {
+        PortalApp.getPortalPage().refresh($formEl);
       }
     });
 

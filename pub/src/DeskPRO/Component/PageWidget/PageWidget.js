@@ -51,13 +51,11 @@ export default class PageWidget {
   constructor(element = null, parent = null) {
     this.initState = 'pre_init';
     this.waitingRender = false;
-    this.waitingRunWidgets = false;
 
     this.$element    = element ? $(element) : null;
     this.parent      = parent;
     this.widgetDefs  = [];
     this.widgetInsts = [];
-    this.widgetClassInst = new Map();
 
     let initVal = this.init();
     if (initVal && initVal.then) {
@@ -131,6 +129,14 @@ export default class PageWidget {
    */
   renderWidget() {
     // Add custom code here
+  }
+
+  /**
+   * Refresh all widgets.
+   */
+  refresh($el) {
+    this.widgetInsts.forEach(i => i.refresh($el));
+    this.runWidgets($el);
   }
 
   /**
@@ -213,10 +219,6 @@ export default class PageWidget {
    */
   _createWidgetInst(widgetDef, $el) {
     let widgetClass = widgetDef[0];
-    if (!this.widgetClassInst.get(widgetClass)) {
-      this.widgetClassInst.set(widgetClass, [])
-    }
-    let widgetClassInstArray = this.widgetClassInst.set(widgetClass);
     let selector = widgetDef[1];
     let matches;
 
