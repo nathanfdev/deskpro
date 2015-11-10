@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { currentViewModeSelector, currentSortSelector, currentOrderSelector } from '../../Selectors/tasks';
-import { changeView, changeSort, changeOrder } from '../../Actions/tasksActions';
+import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 
 @connect(state => ({
   viewMode: currentViewModeSelector(state),
@@ -35,8 +35,8 @@ export class ControlBarContainer extends Component {
         ],
         sort: this.props.sort,
         order: this.props.order,
-        sortAction: changeSort,
-        orderAction: changeOrder
+        sortAction: value => updateRoutingState('list', 'sort', value),
+        orderAction: value => updateRoutingState('list', 'order', value)
       },
       view: {
         options: [
@@ -46,7 +46,7 @@ export class ControlBarContainer extends Component {
           {field: constants.VIEW_MODE_CALENDAR, label: 'Calendar View', icon: 'calendar'}
         ],
         viewMode: this.props.viewMode,
-        viewModeAction: changeView
+        viewModeAction: value => updateRoutingState('list', 'view', value)
       }
     };
 

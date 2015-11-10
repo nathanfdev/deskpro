@@ -3,30 +3,6 @@ import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import * as Tasks from 'DeskPRO/Bundle/AgentBundle/Services/Api/Tasks';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 
-export const changeView = createAction(
-  'TASKS_CHANGE_VIEW_MODE',
-  value => dispatch => {
-    dispatch(updateRoutingState('list', 'view', value));
-    return value;
-  }
-);
-
-export const changeSort = createAction(
-  'TASKS_CHANGE_SORT',
-    value => dispatch => {
-      dispatch(updateRoutingState('list', 'sort', value));
-      return value;
-    }
-);
-
-export const changeOrder = createAction(
-  'TASKS_CHANGE_ORDER',
-    value => dispatch => {
-      dispatch(updateRoutingState('list', 'order', value));
-      return value;
-    }
-);
-
 export const setListParamsFilter = createAction('TASKS_SET_LIST_PARAMS_FILTER');
 export const setListParamsSort = createAction('TASKS_SET_LIST_PARAMS_SORT');
 export const setListParamsOrder = createAction('TASKS_SET_LIST_PARAMS_ORDER');
