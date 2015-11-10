@@ -111,7 +111,8 @@ class TicketsDataService extends AbstractDataService
 
                 // search query
                 if ($q = $filter->getSearchQuery()) {
-                    $qb->andWhere('t.subject LIKE :query')->setParameter('query', '%'.$q.'%');
+                    $qb->join('t.messages', 'm');
+                    $qb->andWhere('(t.subject LIKE :query OR (m.message LIKE :query AND m.is_agent_note = 0))')->setParameter('query', '%'.$q.'%');
                 }
 
                 // sort

@@ -4,20 +4,21 @@ import { ListItemContainer } from './ListItemContainer';
 
 export class TypeTab extends Component {
   static propTypes = {
-    types: PropTypes.array.isRequired
+    types: PropTypes.object.isRequired
   };
 
   render() {
     const { types } = this.props;
+    console.log('Types', types.get('nested').toJS());
     return (
       <ul>
-        {types.map((item, index) =>
+        {types.get('nested').toJS().map((item, index) =>
             <ListItemContainer key={index}
-                               label={item.get('title')}
-                               listOptions={{navItem: {category: item.get('title')}}}>
+                               label={item.group}
+                               listOptions={{navItem: {category: item.group}}}>
 
-              <ListItem count={item.get('value')}
-                        label={item.get('title')} />
+              <ListItem count={item.count}
+                        label={item.group} />
             </ListItemContainer>
         )}
       </ul>

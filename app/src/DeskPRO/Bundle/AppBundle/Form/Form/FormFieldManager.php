@@ -41,6 +41,7 @@ use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\Regex;
 
 /**
@@ -328,10 +329,12 @@ class FormFieldManager
             $opts = array();
 
             if ($min) {
-                $opts['min'] = $min;
+                $opts['min']        = $min;
+                $opts['minMessage'] = 'The value is too short. It must be at least '.$min.' characters';
             }
             if ($max) {
-                $opts['max'] = $max;
+                $opts['max']        = $max;
+                $opts['maxMessage'] = 'The value is too long. It must be '.$max.' or less characters';
             }
 
             $constraints[] = new Length($opts);
@@ -341,7 +344,15 @@ class FormFieldManager
 
         // regex
         if ($regex = $field_type->getRegex($isAgent)) {
-            $constraints[] = new Regex(array('pattern' => Strings::getInputRegexPattern($regex)));
+            $constraints[] = new Regex(
+                array(
+                    'pattern' => Strings::getInputRegexPattern($regex),
+                    'message' => 'This value does not match the expected format',
+                )
+            );
+            // becase we are requiring it must match a regex, and the UI doesn't allow
+            // it to be also "not required" we must ensure both
+             $constraints[] = new NotNull(array('message' => 'This value is required'));
         }
 
         $options['constraints'] = $constraints;

@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 
 export class ViewField extends Component {
@@ -16,18 +16,23 @@ export class ViewField extends Component {
 
   clickHandle(event) {
     event.preventDefault();
-    const {isShown, changeState, value} = this.props;
+    const { isShown, changeState, value } = this.props;
     if (changeState) {
       changeState(value, !isShown);
     }
   }
 
   renderStatus() {
-    if (this.props.isShown) {
-      return (
-        <span className="dpw-navigation-dropdown-column-list-status"><i className="fa fa-check"></i></span>
-      );
+    const style = {};
+    if (!this.props.isShown) {
+      style.display = 'none';
     }
+
+    return (
+      <span className="dpw-navigation-dropdown-column-list-status" style={style}>
+        <i className="fa fa-check"></i>
+      </span>
+    );
   }
 
   render() {
@@ -40,9 +45,9 @@ export class ViewField extends Component {
       <li>
         <a className={anchorClasses} href="#" onClick={this.clickHandle.bind(this)}>
           {this.renderStatus()}
-        <span className="dpw-navigation-dropdown-column-list-move">
-          <i className={moveIconClass}></i>
-        </span>
+          <span className="dpw-navigation-dropdown-column-list-move">
+            <i className={moveIconClass}></i>
+          </span>
           <span className="dpw-navigation-dropdown-column-list-title">{label}</span>
         </a>
       </li>

@@ -20,7 +20,8 @@ export default class Abstract extends React.Component {
     collision: PropTypes.object,
     onOpen: PropTypes.func,
     onClose: PropTypes.func,
-    children: PropTypes.any
+    children: PropTypes.any,
+    style: PropTypes.object
   };
 
   /**
@@ -124,12 +125,13 @@ export default class Abstract extends React.Component {
    */
   renderContent() {
     const { isOpen = false, children, onOpen, onClose } = this.props;
+    const style = this.props.style || {};
     const renderSubtreeIntoContainer = ReactDOM.unstable_renderSubtreeIntoContainer;
 
     // Render the component with react, or don't if the prop changes
     if (isOpen) {
       // Put the element inside a div that we can position
-      renderSubtreeIntoContainer(this, <div className="positioned-element">{children}</div>, this.node);
+      renderSubtreeIntoContainer(this, <div className="positioned-element" style={style}>{children}</div>, this.node);
       this.updatePosition();
       if (this.shouldFire() && onOpen) {
         onOpen();

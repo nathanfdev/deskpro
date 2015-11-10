@@ -1,19 +1,26 @@
 import { createReducer } from 'Ampliflux';
 import { setFullPayload, setValue, async } from 'Ampliflux/reducers/handlers';
-import { toggleMassAction, toggleSelected } from '../Actions/listActions';
+import {
+  toggleAll, toggleSelected, toggleTableFieldVisibility, toggleCardFieldVisibility, setViewMode
+} from '../Actions/listActions';
 
 const initialState = {
-  mode: 'list',
+  viewMode: 'card',
   elements: [],
   listParams: {
-    filter: 1
+    sort: 'date_created',
+    order: 'asc',
+    filter: null
   },
   selected: [],
 
   // async indicators
   async: {
     done: null
-  }
+  },
+
+  tableVisibleFields: ['id', 'urgency', 'person', 'agent', 'subject', 'status'],
+  cardVisibleFields: ['id', 'urgency', 'person', 'agent', 'subject', 'status', 'date_created', 'labels']
 };
 
 export default createReducer(initialState, {
@@ -23,10 +30,10 @@ export default createReducer(initialState, {
     start: setValue('async.done', false),
     done: setValue('async.done', true)
   }),
-  [toggleMassAction]: (state, select) => {
+  [toggleAll]: (state, select) => {
     let selected = state.get('selected');
     if (select) {
-      state.get('elements').map(e => selected.includes(e.get('id')) || (selected = selected.push(e.get('id'))));
+      state.get('elements').map(el => selected.includes(el.get('id')) || (selected = selected.push(el.get('id'))));
     } else {
       selected = selected.clear();
     }
@@ -38,5 +45,18 @@ export default createReducer(initialState, {
     selected = selected.includes(id) ? selected.delete(selected.indexOf(id)) : selected.push(id);
 
     return state.set('selected', selected);
-  }
+  },
+  [toggleTableFieldVisibility]: (state, field) => {
+    let fields = state.get('tableVisibleFields');
+    fields = fields.includes(field) ? fields.delete(fields.indexOf(field)) : fields.push(field);
+
+    return state.set('tableVisibleFields', fields);
+  },
+  [toggleCardFieldVisibility]: (state, field) => {
+    let fields = state.get('cardVisibleFields');
+    fields = fields.includes(field) ? fields.delete(fields.indexOf(field)) : fields.push(field);
+
+    return state.set('cardVisibleFields', fields);
+  },
+  [setViewMode]: setFullPayload('viewMode')
 });

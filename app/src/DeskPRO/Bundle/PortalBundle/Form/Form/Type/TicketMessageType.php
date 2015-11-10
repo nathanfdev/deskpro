@@ -114,15 +114,17 @@ class TicketMessageType extends AbstractType
             unset($messageData['message_html']);
             $event->setData($messageData);
         } else {
-            $form->remove('message_text');
+            if (array_key_exists('message_text', $messageData)) {
+                $form->remove('message_text');
 
-            // The actual content is always submitted in the text field,
-            // so we need to swap that over to the html field so the
-            // proper setter is called on TicketMessage
-            $messageData['message_html'] = $messageData['message_text'];
+                // The actual content is always submitted in the text field,
+                // so we need to swap that over to the html field so the
+                // proper setter is called on TicketMessage
+                $messageData['message_html'] = $messageData['message_text'];
 
-            unset($messageData['message_text']);
-            $event->setData($messageData);
+                unset($messageData['message_text']);
+                $event->setData($messageData);
+            }
         }
     }
 

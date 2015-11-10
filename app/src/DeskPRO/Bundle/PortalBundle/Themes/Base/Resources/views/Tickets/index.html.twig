@@ -32,7 +32,7 @@
                         </li>
 
                         <li class="tab-solo">
-                            <form class="form-filter" method="GET" action="{{ path('portal_tickets', { type: type }) }}">
+                            <form class="form-filter" method="GET"  id="ticket_list_search_form" action="{{ path('portal_tickets', { type: type }) }}" novalidate>
                                 <div class="bucket">
                                     <span>Search in Tickets:</span>
                                     <input title="Search in Tickets" name="q" value="{{ search_query }}" type="text" />
@@ -160,6 +160,13 @@
                 {% endif %}
             {%- endmacro -%}
 
+            {%- macro col_td_class(ticket, ticket_view, ticket_table, col) -%}
+                {%- if col.id == 'department_subject' -%}
+                {%- else -%}
+                    info-block
+                {%- endif -%}
+            {%- endmacro -%}
+
             {% macro tickets_table(ticket_table, id) %}
                 <div class="column-full">
                     <div class="ticket-table" data-id="{{ id }}">
@@ -197,7 +204,7 @@
                                 <tr class="first-in-line">
                                     <td class="span-total-cols" colspan="{{ ticket_table.columns|length }}">
                                         <div class="filter-warning">
-                                            <i class="fa fa-eye"></i> You have an active filter on this view. <a href="{{ path('portal_tickets', { type: ticket_table.ticketFilter.type }) }}">Click here to clear it</a> and see everything.
+                                            <i class="fa fa-eye"></i> You have an active filter on this view. <a class="dpx-active-filter-link" href="{{ path('portal_tickets', { type: ticket_table.ticketFilter.type }) }}">Click here to clear it</a> and see everything.
                                         </div>
                                     </td>
                                 </tr>
@@ -209,7 +216,7 @@
                                         {{ ticket_public_id(ticket) }}
                                     </td>
                                 {% for col in ticket_table.columns %}
-                                    <td class="info-block" data-col="{{ col.id }}"{% if not ticket_table.isActive(col) %} style="display:none;"{% endif %}>
+                                    <td class="{{ _self.col_td_class(ticket, ticket_view, ticket_table, col) }}" data-col="{{ col.id }}"{% if not ticket_table.isActive(col) %} style="display:none;"{% endif %}>
                                         <a href="{{ portal_path(ticket) }}">
                                             {{ _self.col_data(ticket, ticket_view, ticket_table, col) }}
                                         </a>

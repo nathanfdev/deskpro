@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import Immutable from 'immutable';
 import { LabelsFilter } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/LabelsFilter';
-import { setLabelsFilterMode, selectLabel } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
+import { setLabelsFilterMode, selectLabel, deselectLabel } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { connect } from 'react-redux';
 @connect(state => ({
   allLabels: state.Feedback.nav.get('labels'),
@@ -23,9 +23,14 @@ export class LabelsFilterContainer extends Component {
 
   selectLabel(label, event) {
     event.preventDefault();
-    event.stopPropagation();
     const {dispatch} = this.props;
     dispatch(selectLabel(label));
+  }
+
+  deselectLabel(label, event) {
+    event.preventDefault();
+    const {dispatch} = this.props;
+    dispatch(deselectLabel(label));
   }
 
   render() {
@@ -39,6 +44,7 @@ export class LabelsFilterContainer extends Component {
         allLabels={allLabels}
         selectedLabels={selectedLabels}
         selectLabel={this.selectLabel.bind(this)}
+        deselectLabel={this.deselectLabel.bind(this)}
         />
     );
   }

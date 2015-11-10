@@ -12,21 +12,36 @@ export default class DpCheckbox extends React.Component {
       label: props.$label.text()
     }
   }
-  onClick() {
+
+  toggleState() {
     this.state.$checkbox.prop('checked', !this.isChecked());
     this.setState({
       checked: this.state.$checkbox.prop('checked')
     });
   }
+
   isChecked() {
     return this.state.checked;
   }
+
   getLabel() {
     return this.state.label;
   }
+
+  onClick = (ev) => {
+    this.toggleState();
+  }
+
+  onKeyDown = (ev) => {
+    if (ev.keyCode === 32) {
+      ev.preventDefault();
+      this.toggleState();
+    }
+  }
+
   render() {
     return (
-      <div onClick={this.onClick.bind(this)} className="checkbox-container">
+      <div onClick={this.onClick} className="checkbox-container" tabIndex="0" onKeyDown={this.onKeyDown}>
         <span className={"checkbox" + (this.isChecked() ? " checked" : "")}><i className="fa fa-check"></i></span>
         { this.getLabel() }
       </div>

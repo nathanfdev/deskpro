@@ -7,7 +7,8 @@ export class ClickOut extends React.Component {
     ignoreNodes: PropTypes.array,
     additionalNodes: PropTypes.array,
     children: PropTypes.node,
-    onClickOut: PropTypes.func.isRequired
+    onClickOut: PropTypes.func.isRequired,
+    onClick: PropTypes.func
   };
 
   componentDidMount() {
@@ -19,14 +20,25 @@ export class ClickOut extends React.Component {
   }
 
   onClick = event => {
-    const { additionalNodes = [], ignoreNodes, onClickOut } = this.props;
+    event.preventDefault();
+    const { additionalNodes = [], ignoreNodes, onClickOut, onClick } = this.props;
 
+    // skip if clicking on one of the ignored nodes
     if (ignoreNodes) {
       let skip = false;
 
-      ignoreNodes.forEach(node => {
-        if (node === event.target) {
-          skip = true;
+      ignoreNodes.forEach(ignored => {
+        const node = ignored && ignored.node ? ignored.node : ignored;
+        if (node) {
+          // skip when clicking on a note itself
+          if (node === event.target) {
+            skip = true;
+          }
+
+          // skip when clicking on a child of the ignored node
+          if (jQuery.contains(node, event.target)) {
+            skip = true;
+          }
         }
       });
 
@@ -48,6 +60,8 @@ export class ClickOut extends React.Component {
 
     if (outside) {
       onClickOut(event);
+    } else if (onClick) {
+      onClick(event);
     }
   };
 

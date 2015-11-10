@@ -26,11 +26,27 @@ const loadList = createAction(
 
 export const applyListParams = createAction(
   'TICKETS_LIST_APPLY_LIST_PARAMS',
-  params => (dispatch) => {
+  overwrite => (dispatch, getState) => {
+    const current = listParamsSelector(getState()).toJS();
+    const params = {...current, ...overwrite};
     dispatch(setListParams(params));
-    dispatch(loadList(params));
+
+    if (params.filter) {
+      dispatch(loadList(params));
+    }
   }
 );
 
-export const toggleMassAction = createAction('TICKETS_LIST_TOGGLE_MASS_ACTION');
+export const toggleAll = createAction('TICKETS_LIST_TOGGLE_ALL_ACTION');
 export const toggleSelected = createAction('TICKETS_LIST_TOGGLE_SELECTED');
+export const setSort = createAction(
+  'TICKETS_LIST_SET_SORT',
+  sort => dispatch => dispatch(applyListParams({sort}))
+);
+export const setOrder = createAction(
+  'TICKETS_LIST_SET_ORDER',
+  order => dispatch => dispatch(applyListParams({order}))
+);
+export const toggleTableFieldVisibility = createAction('TICKETS_LIST_TOGGLE_TABLE_FIELD_VISIBILITY');
+export const toggleCardFieldVisibility = createAction('TICKETS_LIST_TOGGLE_CARD_FIELD_VISIBILITY');
+export const setViewMode = createAction('TICKETS_LIST_SET_VIEW_MODE');

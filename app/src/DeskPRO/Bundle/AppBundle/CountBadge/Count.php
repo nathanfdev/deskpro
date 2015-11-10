@@ -136,7 +136,7 @@ class Count
      */
     public function setCount($count)
     {
-        $this->count = $count;
+        $this->count = (int) $count;
     }
 
     /**

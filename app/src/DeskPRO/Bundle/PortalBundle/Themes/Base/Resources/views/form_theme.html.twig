@@ -1,5 +1,20 @@
 {% extends 'form_div_layout.html.twig' %}
 
+{# form start - turn off novalidate #}
+{%- block form_start -%}
+    {% set method = method|upper %}
+    {%- if method in ["GET", "POST"] -%}
+        {% set form_method = method %}
+    {%- else -%}
+        {% set form_method = "POST" %}
+    {%- endif -%}
+    <form name="{{ name }}" method="{{ form_method|lower }}" action="{{ action }}"{% for attrname, attrvalue in attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}{% if multipart %} enctype="multipart/form-data"{% endif %} novalidate>
+    {%- if form_method != method -%}
+        <input type="hidden" name="_method" value="{{ method }}" />
+    {%- endif -%}
+{%- endblock form_start -%}
+
+
 {# Basic structure #}
 
 {%- block form_row -%}
@@ -226,7 +241,7 @@
         {% if count > 1 %}
             <div class="dp-choice-widget-group email-present">
                 {%- for child in form %}
-                    <div class="radio-button">
+                    <div class="radio-button dpx-radio-button">
                         {{- form_widget(child) -}}
                         {{- form_label(child, null, { dp_no_validation_indicator: true }) -}}
                     </div>
@@ -457,7 +472,7 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
                 {% if form.vars.choices[child.vars.value] is defined %}
                     {% if form.vars.choices[child.vars.value].data|length == 0 %}
                         {% if not multiple %}
-                            <div class="radio-button">
+                            <div class="radio-button dpx-radio-button">
                         {% endif %}
                         {{- form_widget(child) -}}
                         {{- form_label(child, null, { dp_no_validation_indicator: true }) -}}

@@ -154,9 +154,8 @@ var DpDropzone = React.createClass({
           multiple={this.props.multiple}
           onChange={this.onDrop}
           name={this.props.inputName}
-          >
+          />
           {this.props.children}
-        </input>
       </div>
     );
   }

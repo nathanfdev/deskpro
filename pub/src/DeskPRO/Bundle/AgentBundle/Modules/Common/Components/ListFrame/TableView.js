@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import classNames from 'classnames';
-import jQuery from 'jquery';
 
 export class TableView extends Component {
   static propTypes = {
@@ -38,6 +37,7 @@ export class TableHeader extends Component {
 export class Th extends Component {
 
   static propTypes = {
+    visible: PropTypes.bool.isRequired,
     label: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     order: PropTypes.string,
@@ -71,8 +71,10 @@ export class Th extends Component {
 
   render() {
     const { value, label, className } = this.props;
+    const style = this.props.visible === false ? {display: 'none'} : {};
+
     return (
-      <th className={className} onClick={this.handleClick.bind(this, value)}>
+      <th style={style} className={className} onClick={this.handleClick.bind(this, value)}>
         {label}
         { this.renderCaret() }
       </th>
@@ -112,15 +114,17 @@ export class Row extends Component {
 export class Td extends Component {
 
   static propTypes = {
+    visible: PropTypes.bool.isRequired,
     className: PropTypes.string,
     children: PropTypes.any
   };
 
   render() {
     const { className } = this.props;
+    const style = this.props.visible === false ? {display: 'none'} : {};
 
     return (
-      <td className={className}>
+      <td style={style} className={className}>
         {this.props.children}
       </td>
     );
@@ -167,9 +171,16 @@ export class TableCheckbox extends Component {
   };
 
   render() {
-    const { selected, onClick } = this.props;
+    var divClasses = classNames('dpwd-navigation-top-row-mass-action-checkbox', {active: this.props.selected});
+    var checkboxClasses = classNames('fa', {'fa-check': this.props.selected});
+
     return (
-      <input type="checkbox" checked={selected} className="dpw--checkbox" onClick={onClick} />
+      <div className="dpwd-navigation-top-row-mass-action-checkbox-container"
+           style={{position: 'relative', border: 'none', margin: 0, width: 'auto', height: 'auto'}}>
+        <div className={divClasses} onClick={this.props.onClick} style={{margin: 0, padding: 0}}>
+          <i className={checkboxClasses}></i>
+        </div>
+      </div>
     );
   }
 }

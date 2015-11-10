@@ -4,7 +4,7 @@ import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentT
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 import jQuery from 'jquery';
 import Immutable from 'immutable';
-import { defaultCardFields } from '../../../List/ControlBar/FeedbackViewOptions';
+import { defaultCardFields} from '../../../List/ControlBar/FeedbackViewOptions';
 
 @injectIntl
 export class FeedbackCard extends Component {
@@ -12,7 +12,7 @@ export class FeedbackCard extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     feedback: PropTypes.object.isRequired,
-    viewFields: PropTypes.object.isRequired,
+    viewFields: PropTypes.object,
     selected: PropTypes.bool.isRequired,
     toggleSelected: PropTypes.func.isRequired,
     author: PropTypes.object.isRequired,
