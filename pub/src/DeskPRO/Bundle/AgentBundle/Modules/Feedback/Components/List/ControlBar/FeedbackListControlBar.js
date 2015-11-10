@@ -10,6 +10,7 @@ import { currentListSortSelector, currentListOrderSelector, isCommentsSelector }
 import { setSort, setOrder } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import { currentViewModeSelector } from '../../../Selectors/list';
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 @connect(state => ({
   // mass action data
@@ -81,6 +82,10 @@ export class FeedbackListControlBar extends Component {
         orderAction: setOrder
       },
       view: {
+        options: [
+          {field: constants.VIEW_MODE_CARD, label: 'Card View', icon: 'list'},
+          {field: constants.VIEW_MODE_TABLE, label: 'Table View', icon: 'table'}
+        ],
         viewMode: this.props.viewMode,
         viewModeAction: (mode) => updateRoutingState('list', 'view', mode),
 

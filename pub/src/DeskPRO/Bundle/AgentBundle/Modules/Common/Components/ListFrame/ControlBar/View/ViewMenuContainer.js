@@ -14,6 +14,7 @@ import Immutable from 'immutable';
 export class ViewMenuContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
+    options: PropTypes.object.isRequired,
     viewMode: PropTypes.string.isRequired,
     viewModeAction: PropTypes.func.isRequired,
     tableFields: PropTypes.object.isRequired,
@@ -34,7 +35,7 @@ export class ViewMenuContainer extends Component {
   collapse = () => this.setState({menuExpanded: false, optionsExpanded: false});
 
   render() {
-    const { dispatch, viewMode, viewModeAction } = this.props;
+    const { dispatch, options, viewMode, viewModeAction } = this.props;
 
     return (
       <li>
@@ -53,20 +54,14 @@ export class ViewMenuContainer extends Component {
                       positionTarget={this.refs.button}
                       ref="menu">
             <Menu>
-              <Item
-                label="Card view"
-                isActive={viewMode === 'card'}
-                checked={viewMode === 'card'}
-                onClick={() => dispatch(viewModeAction('card'))}
-                icon="list"
-                />
-              <Item
-                label="Table view"
-                isActive={viewMode === 'table'}
-                checked={viewMode === 'table'}
-                onClick={() => dispatch(viewModeAction('table'))}
-                icon="table"
-                />
+              {options.map(option =>
+                  <Item key={option.field}
+                        label={option.label}
+                        isActive={viewMode === option.field}
+                        checked={viewMode === option.field}
+                        onClick={() => dispatch(viewModeAction(option.field))}
+                        icon={option.icon} />
+              )}
               <MenuFooter>
                 <div className="dpw-navigation-dropdown-options-link">
                   <a href="#" onClick={this.expandOptions}>View Options <i className="fa fa-cog"></i></a>

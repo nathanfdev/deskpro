@@ -48,6 +48,15 @@ export class DpAppContainer extends React.Component {
     });
   }
 
+  componentDidMount() {
+    const { dispatch } = this.props;
+
+    // dispatch hashChanged() when hash is changed to bind it to the redux state
+    window.onhashchange = () => dispatch(hashChanged(window.location.hash));
+    // dispatch hashChanged() to track the initial hash value
+    dispatch(hashChanged(window.location.hash));
+  }
+
   workOutBasePath() {
     const baseEnd = DP_BASE_URL.indexOf('/', DP_BASE_URL.indexOf('://') + 3);
 
@@ -55,14 +64,7 @@ export class DpAppContainer extends React.Component {
   }
 
   render() {
-    const { dispatch, history } = this.props;
-
-    // dispatch hashChanged() when hash is changed to bind it to the redux state
-    window.onhashchange = () => dispatch(hashChanged(window.location.hash));
-
-    // dispatch hashChanged() to track the initial hash value
-    dispatch(hashChanged(window.location.hash));
-
+    const { history } = this.props;
     const basePath = this.workOutBasePath();
     const defaultPath = `${basePath}/tasks`;
 

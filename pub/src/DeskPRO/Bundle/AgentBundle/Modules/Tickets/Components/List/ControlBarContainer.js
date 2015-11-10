@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import {
   selectedCountSelector, listSortSelector, listOrderSelector, tableVisibleFieldsSelector, cardVisibleFieldsSelector,
   viewModeSelector
@@ -45,6 +46,10 @@ export class ControlBarContainer extends Component {
         orderAction: setOrder
       },
       view: {
+        options: [
+          {field: constants.VIEW_MODE_CARD, label: 'Card View', icon: 'list'},
+          {field: constants.VIEW_MODE_TABLE, label: 'Table View', icon: 'table'}
+        ],
         viewMode: this.props.viewMode,
         viewModeAction: setViewMode,
 
