@@ -5,10 +5,26 @@ import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Applicati
 
 export const changeView = createAction(
   'TASKS_CHANGE_VIEW_MODE',
-  viewMode => dispatch => {
-    dispatch(updateRoutingState('list', 'view', viewMode));
-    return viewMode;
+  value => dispatch => {
+    dispatch(updateRoutingState('list', 'view', value));
+    return value;
   }
+);
+
+export const changeSort = createAction(
+  'TASKS_CHANGE_SORT',
+    value => dispatch => {
+      dispatch(updateRoutingState('list', 'sort', value));
+      return value;
+    }
+);
+
+export const changeOrder = createAction(
+  'TASKS_CHANGE_ORDER',
+    value => dispatch => {
+      dispatch(updateRoutingState('list', 'order', value));
+      return value;
+    }
 );
 
 export const setListParamsFilter = createAction('TASKS_SET_LIST_PARAMS_FILTER');

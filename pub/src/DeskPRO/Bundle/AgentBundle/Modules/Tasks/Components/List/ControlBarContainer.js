@@ -2,11 +2,13 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import { currentViewModeSelector } from '../../Selectors/tasks';
-import { changeView } from '../../Actions/tasksActions';
+import { currentViewModeSelector, currentSortSelector, currentOrderSelector } from '../../Selectors/tasks';
+import { changeView, changeSort, changeOrder } from '../../Actions/tasksActions';
 
 @connect(state => ({
-  viewMode: currentViewModeSelector(state)
+  viewMode: currentViewModeSelector(state),
+  sort: currentSortSelector(state),
+  order: currentOrderSelector(state)
 }))
 export class ControlBarContainer extends Component {
 
@@ -24,17 +26,17 @@ export class ControlBarContainer extends Component {
     const config = {
       sorting: {
         options: [
-          {field: 'list', label: 'List', icon: 'list' },
-          {field: 'project', label: 'Project', icon: 'briefcase' },
-          {field: 'date_due', label: 'Due Date', icon: 'calendar' },
-          {field: 'date_done', label: 'Done Date', icon: 'calendar' },
-          {field: 'date_created', label: 'Created Date', icon: 'calendar' },
-          {field: 'assignee', label: 'Assignee', icon: 'user' }
+          {field: 'list', label: 'List', icon: 'list'},
+          {field: 'project', label: 'Project', icon: 'briefcase'},
+          {field: 'date_due', label: 'Due Date', icon: 'calendar'},
+          {field: 'date_done', label: 'Done Date', icon: 'calendar'},
+          {field: 'date_created', label: 'Created Date', icon: 'calendar'},
+          {field: 'assignee', label: 'Assignee', icon: 'user'}
         ],
-        sort: 'list',
-        order: 'order',
-        sortAction: () => {},
-        orderAction: () => {}
+        sort: this.props.sort,
+        order: this.props.order,
+        sortAction: changeSort,
+        orderAction: changeOrder
       },
       view: {
         options: [
@@ -44,9 +46,7 @@ export class ControlBarContainer extends Component {
           {field: constants.VIEW_MODE_CALENDAR, label: 'Calendar View', icon: 'calendar'}
         ],
         viewMode: this.props.viewMode,
-        viewModeAction: changeView,
-        tableToggleFieldVisibility: () => {},
-        cardToggleFieldVisibility: () => {}
+        viewModeAction: changeView
       }
     };
 
