@@ -53,7 +53,7 @@ class TicketListTable
     protected $columns;
     protected $active_columns_name;
 
-    public function __construct($ticket_category, $ticket_type, $title, TicketColumns $columns, Request $request)
+    public function __construct($ticket_category, $ticket_type, $title, TicketColumns $columns, Request $request, $per_page)
     {
         $this->ticket_category     = $ticket_category;
         $this->ticket_type         = $ticket_type;
@@ -66,6 +66,7 @@ class TicketListTable
         $this->pager               = null;
         $this->active_columns      = [];
         $this->columns             = $columns;
+        $this->per_page            = $per_page;
         $this->makeFilterWithRequest($request);
     }
 
@@ -109,7 +110,7 @@ class TicketListTable
         return in_array($column->getId(), $this->active_columns);
     }
 
-    protected function makeFilterWithRequest(Request $request, $per_page = 10)
+    protected function makeFilterWithRequest(Request $request, $per_page = 50)
     {
         $this->ticket_filter = new TicketFilter(
             $this->ticket_type,

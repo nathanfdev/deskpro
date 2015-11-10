@@ -617,7 +617,7 @@ return array(
     /*
      * The default "per page" number of results in each of the user's ticket lists
      */
-    'portal.per_page_tickets' => 10,
+    'portal.per_page_tickets' => 50,
 
     /*
      * If the portal should validate based on etags in the http cache layer
