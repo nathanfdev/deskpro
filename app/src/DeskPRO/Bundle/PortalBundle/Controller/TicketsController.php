@@ -39,6 +39,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
 use DeskPRO\Bundle\PortalBundle\Model\TicketFilter;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable;
+use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTablesCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -80,6 +81,8 @@ class TicketsController extends AbstractController
         // BREADCRUMBS
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketList();
 
+        $ticket_list_js = 'window.DESKPRO_TICKET_LIST_TABLES = '.$tables->compileJsObj().';';
+
         return $this->renderThemeView(
             'Theme:Tickets:index.html.twig',
             array(
@@ -90,24 +93,28 @@ class TicketsController extends AbstractController
                 'person'             => $person,
                 'breadcrumbs'        => $breadcrumbs,
                 'page_title'         => $this->createPageTitle()->tickets(),
+                'ticket_list_js'     => $ticket_list_js,
+                'search_query'       => $request->query->get('q', ''),
             )
         );
     }
 
+    /**
+     * @param $type
+     * @param array   $categories
+     * @param Person  $person
+     * @param Request $request
+     *
+     * @return TicketListTablesCollection
+     */
     protected function makeTicketListTables($type, array $categories, Person $person, Request $request)
     {
-        $tds      = $this->getTicketsDataService();
-        $per_page = $this->getBrandSetting('portal.per_page_tickets');
-        $tables   = [];
+        $tables = new TicketListTablesCollection();
 
         foreach ($categories as $category => $title) {
-            $tables[] = $table = new TicketListTable(
-                $category,
-                $type,
-                $title
+            $tables->addTable(
+                $this->get('tickets.table')->makeTicketTable($person, $request, $type, $category, $title)
             );
-            $table->makeFilterWithRequest($request, $per_page);
-            $table->makePagerUsingDataService($tds, $person);
         }
 
         return $tables;
@@ -165,7 +172,8 @@ class TicketsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Tickets:view.html.twig',
             array(
-                'ticket'      => $ticket_view,
+                'ticket'      => $ticket,
+                'ticket_view' => $ticket_view,
                 'timeline'    => $timeline,
                 'can_edit'    => $this->isGranted('TICKET_EDIT', $ticket),
                 'form'        => $form->createView(),
@@ -206,7 +214,8 @@ class TicketsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Tickets:guest-view.html.twig',
             array(
-                'ticket'      => $ticket_view,
+                'ticket'      => $ticket,
+                'ticket_view' => $ticket_view,
                 'timeline'    => $timeline,
                 'breadcrumbs' => $breadcrumbs,
                 'page_title'  => $this->createPageTitle()->tickets($ticket),

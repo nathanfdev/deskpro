@@ -54,6 +54,11 @@ export const selectLabel = createAction(
     label => label
 );
 
+export const deselectLabel = createAction(
+  'FEEDBACK_DESELECT_LABEL',
+    label => label
+);
+
 export const getCategories = createAction(
   'FEEDBACK_GET_CATEGORIES',
     ids => dispatch => dispatch(loadFeedbackCategories(recordStoresId, ids))

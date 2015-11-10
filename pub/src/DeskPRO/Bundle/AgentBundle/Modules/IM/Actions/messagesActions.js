@@ -4,11 +4,12 @@ import { releaseChats, setChatsRequest } from '../RecordStores/Actions/chatsActi
 
 export const loadMessages = createAction(
   'IM_LOAD_MESSAGES',
-  (chatId, searchQuery = '') => {
-    return IM.loadMessages(chatId, searchQuery).then(response => {
+  (chatId, searchQuery = '', page = null) => {
+    return IM.loadMessages(chatId, searchQuery, page).then(response => {
       const messages = response.data.data;
+      const meta = response.data.meta.pagination;
       return new Promise((resolve) => {
-        resolve({chat_id: chatId, messages: messages});
+        resolve({chat_id: chatId, messages: messages, page: meta.current_page, pages: meta.total_pages, searchQuery: searchQuery});
       });
     });
   }
@@ -27,7 +28,8 @@ export const addMessageOptimistic = createAction(
           message: message,
           metadata: null,
           person_id: me.get('id'),
-          person_name: me.get('name')
+          person_name: me.get('name'),
+          old: false
         }
       };
 

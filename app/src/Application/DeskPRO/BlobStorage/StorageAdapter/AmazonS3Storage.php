@@ -32,6 +32,7 @@
 namespace Application\DeskPRO\BlobStorage\StorageAdapter;
 
 use Application\DeskPRO\BlobStorage\Blob;
+use Application\DeskPRO\BlobStorage\BlobStorageException;
 use Aws\S3\Enum\CannedAcl;
 use Aws\S3\S3Client;
 
@@ -176,7 +177,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
                 break;
             } catch (\Exception $e) {
                 if ($try == 0) {
-                    throw $e;
+                    throw new BlobStorageException('Failed to write blob', BlobStorageException::FAILED_RESOURCE_WRITE, $e);
                 }
                 if ($this->retry_sleep) {
                     sleep($this->retry_sleep);
@@ -235,7 +236,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
                 break;
             } catch (\Exception $e) {
                 if ($try == 0) {
-                    throw $e;
+                    throw new BlobStorageException('Failed to read blob', BlobStorageException::FAILED_RESOURCE_READ, $e);
                 }
                 if ($this->retry_sleep) {
                     sleep($this->retry_sleep);

@@ -52,7 +52,6 @@ use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
-use Application\DeskPRO\TicketLayout\LayoutField;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Application\DeskPRO\Tickets\TicketActions\AgentAction;
@@ -2072,6 +2071,16 @@ class TicketController extends AbstractController
                         $this->em->flush();
                     }
 
+                    if ($this->request->request->has('custom_person_fields')) {
+                        $person_field_manager->saveFormToObject($this->request->get('custom_person_fields') ?: array(), $ticket->person);
+                        $this->em->persist($ticket->person);
+                    }
+
+                    if ($this->request->request->has('custom_org_fields') && $ticket->person->organization) {
+                        $org_field_manager->saveFormToObject($this->request->get('custom_org_fields') ?: array(), $ticket->person->organization);
+                        $this->em->persist($ticket->person->organization);
+                    }
+
                     if ($this->settings->get('core.problems.enabled')) {
                         if (isset($actions['problem_id'])) {
                             $id    = (int) $actions['problem_id'];
@@ -3973,17 +3982,12 @@ class TicketController extends AbstractController
             $validator = new \Application\AgentBundle\Validator\NewTicketValidator();
             $layout    = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
 
-            // agent newticket form has a quick create-user form
-            // which doesnt include custom fields at the moment so
-            // remove them from validator so we can still create the ticket
-            $layout = $layout->filter(function (LayoutField $f) {
-                return $f->getFieldType() != 'user_field';
-            });
-
-            $layout                    = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newticket->getMockTicket());
-            $newticket->ticket_fields  = $this->request->request->get('custom_fields', array());
-            $newticket->billing_fields = $this->request->request->get('billing_fields', array());
-            $newticket->status         = $set_status;
+            $layout                          = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newticket->getMockTicket());
+            $newticket->ticket_fields        = $this->request->request->get('custom_fields', array());
+            $newticket->custom_person_fields = $this->request->request->get('custom_person_fields', array());
+            $newticket->custom_org_fields    = $this->request->request->get('custom_org_fields', array());
+            $newticket->billing_fields       = $this->request->request->get('billing_fields', array());
+            $newticket->status               = $set_status;
             $validator->setLayout($layout);
             $newticket->setLayout($layout);
 
@@ -4063,6 +4067,21 @@ class TicketController extends AbstractController
                 if ($collection->countActions()) {
                     $collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
                     $this->em->flush();
+                }
+
+                #------------------------------
+                # per-person and per-org fields
+                #------------------------------
+                $new_field_manager = $this->container->getCustomFieldManager();
+                $new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $layout, array('allow_edit' => true));
+                if ($org = $ticket->person->organization) {
+                    $new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner(
+                        $ticket, $org, $layout, array('allow_edit' => true)
+                    ));
+                }
+                $new_custom_fields->handleRequest($this->request);
+                if ($new_custom_fields->isValid()) {
+                    $new_field_manager->flush($new_custom_fields);
                 }
 
                 #------------------------------
@@ -4380,9 +4399,11 @@ class TicketController extends AbstractController
         if ($org = $person->organization) {
             $manager->merge($new_custom_fields, $manager->createFormForOwner($mock, $org, $layout, array('allow_edit' => true)));
         }
-        $custom_person_fields = $this->container->getPersonFieldManager()->getDisplayArrayForObject($person);
-        $custom_org_fields    = $person->organization
-            ? $this->container->getOrgFieldManager()->getDisplayArrayForObject($person->organization)
+        $custom_person_fields_form = $this->get('form.factory')->createNamedBuilder('custom_person_fields', 'form');
+        $custom_org_fields_form    = $this->get('form.factory')->createNamedBuilder('custom_org_fields', 'form');
+        $custom_person_fields      = $this->container->getPersonFieldManager()->getDisplayArrayForObject($person, $custom_person_fields_form);
+        $custom_org_fields         = $person->organization
+            ? $this->container->getOrgFieldManager()->getDisplayArrayForObject($person->organization, $custom_org_fields_form)
             : array();
 
         return $this->render('AgentBundle:Ticket:newticket-custom-fields-row.html.twig', array(

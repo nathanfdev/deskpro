@@ -31,26 +31,12 @@
  */
 namespace Application\DeskPRO\CustomFields\Handler;
 
-use Application\DeskPRO\App;
-
 /**
  * A field that doesnt have any user-editable form field. It's used by API's or other features to store
  * data attached to things. For example, storing data from a user source on a person.
  */
 class Data extends HandlerAbstract
 {
-    public function getFormField($data = null)
-    {
-        $setData = null;
-        if ($data and !empty($data['value'])) {
-            $setData = $data['value'];
-        }
-
-        $field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'text', $setData, array('required' => false));
-
-        return $field;
-    }
-
     public function getDataFromForm(array $form_data)
     {
         if (isset($form_data[$this->getFormFieldName()])) {

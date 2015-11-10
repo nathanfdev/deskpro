@@ -39,7 +39,7 @@
         <h1>{{ phrase('portal.account.section-title-login') }}</h1>
 
         {% if show_login_form %}
-            <form action="{{ path('portal_login_submit') }}" method="post" id="login-sidebar">
+            <form action="{{ path('portal_login_submit') }}" method="post" id="login-sidebar" novalidate>
                 <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}"/>
                 <label>
                     <span>{{ phrase('portal.account.login-email') }}</span>

@@ -151,4 +151,5 @@ return array(
     'agent.time.time_x_month'           => '{0} Monate',
     'agent.time.time_x_second'          => '{0} Sekunden',
     'agent.time.time_x_week'            => '{0} Wochen',
+    'agent.time.time_x_year'            => '{{0} Jahre',
 );

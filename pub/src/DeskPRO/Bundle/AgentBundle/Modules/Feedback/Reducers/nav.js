@@ -40,7 +40,7 @@ export default createReducer(initialState, {
   }),
   [actions.feedbackLabels]: async({
     success: (state, payload) =>
-      state.setIn(['labels'], payload.data)
+      state.setIn(['labels'], Immutable.fromJS(payload.data))
   }),
   [actions.feedbackTypes]: async({
     success: (state, payload) => state.set('types', Immutable.fromJS(payload.data))

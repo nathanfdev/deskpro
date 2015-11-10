@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
+import Loader from 'react-loader';
 import { connect } from 'react-redux';
 import * as ui from '../../Actions/uiActions';
-import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
 // agents
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
@@ -35,11 +35,8 @@ export class Header extends React.Component {
     current: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     toggleSearch: PropTypes.func.isRequired,
-    online: PropTypes.bool.isRequired
-  };
-
-  closeChat = () => {
-    this.props.dispatch(ui.closeChat());
+    online: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired
   };
 
   calculateAgentText = () => {
@@ -80,7 +77,7 @@ export class Header extends React.Component {
         render = this.wrapHeaderText(text);
         break;
       default:
-        render = <Spinner width="20" height="20" />;
+        render = <Loader loaded={false} opacity={0} scale={0.5} left="20" components="span" color="#fff" width={3} top="45%"/>
     }
 
     return render;
@@ -98,7 +95,7 @@ export class Header extends React.Component {
         <div className="header-controls">
           <a href="#" onClick={this.props.toggleSearch}><i className="fa fa-search"></i> Search IM</a>
             <span className="close">
-              <a href="#" onClick={this.closeChat}><i className="fa fa-times"></i></a>
+              <a href="#" onClick={this.props.onClose}><i className="fa fa-times"></i></a>
             </span>
         </div>
         { this.renderHeader() }

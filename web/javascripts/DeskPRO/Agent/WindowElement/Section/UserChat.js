@@ -76,7 +76,6 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		});
 		this.filterGroupEditor._initControl();
 		*/
-		this.refreshFilterGrouping(data, lastSelectedId);
 		this.updateGroupingVars();
 
 		this._lastLoaded = new Date();

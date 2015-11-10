@@ -1,16 +1,18 @@
 import React, { Component, PropTypes } from 'react';
+import { ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { ListItemContainer } from './ListItemContainer';
 import { NestedList } from './NestedList';
 
 export class StatusTab extends Component {
 
   static propTypes = {
-    statuses: PropTypes.array.isRequired,
+    statuses: PropTypes.object.isRequired,
     onClick: PropTypes.func.isRequired
   };
 
   render() {
-    const { active, closed, hidden } = this.props.statuses;
+    const { statuses } = this.props;
+    const { active, closed, hidden } = statuses.toJS();
 
     // @todo Turn it in form of NestedList in the reducer
     // @todo Rename 'new' within statuses
@@ -22,12 +24,14 @@ export class StatusTab extends Component {
 
     return (
       <ul>
-        <ListItemContainer
-          label="New"
-          count={this.props.statuses.new}
-          listOptions={{navItem: {status: 'new'}}}
-          />
-        <NestedList items={items} alwaysExpanded/>
+        <ListItemContainer label="New"
+                           listOptions={{navItem: {status: 'new'}}}>
+
+          <ListItem label="New"
+                    count={statuses.toJS().new} />
+        </ListItemContainer>
+
+        <NestedList items={items} alwaysExpanded />
       </ul>
     );
   }

@@ -32,6 +32,7 @@
 namespace Application\DeskPRO\BlobStorage\StorageAdapter;
 
 use Application\DeskPRO\BlobStorage\Blob;
+use Application\DeskPRO\BlobStorage\BlobStorageException;
 use Orb\Util\Numbers;
 
 class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInterface, WriteStreamInterface
@@ -135,7 +136,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
         if (!$fp_source) {
             @fclose($fp_source);
             $this->logger->logError("[FilesystemStorage] (writeBlobFromFile) Could not open $source_path for reading");
-            throw new \RuntimeException("Could not open source_path for reading: $source_path");
+            throw new BlobStorageException("Could not open source_path for reading: $source_path", BlobStorageException::FAILED_RESOURCE_READ);
         }
 
         try {
@@ -210,7 +211,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
         if (!$fp_target) {
             @fclose($fp_target);
             $this->logger->logError("[FilesystemStorage] (readBlobToFile) Could not open $target_path for writing");
-            throw new \RuntimeException("Could not open target_path for writing: $target_path");
+            throw new BlobStorageException("Could not open target_path for writing: $target_path", BlobStorageException::FAILED_RESOURCE_WRITE);
         }
 
         try {
@@ -255,11 +256,11 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
             $this->_chmod($dir, $this->dir_mode);
         }
 
-        $fp = @fopen($path, 'w');
+        $fp = fopen($path, 'w');
 
         if (!$fp) {
             $this->logger->logError("[FilesystemStorage] (getBlobWriteStream) Failed to open path for writing: $path");
-            throw new \RuntimeException("Could not open blob for writing: $path");
+            throw new BlobStorageException("Could not open blob for writing: $path", BlobStorageException::FAILED_RESOURCE_WRITE);
         }
 
         return $fp;
@@ -272,11 +273,11 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
     {
         $path = $this->resolvePath($blob->getPath());
 
-        $fp = @fopen($path, 'r');
+        $fp = fopen($path, 'r');
 
         if (!$fp) {
             $this->logger->logError("[FilesystemStorage] (getBlobReadStream) Failed to open path for reading: $path");
-            throw new \RuntimeException("Could not open blob for reading: $path");
+            throw new BlobStorageException("Could not open blob for reading: $path", BlobStorageException::FAILED_RESOURCE_READ);
         }
 
         return $fp;

@@ -620,6 +620,11 @@ DeskPRO.Agent.RteEditor = {
       this.pasteCleanUpInsert(html);
     }, api);
 
+		api.syncCode = $.proxy(function(){
+			this.$el.val(this.$editor.html());
+			this.$editor.trigger('synced');
+		}, api);
+
 		return textarea;
 	}
 };

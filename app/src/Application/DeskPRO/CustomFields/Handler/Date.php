@@ -96,32 +96,32 @@ class Date extends HandlerAbstract
 
     public function getFormField($data = null)
     {
-        $setData = null;
         if ($data and !empty($data['value'])) {
             try {
                 if (ctype_digit($data['value'])) {
                     $date = new \DateTime('@'.$data['value']);
                     if ($date) {
                         $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
-                        $setData = $date->format('Y-m-d');
+                        $data['value'] = $date->format($this->getFormat());
                     }
                 } else {
-                    $date = \DateTime::createFromFormat('Y-m-d', $data['value']);
+                    $date = \DateTime::createFromFormat($this->getFormat(), $data['value']);
                     if ($date) {
                         $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
-                        $setData = $date->format('Y-m-d');
+                        $data['value'] = $date->format($this->getFormat());
                     }
                 }
             } catch (\Exception $e) {
-                $setData = null;
+                $data = null;
             }
         }
 
-        $field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'text', $setData, array(
-            'required' => false,
-        ));
+        return parent::getFormField($data);
+    }
 
-        return $field;
+    protected function getFormat()
+    {
+        return 'Y-m-d';
     }
 
     public function getSearchCriteriaForm($data = null)
@@ -133,13 +133,13 @@ class Date extends HandlerAbstract
                     $date = new \DateTime('@'.$data['value']);
                     if ($date) {
                         $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
-                        $setData = $date->format('Y-m-d');
+                        $setData = $date->format($this->getFormat());
                     }
                 } else {
-                    $date = \DateTime::createFromFormat('Y-m-d', $data['value']);
+                    $date = \DateTime::createFromFormat($this->getFormat(), $data['value']);
                     if ($date) {
                         $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
-                        $setData = $date->format('Y-m-d');
+                        $setData = $date->format($this->getFormat());
                     }
                 }
             } catch (\Exception $e) {
@@ -165,7 +165,7 @@ class Date extends HandlerAbstract
 
         // Timestamp value
         if (strlen($data) == 10 && ctype_digit($data)) {
-            $data = date('Y-m-d', $data);
+            $data = date($this->getFormat(), $data);
         }
 
         #------------------------------
@@ -189,7 +189,7 @@ class Date extends HandlerAbstract
         }
 
         if ($data) {
-            $date = \DateTime::createFromFormat('Y-m-d', $data);
+            $date = \DateTime::createFromFormat($this->getFormat(), $data);
             if (!$date) {
                 return $this->makeErrorArray(array('date_invalid'));
             }
@@ -205,7 +205,7 @@ class Date extends HandlerAbstract
             } catch (\Exception $e) {
                 $admin_tz = App::getCurrentPerson()->getDateTimezone();
             }
-            $date       = \DateTime::createFromFormat('Y-m-d', $data, App::getCurrentPerson()->getDateTimezone());
+            $date       = \DateTime::createFromFormat($this->getFormat(), $data, App::getCurrentPerson()->getDateTimezone());
             $date_admin = clone $date;
             $date_admin->setTimezone($admin_tz);
 
@@ -224,7 +224,7 @@ class Date extends HandlerAbstract
                 $d2 = $this->field_def->getOption('date_valid_date2');
 
                 if ($d1) {
-                    $d1 = \DateTime::createFromFormat('Y-m-d', $d1, $admin_tz);
+                    $d1 = \DateTime::createFromFormat($this->getFormat(), $d1, $admin_tz);
                     $d1->setTime(0, 0, 0);
 
                     if ($date_admin < $d1) {
@@ -232,7 +232,7 @@ class Date extends HandlerAbstract
                     }
                 }
                 if ($d2) {
-                    $d2 = \DateTime::createFromFormat('Y-m-d', $d2, $admin_tz);
+                    $d2 = \DateTime::createFromFormat($this->getFormat(), $d2, $admin_tz);
                     $d2->setTime(23, 59, 59);
 
                     if ($date_admin > $d2) {

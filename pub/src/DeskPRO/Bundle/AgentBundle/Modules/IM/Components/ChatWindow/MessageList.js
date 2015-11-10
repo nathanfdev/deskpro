@@ -1,18 +1,18 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
 import { Message } from './Message';
 import { loadMessages, markMessages, refreshCounts } from '../../Actions/messagesActions';
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
+import Loader from 'react-loader';
 
 @connect(state => ({
   me: meSelector(state),
   agents: agentsSelector(state),
   agentsStatus: agentsStatusSelector(state),
   messages: state.IM.messages,
-  loadingMessages: state.IM.messages.get('loadingMessages')
+  messagesLoaded: !state.IM.messages.get('loadingMessages')
 }))
 export class MessageList extends React.Component {
 
@@ -22,9 +22,11 @@ export class MessageList extends React.Component {
     agentsStatus: PropTypes.object.isRequired,
     current: PropTypes.object.isRequired,
     messages: PropTypes.object.isRequired,
+    messagesLoaded: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
     searchQuery: PropTypes.string.isRequired
   };
+
 
   componentDidMount() {
     this.refresh();
@@ -34,6 +36,7 @@ export class MessageList extends React.Component {
       interval: interval,
       countsInterval: countsInterval
     };
+    this.shouldScrollBottom = true;
   }
 
   componentWillReceiveProps(newProps) {
@@ -44,12 +47,12 @@ export class MessageList extends React.Component {
 
   componentWillUpdate = () => {
     const node = ReactDOM.findDOMNode(this.refs.list);
-    this.shouldScrollBottom = node.scrollTop + node.offsetHeight === node.scrollHeight;
+    this.shouldScrollBottom = this.props.messagesLoaded && node && (node.scrollTop + node.offsetHeight === node.scrollHeight);
   };
 
   componentDidUpdate = () => {
-    if (this.shouldScrollBottom) {
-      const node = ReactDOM.findDOMNode(this.refs.list);
+    const node = ReactDOM.findDOMNode(this.refs.list);
+    if (this.shouldScrollBottom && node) {
       node.scrollTop = node.scrollHeight;
     }
   };
@@ -59,10 +62,22 @@ export class MessageList extends React.Component {
     clearInterval(this.state.countsInterval);
   }
 
+  getPath = () => {
+    let path;
+    if (!this.props.searchQuery) {
+      path = ['chatMessages', this.props.current.id];
+    } else {
+      path = ['searchMessages', this.props.current.id];
+    }
+    return path;
+  };
+
   markNewMessages() {
     const ids = [];
-    const messages = this.props.messages.getIn(['chatMessages', this.props.current.id]) || [];
-    messages.map((message) => {
+    const { messages } = this.props;
+
+    const msg = messages.getIn(this.getPath()) ? messages.getIn(this.getPath()).messages : [];
+    msg.map((message) => {
       if (message.status < 1 && message.person_id !== this.props.me.get('id')) {
         ids.push(message.id);
       }
@@ -72,8 +87,21 @@ export class MessageList extends React.Component {
     }
   }
 
+  loadOld = () => {
+    const { messages } = this.props;
+    const page = messages.getIn(this.getPath()) ? messages.getIn(this.getPath()).page : 1;
+    this.props.dispatch(loadMessages(this.props.current.id, this.props.searchQuery, page + 1));
+  };
+
   controls = () => {
-    return <div className="chat-controls"><a href="#">Load old messages</a></div>;
+    const { messages } = this.props;
+    const page = messages.getIn(this.getPath()) ? messages.getIn(this.getPath()).page : 1;
+    const pages = messages.getIn(this.getPath()) ? messages.getIn(this.getPath()).pages : 1;
+    return (
+      <li className="chat-controls">
+        {page < pages ? <a href="#" onClick={this.loadOld}>Load old messages</a> : null}
+      </li>
+    );
   };
 
   refresh = () => {
@@ -81,32 +109,45 @@ export class MessageList extends React.Component {
     this.markNewMessages();
   };
 
-  renderMessages() {
-    const messages = this.props.messages.getIn(['chatMessages', this.props.current.id]) || [];
+
+  renderList(msg) {
     return (
-      <div>
-        {this.controls()}
-        <ul ref="list" className="chat-message-list">
-          {
-            messages.map((message, index) => {
-              return (<Message
-                key={index}
-                message={message}
-                agents={this.props.agents}
-                me={this.props.me}/>);
-            })
-          }
-        </ul>
-      </div>
+      <ul ref="list" className="chat-message-list">
+        { this.controls() }
+        {
+          msg.map((message, index) => {
+            return (<Message
+              key={index}
+              message={message}
+              agents={this.props.agents}
+              me={this.props.me}/>);
+          })
+        }
+      </ul>
     );
   }
 
-  renderLoading() {
-    return <Spinner ref="list" width="40" height="40" />;
-  }
+  renderEmpty = () => {
+    return (
+      <ul ref="list" className="chat-message-list">
+        <li className="chat-controls">
+          <a>Sorry, nothing found here</a>
+        </li>
+      </ul>
+    );
+  };
 
   render() {
-    const loading = this.props.messages.loadingMessages;
-    return !loading ? this.renderMessages() : this.renderLoading();
+    const { messages } = this.props;
+    const msg = messages.getIn(this.getPath()) ? messages.getIn(this.getPath()).messages : [];
+    msg.sort((first, second) => {
+      return first.id - second.id;
+    });
+    const loaded = this.props.messagesLoaded || msg.length > 0;
+    return (
+       <Loader loaded={loaded}>
+         { msg.length > 0 ? this.renderList(msg) : this.renderEmpty()}
+      </Loader>
+    );
   }
 }

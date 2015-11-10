@@ -1515,7 +1515,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     /**
      * Find an existing data record for a field id.
      *
-     * @param int $field_id
+     * @param int|CustomDefTicket $field_id
      *
      * @return CustomDataTicket
      */

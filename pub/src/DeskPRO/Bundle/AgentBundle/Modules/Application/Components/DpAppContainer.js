@@ -17,24 +17,28 @@ import { setHasAuth } from '../../Login/Actions/loginActions';
 import { hashChanged } from '../../Application/Actions/routingActions';
 import Jquery from 'jquery';
 
-@connect()
+@connect(state => ({
+  login: state.Login.login
+}))
 export class DpAppContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired
+    history: PropTypes.object.isRequired,
+    login: PropTypes.object.isRequired
   };
 
-  constructor(props) {
-    super(props);
-    const { dispatch, history } = props;
+  componentWillMount() {
+    const { dispatch, history, login } = this.props;
 
     dispatch(loadMe());
 
     Jquery.ajaxSetup({
       statusCode: {
         200: () => {
-          dispatch(setHasAuth(true));
+          if (!login.hasAuth) {
+            dispatch(setHasAuth(true));
+          }
         },
         401: () => {
           dispatch(setHasAuth(false));

@@ -8,8 +8,15 @@ export function loadChats(missingIds) {
   return DpApi.sendGet('DP_API/agent_chats/?ids=' + missingIds.toArray().join(','));
 }
 
-export function loadMessages(chatId, searchQuery = '') {
-  return DpApi.sendGet('DP_API/agent_chats/' + chatId + '/messages?search=' + searchQuery);
+export function loadMessages(chatId, searchQuery = '', page = null) {
+  const params = {
+    search: searchQuery
+  };
+  if(page) {
+    params.page = page;
+  }
+  const compiled = compileParams(params);
+  return DpApi.sendGet('DP_API/agent_chats/' + chatId + '/messages?' + compiled);
 }
 
 export function startChat(entityId, type) {
@@ -26,4 +33,19 @@ export function loadMessagesCount() {
 
 export function markMessages(ids) {
   return DpApi.sendPatch('DP_API/agent_chats/messages/mark', {ids: ids});
+}
+
+/**
+ * Compile parameters into a URL string
+ * @param {Object} params - parameters to be compiled
+ * @returns {string} - compiled string
+ */
+function compileParams(params) {
+  const compiled = [];
+
+  for (const key of Object.keys(params)) {
+    compiled.push(key + '=' + String(params[key]));
+  }
+
+  return compiled.join('&');
 }

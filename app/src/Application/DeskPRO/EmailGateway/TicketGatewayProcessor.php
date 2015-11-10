@@ -388,14 +388,20 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 if ($reply_actions) {
                     $email_body_html = $rc->getNewBody();
                 }
-            } else {
-                $this->logMessage('Checking for agent reply codes in TEXT body');
-                $rc = new AgentReplyCodes($email_body_text, false);
-                $rc->setLogger($this->logger);
+            }
 
-                $reply_actions = $rc->getProperties();
+            $this->logMessage('Checking for agent reply codes in TEXT body');
+            $rc = new AgentReplyCodes($email_body_text, false);
+            $rc->setLogger($this->logger);
+
+            $txt_reply_actions = $rc->getProperties();
+            if ($txt_reply_actions) {
+                $email_body_text = $rc->getNewBody();
+
                 if ($reply_actions) {
-                    $email_body_text = $rc->getNewBody();
+                    $this->logMessage('TEXT body has codes, but we are using HTML email so they will be ignored');
+                } else {
+                    $reply_actions = $txt_reply_actions;
                 }
             }
         }

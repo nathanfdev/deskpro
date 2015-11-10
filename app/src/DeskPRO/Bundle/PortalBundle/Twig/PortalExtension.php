@@ -192,7 +192,7 @@ class PortalExtension extends \Twig_Extension
     public function getPublicTicketId($ticket)
     {
         if ($ticket instanceof TicketView) {
-            $ticket = $ticket->ticket;
+            $ticket = $ticket->getTicket();
         }
 
         if (!$ticket instanceof Entity\Ticket) {

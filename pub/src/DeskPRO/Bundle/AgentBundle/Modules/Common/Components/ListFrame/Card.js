@@ -258,7 +258,7 @@ export class CardLabel extends Component {
 export class CardComments extends Component {
 
   static propTypes = {
-    commentsCounter: PropTypes.string.isRequired
+    commentsCounter: PropTypes.number.isRequired
   };
 
   render() {

@@ -147,7 +147,10 @@ class FeedbackDataService extends AbstractDataService
                 // status_categories (feedback->status_category)
                 // array(6,1,4)
                 if (count($status_categories = $filter->getStatusCategories())) {
-                    $qb->andWhere('f.status_category IN (:status_categories)')->setParameter('status_categories', $status_categories);
+                    $qb->andWhere('f.status_category IN (:status_categories)')->setParameter(
+                        'status_categories',
+                        $status_categories
+                    );
                 }
 
                 // types
@@ -383,18 +386,5 @@ class FeedbackDataService extends AbstractDataService
         }
 
         return $count;
-    }
-
-    public function countsByType()
-    {
-        /* @ToDo move to FeedbackRepository after removing old code */
-        $qb = $this->em->createQueryBuilder();
-        $qb->select('category.title as title', 'category.id as id', 'count(f) as value')
-            ->from('DeskPRO:Feedback', 'f')
-            ->leftJoin('f.category', 'category')
-            ->groupBy('category.id')
-            ->orderBy('category.title');
-
-        return $qb->getQuery()->getScalarResult();
     }
 }

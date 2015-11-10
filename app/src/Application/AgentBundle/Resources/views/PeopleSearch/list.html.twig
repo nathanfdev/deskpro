@@ -4,28 +4,28 @@
 {# METADATA #}
 {######################################################################################################################}
 {% block top %}
-<script>
+    <script>
 
-{% if view_name_data and view_name_type == 'usergroup' %}
-	pageMeta.url_fragment = '{{ url_fragment('agent_peoplesearch_usergroup', {'id': view_name_data}) }}';
-{% else %}
-	pageMeta.url_fragment = '{{ url_fragment('agent_peoplesearch_customfilter', {'letter': selected_letter}) }}';
-{% endif %}
+        {% if view_name_data and view_name_type == 'usergroup' %}
+        pageMeta.url_fragment = '{{ url_fragment('agent_peoplesearch_usergroup', {'id': view_name_data}) }}';
+        {% else %}
+        pageMeta.url_fragment = '{{ url_fragment('agent_peoplesearch_customfilter', {'letter': selected_letter}) }}';
+        {% endif %}
 
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.PeopleList';
-pageMeta.viewTypeUrl = '{{ path('agent_peoplesearch_customfilter') }}?cache_id={{cache_id}}&view_type=$view_type';
-pageMeta.pageUrl = '{{ path('agent_peoplesearch_customfilter') }}?partial=1&cache_id={{cache_id}}&page=$page';
-pageMeta.refreshUrl = '{{ path('agent_peoplesearch_customfilter') }}?cache_id={{cache_id}}&letter={{selected_letter}}';
-pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
-pageMeta.fetchResultsUrl = '{{ path('agent_peoplesearch_getpage') }}';
-pageMeta.resultId = {{cache_id}};
-pageMeta.cache_id = {{cache_id}};
-{% set baseId = el_uid() %}
-pageMeta.baseId = '{{ baseId }}';
-pageMeta.displayFields = {{ display_fields|json_encode|raw }};
-pageMeta.page = {{ page }};
-pageMeta.persons = {{ people_json|raw }};
-</script>
+        pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.PeopleList';
+        pageMeta.viewTypeUrl = '{{ path('agent_peoplesearch_customfilter') }}?cache_id={{cache_id}}&view_type=$view_type';
+        pageMeta.pageUrl = '{{ path('agent_peoplesearch_customfilter') }}?partial=1&cache_id={{cache_id}}&page=$page';
+        pageMeta.refreshUrl = '{{ path('agent_peoplesearch_customfilter') }}?cache_id={{cache_id}}&letter={{selected_letter}}';
+        pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
+        pageMeta.fetchResultsUrl = '{{ path('agent_peoplesearch_getpage') }}';
+        pageMeta.resultId = {{cache_id}};
+        pageMeta.cache_id = {{cache_id}};
+        {% set baseId = el_uid() %}
+        pageMeta.baseId = '{{ baseId }}';
+        pageMeta.displayFields = {{ display_fields|json_encode|raw }};
+        pageMeta.page = {{ page }};
+        pageMeta.persons = {{ people_json|raw }};
+    </script>
 {% endblock top %}
 
 {######################################################################################################################}
@@ -33,46 +33,49 @@ pageMeta.persons = {{ people_json|raw }};
 {######################################################################################################################}
 
 {% block pane_header %}
-	<h1><i class="icon-dp-person"></i> {{ phrase('agent.people.list_title', {count: person_ids|length|default(0)}) }}</h1>
+    <h1><i class="icon-dp-person"></i> {{ phrase('agent.people.list_title', {count: person_ids|length|default(0)}) }}
+    </h1>
 {% endblock pane_header %}
 
 {######################################################################################################################}
 {# CONTENT #}
 {######################################################################################################################}
 
+{% block pane_content_header %}
+    {% include 'AgentBundle:PeopleSearch:list-display-options-overlay.html.twig' %}
+    {% include 'AgentBundle:PeopleSearch:list-control-bar.html.twig' %}
+{% endblock %}
+
 {% block pane_content %}
 
     <div id="people-list-result" ng-show="persons.length">
-        {% include 'AgentBundle:PeopleSearch:list-display-options-overlay.html.twig' %}
-        {% include 'AgentBundle:PeopleSearch:list-control-bar.html.twig' %}
-        {#{% include 'AgentBundle:PeopleSearch:list-massactions-bar.html.twig' %}#}
 
-      <div ng-if="listType == 'list'">
         <section class="people-list list-listing no-check">
-            {% include 'AgentBundle:PeopleSearch:list-page.html.twig' %}
+
+            <div ng-if="listType == 'list'">
+                {% include 'AgentBundle:PeopleSearch:list-page.html.twig' %}
+            </div>
+
+            <div class="table-result-list" ng-if="'table' === listType">
+                <table cellspacing="0" width="100%">
+
+                    {% include 'AgentBundle:PeopleSearch:list-table-head.html.twig' %}
+
+                    <tbody>
+                    <tr
+                            ng-repeat="person in persons"
+                            class="row-item person person-{{ ng_var('person.id') }}"
+                            data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '{{ person.id }}'})|raw }}"
+                            data-route-title="@selector(a.name)" data-route-openclass="open"
+                            >
+                        {% include 'AgentBundle:PeopleSearch:list-table-row.html.twig' %}
+                    </tr>
+                    </tbody>
+
+                </table>
+            </div>
+
         </section>
-      </div>
-
-      <div ng-if="'table' === listType">
-        <div class="table-result-list">
-            <table cellspacing="0" width="100%">
-
-                {% include 'AgentBundle:PeopleSearch:list-table-head.html.twig' %}
-
-                <tbody>
-                <tr
-                        ng-repeat="person in persons"
-                        class="row-item person person-{{ ng_var('person.id') }}"
-                        data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '{{ person.id }}'})|raw }}"
-                        data-route-title="@selector(a.name)" data-route-openclass="open"
-                        >
-                    {% include 'AgentBundle:PeopleSearch:list-table-row.html.twig' %}
-                </tr>
-                </tbody>
-
-            </table>
-        </div>
-      </div>
 
         {% include 'AgentBundle::list-pane-nav.html.twig' with {
             listName: 'persons',

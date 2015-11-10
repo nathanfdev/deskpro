@@ -21,7 +21,7 @@ export class ClickOut extends React.Component {
 
   onClick = event => {
     event.preventDefault();
-    const { additionalNodes, ignoreNodes, onClickOut, onClick } = this.props;
+    const { additionalNodes = [], ignoreNodes, onClickOut } = this.props;
 
     // skip if clicking on one of the ignored nodes
     if (ignoreNodes) {
@@ -30,10 +30,12 @@ export class ClickOut extends React.Component {
       ignoreNodes.forEach(ignored => {
         const node = ignored && ignored.node ? ignored.node : ignored;
         if (node) {
+          // skip when clicking on a note itself
           if (node === event.target) {
             skip = true;
           }
 
+          // skip when clicking on a child of the ignored node
           if (jQuery.contains(node, event.target)) {
             skip = true;
           }
@@ -45,7 +47,7 @@ export class ClickOut extends React.Component {
       }
     }
 
-    const nodes = additionalNodes || [];
+    const nodes = [...additionalNodes];
     nodes.push(this.refs.container);
 
     let outside = true;

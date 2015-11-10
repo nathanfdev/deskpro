@@ -30,8 +30,18 @@ export class Footer extends React.Component {
     this.setState(newState);
   }
 
+  handleTyping = (event) => {
+    if (event.keyCode === 13 && event.altKey === true) {
+      event.target.value += '\r\n';
+      this.handleChange(event);
+    } else if (event.keyCode === 13) {
+      event.preventDefault();
+      this.handleSubmit();
+    }
+  };
+
   handleSubmit = () => {
-    if (this.state.message) {
+    if (this.state.message.trim()) {
       this.props.handleAddMessage(this.state.message);
       this.handleChange({target: {value: ''}});
     }
@@ -88,6 +98,7 @@ export class Footer extends React.Component {
         <form onSubmit={this.handleSubmit}>
           <TextareaAutosize
             onChange={this.handleChange.bind(this)}
+            onKeyDown={this.handleTyping}
             placeholder="Send a message"
             rows={1}
             style={{maxHeight: 300}}

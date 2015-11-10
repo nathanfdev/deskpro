@@ -32,10 +32,10 @@
                         </li>
 
                         <li class="tab-solo">
-                            <form class="form-filter">
+                            <form class="form-filter" method="GET"  id="ticket_list_search_form" action="{{ path('portal_tickets', { type: type }) }}" novalidate>
                                 <div class="bucket">
-                                    <span>Filter: </span>
-                                    <input placeholder="Type filters here" type="text">
+                                    <span>Search in Tickets:</span>
+                                    <input title="Search in Tickets" name="q" value="{{ search_query }}" type="text" />
                                 </div>
                             </form>
                         </li>
@@ -56,7 +56,12 @@
                 </a>
             {% endif %}
 
-            {% macro sort_link(label, sort_value, sort, sort_param, sort_dir, sort_dir_param) %}
+            {%- macro sort_link(ticket_table, label, sort_value) -%}
+                {% set sort = ticket_table.ticketFilter.sort %}
+                {% set sort_param = ticket_table.sortName %}
+                {% set sort_dir = ticket_table.ticketFilter.sortDirection %}
+                {% set sort_dir_param = ticket_table.sortDirectionName %}
+
                 {% set queryParams = app.request.query.all|merge({(sort_param):sort_value}) %}
                 {% set isActive = sort_value == sort %}
                 {% if isActive %}
@@ -68,158 +73,160 @@
                 {% set url = path(app.request.attributes.get('_route'), queryParams) %}
                 {% set sort_icon = sort_dir == 'desc' ? '&darr;' : '&uarr;' %}
                 <a href="{{ url }}">{{ label }}{% if isActive %}{{ sort_icon|raw }}{% endif %}</a>
-            {% endmacro %}
+            {%- endmacro -%}
+
+            {%- macro col_header(ticket_table, col) -%}
+                {% if col.id == 'department_subject' %}
+                    {{ _self.sort_link(
+                    ticket_table,
+                    phrase('portal.tickets.list_department'),
+                    'department'
+                    ) }}
+                    /
+                    {{ _self.sort_link(
+                    ticket_table,
+                    phrase('portal.tickets.list_subject'),
+                    'subject'
+                    ) }}
+                {% else %}
+                    {% set make_link = true %}
+                    {% if col.id == 'agent' %}
+                        {% set label = phrase('portal.tickets.list_agent' ) %}
+                    {% elseif col.id == 'date_activity' %}
+                        {% set label = phrase('portal.tickets.list_last_action') %}
+                    {% elseif col.id == 'date_created' %}
+                        {% set label = phrase('portal.tickets.list_date_created') %}
+                    {% elseif col.id == 'date_user' %}
+                        {% set label = phrase('portal.tickets.list_date_last_user') %}
+                    {% elseif col.id == 'date_agent' %}
+                        {% set label = phrase('portal.tickets.list_date_last_agent') %}
+                    {% else  %}
+                        {% set label = col.label %}
+                        {% set make_link = false %}
+                    {% endif %}
+                    {% if make_link %}
+                        {{ _self.sort_link(
+                        ticket_table,
+                        label,
+                        col.id
+                        ) }}
+                    {% else %}
+                        {{ label }}
+                    {% endif %}
+                {% endif %}
+            {%- endmacro -%}
+
+            {%- macro col_data(ticket, ticket_view, ticket_table, col) -%}
+                {% if col.id == 'department_subject' %}
+                    <span class="focus">[{{ ticket.department }}]</span>
+                    {{ ticket.subject }}
+                {% else %}
+                    {% if col.id == 'agent' %}
+                        {% if ticket.agent %}
+                        <img src="{{ avatar_url(ticket.agent) }}" class="avatar">
+                        <span class="person">{{ ticket.agent.display_name_user }}</span>
+                        {% endif %}
+                    {% elseif col.id == 'date_activity' %}
+                        {% set last_message = ticket.messages|last %}
+                        <img src="{{ avatar_url(last_message.person) }}" class="avatar">
+                        <span class="person">{{ last_message.person.display_name_user }}</span>
+                        <span class="date">{{ ticket.last_activity_date|date }}</span>
+                    {% elseif col.id == 'date_created' %}
+                        <a href="{{ portal_path(ticket) }}">
+                            <span class="date">{{ ticket.date_created|date }}</span>
+                        </a>
+                    {% elseif col.id == 'date_user' %}
+                        {% if ticket.date_last_user_reply %}
+                            {% if ticket.person %}
+                                <img src="{{ avatar_url(ticket.person) }}" class="avatar">
+                                <span class="person">{{ ticket.person.display_name_user }}</span>
+                            {% endif %}
+                            <span class="date">{{ ticket.date_last_user_reply|date }}</span>
+                        {% endif %}
+                    {% elseif col.id == 'date_agent' %}
+                        {% if ticket.date_last_agent_reply %}
+                            {% if ticket.agent %}
+                                <img src="{{ avatar_url(ticket.agent) }}" class="avatar">
+                                <span class="person">{{ ticket.agent.display_name_user }}</span>
+                            {% endif %}
+                            <span class="date">{{ ticket.date_last_agent_reply|date }}</span>
+                        {% endif %}
+                    {% else  %}
+                        {% set property = ticket_view.getProperty(col.id) %}
+                        {% if property and property.isVisible() %}
+                            {{ property.value }}
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            {%- endmacro -%}
+
+            {%- macro col_td_class(ticket, ticket_view, ticket_table, col) -%}
+                {%- if col.id == 'department_subject' -%}
+                {%- else -%}
+                    info-block
+                {%- endif -%}
+            {%- endmacro -%}
 
             {% macro tickets_table(ticket_table, id) %}
                 <div class="column-full">
-                    <div class="ticket-table">
-                        <!-- Table Header -->
+                    <div class="ticket-table" data-id="{{ id }}">
                         <header class="titled-header">
                             <h1>{{ ticket_table.title }}</h1>
                         </header>
 
                         <div class="table-meta">
                             <div class="table-controls">
-                                <a href="#" class="clickaway-dropdown column-control" data-clickaway-target="table_list_{{ id }}" data-columns="{{ ticket_table.columns|join(',') }}" data-active-columns="{{ ticket_table.activeColumns|join(',') }}"></a>
-                                <div class="popup-tiny" id="table_list_{{ id }}" style="display:none;">
-
+                                {% set table_list_id = "table_list_" ~ id %}
+                                <a href="#" class="column-control"></a>
+                                <div class="popup-tiny" style="display:none;">
                                 </div>
-                                <a href="#" class="expand-control"><i class="fa fa-caret-right"></i></a>
+                                {# below was an old idea of expanding the table over the sdiebar, if present #}
+                                {#<a href="#" class="expand-control"><i class="fa fa-caret-right"></i></a>#}
                             </div>
                         </div>
-
-
-
 
                         <!-- Table -->
                         <table class="user-ticket-list">
                             <thead>
                             <tr>
-                                <td class="table-header" data-col="department_subject">
-                                    {{ _self.sort_link(
-                                    phrase('portal.tickets.list_department'),
-                                    'department',
-                                    ticket_table.ticketFilter.sort,
-                                    ticket_table.sortName,
-                                    ticket_table.ticketFilter.sortDirection,
-                                    ticket_table.sortDirectionName
-                                    ) }}
-                                    /
-                                    {{ _self.sort_link(
-                                    phrase('portal.tickets.list_subject'),
-                                    'subject',
-                                    ticket_table.ticketFilter.sort,
-                                    ticket_table.sortName,
-                                    ticket_table.ticketFilter.sortDirection,
-                                    ticket_table.sortDirectionName
-                                    ) }}
+                                <td class="table-header ticket-ref">
+                                    Reference
                                 </td>
-                                <td class="table-header" data-col="agent">
-                                    {{ _self.sort_link(
-                                    'Agent',
-                                    'agent',
-                                    ticket_table.ticketFilter.sort,
-                                    ticket_table.sortName,
-                                    ticket_table.ticketFilter.sortDirection,
-                                    ticket_table.sortDirectionName
-                                    ) }}
-                                </td>
-                                <td class="table-header" data-col="date_created">
-                                    {{ _self.sort_link(
-                                    phrase('portal.tickets.list_date_created'),
-                                    'created',
-                                    ticket_table.ticketFilter.sort,
-                                    ticket_table.sortName,
-                                    ticket_table.ticketFilter.sortDirection,
-                                    ticket_table.sortDirectionName
-                                    ) }}
-                                </td>
-                                <td class="table-header right" data-col="date_activity">
-                                    {{ _self.sort_link(
-                                    phrase('portal.tickets.list_last_action'),
-                                    'activity',
-                                    ticket_table.ticketFilter.sort,
-                                    ticket_table.sortName,
-                                    ticket_table.ticketFilter.sortDirection,
-                                    ticket_table.sortDirectionName
-                                    ) }}
-                                </td>
-                                <td class="table-header right" data-col="date_user">
-                                    {{ _self.sort_link(
-                                    'Last User Reply',
-                                    'date_user',
-                                    ticket_table.ticketFilter.sort,
-                                    ticket_table.sortName,
-                                    ticket_table.ticketFilter.sortDirection,
-                                    ticket_table.sortDirectionName
-                                    ) }}
-                                </td>
-                                <td class="table-header right" data-col="date_agent">
-                                    {{ _self.sort_link(
-                                    'Last Agent Reply',
-                                    'date_user',
-                                    ticket_table.ticketFilter.sort,
-                                    ticket_table.sortName,
-                                    ticket_table.ticketFilter.sortDirection,
-                                    ticket_table.sortDirectionName
-                                    ) }}
-                                </td>
+                                {% for col in ticket_table.columns %}
+                                    <td class="table-header" data-col="{{ col.id }}"{% if not ticket_table.isActive(col)  %} style="display:none;"{% endif %}>
+                                        {{ _self.col_header(ticket_table, col) }}
+                                    </td>
+                                {% endfor %}
                             </tr>
                             </thead>
                             <tbody>
+                            {% if ticket_table.ticketFilter.searchQuery %}
+                                <tr class="first-in-line">
+                                    <td class="span-total-cols" colspan="{{ ticket_table.columns|length }}">
+                                        <div class="filter-warning">
+                                            <i class="fa fa-eye"></i> You have an active filter on this view. <a class="dpx-active-filter-link" href="{{ path('portal_tickets', { type: ticket_table.ticketFilter.type }) }}">Click here to clear it</a> and see everything.
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endif %}
                             {% for ticket in ticket_table.pager %}
+                                {% set ticket_view = ticket_view(ticket) %}
                                 <tr class="item-row">
-                                    <td data-col="department_subject">
+                                    <td class="first-in-line ticket-ref">
+                                        {{ ticket_public_id(ticket) }}
+                                    </td>
+                                {% for col in ticket_table.columns %}
+                                    <td class="{{ _self.col_td_class(ticket, ticket_view, ticket_table, col) }}" data-col="{{ col.id }}"{% if not ticket_table.isActive(col) %} style="display:none;"{% endif %}>
                                         <a href="{{ portal_path(ticket) }}">
-                                            <span class="status-tag">{{ ticket_status(ticket) }}</span>
-                                            <span class="focus">[{{ ticket.department }}]</span>
-                                            {{ ticket.subject }}
+                                            {{ _self.col_data(ticket, ticket_view, ticket_table, col) }}
                                         </a>
                                     </td>
-                                    <td class="info-block" data-col="agent">
-                                        <a href="{{ portal_path(ticket) }}">
-                                            {% if ticket.agent %}
-                                                <img src="{{ avatar_url(ticket.agent) }}" class="avatar">
-                                                <span class="person">{{ ticket.agent.display_name_user }}</span>
-                                            {% endif %}
-                                        </a>
-                                    </td>
-                                    <td class="info-block" data-col="date_created">
-                                        <a href="{{ portal_path(ticket) }}">
-                                            <span class="date">{{ ticket.date_created|date }}</span>
-                                        </a>
-                                    </td>
-                                    <td class="info-block" data-col="date_activity">
-                                        {% set last_message = ticket.messages|last %}
-                                        {% if last_message %}
-                                            <a href="{{ portal_path(ticket) }}">
-                                                <img src="{{ avatar_url(last_message.person) }}" class="avatar">
-                                                <span class="person">{{ last_message.person.display_name_user }}</span>
-                                                <span class="date">{{ ticket.last_activity_date|date }}</span>
-                                            </a>
-                                        {% endif %}
-                                    </td>
-                                    <td class="info-block" data-col="date_user">
-                                        {% if ticket.date_last_user_reply %}
-                                            <a href="{{ portal_path(ticket) }}">
-                                                {% if ticket.person %}
-                                                    <img src="{{ avatar_url(ticket.person) }}" class="avatar">
-                                                    <span class="person">{{ ticket.person.display_name_user }}</span>
-                                                {% endif %}
-                                                <span class="date">{{ ticket.date_last_user_reply|date }}</span>
-                                            </a>
-                                        {% endif %}
-                                    </td>
-                                    <td class="info-block" data-col="date_agent">
-                                        {% if ticket.date_last_agent_reply %}
-                                            <a href="{{ portal_path(ticket) }}">
-                                                {% if ticket.agent %}
-                                                    <img src="{{ avatar_url(ticket.agent) }}" class="avatar">
-                                                    <span class="person">{{ ticket.agent.display_name_user }}</span>
-                                                {% endif %}
-                                                <span class="date">{{ ticket.date_last_agent_reply|date }}</span>
-                                            </a>
-                                        {% endif %}
+                                {% endfor %}
+                                </tr>
+                            {% else %}
+                                <tr class="item-row">
+                                    <td class="span-total-cols" colspan="{{ ticket_table.columns|length }}">
+                                        No tickets! (should we just make the table disappear in this case?)
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -234,7 +241,13 @@
             {% endmacro %}
 
             {% for table in ticket_list_tables %}
-                {{ _self.tickets_table(table, loop.index) }}
+                {{ _self.tickets_table(table, loop.index0) }}
             {% endfor %}
     </div>
 {% endblock inner_content %}
+{% block doc_end %}
+    <!-- DESKPRO_TICKET_DISPLAY -->
+    <script type="text/javascript">
+        {{ ticket_list_js|raw }}
+    </script>
+{% endblock doc_end %}

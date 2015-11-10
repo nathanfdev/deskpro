@@ -37,6 +37,7 @@ use Application\DeskPRO\App;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Html\Html2Text;
 use Orb\Util\Strings;
 
 /**
@@ -377,25 +378,28 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
             $marker_class_a   = 'dp-embed-blob-a-'.$m[2];
             $marker_class_img = 'dp-embed-blob-img-'.$m[2];
 
-            // Add a sign code
-            // There was a bug briefly in the wild where a blob that failed to save using its primary fs
-            // adapter could have the wrong authcode and be served from the db, which means any embedded images saved in the text of messages
-            // (rather than being output by the router) will be incorrect
+            // Add a sign code for fs-saved files
+            // If the auto-code contains the '0' digit it means it was originally in the db
+            // It's possible it's been moved (e.g., to fs or s3) which means the auth will have changed
+            // so adding the 'sc' code makes any hard-coded links still work by using a separate sign code as auth in serve_file.php
             if (substr($m[2], -1, 1) == '0') {
-                $aids = App::getContainer()->getBlobStorage()->getAdapterIds();
+                $sc_code = \Orb\Util\Util::generateStaticSecurityToken(App::getSetting('core.install_token').$m[2]);
+                $aids    = App::getContainer()->getBlobStorage()->getAdapterIds();
                 if (in_array('fs', $aids)) {
-                    $download_url .= '?sc='.\Orb\Util\Util::generateStaticSecurityToken(App::getSetting('core.install_token').$m[2]);
+                    $download_url .= "?sc=$sc_code";
                 }
+            } else {
+                $sc_code = null;
             }
 
             if ($m[1] == 'signature_image') {
                 $url = App::getSetting('core.deskpro_url');
-                $url .= ltrim(App::getRouter()->getGenerator()->generatePath('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3]), false), '/');
+                $url .= ltrim(App::getRouter()->getGenerator()->generatePath('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3], 'sc' => $sc_code), false), '/');
 
                 $replace = sprintf('<img src="%s" title="%s" />', $url, $m[3]);
             } elseif ($m[1] == 'image') {
                 $url = App::getSetting('core.deskpro_url');
-                $url .= ltrim(App::getRouter()->getGenerator()->generatePath('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3], 's' => 350), false), '/');
+                $url .= ltrim(App::getRouter()->getGenerator()->generatePath('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3], 's' => 350, 'sc' => $sc_code), false), '/');
 
                 $do_link = true;
 
@@ -484,12 +488,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     public function getMessageText()
     {
         $message = $this->message;
-        $message = strip_tags($message);
-
-        // Decode entities in the HTML back to characters,
-        // This is needed so when outputting, they arent double-encoded by twig
-        // (And its just proper!)
-        $message = \Orb\Util\Strings::htmlEntityDecodeUtf8($message);
+        $message = Html2Text::convertHtml($message);
 
         return $message;
     }

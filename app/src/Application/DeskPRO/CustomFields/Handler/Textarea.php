@@ -31,8 +31,6 @@
  */
 namespace Application\DeskPRO\CustomFields\Handler;
 
-use Application\DeskPRO\App;
-
 /**
  * Handles the text field.
  */
@@ -47,14 +45,8 @@ class Textarea extends Text
         return array();
     }
 
-    public function getFormField($data = null)
+    public function getWidgetName()
     {
-        $setData = null;
-        if ($data and !empty($data['value'])) {
-            $setData = $data['value'];
-        }
-        $field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'textarea', $setData, array('required' => false));
-
-        return $field;
+        return 'textarea';
     }
 }

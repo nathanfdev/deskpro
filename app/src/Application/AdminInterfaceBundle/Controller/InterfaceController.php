@@ -32,6 +32,7 @@
 namespace Application\AdminInterfaceBundle\Controller;
 
 use Application\DeskPRO\Translate\JsExporter;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -157,9 +158,8 @@ class InterfaceController extends AbstractController
                     $native_package = $app_manager->getNativePackageConfig($package);
 
                     $real_path = @realpath($native_package->getNativeDir().'/Resources/views/'.$tpl_name);
-                    if ($real_path && strpos($real_path, $native_package->getNativeDir()) === 0 && file_exists($real_path)) {
-                        return file_get_contents($real_path);
-                    }
+
+                    return SafeFile::fileGetContents($real_path, array($native_package->getNativeDir()));
                 }
             }
         }

@@ -348,7 +348,32 @@ abstract class HandlerAbstract
      *
      * @return Symfony\Component\Form\Field
      */
-    abstract public function getFormField($data = null);
+    public function getFormField($data = null)
+    {
+        $required = defined('DP_INTERFACE') && (
+                ('user' === DP_INTERFACE && $this->field_def->getOption('required'))
+                ||
+                ('agent' === DP_INTERFACE && $this->field_def->getOption('agent_required'))
+            );
+
+        $options = array(
+            'required' => $required,
+            'attr'     => $this->field_def->getOption('attr', array()),
+        );
+
+        if ($class = $this->field_def->getOption('custom_css_classname')) {
+            $options['attr']['class'] = @$options['attr']['class'].' '.$class;
+        }
+
+        $field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), $this->getWidgetName(), @$data['value'], $options);
+
+        return $field;
+    }
+
+    public function getWidgetName()
+    {
+        return 'text';
+    }
 
     /**
      * Get data from a posted form that we'll store in the database.

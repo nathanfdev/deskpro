@@ -103,6 +103,10 @@ DeskPRO.Agent.RuleBuilder.DateTimeTerm = new Orb.Class({
       }
     });
 
+    this.date1Display.on('dp.change', function(){
+      $(this).trigger('change');
+    });
+
     this.date2Display.datetimepicker({
       format: 'YYYY-MM-DD HH:mm',
       widgetParent: this.date2Display.parent().css({
@@ -117,6 +121,10 @@ DeskPRO.Agent.RuleBuilder.DateTimeTerm = new Orb.Class({
         previous: 'fa fa-chevron-left',
         next: 'fa fa-chevron-right'
       }
+    });
+
+    this.date2Display.on('dp.change', function(){
+      $(this).trigger('change');
     });
 
 

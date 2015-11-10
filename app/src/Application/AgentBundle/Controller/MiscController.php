@@ -37,8 +37,8 @@ use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConf
 use Application\DeskPRO\Assets\RequireJsConfigGenerator;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Orb\Util\Arrays;
-use Orb\Util\Numbers;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -761,7 +761,7 @@ JS;
         } else {
             $file = $this->request->files->get('files');
 
-            $content = file_get_contents($file[0]->getPathName());
+            $content = SafeFile::fileGetContents($file[0]->getPathName(), dirname($file[0]->getPathName()));
         }
 
         $fields = \Application\DeskPRO\Reader\VCard::parseVCard($content);
@@ -866,25 +866,7 @@ JS;
 
     public function redirectExternalInfoAction($url)
     {
-        $urlinfo = parse_url($url);
-
-        $page = @file_get_contents($url);
-        $info = array();
-
-        $info['title']         = Strings::extractRegexMatch('#<title>(.*?)</title>#im', $page, 1);
-        $info['ip']            = gethostbyname($urlinfo['host']);
-        $info['hostname']      = gethostbyname($info['ip']);
-        $info['size']          = strlen($page);
-        $info['size_readable'] = Numbers::filesizeDisplay($info['size']);
-
-        $info['num_images']  = substr_count($page, '<img');
-        $info['num_scripts'] = substr_count($page, '<script');
-
-        return $this->render('AgentBundle:Misc:redirect-external-info.html.twig', array(
-            'url'     => $url,
-            'urlinfo' => $urlinfo,
-            'info'    => $info,
-        ));
+        return $this->createNotFoundException();
     }
 
     public function getPasswordConfirmCodeAction()

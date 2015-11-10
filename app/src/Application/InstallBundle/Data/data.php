@@ -507,12 +507,31 @@ $publisher->setPassword('publisher');
 $em->persist($publisher);
 $em->flush($publisher);
 
+// an org
+$organization = new \Application\DeskPRO\Entity\Organization();
+$organization->setName('Mana Publishing');
+$organization->setImportance(5);
+
 // a regular dude
 $person       = new \Application\DeskPRO\Entity\Person();
 $person->name = 'Joe Kool';
 $person->addEmailAddressString('joe@deskprodemo.com');
 $person->setPassword('joe');
+$person->setOrganization($organization);
 
+// an organization
+$mana       = new \Application\DeskPRO\Entity\Person();
+$mana->name = 'Mana Ger';
+$mana->addEmailAddressString('manager@deskprodemo.com');
+$mana->setPassword('manager');
+$mana->setOrganization($organization);
+$mana->organization_manager = true;
+$mana->setOrganizationPosition('MANAGER');
+
+$em->persist($mana);
+$em->persist($organization);
+$em->flush($mana);
+$em->flush($organization);
 $em->persist($person);
 $em->flush($person);
 
@@ -796,10 +815,8 @@ INSERT INTO `custom_def_ticket` (`id`, `parent_id`, `app_id`, `js_class`, `has_f
 VALUES
 	(1, NULL, NULL, '', 0, 0, 'Custom Text Box', 'This is a custom text box description', 'Application\\\\DeskPRO\\\\CustomFields\\\\Handler\\\\Text', X'613A303A7B7D', 1, 1, 0, NULL, 0),
 	(2, NULL, NULL, '', 0, 0, 'Custom Multi-Line Text Box', 'The description of a custom multi-line text box', 'Application\\\\DeskPRO\\\\CustomFields\\\\Handler\\\\Textarea', X'613A303A7B7D', 1, 1, 0, NULL, 0),
-	(3, NULL, NULL, '', 0, 0, 'Custom Single Checkbox', 'Custom (toggle type) checkbox description', 'Application\\\\DeskPRO\\\\CustomFields\\\\Handler\\\\Toggle', X'613A303A7B7D', 1, 1, 0, '', 0),
 	(4, NULL, NULL, '', 0, 0, 'Custom Date', 'Custom date description', 'Application\\\\DeskPRO\\\\CustomFields\\\\Handler\\\\Date', X'613A333A7B733A383A227265717569726564223B623A303B733A31343A226167656E745F7265717569726564223B623A303B733A31393A22646174655F76616C69645F74696D657A6F6E65223B733A31363A22416D65726963612F4E65775F596F726B223B7D', 1, 1, 0, NULL, 0),
 	(5, NULL, NULL, '', 0, 0, 'Custom Date Time', 'Custom date/time description', 'Application\\\\DeskPRO\\\\CustomFields\\\\Handler\\\\DateTime', X'613A333A7B733A383A227265717569726564223B623A303B733A31343A226167656E745F7265717569726564223B623A303B733A31393A22646174655F76616C69645F74696D657A6F6E65223B733A31363A22416D65726963612F4E65775F596F726B223B7D', 1, 1, 0, NULL, 0),
-	(6, NULL, NULL, '', 0, 0, 'Custom Display', 'This is a custom HTML display', 'Application\\\\DeskPRO\\\\CustomFields\\\\Handler\\\\Display', X'613A313A7B733A343A2268746D6C223B733A33343A223C68313E437573746F6D2048544D4C20446973706C6179204669656C643C2F68313E223B7D', 1, 1, 0, NULL, 0),
 	(7, NULL, NULL, '', 0, 0, 'Custom Hidden', 'this is a custom hidden field description', 'Application\\\\DeskPRO\\\\CustomFields\\\\Handler\\\\Hidden', X'613A303A7B7D', 1, 1, 0, 'VALUE', 0),
 	(8, NULL, NULL, '', 0, 0, 'Custom Radio Group', 'these are a custom pre-defined \"radio\" choices', 'Application\\\\DeskPRO\\\\CustomFields\\\\Handler\\\\Choice', X'613A323A7B733A383A226D756C7469706C65223B623A303B733A383A22657870616E646564223B623A313B7D', 1, 1, 0, NULL, 0),
 	(9, 8, NULL, '', 0, 0, 'Radio 1', '', NULL, X'613A313A7B733A323A226362223B733A323A223139223B7D', 1, 1, 10, NULL, 0),

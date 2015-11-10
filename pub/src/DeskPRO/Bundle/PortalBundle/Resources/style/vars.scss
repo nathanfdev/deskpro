@@ -6,7 +6,8 @@
 // Outer page
 //-------------------------
 
-$world-background: #fff;
+$world-background: #F4F6F6;
+//$world-background: #fff;
 $world-padding: 20px;
 
 //-------------------------
@@ -21,11 +22,12 @@ $fonts: apple-system, ".SFNSText-Regular", "Helvetica Neue", "Segoe UI", "Roboto
 $divider-color: rgba(0, 0, 0, 0.1);
 $universal-left-padding: 10px;
 $main-color: #3575bd;
+$main-color-light: lighten(#3575bd, 45%);
 
 // Font sizes
 $font-small: 0.8em;
 $font-mid: 0.9em;
-$font-default: 1em;
+$font-default: 0.85em;
 $font-large: 1.4em;
 
 // Font colors
@@ -91,3 +93,10 @@ $form-padding-horizontal: 1em;
 
 // Max page width
 $max-width: 1080px;
+
+// Simple condition used to see if the world div should be 'framed'
+// based on if the body bg is different from page bg
+$with-world-framed: $world-background != $page-background;
+
+$form-widget-selector: 'input[type="text"], input[type="email"], input[type="[password"], textarea, .dp-choice-widget-group, .dp-medium-rte-wrapper';
+$zindex-very-top: 5000;

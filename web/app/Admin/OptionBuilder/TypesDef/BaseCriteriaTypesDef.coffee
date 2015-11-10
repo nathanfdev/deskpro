@@ -150,10 +150,7 @@ define [
         getDataFormatter: ->
           return {
             getViewValue: (value = {}, data) ->
-              if value.options.custom_fields? && options.field_id?
-                val = value.options.custom_fields['field_' + options.field_id]
-              else
-                val = value.options?[prop_name] || null
+              val = value.options?[prop_name] || null
 
               if val == null and data.options and prop_name
                 val = data.options[0]?.value || null
@@ -170,11 +167,7 @@ define [
               value.type = type
               value.op = model.op
               value.options = {}
-              if options.field_id?
-                value.options.custom_fields = {}
-                value.options.custom_fields['field_' + options.field_id] = model.value
-              else
-                value.options[prop_name] = model.value
+              value.options[prop_name] = model.value
               return value
           }
       }
@@ -235,10 +228,7 @@ define [
         getDataFormatter: ->
           return {
             getViewValue: (value = {}, data) ->
-              if value.options.custom_fields? && options.field_id?
-                val = value.options.custom_fields['field_' + options.field_id]
-              else
-                val = value.options?[prop_name] || ''
+              val = value.options?[prop_name] || ''
               if Util.isArray(val) then val = val.join(',')
 
               if value.op
@@ -261,11 +251,7 @@ define [
               value.type = type
               value.op = model.op
               value.options = {}
-              if options.field_id?
-                value.options.custom_fields = {}
-                value.options.custom_fields['field_' + options.field_id] = val
-              else
-                value.options[prop_name] = val
+              value.options[prop_name] = val
 
               return value
             }

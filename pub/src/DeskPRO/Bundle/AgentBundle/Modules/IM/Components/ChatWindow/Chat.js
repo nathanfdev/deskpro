@@ -1,6 +1,9 @@
 import React, { PropTypes } from 'react';
+import Loader from 'react-loader';
 import { connect } from 'react-redux';
-import Spinner from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Spinner';
+import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
+import * as ui from '../../Actions/uiActions';
+import jQuery from 'jquery';
 
 // components
 import { Footer } from './Footer';
@@ -30,6 +33,7 @@ export class Chat extends React.Component {
     dispatch: PropTypes.func.isRequired
   };
 
+
   constructor(props) {
     super(props);
     this.state = {
@@ -57,9 +61,13 @@ export class Chat extends React.Component {
   }
 
   messageList = () => {
-    return (this.props.current.id)
-      ? <MessageList current={this.props.current} searchQuery={this.state.searchQuery}/>
-      : <Spinner width="40" height="40"/>;
+    return (
+      <div style={{minHeight: 75}}>
+        <Loader loaded={this.props.current.id} opacity={0} width={3} top="45%">
+          <MessageList current={this.props.current} searchQuery={this.state.searchQuery}/>
+        </Loader>
+      </div>
+    );
   };
 
   handleType = (event) => {
@@ -67,6 +75,10 @@ export class Chat extends React.Component {
     const newState = {...oldState};
     newState.searchTyped = event.target.value;
     this.setState(newState);
+  };
+
+  handleOnClose = (event) => {
+    this.props.dispatch(ui.closeChat());
   };
 
   handleSearch = (event) => {
@@ -81,6 +93,10 @@ export class Chat extends React.Component {
     const oldState = this.state;
     const newState = {...oldState};
     newState.searchShown = !oldState.searchShown;
+    if (!newState.searchShown) {
+      newState.searchTyped = '';
+      newState.searchQuery = '';
+    }
     this.setState(newState);
   };
 
@@ -89,7 +105,14 @@ export class Chat extends React.Component {
   };
 
   searchForm() {
-    return (this.state.searchShown) ? <SearchForm handleType={this.handleType} handleSearch={this.handleSearch} /> : null;
+    return (this.state.searchShown)
+      ?
+      <SearchForm
+        handleClear={this.handleClear}
+        handleType={this.handleType}
+        handleSearch={this.handleSearch}
+        searching={this.state.searchTyped}/>
+      : null;
   }
 
   static typing() {
@@ -104,13 +127,19 @@ export class Chat extends React.Component {
 
   render() {
     return (
+    <ClickOut
+      onClickOut={this.handleOnClose}
+      ignoreNodes={[jQuery('#active-chat-search-clear')]}
+      >
       <div className="dropdown active-chat-dropdown" id="active-chat-dropdown">
-        <Header toggleSearch={this.toggleSearch} online={this.isOnline()}/>
+        <Header toggleSearch={this.toggleSearch} onClose={this.handleOnClose} online={this.isOnline()}/>
         { this.searchForm() }
         { this.messageList() }
         { this.offline() }
         <Footer handleAddMessage={this.handleAddMessage}/>
       </div>
+    </ClickOut>
+
     );
   }
 }

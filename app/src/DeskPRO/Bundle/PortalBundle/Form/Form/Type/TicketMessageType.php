@@ -67,10 +67,23 @@ class TicketMessageType extends AbstractType
         $builder->add('message_text', 'textarea', array(
             'label'       => $options['message_label'],
             'required'    => $options['required'],
+            'attr'        => ['data-rte-field' => 'text'],
             'constraints' => $constraints,
         ));
 
+        $builder->add('message_html', 'hidden', array(
+            'attr'        => ['data-rte-field' => 'html'],
+            'constraints' => $constraints,
+        ));
+
+        $builder->add('message_format', 'hidden', array(
+            'data'   => 'text',
+            'attr'   => ['data-rte-field' => 'format'],
+            'mapped' => false,
+        ));
+
         $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onPreData'));
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'onPreSubmit'));
     }
 
     public function onPreData(FormEvent $event)
@@ -90,6 +103,31 @@ class TicketMessageType extends AbstractType
         $message->setPerson($person);
     }
 
+    public function onPreSubmit(FormEvent $event)
+    {
+        $messageData = $event->getData();
+        $form        = $event->getForm();
+
+        if ($messageData['message_format'] === 'text') {
+            $form->remove('message_html');
+
+            unset($messageData['message_html']);
+            $event->setData($messageData);
+        } else {
+            if (array_key_exists('message_text', $messageData)) {
+                $form->remove('message_text');
+
+                // The actual content is always submitted in the text field,
+                // so we need to swap that over to the html field so the
+                // proper setter is called on TicketMessage
+                $messageData['message_html'] = $messageData['message_text'];
+
+                unset($messageData['message_text']);
+                $event->setData($messageData);
+            }
+        }
+    }
+
     public function getName()
     {
         return 'ticket_message';
@@ -100,7 +138,8 @@ class TicketMessageType extends AbstractType
         $resolver->setDefaults(array(
             'data_class'          => 'Application\\DeskPRO\\Entity\\TicketMessage',
             'message_label'       => $this->language_manager->phrase('portal.forms.label_message'),
-            'message_constraints' => array(),
+            'message_constraints' => [],
+            'attr'                => ['data-rte' => '1'],
         ));
         $resolver->setRequired(array(
             'person',

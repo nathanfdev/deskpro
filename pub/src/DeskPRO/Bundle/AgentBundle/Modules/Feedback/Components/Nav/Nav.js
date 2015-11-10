@@ -22,7 +22,7 @@ export class Nav extends Component {
   };
 
   render() {
-    const { labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dispatch, dpWindow, commentsView } = this.props;
+    const { labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dispatch, dpWindow } = this.props;
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
@@ -33,7 +33,6 @@ export class Nav extends Component {
           <Pending
             toValidateCount={toValidateCount}
             commentsToReviewCount={commentsToReviewCount}
-            commentsView={commentsView.bind(this)}
           />
 
           <TabsPaneStatefulContainer id="tab">
