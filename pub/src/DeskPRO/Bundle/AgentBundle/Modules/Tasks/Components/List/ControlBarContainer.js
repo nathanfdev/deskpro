@@ -17,8 +17,6 @@ export class ControlBarContainer extends Component {
     selectedCount: PropTypes.number.isRequired,
     sort: PropTypes.string.isRequired,
     order: PropTypes.string.isRequired,
-    tableVisibleFields: PropTypes.array.isRequired,
-    cardVisibleFields: PropTypes.array.isRequired,
     viewMode: PropTypes.string.isRequired
   };
 

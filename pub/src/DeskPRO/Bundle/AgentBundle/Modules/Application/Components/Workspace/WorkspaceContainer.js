@@ -11,7 +11,7 @@ export class WorkspaceContainer extends React.Component {
   static propTypes = {
     dpWindow: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
-    positionTarget: PropTypes.node
+    positionTarget: PropTypes.any.isRequired
   };
 
   render() {
