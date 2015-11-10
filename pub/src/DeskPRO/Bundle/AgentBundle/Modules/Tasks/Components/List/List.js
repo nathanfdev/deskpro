@@ -40,7 +40,7 @@ export class List extends React.Component {
     return (
       <ListFrameContainer>
         <ControlBarContainer />
-        {listParams &&
+        {listParams.get('filter') &&
           <Loader loaded={loaded}
                   color="green"
                   opacity={0}
