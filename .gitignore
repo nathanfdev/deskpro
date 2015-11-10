@@ -2,6 +2,8 @@
 .DS_Store
 /.idea
 /web/app/.idea/
+/web/.idea/
+/pub/.idea/
 /nbproject/
 /catalog.xml
 /.settings/
