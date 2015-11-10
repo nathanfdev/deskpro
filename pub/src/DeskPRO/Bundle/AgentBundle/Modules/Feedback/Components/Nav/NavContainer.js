@@ -48,15 +48,6 @@ export class NavContainer extends Component {
     dispatch(actions.feedbackHiddenStatus());
   }
 
-  commentsView(group, event) {
-    event.preventDefault();
-    event.stopPropagation();
-    const {dispatch } = this.props;
-    dispatch(actions.setSort('date_created'));
-    dispatch(actions.setOrder('desc'));
-    dispatch(commentActions.loadCommentsList());
-  }
-
   render() {
     const {statuses, toValidateCount, commentsToReviewCount, dispatch, labels, types, customCategories, dpWindow} = this.props;
     return (
@@ -68,7 +59,6 @@ export class NavContainer extends Component {
         labels={labels}
         types={types}
         customCategories={customCategories}
-        commentsView={this.commentsView.bind(this)}
         dpWindow={dpWindow}
         />
     );

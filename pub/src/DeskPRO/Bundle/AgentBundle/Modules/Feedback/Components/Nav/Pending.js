@@ -6,12 +6,11 @@ export class Pending extends Component {
 
   static propTypes = {
     toValidateCount: PropTypes.number.isRequired,
-    commentsToReviewCount: PropTypes.number.isRequired,
-    commentsView: PropTypes.func.isRequired
+    commentsToReviewCount: PropTypes.number.isRequired
   };
 
   render() {
-    const { toValidateCount, commentsToReviewCount, commentsView } = this.props;
+    const { toValidateCount, commentsToReviewCount } = this.props;
 
     return (
       <Section>
@@ -30,7 +29,6 @@ export class Pending extends Component {
             <ListItem
               count={commentsToReviewCount}
               label="Comments to Review"
-              // onClick={commentsView.bind(this, {name: 'feedback_comments'})}
               />
 
           </ListItemContainer>
