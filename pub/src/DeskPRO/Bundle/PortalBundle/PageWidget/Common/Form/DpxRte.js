@@ -24,7 +24,7 @@ export default class DpxRte extends PageWidget {
     const $format  = this.$element.find('input[data-rte-field="format"]');
 
     $txt.val($html.val());
-    $txt.wrap('<div class="dp-medium-rte-wrapper" />');
+    $txt.wrap('<div class="dp-medium-rte-wrapper as-dpui" />');
 
     const $wrap = $txt.parent();
 

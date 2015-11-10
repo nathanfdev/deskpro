@@ -5,21 +5,15 @@
   <title>{% if page_title is defined %}{{ page_title }}{% else %}{{ global_settings.get('core.site_name')|default(global_settings.get('core.deskpro_name')) }}{% endif %}</title>
   <meta name="viewport" content="width=device-width">
   <style>
-      body .as-no-dpui {
-          display: block;
-      }
-
-      body .as-dpui {
-          display: none;
-      }
-
-      body.with-dpui .as-no-dpui {
-          display: none;
-      }
-
-      body.with-dpui .as-dpui {
-          display: block;
-      }
+      {# This is copy+pasted from dpx.scss. It needs to be inline because it needs to be instant. #}
+      body .as-no-dpui { display: block; }
+      body .as-dpui { display: none; }
+      body.with-dpui .as-no-dpui { display: none; }
+      body.with-dpui .as-dpui { display: block; }
+      body.with-js .with-dpx { visibility: hidden; }
+      body.with-js .with-dpx { visibility: hidden; }
+      body.with-js.without-dpui.with-pageload-done .with-dpx { visibility: visible; }
+      body.with-js.with-dpui.with-pageload-dpx-done .with-dpx { visibility: visible; }
   </style>
   {#<link href="{{ path('serve_brand_asset', { brand_id: brand('id'), file: 'DeskPRO/Bundle/Build/Resources/style/DeskPRO_PortalBundle_style.css' }) }}" media="all" rel="stylesheet" />#}
   <link href="{{ asset('DeskPRO_PortalBundle_style.css', 'app_assets') }}" media="all" rel="stylesheet" type="text/css" />
@@ -31,7 +25,12 @@
   document.body.className = document.body.className + ' with-js';
 
   window.WITH_DPUI = true;
-  document.body.className = document.body.className + ' with-dpui';
+  if (window.WITH_DPUI) {
+    document.body.className = document.body.className + ' with-dpui';
+  } else {
+    document.body.className = document.body.className + ' without-dpui';
+  }
+
 
   window.DP_LOAD_FN = [];
 
@@ -56,6 +55,12 @@
 <script type="text/javascript">
 (function(){
   document.body.className = document.body.className + ' with-pageload-done';
+  if (window.WITH_DPUI) {
+    window.setTimeout(function () {
+      // fallback
+      document.body.className = document.body.className + ' with-dpx-done';
+    }, 4000);
+  }
 
   window.DP_ASSET_URL      = '{{ asset('') }}';
   window.DP_BASE_URL       = '{{ path('portal_home')|trim('/') }}/';

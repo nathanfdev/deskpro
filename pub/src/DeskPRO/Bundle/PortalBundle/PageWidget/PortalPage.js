@@ -38,4 +38,8 @@ export default class PortalPage extends PageWidget {
       }
     });
   }
+
+  renderWidget() {
+    $(document.body).addClass('with-pageload-dpx-done');
+  }
 }

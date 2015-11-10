@@ -314,22 +314,6 @@ section {
   @include row();
 }
 
-body .as-no-dpui {
-  display: block;
-}
-
-body .as-dpui {
-  display: none;
-}
-
-body.with-dpui .as-no-dpui {
-  display: none;
-}
-
-body.with-dpui .as-dpui {
-  display: block;
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Buttons
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -8462,7 +8446,20 @@ form {
 }
 
 .dp-react-widget {
-  display: inline;
+  display: inline !important;
+}
+
+
+// This cleans up the style as widgets are loaded
+.with-dpui {
+  .dpx-date-time, .dpx-date {
+    .fallback-input, .fallback-input div, .fallback-input select {
+      display: inline;
+    }
+    .fallback-input select {
+      width: auto;
+    }
+  }
 }
 
 .xdsoft_datetimepicker {
