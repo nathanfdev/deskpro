@@ -7944,6 +7944,7 @@ input[type="text"], input[type="email"], input[type="password"], textarea, .dp-m
   border-radius: 2px;
   background: $form-input;
   padding: $form-padding-vertical $form-padding-horizontal;
+  color: $text-color;
 
   @include placeholder {
     color: $text-faded;
