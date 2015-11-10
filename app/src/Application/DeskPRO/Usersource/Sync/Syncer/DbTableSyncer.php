@@ -174,11 +174,6 @@ class DbTableSyncer extends AbstractSyncer
         $this->helper->savePerson($person);
         $this->helper->saveAssociation($assoc);
 
-        // detach
-        $person->clear();
-        $this->helper->getEm()->detach($person);
-        $this->helper->getEm()->detach($assoc);
-
         return true;
     }
 }

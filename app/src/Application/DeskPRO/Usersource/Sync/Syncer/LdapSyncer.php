@@ -334,11 +334,6 @@ class LdapSyncer extends AbstractSyncer
         $this->helper->savePerson($person);
         $this->helper->saveAssociation($assoc);
 
-        // detach
-        $person->clear();
-        $this->helper->getEm()->detach($person);
-        $this->helper->getEm()->detach($assoc);
-
         $timeConsumed = round(microtime(true) - $curTime, 3) * 1000;
         if ($timeConsumed >= 5) {
             // only log if it took 1 second or more
