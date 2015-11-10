@@ -51,7 +51,7 @@ export default class DpxDateWidget extends PageWidget {
 
     $textBox.datetimepicker({
       timepicker: is_time_included,
-      format: is_time_included ? 'm/d/Y h:ma' : 'm/d/Y',
+      format: is_time_included ? 'm/d/Y h:ia' : 'm/d/Y',
       startDate: initial_value,
       onChangeDateTime: function (dp, $input) {
         let m = moment($input.val(), is_time_included ? 'M/D/YYYY hh:mma' : 'M/D/YYYY');
