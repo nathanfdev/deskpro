@@ -31,7 +31,10 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpDate;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class DateType extends AbstractType
@@ -56,5 +59,31 @@ class DateType extends AbstractType
                 'placeholder' => '',
             ]
         );
+    }
+
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        $view->vars['weekdays'] = null;
+        $view->vars['min_date'] = null;
+        $view->vars['max_date'] = null;
+
+        if (array_key_exists('constraints', $options)) {
+            foreach ($options['constraints'] as $constraint) {
+                if ($constraint instanceof DpDate) {
+                    $view->vars['weekdays'] = implode(',', $constraint->days_of_week);
+                    $view->vars['min_date'] = $this->formatDate($constraint->min_date);
+                    $view->vars['max_date'] = $this->formatDate($constraint->max_date);
+                }
+            }
+        }
+    }
+
+    private function formatDate($date)
+    {
+        if ($date instanceof \DateTime) {
+            return $date->format('Y m d');
+        }
+
+        return;
     }
 }

@@ -135,7 +135,7 @@
 {# Date and Time #}
 
 {%- block datetime_widget -%}
-    <div class="dpx-date-time with-dpx">
+    <div class="dpx-date-time with-dpx" data-min-date="{{ form.vars.min_date }}" data-max-date="{{ form.vars.max_date }}" data-weekdays="{{ form.vars.weekdays }}">
         {% if widget == 'single_text' %}
             {{- block('form_widget_simple') -}}
         {%- else -%}
@@ -153,7 +153,7 @@
 
 {%- block date_widget -%}
     {% if not (nodpx is defined and nodpx) %}
-        <div class="dpx-date with-dpx">
+        <div class="dpx-date with-dpx" data-min-date="{{ form.vars.min_date }}" data-max-date="{{ form.vars.max_date }}" data-weekdays="{{ form.vars.weekdays }}">
     {% endif %}
         {%- if widget == 'single_text' -%}
             {{ block('form_widget_simple') }}

@@ -8,7 +8,7 @@ export default class DpxDateWidget extends PageWidget {
     // this widget can work with a DATE form type or a DATETIME
     // it works by following "id" naming conventions from symfony's form component ("choice" widgets for the date)
     // it hides the original widgets and connects them with events to a new text input that uses jquery-datetimepicker
-    const id_div = this.$element.find('div:first');
+    const id_div = this.$element.find('.fallback-input').find('div:first');
     const id = id_div.attr('id');
 
     let is_time_included = false;
@@ -17,6 +17,19 @@ export default class DpxDateWidget extends PageWidget {
     let $s_day = $(`#${id}_day`);
     let $s_hour = null;
     let $s_minute = null;
+    let min_date = (this.$element.data('min-date').length === 0) ? null: moment(this.$element.data('min-date'), "YYYY MM DD");
+    let max_date = (this.$element.data('max-date').length === 0) ? null : moment(this.$element.data('max-date'), "YYYY MM DD");
+    let now = moment();
+    let weekdays = this.$element.data('weekdays');
+    if (weekdays) {
+      if (typeof weekdays == 'string') {
+        weekdays = weekdays.split(',');
+      } else {
+        weekdays = [weekdays];
+      }
+    } else {
+      weekdays = [0,1,2,3,4,5,6];
+    }
     if (this.$element.hasClass('dpx-date-time')) {
       $s_year = $(`#${id}_date_year`);
       $s_month = $(`#${id}_date_month`);
@@ -48,8 +61,7 @@ export default class DpxDateWidget extends PageWidget {
       }
     }
 
-
-    $textBox.datetimepicker({
+    let options = {
       timepicker: is_time_included,
       format: is_time_included ? 'm/d/Y h:ia' : 'm/d/Y',
       startDate: initial_value,
@@ -63,7 +75,38 @@ export default class DpxDateWidget extends PageWidget {
           $s_minute.val(m.minute());
         }
       }
-    });
+    };
+
+    // days of week
+    if (weekdays.length > 0) {
+      // disable all days of week
+      options['onGenerate']  = function() {
+        let that = this;
+        let allowed_weekdays = _.map(weekdays, (day) => {
+          // php stores 1 as monday and sunday as 7, but our cal uses 0 for sunday, 1 for monday, and so on.
+          let d = _.parseInt(day);
+          if (d === 6) {
+            return 0;
+          }
+          return d + 1;
+        });
+        _.forEach([0,1,2,3,4,5,6], function(day) {
+          if (!_.includes(allowed_weekdays, day)) {
+            $(that).find('.xdsoft_day_of_week'+day).addClass('xdsoft_disabled');
+          }
+        });
+      }
+    }
+
+    // min date
+
+    if (min_date && max_date) {
+      options['minDate'] = min_date.format('YYYY/MM/DD');
+      options['maxDate'] = max_date.format('YYYY/MM/DD');
+    }
+
+
+    $textBox.datetimepicker(options);
 
     $textBox.addClass('dpx-date-input');
 
