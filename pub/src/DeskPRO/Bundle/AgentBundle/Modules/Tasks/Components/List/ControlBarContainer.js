@@ -25,43 +25,78 @@ export class ControlBarContainer extends Component {
   render() {
     const config = {
       sorting: {
-        options: [
-          {field: 'list', label: 'List', icon: 'list'},
-          {field: 'project', label: 'Project', icon: 'briefcase'},
-          {field: 'date_due', label: 'Due Date', icon: 'calendar'},
-          {field: 'date_done', label: 'Done Date', icon: 'calendar'},
-          {field: 'date_created', label: 'Created Date', icon: 'calendar'},
-          {field: 'assignee', label: 'Assignee', icon: 'user'}
-        ],
+        options: {
+          list: {
+            label: 'List',
+            icon: 'list'
+          },
+          project: {
+            label: 'Project',
+            icon: 'briefcase'
+          },
+          date_due: {
+            label: 'Due Date',
+            icon: 'calendar'
+          },
+          date_done: {
+            label: 'Done Date',
+            icon: 'calendar'
+          },
+          date_created: {
+            label: 'Created Date',
+            icon: 'calendar'
+          },
+          assignee: {
+            label: 'Assignee',
+            icon: 'user'
+          }
+        },
+
         sort: this.props.sort,
-        order: this.props.order,
         sortAction: value => updateRoutingState('list', 'sort', value),
+
+        order: this.props.order,
         orderAction: value => updateRoutingState('list', 'order', value)
       },
       view: {
-        options: [
-          {field: constants.VIEW_MODE_CARD, label: 'Card View', icon: 'list'},
-          {field: constants.VIEW_MODE_TABLE, label: 'Table View', icon: 'table'},
-          {field: constants.VIEW_MODE_KANBAN, label: 'Kanban View', icon: 'sticky-note-o'},
-          {field: constants.VIEW_MODE_CALENDAR, label: 'Calendar View', icon: 'calendar'}
-        ],
-        viewMode: this.props.viewMode,
-        viewModeAction: value => updateRoutingState('list', 'view', value),
-
-        tableConfigurableFields: {
-          subject: 'Subject',
-          status: 'Status',
-          date_created: 'Date created',
-          labels: 'Labels'
+        options: {
+          [constants.VIEW_MODE_CARD]: {
+            label: 'Card View',
+            icon: 'list',
+            configurableFields: {
+              id: 'ID',
+              urgency: 'Urgency',
+              person: 'Person',
+              date_created: 'Date created',
+              labels: 'Labels'
+            },
+            visibleFields: [],
+            toggleFieldVisibility: () => {}
+          },
+          [constants.VIEW_MODE_TABLE]: {
+            label: 'Table View',
+            icon: 'table',
+            configurableFields: {
+              subject: 'Subject',
+              status: 'Status',
+              date_created: 'Date created',
+              labels: 'Labels'
+            },
+            visibleFields: [],
+            toggleFieldVisibility: () => {}
+          },
+          [constants.VIEW_MODE_KANBAN]: {
+            label: 'Kanban View',
+            icon: 'sticky-note-o'
+          },
+          [constants.VIEW_MODE_CALENDAR]: {
+            label: 'Calendar View',
+            icon: 'calendar'
+          }
         },
 
-        cardConfigurableFields: {
-          id: 'ID',
-          urgency: 'Urgency',
-          person: 'Person',
-          date_created: 'Date created',
-          labels: 'Labels'
-        }
+        viewMode: this.props.viewMode,
+        viewModeAction: value => updateRoutingState('list', 'view', value)
       }
     };
 

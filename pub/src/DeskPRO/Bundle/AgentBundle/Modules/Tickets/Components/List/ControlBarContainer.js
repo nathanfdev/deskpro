@@ -36,46 +36,61 @@ export class ControlBarContainer extends Component {
         action: toggleAll
       },
       sorting: {
-        options: [
-          {field: 'date_created', label: 'Date', icon: 'calendar'},
-          {field: 'urgency', label: 'Urgency', icon: 'calendar-o'}
-        ],
+        options: {
+          date_created: {
+            label: 'Date',
+            icon: 'calendar'
+          },
+          urgency: {
+            label: 'Urgency',
+            icon: 'calendar-o'
+          }
+        },
         sort: this.props.sort,
         order: this.props.order,
         sortAction: setSort,
         orderAction: setOrder
       },
       view: {
-        options: [
-          {field: constants.VIEW_MODE_CARD, label: 'Card View', icon: 'list'},
-          {field: constants.VIEW_MODE_TABLE, label: 'Table View', icon: 'table'}
-        ],
+        options: {
+          [constants.VIEW_MODE_CARD]: {
+            label: 'Card View',
+            icon: 'list',
+
+            configurableFields: {
+              id: 'ID',
+              urgency: 'Urgency',
+              person: 'Person',
+              date_created: 'Date created',
+              labels: 'Labels'
+            },
+
+            visibleFields: this.props.cardVisibleFields,
+            toggleFieldVisibility: toggleCardFieldVisibility
+          },
+          [constants.VIEW_MODE_TABLE]: {
+            label: 'Table View',
+            icon: 'table',
+
+            configurableFields: {
+              id: 'ID',
+              urgency: 'Urgency',
+              person: 'Person',
+              person_email: 'Person email',
+              agent: 'Agent',
+              subject: 'Subject',
+              status: 'Status',
+              date_created: 'Date created',
+              labels: 'Labels'
+            },
+
+            visibleFields: this.props.tableVisibleFields,
+            toggleFieldVisibility: toggleTableFieldVisibility
+          }
+        },
+
         viewMode: this.props.viewMode,
-        viewModeAction: setViewMode,
-
-        tableConfigurableFields: {
-          id: 'ID',
-          urgency: 'Urgency',
-          person: 'Person',
-          person_email: 'Person email',
-          agent: 'Agent',
-          subject: 'Subject',
-          status: 'Status',
-          date_created: 'Date created',
-          labels: 'Labels'
-        },
-        tableVisibleFields: this.props.tableVisibleFields,
-        tableToggleFieldVisibility: toggleTableFieldVisibility,
-
-        cardConfigurableFields: {
-          id: 'ID',
-          urgency: 'Urgency',
-          person: 'Person',
-          date_created: 'Date created',
-          labels: 'Labels'
-        },
-        cardVisibleFields: this.props.cardVisibleFields,
-        cardToggleFieldVisibility: toggleCardFieldVisibility
+        viewModeAction: setViewMode
       }
     };
 

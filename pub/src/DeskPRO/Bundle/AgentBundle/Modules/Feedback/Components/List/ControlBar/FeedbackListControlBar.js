@@ -71,47 +71,65 @@ export class FeedbackListControlBar extends Component {
         action: toggleMassAction
       },
       sorting: {
-        options: [
-          {field: 'date_created', label: 'Date', icon: 'calendar'},
-          {field: 'total_rating', label: 'Rating', icon: 'calendar-o'},
-          {field: 'num_ratings', label: 'Votes', icon: 'calendar'}
-        ],
+        options: {
+          date_created: {
+            label: 'Date',
+            icon: 'calendar'
+          },
+          total_rating: {
+            label: 'Rating',
+            icon: 'calendar-o'
+          },
+          num_ratings: {
+            label: 'Votes',
+            icon: 'calendar'
+          }
+        },
         sort: this.props.sort,
         order: this.props.order,
         sortAction: setSort,
         orderAction: setOrder
       },
       view: {
-        options: [
-          {field: constants.VIEW_MODE_CARD, label: 'Card View', icon: 'list'},
-          {field: constants.VIEW_MODE_TABLE, label: 'Table View', icon: 'table'}
-        ],
+        options: {
+          [constants.VIEW_MODE_CARD]: {
+            label: 'Card View',
+            icon: 'list',
+
+            configurableFields: {
+              id: 'ID',
+              urgency: 'Urgency',
+              person: 'Person',
+              date_created: 'Date created',
+              labels: 'Labels'
+            },
+
+            visibleFields: ['id', 'urgency', 'person'],
+            toggleFieldVisibility: () => ({})
+          },
+          [constants.VIEW_MODE_TABLE]: {
+            label: 'Table View',
+            icon: 'table',
+
+            configurableFields: {
+              id: 'ID',
+              urgency: 'Urgency',
+              person: 'Person',
+              person_email: 'Person email',
+              agent: 'Agent',
+              subject: 'Subject',
+              status: 'Status',
+              date_created: 'Date created',
+              labels: 'Labels'
+            },
+
+            visibleFields: ['id', 'urgency', 'person'],
+            toggleFieldVisibility: () => ({})
+          }
+        },
+
         viewMode: this.props.viewMode,
-        viewModeAction: (mode) => updateRoutingState('list', 'view', mode),
-
-        tableConfigurableFields: {
-          id: 'ID',
-          urgency: 'Urgency',
-          person: 'Person',
-          person_email: 'Person email',
-          agent: 'Agent',
-          subject: 'Subject',
-          status: 'Status',
-          date_created: 'Date created',
-          labels: 'Labels'
-        },
-        tableVisibleFields: ['id', 'urgency', 'person'],
-        tableToggleFieldVisibility: () => ({}),
-
-        cardConfigurableFields: {
-          id: 'ID',
-          urgency: 'Urgency',
-          person: 'Person',
-          date_created: 'Date created',
-          labels: 'Labels'
-        },
-        cardVisibleFields: ['id', 'urgency', 'person'],
-        cardToggleFieldVisibility: () => ({})
+        viewModeAction: (mode) => updateRoutingState('list', 'view', mode)
       }
     };
 

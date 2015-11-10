@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { Button } from '../Button';
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
@@ -7,19 +8,16 @@ import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item
 import ItemList from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemList';
 import MenuFooter from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooter';
 import { ViewField } from './ViewField';
-import { connect } from 'react-redux';
-import Immutable from 'immutable';
+import jQuery from 'jquery';
 
 @connect()
 export class ViewMenuContainer extends Component {
+
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     options: PropTypes.object.isRequired,
     viewMode: PropTypes.string.isRequired,
-    viewModeAction: PropTypes.func.isRequired,
-    tableFields: PropTypes.object.isRequired,
-    tableVisibleFields: PropTypes.object.isRequired,
-    tableToggleFieldVisibility: PropTypes.object.isRequired
+    viewModeAction: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -35,7 +33,7 @@ export class ViewMenuContainer extends Component {
   collapse = () => this.setState({menuExpanded: false, optionsExpanded: false});
 
   render() {
-    const { dispatch, options, viewMode, viewModeAction } = this.props;
+    const { dispatch, options, viewMode = '', viewModeAction } = this.props;
 
     return (
       <li>
@@ -54,12 +52,12 @@ export class ViewMenuContainer extends Component {
                       positionTarget={this.refs.button}
                       ref="menu">
             <Menu>
-              {options.map(option =>
-                  <Item key={option.field}
+              {jQuery.map(options, (option, type) =>
+                  <Item key={type}
                         label={option.label}
-                        isActive={viewMode === option.field}
-                        checked={viewMode === option.field}
-                        onClick={() => dispatch(viewModeAction(option.field))}
+                        isActive={viewMode === type}
+                        checked={viewMode === type}
+                        onClick={() => dispatch(viewModeAction(type))}
                         icon={option.icon} />
               )}
               <MenuFooter>
@@ -83,69 +81,49 @@ export class ViewMenuContainer extends Component {
 
 @connect()
 class ViewOptionsContainer extends Component {
+
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     viewMode: PropTypes.string.isRequired,
-    tableConfigurableFields: PropTypes.object.isRequired,
-    tableVisibleFields: PropTypes.any.isRequired,
-    tableToggleFieldVisibility: PropTypes.object.isRequired,
-    cardConfigurableFields: PropTypes.object.isRequired,
-    cardVisibleFields: PropTypes.any.isRequired,
-    cardToggleFieldVisibility: PropTypes.object.isRequired
+    options: PropTypes.object.isRequired
   };
 
   render() {
-    const {
-      viewMode,
-      tableConfigurableFields,
-      tableToggleFieldVisibility,
-      cardConfigurableFields,
-      cardToggleFieldVisibility
-    } = this.props;
-
-    let { tableVisibleFields = [], cardVisibleFields = [] } = this.props;
-
-    if (Immutable.Iterable.isIterable(tableVisibleFields)) {
-      tableVisibleFields = tableVisibleFields.toJS();
-    }
-    if (Immutable.Iterable.isIterable(cardVisibleFields)) {
-      cardVisibleFields = cardVisibleFields.toJS();
-    }
+    const { viewMode, options, dispatch } = this.props;
 
     return (
       <Menu widgetClass="dpw-navigation-dropdown-secondary">
-        <Item discMarked
-              label="Card view"
-              widgetClass="dpw-navigation-dropdown-column-list-item"
-              isActive={viewMode === 'card'}
-          >
-          <ItemList>
-            {Object.keys(cardConfigurableFields).map(name =>
-                <ViewField
-                  key={name}
-                  value={name}
-                  label={cardConfigurableFields[name]}
-                  isShown={cardVisibleFields.indexOf(name) > -1}
-                  changeState={(field) => this.props.dispatch(cardToggleFieldVisibility(field))} />
-            )}
-          </ItemList>
-        </Item>
-        <Item discMarked
-              label="Table view"
-              widgetClass="dpw-navigation-dropdown-column-list-item"
-              isActive={viewMode === 'table'}
-          >
-          <ItemList>
-            {Object.keys(tableConfigurableFields).map(name =>
-              <ViewField
-                key={name}
-                value={name}
-                label={tableConfigurableFields[name]}
-                isShown={tableVisibleFields.indexOf(name) > -1}
-                changeState={(field) => this.props.dispatch(tableToggleFieldVisibility(field))} />
-            )}
-          </ItemList>
-        </Item>
+        {jQuery.map(options, (option, type) => {
+          if (!option.configurableFields) {
+            return null;
+          }
+
+          const onClick = name => {
+            if (option.toggleFieldVisibility) {
+              dispatch(option.toggleFieldVisibility(name));
+            }
+          };
+
+          return (
+            <Item discMarked
+                  key={type}
+                  label={option.label}
+                  widgetClass="dpw-navigation-dropdown-column-list-item"
+                  isActive={viewMode === type}
+              >
+              <ItemList>
+                {jQuery.map(option.configurableFields, (label, name) =>
+                    <ViewField
+                      key={name}
+                      value={name}
+                      label={label}
+                      isShown={(option.visibleFields || []).indexOf(name) > -1}
+                      changeState={onClick} />
+                )}
+              </ItemList>
+            </Item>
+          );
+        })}
       </Menu>
     );
   }
