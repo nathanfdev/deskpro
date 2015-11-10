@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 
 export class SortingMenu extends Component {
   static propTypes = {
-    options: PropTypes.object.isRequired,
+    options: PropTypes.array.isRequired,
     sort: PropTypes.string.isRequired,
     order: PropTypes.string.isRequired,
     sortAction: PropTypes.func.isRequired,
@@ -53,7 +53,7 @@ export class SortingMenu extends Component {
 class OrderByDropdownContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    options: PropTypes.object.isRequired,
+    options: PropTypes.array.isRequired,
     sort: PropTypes.string.isRequired,
     order: PropTypes.string.isRequired,
     sortAction: PropTypes.func.isRequired,
