@@ -46,7 +46,22 @@ export class ControlBarContainer extends Component {
           {field: constants.VIEW_MODE_CALENDAR, label: 'Calendar View', icon: 'calendar'}
         ],
         viewMode: this.props.viewMode,
-        viewModeAction: value => updateRoutingState('list', 'view', value)
+        viewModeAction: value => updateRoutingState('list', 'view', value),
+
+        tableConfigurableFields: {
+          subject: 'Subject',
+          status: 'Status',
+          date_created: 'Date created',
+          labels: 'Labels'
+        },
+
+        cardConfigurableFields: {
+          id: 'ID',
+          urgency: 'Urgency',
+          person: 'Person',
+          date_created: 'Date created',
+          labels: 'Labels'
+        }
       }
     };
 

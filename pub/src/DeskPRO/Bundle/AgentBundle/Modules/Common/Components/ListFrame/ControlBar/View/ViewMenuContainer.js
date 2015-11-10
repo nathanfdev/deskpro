@@ -97,11 +97,13 @@ class ViewOptionsContainer extends Component {
   render() {
     const {
       viewMode,
-      tableConfigurableFields, tableToggleFieldVisibility,
-      cardConfigurableFields, cardToggleFieldVisibility
+      tableConfigurableFields,
+      tableToggleFieldVisibility,
+      cardConfigurableFields,
+      cardToggleFieldVisibility
     } = this.props;
 
-    let { tableVisibleFields, cardVisibleFields } = this.props;
+    let { tableVisibleFields = [], cardVisibleFields = [] } = this.props;
 
     if (Immutable.Iterable.isIterable(tableVisibleFields)) {
       tableVisibleFields = tableVisibleFields.toJS();
