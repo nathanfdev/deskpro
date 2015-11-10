@@ -52,7 +52,7 @@ export class DpAppRouteContainer extends React.Component {
           {children}
         </DpApp>
 
-        {dpWindow.get('coverShown') ? (<div className="cover"></div>) : null}
+        {dpWindow.get('coverShown') && <div className="cover"></div>}
 
         <IMContainer/>
         <PreferencesContainer positionTarget={document.body}/>
