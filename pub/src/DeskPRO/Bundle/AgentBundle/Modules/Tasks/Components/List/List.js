@@ -13,7 +13,7 @@ export class List extends React.Component {
 
   static propTypes = {
     currentView: PropTypes.string.isRequired,
-    tasks: PropTypes.array.isRequired,
+    tasks: PropTypes.object.isRequired,
     loaded: PropTypes.bool.isRequired,
     listParams: PropTypes.object.isRequired
   };

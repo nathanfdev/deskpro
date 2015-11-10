@@ -20,13 +20,7 @@ export class ControlBar extends Component {
     view: PropTypes.shape({
       options: PropTypes.array.isRequired,
       viewMode: PropTypes.string.isRequired,
-      viewModeAction: PropTypes.func.isRequired,
-      tableConfigurableFields: PropTypes.object.isRequired,
-      tableVisibleFields: PropTypes.array.isRequired,
-      tableToggleFieldVisibility: PropTypes.func.isRequired,
-      cardConfigurableFields: PropTypes.object.isRequired,
-      cardVisibleFields: PropTypes.array.isRequired,
-      cardToggleFieldVisibility: PropTypes.func.isRequired
+      viewModeAction: PropTypes.func.isRequired
     })
   };
 

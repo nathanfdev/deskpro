@@ -12,7 +12,7 @@ export class ListItemRouteContainer extends React.Component {
     state: PropTypes.object.isRequired,
     groupId: PropTypes.string.isRequired,
     itemId: PropTypes.string.isRequired,
-    onClick: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired,
     children: PropTypes.node.isRequired
   };
 
