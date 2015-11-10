@@ -4,13 +4,19 @@ export class Button extends Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
-    icon: PropTypes.string.isRequired
+    icon: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired
+  };
+
+  onClick = event => {
+    event.preventDefault();
+    this.props.onClick();
   };
 
   render() {
     const { title, label, icon } = this.props;
     return (
-      <a href="#" className="dpwd-navigation-dropdown-top-row-button">
+      <a href="#" className="dpwd-navigation-dropdown-top-row-button" onClick={this.onClick}>
         <span
           className="dpwd-navigation-dropdown-top-row-button-text dpwd-navigation-dropdown-top-row-button-text-grey">
           {title}

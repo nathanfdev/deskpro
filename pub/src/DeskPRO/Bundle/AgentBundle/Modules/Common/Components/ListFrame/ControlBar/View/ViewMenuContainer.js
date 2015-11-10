@@ -23,57 +23,60 @@ export class ViewMenuContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      menuExpanded: false,
+      expanded: false,
       optionsExpanded: false
     };
   }
 
-  expandMenu = () => this.setState({menuExpanded: true});
+  expandMenu = () => this.setState({expanded: true});
   expandOptions = () => this.setState({optionsExpanded: true});
-  collapse = () => this.setState({menuExpanded: false, optionsExpanded: false});
+  collapse = () => this.setState({expanded: false, optionsExpanded: false});
 
   render() {
     const { dispatch, options, viewMode = '', viewModeAction } = this.props;
 
     return (
       <li>
-        <ClickOut onClick={this.expandMenu}
-                  onClickOut={this.collapse}
-                  ignoreNodes={[this.refs.menu, this.refs.options]}>
           <Button
+            onClick={this.expandMenu}
             ref="button"
             title="View:"
             icon={null}
             label={viewMode.charAt(0).toUpperCase() + viewMode.slice(1)}
           />
-          <Detached isOpen={this.state.menuExpanded}
-                      style={{display: this.state.optionsExpanded ? 'none' : 'block'}}
-                      positionAt="left bottom"
-                      positionTarget={this.refs.button}
-                      ref="menu">
-            <Menu>
-              {jQuery.map(options, (option, type) =>
-                  <Item key={type}
-                        label={option.label}
-                        isActive={viewMode === type}
-                        checked={viewMode === type}
-                        onClick={() => dispatch(viewModeAction(type))}
-                        icon={option.icon} />
-              )}
-              <MenuFooter>
-                <div className="dpw-navigation-dropdown-options-link">
-                  <a href="#" onClick={this.expandOptions}>View Options <i className="fa fa-cog"></i></a>
-                </div>
-              </MenuFooter>
-            </Menu>
+
+          <Detached isOpen={this.state.expanded}
+                    positionAt="left bottom"
+                    positionTarget={this.refs.button}>
+
+            <ClickOut onClickOut={this.collapse}
+                      additionalNodes={[this.refs.optionsButton]}>
+
+              {this.state.optionsExpanded
+                ? <ViewOptionsContainer {...this.props} />
+                : <Menu>
+                    {jQuery.map(options, (option, type) =>
+                        <Item key={type}
+                              label={option.label}
+                              isActive={viewMode === type}
+                              checked={viewMode === type}
+                              onClick={() => dispatch(viewModeAction(type))}
+                              icon={option.icon}/>
+                    )}
+                    <MenuFooter>
+                      <div className="dpw-navigation-dropdown-options-link">
+                        <a href="#"
+                           ref="optionsButton"
+                           onClick={this.expandOptions}>
+
+                          View Options <i className="fa fa-cog"></i>
+                        </a>
+                      </div>
+                    </MenuFooter>
+                  </Menu>
+              }
+            </ClickOut>
           </Detached>
-          <Detached isOpen={this.state.optionsExpanded}
-                      positionAt="left bottom"
-                      positionTarget={this.refs.button}
-                      ref="options">
-            <ViewOptionsContainer {...this.props} />
-          </Detached>
-        </ClickOut>
       </li>
     );
   }

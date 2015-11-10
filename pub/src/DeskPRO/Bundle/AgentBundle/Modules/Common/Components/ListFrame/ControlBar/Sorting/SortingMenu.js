@@ -33,19 +33,24 @@ export class SortingMenu extends Component {
 
     return (
       <li>
-        <ClickOut onClickOut={this.collapse} onClick={this.toggleExpanded}>
-          <Button
-            ref="button"
-            title="Order by:"
-            icon={current ? current.icon : null}
-            label={current ? `${current.label} (${order})` : '(no order)'}
-          />
-          <Detached isOpen={this.state.expanded}
-                      positionAt="left bottom"
-                      positionTarget={this.refs.button}>
+        <Button
+          onClick={this.toggleExpanded}
+          ref="button"
+          title="Order by:"
+          icon={current ? current.icon : null}
+          label={current ? `${current.label} (${order})` : '(no order)'}
+        />
+
+        <Detached isOpen={this.state.expanded}
+                  positionAt="left bottom"
+                  positionTarget={this.refs.button}>
+
+          <ClickOut onClickOut={this.collapse}
+                    onClick={this.collapse}>
+
             <OrderByDropdownContainer {...this.props} />
-          </Detached>
-        </ClickOut>
+          </ClickOut>
+        </Detached>
       </li>
     );
   }
