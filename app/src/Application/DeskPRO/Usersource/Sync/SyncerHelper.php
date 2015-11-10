@@ -77,7 +77,7 @@ class SyncerHelper
     public function log($orb_logger_priority, $message, array $info = array())
     {
         if ($this->logger) {
-            $this->logger->log('SYNC: '.$message, $orb_logger_priority, $info);
+            $this->logger->log('SYNC HELPER: '.$message, $orb_logger_priority, $info);
         }
     }
 
@@ -110,6 +110,8 @@ class SyncerHelper
 
         if (!$person) {
             if (!$person = $this->getPersonFromEmail($user_info['email'])) {
+                $this->log(Logger::DEBUG, 'could not find a person with the email "'.$user_info['email'].'"');
+                $this->log(Logger::INFO, 'creating a new person with email "'.$user_info['email'].'"', $user_info);
                 $person = Person::newContactPerson(array('email' => $user_info['email']));
                 $this->em->persist($person);
             }
@@ -131,6 +133,7 @@ class SyncerHelper
             // if "$this->getPersonFromEmail($user_info['email'])" is true, we are in a potential merge situation
             // ignoring for now
             if (!$person->hasEmailAddress($user_info['email']) && !$this->getPersonFromEmail($user_info['email'])) {
+                $this->log(Logger::DEBUG, 'person does not have email and no other person does either: "'.$user_info['email'].'" so we are adding it to person ID: "'.$person->getId().'"');
                 $person->addEmailAddressString($user_info['email']);
             }
         }
@@ -209,11 +212,16 @@ class SyncerHelper
      */
     public function getAssoc(Usersource $usersource, $identity)
     {
+        $this->log(Logger::DEBUG, 'getting assoc');
+
         /** @var \Application\DeskPRO\EntityRepository\PersonUsersourceAssoc $assoc_repo */
         $assoc_repo = $this->em->getRepository('DeskPRO:PersonUsersourceAssoc');
         if ($assoc = $assoc_repo->getIdentityAssociation($usersource, $identity)) {
+            $this->log(Logger::DEBUG, 'SYNC HELPER: did find an existing association');
+
             return $assoc;
         }
+        $this->log(Logger::DEBUG, 'did not find an existing association');
 
         return;
     }
@@ -235,6 +243,7 @@ class SyncerHelper
      */
     public function savePerson(Person $person, $flush = true)
     {
+        $this->log(Logger::DEBUG, 'saving person');
         $this->em->persist($person);
         if ($flush) {
             $this->em->flush($person);
@@ -248,6 +257,7 @@ class SyncerHelper
      */
     public function saveAssociation(PersonUsersourceAssoc $association, $flush = true)
     {
+        $this->log(Logger::DEBUG, 'saving association');
         $this->em->persist($association);
         if ($flush) {
             $this->em->flush($association);
