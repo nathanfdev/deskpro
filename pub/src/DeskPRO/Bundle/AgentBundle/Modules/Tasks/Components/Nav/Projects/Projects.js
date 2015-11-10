@@ -8,7 +8,6 @@ import { ListItemContainer } from '../ListItemContainer';
 export class Projects extends React.Component {
 
   static propTypes = {
-    onApplyListParams: PropTypes.func.isRequired,
     projects: PropTypes.object.isRequired
   };
 
