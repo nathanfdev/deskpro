@@ -28,7 +28,8 @@ export class Projects extends React.Component {
     });
   };
 
-  onOpenForm = () => {
+  onOpenForm = event => {
+    event.preventDefault();
     this.setState({
       formOpened: true
     });
