@@ -65,6 +65,8 @@ export default class DpxDateWidget extends PageWidget {
       }
     });
 
+    $textBox.addClass('dpx-date-input');
+
     this.$element.hide();
     $textBox.insertAfter(this.$element);
   }

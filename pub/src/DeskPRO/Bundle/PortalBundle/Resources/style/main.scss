@@ -8477,6 +8477,10 @@ form {
   }
 }
 
+input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-input {
+  width: 190px;
+}
+
 .xdsoft_datetimepicker {
   box-shadow: 0 5px 15px -5px rgba(0, 0, 0, 0.506);
   background: #fff;
