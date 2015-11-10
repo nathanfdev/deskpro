@@ -34,10 +34,14 @@ export class ControlButton extends Component {
 
   render() {
     const {toggleDropdown, title, label, icon } = this.props;
-    var classes = classNames('fa', icon);
+    const classes = classNames('fa', icon);
+    const onClick = (e) => {
+      e.preventDefault();
+      if (toggleDropdown) toggleDropdown(e);
+    };
 
     return (
-      <a href="#" className="dpwd-navigation-dropdown-top-row-button" onClick={toggleDropdown}>
+      <a href="#" className="dpwd-navigation-dropdown-top-row-button" onClick={onClick}>
         <span
           className="dpwd-navigation-dropdown-top-row-button-text dpwd-navigation-dropdown-top-row-button-text-grey">
           {title}

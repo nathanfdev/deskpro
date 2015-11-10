@@ -1,12 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { ListFrameContainer, ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
-import { ControlBarContainer } from './ControlBar/ControlBarContainer';
+import { ControlBarContainer } from './ControlBarContainer';
 import { ListTableViewContainer } from './View/Table/ListTableViewContainer';
 import { ListCardViewContainer } from './View/Card/ListCardViewContainer';
 
 export class List extends Component {
   static propTypes = {
-    mode: PropTypes.string.isRequired,
+    viewMode: PropTypes.string.isRequired,
     isDone: PropTypes.bool.isRequired
   };
 
@@ -14,16 +14,21 @@ export class List extends Component {
     return (
       <ListFrameContainer>
         <ControlBarContainer />
-        {this.renderList()}
+        <ListFrameContents>
+          {this.renderList()}
+        </ListFrameContents>
       </ListFrameContainer>
     );
   }
 
   renderList() {
-    return this.props.isDone ? (
-      <ListFrameContents>
-        {this.props.mode === 'table' ? <ListTableViewContainer /> : <ListCardViewContainer />}
-      </ListFrameContents>
-    ) : <div>Loading...</div>;
+    switch (this.props.isDone) {
+      case false:
+        return <div>Loading...</div>;
+      case true:
+        return this.props.viewMode === 'table' ? <ListTableViewContainer /> : <ListCardViewContainer />;
+      default:
+        return <div />;
+    }
   }
 }

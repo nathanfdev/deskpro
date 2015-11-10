@@ -34,7 +34,7 @@ export class ClickOut extends React.Component {
             skip = true;
           }
 
-          if (node.contains(event.target)) {
+          if (jQuery.contains(node, event.target)) {
             skip = true;
           }
         }

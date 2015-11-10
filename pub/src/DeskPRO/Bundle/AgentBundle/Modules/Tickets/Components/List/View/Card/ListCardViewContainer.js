@@ -1,20 +1,36 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import Immutable from 'immutable';
+import { elementsSelector, selectedSelector, cardVisibleFieldsSelector } from '../../../../Selectors/list';
+import { TicketCardContainer } from './TicketCardContainer';
 
-@connect(() => ({
-  elements: Immutable.fromJS([{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}])
+@connect(state => ({
+  elements: elementsSelector(state),
+  selected: selectedSelector(state),
+  fields: cardVisibleFieldsSelector(state)
 }))
 export class ListCardViewContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    elements: PropTypes.object.isRequired
+    elements: PropTypes.object.isRequired,
+    fields: PropTypes.object.isRequired,
+    selected: PropTypes.object.isRequired
   };
 
   render() {
+    const { elements, fields, selected } = this.props;
+
     return (
-      <div>ListCardViewContainer</div>
+      <div>
+        {elements.map(ticket =>
+          <TicketCardContainer
+            key={ticket.get('id')}
+            fields={fields}
+            selected={selected.indexOf(ticket.get('id')) > -1}
+            toggleSelected={() => this.props.dispatch(toggleSelected(ticket.get('id')))}
+            ticket={ticket}
+          />
+        )}
+      </div>
     );
   }
-
 }

@@ -5,7 +5,6 @@ import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Pos
 import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameMenu';
 import TaskControlsViewSwitcher from '../Components/TaskControlsViewSwitcher';
 import jQuery from 'jquery';
-import { MassActionCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar';
 
 export default class TaskControls extends React.Component {
   static propTypes = {
@@ -22,7 +21,6 @@ export default class TaskControls extends React.Component {
     setView: React.PropTypes.func,
     taskFilter: React.PropTypes.object,
     teams: React.PropTypes.object,
-    toggleAllMassActions: React.PropTypes.func,
     toggleView: React.PropTypes.func,
     view: React.PropTypes.string,
     windowProps: React.PropTypes.func
@@ -70,7 +68,7 @@ export default class TaskControls extends React.Component {
     const taskView = this.props.windowProps.get('taskView');
     const viewSwitcherPosition = jQuery('.task-list-view-switcher');
 
-    const {actionable, toggleAllMassActions, setView} = this.props;
+    const {actionable, setView} = this.props;
 
     const count = actionable > 0 ? actionable.toString() : '';
 
@@ -83,10 +81,6 @@ export default class TaskControls extends React.Component {
 
     return (
       <ListFrameMenu ref="ticketControlBar">
-
-        { this.props.view !== 'calendar' ?
-          <MassActionCheckbox count={count} massAction={(actionable > 0)} onClick={toggleAllMassActions.bind(this)}/>
-        : '' }
         <li>
           <a href="#" ref="orderButton" className="dpwd-navigation-dropdown-top-row-button"
              onClick={this.toggleShowOrder.bind(this)}>

@@ -1,10 +1,28 @@
 import React, {Component, PropTypes} from 'react';
 import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameMenu';
-import { OrderByContainer } from './OrderByContainer';
 import { FilterContainer } from './FilterContainer';
-import { ViewSwitcherContainer } from './ViewSwitcherContainer';
-import { MassActionCheckboxContainer } from './MassActionCheckboxContainer';
+import { CheckboxContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/MassAction/CheckboxContainer';
+import { SortingMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/Sorting/SortingMenu';
+import { ViewMenuContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/View/ViewMenuContainer';
+import { connect } from 'react-redux';
+import { toggleMassAction } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
+import { currentListSortSelector, currentListOrderSelector, isCommentsSelector } from '../../../Selectors/list';
+import { setSort, setOrder } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
+import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
+import { currentViewModeSelector } from '../../../Selectors/list';
 
+@connect(state => ({
+  // mass action data
+  count: state.Feedback.list.get('selected').size,
+
+  // sorting data
+  sort: currentListSortSelector(state),
+  order: currentListOrderSelector(state),
+  isComments: isCommentsSelector(state),
+
+  // view
+  viewMode: currentViewModeSelector(state)
+}))
 export class FeedbackListControlBar extends Component {
 
   static propTypes = {
@@ -21,18 +39,6 @@ export class FeedbackListControlBar extends Component {
       };
     }
 
-  toggleOrderByDropdown = (event) => {
-    if (event) {
-      event.preventDefault();
-    }
-    this.setState({
-      orderByDropdownIsExpanded: !this.state.orderByDropdownIsExpanded,
-      viewModeDropdownIsExpanded: false,
-      viewOptionsIsExpanded: false,
-      filterByDropdownIsExpanded: false
-    });
-  };
-
   toggleFilterByDropdown = (event) => {
     if (event) {
       event.preventDefault();
@@ -42,18 +48,6 @@ export class FeedbackListControlBar extends Component {
       orderByDropdownIsExpanded: false,
       viewModeDropdownIsExpanded: false,
       viewOptionsIsExpanded: false
-    });
-  };
-
-  toggleViewModeDropdown = (event) => {
-    if (event) {
-      event.preventDefault();
-    }
-    this.setState({
-      viewModeDropdownIsExpanded: !this.state.viewModeDropdownIsExpanded,
-      viewOptionsIsExpanded: false,
-      orderByDropdownIsExpanded: false,
-      filterByDropdownIsExpanded: false
     });
   };
 
@@ -69,15 +63,57 @@ export class FeedbackListControlBar extends Component {
     });
   };
 
-
   render() {
+    const config = {
+      checkbox: {
+        count: this.props.count,
+        action: toggleMassAction
+      },
+      sorting: {
+        options: [
+          {field: 'date_created', label: 'Date', icon: 'calendar'},
+          {field: 'total_rating', label: 'Rating', icon: 'calendar-o'},
+          {field: 'num_ratings', label: 'Votes', icon: 'calendar'}
+        ],
+        sort: this.props.sort,
+        order: this.props.order,
+        sortAction: setSort,
+        orderAction: setOrder
+      },
+      view: {
+        viewMode: this.props.viewMode,
+        viewModeAction: (mode) => updateRoutingState('list', 'view', mode),
+
+        tableConfigurableFields: {
+          id: 'ID',
+          urgency: 'Urgency',
+          person: 'Person',
+          person_email: 'Person email',
+          agent: 'Agent',
+          subject: 'Subject',
+          status: 'Status',
+          date_created: 'Date created',
+          labels: 'Labels'
+        },
+        tableVisibleFields: ['id', 'urgency', 'person'],
+        tableToggleFieldVisibility: () => ({}),
+
+        cardConfigurableFields: {
+          id: 'ID',
+          urgency: 'Urgency',
+          person: 'Person',
+          date_created: 'Date created',
+          labels: 'Labels'
+        },
+        cardVisibleFields: ['id', 'urgency', 'person'],
+        cardToggleFieldVisibility: () => ({})
+      }
+    };
+
     return (
       <ListFrameMenu>
-        <MassActionCheckboxContainer/>
-        <OrderByContainer
-          expanded={this.state.orderByDropdownIsExpanded}
-          toggleDropdown={this.toggleOrderByDropdown}
-          />
+        <CheckboxContainer {...config.checkbox} />
+        <SortingMenu {...config.sorting} />
         <li>
           <hr/>
         </li>
@@ -88,12 +124,7 @@ export class FeedbackListControlBar extends Component {
         <li>
           <hr/>
         </li>
-        <ViewSwitcherContainer
-          menuExpanded={this.state.viewModeDropdownIsExpanded}
-          optionsExpanded={this.state.viewOptionsIsExpanded}
-          toggleDropdown={this.toggleViewModeDropdown}
-          toggleOptionsMenu={this.toggleOptionsMenu}
-          />
+        <ViewMenuContainer {...config.view} />
       </ListFrameMenu>
     );
   }
