@@ -28,9 +28,8 @@ export class DpAppContainer extends React.Component {
     login: PropTypes.object.isRequired
   };
 
-  constructor(props) {
-    super(props);
-    const { dispatch, history, login } = props;
+  componentWillMount() {
+    const { dispatch, history, login } = this.props;
 
     dispatch(loadMe());
 

@@ -74,6 +74,10 @@ class FeedbackCountCriteria extends FeedbackSelectCriteria implements GroupableC
                 ->leftJoin('g.field', 'def')
                 ->andWhere('def.sys_name = :cat')
                 ->setParameter('cat', 'cat');
+        } elseif ($this->group_by === 'category') {
+            $qb
+                ->addSelect('g.title as group_name')
+                ->innerJoin("{$alias}.category", 'g');
         } else {
             $qb
                 ->addSelect('g.title as group_name')

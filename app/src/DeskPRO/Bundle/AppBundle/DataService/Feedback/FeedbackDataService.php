@@ -82,13 +82,13 @@ class FeedbackDataService extends AbstractDataService
      * @param $page
      * @param $max_per_page
      * @param FeedbackFilter $filter
-     * @param Person         $person
+     * @param Person $person
      *
      * @return Pagerfanta
      */
     public function getItemsPager($page, $max_per_page, FeedbackFilter $filter, Person $person)
     {
-        $em                  = $this->em;
+        $em = $this->em;
         $permissions_manager = $this->permissions_manager;
 
         return $this->generateAndCache(
@@ -147,7 +147,10 @@ class FeedbackDataService extends AbstractDataService
                 // status_categories (feedback->status_category)
                 // array(6,1,4)
                 if (count($status_categories = $filter->getStatusCategories())) {
-                    $qb->andWhere('f.status_category IN (:status_categories)')->setParameter('status_categories', $status_categories);
+                    $qb->andWhere('f.status_category IN (:status_categories)')->setParameter(
+                        'status_categories',
+                        $status_categories
+                    );
                 }
 
                 // types
@@ -302,8 +305,8 @@ class FeedbackDataService extends AbstractDataService
      * Select filtered list of feedback.
      *
      * @param Criteria $criteria
-     * @param int      $page
-     * @param int      $count
+     * @param int $page
+     * @param int $count
      *
      * @return array
      */
@@ -376,7 +379,7 @@ class FeedbackDataService extends AbstractDataService
         $criteria->applyFilters($qb);
         $criteria->applyGroupBy($qb);
         $result = $qb->getQuery()->getArrayResult();
-        $count  = Count::fromGroupedBy($criteria->getGroupBy());
+        $count = Count::fromGroupedBy($criteria->getGroupBy());
         foreach ($result as $group) {
             $count->add($group['value']);
             $count->addNested($group['value'], $group['group_name']);
@@ -385,16 +388,4 @@ class FeedbackDataService extends AbstractDataService
         return $count;
     }
 
-    public function countsByType()
-    {
-        /* @ToDo move to FeedbackRepository after removing old code */
-        $qb = $this->em->createQueryBuilder();
-        $qb->select('category.title as title', 'category.id as id', 'count(f) as value')
-            ->from('DeskPRO:Feedback', 'f')
-            ->leftJoin('f.category', 'category')
-            ->groupBy('category.id')
-            ->orderBy('category.title');
-
-        return $qb->getQuery()->getScalarResult();
-    }
 }

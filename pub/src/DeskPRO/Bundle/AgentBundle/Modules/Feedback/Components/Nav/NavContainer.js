@@ -10,7 +10,7 @@ import { loadFeedbackLabels } from '../../RecordStores/Actions/feedbackLabelsAct
   return ({
     toValidateCount: state.Feedback.nav.get('toValidateCount'),
     commentsToReviewCount: state.Feedback.nav.get('commentsToReviewCount'),
-    statuses: state.Feedback.nav.get('statuses').toJS(),
+    statuses: state.Feedback.nav.get('statuses'),
     types: state.Feedback.nav.get('types'),
     labels: state.Feedback.nav.get('labels'),
     customCategories: state.Feedback.nav.get('customCategories'),
@@ -31,8 +31,7 @@ export class NavContainer extends Component {
     dpWindow: PropTypes.object.isRequired
   };
 
-  constructor(props) {
-    super(props);
+  componentWillMount() {
     const { dispatch } = this.props;
 
     dispatch(loadFeedbackTypes());
