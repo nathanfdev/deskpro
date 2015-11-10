@@ -7630,11 +7630,19 @@ body.with-agent-bar {
     }
   }
 
+  &:focus.no-focus-border label {
+    outline: none;
+  }
+
   input[type="radio"] {
     display: none;
-    border: 2px solid $button-color;
+    border: 1px solid $button-color;
 
     &:checked + label {
+      &:before {
+        background: $button-color;
+        border: 1px solid $button-color;
+      }
       &:after {
         position: absolute;
         top: 5px;
@@ -7644,9 +7652,9 @@ body.with-agent-bar {
         margin-right: 3px;
         width: 7px;
         height: 7px;
-        border: 1px solid $button-color;
+        border: 1px solid #fff;
         border-radius: 16px;
-        background-color: $button-color;
+        background-color: #fff;
         content: "";
       }
     }
@@ -7667,7 +7675,8 @@ body.with-agent-bar {
       width: 17px;
       height: 17px;
       line-height: 1.3em;
-      border: 2px solid $button-color;
+      border: 1px solid $form-border-color;
+      background: #f0f0f0;
       border-radius: 24px;
       content: "";
     }
@@ -7765,7 +7774,8 @@ table .form-help {
     }
 
     &:focus {
-      outline: 1px dotted #aaa;
+      outline: none;
+      border: 1px solid $button-color;
     }
 
     i[class^='fa-caret'], i[class*=' fa-caret'] {
@@ -7808,9 +7818,6 @@ table .form-help {
           color: #444;
           .checkbox {
             color: #444;
-          }
-
-          .checkbox {
             background: rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(0, 0, 0, 0.1);
           }
@@ -7820,9 +7827,6 @@ table .form-help {
           color: #444;
           .checkbox {
             color: #444;
-          }
-
-          .checkbox {
             background: rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(0, 0, 0, 0.1);
           }
@@ -7834,8 +7838,14 @@ table .form-help {
 
         &:focus {
           outline: none;
-          .option-title {
-            outline: 1px dotted #aaa;
+          a {
+            background: lighten($main-color-light, 3%);
+            color: #444;
+            .checkbox {
+              color: #444;
+              background: rgba(0, 0, 0, 0.1);
+              border: 1px solid rgba(0, 0, 0, 0.1);
+            }
           }
         }
       }
@@ -8093,6 +8103,10 @@ form {
 
   &:focus {
     outline: 1px dotted #aaa;
+  }
+
+  &:focus.no-focus-border {
+    outline: none;
   }
 }
 
