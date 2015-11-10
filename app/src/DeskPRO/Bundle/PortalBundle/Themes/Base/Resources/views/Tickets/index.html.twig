@@ -24,7 +24,7 @@
                         </li>
 
                         <li class="{{ resolved_only ? 'tab-active' : 'tab-inactive' }}">
-                            <a href="{{ path('portal_tickets_resolved') }}">
+                            <a href="{{ path('portal_tickets_resolved', { type: type }) }}">
                                 <div>
                                     <span class="title">Resolved</span>
                                 </div>

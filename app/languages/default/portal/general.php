@@ -70,6 +70,7 @@ return array(
     'portal.general.nav-newticket'               => 'Contact Us',
     'portal.general.nav-newticket-desc'          => 'We\'re here to help',
     'portal.general.nav-tickets'                 => 'Tickets',
+    'portal.general.nav-tickets-org'             => 'Organization Tickets',
     'portal.general.nav-register'                => 'Register',
     'portal.general.nav-login'                   => 'Login',
     'portal.general.nav-reset-password'          => 'Reset Password',
