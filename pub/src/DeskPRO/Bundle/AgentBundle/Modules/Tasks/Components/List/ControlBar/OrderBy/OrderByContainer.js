@@ -4,6 +4,8 @@ import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Posit
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import { OrderBy } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { OrderByDropdown } from './OrderByDropdown';
+import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
+import { currentOrderSelector, currentSortSelector } from '../../../../Selectors/tasks';
 
 const sortOptions = {
   list: { label: 'List', icon: 'list' },
@@ -14,11 +16,16 @@ const sortOptions = {
   assignee: { label: 'Assignee', icon: 'user' }
 };
 
-@connect()
+@connect(state => ({
+  currentSort: currentSortSelector(state),
+  currentOrder: currentOrderSelector(state)
+}))
 export class OrderByContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    currentSort: PropTypes.string,
+    currentOrder: PropTypes.string
   };
 
   constructor(props) {
@@ -43,24 +50,23 @@ export class OrderByContainer extends React.Component {
   };
 
   onToggleListSort = value => {
-    console.log(value);
+    this.props.dispatch(updateRoutingState('list', 'sort', value));
     this.onCloseDropDown();
   };
 
   onToggleListOrder = value => {
-    console.log(value);
+    this.props.dispatch(updateRoutingState('list', 'order', value));
     this.onCloseDropDown();
   };
 
   render() {
-    const currentSortOption = sortOptions[0];
-    const order = 'asc';
+    const { currentSort, currentOrder } = this.props;
 
     return (
       <OrderBy ref="button"
-               currentSortOption={currentSortOption}
+               currentSortOption={sortOptions[currentSort]}
                sortOptions={sortOptions}
-               order={order}
+               order={currentOrder}
                toggleDropdown={this.onOpenDropdown}>
 
         <Detached isOpen={this.state.dropdownOpened}
@@ -68,8 +74,8 @@ export class OrderByContainer extends React.Component {
                   positionTarget={this.refs.button}>
 
           <ClickOut onClickOut={this.onCloseDropDown}>
-            <OrderByDropdown order={order}
-                             currentSortOption={currentSortOption}
+            <OrderByDropdown currentOrder={currentOrder}
+                             currentSort={currentSort}
                              sortOptions={sortOptions}
                              onToggleListSort={this.onToggleListSort}
                              onToggleListOrder={this.onToggleListOrder} />

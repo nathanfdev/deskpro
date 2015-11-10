@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
-import { Controls } from './ControlBar/Controls';
+import { ControlBarContainer } from './ControlBarContainer';
 import { CardView } from './View/Card/CardView';
 import { KanbanView } from './View/Kanban/KanbanView';
 import { TableView } from './View/Table/TableView';
@@ -39,7 +39,7 @@ export class List extends React.Component {
 
     return (
       <ListFrameContainer>
-        <Controls />
+        <ControlBarContainer />
         {listParams &&
           <Loader loaded={loaded}
                   color="green"

@@ -1,6 +1,15 @@
 import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import * as Tasks from 'DeskPRO/Bundle/AgentBundle/Services/Api/Tasks';
+import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
+
+export const changeView = createAction(
+  'TASKS_CHANGE_VIEW_MODE',
+  viewMode => dispatch => {
+    dispatch(updateRoutingState('list', 'view', viewMode));
+    return viewMode;
+  }
+);
 
 export const setListParamsFilter = createAction('TASKS_SET_LIST_PARAMS_FILTER');
 export const setListParamsSort = createAction('TASKS_SET_LIST_PARAMS_SORT');

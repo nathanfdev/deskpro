@@ -22,7 +22,7 @@ export class ViewModeContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    currentView: PropTypes.string.isRequired
+    currentView: PropTypes.string
   };
 
   constructor(props) {

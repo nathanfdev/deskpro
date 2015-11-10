@@ -18,6 +18,7 @@ export class ControlBar extends Component {
       orderAction: PropTypes.func.isRequired
     }),
     view: PropTypes.shape({
+      options: PropTypes.array.isRequired,
       viewMode: PropTypes.string.isRequired,
       viewModeAction: PropTypes.func.isRequired,
       tableConfigurableFields: PropTypes.object.isRequired,
