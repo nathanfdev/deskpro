@@ -141,14 +141,6 @@ class FeedbackController extends BaseController
     {
         $dataService = $this->get('data.feedback');
         $params      = $request->query->all();
-        if (array_key_exists('group_by', $params) && $params['group_by'] === 'category') {
-            $result = $dataService->countsByType();
-
-            return View::create(
-                $this->dataSerialize(new PrimitiveArray($result)),
-                Response::HTTP_OK
-            );
-        }
         try {
             $criteria = FeedbackCountCriteria::fromParameters($params, new OptionsResolver());
         } catch (InvalidArgumentException $e) {

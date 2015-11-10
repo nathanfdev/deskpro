@@ -12,7 +12,7 @@ export class FeedbackCard extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     feedback: PropTypes.object.isRequired,
-    viewFields: PropTypes.object.isRequired,
+    viewFields: PropTypes.object,
     selected: PropTypes.bool.isRequired,
     toggleSelected: PropTypes.func.isRequired,
     author: PropTypes.object.isRequired,

@@ -23,7 +23,7 @@ export class List extends Component {
     comments: PropTypes.array.isRequired,
     massAction: PropTypes.bool.isRequired,
     currentViewMode: PropTypes.string.isRequired,
-    isComments: PropTypes.bool.isRequired
+    isComments: PropTypes.bool
   };
 
   contentChoice() {
