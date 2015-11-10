@@ -36,7 +36,6 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\JobQueue\Processor\Reset\SettingsProcessor;
 
 class DataInitializer
 {
@@ -88,8 +87,6 @@ class DataInitializer
         $this->runInitAdminNotifications();
         $this->runInitDefaultSla();
         $this->runInitInitialData();
-
-        SettingsProcessor::saveBaseSettings($this->container->getDb());
     }
 
     public function runInitPerms()
