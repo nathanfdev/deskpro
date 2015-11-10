@@ -21,7 +21,7 @@ export class ClickOut extends React.Component {
 
   onClick = event => {
     event.preventDefault();
-    const { additionalNodes = [], ignoreNodes, onClickOut } = this.props;
+    const { additionalNodes = [], ignoreNodes, onClickOut, onClick } = this.props;
 
     // skip if clicking on one of the ignored nodes
     if (ignoreNodes) {
