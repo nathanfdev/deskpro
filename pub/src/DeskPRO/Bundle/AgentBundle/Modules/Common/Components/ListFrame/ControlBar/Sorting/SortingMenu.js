@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Button } from '../Button';
-import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
+import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
@@ -40,11 +40,11 @@ export class SortingMenu extends Component {
             icon={current ? current.icon : null}
             label={current ? `${current.label} (${order})` : '(no order)'}
           />
-          <Positioned isOpen={this.state.expanded}
+          <Detached isOpen={this.state.expanded}
                       positionAt="left bottom"
                       positionTarget={this.refs.button}>
             <OrderByDropdownContainer {...this.props} />
-          </Positioned>
+          </Detached>
         </ClickOut>
       </li>
     );

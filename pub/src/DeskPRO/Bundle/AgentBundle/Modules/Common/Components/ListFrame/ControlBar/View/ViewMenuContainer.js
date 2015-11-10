@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Button } from '../Button';
-import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
+import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
@@ -46,7 +46,7 @@ export class ViewMenuContainer extends Component {
             icon={null}
             label={viewMode.charAt(0).toUpperCase() + viewMode.slice(1)}
           />
-          <Positioned isOpen={this.state.menuExpanded}
+          <Detached isOpen={this.state.menuExpanded}
                       style={{display: this.state.optionsExpanded ? 'none' : 'block'}}
                       positionAt="left bottom"
                       positionTarget={this.refs.button}
@@ -66,13 +66,13 @@ export class ViewMenuContainer extends Component {
                 </div>
               </MenuFooter>
             </Menu>
-          </Positioned>
-          <Positioned isOpen={this.state.optionsExpanded}
+          </Detached>
+          <Detached isOpen={this.state.optionsExpanded}
                       positionAt="left bottom"
                       positionTarget={this.refs.button}
                       ref="options">
             <ViewOptionsContainer {...this.props} />
-          </Positioned>
+          </Detached>
         </ClickOut>
       </li>
     );
