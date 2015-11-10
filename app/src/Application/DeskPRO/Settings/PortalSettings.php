@@ -84,6 +84,9 @@ class PortalSettings
         $this->show_ratings     = (int) $this->settings->get('user.show_ratings');
         $this->publish_comments = (bool) $this->settings->get('user.publish_comments');
 
+
+        // TODO these captcha changes were redone see settings.php 'captcha' section
+
         $this->register_captcha    = (bool) $this->settings->get('user.register_captcha');
         $this->publish_captcha     = (bool) $this->settings->get('user.publish_captcha');
         $this->always_show_captcha = (bool) $this->settings->get('user.always_show_captcha');

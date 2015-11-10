@@ -53,6 +53,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
  */
 class CaptchaDecider
 {
+    const CAPTCHA_GUESTS = 'guests';
+    const CAPTCHA_EVERYONE = 'everyone';
+
     /**
      * @var BrandStack
      */
@@ -94,40 +97,42 @@ class CaptchaDecider
 
     public function shouldRequireFeedbackCaptchaForCurrentPerson()
     {
-        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_SUBMIT_FEEDBACK, 'user.publish_captcha');
+        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_SUBMIT_FEEDBACK, 'user.captcha.feedback');
     }
 
     public function shouldRequireCommentCaptchaForCurrentPerson()
     {
-        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_SUBMIT_COMMENT, 'user.publish_captcha');
+        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_SUBMIT_COMMENT, 'user.captcha.comments');
     }
 
     public function shouldRequireRegistrationCaptchaForCurrentPerson()
     {
-        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_REGISTER, 'user.register_captcha');
+        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_REGISTER, 'user.captcha.register');
     }
 
     public function shouldRequireTicketCaptchaForCurrentPerson()
     {
-        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_SUBMIT_TICKET, 'user.ticket_captcha');
+        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_SUBMIT_TICKET, 'user.captcha.tickets');
     }
 
     public function shouldRequireForgotPasswordCaptchaForCurrentPerson()
     {
-        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_RESET_PASSWORD, 'user.register_captcha');
+        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_RESET_PASSWORD, 'user.captcha.register');
     }
 
-    protected function shouldRequireCaptcha($where, $guest_setting)
+    protected function shouldRequireCaptcha($where, $setting_name)
     {
-        // this setting means captcha is always displayed
-        if ($this->getBrandSetting('user.always_show_captcha')) {
-            return true;
-        }
+        $setting = $this->getBrandSetting($setting_name);
 
-        if (!$this->authorization_checker->isGranted('ROLE_USER')) {
-            // this setting means it should always be displayed to a guest
-            if ($this->getBrandSetting($guest_setting)) {
-                return true;
+        if ($setting) {
+            if ($this->authorization_checker->isGranted('ROLE_USER')) {
+                if ($setting === self::CAPTCHA_EVERYONE) {
+                    return true;
+                }
+            } else {
+                if ($setting === self::CAPTCHA_GUESTS) {
+                    return true;
+                }
             }
         }
 

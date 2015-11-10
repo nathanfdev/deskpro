@@ -921,16 +921,23 @@ return array(
     'user.show_ratings'             => true,
     'user.show_ratings_min_votes'   => 1,
     'user.show_num_votes'           => false,
-    'user.publish_captcha'          => false,
     'user.publish_comments'         => true,
-    'user.register_captcha'         => false,
-    'user.ticket_captcha'           => false,
-    'user.always_show_captcha'      => false,
     'user.feedback_notify_comments' => true,
     'user.kb_subscriptions'         => true,
     'user.news_subscriptions'       => true,
     'user.downloads_subscriptions'  => true,
     'user.feedback_subscriptions'   => true,
+
+    ####################################################################################################################
+    # captcha : FALSE (off), 'guests', 'everyone'
+    ####################################################################################################################
+
+    //TODO need admin controls for these
+
+    'user.captcha.tickets'  => false,
+    'user.captcha.comments' => false,
+    'user.captcha.feedback' => false,
+    'user.captcha.register' => false,
 
     ####################################################################################################################
     # search
