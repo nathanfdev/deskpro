@@ -7,20 +7,21 @@ export class LabelsFilter extends Component {
   static propTypes = {
     changeMode: PropTypes.func.isRequired,
     selectLabel: PropTypes.func.isRequired,
+    deselectLabel: PropTypes.func.isRequired,
     selectedLabels: PropTypes.object,
     allLabels: PropTypes.array.isRequired,
     params: PropTypes.object
   };
 
   render() {
-    const {params, changeMode, allLabels, selectLabel, selectedLabels} = this.props;
+    const {params, changeMode, allLabels, selectLabel, selectedLabels, deselectLabel} = this.props;
     return (
       <div className="dpw-navigation-dropdown-panel dpw-navigation-dropdown-panel-corner-left">
         <LabelsMatchingMode mode={params.get('mode')} changeMode={changeMode}/>
 
         <div className="dpw-navigation-dropdown-panel-content">
           <div className="dpw-navigation-dropdown-panel-content-line">
-            <SelectedLabels selectedLabels={selectedLabels}/>
+            <SelectedLabels selectedLabels={selectedLabels} deselectLabel={deselectLabel}/>
             <hr/>
             <div className="dpw-navigation-dropdown-panel-content-full">
               <div className="dpw-label-long-list">
@@ -99,11 +100,12 @@ export class AnyLabelMatchingMode extends Component {
 export class SelectedLabels extends Component {
 
   static propTypes = {
-    selectedLabels: PropTypes.object
+    selectedLabels: PropTypes.object,
+    deselectLabel: PropTypes.func.isRequired
   };
 
   render() {
-    const { selectedLabels } = this.props;
+    const { selectedLabels, deselectLabel } = this.props;
     if (selectedLabels) {
       return (
         <div className="dpw-navigation-dropdown-panel-content-full">
@@ -111,16 +113,21 @@ export class SelectedLabels extends Component {
             <ul className="dpw-label-list">
               {selectedLabels.map((item, index) =>
                   <li key={index}>
-                    <a href="#" className="dpw-item-label"><i className="fa fa-times"></i> {item}</a>
+                    <a href="#" className="dpw-item-label" onClick={deselectLabel.bind(this, item)}>
+                      <i className="fa fa-times"></i> {item}
+                    </a>
                   </li>
               )}
             </ul>
           </div>
         </div>
       );
-    } else {
-      return (<div/>);
     }
+    return (
+      <div className="dpw-navigation-dropdown-panel-content-full">
+        <div className="dpw-label-pile"></div>
+      </div>
+    );
   }
 }
 

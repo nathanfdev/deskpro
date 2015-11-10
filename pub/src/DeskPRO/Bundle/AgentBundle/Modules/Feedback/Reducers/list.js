@@ -51,6 +51,18 @@ export default createReducer(initialState, {
     return state.setIn(['currentListParams', 'filters', 'labels', 'selected_labels'], Immutable.fromJS(selected));
   },
 
+  [actions.deselectLabel]: (state, payload) => {
+    const filtersState = state.get('currentListParams').get('filters');
+    if (filtersState && filtersState.get('labels') && filtersState.get('labels').get('selected_labels')) {
+      const selected = filtersState.get('labels').get('selected_labels').toJS();
+      const index = selected.indexOf(payload);
+      if (index !== -1) {
+        selected.splice(index, 1);
+      }
+      return state.setIn(['currentListParams', 'filters', 'labels', 'selected_labels'], Immutable.fromJS(selected));
+    }
+  },
+
   [commentsActions.loadCommentsList]: async({
     success: (state, payload) => state.set('comments', payload.data)
   }),
