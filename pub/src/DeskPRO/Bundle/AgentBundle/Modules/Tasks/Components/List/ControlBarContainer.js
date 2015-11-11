@@ -11,13 +11,13 @@ import {
   tableVisibleFieldsSelector,
   calendarVisibleFieldsSelector,
   kanbanVisibleFieldsSelector
-} from '../../Selectors/tasks';
+} from '../../Selectors/list';
 import {
   toggleCardFieldVisibility,
   toggleTableFieldVisibility,
   toggleKanbanFieldVisibility,
   toggleCalendarFieldVisibility
-} from '../../Actions/tasksActions';
+} from '../../Actions/listActions';
 
 @connect(state => ({
   viewMode: currentViewModeSelector(state),
@@ -36,10 +36,10 @@ export class ControlBarContainer extends Component {
     sort: PropTypes.string.isRequired,
     order: PropTypes.string.isRequired,
     viewMode: PropTypes.string.isRequired,
-    cardVisibleFields: PropTypes.array.isRequired,
-    tableVisibleFields: PropTypes.array.isRequired,
-    kanbanVisibleFields: PropTypes.array.isRequired,
-    calendarVisibleFields: PropTypes.array.isRequired
+    cardVisibleFields: PropTypes.object.isRequired,
+    tableVisibleFields: PropTypes.object.isRequired,
+    kanbanVisibleFields: PropTypes.object.isRequired,
+    calendarVisibleFields: PropTypes.object.isRequired
   };
 
   render() {

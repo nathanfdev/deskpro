@@ -2,8 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { urlSanitize } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Service/routing';
 import { ListItemRouteContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
-import { currentNavSelector } from '../../Selectors/tasks';
-import * as TasksActions from '../../Actions/tasksActions';
+import { currentNavSelector } from '../../Selectors/list';
+import * as ListActions from '../../Actions/listActions';
 
 @connect(state => ({
   activeItemId: currentNavSelector(state)
@@ -31,7 +31,7 @@ export class ListItemContainer extends React.Component {
 
   loadList = () => {
     const { listOptions, dispatch } = this.props;
-    dispatch(TasksActions.applyListParams(listOptions));
+    dispatch(ListActions.applyListParams(listOptions));
   };
 
   render() {

@@ -1,13 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { List } from './List';
-import { currentViewModeSelector } from '../../Selectors/tasks';
+import { currentViewModeSelector } from '../../Selectors/list';
 
 @connect(state => ({
-  tasks: state.Tasks.tasks.get('elements'),
-  loaded: state.Tasks.tasks.getIn(['async', 'done']),
+  tasks: state.Tasks.list.get('elements'),
+  loaded: state.Tasks.list.getIn(['async', 'done']),
   currentView: currentViewModeSelector(state),
-  listParams: state.Tasks.tasks.get('listParams')
+  listParams: state.Tasks.list.get('listParams')
 }))
 export class ListContainer extends React.Component {
 
