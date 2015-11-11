@@ -47,12 +47,12 @@ export class TypesCollectionContainer extends Component {
     return (
       <ChoiceMenu title="Feedback Type">
         <ul>
-          {types.toJS().map((item, index) =>
+          {types.toJS().nested.map((item, index) =>
               <ChoiceMenuOption
                 key={index}
                 values={values}
-                label={item.title}
-                value={item.title}
+                label={item.group}
+                value={item.group}
                 onClick={this.setFilter.bind(this)}
                 />
           )}
