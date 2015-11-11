@@ -58,7 +58,11 @@ const FilterByDropdown = React.createClass({
 
   resetFilter(type) {
     const {dispatch, isComments} = this.props;
-    dispatch(setFilterValue({ filter: type, value: null }));
+    if (Object.prototype.toString.call(type) === '[object Array]') {
+      type.forEach(item => dispatch(setFilterValue({ filter: item, value: null })));
+    } else {
+      dispatch(setFilterValue({ filter: type, value: null }));
+    }
     if (isComments) {
       dispatch(loadCommentsList());
     } else {
@@ -248,7 +252,7 @@ const FilterByDropdown = React.createClass({
 
       return (
         <FilterItem
-          filterType="status"
+          filterType={['status', 'status_category']}
           isActive={isStatusesFilterActive}
           resetFilter={this.resetFilter}
           icon="calendar-o"

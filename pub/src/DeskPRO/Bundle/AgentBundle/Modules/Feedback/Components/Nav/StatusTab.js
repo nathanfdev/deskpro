@@ -6,8 +6,7 @@ import { NestedList } from './NestedList';
 export class StatusTab extends Component {
 
   static propTypes = {
-    statuses: PropTypes.object.isRequired,
-    onClick: PropTypes.func.isRequired
+    statuses: PropTypes.object.isRequired
   };
 
   render() {

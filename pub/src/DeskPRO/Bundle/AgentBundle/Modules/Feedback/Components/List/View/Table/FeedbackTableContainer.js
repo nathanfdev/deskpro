@@ -30,7 +30,7 @@ export class FeedbackTableContainer extends Component {
     feedbackComments: PropTypes.object.isRequired,
     feedbackCategories: PropTypes.object.isRequired,
     feedbackTypes: PropTypes.object.isRequired,
-    viewFields: PropTypes.object.isRequired,
+    viewFields: PropTypes.object,
     dispatch: PropTypes.func.isRequired
   };
 

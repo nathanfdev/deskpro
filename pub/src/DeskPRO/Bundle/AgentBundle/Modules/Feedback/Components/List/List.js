@@ -12,15 +12,15 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 export class List extends Component {
 
   static propTypes = {
-    feedback: PropTypes.array.isRequired,
-    people: PropTypes.array.isRequired,
-    emails: PropTypes.array.isRequired,
-    selected: PropTypes.array.isRequired,
-    feedbackFromStore: PropTypes.array.isRequired,
+    feedback: PropTypes.object.isRequired,
+    people: PropTypes.object.isRequired,
+    emails: PropTypes.object.isRequired,
+    selected: PropTypes.object.isRequired,
+    feedbackFromStore: PropTypes.object.isRequired,
     feedbackStatuses: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     toggleSelected: PropTypes.func.isRequired,
-    comments: PropTypes.array.isRequired,
+    comments: PropTypes.object.isRequired,
     massAction: PropTypes.bool.isRequired,
     currentViewMode: PropTypes.string.isRequired,
     isComments: PropTypes.bool

@@ -23,7 +23,7 @@ export class FilterContainer extends Component {
     dispatch: PropTypes.func.isRequired,
     statuses: PropTypes.object.isRequired,
     types: PropTypes.object.isRequired,
-    filterParams: PropTypes.object.isRequired
+    filterParams: PropTypes.object
   };
 
   render() {

@@ -26,17 +26,17 @@ import { connect } from 'react-redux';
 export class ListContainer extends Component {
 
   static propTypes = {
-    feedback: PropTypes.array.isRequired,
+    feedback: PropTypes.object.isRequired,
     currentViewMode: PropTypes.string.isRequired,
-    comments: PropTypes.array.isRequired,
+    comments: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
-    people: PropTypes.array.isRequired,
-    emails: PropTypes.array.isRequired,
-    feedbackTypes: PropTypes.array.isRequired,
-    feedbackLabels: PropTypes.array.isRequired,
-    feedbackComments: PropTypes.array.isRequired,
+    people: PropTypes.object.isRequired,
+    emails: PropTypes.object.isRequired,
+    feedbackTypes: PropTypes.object.isRequired,
+    feedbackLabels: PropTypes.object.isRequired,
+    feedbackComments: PropTypes.object.isRequired,
     feedbackStatuses: PropTypes.object.isRequired,
-    feedbackFromStore: PropTypes.array.isRequired,
+    feedbackFromStore: PropTypes.object.isRequired,
     massAction: PropTypes.bool.isRequired,
     selected: PropTypes.array.isRequired,
     isComments: PropTypes.bool
