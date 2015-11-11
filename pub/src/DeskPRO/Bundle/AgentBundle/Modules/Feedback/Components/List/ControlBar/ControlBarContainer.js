@@ -1,29 +1,29 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
-import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameMenu';
 import { toggleMassAction } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
-import { currentListSortSelector, currentListOrderSelector, isCommentsSelector, currentViewModeSelector } from '../../../Selectors/list';
-import { setSort, setOrder, setFilters } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
+import { currentListSortSelector, currentListOrderSelector, currentListParamsSelector, currentViewModeSelector }
+  from '../../../Selectors/list';
+import { setSort, setOrder, applyParams } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
 
 @connect(state => ({
-  // mass action data
   count: state.Feedback.list.get('selected').size,
-
-  // sorting data
   sort: currentListSortSelector(state),
   order: currentListOrderSelector(state),
-  isComments: isCommentsSelector(state),
-
-  // filtering
-  filterParams: state.Feedback.list.get('currentListParams').get('filters'),
-
-  // view
+  filterParams: currentListParamsSelector(state),
   viewMode: currentViewModeSelector(state)
 }))
 export class ControlBarContainer extends Component {
+  static propTypes = {
+    count: PropTypes.number.isRequired,
+    sort: PropTypes.string.isRequired,
+    order: PropTypes.string.isRequired,
+    filterParams: PropTypes.object.isRequired,
+    viewMode: PropTypes.string.isRequired,
+  };
+
   render() {
     const config = {
       checkbox: {
@@ -64,7 +64,7 @@ export class ControlBarContainer extends Component {
             'label 1', 'label 2', 'label 3'
           ]}
         ],
-        setParamsAction: setFilters,
+        setParamsAction: applyParams,
         state: this.props.filterParams
       },
       view: {

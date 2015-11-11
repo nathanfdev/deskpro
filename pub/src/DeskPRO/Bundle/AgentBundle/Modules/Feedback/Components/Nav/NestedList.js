@@ -10,6 +10,7 @@ export class NestedList extends BaseNestedList {
 
     // 1st level menu items set 'status' filtering option, all other set 'status_category'
     const listOptions = (depth === 1) ? { navItem: { status: group } } : { navItem: { status_category: group } };
+    listOptions.isComments = false;
 
     return (
       <ListItemContainer key={group}

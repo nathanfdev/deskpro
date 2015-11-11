@@ -6,7 +6,7 @@ import { peopleSelector, feedbackTypesSelector, feedbackLabelsSelector, feedback
 
 @connect(state => {
   return ({
-    feedback: state.Feedback.list.get('feedback'),
+    feedback: state.Feedback.list.get('elements'),
     viewFields: state.Feedback.list.get('viewFields'),
     selected: state.Feedback.list.get('selected'),
     people: peopleSelector(state),

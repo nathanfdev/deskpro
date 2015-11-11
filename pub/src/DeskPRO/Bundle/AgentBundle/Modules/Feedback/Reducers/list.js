@@ -1,22 +1,18 @@
 import { createReducer } from 'Ampliflux';
 import { async, setFullPayload } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/FeedbackListActions';
-import * as commentsActions from '../Actions/FeedbackCommentsActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import Immutable from 'immutable';
 
 const initialState = {
-  massAction: false,
-  feedback: [],
+  elements: [], // array of list elements (feedback or comments)
   selected: [], // array of IDs
-  comments: [],
 
   // currently viewed list GET parameters map
   currentListParams: {
-    isComments: false, // whether comments or feedback list is shown
+    isComments: false,
     sort: 'date_created',
     order: constants.ORDER_DESC,
-    filters: {}
+    labels_mode: 'any'
   },
 
   commentsTableViewFields: [ // temporary, must be removed later
@@ -29,63 +25,19 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-
-  [actions.loadFeedbackList]: async({
-    success: (state, payload) => state.set('feedback', payload.data)
+  [actions.loadList]: async({
+    success: (state, payload) => state.set('elements', payload.data)
   }),
 
-  [actions.setCurrentListParams]: (state, payload) => state.set('currentListParams', Immutable.fromJS(payload)),
-
-  [actions.setLabelsFilterMode]: (state, payload) => state.setIn(['currentListParams', 'filters', 'labels', 'mode'], payload),
-
-  [actions.selectLabel]: (state, payload) => {
-    let selected = [];
-    const filtersState = state.get('currentListParams').get('filters');
-    if (filtersState && filtersState.get('labels') && filtersState.get('labels').get('selected_labels')) {
-      selected = filtersState.get('labels').get('selected_labels').toJS();
-      if (selected.indexOf(payload) === -1) {
-        selected.push(payload);
-      }
-    } else {
-      selected.push(payload);
-    }
-    return state.setIn(['currentListParams', 'filters', 'labels', 'selected_labels'], Immutable.fromJS(selected));
-  },
-
-  [actions.deselectLabel]: (state, payload) => {
-    const filtersState = state.get('currentListParams').get('filters');
-    if (filtersState && filtersState.get('labels') && filtersState.get('labels').get('selected_labels')) {
-      const selected = filtersState.get('labels').get('selected_labels').toJS();
-      const index = selected.indexOf(payload);
-      if (index !== -1) {
-        selected.splice(index, 1);
-      }
-      return state.setIn(['currentListParams', 'filters', 'labels', 'selected_labels'], Immutable.fromJS(selected));
-    }
-  },
-
-  [commentsActions.loadCommentsList]: async({
-    success: (state, payload) => state.set('comments', payload.data)
-  }),
-
-  [actions.toggleMassAction]: (state) => {
-    let next = state.set('massAction', !state.get('massAction'));
-    let selected = next.get('selected');
-
-    if (next.get('massAction')) {
-      const elements = next.get('feedback');
-      elements.forEach((element) => {
-        if (!selected.includes(element.id)) {
-          selected = selected.push(element.id);
-        }
-      });
+  [actions.toggleMassAction]: (state, select) => {
+    let selected = state.get('selected');
+    if (select) {
+      state.get('elements').map(el => selected.includes(el.id) || (selected = selected.push(el.id)));
     } else {
       selected = selected.clear();
     }
 
-    next = next.set('selected', selected);
-
-    return next;
+    return state.set('selected', selected);
   },
 
   [actions.toggleSelectedAction]: (state, payload) => {
@@ -102,34 +54,5 @@ export default createReducer(initialState, {
       state.setIn(['viewFields'], payload.data.value)
   }),
 
-  [actions.setFilterValue]: (state, payload) => {
-    let newFilters = {};
-    if (state.get('currentListParams').get('filters')) {
-      newFilters = state.get('currentListParams').get('filters').toJS();
-    }
-    newFilters[payload.filter] = payload.value;
-    return state.setIn(['currentListParams', 'filters'], Immutable.fromJS(newFilters));
-  },
-
-  [actions.setFilters]: (state, overwrite) => {
-    let current = {};
-    if (state.get('currentListParams').get('filters')) {
-      current = state.get('currentListParams').get('filters').toJS();
-    }
-    const newFilters = {...current, ...overwrite};
-
-    return state.setIn(['currentListParams', 'filters'], Immutable.fromJS(newFilters));
-  },
-
-  [commentsActions.commentsToggleOrder]: setFullPayload('order'),
-
-  [commentsActions.setTableSort]: (state, payload) => {
-    const commentsTableViewFields = [];
-    state.get('commentsTableViewFields').toJS().forEach(obj=> {
-      const nextObj = { ...obj };
-      nextObj.order = nextObj.name === payload.sort ? payload.order : false;
-      commentsTableViewFields.push(nextObj);
-    });
-    return state.set('commentsTableViewFields', Immutable.fromJS(commentsTableViewFields));
-  }
+  [actions.setParams]: setFullPayload('currentListParams')
 });

@@ -2,13 +2,13 @@ import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import { peopleSelector, emailsSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackStatusesSelector, feedbackCategoriesSelector }
   from '../../../../Selectors/list';
-import { setTableSort } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { TableView, TableHeader, Th, TableBody, Row, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { defaultTableFields } from '../../../List/ControlBar/FeedbackViewOptions';
-
+import { applyParams } from '../../../../Actions/FeedbackListActions';
 import { connect } from 'react-redux';
+
 @connect(state => ({
-  feedback: state.Feedback.list.get('feedback'),
+  feedback: state.Feedback.list.get('elements'),
   viewFields: state.Feedback.list.get('viewFields'),
   feedbackTypes: feedbackTypesSelector(state),
   feedbackComments: feedbackCommentsSelector(state),
@@ -17,7 +17,6 @@ import { connect } from 'react-redux';
   people: peopleSelector(state),
   emails: emailsSelector(state)
 }))
-
 @injectIntl
 export class FeedbackTableContainer extends Component {
 
@@ -43,9 +42,7 @@ export class FeedbackTableContainer extends Component {
   }
 
   sortTable(param, order) {
-    const {dispatch} = this.props;
-    dispatch(setTableSort(param, order));
-    this.setState({ sort: param, order: order });
+    this.props.dispatch(applyParams({sort: param, order}));
   }
 
   renderLongString(string) {

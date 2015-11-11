@@ -8,10 +8,9 @@ import { connect } from 'react-redux';
 
 @connect(state => {
   return ({
-    feedback: state.Feedback.list.get('feedback'),
-    massAction: state.Feedback.list.get('massAction'),
+    elements: state.Feedback.list.get('elements'),
+    isComments: isCommentsSelector(state),
     selected: state.Feedback.list.get('selected'),
-    comments: state.Feedback.list.get('comments'),
     currentViewMode: currentViewModeSelector(state),
     people: peopleSelector(state),
     emails: emailsSelector(state),
@@ -19,14 +18,14 @@ import { connect } from 'react-redux';
     feedbackLabels: feedbackLabelsSelector(state),
     feedbackComments: feedbackCommentsSelector(state),
     feedbackFromStore: feedbackSelector(state),
-    feedbackStatuses: feedbackStatusesSelector(state),
-    isComments: isCommentsSelector(state)
+    feedbackStatuses: feedbackStatusesSelector(state)
   });
 })
 export class ListContainer extends Component {
 
   static propTypes = {
-    feedback: PropTypes.object.isRequired,
+    elements: PropTypes.object.isRequired,
+    isComments: PropTypes.bool,
     currentViewMode: PropTypes.string.isRequired,
     comments: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
@@ -37,9 +36,7 @@ export class ListContainer extends Component {
     feedbackComments: PropTypes.object.isRequired,
     feedbackStatuses: PropTypes.object.isRequired,
     feedbackFromStore: PropTypes.object.isRequired,
-    massAction: PropTypes.bool.isRequired,
-    selected: PropTypes.array.isRequired,
-    isComments: PropTypes.bool
+    selected: PropTypes.array.isRequired
   };
 
   render() {

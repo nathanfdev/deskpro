@@ -16,7 +16,7 @@ export class CategoryTab extends Component {
         {customCategories.toJS().map((item, index) =>
             <ListItemContainer key={index}
                                label={item.group}
-                               listOptions={{navItem: {custom_category: item.group}}}>
+                               listOptions={{isComments: false, navItem: {custom_category: item.group}}}>
 
               <ListItem count={item.count}
                         label={item.group} />

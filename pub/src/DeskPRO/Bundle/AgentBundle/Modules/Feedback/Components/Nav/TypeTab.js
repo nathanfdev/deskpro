@@ -14,7 +14,7 @@ export class TypeTab extends Component {
         {types.get('nested').toJS().map((item, index) =>
             <ListItemContainer key={index}
                                label={item.group}
-                               listOptions={{navItem: {category: item.group}}}>
+                               listOptions={{isComments: false, navItem: {category: item.group}}}>
 
               <ListItem count={item.count}
                         label={item.group} />
