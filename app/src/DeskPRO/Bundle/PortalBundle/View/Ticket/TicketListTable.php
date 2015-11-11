@@ -152,7 +152,8 @@ class TicketListTable
     {
         // if the request does not specify columns to show in the table initially, we use these columns
         return [
-            TicketColumn::TYPE_DEPARTMENT_SUBJECT,
+            TicketColumn::TYPE_SUBJECT,
+            TicketColumn::TYPE_DEPARTMENT,
             TicketColumn::TYPE_DATE_CREATED,
             TicketColumn::TYPE_DATE_ACTIVITY,
         ];

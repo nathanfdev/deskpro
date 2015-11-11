@@ -128,10 +128,28 @@ class TicketTableDataService extends AbstractDataService
      */
     public function addStaticColumns(TicketColumns $columns)
     {
+        //$columns->addColumn(
+        //    TicketColumn::TYPE_DEPARTMENT_SUBJECT,
+        //    $this->phrase('portal.tickets.list_department').' / '.$this->phrase('portal.tickets.list_subject'),
+        //    TicketColumn::TYPE_DEPARTMENT_SUBJECT
+        //);
+
         $columns->addColumn(
-            TicketColumn::TYPE_DEPARTMENT_SUBJECT,
-            $this->phrase('portal.tickets.list_department').' / '.$this->phrase('portal.tickets.list_subject'),
-            TicketColumn::TYPE_DEPARTMENT_SUBJECT
+            TicketColumn::TYPE_SUBJECT,
+            $this->phrase('portal.tickets.list_subject'),
+            TicketColumn::TYPE_SUBJECT
+        );
+
+        $columns->addColumn(
+            TicketColumn::TYPE_DEPARTMENT,
+            $this->phrase('portal.tickets.list_department'),
+            TicketColumn::TYPE_DEPARTMENT
+        );
+
+        $columns->addColumn(
+            TicketColumn::TYPE_USER,
+            $this->phrase('portal.tickets.list_user'),
+            TicketColumn::TYPE_USER
         );
 
         $columns->addColumn(

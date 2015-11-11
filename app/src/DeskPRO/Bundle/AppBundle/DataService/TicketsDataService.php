@@ -138,6 +138,10 @@ class TicketsDataService extends AbstractDataService
                         $qb->addOrderBy('t.date_last_agent_reply', $filter->getSortDirection());
                         break;
 
+                    case TicketFilter::SORT_USER:
+                        $qb->addOrderBy('t.person', $filter->getSortDirection());
+                        break;
+
                     case TicketFilter::SORT_AGENT:
                         $qb->orderBy('t.agent', $filter->getSortDirection());
                         break;
