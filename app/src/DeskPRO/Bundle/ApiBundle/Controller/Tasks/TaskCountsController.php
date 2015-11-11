@@ -61,6 +61,7 @@ class TaskCountsController extends BaseController
      */
     public function getAgentCountsAction()
     {
+        return $this->get('data.tasks.task_counts')->getAgentsCounts();
     }
 
     /**
@@ -68,5 +69,6 @@ class TaskCountsController extends BaseController
      */
     public function getProjectCountsAction()
     {
+        return $this->get('data.tasks.task_counts')->getProjectsCounts();
     }
 }

@@ -184,4 +184,38 @@ class TasksCountsDataService
 
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
+
+    /**
+     *
+     */
+    public function getAgentsCounts()
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('p.id AS agent_id, COALESCE((COUNT(t.id) - SUM(t.is_done)), 0) AS tasks_count')
+            ->from('DeskPRO:Person', 'p')
+            ->leftJoin('p.assigned_tasks', 'ta')
+            ->leftJoin('ta.task', 't')
+            ->where($qb->expr()->eq('p.is_agent', 1))
+            ->groupBy('p.id')
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @return array
+     */
+    public function getProjectsCounts()
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('p.id AS project_id, COALESCE((COUNT(t.id) - SUM(t.is_done)), 0) AS tasks_count')
+            ->from('App:TaskProject', 'p')
+            ->leftJoin('p.tasks', 't')
+            ->groupBy('p.id')
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
 }
