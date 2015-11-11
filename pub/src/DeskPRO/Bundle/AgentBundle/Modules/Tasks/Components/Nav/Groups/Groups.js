@@ -1,36 +1,37 @@
 import React, { PropTypes } from 'react';
 import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { ListItemContainer } from '../ListItemContainer';
+import jQuery from 'jquery';
 
-const groups = [
-  { countKey: 'myTasksCount', filter: {agents: ['me']}, label: 'My Tasks' },
-  { countKey: 'teamTasksCount', filter: {teams: ['me']}, label: 'My Team Tasks' },
-  { countKey: 'deptTasksCount', filter: {departments: ['me']}, label: 'My Department Tasks' },
-  { countKey: 'delegatedTasksCount', filter: {agents: ['not_me'], creator: 'me'}, label: 'My Delegated Tasks' },
-  { countKey: 'unassignedTasksCount', filter: {agents: ['null'], teams: ['null'], departments: ['null']}, label: 'Unassigned Tasks' },
-  { countKey: 'allTasksCount', filter: {done: 'all'}, label: 'All Tasks' }
-];
+const groupOptions = {
+  my: {filter: {agents: ['me']}, label: 'My Tasks'},
+  team: {filter: {teams: ['me']}, label: 'My Team Tasks'},
+  department: {filter: {departments: ['me']}, label: 'My Department Tasks'},
+  delegated: {filter: {agents: ['not_me'], creator: 'me'}, label: 'My Delegated Tasks'},
+  unassigned: {filter: {agents: ['null'], teams: ['null'], departments: ['null']}, label: 'Unassigned Tasks'},
+  all: {filter: {done: 'all'}, label: 'All Tasks'}
+};
 
 export class Groups extends React.Component {
 
   static propTypes = {
-    groupsState: PropTypes.object.isRequired
+    groups: PropTypes.object.isRequired
   };
 
   render() {
-    const { groupsState } = this.props;
+    const { groups } = this.props;
 
     return (
       <Section>
         <SectionHeader>Tasks</SectionHeader>
         <ul>
-          {groups.map((group, index) =>
-            <ListItemContainer key={index}
-                               urlHash={group.label}
-                               listOptions={group.filter}>
+          {jQuery.map(groupOptions, (params, type) =>
+            <ListItemContainer key={type}
+                               urlHash={params.label}
+                               listOptions={params.filter}>
 
-              <ListItem count={groupsState.get(group.countKey)}
-                        label={group.label} />
+              <ListItem count={groups.get(type)}
+                        label={params.label} />
             </ListItemContainer>
           )}
         </ul>
