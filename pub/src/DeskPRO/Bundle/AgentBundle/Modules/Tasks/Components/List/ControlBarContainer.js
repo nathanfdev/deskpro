@@ -2,13 +2,31 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import { currentViewModeSelector, currentSortSelector, currentOrderSelector } from '../../Selectors/tasks';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
+import {
+  currentViewModeSelector,
+  currentSortSelector,
+  currentOrderSelector,
+  cardVisibleFieldsSelector,
+  tableVisibleFieldsSelector,
+  calendarVisibleFieldsSelector,
+  kanbanVisibleFieldsSelector
+} from '../../Selectors/tasks';
+import {
+  toggleCardFieldVisibility,
+  toggleTableFieldVisibility,
+  toggleKanbanFieldVisibility,
+  toggleCalendarFieldVisibility
+} from '../../Actions/tasksActions';
 
 @connect(state => ({
   viewMode: currentViewModeSelector(state),
   sort: currentSortSelector(state),
-  order: currentOrderSelector(state)
+  order: currentOrderSelector(state),
+  cardVisibleFields: cardVisibleFieldsSelector(state),
+  tableVisibleFields: tableVisibleFieldsSelector(state),
+  kanbanVisibleFields: kanbanVisibleFieldsSelector(state),
+  calendarVisibleFields: calendarVisibleFieldsSelector(state)
 }))
 export class ControlBarContainer extends Component {
 
@@ -17,37 +35,23 @@ export class ControlBarContainer extends Component {
     selectedCount: PropTypes.number.isRequired,
     sort: PropTypes.string.isRequired,
     order: PropTypes.string.isRequired,
-    viewMode: PropTypes.string.isRequired
+    viewMode: PropTypes.string.isRequired,
+    cardVisibleFields: PropTypes.array.isRequired,
+    tableVisibleFields: PropTypes.array.isRequired,
+    kanbanVisibleFields: PropTypes.array.isRequired,
+    calendarVisibleFields: PropTypes.array.isRequired
   };
 
   render() {
     const config = {
       sorting: {
         options: {
-          list: {
-            label: 'List',
-            icon: 'list'
-          },
-          project: {
-            label: 'Project',
-            icon: 'briefcase'
-          },
-          date_due: {
-            label: 'Due Date',
-            icon: 'calendar'
-          },
-          date_done: {
-            label: 'Done Date',
-            icon: 'calendar'
-          },
-          date_created: {
-            label: 'Created Date',
-            icon: 'calendar'
-          },
-          assignee: {
-            label: 'Assignee',
-            icon: 'user'
-          }
+          list: {label: 'List', icon: 'list'},
+          project: {label: 'Project', icon: 'briefcase'},
+          date_due: {label: 'Due Date', icon: 'calendar'},
+          date_done: {label: 'Done Date', icon: 'calendar'},
+          date_created: {label: 'Created Date', icon: 'calendar'},
+          assignee: {label: 'Assignee', icon: 'user'}
         },
 
         sort: this.props.sort,
@@ -68,8 +72,8 @@ export class ControlBarContainer extends Component {
               date_created: 'Date created',
               labels: 'Labels'
             },
-            visibleFields: [],
-            toggleFieldVisibility: () => {}
+            visibleFields: this.props.cardVisibleFields,
+            toggleFieldVisibility: toggleCardFieldVisibility
           },
           [constants.VIEW_MODE_TABLE]: {
             label: 'Table View',
@@ -80,16 +84,28 @@ export class ControlBarContainer extends Component {
               date_created: 'Date created',
               labels: 'Labels'
             },
-            visibleFields: [],
-            toggleFieldVisibility: () => {}
+            visibleFields: this.props.tableVisibleFields,
+            toggleFieldVisibility: toggleTableFieldVisibility
           },
           [constants.VIEW_MODE_KANBAN]: {
             label: 'Kanban View',
-            icon: 'sticky-note-o'
+            icon: 'sticky-note-o',
+            configurableFields: {
+              subject: 'Subject',
+              status: 'Status'
+            },
+            visibleFields: this.props.kanbanVisibleFields,
+            toggleFieldVisibility: toggleKanbanFieldVisibility
           },
           [constants.VIEW_MODE_CALENDAR]: {
             label: 'Calendar View',
-            icon: 'calendar'
+            icon: 'calendar',
+            configurableFields: {
+              subject: 'Subject',
+              status: 'Status'
+            },
+            visibleFields: this.props.calendarVisibleFields,
+            toggleFieldVisibility: toggleCalendarFieldVisibility
           }
         },
 
