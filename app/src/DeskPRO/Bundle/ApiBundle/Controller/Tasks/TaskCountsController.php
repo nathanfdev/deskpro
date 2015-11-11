@@ -33,6 +33,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class TaskGroupsController.
@@ -45,8 +47,7 @@ class TaskCountsController extends BaseController
     public function getGroupCountsAction()
     {
         $count_service = $this->get('data.tasks.task_counts');
-
-        return [
+        $counts        = [
             'all'        => $count_service->getAllRemainingCount(),
             'my'         => $count_service->getMyRemainingCount(),
             'team'       => $count_service->getTeamRemainingCount(),
@@ -54,6 +55,8 @@ class TaskCountsController extends BaseController
             'delegated'  => $count_service->getDelegatedRemainingCount(),
             'unassigned' => $count_service->getUnassignedRemainingCount(),
         ];
+
+        return View::create($this->createRepresentation($counts), Response::HTTP_OK);
     }
 
     /**
@@ -61,7 +64,9 @@ class TaskCountsController extends BaseController
      */
     public function getAgentCountsAction()
     {
-        return $this->get('data.tasks.task_counts')->getAgentsCounts();
+        $counts = $this->get('data.tasks.task_counts')->getAgentsCounts();
+
+        return View::create($this->createRepresentation($counts), Response::HTTP_OK);
     }
 
     /**
@@ -69,6 +74,8 @@ class TaskCountsController extends BaseController
      */
     public function getProjectCountsAction()
     {
-        return $this->get('data.tasks.task_counts')->getProjectsCounts();
+        $counts = $this->get('data.tasks.task_counts')->getProjectsCounts();
+
+        return View::create($this->createRepresentation($counts), Response::HTTP_OK);
     }
 }
