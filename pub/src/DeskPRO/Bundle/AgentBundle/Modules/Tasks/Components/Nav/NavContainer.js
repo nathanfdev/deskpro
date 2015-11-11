@@ -2,18 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { loadAllProjects } from '../../RecordStores/Actions/projectActions';
 import { loadAllTaskLabels } from '../../RecordStores/Actions/taskLabelActions';
-import { agentsSelector } from '../../../Agent/RecordStores/Selectors/agentsSelectors';
-import { allProjectsSelector } from '../../RecordStores/Selectors/projectSelectors';
-import { allTaskLabelsSelector } from '../../RecordStores/Selectors/taskLabelSelectors';
 import { Nav } from './Nav';
 import * as GroupsActions from '../../Actions/groupsActions';
 
 @connect(state => ({
-  dpWindow: state.Application.dpWindow,
-  agents: agentsSelector(state),
-  projects: allProjectsSelector(state),
-  labels: allTaskLabelsSelector(state),
-  groupsState: state.Tasks.groups
+  dpWindow: state.Application.dpWindow
 }))
 export class NavContainer extends React.Component {
 
@@ -31,8 +24,6 @@ export class NavContainer extends React.Component {
   }
 
   render() {
-    return (
-      <Nav {...this.props} />
-    );
+    return <Nav {...this.props} />;
   }
 }

@@ -4,6 +4,7 @@ import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Mod
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import { ProjectFormContainer } from './ProjectForm/ProjectFormContainer';
 import { ListItemContainer } from '../ListItemContainer';
+import Loader from 'react-loader';
 
 export class Projects extends React.Component {
 
@@ -68,9 +69,11 @@ export class Projects extends React.Component {
           </a>
         </SectionHeader>
 
-        <ul>
-          {this.props.projects.map((project, index) => this.renderItem(project, index))}
-        </ul>
+        <Loader loaded={!!this.props.projects}>
+          <ul>
+            {this.props.projects.map((project, index) => this.renderItem(project, index))}
+          </ul>
+        </Loader>
 
         <Detached isOpen={this.state.formOpened}
                   positionTarget={this}

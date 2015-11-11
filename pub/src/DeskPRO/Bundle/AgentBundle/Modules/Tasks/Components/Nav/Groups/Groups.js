@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
-import { ListItemContainer } from './ListItemContainer';
+import { ListItemContainer } from '../ListItemContainer';
 
 const groups = [
   { countKey: 'myTasksCount', filter: {agents: ['me']}, label: 'My Tasks' },
