@@ -14,8 +14,8 @@ export class Nav extends Component {
     intl: intlShape.isRequired,
     dispatch: PropTypes.func.isRequired,
     statuses: PropTypes.object.isRequired,
-    labels: PropTypes.array.isRequired,
-    types: PropTypes.array.isRequired,
+    labels: PropTypes.object.isRequired,
+    types: PropTypes.object.isRequired,
     customCategories: PropTypes.object.isRequired,
     toValidateCount: PropTypes.number.isRequired,
     commentsToReviewCount: PropTypes.number.isRequired

@@ -22,8 +22,8 @@ import { peopleSelector, feedbackTypesSelector, feedbackLabelsSelector, feedback
 export class FeedbackCardsContainer extends Component {
 
   static propTypes = {
-    feedback: PropTypes.array.isRequired,
-    viewFields: PropTypes.object.isRequired,
+    feedback: PropTypes.object.isRequired,
+    viewFields: PropTypes.object,
     selected: PropTypes.object.isRequired,
     people: PropTypes.object.isRequired,
     feedbackTypes: PropTypes.object.isRequired,
