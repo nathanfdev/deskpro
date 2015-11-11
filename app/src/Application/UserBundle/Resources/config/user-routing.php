@@ -513,6 +513,11 @@ $collection->create('user_chat_initsession', array(
     'controller' => 'UserBundle:Chat:chatSession',
 ));
 
+$collection->create('user_chat_validate_fields', array(
+    'path'       => '/chat/validate-fields/{session_code}',
+    'controller' => 'UserBundle:Chat:validateCustomFields',
+));
+
 $collection->create('user_chat_widgetisavail', array(
     'path'       => '/dp.php/chat/is-available.js',
     'controller' => '(see: serve_dp.php)',

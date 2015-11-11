@@ -33,6 +33,7 @@ namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\HttpFoundation\Request;
 
 /**
  * Handles ticket searches.
@@ -170,14 +171,19 @@ class ChatController extends AbstractController
         if (!$convo) {
             $convo = $chat_manager->startChat($_REQUEST, false, $error_code);
             if (!$convo) {
+                $details = null;
                 if ($error_code == 'person_disabled') {
                     $error = App::getTranslator()->getPhraseText('user.profile.account_disabled_message');
+                } elseif (is_array($error_code)) {
+                    $error   = 'custom_fields';
+                    $details = $error_code;
                 } else {
                     $error = 'Unknown error.';
                 }
                 $response = $this->createJsonResponse(array(
                     'conversation_id' => false,
                     'error'           => $error,
+                    'details'         => $details,
                 ));
                 $response->setLastModified(date_create('-1 day'));
                 $response->setExpires(date_create('-1 day'));
@@ -205,6 +211,14 @@ class ChatController extends AbstractController
         $response->setExpires(date_create('-1 day'));
 
         return $response;
+    }
+
+    public function validateCustomFieldsAction($session_code, Request $request)
+    {
+        $chat_manager = $this->getChatManager($session_code);
+        $result       = $chat_manager->validateCustomFields($request->get('chat_fields'));
+
+        return $this->createJsonResponse($result ?: null);
     }
 
     /**

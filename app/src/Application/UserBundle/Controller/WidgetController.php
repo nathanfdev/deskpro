@@ -427,7 +427,7 @@ class WidgetController extends AbstractController
 
         $custom_fields_form = $this->get('form.factory')->createNamedBuilder('chat_fields', 'form');
 
-        /** @var $fm \Application\DeskPRO\CustomFields\TicketFieldManager */
+        /** @var $fm \Application\DeskPRO\CustomFields\ChatFieldManager */
         $fm = $this->container->getSystemService('ChatFieldsManager');
         if (isset($_POST['newchat']['custom_chat_fields'])) {
             $field_data = $fm->getStrucutredDataFromForm($_POST['newchat']['custom_chat_fields'], 'Application\\DeskPRO\\Entity\\CustomDataChat');
