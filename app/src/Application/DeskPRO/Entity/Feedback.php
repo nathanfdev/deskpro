@@ -456,6 +456,14 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
+     * @return array
+     */
+    public function getStringLabels()
+    {
+        return array_map(function (LabelFeedback $label) { return $label->getLabel(); }, $this->getLabels()->toArray());
+    }
+
+    /**
      * @return \Application\DeskPRO\Labels\LabelManager
      */
     public function getLabelManager()

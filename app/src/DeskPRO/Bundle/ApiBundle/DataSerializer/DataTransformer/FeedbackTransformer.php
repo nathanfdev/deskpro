@@ -68,6 +68,11 @@ class FeedbackTransformer extends AbstractDataSerializerTransformer
      */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        return [];
+        /** @var \Application\DeskPRO\Entity\Feedback $feedback */
+        $feedback = $transformation_request->getDataToBeTransformed();
+
+        return [
+            'labels' => $feedback->getStringLabels(),
+        ];
     }
 }

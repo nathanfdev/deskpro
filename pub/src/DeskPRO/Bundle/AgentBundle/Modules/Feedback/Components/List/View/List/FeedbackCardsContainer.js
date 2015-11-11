@@ -52,7 +52,7 @@ export class FeedbackCardsContainer extends Component {
                           feedbackStatus={feedbackStatuses.get(element.id)}
                           feedbackCategory={feedbackCategories.get(element.id)}
                           feedbackComments={feedbackComments.get(element.id)}
-                          feedbackLabels={feedbackLabels.get(element.id)}
+                          feedbackLabels={element.labels}
                           type={feedbackTypes.get(element.category_id)}
               />
         )}
