@@ -44,14 +44,21 @@ pageMeta.baseId = '{{ baseId }}';
 			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" style="display: none">
 				{# Tab Properties #}
 				<div class="tab-properties">
-					<dl>
-						<dt class="prop">{{ phrase('agent.general.labels') }}</dt>
-						<dd class="prop">
-							<div class="tags-wrap article-tags">
-								<input type="text" value="{% for label in state.neworg.labels %}{{label}},{% endfor %}" />
-							</div>
-						</dd>
-					</dl>
+					<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table">
+						<tr>
+							<th width="150">{{ phrase('agent.general.labels') }}</th>
+							<td>
+								<input
+										type="hidden"
+										id="{{ baseId }}_labels_input"
+										class="labels-input dpe_select dpe_select_noborder"
+										data-select-width="auto"
+										data-placeholder="Add a label"
+										data-allow-new="{% if app.user.hasPerm('agent_people.create_labels') %}1{% endif %}"
+								/>
+							</td>
+						</tr>
+					</table>
 				</div>
 				{# /Tab Properties #}
 			</div>

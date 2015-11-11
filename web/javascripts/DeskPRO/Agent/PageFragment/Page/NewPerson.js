@@ -61,10 +61,10 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 		});
 
         var wrapper = $(this.wrapper).find('.upload-vcard-wrap');
-        
+
         console.log(wrapper);
         //console.log(this.page);
-        
+
         DeskPRO_Window.util.fileupload(wrapper, {
             page: this.page,
             uploadTemplate: $('.template-upload', wrapper),
@@ -75,7 +75,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
             }],
             completed: function() {
                 //var self = this;
-                
+
                 self.blobId = $('input.new_blob_id', this.wrapper).val();
 
                 $('.files .in', wrapper).css({
@@ -107,7 +107,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
                                         $('.files .in', wrapper).append("<hr/>");
                                         for (var prop3 in vCard[prop][prop2]) {
                                             if (typeof vCard[prop][prop2][prop3] === 'string') {
-                                        $('.files .in', wrapper).append(prop3 + ": " + vCard[prop][prop2][prop3] + "<br/>");    
+                                        $('.files .in', wrapper).append(prop3 + ": " + vCard[prop][prop2][prop3] + "<br/>");
                                             }
                                         }
                                     }
@@ -198,7 +198,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 		});
             }
 	},
-        
+
         createCallback: function(data) {
             if (data.success) {
                 if (this.getEl('org_id').val().length && this.fromCompanyTab) {
@@ -260,7 +260,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 			onTabSwitch: function(eventData) {
 				if (!self.labelsInput && eventData.tabContent.hasClass('tab-properties') && self.getEl('labels_input')[0]) {
 					self.labelsInput = new DeskPRO.UI.LabelsInput({
-						type: 'tickets',
+						type: 'people',
 						input: self.getEl('labels_input')
 					});
 					self.ownObject(self.labelsInput);
