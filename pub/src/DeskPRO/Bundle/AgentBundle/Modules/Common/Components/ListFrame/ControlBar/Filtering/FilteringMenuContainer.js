@@ -47,9 +47,11 @@ export class FilteringMenuContainer extends Component {
   }
 
   getButtonLabel() {
+    const { filters = [] } = this.props;
+
     let label = '(none)';
     let count = 0;
-    this.props.filters.map(filter => {
+    filters.map(filter => {
       const value = this.stateValue(filter.param);
       if ((value instanceof Array && value.length) || (!value instanceof Array)) {
         label = filter.label;
@@ -65,6 +67,8 @@ export class FilteringMenuContainer extends Component {
   }
 
   render() {
+    const { filters = [] } = this.props;
+
     return (
       <li ref="menuItem">
         <Button
@@ -81,7 +85,7 @@ export class FilteringMenuContainer extends Component {
             onClickOut={this.collapse}
             ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list']}>
             <Menu>
-              {this.props.filters.map((filter, index) => this.renderFilter(filter, index))}
+              {filters.map((filter, index) => this.renderFilter(filter, index))}
             </Menu>
           </ClickOut>
         </Positioned>
