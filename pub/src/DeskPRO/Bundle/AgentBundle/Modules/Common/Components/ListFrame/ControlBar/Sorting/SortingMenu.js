@@ -32,7 +32,7 @@ export class SortingMenu extends Component {
     const current = options[sort];
 
     return (
-      <li>
+      <li ref="menuItem">
         <Button
           onClick={this.toggleExpanded}
           ref="button"
@@ -45,9 +45,7 @@ export class SortingMenu extends Component {
                   positionAt="left bottom"
                   positionTarget={this.refs.button}>
 
-          <ClickOut onClickOut={this.collapse}
-                    onClick={this.collapse}>
-
+          <ClickOut onClickOut={this.collapse} ignoreNodes={[this.refs.menuItem]}>
             <OrderByDropdownContainer {...this.props} />
           </ClickOut>
         </Detached>

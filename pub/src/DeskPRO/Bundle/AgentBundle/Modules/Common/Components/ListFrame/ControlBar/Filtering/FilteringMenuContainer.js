@@ -66,27 +66,25 @@ export class FilteringMenuContainer extends Component {
 
   render() {
     return (
-      <li>
-        <ClickOut
-          onClickOut={this.collapse}
+      <li ref="menuItem">
+        <Button
+          ref="button"
+          title="Filter by:"
+          icon={null}
+          label={this.getButtonLabel()}
           onClick={this.toggleExpanded}
-          ignoreNodes={[this.refs.menu, '.dpw-navigation-dropdown-panel', '.dpw-label-list']}>
-
-          <Button
-            ref="button"
-            title="Filter by:"
-            icon={null}
-            label={this.getButtonLabel()}
-          />
-          <Positioned isOpen={this.state.expanded}
-                      positionAt="left bottom"
-                      positionTarget={this.refs.button}
-                      ref="menu">
+        />
+        <Positioned isOpen={this.state.expanded}
+                    positionAt="left bottom"
+                    positionTarget={this.refs.button}>
+          <ClickOut
+            onClickOut={this.collapse}
+            ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list']}>
             <Menu>
               {this.props.filters.map((filter, index) => this.renderFilter(filter, index))}
             </Menu>
-          </Positioned>
-        </ClickOut>
+          </ClickOut>
+        </Positioned>
       </li>
     );
   }
