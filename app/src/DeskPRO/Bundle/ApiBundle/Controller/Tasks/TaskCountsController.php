@@ -47,9 +47,12 @@ class TaskCountsController extends BaseController
         $count_service = $this->get('data.tasks.task_counts');
 
         return [
-            $count_service->getAllRemainingCount(),
-            $count_service->getMyRemainingCount(),
-            $count_service->getTeamRemainingCount(),
+            'all'        => $count_service->getAllRemainingCount(),
+            'my'         => $count_service->getMyRemainingCount(),
+            'team'       => $count_service->getTeamRemainingCount(),
+            'department' => $count_service->getDepartmentRemainingCount(),
+            'delegated'  => $count_service->getDelegatedRemainingCount(),
+            'unassigned' => $count_service->getUnassignedRemainingCount(),
         ];
     }
 

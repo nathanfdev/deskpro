@@ -61,7 +61,7 @@ class TasksCountsDataService
     }
 
     /**
-     *
+     * @return int
      */
     public function getAllRemainingCount()
     {
@@ -76,7 +76,7 @@ class TasksCountsDataService
     }
 
     /**
-     *
+     * @return int
      */
     public function getMyRemainingCount()
     {
@@ -95,11 +95,13 @@ class TasksCountsDataService
     }
 
     /**
-     *
+     * @return int
      */
     public function getTeamRemainingCount()
     {
-        if (!$this->user->getTeamIds()) {
+        $this->user->loadHelper('AgentTeam');
+        $team_ids = $this->user->getAgentTeamIds();
+        if (!$team_ids) {
             return 0;
         }
 
@@ -109,7 +111,7 @@ class TasksCountsDataService
             ->from('App:Task', 't')
             ->join('t.assigned', 'ta')
             ->where(
-                $qb->expr()->in('ta.team', $this->user->getTeamIds()),
+                $qb->expr()->in('ta.team', $team_ids),
                 $qb->expr()->eq('t.is_done', 0)
             )
         ;
@@ -118,26 +120,68 @@ class TasksCountsDataService
     }
 
     /**
-     *
+     * @return int
      */
     public function getDepartmentRemainingCount()
     {
-        return 0;
+        $this->user->loadHelper('AgentPermissions');
+        $department_ids = $this->user->getAllowedDepartments();
+        if (!$department_ids) {
+            return 0;
+        }
+
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('COUNT(t.id)')
+            ->from('App:Task', 't')
+            ->join('t.assigned', 'ta')
+            ->where(
+                $qb->expr()->in('ta.department', $department_ids),
+                $qb->expr()->eq('t.is_done', 0)
+            )
+        ;
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     /**
-     *
+     * @return int
      */
     public function getDelegatedRemainingCount()
     {
-        return 0;
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('COUNT(t.id)')
+            ->from('App:Task', 't')
+            ->join('t.assigned', 'ta')
+            ->where(
+                $qb->expr()->neq('ta.person', $this->user->getId()),
+                $qb->expr()->eq('t.creator', $this->user->getId()),
+                $qb->expr()->eq('t.is_done', 0)
+            )
+        ;
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     /**
-     *
+     * @return int
      */
     public function getUnassignedRemainingCount()
     {
-        return 0;
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('COUNT(t.id)')
+            ->from('App:Task', 't')
+            ->leftJoin('t.assigned', 'ta')
+            ->where(
+                $qb->expr()->isNull('ta.person'),
+                $qb->expr()->isNull('ta.team'),
+                $qb->expr()->isNull('ta.department'),
+                $qb->expr()->eq('t.is_done', 0)
+            )
+        ;
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 }
