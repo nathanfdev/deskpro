@@ -40,10 +40,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
+/**
+ * Class BatchController.
+ */
 class BatchController extends BaseController
 {
     /**
      * @Post("/batch", name="api_batch_post")
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function executeBatchPostAction(Request $request)
     {
@@ -52,8 +59,8 @@ class BatchController extends BaseController
         }
 
         $responses = [];
-        foreach ($requests as $identifier => $subrequest_info) {
-            $responses[$identifier] = $this->performSubrequest($subrequest_info);
+        foreach ($requests as $identifier => $sub_request_info) {
+            $responses[$identifier] = $this->performSubRequest($sub_request_info);
         }
 
         return View::create(
@@ -64,17 +71,23 @@ class BatchController extends BaseController
 
     /**
      * @Get("/batch", name="api_batch_get")
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function executeBatchGetAction(Request $request)
     {
         if (!$requests = $request->get('get')) {
             throw new BadRequestHttpException('You must specify requests in the "get" parameter');
         }
-        is_array($requests) or $requests = explode(',', $requests);
+        if (!is_array($requests)) {
+            $requests = explode(',', $requests);
+        }
 
         $responses = [];
-        foreach ($requests as $identifier => $subrequest_info) {
-            $responses[$identifier] = $this->performSubrequest($subrequest_info);
+        foreach ($requests as $identifier => $sub_request_info) {
+            $responses[$identifier] = $this->performSubRequest($sub_request_info);
         }
 
         return View::create(
@@ -84,24 +97,24 @@ class BatchController extends BaseController
     }
 
     /**
-     * @param array $subrequest_info
+     * @param array $sub_request_info
      *
      * @return string
      */
-    public function performSubrequest($subrequest_info)
+    protected function performSubRequest($sub_request_info)
     {
-        $info = array(
+        $info = [
             'method'  => 'GET',
             'url'     => null,
             'data'    => null,
             'headers' => null,
             'params'  => [],
-        );
+        ];
 
-        if (is_array($subrequest_info)) {
-            $info = array_merge($info, $subrequest_info);
+        if (is_array($sub_request_info)) {
+            $info = array_merge($info, $sub_request_info);
         } else {
-            $info = array_merge($info, array('url' => $subrequest_info));
+            $info = array_merge($info, ['url' => $sub_request_info]);
         }
 
         $json_serialized = null;
@@ -110,7 +123,7 @@ class BatchController extends BaseController
             $json_serialized = $this->get('serializer')->serialize($json, 'json');
         }
 
-        $subrequest = Request::create(
+        $sub_request = Request::create(
             $info['url'],
             $info['method'],
             $info['params'],
@@ -120,16 +133,16 @@ class BatchController extends BaseController
             $json_serialized
         );
 
-        $subrequest->headers->set('Content-Type', 'json');
-        $subrequest->query->set(JsonHeadersResponseListener::INCLUDE_HEADERS_PARAM, 1);
+        $sub_request->headers->set('Content-Type', 'json');
+        $sub_request->query->set(JsonHeadersResponseListener::INCLUDE_HEADERS_PARAM, 1);
 
         if ($info['headers']) {
             foreach ($info['headers'] as $k => $v) {
-                $subrequest->headers->set($k, $v);
+                $sub_request->headers->set($k, $v);
             }
         }
 
-        $response = $this->get('http_kernel')->handle($subrequest, HttpKernelInterface::SUB_REQUEST);
+        $response = $this->get('http_kernel')->handle($sub_request, HttpKernelInterface::SUB_REQUEST);
 
         return $this->get('serializer')->deserialize($response->getContent(), 'array', 'json');
     }
