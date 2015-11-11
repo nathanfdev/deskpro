@@ -32,7 +32,6 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Doctrine\ORM\EntityManager;
-use PhpOption\Option;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -84,12 +83,12 @@ class PersonEmailChoiceType extends AbstractType
             'class'      => 'Application\DeskPRO\Entity\PersonEmail',
             'property'   => 'email',
             'multiple'   => false,
-            'expanded'   => true,
+            'expanded'   => false,
             'required'   => true,
-            'empty_data' => function (Option $options) {
-                $person = $options['person'];
+            'empty_data' => function (FormInterface $form) {
+                $person = $form->getConfig()->getOption('person');
                 // if nothing is selected, use their primary email
-                return $person->getPrimaryEmail();
+                return $person->getPrimaryEmail()->getId();
             },
             'choices' => function (Options $options) {
                 /** @var \Application\DeskPRO\Entity\Person $person */

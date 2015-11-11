@@ -8206,6 +8206,18 @@ form {
     }
   }
 
+  label {
+    position: relative;
+
+    .form-label-link {
+      position: absolute;
+      right: 0;
+      i {
+        margin-left: 4px;
+      }
+    }
+  }
+
   .field_user_name_and_email {
     width: 60%;
   }
