@@ -1,7 +1,7 @@
 import { hashStateSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
 import { createSelector } from 'reselect';
 
-const stateSelector = state => state.Tasks.tasks;
+const stateSelector = state => state.Tasks.list;
 
 export const currentNavSelector = hashStateSelectorFactory(['nav', 'active']);
 export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');

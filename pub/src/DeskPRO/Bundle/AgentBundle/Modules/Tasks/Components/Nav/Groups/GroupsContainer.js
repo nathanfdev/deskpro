@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Groups } from './Groups';
 
 @connect(state => ({
-  groupsState: state.Tasks.groups
+  groupsState: state.Tasks.nav
 }))
 export class GroupsContainer extends React.Component {
 
