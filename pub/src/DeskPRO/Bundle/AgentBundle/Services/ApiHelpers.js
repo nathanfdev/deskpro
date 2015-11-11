@@ -9,7 +9,7 @@ export function compileParams(params = {}) {
   for (const key of Object.keys(params)) {
     if (Object.prototype.toString.call(params[key]) === '[object Array]') {
       params[key].forEach(item => compiled.push(key + '[]=' + item.replace(/\s/g, '%20')));
-    } else {
+    } else if (params[key] !== undefined) {
       var str = String(params[key]);
       if (str !== 'null') {
         compiled.push(key + '=' + str.replace(/\s/g, '%20'));
