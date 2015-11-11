@@ -264,11 +264,13 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 									}
 								}, this);
 							} else {
-								var el = $('[name="'+sub_name_safe+'"], [name$="'+this.makeArrayName(sub_name,true)+'"], [name$="'+this.makeArrayName(sub_name+'[]',true)+'"]', new_row).first();
+								var el = $('[name="'+sub_name_safe+'"], [name$="'+this.makeArrayName(sub_name,true)+'"], [name$="'+this.makeArrayName(sub_name+'[]',true)+'"]', new_row);
 								if (el.is('select')) {
 									el.find('[value="' + subval + '"]').prop('selected', true);
-								} else if (el.is(':checkbox')) {
-									el.prop('checked', true).change();
+								} else if (el.is(':checkbox') || el.is(':radio')) {
+									el.each(function(){
+										if(subval === $(this).val()) $(this).prop('checked', true);
+									});
 								} else {
 									el.val(subval).change();
 								}
