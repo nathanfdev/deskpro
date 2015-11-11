@@ -150,7 +150,18 @@ class TicketListTable
 
     public function getDefaultColumnsIds()
     {
-        // if the request does not specify columns to show in the table initially, we use these columns
+        // get the initial columns to show by default
+
+        if ($this->ticket_type === TicketFilter::TYPE_ORGANIZATION) {
+            return [
+                TicketColumn::TYPE_SUBJECT,
+                TicketColumn::TYPE_DEPARTMENT,
+                TicketColumn::TYPE_USER,
+                TicketColumn::TYPE_DATE_CREATED,
+                TicketColumn::TYPE_DATE_ACTIVITY,
+            ];
+        }
+
         return [
             TicketColumn::TYPE_SUBJECT,
             TicketColumn::TYPE_DEPARTMENT,
