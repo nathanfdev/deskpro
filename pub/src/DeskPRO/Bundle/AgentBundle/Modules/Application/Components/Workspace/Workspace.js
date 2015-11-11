@@ -21,15 +21,15 @@ export class Workspace extends React.Component {
     };
   }
 
-  setColumnMode = (mode) => {
+  setColumnMode = mode => {
     this.props.dispatch(AppActions.setColumnMode(mode));
   };
 
-  setColumnDimensions = (percent) => {
+  setColumnDimensions = percent => {
     this.props.dispatch(AppActions.setColumnDimensions(percent));
   };
 
-  setSidebarMode = (mode) => {
+  setSidebarMode = mode => {
     this.props.dispatch(AppActions.setSidebarMode(mode));
   };
 

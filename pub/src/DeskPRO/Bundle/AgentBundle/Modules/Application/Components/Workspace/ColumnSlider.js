@@ -17,7 +17,7 @@ export class ColumnSlider extends React.Component {
       min: 0,
       max: 100,
       step: 5,
-      slide: function(event, ui) {
+      slide: (event, ui) => {
         if (ui.value < 20 || ui.value > 80) {
           return false;
         }
