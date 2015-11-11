@@ -24,26 +24,34 @@ export class DpAppRouteContainer extends React.Component {
   };
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    this.props.dispatch(AppActions.showWelcomePage());
+    this.hideWelcomePage();
+  }
 
-    dispatch(AppActions.showWelcomePage());
-    this.welcomePageTimer = setTimeout(() => dispatch(AppActions.hideWelcomePage()), 3000);
+  componentDidUpdate() {
+    this.hideWelcomePage();
   }
 
   componentWillUnmount() {
     clearTimeout(this.welcomePageTimer);
   }
 
+  hideWelcomePage() {
+    const { userStatus, dispatch } = this.props;
+
+    if (!this.welcomePageTimer && userStatus.get('isDone')) {
+      this.welcomePageTimer = setTimeout(() => dispatch(AppActions.hideWelcomePage()), 3000);
+    }
+  }
+
   render() {
     const { userStatus, user, dpWindow, children } = this.props;
+
     if (userStatus.get('isLoading') || userStatus.get('isError')) {
       return <DpAppLoading />;
     }
-
     if (dpWindow.get('showWelcomePage')) {
-      return (
-        <WelcomeBack user={user} />
-      );
+      return <WelcomeBack user={user} />;
     }
 
     return (

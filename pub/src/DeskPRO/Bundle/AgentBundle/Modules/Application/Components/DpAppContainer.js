@@ -22,8 +22,7 @@ export class DpAppContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
-    login: PropTypes.object.isRequired
+    history: PropTypes.object.isRequired
   };
 
   componentWillMount() {
