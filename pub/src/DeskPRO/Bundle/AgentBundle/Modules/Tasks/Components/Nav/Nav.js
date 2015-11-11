@@ -4,16 +4,18 @@ import { GroupsContainer } from './Groups/GroupsContainer';
 import { ProjectsContainer } from './Projects/ProjectsContainer';
 import { AgentsContainer } from './Agents/AgentsContainer';
 import { LabelsContainer } from './Labels/LabelsContainer';
+import Loader from 'react-loader';
 
 export class Nav extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    dpWindow: PropTypes.object.isRequired
+    dpWindow: PropTypes.object.isRequired,
+    isDone: PropTypes.bool.isRequired
   };
 
   render() {
-    const { dispatch, dpWindow } = this.props;
+    const { dispatch, dpWindow, isDone } = this.props;
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
@@ -22,10 +24,16 @@ export class Nav extends React.Component {
         </NavFrameHeader>
 
         <div className="sidebar-list sidebar-list-filters">
-          <GroupsContainer />
-          <ProjectsContainer />
-          <AgentsContainer />
-          <LabelsContainer />
+          <Loader loaded={isDone}
+                  color="green"
+                  opacity={0}
+                  width={3}>
+
+            <GroupsContainer />
+            <ProjectsContainer />
+            <AgentsContainer />
+            <LabelsContainer />
+          </Loader>
         </div>
       </NavFrame>
     );
