@@ -59,14 +59,14 @@ class AbstractDataService
      */
     protected $em;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
-    }
-
-    protected function getEm()
-    {
-        return $this->em;
     }
 
     /**

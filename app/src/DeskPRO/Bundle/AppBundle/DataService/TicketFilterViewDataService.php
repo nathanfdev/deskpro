@@ -43,7 +43,7 @@ class TicketFilterViewDataService extends AbstractDataService
      */
     public function getUnassignedFilterViews()
     {
-        $views = $this->getEm()
+        $views = $this->em
             ->getRepository('App:TicketFilterView')
             ->findBy(array('agent' => null), array('display_order' => 'ASC'));
 
