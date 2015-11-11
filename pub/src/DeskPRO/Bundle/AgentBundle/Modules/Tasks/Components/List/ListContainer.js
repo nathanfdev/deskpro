@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { List } from './List';
-import { currentViewModeSelector } from '../../Selectors/tasks';
+import { currentViewModeSelector } from '../../Selectors/list';
 
 @connect(state => ({
   tasks: state.Tasks.tasks.get('elements'),

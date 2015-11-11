@@ -1,5 +1,5 @@
 import { createReducer } from 'Ampliflux';
-import * as GroupsActions from '../Actions/groupsActions';
+import * as NavActions from '../Actions/navActions';
 
 const initialState = {
   allTasksCount: 0,
@@ -11,22 +11,22 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-  [GroupsActions.loadAllTasksRemainingCount]: (state, payload) => {
+  [NavActions.loadAllTasksRemainingCount]: (state, payload) => {
     return state.set('allTasksCount', payload || 0);
   },
-  [GroupsActions.loadMyTasksRemainingCount]: (state, payload) => {
+  [NavActions.loadMyTasksRemainingCount]: (state, payload) => {
     return state.set('myTasksCount', payload || 0);
   },
-  [GroupsActions.loadTeamTasksRemainingCount]: (state, payload) => {
+  [NavActions.loadTeamTasksRemainingCount]: (state, payload) => {
     return state.set('teamTasksCount', payload || 0);
   },
-  [GroupsActions.loadDepartmentTasksRemainingCount]: (state, payload) => {
+  [NavActions.loadDepartmentTasksRemainingCount]: (state, payload) => {
     return state.set('deptTasksCount', payload || 0);
   },
-  [GroupsActions.loadDelegatedTasksRemainingCount]: (state, payload) => {
+  [NavActions.loadDelegatedTasksRemainingCount]: (state, payload) => {
     return state.set('delegatedTasksCount', payload || 0);
   },
-  [GroupsActions.loadUnassignedTasksRemainingCount]: (state, payload) => {
+  [NavActions.loadUnassignedTasksRemainingCount]: (state, payload) => {
     return state.set('unassignedTasksCount', payload || 0);
   }
 });

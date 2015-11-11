@@ -11,13 +11,13 @@ import {
   tableVisibleFieldsSelector,
   calendarVisibleFieldsSelector,
   kanbanVisibleFieldsSelector
-} from '../../Selectors/tasks';
+} from '../../Selectors/list';
 import {
   toggleCardFieldVisibility,
   toggleTableFieldVisibility,
   toggleKanbanFieldVisibility,
   toggleCalendarFieldVisibility
-} from '../../Actions/tasksActions';
+} from '../../Actions/listActions';
 
 @connect(state => ({
   viewMode: currentViewModeSelector(state),

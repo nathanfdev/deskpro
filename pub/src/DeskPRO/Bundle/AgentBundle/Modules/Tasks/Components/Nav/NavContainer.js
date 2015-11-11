@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { loadAllProjects } from '../../RecordStores/Actions/projectActions';
 import { loadAllTaskLabels } from '../../RecordStores/Actions/taskLabelActions';
 import { Nav } from './Nav';
-import * as GroupsActions from '../../Actions/groupsActions';
+import * as NavActions from '../../Actions/navActions';
 
 @connect(state => ({
   dpWindow: state.Application.dpWindow
@@ -15,12 +15,12 @@ export class NavContainer extends React.Component {
     props.dispatch(loadAllProjects());
     props.dispatch(loadAllTaskLabels());
 
-    props.dispatch(GroupsActions.loadAllTasksRemainingCount());
-    props.dispatch(GroupsActions.loadMyTasksRemainingCount());
-    props.dispatch(GroupsActions.loadTeamTasksRemainingCount());
-    props.dispatch(GroupsActions.loadDepartmentTasksRemainingCount());
-    props.dispatch(GroupsActions.loadDelegatedTasksRemainingCount());
-    props.dispatch(GroupsActions.loadUnassignedTasksRemainingCount());
+    props.dispatch(NavActions.loadAllTasksRemainingCount());
+    props.dispatch(NavActions.loadMyTasksRemainingCount());
+    props.dispatch(NavActions.loadTeamTasksRemainingCount());
+    props.dispatch(NavActions.loadDepartmentTasksRemainingCount());
+    props.dispatch(NavActions.loadDelegatedTasksRemainingCount());
+    props.dispatch(NavActions.loadUnassignedTasksRemainingCount());
   }
 
   render() {

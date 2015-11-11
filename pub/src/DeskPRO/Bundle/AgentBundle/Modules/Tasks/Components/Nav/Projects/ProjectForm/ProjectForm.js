@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import * as ProjectsActions from '../../../../Actions/projectsActions';
+import * as ProjectsActions from '../../../../Actions/navActions';
 import { FieldErrors } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/FieldErrors';
 import Immutable from 'immutable';
 import Loader from 'react-loader';
