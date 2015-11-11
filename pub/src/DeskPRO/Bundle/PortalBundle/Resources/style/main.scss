@@ -6582,7 +6582,7 @@ ul.categories-article-list {
     padding: $form-padding-vertical $form-padding-horizontal;
     padding-bottom: $form-padding-vertical + 0.5em;
     font-size: 0.9em;
-    min-width: 200px;
+    min-width: 100px;
     text-align: center;
 
     &:first-child {
@@ -6668,6 +6668,22 @@ ul.categories-article-list {
     width: 200px;
     border-left: 1px solid $divider-color;
     text-align: right;
+
+    &.centered {
+      text-align: center;
+    }
+
+    &.left {
+      text-align: left;
+    }
+
+    &.long {
+      width: 400px;
+    }
+
+    &.small {
+      width: 100px;
+    }
 
     &:before, &:after {
       position: absolute;
