@@ -594,6 +594,45 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return $this->getOption($option_name, null);
     }
 
+    public function getValidWeekDays()
+    {
+        return $this->getOption('date_valid_dow', null);
+    }
+
+    public function getDateMin()
+    {
+        $type = $this->getOption('date_valid_type', null);
+        switch ($type) {
+            case 'range':
+                $int = $this->getOption('date_valid_range1', null);
+
+                return $int === null ? null : (int) $int;
+            case 'date':
+                try {
+                    return new \DateTime($this->getOption('date_valid_date1'));
+                } catch (\Exception $e) {
+                    return;
+                }
+        }
+    }
+
+    public function getDateMax()
+    {
+        $type = $this->getOption('date_valid_type', null);
+        switch ($type) {
+            case 'range':
+                $int = $this->getOption('date_valid_range2', null);
+
+                return $int === null ? null : (int) $int;
+            case 'date':
+                try {
+                    return new \DateTime($this->getOption('date_valid_date2'));
+                } catch (\Exception $e) {
+                    return;
+                }
+        }
+    }
+
     /**
      * Mark as enabled.
      *
@@ -744,6 +783,21 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     {
         switch ($this->handler_class) {
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDateType()
+    {
+        switch ($this->handler_class) {
+            case 'Application\\DeskPRO\\CustomFields\\Handler\\Date':
+            case 'Application\\DeskPRO\\CustomFields\\Handler\\DateTime':
                 return true;
 
             default:

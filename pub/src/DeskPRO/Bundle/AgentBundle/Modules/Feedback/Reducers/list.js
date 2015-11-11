@@ -15,7 +15,8 @@ const initialState = {
   currentListParams: {
     isComments: false, // whether comments or feedback list is shown
     sort: 'date_created',
-    order: constants.ORDER_DESC
+    order: constants.ORDER_DESC,
+    filters: {}
   },
 
   commentsTableViewFields: [ // temporary, must be removed later
@@ -107,6 +108,16 @@ export default createReducer(initialState, {
       newFilters = state.get('currentListParams').get('filters').toJS();
     }
     newFilters[payload.filter] = payload.value;
+    return state.setIn(['currentListParams', 'filters'], Immutable.fromJS(newFilters));
+  },
+
+  [actions.setFilters]: (state, overwrite) => {
+    let current = {};
+    if (state.get('currentListParams').get('filters')) {
+      current = state.get('currentListParams').get('filters').toJS();
+    }
+    const newFilters = {...current, ...overwrite};
+
     return state.setIn(['currentListParams', 'filters'], Immutable.fromJS(newFilters));
   },
 

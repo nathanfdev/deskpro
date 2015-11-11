@@ -214,6 +214,58 @@ class TicketsDataService extends AbstractDataService
     }
 
     /**
+     * Returns the count of tickets that can be seen by the organization manager (stuff that would show up
+     * if they clicked "Switch to Organization" in the ticket list).
+     *
+     * @param Person $person
+     * @param string $status "open" [awaiting user or agent], "all" [open + resolved], or a specific status
+     *
+     * @return int|null
+     */
+    public function getOrganizationTicketCount(Person $person, $status = 'all')
+    {
+        $em = $this->em;
+
+        return $this->generateAndCache(
+            array(
+                'getOrganizationTicketCount',
+                $person,
+                $status,
+            ),
+            function () use ($em, $person, $status) {
+                $qb = $em->createQueryBuilder();
+
+                if ('open' === $status) {
+                    $status_list = array(
+                        Ticket::STATUS_AWAITING_AGENT,
+                        Ticket::STATUS_AWAITING_USER,
+                    );
+                } elseif ('all' !== $status) {
+                    $status_list = array($status);
+                } else {
+                    $status_list = array(
+                        Ticket::STATUS_AWAITING_AGENT,
+                        Ticket::STATUS_RESOLVED,
+                        Ticket::STATUS_AWAITING_USER,
+                    );
+                }
+
+                $qb->select($qb->expr()->countDistinct('t.id'))
+                    ->from('DeskPRO:Ticket', 't')
+                    ->andWhere('t.status IN (:status_list)')->setParameter('status_list', $status_list);
+
+                if ($person->organization && $person->organization_manager) {
+                    $qb->andWhere('t.organization = :organization')->setParameter('organization', $person->organization);
+                }
+
+                $qb->distinct(true);
+
+                return $qb->getQuery()->getSingleScalarResult();
+            }
+        );
+    }
+
+    /**
      * @return \Application\DeskPRO\EntityRepository\Ticket
      */
     protected function getTicketRepo()

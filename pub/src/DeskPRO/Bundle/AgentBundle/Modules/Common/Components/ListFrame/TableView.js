@@ -37,7 +37,7 @@ export class TableHeader extends Component {
 export class Th extends Component {
 
   static propTypes = {
-    visible: PropTypes.bool.isRequired,
+    visible: PropTypes.bool,
     label: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     order: PropTypes.string,
@@ -114,7 +114,7 @@ export class Row extends Component {
 export class Td extends Component {
 
   static propTypes = {
-    visible: PropTypes.bool.isRequired,
+    visible: PropTypes.bool,
     className: PropTypes.string,
     children: PropTypes.any
   };

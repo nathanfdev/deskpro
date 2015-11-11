@@ -98,9 +98,9 @@ class TicketTableDataService extends AbstractDataService
     {
         $columns = $this->makeColumnControl($person);
         if ($this->brand_stack) {
-            $per_page = $this->brand_stack->getActive()->getSetting('portal.per_page_tickets', 10);
+            $per_page = $this->brand_stack->getActive()->getSetting('portal.per_page_tickets', 50);
         } else {
-            $per_page = 10;
+            $per_page = 50;
         }
         $table = new TicketListTable($category, $ticket_type, $category_title, $columns, $request, $per_page);
         $table->makePagerUsingDataService($this->ticket_data_service, $person);

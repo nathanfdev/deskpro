@@ -56,8 +56,9 @@ export default class DynamicForm {
       }
     });
 
-    if (options.onInit) this.ee.on('init', options.onInit);
+    if (options.onInit)          this.ee.on('init', options.onInit);
     if (options.onFieldsUpdated) this.ee.on('fieldsUpdated', options.onFieldsUpdated);
+    if (options.onPostUpdate)    this.ee.on('postUpdate', options.onPostUpdate);
 
     this.fieldNames = Array.from(this.fields.keys());
     this.fieldElements = Array.from(this.fields.values());

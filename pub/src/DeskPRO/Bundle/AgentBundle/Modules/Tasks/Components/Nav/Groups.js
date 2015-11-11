@@ -24,8 +24,9 @@ export class Groups extends React.Component {
       <Section>
         <SectionHeader>Tasks</SectionHeader>
         <ul>
-          {groups.map(group =>
-            <ListItemContainer urlHash={group.label}
+          {groups.map((group, index) =>
+            <ListItemContainer key={index}
+                               urlHash={group.label}
                                listOptions={group.filter}>
 
               <ListItem count={groupsState.get(group.countKey)}

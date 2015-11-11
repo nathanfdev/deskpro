@@ -9,7 +9,6 @@ export class TypeTab extends Component {
 
   render() {
     const { types } = this.props;
-    console.log('Types', types.get('nested').toJS());
     return (
       <ul>
         {types.get('nested').toJS().map((item, index) =>

@@ -4,10 +4,10 @@ import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import {
   selectedCountSelector, listSortSelector, listOrderSelector, tableVisibleFieldsSelector, cardVisibleFieldsSelector,
-  viewModeSelector
+  viewModeSelector, listParamsSelector
 } from '../../Selectors/list';
 import {
-  toggleAll, setViewMode, setSort, setOrder, toggleTableFieldVisibility, toggleCardFieldVisibility
+  toggleAll, setViewMode, setSort, setOrder, toggleTableFieldVisibility, toggleCardFieldVisibility, applyListParams
 } from '../../Actions/listActions';
 
 @connect(state => ({
@@ -16,7 +16,8 @@ import {
   order: listOrderSelector(state),
   viewMode: viewModeSelector(state),
   tableVisibleFields: tableVisibleFieldsSelector(state),
-  cardVisibleFields: cardVisibleFieldsSelector(state)
+  cardVisibleFields: cardVisibleFieldsSelector(state),
+  listParams: listParamsSelector(state)
 }))
 export class ControlBarContainer extends Component {
   static propTypes = {
@@ -26,7 +27,8 @@ export class ControlBarContainer extends Component {
     order: PropTypes.string.isRequired,
     tableVisibleFields: PropTypes.array.isRequired,
     cardVisibleFields: PropTypes.array.isRequired,
-    viewMode: PropTypes.string.isRequired
+    viewMode: PropTypes.string.isRequired,
+    listParams: PropTypes.object.isRequired
   };
 
   render() {
@@ -36,46 +38,73 @@ export class ControlBarContainer extends Component {
         action: toggleAll
       },
       sorting: {
-        options: [
-          {field: 'date_created', label: 'Date', icon: 'calendar'},
-          {field: 'urgency', label: 'Urgency', icon: 'calendar-o'}
-        ],
+        options: {
+          date_created: {label: 'Date', icon: 'calendar'},
+          urgency: {label: 'Urgency', icon: 'calendar-o'}
+        },
         sort: this.props.sort,
         order: this.props.order,
         sortAction: setSort,
         orderAction: setOrder
       },
-      view: {
-        options: [
-          {field: constants.VIEW_MODE_CARD, label: 'Card View', icon: 'list'},
-          {field: constants.VIEW_MODE_TABLE, label: 'Table View', icon: 'table'}
+      filtering: {
+        filters: [
+          {label: 'Date Created', type: 'date', fromParam: 'from', toParam: 'to'},
+          {label: 'Labels', type: 'labels', param: 'labels', modeParam: 'labels_mode', labels: [
+            'Aaa', 'Vvvvvv', 'Bbb', 'Cccc', 'Dd'
+          ]},
+          {label: 'Status', type: 'select', param: 'status', options: [
+            {value: 'new', label: 'New', nested: [
+              {value: 'very_new', label: 'Very new'},
+              {value: 'not_so_new', label: 'Not so new'}
+            ]},
+            {value: 'awaiting_agent', label: 'Awaiting agent'},
+            {value: 'closed', label: 'Closed'}
+          ]}
         ],
+        setParamsAction: applyListParams,
+        state: this.props.listParams
+      },
+      view: {
+        options: {
+          [constants.VIEW_MODE_CARD]: {
+            label: 'Card View',
+            icon: 'list',
+
+            configurableFields: {
+              id: 'ID',
+              urgency: 'Urgency',
+              person: 'Person',
+              date_created: 'Date created',
+              labels: 'Labels'
+            },
+
+            visibleFields: this.props.cardVisibleFields,
+            toggleFieldVisibility: toggleCardFieldVisibility
+          },
+          [constants.VIEW_MODE_TABLE]: {
+            label: 'Table View',
+            icon: 'table',
+
+            configurableFields: {
+              id: 'ID',
+              urgency: 'Urgency',
+              person: 'Person',
+              person_email: 'Person email',
+              agent: 'Agent',
+              subject: 'Subject',
+              status: 'Status',
+              date_created: 'Date created',
+              labels: 'Labels'
+            },
+
+            visibleFields: this.props.tableVisibleFields,
+            toggleFieldVisibility: toggleTableFieldVisibility
+          }
+        },
+
         viewMode: this.props.viewMode,
-        viewModeAction: setViewMode,
-
-        tableConfigurableFields: {
-          id: 'ID',
-          urgency: 'Urgency',
-          person: 'Person',
-          person_email: 'Person email',
-          agent: 'Agent',
-          subject: 'Subject',
-          status: 'Status',
-          date_created: 'Date created',
-          labels: 'Labels'
-        },
-        tableVisibleFields: this.props.tableVisibleFields,
-        tableToggleFieldVisibility: toggleTableFieldVisibility,
-
-        cardConfigurableFields: {
-          id: 'ID',
-          urgency: 'Urgency',
-          person: 'Person',
-          date_created: 'Date created',
-          labels: 'Labels'
-        },
-        cardVisibleFields: this.props.cardVisibleFields,
-        cardToggleFieldVisibility: toggleCardFieldVisibility
+        viewModeAction: setViewMode
       }
     };
 

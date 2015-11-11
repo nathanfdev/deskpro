@@ -7,12 +7,12 @@ export class ListItem extends React.Component {
 
   static propTypes = {
     children: PropTypes.node,
-    count: PropTypes.any.isRequired,
+    count: PropTypes.any,
     label: PropTypes.string,
-    active: PropTypes.bool.isRequired,
-    onClick: PropTypes.func.isRequired,
-    onEdit: PropTypes.func.isRequired,
-    onItemControlClick: PropTypes.func.isRequired
+    active: PropTypes.bool,
+    onClick: PropTypes.func,
+    onEdit: PropTypes.func,
+    onItemControlClick: PropTypes.func
   };
 
   constructor(props) {

@@ -52,7 +52,7 @@ class SelectOption extends React.Component {
   render() {
     const option = this.props.option;
     return (
-      <li tabIndex="0" onKeyDown={this.onKeyDown} role="option" ref="row">
+      <li tabIndex="0" onMouseOver={this.focus.bind(this)} onKeyDown={this.onKeyDown} role="option" ref="row">
         <a onClick={this.onClickOption} className={this.props.active ? 'active' : null}>
           {this.props.multiple ? (
               <span className={"checkbox" + (this.props.active ? " checked" : "")}><i className="fa fa-check"></i></span>

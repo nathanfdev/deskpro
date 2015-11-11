@@ -20,7 +20,11 @@
     {% show section flashes %}
 
     {% block page_content %}
-        {% block content_header %}{% endblock content_header %}
+        {% block content_header %}
+            <section class="welcome-news">
+                {% show section nav_buttons %}
+            </section>
+        {% endblock content_header %}
         <section>
             <div class="column-full">
               {% block inner_content %}{% endblock inner_content %}

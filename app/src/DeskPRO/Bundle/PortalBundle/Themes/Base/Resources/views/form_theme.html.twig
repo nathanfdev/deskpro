@@ -135,15 +135,17 @@
 {# Date and Time #}
 
 {%- block datetime_widget -%}
-    <div class="dpx-date-time">
+    <div class="dpx-date-time with-dpx" data-min-date="{{ form.vars.min_date }}" data-max-date="{{ form.vars.max_date }}" data-weekdays="{{ form.vars.weekdays }}">
         {% if widget == 'single_text' %}
             {{- block('form_widget_simple') -}}
         {%- else -%}
-            <div {{ block('widget_container_attributes') }}>
-                {{- form_errors(form.date) -}}
-                {{- form_errors(form.time) -}}
-                {{- form_widget(form.date, {nodpx: true}) -}}
-                {{- form_widget(form.time, {nodpx: true}) -}}
+            <div class="fallback-input">
+                <div {{ block('widget_container_attributes') }}>
+                    {{- form_errors(form.date) -}}
+                    {{- form_errors(form.time) -}}
+                    {{- form_widget(form.date, {nodpx: true}) -}}
+                    {{- form_widget(form.time, {nodpx: true}) -}}
+                </div>
             </div>
         {%- endif -%}
     </div>
@@ -151,17 +153,19 @@
 
 {%- block date_widget -%}
     {% if not (nodpx is defined and nodpx) %}
-        <div class="dpx-date">
+        <div class="dpx-date with-dpx" data-min-date="{{ form.vars.min_date }}" data-max-date="{{ form.vars.max_date }}" data-weekdays="{{ form.vars.weekdays }}">
     {% endif %}
         {%- if widget == 'single_text' -%}
             {{ block('form_widget_simple') }}
         {%- else -%}
-            <div {{ block('widget_container_attributes') }}>
-                {{- date_pattern|replace({
-                    '{{ year }}':  form_widget(form.year),
-                    '{{ month }}': form_widget(form.month),
-                    '{{ day }}':   form_widget(form.day),
-                })|raw -}}
+            <div class="fallback-input">
+                <div {{ block('widget_container_attributes') }}>
+                    {{- date_pattern|replace({
+                        '{{ year }}':  form_widget(form.year),
+                        '{{ month }}': form_widget(form.month),
+                        '{{ day }}':   form_widget(form.day),
+                    })|raw -}}
+                </div>
             </div>
         {%- endif -%}
     {% if not (nodpx is defined and nodpx) %}
@@ -171,7 +175,7 @@
 
 {%- block time_widget -%}
     {% if not (nodpx is defined and nodpx) %}
-        <div class="dpx-time">
+        <div class="dpx-time with-dpx">
     {% endif %}
         {%- if widget == 'single_text' -%}
             {{ block('form_widget_simple') }}
@@ -239,7 +243,7 @@
     <div {{ block('widget_container_attributes') }}>
         {% set count = form|length %}
         {% if count > 1 %}
-            <div class="dp-choice-widget-group email-present">
+            <div class="dp-choice-widget-group email-present with-dpx">
                 {%- for child in form %}
                     <div class="radio-button dpx-radio-button">
                         {{- form_widget(child) -}}
@@ -267,6 +271,28 @@
         {{ block('form_widget') }}
     </div>
 {% endblock %}
+
+{%- block choice_widget_collapsed -%}
+    {%- if required and placeholder is none and not placeholder_in_choices and not multiple -%}
+        {% set required = false %}
+    {%- endif -%}
+    <div class="with-dpx">
+        <select dpx-select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+            {%- if placeholder is not none -%}
+                <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ placeholder != '' ? placeholder|trans({}, translation_domain) }}</option>
+            {%- endif -%}
+            {%- if preferred_choices|length > 0 -%}
+                {% set options = preferred_choices %}
+                {{- block('choice_widget_options') -}}
+                {%- if choices|length > 0 and separator is not none -%}
+                    <option disabled="disabled">{{ separator }}</option>
+                {%- endif -%}
+            {%- endif -%}
+            {%- set options = choices -%}
+            {{- block('choice_widget_options') -}}
+        </select>
+    </div>
+{%- endblock choice_widget_collapsed -%}
 
 {# TICKET ATTACHMENTS #}
 {% block ticket_message_attachment_widget %}
@@ -410,11 +436,11 @@ HEIRARCHY
 {% endblock deskpro_heirarchical_choice_widget_expanded %}
 
 {% block deskpro_heirarchical_choice_widget_collapsed -%}
-    <div>
+    <div class="with-dpx">
         {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
             {% set required = false %}
         {%- endif -%}
-        <select data-heirarchy="" {{ block('widget_attributes') }}{% if multiple %} dpx-select-multiple="" multiple="multiple"{% else %} dpx-select=""{% endif %}>
+        <select data-heirarchy="" {{ block('widget_attributes') }}{% if multiple %} dpx-select-multiple="" multiple="multiple"{% else %} dpx-select=""{% endif %} class="as-no-dpui">
             {% if empty_value is not none -%}
                 <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
             {%- endif %}
@@ -467,7 +493,7 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
 
 {% block deskpro_custom_field_choice_widget_expanded -%}
     <div {{ block('widget_container_attributes') }}>
-        <div class="{% if multiple %}dpx-checkbox-group{% endif %} dp-choice-widget-group">
+        <div class="{% if multiple %}dpx-checkbox-group{% endif %} dp-choice-widget-group with-dpx">
             {%- for child in form %}
                 {% if form.vars.choices[child.vars.value] is defined %}
                     {% if form.vars.choices[child.vars.value].data|length == 0 %}
@@ -490,20 +516,22 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
     {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
         {% set required = false %}
     {%- endif -%}
-    <select {{ block('widget_attributes') }}{% if multiple %} dpx-select-multiple="" multiple="multiple"{% else %} dpx-select=""{% endif %}>
-        {% if empty_value is not none -%}
-            <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
-        {%- endif %}
-        {%- if preferred_choices|length > 0 -%}
-            {% set options = preferred_choices %}
-            {{- block('deskpro_heirarchical_choice_widget_options') -}}
-            {% if choices|length > 0 and separator is not none -%}
-                <option disabled="disabled">{{ separator }}</option>
+    <div class="with-dpx">
+        <select {{ block('widget_attributes') }}{% if multiple %} dpx-select-multiple="" multiple="multiple"{% else %} dpx-select=""{% endif %}>
+            {% if empty_value is not none -%}
+                <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
             {%- endif %}
-        {%- endif -%}
-        {% set options = choices -%}
-        {{- block('deskpro_custom_field_choice_widget_options') -}}
-    </select>
+            {%- if preferred_choices|length > 0 -%}
+                {% set options = preferred_choices %}
+                {{- block('deskpro_heirarchical_choice_widget_options') -}}
+                {% if choices|length > 0 and separator is not none -%}
+                    <option disabled="disabled">{{ separator }}</option>
+                {%- endif %}
+            {%- endif -%}
+            {% set options = choices -%}
+            {{- block('deskpro_custom_field_choice_widget_options') -}}
+        </select>
+    </div>
 {%- endblock deskpro_custom_field_choice_widget_collapsed %}
 
 {% block deskpro_custom_field_choice_widget_options -%}
@@ -552,7 +580,7 @@ END HEIRARCHY
 {% endblock entity_hierarchy_expanded %}
 
 {% block entity_hierarchy_collapsed -%}
-    <div>
+    <div class="with-dpx">
         {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
             {% set required = false %}
         {%- endif -%}

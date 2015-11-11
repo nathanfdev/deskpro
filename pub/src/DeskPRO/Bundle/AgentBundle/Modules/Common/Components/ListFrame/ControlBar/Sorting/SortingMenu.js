@@ -1,14 +1,16 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { Button } from '../Button';
-import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
+import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
 import MenuFooter from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooter';
 import MenuFooterOptions from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooterOptions';
-import { connect } from 'react-redux';
+import jQuery from 'jquery';
 
 export class SortingMenu extends Component {
+
   static propTypes = {
     options: PropTypes.object.isRequired,
     sort: PropTypes.string.isRequired,
@@ -27,23 +29,26 @@ export class SortingMenu extends Component {
 
   render() {
     const { sort, order, options } = this.props;
-    const current = options.find(option => option.field === sort);
+    const current = options[sort];
 
     return (
-      <li>
-        <ClickOut onClickOut={this.collapse} onClick={this.toggleExpanded}>
-          <Button
-            ref="button"
-            title="Order by:"
-            icon={current ? current.icon : null}
-            label={current ? `${current.label} (${order})` : '(no order)'}
-          />
-          <Positioned isOpen={this.state.expanded}
-                      positionAt="left bottom"
-                      positionTarget={this.refs.button}>
+      <li ref="menuItem">
+        <Button
+          onClick={this.toggleExpanded}
+          ref="button"
+          title="Order by:"
+          icon={current ? current.icon : null}
+          label={current ? `${current.label} (${order})` : '(no order)'}
+        />
+
+        <Detached isOpen={this.state.expanded}
+                  positionAt="left bottom"
+                  positionTarget={this.refs.button}>
+
+          <ClickOut onClickOut={this.collapse} ignoreNodes={[this.refs.menuItem]}>
             <OrderByDropdownContainer {...this.props} />
-          </Positioned>
-        </ClickOut>
+          </ClickOut>
+        </Detached>
       </li>
     );
   }
@@ -51,6 +56,7 @@ export class SortingMenu extends Component {
 
 @connect()
 class OrderByDropdownContainer extends Component {
+
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     options: PropTypes.object.isRequired,
@@ -63,13 +69,13 @@ class OrderByDropdownContainer extends Component {
   renderOptions() {
     const { dispatch, sort, sortAction, options } = this.props;
     return (
-      options.map((option, index)=>
+      jQuery.map(options, (option, type) =>
           <Item
-            key={index}
+            key={type}
             label={option.label}
-            isActive={sort === option.field}
-            checked={sort === option.field}
-            onClick={() => dispatch(sortAction(option.field))}
+            isActive={sort === type}
+            checked={sort === type}
+            onClick={() => dispatch(sortAction(type))}
             icon={option.icon}
           />
       )

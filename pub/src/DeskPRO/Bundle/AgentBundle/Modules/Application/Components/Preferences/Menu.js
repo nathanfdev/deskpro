@@ -5,6 +5,7 @@ import { Menu as SettingsMenu } from './Tabs/Settings/Menu';
 import { Menu as NotificationsMenu } from './Tabs/Notifications/Menu';
 import { Menu as DevicesMenu } from './Tabs/Devices/Menu';
 import * as AppActions from '../../Actions/AppActions';
+import classNames from 'classnames';
 
 export class Menu extends React.Component {
 
@@ -17,13 +18,10 @@ export class Menu extends React.Component {
     const { dpWindow, dispatch } = this.props;
     const clickHandler = () => dispatch(AppActions.changePreferenceTab(name));
 
-    const classNames = [];
-    if (dpWindow.get('preferenceTab') === name) {
-      classNames.push('active');
-    }
-
     return (
-      <li className={classNames.join(' ')} onClick={clickHandler}>
+      <li className={classNames({'active': dpWindow.get('preferenceTab') === name})}
+          onClick={clickHandler}>
+
         {children}
       </li>
     );

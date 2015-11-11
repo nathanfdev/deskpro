@@ -236,6 +236,8 @@ class TicketType extends AbstractType
 
         $extracted_data = $this->getTicketDataIds($submitted_data, $context);
 
+        $form = $context->getForm();
+
         $added_something = false;
         foreach ($additional_fields as $field) {
             if (!$context->hasValidVisibility($field)) {
@@ -247,7 +249,7 @@ class TicketType extends AbstractType
                     continue;
                 }
             } else {
-                if ($field->hasCriteria() && !$field->getCriteria()->isTicketMatch($context->getTicket())) {
+                if (!$form->getConfig()->getOption('full_version') && $field->hasCriteria() && !$field->getCriteria()->isTicketMatch($context->getTicket())) {
                     continue;
                 }
             }

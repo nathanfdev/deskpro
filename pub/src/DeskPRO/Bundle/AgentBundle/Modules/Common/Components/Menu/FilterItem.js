@@ -4,7 +4,7 @@ import BaseItem from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/
 export class FilterItem extends Component {
   static propTypes = {
     icon: PropTypes.string,
-    filterType: PropTypes.string.isRequired,
+    filterType: PropTypes.any.isRequired,
     children: PropTypes.any,
     resetFilter: PropTypes.func.isRequired,
     isActive: PropTypes.bool

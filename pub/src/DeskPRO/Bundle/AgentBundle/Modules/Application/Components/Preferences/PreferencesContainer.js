@@ -11,7 +11,7 @@ export class PreferencesContainer extends React.Component {
   static propTypes = {
     dpWindow: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
-    positionTarget: PropTypes.node.isRequired
+    positionTarget: PropTypes.any.isRequired
   };
 
   render() {

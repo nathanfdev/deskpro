@@ -4,7 +4,7 @@ import { ListItem } from './ListItem';
 export class NestedList extends React.Component {
 
   static propTypes = {
-    onClick: PropTypes.func.isRequired,
+    onClick: PropTypes.func,
     onItemControlClick: PropTypes.func,
     groups: PropTypes.object,
     items: PropTypes.object,

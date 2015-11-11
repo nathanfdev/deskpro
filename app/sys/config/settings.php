@@ -617,7 +617,7 @@ return array(
     /*
      * The default "per page" number of results in each of the user's ticket lists
      */
-    'portal.per_page_tickets' => 10,
+    'portal.per_page_tickets' => 50,
 
     /*
      * If the portal should validate based on etags in the http cache layer
@@ -921,16 +921,23 @@ return array(
     'user.show_ratings'             => true,
     'user.show_ratings_min_votes'   => 1,
     'user.show_num_votes'           => false,
-    'user.publish_captcha'          => true,
     'user.publish_comments'         => true,
-    'user.register_captcha'         => true,
-    'user.ticket_captcha'           => true,
-    'user.always_show_captcha'      => false,
     'user.feedback_notify_comments' => true,
     'user.kb_subscriptions'         => true,
     'user.news_subscriptions'       => true,
     'user.downloads_subscriptions'  => true,
     'user.feedback_subscriptions'   => true,
+
+    ####################################################################################################################
+    # captcha : FALSE (off), 'guests', 'everyone'
+    ####################################################################################################################
+
+    //TODO need admin controls for these
+
+    'user.captcha.tickets'  => false,
+    'user.captcha.comments' => false,
+    'user.captcha.feedback' => false,
+    'user.captcha.register' => false,
 
     ####################################################################################################################
     # search

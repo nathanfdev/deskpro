@@ -5,7 +5,7 @@ import * as PortalMultipleSelectBox from "DeskPRO/Bundle/PortalBundle/React/Form
 export default class DpxLevelSelect extends PageWidget {
   renderWidget() {
     this.$element.hide();
-    this.$rElement = $('<div class="dp-react-widget"></div>').insertAfter(this.$element);
+    this.$rElement = $('<div class="dp-react-widget as-dpui"></div>').insertAfter(this.$element);
     this.actionStore = PortalMultipleSelectBox.createComponent(this.$element, this.$rElement);
   }
 }

@@ -37,12 +37,12 @@ use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpDate;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\ValidRegex;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\NotNull;
-use Symfony\Component\Validator\Constraints\Regex;
 
 /**
  * A service responsible for making sense of "Fields". Usually, special strings (see FormFields class), need to be
@@ -281,14 +281,16 @@ class FormFieldManager
 
             case 'Application\\DeskPRO\\CustomFields\\Handler\\DateTime':
 
+                $options = $this->getGeneralOptionsForField($field_type, array(
+                    'input'  => 'string',
+                    'widget' => 'choice',
+                    'format' => 'Y-m-d H:i',
+                ), $agent_interface);
+
                 return array(
                     'deskpro_datetime',
                     'input',
-                    $this->getGeneralOptionsForField($field_type, array(
-                        'input'  => 'string',
-                        'widget' => 'choice',
-                        'format' => 'Y-m-d H:i',
-                    ), $agent_interface), );
+                    $options, );
 
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Hidden':
 
@@ -344,15 +346,48 @@ class FormFieldManager
 
         // regex
         if ($regex = $field_type->getRegex($isAgent)) {
-            $constraints[] = new Regex(
+            $constraints[] = new ValidRegex(
                 array(
                     'pattern' => Strings::getInputRegexPattern($regex),
                     'message' => 'This value does not match the expected format',
                 )
             );
-            // becase we are requiring it must match a regex, and the UI doesn't allow
-            // it to be also "not required" we must ensure both
-             $constraints[] = new NotNull(array('message' => 'This value is required'));
+        }
+
+        // date stuff
+        if ($field_type->isDateType()) {
+            $weekdays = $field_type->getValidWeekDays();
+            if (!$weekdays || count($weekdays) === 0) {
+                $weekdays = [0, 1, 2, 3, 4, 5, 6];
+            }
+            $min_date = $field_type->getDateMin();
+            if (null !== $min_date) {
+                try {
+                    $min_date = $min_date instanceof \DateTime ? $min_date : new \DateTime(sprintf('now -%s days', $min_date));
+                    $min_date->setTime(0, 0, 0);
+                } catch (\Exception $e) {
+                    $min_date = null;
+                }
+            }
+            $max_date = $field_type->getDateMax();
+            if (null !== $max_date) {
+                try {
+                    $max_date = $max_date instanceof \DateTime ? $max_date : new \DateTime(sprintf('now +%s days', $max_date));
+                    $max_date->setTime(23, 59, 59);
+                } catch (\Exception $e) {
+                    $max_date = null;
+                }
+            }
+
+            if ($weekdays || $min_date || $max_date) {
+                $constraints[] = new DpDate(
+                    [
+                        'days_of_week' => $weekdays,
+                        'min_date'     => $min_date ?: null,
+                        'max_date'     => $max_date ?: null,
+                    ]
+                );
+            }
         }
 
         $options['constraints'] = $constraints;
