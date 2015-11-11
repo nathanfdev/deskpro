@@ -8,7 +8,8 @@ import { ListItemContainer } from '../ListItemContainer';
 export class Projects extends React.Component {
 
   static propTypes = {
-    projects: PropTypes.object.isRequired
+    projects: PropTypes.object.isRequired,
+    projectsCount: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -41,24 +42,13 @@ export class Projects extends React.Component {
     });
   };
 
-  renderItem(project, index) {
-    return (
-      <ListItemContainer key={index}
-                         urlHash={`project-${project.get('id')}-${project.get('title')}`}
-                         listOptions={{projects: [project.get('id')]}}>
-
-        <ListItem count={project.get('remaining')}
-                  onEdit={this.onEdit.bind(this, project)}>
-
-          <div part="label">
-            <i className="fa fa-book" /> {project.get('title')}
-          </div>
-        </ListItem>
-      </ListItemContainer>
-    );
-  }
-
   render() {
+    const { projects, projectsCount = [] } = this.props;
+    const countMap = [];
+    projectsCount.forEach(projectCount => {
+      countMap[projectCount.get('project_id')] = parseInt(projectCount.get('tasks_count'), 10);
+    });
+
     return (
       <Section>
         <SectionHeader>
@@ -69,7 +59,20 @@ export class Projects extends React.Component {
         </SectionHeader>
 
         <ul>
-          {this.props.projects.map((project, index) => this.renderItem(project, index))}
+          {projects.map((project, index) =>
+            <ListItemContainer key={index}
+                               urlHash={`project-${project.get('id')}-${project.get('title')}`}
+                               listOptions={{projects: [project.get('id')]}}>
+
+              <ListItem count={countMap[project.get('id')] || 0}
+                        onEdit={this.onEdit.bind(this, project)}>
+
+                <div part="label">
+                  <i className="fa fa-book" /> {project.get('title')}
+                </div>
+              </ListItem>
+            </ListItemContainer>
+          )}
         </ul>
 
         <Detached isOpen={this.state.formOpened}

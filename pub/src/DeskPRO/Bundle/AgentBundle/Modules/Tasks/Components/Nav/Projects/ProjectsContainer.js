@@ -4,7 +4,8 @@ import { Projects } from './Projects';
 import { allProjectsSelector } from '../../../RecordStores/Selectors/projectSelectors';
 
 @connect(state => ({
-  projects: allProjectsSelector(state)
+  projects: allProjectsSelector(state),
+  projectsCount: state.Tasks.nav.get('projects')
 }))
 export class ProjectsContainer extends React.Component {
 
