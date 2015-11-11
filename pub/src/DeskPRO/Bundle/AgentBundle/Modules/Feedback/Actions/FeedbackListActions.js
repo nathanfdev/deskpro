@@ -221,3 +221,5 @@ export const setFilterValue = createAction(
   'FEEDBACK_SET_FILTER_VALUE',
     update => update
 );
+
+export const setFilters = createAction('FEEDBACK_SET_FILTERS');
