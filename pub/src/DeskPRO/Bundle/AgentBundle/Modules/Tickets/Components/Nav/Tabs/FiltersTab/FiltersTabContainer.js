@@ -10,13 +10,16 @@ import { FiltersTab } from './FiltersTab';
   filterSets: filterSetsSelector(state)
 }))
 export class FiltersTabContainer extends Component {
+
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    filterSets: PropTypes.object.isRequired,
-    filterSetsCount: PropTypes.object.isRequired
+    isDone: PropTypes.bool.isRequired
   };
 
   render() {
-    return this.props.isDone ? <FiltersTab {...this.props} /> : <TabSpinner />;
+    return (
+      <TabSpinner loaded={this.props.isDone}>
+        <FiltersTab {...this.props} />
+      </TabSpinner>
+    );
   }
 }

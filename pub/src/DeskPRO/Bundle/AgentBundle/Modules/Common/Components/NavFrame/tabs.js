@@ -68,8 +68,8 @@ export class TabsPane extends React.Component {
   }
 
   activate(index) {
-    return e => {
-      e.preventDefault();
+    return event => {
+      event.preventDefault();
       this.setState({active: index});
     };
   }
@@ -93,9 +93,9 @@ export class TabsPaneStatefulContainer extends TabsPane {
   activate(index) {
     const parentHandler = super.activate(index);
 
-    return e => {
+    return event => {
       this.props.dispatch(updateRoutingState(this.props.id, 'active', index));
-      parentHandler(e);
+      parentHandler(event);
     };
   }
 }
@@ -107,7 +107,14 @@ export class Tab extends React.Component {
 }
 
 export class TabSpinner extends React.Component {
+
   render() {
-    return <Loader loaded={false} color="green" width="3" left="50%" top="50%" component="span" />;
+    return (
+      <Loader color="green"
+              width={3}
+              left="50%"
+              top="50%"
+              {...this.props} />
+    );
   }
 }

@@ -9,12 +9,16 @@ import { LabelsTab } from './LabelsTab';
   labels: labelsSelector(state)
 }))
 export class LabelsTabContainer extends Component {
+
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    labels: PropTypes.object.isRequired
+    isDone: PropTypes.bool.isRequired
   };
 
   render() {
-    return this.props.isDone ? <LabelsTab {...this.props} /> : <TabSpinner />;
+    return (
+      <TabSpinner loaded={this.props.isDone}>
+        <LabelsTab {...this.props} />
+      </TabSpinner>
+    );
   }
 }
