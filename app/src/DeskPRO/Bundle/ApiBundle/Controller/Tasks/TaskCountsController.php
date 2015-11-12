@@ -64,7 +64,7 @@ class TaskCountsController extends BaseController
      */
     public function getAgentCountsAction()
     {
-        $counts = $this->get('data.tasks.task_counts')->getAgentsCounts();
+        $counts = $this->get('data.tasks.task_counts')->getAgentsRemainingCounts();
 
         return View::create($this->createRepresentation($counts), Response::HTTP_OK);
     }
@@ -74,7 +74,7 @@ class TaskCountsController extends BaseController
      */
     public function getProjectCountsAction()
     {
-        $counts = $this->get('data.tasks.task_counts')->getProjectsCounts();
+        $counts = $this->get('data.tasks.task_counts')->getProjectsRemainingCounts();
 
         return View::create($this->createRepresentation($counts), Response::HTTP_OK);
     }
