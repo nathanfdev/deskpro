@@ -41,6 +41,7 @@ class ResetDemoController extends AbstractController implements ProtectedControl
         'users',
         'agents',
         'tickets',
+        'organizations',
         'triggers',
         'filters',
         'templates',
