@@ -34,7 +34,7 @@ export class ControlBarContainer extends Component {
         options: {
           date_created: {label: 'Date', icon: 'calendar'},
           total_rating: {label: 'Rating', icon: 'calendar-o'},
-          num_ratings:  {label: 'Votes', icon: 'calendar'}
+          num_ratings: {label: 'Votes', icon: 'calendar'}
         },
         sort: this.props.sort,
         order: this.props.order,
@@ -43,7 +43,7 @@ export class ControlBarContainer extends Component {
       },
       filtering: {
         filters: [
-          {label: 'Type', type: 'select', param: 'type', options: [
+          {label: 'Type', type: 'select', param: 'category', options: [
             {value: 'type_1', label: 'Type 1'}
           ]},
           {label: 'Status', type: 'select', param: 'status', options: [
@@ -54,7 +54,7 @@ export class ControlBarContainer extends Component {
             {value: 'awaiting_agent', label: 'Awaiting agent'},
             {value: 'closed', label: 'Closed'}
           ]},
-          {label: 'Category', type: 'select', param: 'category', options: [
+          {label: 'Category', type: 'select', param: 'custom_category', options: [
             {value: 'mac', label: 'Mac'},
             {value: 'linux', label: 'Linux'},
             {value: 'windows', label: 'Windows'}
