@@ -31,6 +31,7 @@ const releaseOrganizations = createAction(
 );
 
 const markFilterLoading = createAction('TICKETS_NAV_MARK_FILTER_AS_LOADING');
+const updateFilter = createAction('TICKET_NAV_UPDATE_FILTER');
 
 /**
  * Load Person and Organization entities used in filter sets count
@@ -84,9 +85,8 @@ export const applyFilterEditing = createAction(
     dispatch(markFilterLoading(id));
     dispatch(closeFilterEditing());
 
-    // @todo Update record store filter.grouped_by value on success
     DpApi.sendPut(`DP_API/ticket_filters/${id}`, {group_by: groupBy})
-         .success(() => dispatch(loadFilterCount(id)));
+         .success(() => dispatch(loadFilterCount(id)) && dispatch(updateFilter({id, group_by: groupBy})));
   }
 );
 export const initialLoad = createAction(
