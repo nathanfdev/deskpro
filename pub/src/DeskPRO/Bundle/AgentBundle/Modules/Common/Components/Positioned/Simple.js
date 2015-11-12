@@ -18,7 +18,7 @@ export default class Simple extends Abstract {
    * @returns {void}
    */
   componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this); // I'm not sure if we need this?
+    this.node = ReactDOM.findDOMNode(this);
     this.updatePosition();
   }
 
@@ -41,16 +41,12 @@ export default class Simple extends Abstract {
 
   /**
    * Render directly insteadof renderContent, the last one causes DOM mutations
-   * @return {React.Element} The rendered element
+   * @return {XML} The rendered element
    */
   render() {
-    let render;
+    const { isOpen, children } = this.props;
+
     // Render the component with react, or don't if the prop changes
-    if (this.props.isOpen) {
-      render = <div className="positioned-element">{this.props.children}</div>;
-    } else {
-      render = <div />;
-    }
-    return render;
+    return isOpen ? <div className="positioned-element">{children}</div> : <div/>;
   }
 }

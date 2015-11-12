@@ -69,7 +69,7 @@
                 {% else %}
                     {% set linkDir = 'desc' %}
                 {% endif %}
-                {% set queryParams = app.request.query.all|merge({(sort_param):sort_value, (sort_dir_param):linkDir}) %}
+                {% set queryParams = app.request.query.all|merge({(sort_param):sort_value, (sort_dir_param):linkDir, type: ticket_table.getTicketType()}) %}
                 {% set url = path(app.request.attributes.get('_route'), queryParams) %}
                 {% set sort_icon = sort_dir == 'desc' ? '&darr;' : '&uarr;' %}
                 <a href="{{ url }}">{{ label }}{% if isActive %}{{ sort_icon|raw }}{% endif %}</a>
@@ -92,6 +92,12 @@
                     {% set make_link = true %}
                     {% if col.id == 'agent' %}
                         {% set label = phrase('portal.tickets.list_agent' ) %}
+                    {% elseif col.id == 'department' %}
+                        {% set label = phrase('portal.tickets.list_department') %}
+                    {% elseif col.id == 'subject' %}
+                        {% set label = phrase('portal.tickets.list_subject') %}
+                    {% elseif col.id == 'user' %}
+                        {% set label = phrase('portal.tickets.list_user') %}
                     {% elseif col.id == 'date_activity' %}
                         {% set label = phrase('portal.tickets.list_last_action') %}
                     {% elseif col.id == 'date_created' %}
@@ -125,6 +131,15 @@
                         {% if ticket.agent %}
                         <img src="{{ avatar_url(ticket.agent) }}" class="avatar">
                         <span class="person">{{ ticket.agent.display_name_user }}</span>
+                        {% endif %}
+                    {% elseif col.id == 'department' %}
+                        {{ ticket.department }}
+                    {% elseif col.id == 'subject' %}
+                        {{ ticket.subject }}
+                    {% elseif col.id == 'user' %}
+                        {% if ticket.person %}
+                            <img src="{{ avatar_url(ticket.person) }}" class="avatar">
+                            <span class="person">{{ ticket.person.display_name_user }}</span>
                         {% endif %}
                     {% elseif col.id == 'date_activity' %}
                         {% set last_message = ticket.messages|last %}
@@ -161,7 +176,11 @@
             {%- endmacro -%}
 
             {%- macro col_td_class(ticket, ticket_view, ticket_table, col) -%}
-                {%- if col.id == 'department_subject' -%}
+                {%- if col.id in ['department_subject'] -%}
+                {%- elseif col.id in ['department'] -%}
+                    info-block centered small
+                {%- elseif col.id in ['subject'] -%}
+                    info-block left long
                 {%- else -%}
                     info-block
                 {%- endif -%}

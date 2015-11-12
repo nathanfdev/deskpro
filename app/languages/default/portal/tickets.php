@@ -34,6 +34,7 @@ return array(
     'portal.tickets.list_switch_to_my_tickets'    => 'Switch to My Tickets',
     'portal.tickets.list_department'              => 'Department',
     'portal.tickets.list_subject'                 => 'Subject',
+    'portal.tickets.list_user'                    => 'User',
     'portal.tickets.list_last_action'             => 'Last Action',
     'portal.tickets.list_date_created'            => 'Date Created',
     'portal.tickets.list_date_last_agent'         => 'Last Agent Reply',

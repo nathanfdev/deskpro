@@ -28,18 +28,27 @@ export class ClickOut extends React.Component {
       let skip = false;
 
       ignoreNodes.forEach(ignored => {
-        const node = ignored && ignored.node ? ignored.node : ignored;
-        if (node) {
-          // skip when clicking on a note itself
-          if (node === event.target) {
-            skip = true;
-          }
-
-          // skip when clicking on a child of the ignored node
-          if (jQuery.contains(node, event.target)) {
-            skip = true;
-          }
+        let nodes;
+        if (typeof ignored === 'string') {
+          nodes = jQuery.find(ignored);
+        } else {
+          nodes = [ignored];
         }
+
+        nodes.map(node => {
+          const domNode = node && node.node ? node.node : node;
+          if (domNode) {
+            // skip when clicking on a node itself
+            if (domNode === event.target) {
+              skip = true;
+            }
+
+            // skip when clicking on a child of the ignored node
+            if (jQuery.contains(domNode, event.target)) {
+              skip = true;
+            }
+          }
+        });
       });
 
       if (skip) {

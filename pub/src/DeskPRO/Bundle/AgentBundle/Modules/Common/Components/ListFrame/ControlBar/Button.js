@@ -10,7 +10,9 @@ export class Button extends Component {
 
   onClick = event => {
     event.preventDefault();
-    this.props.onClick();
+    if (this.props.onClick) {
+      this.props.onClick();
+    }
   };
 
   render() {

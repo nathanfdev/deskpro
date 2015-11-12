@@ -211,7 +211,11 @@
                 {% set label = name|humanize %}
             {%- endif -%}
         {%- endif -%}
-        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}{% if required %} *{% endif %}{% if not dp_no_validation_indicator is defined or not dp_no_validation_indicator %}<span class="form-item-valid{% if not  (submitted and valid) %} hidden{% endif %}"><i class="fa fa-check"></i></span>{% endif %}</label>
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}{% if required %} *{% endif %}{% if not dp_no_validation_indicator is defined or not dp_no_validation_indicator %}<span class="form-item-valid{% if not  (submitted and valid) %} hidden{% endif %}"><i class="fa fa-check"></i></span>{% endif %}{% if dp_include_link is defined and dp_include_link == 'manage_email' %}
+            <span class="form-label-link">
+                <a href="{{ path('portal_user_profile_emails') }}">{{ phrase('portal.account.email-managment-from-form') }}<i class="fa fa-angle-double-right"></i></a>
+            </span>
+    {% endif %}</label>
     {%- endif -%}
 {%- endblock form_label -%}
 
@@ -241,21 +245,26 @@
 {# letting logged in users choose their email #}
 {% block deskpro_person_email_choice_widget %}
     <div {{ block('widget_container_attributes') }}>
-        {% set count = form|length %}
+        {% set count = choices|length %}
         {% if count > 1 %}
-            <div class="dp-choice-widget-group email-present with-dpx">
-                {%- for child in form %}
-                    <div class="radio-button dpx-radio-button">
-                        {{- form_widget(child) -}}
-                        {{- form_label(child, null, { dp_no_validation_indicator: true }) -}}
-                    </div>
-                {% endfor -%}
-            </div>
+           <div class="with-dpx">
+               <select dpx-select="" id="{{ id }}" name="{{ full_name }}">
+                   {% for choice in choices %}
+                       <option data-id="{{ choice.value }}" data-name="{{ choice.label }}" value="{{ choice.value }}"{% if choice.value == value %} selected="selected"{% endif %}>{{ choice.label }}</option>
+                   {% endfor %}
+               </select>
+           </div>
         {% else %}
                 <input class="email-present" type="text" disabled="disabled" value="{{ person.primary_email_address }}" />
         {% endif %}
     </div>
 {% endblock deskpro_person_email_choice_widget %}
+
+{# letting logged in users choose their email #}
+{% block deskpro_person_email_choice_label %}
+    {% set dp_include_link = 'manage_email' %}
+    {{ block('form_label') }}
+{% endblock deskpro_person_email_choice_label %}
 
 
 {% block deskpro_custom_per_field_data_widget %}

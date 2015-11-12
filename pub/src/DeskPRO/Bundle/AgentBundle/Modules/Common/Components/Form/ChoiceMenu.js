@@ -71,37 +71,6 @@ export class ChoiceMenuOption extends Component {
   }
 }
 
-export class ChoiceMenuOptionGroup extends Component {
-
-  static propTypes = {
-    node: PropTypes.object.isRequired,
-    values: PropTypes.array,
-    type: PropTypes.string.isRequired,
-    onClick: PropTypes.func.isRequired
-  };
-
-  render() {
-    const {node, type, values, onClick} = this.props;
-    if (node.nested) {
-      return (
-        <ul>
-          {node.nested.map((item, index) =>
-            <ChoiceMenuOption
-              key={index}
-              label={item.group}
-              type={type}
-              values={values}
-              value={item.group}
-              onClick={onClick}
-              />)}
-        </ul>
-      );
-    }
-    return (<div/>);
-  }
-}
-
-
 export class ChoiceMenuHeader extends Component {
 
   static propTypes = {

@@ -44,7 +44,7 @@ class TicketLabelsDataService extends AbstractDataService
     {
         /* So we're duplicating the labels per ticket. Hence we must do a group by operation
          * on the (hopefully) unique label names. That means using a querybuilder. */
-        $qb = $this->getEm()->createQueryBuilder();
+        $qb = $this->em->createQueryBuilder();
         $qb
             ->select('l.label')
             ->from('DeskPRO:LabelTicket', 'l')

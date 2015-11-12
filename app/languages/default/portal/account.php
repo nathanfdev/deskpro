@@ -73,6 +73,7 @@ return array(
     'portal.account.set-password-sent-to'              => 'We sent an email to',
     'portal.account.set-password-success'              => 'Your password has been set. You may now login.',
     'portal.account.email-managment'                   => 'Manage Emails',
+    'portal.account.email-managment-from-form'         => 'Manage Your Email Addresses',
     'portal.account.email-primary-needs-validation'    => 'Your email (<strong>{{ email }}</strong>) is awaiting validation. Please check your email. After you click the verification link, you will be able to add more emails. <br><a href="{{ verify_url }}">Click here to send the email again.</a>',
     'portal.account.email-primary-indicator'           => 'Primary',
     'portal.account.email-btn-make-primary'            => 'Make Primary',

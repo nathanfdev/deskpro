@@ -31,6 +31,9 @@ namespace DeskPRO\Bundle\AppBundle\Model;
 class TicketColumn
 {
     const TYPE_DEPARTMENT_SUBJECT = 'department_subject';
+    const TYPE_DEPARTMENT         = 'department';
+    const TYPE_SUBJECT            = 'subject';
+    const TYPE_USER               = 'user';
     const TYPE_AGENT              = 'agent';
     const TYPE_DATE_CREATED       = 'date_created';
     const TYPE_DATE_ACTIVITY      = 'date_activity';
@@ -40,6 +43,9 @@ class TicketColumn
 
     public static $column_types = [
         self::TYPE_DEPARTMENT_SUBJECT,
+        self::TYPE_SUBJECT,
+        self::TYPE_DEPARTMENT,
+        self::TYPE_USER,
         self::TYPE_AGENT,
         self::TYPE_DATE_CREATED,
         self::TYPE_DATE_ACTIVITY,

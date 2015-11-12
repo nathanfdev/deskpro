@@ -8,7 +8,7 @@ import { loadFeedbackCommentsCounter } from 'DeskPRO/Bundle/AgentBundle/Modules/
 import { loadFeedbackStatuses } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackStatusesActions';
 import { loadFeedbackCategories } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';
 import { currentListParamsSelector } from '../Selectors/list';
-import Moment from 'moment';
+import { getFeedbackForComments } from './FeedbackCommentsActions';
 
 /**
  * Used to identify requests within record stores
@@ -44,77 +44,60 @@ export const getStatuses = createAction(
     ids => dispatch => dispatch(loadFeedbackStatuses(recordStoresId, ids))
 );
 
-export const setLabelsFilterMode = createAction(
-  'FEEDBACK_SET_LABELS_FILTER_MODE',
-    mode => mode
-);
-
-export const selectLabel = createAction(
-  'FEEDBACK_SELECT_LABEL',
-    label => label
-);
-
-export const deselectLabel = createAction(
-  'FEEDBACK_DESELECT_LABEL',
-    label => label
-);
-
 export const getCategories = createAction(
   'FEEDBACK_GET_CATEGORIES',
     ids => dispatch => dispatch(loadFeedbackCategories(recordStoresId, ids))
 );
 
-export const setCurrentListParams = createAction(
-  'FEEDBACK_LIST_SET_CURRENT_PARAMS'
-);
+export const setParams = createAction('FEEDBACK_LIST_SET_CURRENT_PARAMS');
 
-export const loadFeedbackList = createAction(
+export const loadList = createAction(
   'FEEDBACK_LIST',
-  (overwriteParams = {}) => (dispatch, getState)=> {
-    const currentParams = currentListParamsSelector(getState()).toJS();
+  listParams => dispatch=> {
+    let params = listParams;
 
-    let params = { ...currentParams, ...overwriteParams };
-    params.isComments = false;
-    delete params.isComments;
-    dispatch(setCurrentListParams(params));
-    const {navItem} = params;
+    const { navItem } = params;
     if (navItem) {
       delete params.navItem;
       params = { ...params, ...navItem };
     }
-    const {filters} = params;
-    if (filters) {
-      delete params.filters;
-      for (var property in filters) {
-        if (filters.hasOwnProperty(property)) {
-          if (property === 'date_created') {
-            for (var dateProperty in filters[property]) {
-              if (filters[property].hasOwnProperty(dateProperty) && filters[property][dateProperty]) {
-                params[dateProperty] = Moment(filters[property][dateProperty]).format('YYYY-MM-DD HH:mm:ss');
-              }
-            }
-          } else {
-            params[property] = filters[property];
+
+    const isComments = params.isComments;
+    delete params.isComments;
+
+    let result;
+    if (isComments) {
+      result = Feedback.commentsToReviewList(params).then(promise => {
+        const comments = promise.getData();
+        const ids = [];
+        for (var index in comments.data) {
+          if (comments.data.hasOwnProperty(index)) {
+            ids.push(comments.data[index].feedback_id);
           }
         }
-      }
+        dispatch(getFeedbackForComments(ids));
+        dispatch(getAuthors(comments));
+        return comments;
+      });
+    } else {
+      result = Feedback.getList(params).then(promise => {
+        const feedback = promise.getData();
+        const ids = [];
+        for (var index in feedback.data) {
+          if (feedback.data.hasOwnProperty(index)) {
+            ids.push(feedback.data[index].id);
+          }
+        }
+        dispatch(getAuthors(feedback));
+        dispatch(getCommentsCounter(ids));
+        dispatch(getStatuses(ids));
+        dispatch(getCategories(ids));
+
+        return feedback;
+      });
     }
 
-    return () => Feedback.getList(params).then(promise => {
-      const feedback = promise.getData();
-      const ids = [];
-      for (var index in feedback.data) {
-        if (feedback.data.hasOwnProperty(index)) {
-          ids.push(feedback.data[index].id);
-        }
-      }
-      dispatch(getAuthors(feedback));
-      dispatch(getCommentsCounter(ids));
-      dispatch(getStatuses(ids));
-      dispatch(getCategories(ids));
-
-      return feedback;
-    });
+    return result;
   }
 );
 
@@ -162,25 +145,8 @@ export const feedbackHiddenStatus = createAction(
   'FEEDBACK_HIDDEN_STATUS',
   () => Feedback.getHidden().then(promise => promise.getData()));
 
-export const setTableSort = createAction(
-  'FEEDBACK_SET_TABLE_SORT',
-  (sort, order) => dispatch => {
-    dispatch(loadFeedbackList({ sort: sort, order: order }));
-    return { sort, order };
-  });
-
 export const toggleViewMode = createAction(
   'FEEDBACK_TOGGLE_VIEW_MODE'
-);
-
-export const setOrder = createAction(
-  'FEEDBACK_SET_ORDER',
-    order => dispatch => dispatch(loadFeedbackList({ order: order }))
-);
-
-export const setSort = createAction(
-  'FEEDBACK_SET_SORT',
-    sort => dispatch => dispatch(loadFeedbackList({ sort: sort }))
 );
 
 export const getDisplayFieldsFromPersonSetting = createAction(
@@ -209,15 +175,24 @@ export const updateDisplayFieldsToPersonSetting = createAction(
       })
 );
 
-export const toggleMassAction = createAction(
-  'FEEDBACK_TOGGLE_MASS_ACTION'
+export const toggleMassAction = createAction('FEEDBACK_TOGGLE_MASS_ACTION');
+export const toggleSelectedAction = createAction('FEEDBACK_TOGGLE_SELECTED_ACTION');
+export const applyParams = createAction(
+  'FEEDBACK_APPLY_LIST_PARAMS',
+  (overwrite = {}) => (dispatch, getState) => {
+    const current = currentListParamsSelector(getState()).toJS();
+    const params = {...current, ...overwrite};
+    dispatch(setParams(params));
+    if (params.navItem) {
+      dispatch(loadList(params));
+    }
+  }
 );
-
-export const toggleSelectedAction = createAction(
-  'FEEDBACK_TOGGLE_SELECTED_ACTION'
+export const setSort = createAction(
+  'FEEDBACK_LIST_SET_SORT',
+  sort => dispatch => dispatch(applyParams({sort}))
 );
-
-export const setFilterValue = createAction(
-  'FEEDBACK_SET_FILTER_VALUE',
-    update => update
+export const setOrder = createAction(
+  'FEEDBACK_LIST_SET_ORDER',
+  order => dispatch => dispatch(applyParams({order}))
 );

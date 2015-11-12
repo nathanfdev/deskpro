@@ -36,7 +36,7 @@ export class ViewMenuContainer extends Component {
     const { dispatch, options, viewMode = '', viewModeAction } = this.props;
 
     return (
-      <li>
+      <li ref="menuItem">
           <Button
             onClick={this.expandMenu}
             ref="button"
@@ -50,6 +50,7 @@ export class ViewMenuContainer extends Component {
                     positionTarget={this.refs.button}>
 
             <ClickOut onClickOut={this.collapse}
+                      ignoreNodes={[this.refs.menuItem]}
                       additionalNodes={[this.refs.optionsButton]}>
 
               {this.state.optionsExpanded

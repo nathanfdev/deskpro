@@ -2,18 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { loadAllProjects } from '../../RecordStores/Actions/projectActions';
 import { loadAllTaskLabels } from '../../RecordStores/Actions/taskLabelActions';
-import { agentsSelector } from '../../../Agent/RecordStores/Selectors/agentsSelectors';
-import { allProjectsSelector } from '../../RecordStores/Selectors/projectSelectors';
-import { allTaskLabelsSelector } from '../../RecordStores/Selectors/taskLabelSelectors';
 import { Nav } from './Nav';
-import * as GroupsActions from '../../Actions/groupsActions';
+import { initialLoad } from '../../Actions/navActions';
+import { isDoneSelector } from '../../Selectors/nav';
 
 @connect(state => ({
   dpWindow: state.Application.dpWindow,
-  agents: agentsSelector(state),
-  projects: allProjectsSelector(state),
-  labels: allTaskLabelsSelector(state),
-  groupsState: state.Tasks.groups
+  isDone: isDoneSelector(state)
 }))
 export class NavContainer extends React.Component {
 
@@ -22,17 +17,10 @@ export class NavContainer extends React.Component {
     props.dispatch(loadAllProjects());
     props.dispatch(loadAllTaskLabels());
 
-    props.dispatch(GroupsActions.loadAllTasksRemainingCount());
-    props.dispatch(GroupsActions.loadMyTasksRemainingCount());
-    props.dispatch(GroupsActions.loadTeamTasksRemainingCount());
-    props.dispatch(GroupsActions.loadDepartmentTasksRemainingCount());
-    props.dispatch(GroupsActions.loadDelegatedTasksRemainingCount());
-    props.dispatch(GroupsActions.loadUnassignedTasksRemainingCount());
+    props.dispatch(initialLoad());
   }
 
   render() {
-    return (
-      <Nav {...this.props} />
-    );
+    return <Nav {...this.props} />;
   }
 }

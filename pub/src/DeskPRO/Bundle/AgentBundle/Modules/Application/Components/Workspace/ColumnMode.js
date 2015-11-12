@@ -43,7 +43,8 @@ export class ColumnMode extends React.Component {
           </ChangeModeButton>
         </div>
 
-        {currentMode === 'column' ? (<ColumnSlider columnDimensions={columnDimensions} onChangeDimensions={onChangeDimensions} />) : null}
+        {currentMode === 'column' &&
+          <ColumnSlider columnDimensions={columnDimensions} onChangeDimensions={onChangeDimensions} />}
 
     </div>);
   }

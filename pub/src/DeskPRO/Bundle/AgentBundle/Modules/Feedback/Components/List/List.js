@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
-import { FeedbackListControlBar } from './ControlBar/FeedbackListControlBar';
+import { ControlBarContainer } from './ControlBar/ControlBarContainer';
 import { FeedbackCardsContainer } from './View/List/FeedbackCardsContainer';
 import { FeedbackCommentList } from './View/List/FeedbackCommentList';
 import { FeedbackTableContainer } from './View/Table/FeedbackTableContainer';
@@ -12,7 +12,8 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 export class List extends Component {
 
   static propTypes = {
-    feedback: PropTypes.object.isRequired,
+    elements: PropTypes.object.isRequired,
+    isComments: PropTypes.bool,
     people: PropTypes.object.isRequired,
     emails: PropTypes.object.isRequired,
     selected: PropTypes.object.isRequired,
@@ -22,8 +23,7 @@ export class List extends Component {
     toggleSelected: PropTypes.func.isRequired,
     comments: PropTypes.object.isRequired,
     massAction: PropTypes.bool.isRequired,
-    currentViewMode: PropTypes.string.isRequired,
-    isComments: PropTypes.bool
+    currentViewMode: PropTypes.string.isRequired
   };
 
   contentChoice() {
@@ -49,12 +49,12 @@ export class List extends Component {
   }
 
   renderComments() {
-    const {dispatch, feedbackFromStore, currentViewMode, comments, selected, toggleSelected, massAction, people, emails, feedbackStatuses} = this.props;
+    const {dispatch, elements, feedbackFromStore, currentViewMode, selected, toggleSelected, massAction, people, emails, feedbackStatuses} = this.props;
     if (currentViewMode === constants.VIEW_MODE_CARD) {
       return (
         <FeedbackCommentList
           dispatch={dispatch}
-          comments={comments}
+          comments={elements}
           selected={selected}
           toggleSelected={toggleSelected}
           people={people}
@@ -66,20 +66,16 @@ export class List extends Component {
     }
     return (
       <FeedbackCommentTableContainer
-        elements={comments}
+        elements={elements}
         feedbackStatuses={feedbackStatuses}
         />
     );
   }
 
   render() {
-    const {dispatch, feedback} = this.props;
     return (
       <ListFrameContainer>
-        <FeedbackListControlBar
-          count={feedback ? feedback.size : 0}
-          dispatch={dispatch}
-          />
+        <ControlBarContainer />
         <ListFrameContents>
           {this.contentChoice()}
         </ListFrameContents>

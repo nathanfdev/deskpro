@@ -124,8 +124,7 @@ export default class Abstract extends React.Component {
    * @return {void}
    */
   renderContent() {
-    const { isOpen = false, children, onOpen, onClose } = this.props;
-    const style = this.props.style || {};
+    const { isOpen = false, style = {}, children, onOpen, onClose } = this.props;
     const renderSubtreeIntoContainer = ReactDOM.unstable_renderSubtreeIntoContainer;
 
     // Render the component with react, or don't if the prop changes
@@ -146,7 +145,7 @@ export default class Abstract extends React.Component {
 
   /**
    * Render a fake div in place of the element
-   * @return {React.Element} The rendered element
+   * @return {XML} The rendered element
    */
   render() {
     return <div/>;

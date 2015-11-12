@@ -75,10 +75,10 @@ class FeedbackSelectCriteria extends Criteria
                     }
                     $qb->setParameter('title', $value);
                     break;
-                case 'label':
+                case 'labels':
                     $qb
-                        ->andWhere('labels.label = :label')
-                        ->setParameter('label', $value);
+                        ->andWhere('labels.label IN (:labels)')
+                        ->setParameter('labels', $value);
                     break;
                 case 'no_labels':
                     $qb
@@ -143,7 +143,8 @@ class FeedbackSelectCriteria extends Criteria
                 'status_category',
                 'category',
                 'custom_category',
-                'label',
+                'labels_mode',
+                'labels',
                 'no_labels',
                 'sort',
                 'order',
@@ -156,6 +157,7 @@ class FeedbackSelectCriteria extends Criteria
         );
         $resolver->setAllowedValues('awaiting_validation', '1');
         $resolver->setAllowedValues('no_labels', '1');
+        $resolver->setAllowedValues('labels_mode', ['any', 'all']);
         $resolver->setAllowedValues(
             'sort',
             ['date_created', 'total_rating', 'num_ratings', 'id', 'title', 'status', 'category', 'author_name']
