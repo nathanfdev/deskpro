@@ -321,7 +321,7 @@ class FormFieldManager
         // required
         if ($field_type->isRequired($isAgent)) {
             $options['required'] = $field_type->isRequired($isAgent);
-            $constraints[]       = new NotBlank(array('message' => 'This value is required'));
+            $constraints[]       = new NotBlank(array('message' => 'portal.forms.error_required'));
         }
 
         // length
@@ -332,11 +332,11 @@ class FormFieldManager
 
             if ($min) {
                 $opts['min']        = $min;
-                $opts['minMessage'] = 'The value is too short. It must be at least '.$min.' characters';
+                $opts['minMessage'] = 'portal.forms.error_length_min';
             }
             if ($max) {
                 $opts['max']        = $max;
-                $opts['maxMessage'] = 'The value is too long. It must be '.$max.' or less characters';
+                $opts['maxMessage'] = 'portal.forms.error_length_max';
             }
 
             $constraints[] = new Length($opts);
@@ -349,7 +349,7 @@ class FormFieldManager
             $constraints[] = new ValidRegex(
                 array(
                     'pattern' => Strings::getInputRegexPattern($regex),
-                    'message' => 'This value does not match the expected format',
+                    'message' => 'portal.forms.error_regex',
                 )
             );
         }

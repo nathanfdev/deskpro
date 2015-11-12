@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\Helper\TicketPublicIdResolver;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
 use DeskPRO\Bundle\PortalBundle\View\File\FileViewHelper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class PortalExtension extends \Twig_Extension
@@ -87,6 +88,11 @@ class PortalExtension extends \Twig_Extension
     private $visitor_identification_provider;
 
     /**
+     * @var \DeskPRO\Bundle\AppBundle\Language\LanguageManager
+     */
+    private $language_manager;
+
+    /**
      * @param ContainerInterface $continer
      */
     public function __construct(ContainerInterface $continer)
@@ -100,6 +106,7 @@ class PortalExtension extends \Twig_Extension
         $this->token_storage                   = $continer->get('security.token_storage');
         $this->ratings_helper                  = $continer->get('ratings_helper');
         $this->visitor_identification_provider = $continer->get('visitor_identification_provider');
+        $this->language_manager                = $continer->get('language_manager');
     }
 
     /**
@@ -120,7 +127,32 @@ class PortalExtension extends \Twig_Extension
             new \Twig_SimpleFunction('user_down_voted', array($this, 'didUserDownVote')),
             new \Twig_SimpleFunction('file_css_class', array($this, 'getFileCssClass')),
             new \Twig_SimpleFunction('ticket_view', array($this, 'getTicketView')),
+            new \Twig_SimpleFunction('phrase_form_error', array($this, 'makeFormError')),
         );
+    }
+
+    public function makeFormError(FormError $form_error)
+    {
+        $params = $this->parseErrorParams($form_error->getMessageParameters());
+
+        return $this->language_manager->phrase($form_error->getMessageTemplate(), $params);
+    }
+
+    protected function parseErrorParams(array $params)
+    {
+        $cleaned_params = [];
+
+        foreach ($params as $raw_name => $param) {
+            // strip symfony's curly braces
+            if (substr($raw_name, 0, 2) === '{{') {
+                $raw_name = substr($raw_name, 2);
+                $raw_name = substr($raw_name, 0, -2);
+            }
+            $clean_name                  = trim($raw_name);
+            $cleaned_params[$clean_name] = $param;
+        }
+
+        return $cleaned_params;
     }
 
     public function getFileCssClass(Entity\Download $download)

@@ -35,7 +35,7 @@ use Symfony\Component\Validator\Constraint;
 
 class ValidCaptcha extends Constraint
 {
-    public $message = 'This value is not a valid captcha.';
+    public $message = 'portal.forms.error_captcha';
 
     /**
      * {@inheritdoc}

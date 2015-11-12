@@ -66,6 +66,9 @@ class DpDateValidator extends ConstraintValidator
         if ($constraint->min_date instanceof \DateTime) {
             if ($value < $constraint->min_date) {
                 $this->buildViolation($constraint->min_message)
+                    ->setParameters([
+                        'date' => $constraint->min_date->format('m/d/Y'),
+                    ])
                     ->addViolation();
             }
         }
@@ -73,6 +76,9 @@ class DpDateValidator extends ConstraintValidator
         if ($constraint->max_date instanceof \DateTime) {
             if ($value > $constraint->max_date) {
                 $this->buildViolation($constraint->max_message)
+                    ->setParameters([
+                        'date' => $constraint->max_date->format('m/d/Y'),
+                    ])
                     ->addViolation();
             }
         }
