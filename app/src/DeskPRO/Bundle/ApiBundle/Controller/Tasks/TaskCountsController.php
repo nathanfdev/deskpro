@@ -46,7 +46,7 @@ class TaskCountsController extends BaseController
      */
     public function getGroupCountsAction()
     {
-        $count_service = $this->get('data.tasks.task_counts');
+        $count_service = $this->get('data.task_counts');
         $counts        = [
             'all'        => $count_service->getAllCount(),
             'my'         => $count_service->getMyCount(),
@@ -64,7 +64,7 @@ class TaskCountsController extends BaseController
      */
     public function getAgentCountsAction()
     {
-        $counts = $this->get('data.tasks.task_counts')->getAgentsCounts();
+        $counts = $this->get('data.task_counts')->getAgentsCounts();
 
         return View::create($this->createRepresentation($counts), Response::HTTP_OK);
     }
@@ -74,7 +74,7 @@ class TaskCountsController extends BaseController
      */
     public function getProjectCountsAction()
     {
-        $counts = $this->get('data.tasks.task_counts')->getProjectsCounts();
+        $counts = $this->get('data.task_counts')->getProjectsCounts();
 
         return View::create($this->createRepresentation($counts), Response::HTTP_OK);
     }

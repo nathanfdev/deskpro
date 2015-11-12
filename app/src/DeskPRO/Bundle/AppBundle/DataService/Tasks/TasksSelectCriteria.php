@@ -32,40 +32,35 @@
 namespace DeskPRO\Bundle\AppBundle\DataService\Tasks;
 
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
-use Pagerfanta\Pagerfanta;
+use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class TasksDataService.
+ * Class TasksSelectCriteria.
  */
-class TasksDataService extends AbstractTasksDataService
+class TasksSelectCriteria extends Criteria
 {
     /**
-     * Select filtered list of tasks.
-     *
-     * @param Criteria $criteria
-     * @param int      $page
-     * @param int      $count
-     *
-     * @return Pagerfanta
+     * {@inheritdoc}
      */
-    public function selectTasks(Criteria $criteria, $page, $count)
+    public function applyFilters(QueryBuilder $qb)
     {
-        $qb = $this->getBaseQueryBuilder();
-        $qb
-            ->select('t')
-            ->leftJoin('t.assigned', 'ta')
-            ->leftJoin('t.project', 'p')
-            ->leftJoin('t.labels', 'l')
-            ->addGroupBy('t.id')
-        ;
+    }
 
-        $criteria->applyFilters($qb);
-
-        $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
-
-        return $pager;
+    /**
+     * {@inheritdoc}
+     */
+    public static function configureResolver(OptionsResolver $resolver, array $data = [])
+    {
+        $resolver->setDefined([
+            'assigned',
+            'assigned_team',
+            'assigned_department',
+            'creator',
+            'order_by',
+            'project',
+            'sort',
+            'labels',
+        ]);
     }
 }
