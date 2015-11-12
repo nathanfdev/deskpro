@@ -10,7 +10,10 @@ import React from "react";
 class SelectOption extends React.Component {
   onClickOption = (ev) => {
     ev.preventDefault();
-    this.props.onClickOption(this.props.option);
+    // do not fire events for disabled options
+    if (!this.props.disabled) {
+      this.props.onClickOption(this.props.option);
+    }
   }
 
   onKeyDown = (ev) => {
@@ -52,12 +55,21 @@ class SelectOption extends React.Component {
   render() {
     const option = this.props.option;
     return (
-      <li tabIndex="0" onMouseOver={this.focus.bind(this)} onKeyDown={this.onKeyDown} role="option" ref="row">
-        <a onClick={this.onClickOption} className={this.props.active ? 'active' : null}>
-          {this.props.multiple ? (
+      <li
+          tabIndex="0"
+          onMouseOver={this.focus.bind(this)}
+          onKeyDown={this.onKeyDown}
+          role="option"
+          ref="row"
+          className={this.props.disabled ? "select-option-disabled" : null}>
+        <a
+            onClick={this.onClickOption}
+            className={(this.props.active ? 'active ' : '') + (this.props.displayDepth > 0 ? 'display-depth-'+this.props.displayDepth : '')}>
+          {this.props.multiple && !this.props.disabled ? (
               <span className={"checkbox" + (this.props.active ? " checked" : "")}><i className="fa fa-check"></i></span>
           ) : null}
-          <span className="option-title">{" " + option.title}</span>
+          <span
+              className="option-title">{option.title}</span>
         </a>
       </li>
     );
@@ -185,6 +197,8 @@ export default class PortalSimpleSelectBox extends React.Component {
         {this.state.options.map((option) => {
           return (
             <SelectOption onClickOption={this.onClickOption.bind(this)}
+                          disabled={option.children && option.children.length > 0}
+                          displayDepth={option.depth}
                           kbdNav={kbdNav}
                           ref={'SelectOption_' + this.selRefCounter++}
                           key={option.id}

@@ -7768,6 +7768,7 @@ table .form-help {
   position: relative;
   margin-bottom: 10px;
   cursor: pointer;
+  background: #ffffff;
 
   .default {
     border: 1px solid $form-border-color;
@@ -7806,6 +7807,7 @@ table .form-help {
 
     display: block;
     width: 100%;
+    background: #ffffff;
 
     ul {
       @include blank-list;
@@ -7818,6 +7820,7 @@ table .form-help {
       max-height: 300px;
       overflow-y: auto;
       margin: -1px 0 0 0;
+      background: #ffffff;
 
       border-bottom-left-radius: 2px;
       border-bottom-right-radius: 2px;
@@ -7945,6 +7948,61 @@ table .form-help {
   &.hidden {
     display: none;
   }
+}
+
+// multi-select boxes use indentation instead of new select boxes to show the hierarchy
+.select-option-disabled {
+  font-weight: bold;
+}
+
+.display-depth-1 {
+  position: relative;
+  left: 25px;
+}
+
+.display-depth-2 {
+  @extend .display-depth-1;
+  left: 50px;
+}
+
+.display-depth-3 {
+  @extend .display-depth-1;
+  left: 75px;
+}
+
+.display-depth-4 {
+  @extend .display-depth-1;
+  left: 100px;
+}
+
+.display-depth-5 {
+  @extend .display-depth-1;
+  left: 125px;
+}
+
+.display-depth-6 {
+  @extend .display-depth-1;
+  left: 150px;
+}
+
+.display-depth-7 {
+  @extend .display-depth-1;
+  left: 175px;
+}
+
+.display-depth-8 {
+  @extend .display-depth-1;
+  left: 200px;
+}
+
+.display-depth-9 {
+  @extend .display-depth-1;
+  left: 225px;
+}
+
+.display-depth-10 {
+  @extend .display-depth-1;
+  left: 250px;
 }
 
 input[type="text"], input[type="email"], input[type="password"], textarea, select, .multiselect {
