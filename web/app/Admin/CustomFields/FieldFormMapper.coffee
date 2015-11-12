@@ -41,7 +41,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
           agent_validation_resolve: false
         },
         date: {
-          default_mode:              if fieldModel?.default_value then 'date' else '0'
+          default_mode:              fieldModel.options?.default_mode || '0'
           default_value:             if fieldModel?.default_value then moment.utc(fieldModel.default_value, 'YYYY-MM-DD HH:mm:ss').toDate() else new Date()
           valid_weekdays:            [true, true, true, true, true, true, true]
           valid_dates_mode:          '0'
@@ -54,7 +54,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
           agent_validation_resolve:  false
         },
         datetime: {
-          default_mode:              if fieldModel?.default_value then 'date' else '0'
+          default_mode:              fieldModel.options?.default_mode || '0'
           default_value:             if fieldModel?.default_value then moment.utc(fieldModel.default_value, 'YYYY-MM-DD HH:mm:ss').toDate() else new Date()
           valid_weekdays:            [true, true, true, true, true, true, true]
           valid_dates_mode:          '0'
@@ -284,6 +284,8 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
             postData.default_value = moment(formTypeOpts.default_value).utc().format(format)
           else
             postData.default_value = null
+
+          postData.default_mode = formTypeOpts.default_mode
 
           postData.date_valid_dow = []
           for x, day in formTypeOpts.valid_weekdays

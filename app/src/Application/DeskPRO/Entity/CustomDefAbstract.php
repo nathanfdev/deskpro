@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\CustomFields\Handler\Date;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -710,6 +711,21 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      */
     public function getDefaultValue()
     {
+        if ($this->isDateType()) {
+            $mode = $this->getOption('default_mode', false);
+            if ('date' == $mode) {
+                $date = new \DateTime($this->default_value);
+
+                return $date->format($this->getDateExpectedFormat());
+            } elseif ('current' == $mode) {
+                $date = new \DateTime('now');
+
+                return $date->format($this->getDateExpectedFormat());
+            } else {
+                return;
+            }
+        }
+
         return $this->default_value;
     }
 
@@ -800,6 +816,21 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
             case 'Application\\DeskPRO\\CustomFields\\Handler\\DateTime':
                 return true;
 
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function getDateExpectedFormat()
+    {
+        switch ($this->handler_class) {
+            case 'Application\\DeskPRO\\CustomFields\\Handler\\Date':
+                return 'Y-m-d';
+            case 'Application\\DeskPRO\\CustomFields\\Handler\\DateTime':
+                return 'Y-m-d H:i:s';
             default:
                 return false;
         }

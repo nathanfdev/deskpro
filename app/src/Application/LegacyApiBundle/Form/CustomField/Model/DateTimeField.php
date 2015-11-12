@@ -58,7 +58,7 @@ class DateTimeField extends CustomFieldAbstract
         }
 
         if (empty($this->default_mode)) {
-            $this->default_mode = 'current';
+            $this->default_mode = '0';
         }
 
         if ($this->_field->getOption('required')) {
