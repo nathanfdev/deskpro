@@ -1141,6 +1141,12 @@ button, .button, input[type="submit"] {
   }
 }
 
+#omnisearch {
+  input.omnisearch::-ms-clear {
+    display: none;
+  }
+}
+
 .search-box-results {
   width: 585px;
   display: block;
