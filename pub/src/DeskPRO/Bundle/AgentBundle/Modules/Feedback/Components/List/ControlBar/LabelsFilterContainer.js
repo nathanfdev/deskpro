@@ -12,7 +12,7 @@ export class LabelsFilterContainer extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    allLabels: PropTypes.array.isRequired,
+    allLabels: PropTypes.object.isRequired,
     filterParams: PropTypes.object
   };
 

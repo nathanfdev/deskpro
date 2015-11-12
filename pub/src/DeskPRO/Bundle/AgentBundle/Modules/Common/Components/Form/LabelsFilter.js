@@ -9,7 +9,7 @@ export class LabelsFilter extends Component {
     selectLabel: PropTypes.func.isRequired,
     deselectLabel: PropTypes.func.isRequired,
     selectedLabels: PropTypes.object,
-    allLabels: PropTypes.array.isRequired,
+    allLabels: PropTypes.object.isRequired,
     params: PropTypes.object
   };
 
@@ -135,7 +135,7 @@ export class LabelsCollection extends Component {
 
   static propTypes = {
     selectLabel: PropTypes.func.isRequired,
-    allLabels: PropTypes.array.isRequired
+    allLabels: PropTypes.object.isRequired
   };
 
   render() {
