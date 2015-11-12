@@ -8,25 +8,20 @@ export class Nav extends Component {
   render() {
     return (
       <NavFrame>
-        <div part="outer">
-          <FilterEditPopupContainer />
-        </div>
-        <div part="inner">
-          <NavFrameHeader icon="icon icon-dp-streamline-mail-2">Tickets</NavFrameHeader>
-          <NavFrameBody>
-            <TabsPaneStatefulContainer id="tab">
-              <Tab title="Filters">
-                <FiltersTabContainer />
-              </Tab>
-              <Tab title="Labels">
-                <LabelsTabContainer />
-              </Tab>
-              <Tab title="Stars">
-                <StarsTabContainer />
-              </Tab>
-            </TabsPaneStatefulContainer>
-          </NavFrameBody>
-        </div>
+        <NavFrameHeader icon="icon icon-dp-streamline-mail-2">Tickets</NavFrameHeader>
+        <NavFrameBody>
+          <TabsPaneStatefulContainer id="tab">
+            <Tab title="Filters">
+              <FiltersTabContainer />
+            </Tab>
+            <Tab title="Labels">
+              <LabelsTabContainer />
+            </Tab>
+            <Tab title="Stars">
+              <StarsTabContainer />
+            </Tab>
+          </TabsPaneStatefulContainer>
+        </NavFrameBody>
       </NavFrame>
     );
   }

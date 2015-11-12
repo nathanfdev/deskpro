@@ -35,6 +35,8 @@ export class Nav extends React.Component {
             options={Nav.groupingOptions.my}
             visible={lists.getIn(['my', 'isGroupingControlVisible'])}
             onChange={changeGrouping('my')}
+            attachTo={this.refs.mySection}
+            close={toggleGroupingVisibility('my')}
           />
 
           <ListGroupingControl
@@ -42,6 +44,8 @@ export class Nav extends React.Component {
             options={Nav.groupingOptions.all}
             visible={lists.getIn(['all', 'isGroupingControlVisible'])}
             onChange={changeGrouping('all')}
+            attachTo={this.refs.allSection}
+            close={toggleGroupingVisibility('all')}
           />
 
         </div>
@@ -52,7 +56,7 @@ export class Nav extends React.Component {
           </NavFrameHeader>
 
           <SectionsPane>
-            <Section>
+            <Section ref="mySection">
               <SectionHeader>
                 My Chats
                 <div className="list-counter-bucket">
@@ -77,7 +81,7 @@ export class Nav extends React.Component {
               </ul>
             </Section>
 
-            <Section>
+            <Section ref="allSection">
               <SectionHeader>
                 All Chats
                 <div className="list-counter-bucket">

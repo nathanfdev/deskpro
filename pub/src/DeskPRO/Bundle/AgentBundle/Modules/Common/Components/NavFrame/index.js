@@ -7,7 +7,7 @@ import { ListItemRouteContainer } from './Lists/ListItemRouteContainer';
 import { NestedList } from './Lists/NestedList';
 import { ListItemLabelSpinner } from './Lists/ListItemLabelSpinner';
 import { ListItemSpinner } from './Lists/ListItemSpinner';
-import { ListGroupingControl } from './list-grouping-control';
+import { ListGroupingControl } from './ListGroupingControl';
 import { LabelsDictionary } from './labels';
 import { ButtonsPane, Button } from './buttons';
 

@@ -6,6 +6,7 @@ import { startFilterEditing } from '../../../../Actions/navActions';
 import { navItemLabelsSelector } from '../../../../Selectors/nav-item-labels';
 import { loadingFilterIdsSelector } from '../../../../Selectors/nav';
 import { applyListParams } from '../../../../Actions/listActions';
+import { FilterEditPopupContainer } from '../../FilterEditPopupContainer';
 
 @connect(state => ({
   notDoneFilters: loadingFilterIdsSelector(state),
@@ -37,7 +38,13 @@ export class ListItemContainer extends Component {
     // check if filter is being loaded to show spinner
     const isNotDoneFilterItem = (grouped_by === 'filter') && notDoneFilters.includes(group);
 
-    return isNotDoneFilterItem ? <ListItemSpinner /> : <ListItem {...props} />;
+    return isNotDoneFilterItem
+      ? <ListItemSpinner />
+      : <div>
+          {isTopLevel ? <FilterEditPopupContainer attachTo={this.refs.item} filterId={group} /> : ''}
+          <ListItem {...props} ref="item" />
+        </div>
+      ;
   }
 
   startFilterEditing(filterId) {
