@@ -95,7 +95,7 @@ export class FeedbackCard extends Component {
   render() {
     const { feedback, author, selected, toggleSelected, feedbackLabels, feedbackComments, feedbackStatus } = this.props;
     const type = this.props.type || Immutable.fromJS({});
-    const labels = feedbackLabels ? feedbackLabels.get('labels') : false;
+    const labels = feedbackLabels ? feedbackLabels : [];
     const comments = feedbackComments ? feedbackComments.get('counter') : 0;
     const containerWidth = jQuery('.dp-list-frame-contents').innerWidth();
     const feedbackMarkWidth = jQuery('.dpw--feedback-card-mark').innerWidth();

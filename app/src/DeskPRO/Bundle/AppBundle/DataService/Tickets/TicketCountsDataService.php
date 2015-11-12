@@ -73,7 +73,7 @@ class TicketCountsDataService
 
     /**
      * @param TicketFilter $filter
-     * @param sting        $group_by
+     * @param string       $group_by
      *
      * @return Count
      */

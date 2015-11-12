@@ -1,10 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../Actions/FeedbackListActions';
-import * as commentActions from '../../Actions/FeedbackCommentsActions';
 import { Nav } from './Nav';
 import { loadFeedbackTypes } from '../../RecordStores/Actions/feedbackTypesActions';
-import { loadFeedbackLabels } from '../../RecordStores/Actions/feedbackLabelsActions';
 
 @connect(state => {
   return ({
@@ -17,7 +15,6 @@ import { loadFeedbackLabels } from '../../RecordStores/Actions/feedbackLabelsAct
     dpWindow: state.Application.dpWindow
   });
 })
-
 export class NavContainer extends Component {
 
   static propTypes = {
@@ -31,15 +28,13 @@ export class NavContainer extends Component {
     dpWindow: PropTypes.object.isRequired
   };
 
-  componentWillMount() {
+  componentDidMount() {
     const { dispatch } = this.props;
 
     dispatch(loadFeedbackTypes());
-    dispatch(loadFeedbackLabels());
+    dispatch(actions.loadLabels());
     dispatch(actions.feedbackToValidate());
     dispatch(actions.commentsToReview());
-    dispatch(actions.feedbackLabels());
-    dispatch(actions.feedbackTypes());
     dispatch(actions.feedbackCustomCategories());
     dispatch(actions.feedbackNew());
     dispatch(actions.feedbackActiveStatus());

@@ -4,7 +4,6 @@ import { createPeopleRequestSelectors }
 import { createEmailsRequestSelectors }
   from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Selectors/emailsSelectors';
 import { createFeedbackTypesRequestSelectors } from '../RecordStores/Selectors/feedbackTypesSelectors';
-import { createFeedbackLabelsRequestSelectors } from '../RecordStores/Selectors/feedbackLabelsSelectors';
 import { createFeedbackCommentsRequestSelectors } from '../RecordStores/Selectors/feedbackCommentsSelectors';
 import { createFeedbackStatusesRequestSelectors } from '../RecordStores/Selectors/feedbackStatusesSelectors';
 import { createFeedbackCategoriesRequestSelectors } from '../RecordStores/Selectors/feedbackCategoriesSelectors';
@@ -12,6 +11,7 @@ import { createFeedbackRequestSelectors } from '../RecordStores/Selectors/feedba
 import { hashStateSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
 
 const stateSelector = state => state.Feedback.list;
+const navStateSelector = state => state.Feedback.nav;
 
 export const currentListParamsSelector = createSelector(
   stateSelector,
@@ -49,8 +49,8 @@ export const feedbackTypesSelector = createSelector(
 );
 
 export const feedbackLabelsSelector = createSelector(
-  createFeedbackLabelsRequestSelectors('all').recordsSel,
-    labels => labels
+  navStateSelector,
+  state => state.get('labels')
 );
 
 export const feedbackCommentsSelector = createSelector(
@@ -74,3 +74,32 @@ export const feedbackSelector = createSelector(
 );
 
 export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');
+
+export const listFiltersSelector = createSelector(
+  [navStateSelector, feedbackCategoriesSelector, feedbackLabelsSelector, feedbackTypesSelector],
+  (navState, categories, labels, types) => {
+    // Type options
+    const typeOptions = types.toArray().map(type => ({value: type.get('id'), label: type.get('title')}));
+
+    // Status options
+    const statuses = navState.get('statuses').toJS();
+    const toStatusOptions = nested => (nested || []).map(opt => ({value: opt.group, label: opt.group}));
+    const statusOptions = [
+      { label: 'New', value: 'new', nested: toStatusOptions(statuses.new.nested) },
+      { label: 'Active', value: 'active', nested: toStatusOptions(statuses.active.nested) },
+      { label: 'Closed', value: 'closed', nested: toStatusOptions(statuses.closed.nested) },
+      { label: 'Hidden', value: 'hidden', nested: toStatusOptions(statuses.hidden.nested) }
+    ];
+
+    // Category options
+    const categoryOptions = navState.get('customCategories').toJS().map(cat => ({label: cat.group, value: cat.group}));
+
+    return [
+      {label: 'Type', type: 'select', param: 'type', options: typeOptions},
+      {label: 'Status', type: 'select', param: 'status', options: statusOptions},
+      {label: 'Category', type: 'select', param: 'category', options: categoryOptions},
+      {label: 'Date', type: 'date', fromParam: 'from', toParam: 'to'},
+      {label: 'Labels', type: 'labels', param: 'labels', modeParam: 'labels_mode', labels: labels}
+    ];
+  }
+);

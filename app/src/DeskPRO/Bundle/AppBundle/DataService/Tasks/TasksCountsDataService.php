@@ -186,9 +186,9 @@ class TasksCountsDataService
     }
 
     /**
-     *
+     * @return array
      */
-    public function getAgentsCounts()
+    public function getAgentsRemainingCounts()
     {
         $qb = $this->em->createQueryBuilder();
         $qb
@@ -206,7 +206,7 @@ class TasksCountsDataService
     /**
      * @return array
      */
-    public function getProjectsCounts()
+    public function getProjectsRemainingCounts()
     {
         $qb = $this->em->createQueryBuilder();
         $qb

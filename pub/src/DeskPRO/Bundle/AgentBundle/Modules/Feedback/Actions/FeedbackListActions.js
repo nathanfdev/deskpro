@@ -1,5 +1,4 @@
 import { createAction } from 'Ampliflux';
-import { pluck } from 'lodash';
 import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
 import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSetting';
 import { loadPeople } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
@@ -9,6 +8,8 @@ import { loadFeedbackStatuses } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedbac
 import { loadFeedbackCategories } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';
 import { currentListParamsSelector } from '../Selectors/list';
 import { getFeedbackForComments } from './FeedbackCommentsActions';
+import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { reduceMapToProperty } from 'DeskPRO/Component/Util/Map';
 
 /**
  * Used to identify requests within record stores
@@ -32,6 +33,12 @@ export const getAuthors = createAction(
     dispatch(loadEmails(recordStoresId, ids));
     return dispatch(loadPeople(recordStoresId, ids));
   }
+);
+
+export const loadLabels = createAction(
+  'FEEDBACK_LOAD_LABELS',
+  () => new Promise(resolve =>
+    DpApi.sendGet('DP_API/feedback_labels').success(response => resolve(response.data.map(def => def.label))))
 );
 
 export const getCommentsCounter = createAction(
@@ -108,20 +115,6 @@ export const feedbackToValidate = createAction(
 export const commentsToReview = createAction(
   'FEEDBACK_COMMENTS_TO_REVIEW',
   () => Feedback.commentsToReview().then(promise => promise.getData()));
-
-export const feedbackLabels = createAction(
-  'FEEDBACK_LABELS',
-  () => Feedback.getLabels().then(promise => {
-    const response = promise.getData();
-    response.data = pluck(response.data, 'label');
-
-    return response;
-  }));
-
-export const feedbackTypes = createAction(
-  'FEEDBACK_TYPES',
-  () => Feedback.getTypes().then(promise => promise.getData())
-);
 
 export const feedbackCustomCategories = createAction(
   'FEEDBACK_CUSTOM_CATEGORIES',

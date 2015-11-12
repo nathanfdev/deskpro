@@ -10,13 +10,16 @@ import { StarsTab } from './StarsTab';
   starNames: starNamesSelector(state)
 }))
 export class StarsTabContainer extends Component {
+
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    starsCount: PropTypes.object.isRequired,
-    starNames: PropTypes.object.isRequired
+    isDone: PropTypes.bool.isRequired
   };
 
   render() {
-    return this.props.isDone ? <StarsTab {...this.props} /> : <TabSpinner />;
+    return (
+      <TabSpinner loaded={this.props.isDone}>
+        <StarsTab {...this.props} />
+      </TabSpinner>
+    );
   }
 }
