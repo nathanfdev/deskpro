@@ -24,6 +24,7 @@ export class ControlBarContainer extends Component {
     sort: PropTypes.string.isRequired,
     order: PropTypes.string.isRequired,
     filterParams: PropTypes.object.isRequired,
+    filters: PropTypes.array.isRequired,
     viewMode: PropTypes.string.isRequired,
   };
 
