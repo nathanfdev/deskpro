@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { createTaskRequestSelectors } from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/RecordStores/Selectors/taskSelectors';
-import { ticketNamesSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/RecordStores/Selectors/ticketSelectors';
+import { ticketNamesSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/OldTasks/RecordStores/Selectors/ticketSelectors';
 import Immutable from 'immutable';
 
 export const taskListSelector = createSelector(
